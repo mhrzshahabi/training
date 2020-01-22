@@ -186,7 +186,7 @@
                     filterOperator: "iContains",
                     autoFitWidth: true,
                     valueMap: {
-                        "1": "واکنش",
+                        "1": "واکنشی",
                         "2": "یادگیری",
                         "3": "رفتاری",
                         "4": "نتایج"
@@ -453,7 +453,7 @@
         var ToolStripButton_RefreshIssuance = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
             click: function () {
-               ListGrid_evaluation_student.invalidateCache();
+                ListGrid_evaluation_student.invalidateCache();
             }
         })
 
@@ -566,7 +566,7 @@
             tabs: [
                 {
                     id: "TabPane_Reaction",
-                    title: "واکنش",
+                    title: "واکنشی",
                     pane: VLayout_Body_evaluation
                 }
                 ,
@@ -632,122 +632,9 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
-        //*****open insert window*****
-        function create_OperationalUnit() {
-            evaluation_method = "POST";
-            DynamicForm_OperationalUnit.clearValues();
-            Window_OperationalUnit.show();
-        }
-
-        //*****insert function*****
-        function save_OperationalUnit() {
-
-            if (!DynamicForm_OperationalUnit.validate())
-                return;
-
-            let operationalUnitData = DynamicForm_OperationalUnit.getValues();
-            let operationalUnitSaveUrl = operationalUnitUrl;
-
-            isc.RPCManager.sendRequest(TrDSRequest(operationalUnitSaveUrl, evaluation_method, JSON.stringify(operationalUnitData), show_OperationalUnitActionResult));
-        }
-
-        //*****open update window*****
-        function show_OperationalUnitEditForm() {
-
-            let record = ListGrid_evaluation_class.getSelectedRecord();
-
-            if (record == null || record.id == null) {
-                isc.Dialog.create({
-                    message: "<spring:message code="msg.no.records.selected"/>",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="global.message"/>",
-                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-            } else {
-
-                evaluation_method = "PUT";
-                DynamicForm_OperationalUnit.clearValues();
-                DynamicForm_OperationalUnit.editRecord(record);
-                Window_OperationalUnit.show();
-            }
-        }
-
-        //*****update function*****
-        function edit_OperationalUnit() {
-            let operationalUnitData = DynamicForm_OperationalUnit.getValues();
-            let operationalUnitEditUrl = operationalUnitUrl;
-            if (evaluation_method.localeCompare("PUT") === 0) {
-                let selectedRecord = ListGrid_evaluation_class.getSelectedRecord();
-                operationalUnitEditUrl += selectedRecord.id;
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(operationalUnitEditUrl, evaluation_method, JSON.stringify(operationalUnitData), show_OperationalUnitActionResult));
-        }
-
-        //*****delete function*****
-        function remove_OperationalUnit() {
-            var record = ListGrid_evaluation_class.getSelectedRecord();
-            if (record == null || record.id == null) {
-                isc.Dialog.create({
-                    message: "<spring:message code="msg.no.records.selected"/>",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="global.message"/>",
-                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-            } else {
-                isc.MyYesNoDialog.create({
-                    message: "<spring:message code="global.grid.record.remove.ask"/>",
-                    title: "<spring:message code="verify.delete"/>",
-                    buttonClick: function (button, index) {
-                        this.close();
-                        if (index === 0) {
-                            isc.RPCManager.sendRequest(TrDSRequest(operationalUnitUrl + record.id, "DELETE", null, show_OperationalUnitActionResult));
-                        }
-                    }
-                });
-            }
-
-        }
 
         //*****show action result function*****
         var MyOkDialog_Operational;
-
-        function show_OperationalUnitActionResult(resp) {
-            var respCode = resp.httpResponseCode;
-            if (respCode === 200 || respCode === 201) {
-                ListGrid_evaluation_class.invalidateCache();
-                MyOkDialog_Operational = isc.MyOkDialog.create({
-                    message: "<spring:message code="global.form.request.successful"/>"
-                });
-
-                close_MyOkDialog_Operational();
-                Window_OperationalUnit.close();
-
-            } else {
-                let respText = resp.httpResponseText;
-                if (resp.httpResponseCode === 406) {
-
-                    MyOkDialog_Operational = isc.MyOkDialog.create({
-                        message: "<spring:message code="msg.record.duplicate"/>"
-                    });
-
-                    close_MyOkDialog_Operational()
-
-                } else {
-
-                    MyOkDialog_Operational = isc.MyOkDialog.create({
-                        message: "<spring:message code="msg.operation.error"/>"
-                    });
-
-                    close_MyOkDialog_Operational();
-                }
-            }
-        }
 
         //*****close dialog*****
         function close_MyOkDialog_Operational() {
@@ -759,7 +646,9 @@
         //*****print student form issuance*****
         function print_Student_FormIssuance(type) {
 
+            let selectedClass = ListGrid_evaluation_class.getSelectedRecord();
             let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
+
 
             if (selectedStudent !== null && selectedStudent !== undefined) {
 
@@ -767,77 +656,23 @@
                 var advancedCriteria_unit = ListGrid_evaluation_student.getCriteria();
                 var criteriaForm_operational = isc.DynamicForm.create({
                     method: "POST",
-                    action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
+                    action: "<spring:url value="/evaluation/printWithCriteria/"/>" + type + "/" + selectedClass.id,
                     target: "_Blank",
                     canSubmit: true,
                     fields:
                         [
                             {name: "CriteriaStr", type: "hidden"},
                             {name: "myToken", type: "hidden"}
-                        ]
+                        ],
+                    show: function () {
+                        this.Super("show", arguments);
+                        //set_evaluation_status();
+                    }
                 });
                 criteriaForm_operational.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
                 criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
                 criteriaForm_operational.show();
-                criteriaForm_operational.submitForm();
-
-                //*****set evaluation status*****
-                let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
-
-                let evaluationData = {};
-
-                switch (selectedTab.id) {
-                    case "TabPane_Reaction": {
-
-                        evaluationData = {
-                            "idClassStudent": selectedStudent.id,
-                            "reaction": 1,
-                            "learning": selectedStudent.evaluationStatusLearning || 0,
-                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
-                            "results": selectedStudent.evaluationStatusResults || 0
-                        };
-
-                        break;
-                    }
-                    case "TabPane_Learning": {
-
-                        evaluationData = {
-                            "idClassStudent": selectedStudent.id,
-                            "reaction": selectedStudent.evaluationStatusReaction || 0,
-                            "learning": 1,
-                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
-                            "results": selectedStudent.evaluationStatusResults || 0
-                        };
-
-                        break;
-                    }
-                    case "TabPane_Behavior": {
-
-                        evaluationData = {
-                            "idClassStudent": selectedStudent.id,
-                            "reaction": selectedStudent.evaluationStatusReaction || 0,
-                            "learning": selectedStudent.evaluationStatusLearning || 0,
-                            "behavior": 1,
-                            "results": selectedStudent.evaluationStatusResults || 0
-                        };
-
-                        break;
-                    }
-                    case "TabPane_Results": {
-
-                        evaluationData = {
-                            "idClassStudent": selectedStudent.id,
-                            "reaction": selectedStudent.evaluationStatusReaction || 0,
-                            "learning": selectedStudent.evaluationStatusLearning || 0,
-                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
-                            "results": 1
-                        };
-
-                        break;
-                    }
-                }
-
-                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setStudentFormIssuance/", "PUT", JSON.stringify(evaluationData), show_EvaluationActionResult));
+                criteriaForm_operational.submit(set_evaluation_status());
 
             } else {
                 isc.Dialog.create({
@@ -850,6 +685,69 @@
                     }
                 });
             }
+        }
+
+        //*****set evaluation status*****
+        function set_evaluation_status() {
+
+            let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
+
+            let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
+
+            let evaluationData = {};
+
+            switch (selectedTab.id) {
+                case "TabPane_Reaction": {
+
+                    evaluationData = {
+                        "idClassStudent": selectedStudent.id,
+                        "reaction": 1,
+                        "learning": selectedStudent.evaluationStatusLearning || 0,
+                        "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                        "results": selectedStudent.evaluationStatusResults || 0
+                    };
+
+                    break;
+                }
+                case "TabPane_Learning": {
+
+                    evaluationData = {
+                        "idClassStudent": selectedStudent.id,
+                        "reaction": selectedStudent.evaluationStatusReaction || 0,
+                        "learning": 1,
+                        "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                        "results": selectedStudent.evaluationStatusResults || 0
+                    };
+
+                    break;
+                }
+                case "TabPane_Behavior": {
+
+                    evaluationData = {
+                        "idClassStudent": selectedStudent.id,
+                        "reaction": selectedStudent.evaluationStatusReaction || 0,
+                        "learning": selectedStudent.evaluationStatusLearning || 0,
+                        "behavior": 1,
+                        "results": selectedStudent.evaluationStatusResults || 0
+                    };
+
+                    break;
+                }
+                case "TabPane_Results": {
+
+                    evaluationData = {
+                        "idClassStudent": selectedStudent.id,
+                        "reaction": selectedStudent.evaluationStatusReaction || 0,
+                        "learning": selectedStudent.evaluationStatusLearning || 0,
+                        "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                        "results": 1
+                    };
+
+                    break;
+                }
+            }
+
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setStudentFormIssuance/", "PUT", JSON.stringify(evaluationData), show_EvaluationActionResult));
         }
 
         //*****callback for print student form issuance*****

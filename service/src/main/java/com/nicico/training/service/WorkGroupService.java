@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PermissionDTO;
 import com.nicico.training.dto.WorkGroupDTO;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Permission;
 import com.nicico.training.model.WorkGroup;
 import com.nicico.training.repository.PermissionDAO;
@@ -27,7 +28,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class WorkGroupService {
+public class WorkGroupService implements IWorkGroupService {
 
     private final EntityManager entityManager;
     private final ModelMapper modelMapper;
@@ -35,14 +36,14 @@ public class WorkGroupService {
     private final PermissionDAO permissionDAO;
 
     @Transactional(readOnly = true)
-//    @Override
+    @Override
     public WorkGroup getWorkGroup(Long id) {
         Optional<WorkGroup> optionalWorkGroup = workGroupDAO.findById(id);
         return optionalWorkGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional
-    //    @Override
+    @Override
     public WorkGroupDTO.Info create(WorkGroupDTO.Create request) {
         try {
             WorkGroup creating = modelMapper.map(request, WorkGroup.class);
@@ -53,7 +54,7 @@ public class WorkGroupService {
     }
 
     @Transactional
-    //    @Override
+    @Override
     public WorkGroupDTO.Info update(Long id, WorkGroupDTO.Update request) {
         final WorkGroup workGroup = getWorkGroup(id);
         WorkGroup updating = new WorkGroup();
@@ -67,7 +68,7 @@ public class WorkGroupService {
     }
 
     @Transactional
-    //    @Override
+    @Override
     public List<PermissionDTO.Info> editPermissionList(PermissionDTO.CreateOrUpdate[] rq, Long workGroupId) {
         List<PermissionDTO.Info> response = new ArrayList<>();
         for (PermissionDTO.CreateOrUpdate createOrUpdate : rq) {
@@ -95,14 +96,14 @@ public class WorkGroupService {
     }
 
     @Transactional
-//    @Override
+    @Override
     public void deleteAll(List<Long> request) {
         final List<WorkGroup> gAllById = workGroupDAO.findAllById(request);
         workGroupDAO.deleteAll(gAllById);
     }
 
     @Transactional(readOnly = true)
-//    @Override
+    @Override
     public SearchDTO.SearchRs<WorkGroupDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(workGroupDAO, request, job -> modelMapper.map(job, WorkGroupDTO.Info.class));
     }
@@ -110,7 +111,7 @@ public class WorkGroupService {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Transactional(readOnly = true)
-//    @Override
+    @Override
     public List<PermissionDTO.PermissionFormData> getEntityAttributesList(List<String> entityList) {
 
         Class<?> entityType = null;
@@ -167,7 +168,7 @@ public class WorkGroupService {
     }
 
     @Transactional(readOnly = true)
-//    @Override
+    @Override
     public SearchDTO.CriteriaRq applyPermissions(SearchDTO.CriteriaRq criteriaRq, Class entity, Long userId) {
         String query = "SELECT F_WORK_GROUP FROM TBL_WORK_GROUP_USER_IDS WHERE USER_IDS = " + userId;
         List<Long> workGroupIds = modelMapper.map(entityManager.createNativeQuery(query).getResultList(), new TypeToken<List<Long>>() {
@@ -195,6 +196,8 @@ public class WorkGroupService {
         SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq1.getCriteria().add(criteriaRq);
         criteriaRq1.getCriteria().add(rq);
+        criteriaRq1.setStart(criteriaRq.getStart());
+        criteriaRq1.setEnd(criteriaRq.getEnd());
         return criteriaRq1;
     }
 
