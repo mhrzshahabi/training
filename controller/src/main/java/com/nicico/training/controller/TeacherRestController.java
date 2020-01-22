@@ -12,9 +12,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EGender;
 import com.nicico.training.repository.PersonalInfoDAO;
-import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -24,16 +22,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -58,7 +51,27 @@ public class TeacherRestController {
     private final ITeacherCertificationService teacherCertificationService;
     private final IPublicationService publicationService;
     private final IForeignLangKnowledgeService foreignLangService;
-    private final IPersonalInfoService personalInfoService;
+
+    private double evaluationGrade = 0.0;
+    private boolean pass = false;
+    private String pass_status = "";
+    private double table_1_grade = 0.0;
+    private double table_1_license = 0.0;
+    private double table_1_work = 0.0;
+    private double table_1_related_training = 0.0;
+    private double table_1_unRelated_training = 0.0;
+    private double table_1_courses = 0.0;
+    private double table_1_years = 0.0;
+    private double table_1_related_training_hours = 0.0;
+    private double table_1_unRelated_training_hours = 0.0;
+    private double table_2_grade = 0.0;
+    private double table_3_grade = 0.0;
+    private double table_3_count_book = 0.0;
+    private double table_3_count_project = 0.0;
+    private double table_3_count_article = 0.0;
+    private double table_3_count_translation = 0.0;
+    private double table_3_count_note = 0.0;
+    private double table_4_grade = 0.0;
 
     // ------------------------------
 
@@ -293,6 +306,8 @@ public class TeacherRestController {
         final SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> searchRs_foreingLang = foreignLangService.search(searchRq_foreingLang, Long.valueOf(id));
 
 
+
+
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
 
@@ -339,35 +354,35 @@ public class TeacherRestController {
         if(teacherDTO.getPersonality().getContactInfo() != null) {
             //connection
             if (teacherDTO.getPersonality().getContactInfo().getMobile() != null)
-                connection += "تلفن: " +teacherDTO.getPersonality().getContactInfo().getMobile()+ ", ";
+                connection += "تلفن: " +teacherDTO.getPersonality().getContactInfo().getMobile()+ " ";
             else if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null)
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone() != null)
-                    connection += "تلفن: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone()+ ", ";
+                    connection += "تلفن: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone()+ " ";
             if (teacherDTO.getPersonality().getContactInfo().getEmail() != null)
-                connection += "پست الکترونیکی: " +teacherDTO.getPersonality().getContactInfo().getEmail()+ ", ";
+                connection += "پست الکترونیکی: " +teacherDTO.getPersonality().getContactInfo().getEmail()+ " ";
             if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null)
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax() != null)
-                    connection += "فاکس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax()+ ", ";
+                    connection += "فاکس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax()+ " ";
             //address
             if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null) {
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState() != null)
-                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + ", ";
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity() != null)
-                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + ", ";
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() != null)
-                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + ", ";
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() != null)
-                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + ", ";
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + " ";
             }
             else if(teacherDTO.getPersonality().getContactInfo().getWorkAddress() != null) {
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState() != null)
-                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState().getName() + ", ";
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity() != null)
-                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity().getName() + ", ";
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() != null)
-                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() + ", ";
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() != null)
-                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() + ", ";
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() + " ";
             }
         }
         params.put("address", address);
@@ -376,21 +391,44 @@ public class TeacherRestController {
         List<Category> categoryList = teacher.getCategories();
         List<SubCategory> subCategoryList = teacher.getSubCategories();
         for (Category category : categoryList) {
-            categories += category.getTitleFa() + ", ";
+            categories += category.getTitleFa() + " ";
             for (SubCategory subCategory : subCategoryList) {
                 CategoryDTO.Info categoryDTO = subCategoryService.getCategory(subCategory.getId());
                 if(categoryDTO.getId() == category.getId()) {
-                    categories += subCategory.getTitleFa() + ", ";
+                    categories += subCategory.getTitleFa() + " ";
                 }
             }
         }
         params.put("categories", categories);
 
+        List<TeacherCertificationDTO.Info> teacherRelatedCertificate = new ArrayList<>();
+        List<TeacherCertificationDTO.Info> teacherAllCertificate = searchRs_teacherCertification.getList();
+        for (TeacherCertificationDTO.Info info : teacherAllCertificate) {
+            boolean category_related = false;
+            boolean subCategory_related = false;
+            List<CategoryDTO.CategoryInfoTuple> certificationCategories = info.getCategories();
+            List<SubCategoryDTO.SubCategoryInfoTuple> certificationSubCategories = info.getSubCategories();
+            for (Category teacher_category : categoryList) {
+                for(CategoryDTO.CategoryInfoTuple certificate_category : certificationCategories){
+                    if(teacher_category.getId() == certificate_category.getId())
+                        category_related = true;
+                }
+            }
+            for (SubCategory teacher_sub_category : subCategoryList) {
+                for(SubCategoryDTO.SubCategoryInfoTuple certificate_sub_category : certificationSubCategories){
+                    if(teacher_sub_category.getId() == certificate_sub_category.getId())
+                        subCategory_related = true;
+                }
+            }
+            if(category_related && subCategory_related)
+                teacherRelatedCertificate.add(info);
+        }
+
         String data = "{" +
                 "\"academicBK\": " + objectMapper.writeValueAsString(searchRs_academicBk.getList()) + "," +
                 "\"empHistory\": " + objectMapper.writeValueAsString(searchRs_employmentHistory.getList()) + "," +
                 "\"teachingHistory\": " + objectMapper.writeValueAsString(searchRs_teachingHistory.getList()) + "," +
-                "\"teacherCertification\": " + objectMapper.writeValueAsString(searchRs_teacherCertification.getList()) + "," +
+                "\"teacherCertification\": " + objectMapper.writeValueAsString(teacherRelatedCertificate) + "," +
                 "\"publication\": " + objectMapper.writeValueAsString(searchRs_publication.getList()) + "," +
                 "\"languages\": " + objectMapper.writeValueAsString(searchRs_foreingLang.getList())  +
                  "}";
@@ -414,8 +452,8 @@ public class TeacherRestController {
         String categories = null;
         String address = null;
         String phone = null;
-        String totalGrade = null;
-        String status = null;
+
+        evaluateTeacher(Id,catId,subCatId);
 
         name = teacherDTO.getPersonality().getFirstNameFa() + " " + teacherDTO.getPersonality().getLastNameFa();
         personalNum = teacherDTO.getPersonnelCode();
@@ -440,13 +478,13 @@ public class TeacherRestController {
            //address
             if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null) {
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState() != null)
-                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + ", ";
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity() != null)
-                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + ", ";
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() != null)
-                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + ", ";
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() != null)
-                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + ", ";
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + " ";
             }
         }
 
@@ -455,8 +493,25 @@ public class TeacherRestController {
         params.put("address", address);
         params.put("phone", phone);
         params.put("categories",categories);
-        params.put("totalGrade", totalGrade);
-        params.put("status", status);
+        params.put("totalGrade", evaluationGrade);
+        params.put("status", pass_status);
+        params.put("table1Grade", table_1_grade);
+        params.put("tbl1License", table_1_license);
+        params.put("tbl1Work", table_1_work);
+        params.put("tbl1ReTraining", table_1_related_training);
+        params.put("tbl1UnReTraining", table_1_unRelated_training);
+        params.put("tbl1Courses", table_1_courses);
+        params.put("tbl1Years", table_1_years);
+        params.put("tbl1ReTrH", table_1_related_training_hours);
+        params.put("tbl1UReTrH", table_1_unRelated_training_hours);
+        params.put("table2Grade", table_2_grade);
+        params.put("table3Grade", table_3_grade);
+        params.put("table3Book", table_3_count_book);
+        params.put("table3Project", table_3_count_project);
+        params.put("table3Article", table_3_count_article);
+        params.put("table3Translation", table_3_count_translation);
+        params.put("table3Note", table_3_count_note);
+        params.put("table4Grade", table_4_grade);
 
         String data = "{" + "\"content\": " + null + "}";
 
@@ -468,8 +523,29 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
-    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
-        Long evaluationGrade = null;
+    public ResponseEntity<Double> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
+
+        evaluationGrade = 0.0;
+        pass = false;
+        pass_status = "";
+        table_1_grade = 0.0;
+        table_1_license = 0.0;
+        table_1_work = 0.0;
+        table_1_related_training = 0.0;
+        table_1_unRelated_training = 0.0;
+        table_1_courses = 0.0;
+        table_1_years = 0.0;
+        table_1_related_training_hours = 0.0;
+        table_1_unRelated_training_hours = 0.0;
+        table_2_grade = 0.0;
+        table_3_grade = 0.0;
+        table_3_count_book = 0.0;
+        table_3_count_project = 0.0;
+        table_3_count_article = 0.0;
+        table_3_count_translation = 0.0;
+        table_3_count_note = 0.0;
+        table_4_grade = 0.0;
+
         Long CatId = null;
         Long SubCatId = null;
         Category category_selected = null;
@@ -480,24 +556,251 @@ public class TeacherRestController {
         }
         if(!subCatId.equalsIgnoreCase("undefined")) {
             SubCatId = Long.parseLong(subCatId);
-            subCategory_selected = modelMapper.map(categoryService.get(SubCatId),SubCategory.class);
+            subCategory_selected = modelMapper.map(subCategoryService.get(SubCatId),SubCategory.class);
         }
         TeacherDTO.Info teacherDTO = teacherService.get(id);
         Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
-        // table 2
-        String teacherMajor = teacher.getPersonality().getEducationMajor().getTitleFa();
-        String teacherEducation = teacher.getPersonality().getEducationOrientation().getTitleFa();
-        //table 1,
+        int teacher_educationLevel = 0;
+
         if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
-            System.out.println();
+            teacher_educationLevel = 1;
         else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق دیپلم"))
-            System.out.println();
+            teacher_educationLevel = 2;
         else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("لیسانس"))
-            System.out.println();
+            teacher_educationLevel = 3;
         else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق لیسانس"))
-            System.out.println();
+            teacher_educationLevel = 4;
         else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دکتری"))
-            System.out.println();
+            teacher_educationLevel = 5;
+
+        //table 1
+        //table 1 - row 1
+        table_1_license = (teacher_educationLevel-1)*5 + 10;
+        //table 1 - row 2
+        Set<EmploymentHistoryDTO.Info> employmentHistories = teacherDTO.getEmploymentHistories();
+        for (EmploymentHistoryDTO.Info employmentHistory : employmentHistories) {
+            boolean cat_related = false;
+            boolean subCat_related = false;
+            List<CategoryDTO.CategoryInfoTuple> employmentHistory_catrgories = employmentHistory.getCategories();
+            for (CategoryDTO.CategoryInfoTuple employmentHistory_catrgory : employmentHistory_catrgories) {
+                if(employmentHistory_catrgory.getId() == category_selected.getId())
+                    cat_related = true;
+            }
+            if(cat_related == true) {
+                List<SubCategoryDTO.SubCategoryInfoTuple> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
+                for (SubCategoryDTO.SubCategoryInfoTuple employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
+                    if(employmentHistory_sub_catrgory.getId() == subCategory_selected.getId())
+                        subCat_related = true;
+                }
+            }
+            if(cat_related && subCat_related){
+                if(employmentHistory.getEndDate() != null && employmentHistory.getStartDate()!=null) {
+                    Long years = Long.parseLong(employmentHistory.getPersianEndDate().substring(0,4)) -
+                                Long.parseLong(employmentHistory.getPersianStartDate().substring(0,4)) + 1;
+                    table_1_work += years;
+                }
+            }
+            if(employmentHistory.getEndDate() != null && employmentHistory.getStartDate()!=null) {
+                Long years = Long.parseLong(employmentHistory.getPersianEndDate().substring(0,4)) -
+                        Long.parseLong(employmentHistory.getPersianStartDate().substring(0,4)) + 1;
+                table_1_years += years;
+            }
+        }
+        if(table_1_work > 10)
+            table_1_work = 10;
+        table_1_work = ((teacher_educationLevel-1)*0.2 + 0.6)*table_1_work;
+        //table 1 - row 3 & 4
+        Set<TeachingHistoryDTO.Info> teachingHistories = teacherDTO.getTeachingHistories();
+        for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
+            boolean cat_related = false;
+            boolean subCat_related = false;
+            List<CategoryDTO.CategoryInfoTuple> teachingHistory_catrgories = teachingHistory.getCategories();
+            for (CategoryDTO.CategoryInfoTuple teachingHistory_catrgory : teachingHistory_catrgories) {
+                if(teachingHistory_catrgory.getId() == category_selected.getId())
+                    cat_related = true;
+            }
+            if(cat_related == true) {
+                List<SubCategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
+                for (SubCategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
+                    if(teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
+                        subCat_related = true;
+                }
+            }
+            if(cat_related && subCat_related){
+                if(teachingHistory.getDuration() != null) {
+                    table_1_related_training += teachingHistory.getDuration();
+                    table_1_related_training_hours += teachingHistory.getDuration();
+                }
+            }
+            else{
+                if(teachingHistory.getDuration() != null) {
+                    table_1_unRelated_training += teachingHistory.getDuration();
+                    table_1_unRelated_training_hours += teachingHistory.getDuration();
+                }
+            }
+
+        }
+        if(table_1_unRelated_training > 1000)
+            table_1_unRelated_training = 1000;
+        if(table_1_related_training > 1000)
+            table_1_related_training = 1000;
+        table_1_related_training /= 100;
+        table_1_unRelated_training /= 100;
+        if(table_1_related_training < 0.1)
+            table_1_related_training = 0;
+        if(table_1_unRelated_training < 0.1)
+            table_1_unRelated_training = 0;
+        table_1_unRelated_training = ((teacher_educationLevel-1)*0.1 + 0.4)*table_1_unRelated_training;
+        table_1_related_training = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
+        //table 1 - row 5
+        Set<TeacherCertificationDTO.Info> teacherCertifications = teacherDTO.getTeacherCertifications();
+        for (TeacherCertificationDTO.Info teacherCertification : teacherCertifications) {
+            boolean cat_related = false;
+            boolean subCat_related = false;
+            List<CategoryDTO.CategoryInfoTuple> teacherCertification_catrgories = teacherCertification.getCategories();
+            for (CategoryDTO.CategoryInfoTuple teacherCertification_catrgory : teacherCertification_catrgories) {
+                if(teacherCertification_catrgory.getId() == category_selected.getId())
+                    cat_related = true;
+            }
+            if(cat_related == true) {
+                List<SubCategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
+                for (SubCategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
+                    if(teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
+                        subCat_related = true;
+                }
+            }
+            if(cat_related && subCat_related){
+                if(teacherCertification.getDuration() != null)
+                    table_1_courses += teacherCertification.getDuration();
+            }
+        }
+        if(table_1_courses > 1000)
+            table_1_courses = 1000;
+        table_1_courses  /= 100;
+        if(table_1_courses < 0.1)
+            table_1_courses = 0;
+        if(teacher_educationLevel != 1)
+            table_1_courses = ((teacher_educationLevel-1)*0.1 + 1.2)*table_1_courses;
+        //table 1 - total
+        table_1_grade = table_1_courses +
+                        table_1_license +
+                        table_1_related_training +
+                        table_1_related_training_hours +
+                        table_1_unRelated_training +
+                        table_1_work +
+                        table_1_years +
+                        table_1_unRelated_training_hours;
+
+        // table 2
+        int table_2_relation = 0;
+        String teacherMajor = teacher.getPersonality().getEducationMajor().getTitleFa();
+        String teacherOrientation = "";
+        if(teacher.getPersonality().getEducationOrientation() != null)
+            teacherOrientation = teacher.getPersonality().getEducationOrientation().getTitleFa();
+        if(category_selected.getTitleFa().equalsIgnoreCase(teacherMajor)) {
+            table_2_relation += 1;
+            if (subCategory_selected != null)
+                if (subCategory_selected.getTitleFa().equalsIgnoreCase(teacherOrientation))
+                    table_2_relation += 1;
+        }
+            if(teacher_educationLevel == 1)
+                table_2_grade = 2.5;
+            else if(teacher_educationLevel == 2)
+                table_2_grade = 6;
+            else if(teacher_educationLevel == 3)
+                table_2_grade = 8;
+            else if(teacher_educationLevel == 4)
+                table_2_grade = 9;
+            else if(teacher_educationLevel == 5)
+                table_2_grade = 10;
+
+            table_2_grade *= table_2_relation;
+
+         //table 3
+        Set<PublicationDTO.Info> publications  = teacherDTO.getPublications();
+        for (PublicationDTO.Info publication : publications) {
+            boolean cat_related = false;
+            boolean subCat_related = false;
+           List<CategoryDTO.CategoryInfoTuple> publication_catrgories = publication.getCategories();
+            for (CategoryDTO.CategoryInfoTuple publication_catrgory : publication_catrgories) {
+                    if(publication_catrgory.getId() == category_selected.getId())
+                        cat_related = true;
+            }
+            if(cat_related == true) {
+                List<SubCategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
+                for (SubCategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
+                    if(publication_sub_catrgory.getId() == subCategory_selected.getId())
+                        subCat_related = true;
+                }
+            }
+            if(cat_related && subCat_related){
+                if(publication.getPublicationSubjectTypeId() == 0)
+                    table_3_count_book += 1;
+                if(publication.getPublicationSubjectTypeId() == 1)
+                    table_3_count_project += 1;
+                if(publication.getPublicationSubjectTypeId() == 2)
+                    table_3_count_article += 1;
+                if(publication.getPublicationSubjectTypeId() == 3)
+                    table_3_count_translation += 1;
+                if(publication.getPublicationSubjectTypeId() == 4)
+                    table_3_count_note += 1;
+            }
+        }
+        if(table_3_count_book > 10)
+            table_3_count_book = 10;
+        if(table_3_count_project > 10)
+            table_3_count_project = 10;
+        if(table_3_count_article > 10)
+            table_3_count_article = 10;
+        if(table_3_count_note > 10)
+            table_3_count_note = 10;
+        if(table_3_count_translation > 10)
+            table_3_count_translation = 10;
+
+        table_3_grade = table_3_count_book * 7
+                        + table_3_count_project * 4
+                        + table_3_count_article * 3
+                        + table_3_count_translation * 2
+                        + table_3_count_note;
+        //table 4
+        Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges = teacherDTO.getForeignLangKnowledges();
+        for (ForeignLangKnowledgeDTO.Info foreignLangKnowledge : foreignLangKnowledges) {
+            if(foreignLangKnowledge.getLangName().equalsIgnoreCase("انگلیسی") || foreignLangKnowledge.getLangName().equalsIgnoreCase("زبان انگلیسی")) {
+                if (foreignLangKnowledge.getLangLevelId() == 0)
+                    table_4_grade = 3;
+                else if (foreignLangKnowledge.getLangLevelId() == 1)
+                    table_4_grade = 2;
+                else if (foreignLangKnowledge.getLangLevelId() == 2)
+                    table_4_grade = 1;
+            }
+        }
+        //total grade
+        evaluationGrade = table_1_grade+table_2_grade+table_3_grade+table_4_grade;
+        if(teacher_educationLevel == 1) {
+            if (evaluationGrade >= 25)
+                pass = true;
+        }
+        else if(teacher_educationLevel == 2) {
+            if (evaluationGrade >= 40)
+                pass = true;
+        }
+        else if(teacher_educationLevel == 3) {
+            if (evaluationGrade >= 55)
+                pass = true;
+        }
+        else if(teacher_educationLevel == 4) {
+            if (evaluationGrade >= 60)
+                pass = true;
+        }
+        else if(teacher_educationLevel == 5) {
+            if (evaluationGrade >= 75)
+                pass = true;
+        }
+
+        if(pass)
+            pass_status = "قبول";
+        if(!pass)
+            pass_status = "رد";
 
         return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }

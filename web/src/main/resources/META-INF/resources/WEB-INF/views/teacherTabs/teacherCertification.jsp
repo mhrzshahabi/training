@@ -67,6 +67,7 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -106,6 +107,7 @@
                 disabled: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -200,6 +202,7 @@
     IButton_Save_JspTeacherCertification = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+            DynamicForm_JspTeacherCertification.validate();
             if (!DynamicForm_JspTeacherCertification.valuesHaveChanged() || !DynamicForm_JspTeacherCertification.validate())
                 return;
             waitTeacherCertification = createDialog("wait");

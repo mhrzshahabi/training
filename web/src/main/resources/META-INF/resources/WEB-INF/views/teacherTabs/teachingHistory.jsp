@@ -84,6 +84,7 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeachingHistory,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -123,6 +124,7 @@
                 disabled: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -217,6 +219,7 @@
     IButton_Save_JspTeachingHistory = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+            DynamicForm_JspTeachingHistory.validate();
             if (!DynamicForm_JspTeachingHistory.valuesHaveChanged() || !DynamicForm_JspTeachingHistory.validate())
                 return;
             waitTeachingHistory = createDialog("wait");

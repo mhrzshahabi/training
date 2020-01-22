@@ -23,6 +23,8 @@ public class ClassStudentDTO implements Serializable {
 
     private Float score;
 
+    private String valence;
+
     private String applicantCompanyName;
 
     private Long presenceTypeId;
@@ -78,6 +80,7 @@ public class ClassStudentDTO implements Serializable {
         private String scoresState;
         private String failureReason;
         private Float score;
+        private String valence;
     }
 
 
@@ -161,6 +164,7 @@ public class ClassStudentDTO implements Serializable {
         private String scoresState;
         private String failureReason;
         private Float score;
+        private String valence;
     }
 
     @Getter

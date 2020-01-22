@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,7 +22,7 @@ public class WorkGroup extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title", nullable = false)
+    @Column(name = "c_title", nullable = false, unique = true)
     private String title;
 
     @Column(name = "c_description")
