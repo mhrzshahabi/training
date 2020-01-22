@@ -1225,6 +1225,7 @@
                       //  form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit_a").show();
                         form.getItem("acceptancelimit_a").enable();
+                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(true);
                         form.getItem("acceptancelimit_a").setDisabled(false);
 
@@ -1232,6 +1233,7 @@
                     else if(value =="2")
                     {
                         form.getItem("acceptancelimit").show();
+                          form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit").enable();
                         form.getItem("acceptancelimit").setRequired(true);
                         DynamicForm_course_MainTab.getItem("acceptancelimit").validators=[{
@@ -1253,6 +1255,7 @@
                                 expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
                             },{type : "required"}];
                      form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").setValue();
                 //   form.getItem("acceptancelimit").enable();
                      form.getItem("acceptancelimit").setRequired(true);
                      form.getItem("acceptancelimit_a").hide();
@@ -1263,6 +1266,7 @@
 
                     else if(value =="4") {
                         form.getItem("acceptancelimit").show();
+                            form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit").setDisabled(true);
                         form.getItem("acceptancelimit").setValue("بدون نمره")
