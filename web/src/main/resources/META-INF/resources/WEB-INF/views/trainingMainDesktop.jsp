@@ -144,7 +144,7 @@
     });
 
     isc.defineClass("LgLabel", Label);
-    isc.LgLabel.addProperties({height: "30", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2});
+    isc.LgLabel.addProperties({height: "27", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2});
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
@@ -156,6 +156,7 @@
         showRowNumbers: true,
         canAutoFitFields: false,
         filterOnKeypress: false,
+        leaveScrollbarGap: false,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 50,
