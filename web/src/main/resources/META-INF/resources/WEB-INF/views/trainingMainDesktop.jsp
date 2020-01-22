@@ -645,7 +645,7 @@
                 {
                     title: "<spring:message code="training.file"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/course/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/trainingFile/"/>");
                     }
                 },
             ]
