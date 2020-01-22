@@ -54,6 +54,16 @@ public class SkillDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("SkillInfoTuple")
+    public static class InfoTuple {
+        private Long id;
+        private String titleFa;
+        private String code;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("SkillInfo")
     public static class Info extends SkillDTO {
         private Long id;

@@ -1605,8 +1605,8 @@
                             equalCourseIdList.add(equalCourse[j].idEC);
                         }
                         let mainObjectiveIdList = [];
-                        for (let k = 0; k < mainObjectiveList.length; k++) {
-                            mainObjectiveIdList.add(mainObjectiveList[k].id);
+                        for (let k = 0; k < ListGrid_AllSkill_mainObjective_JspCourse.data.localData.length; k++) {
+                            mainObjectiveIdList.add(ListGrid_AllSkill_mainObjective_JspCourse.data.localData[k].id);
                         }
                         data2.mainObjectiveIds = mainObjectiveIdList;
                         data2.equalCourseListId = equalCourseIdList;
