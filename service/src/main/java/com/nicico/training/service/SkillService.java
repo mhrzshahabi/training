@@ -82,8 +82,9 @@ public class SkillService implements ISkillService {
         final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
         SkillDTO.Update requestSkill = modelMapper.map(request, SkillDTO.Update.class);
-
-
+        if(!requestSkill.getCourseId().equals(currentSkill.getCourseId())){
+            currentSkill.setCourseMainObjectiveId(null);
+        }
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
@@ -460,8 +461,9 @@ public class SkillService implements ISkillService {
         return skills;
     }
 
-    public List<SkillDTO.Info> listMainObjective(Long mainObjectiveId) {
-        return modelMapper.map(skillDAO.findByCourseMainObjectiveId(mainObjectiveId), new TypeToken<List<SkillDTO.Info>>() {
+    public List<SkillDTO> listMainObjective(Long mainObjectiveId) {
+        List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(mainObjectiveId);
+        return modelMapper.map(skillList, new TypeToken<List<SkillDTO>>() {
         }.getType());
     }
 }

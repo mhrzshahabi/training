@@ -2498,7 +2498,7 @@
         // DynamicForm_course.getItem("epSection").disable();
         // DynamicForm_course.getItem("theoryDuration").clearErrors();
         Window_course.show();
-        ListSkillBtnMainObjective.setDisabled(true);
+        // ListSkillBtnMainObjective.setDisabled(true);
         //  DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), "3");
         setTimeout(function () {
             // ToolStrip_Actions_Goal.disable();
@@ -2650,12 +2650,11 @@
             Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
-            ListSkillBtnMainObjective.setDisabled(false);
+            // ListSkillBtnMainObjective.setDisabled(false);
             if(sRecord.scoringMethod === "1")
             {
                 DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(sRecord.acceptancelimit)
             }
-
             DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), DynamicForm_course_MainTab.getValue("scoringMethod"));
             setTimeout(function () {
                 ListGrid_Goal_refresh();

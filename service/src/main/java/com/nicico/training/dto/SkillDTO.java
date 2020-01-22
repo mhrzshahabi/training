@@ -49,6 +49,7 @@ public class SkillDTO {
     @ApiModelProperty()
     private String description;
     private Long courseId;
+    private Long courseMainObjectiveId;
 
     @Getter
     @Setter
@@ -59,7 +60,6 @@ public class SkillDTO {
         private SkillLevelDTO.SkillLevelInfoTuple skillLevel;
         private CategoryDTO.CategoryInfoTuple category;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
-        private Long courseMainObjectiveId;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
