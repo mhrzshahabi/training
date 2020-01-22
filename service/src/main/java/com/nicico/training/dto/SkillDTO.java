@@ -65,6 +65,7 @@ public class SkillDTO {
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private Integer version;
+        private CourseDTO.CourseInfoTupleLite course;
     }
 
     // ------------------------------
