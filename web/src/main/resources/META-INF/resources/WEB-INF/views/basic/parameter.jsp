@@ -56,7 +56,7 @@
     ParameterDS_parameter = isc.TrDS.create({
         ID: "ParameterDS_parameter",
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
+            {name: "id", primaryKey: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -69,7 +69,7 @@
         ID: "ParameterLG_parameter",
         dataSource: ParameterDS_parameter,
         autoFetchData: true,
-        fields: [{name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
+        fields: [{name: "id"}, {name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="type"/>" + "</b></span>",}),
             ParameterTS_parameter, "filterEditor", "header", "body"

@@ -754,7 +754,10 @@
     trainingTabSet = isc.TabSet.create({
         minWidth: 1024,
         tabs: [],
-        tabBarControls: [closeAllButton]
+        tabBarControls: [closeAllButton],
+        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+            tabPane.redraw();
+        }
     });
 
     // -------------------------------------------  Page UI -----------------------------------------------

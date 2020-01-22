@@ -6,7 +6,7 @@
 
     var DynamicForm_Permission;
     var entityList_Permission = [
-        // "com.nicico.training.model.Post",
+        "com.nicico.training.model.Post",
         "com.nicico.training.model.Job",
         "com.nicico.training.model.PostGrade",
         "com.nicico.training.model.Skill",
