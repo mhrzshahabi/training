@@ -1,5 +1,6 @@
 package com.nicico.training.repository;
 
+import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.model.enums.EEnabled;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,5 @@ public interface QuestionnaireQuestionDAO extends BaseDAO<QuestionnaireQuestion,
 
     ////    List<QuestionnaireQuestion> findQuestionnaireQuestionByQuestionnaireEEnabledAndEvaluationQuestionDomainId(EEnabled eEnabled, Long domainId);
     List<QuestionnaireQuestion> findQuestionnaireQuestionByQuestionnaireVersionAndEvaluationQuestionDomainId(Integer version, Long domainId);
-
 
 }

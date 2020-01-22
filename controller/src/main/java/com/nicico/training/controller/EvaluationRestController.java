@@ -6,10 +6,9 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.OperationalUnitDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.service.EvaluationService;
 import com.nicico.training.service.OperationalUnitService;
@@ -18,14 +17,14 @@ import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -37,6 +36,7 @@ public class EvaluationRestController {
     private final ObjectMapper objectMapper;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
+    private final ModelMapper modelMapper;
 
 
     private final TclassService tclassService;
@@ -59,6 +59,21 @@ public class EvaluationRestController {
         List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
 
         List<QuestionnaireQuestion> equipmentQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(54L);
+
+        List<EvaluationQuestionDTO.Info> teacherEvaluationQuestion = new ArrayList<>();
+        for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
+            teacherEvaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+        }
+
+        List<EvaluationQuestionDTO.Info> equipmentEvaluationQuestion = new ArrayList<>();
+        for (QuestionnaireQuestion questionnaireQuestion : equipmentQuestionnaireQuestion) {
+            equipmentEvaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+        }
+
+
+//        List<QuestionnaireQuestionDTO.Info> qqq = modelMapper.map(teacherQuestionnaireQuestion, new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {
+//        }.getType());
+
 
         TclassDTO.Info classInfo = tclassService.get(classId);
 
@@ -87,9 +102,8 @@ public class EvaluationRestController {
 
 
         String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classInfo.getClassStudents()) + "," +
-                            "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(teacherQuestionnaireQuestion) + "," +
-                            "\"dsEquipmentQuestion\": " + objectMapper.writeValueAsString(equipmentQuestionnaireQuestion) +"}";
-
+                "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(teacherEvaluationQuestion) + "," +
+                "\"dsEquipmentQuestion\": " + objectMapper.writeValueAsString(equipmentEvaluationQuestion) + "}";
 
 
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
