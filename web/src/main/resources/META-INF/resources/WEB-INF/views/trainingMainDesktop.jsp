@@ -640,7 +640,14 @@
         title: "<spring:message code="report"/>",
         menu: isc.Menu.create({
             placement: "none",
-            data: []
+            data: [
+                {
+                    title: "<spring:message code="training.file"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/course/show-form"/>");
+                    }
+                },
+            ]
         }),
     });
 

@@ -62,7 +62,7 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/main-objective/{mainObjectiveId}")
 //    @PreAuthorize("hasAuthority('r_skill')")
-    public ResponseEntity<List<SkillDTO.InfoTuple>> list(@PathVariable Long mainObjectiveId) {
+    public ResponseEntity<List<SkillDTO>> list(@PathVariable Long mainObjectiveId) {
         return new ResponseEntity<>(skillService.listMainObjective(mainObjectiveId), HttpStatus.OK);
     }
 

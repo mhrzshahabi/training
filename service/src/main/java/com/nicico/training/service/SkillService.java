@@ -461,7 +461,7 @@ public class SkillService implements ISkillService {
         return skills;
     }
 
-    public List<SkillDTO.InfoTuple> listMainObjective(Long mainObjectiveId) {
+    public List<SkillDTO> listMainObjective(Long mainObjectiveId) {
         List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(mainObjectiveId);
         return modelMapper.map(skillList, new TypeToken<List<SkillDTO.InfoTuple>>() {
         }.getType());
