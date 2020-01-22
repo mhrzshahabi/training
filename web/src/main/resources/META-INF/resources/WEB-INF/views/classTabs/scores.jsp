@@ -295,14 +295,12 @@
         members: [ListGrid_Class_Student]
     })
 
-
     function ListGrid_Cell_scoresState_Update(record, newValue) {
         record.scoresState = newValue
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
     }
 
     function ListGrid_Cell_failurereason_Update(record, newValue) {
-
         record.failureReason = newValue
         record.scoresState = "مردود"
         record.score = null
@@ -357,17 +355,35 @@
     };
 
     function validators_score(value) {
-        if (value.match(/^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/)) {
-            return true
-        } else {
-            return false
-        }
+
+         if(score_value ==20)
+             {
+                 if (value.match(/^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/))
+                       {
+                            return true
+                       }
+                          else
+                       {
+                           return false
+                       }
+             }
+             else if (score_value == 100)
+                {
+                 if (value.match(/^(100|[1-9]?\d)$/))
+                       {
+                            return true
+                       }
+                          else
+                       {
+                           return false
+                       }
+
+                }
     }
 
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
-
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
 //===========================================
@@ -379,17 +395,11 @@
                 score_value = 20;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
-// ListGrid_Class_Student.getItem("score").validators= {type: "regexp",errorMessage: "<spring:message
-        code="msg.validate.score"/>",expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/}
-// ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
-
             } else if (classRecord.scoringMethod == "2") {
                 score_value = 100;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
-// ListGrid_Class_Student.showField('score').validators=[{type: "integerRange", min: 0, max: 100,errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",}]
-                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
-
+               ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
             }
 //=================================================
             ListGrid_Class_Student.invalidateCache()
