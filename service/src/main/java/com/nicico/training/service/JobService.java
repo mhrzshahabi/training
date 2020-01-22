@@ -10,6 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.iservice.IJobService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.repository.JobDAO;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class JobService implements IJobService {
 
     private final JobDAO jobDAO;
     private final ModelMapper modelMapper;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override

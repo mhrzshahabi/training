@@ -11,6 +11,7 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class SkillService implements ISkillService {
     private final SkillLevelDAO skillLevelDAO;
     private final CategoryDAO categoryDAO;
     private final SubCategoryDAO subCategoryDAO;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
     private String saveType = "";
 
     @Transactional(readOnly = true)

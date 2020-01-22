@@ -670,7 +670,7 @@
                     }
                 },
                 {
-                    title: "گروه کاری",
+                    title: "<spring:message code="workGroup"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/work-group"/>");
                     },

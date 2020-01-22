@@ -14,6 +14,7 @@ import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.iservice.ISkillGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.CompetenceOld;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.Skill;
@@ -32,8 +33,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-//import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class SkillGroupService implements ISkillGroupService {
@@ -43,7 +42,7 @@ public class SkillGroupService implements ISkillGroupService {
     private final SkillGroupDAO skillGroupDAO;
     private final SkillDAO skillDAO;
     private final CompetenceDAOOld competenceDAO;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
