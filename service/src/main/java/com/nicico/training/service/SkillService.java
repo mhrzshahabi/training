@@ -7,9 +7,11 @@ com.nicico.training.service
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class SkillService implements ISkillService {
     private final SkillLevelDAO skillLevelDAO;
     private final CategoryDAO categoryDAO;
     private final SubCategoryDAO subCategoryDAO;
+    private final IWorkGroupService workGroupService;
     private String saveType = "";
 
     @Transactional(readOnly = true)
@@ -82,8 +85,9 @@ public class SkillService implements ISkillService {
         final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
         SkillDTO.Update requestSkill = modelMapper.map(request, SkillDTO.Update.class);
-
-
+        if(!requestSkill.getCourseId().equals(currentSkill.getCourseId())){
+            currentSkill.setCourseMainObjectiveId(null);
+        }
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
@@ -106,6 +110,7 @@ public class SkillService implements ISkillService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<SkillDTO.Info> search(SearchDTO.SearchRq request) {
+        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), Skill.class, SecurityUtil.getUserId()));
         return SearchUtil.search(skillDAO, request, skill -> modelMapper.map(skill, SkillDTO.Info.class));
     }
 
@@ -411,7 +416,7 @@ public class SkillService implements ISkillService {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillId);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
         skill.setCourseId(null);
-        if (Objects.equals(skill.getCourseMainObjectiveId(), courseId))
+        if(Objects.equals(skill.getCourseMainObjectiveId(), courseId))
             skill.setCourseMainObjectiveId(null);
         skillDAO.save(skill);
     }

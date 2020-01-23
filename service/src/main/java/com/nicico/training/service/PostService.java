@@ -5,8 +5,10 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Post;
 import com.nicico.training.repository.PostDAO;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class PostService implements IPostService {
 
     private final PostDAO postDAO;
     private final ModelMapper modelMapper;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -42,6 +45,7 @@ public class PostService implements IPostService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq request) {
+        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), Post.class, SecurityUtil.getUserId()));
         return SearchUtil.search(postDAO, request, post -> modelMapper.map(post, PostDTO.Info.class));
     }
 }
