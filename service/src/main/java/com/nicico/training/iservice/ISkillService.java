@@ -85,4 +85,8 @@ public interface ISkillService {
 
     @Transactional(readOnly = true)
     List<Skill> getAllByIds(List<Long> ids);
+
+    List<SkillDTO.Info> listMainObjective(Long mainObjectiveId);
+
+    List<Skill> skillList(Long courseId);
 }

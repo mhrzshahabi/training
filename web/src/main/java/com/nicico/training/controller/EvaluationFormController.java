@@ -24,8 +24,8 @@ public class EvaluationFormController {
         return "base/evaluation";
     }
 
-    @PostMapping("/printWithCriteria/{type}/{classId}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId) {
+    @PostMapping("/printWithCriteria/{type}/{classId}/{courseId}/{studentId}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId, @PathVariable Long courseId, @PathVariable Long studentId) {
         //String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
         String token = request.getParameter("myToken");
 
@@ -45,7 +45,7 @@ public class EvaluationFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
         if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/evaluation/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/evaluation/PDF/" + classId + "/" + courseId + "/" + studentId, HttpMethod.POST, entity, byte[].class);
         else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
         else if (type.equals("html"))

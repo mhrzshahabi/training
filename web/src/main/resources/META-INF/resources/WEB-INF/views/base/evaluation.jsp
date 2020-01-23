@@ -439,14 +439,14 @@
         var ToolStripButton_FormIssuance = isc.ToolStripButton.create({
             title: "صدور فرم",
             click: function () {
-                print_Student_FormIssuance("pdf");
+                print_Student_FormIssuance("pdf", "single");
             }
         });
 
         var ToolStripButton_FormIssuanceForAll = isc.ToolStripButton.create({
             title: "صدور فرم برای همه",
             click: function () {
-                alert("صدور فرم برای همه");
+                print_Student_FormIssuance("pdf", "all");
             }
         });
 
@@ -644,19 +644,22 @@
         }
 
         //*****print student form issuance*****
-        function print_Student_FormIssuance(type) {
+        function print_Student_FormIssuance(type, numberOfStudents) {
 
             let selectedClass = ListGrid_evaluation_class.getSelectedRecord();
             let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
 
 
-            if (selectedStudent !== null && selectedStudent !== undefined) {
+
+            if (numberOfStudents === "all" || (numberOfStudents === "single" && selectedStudent !== null && selectedStudent !== undefined)) {
+
+                 let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
 
                 //*****print*****
                 var advancedCriteria_unit = ListGrid_evaluation_student.getCriteria();
                 var criteriaForm_operational = isc.DynamicForm.create({
                     method: "POST",
-                    action: "<spring:url value="/evaluation/printWithCriteria/"/>" + type + "/" + selectedClass.id,
+                    action: "<spring:url value="/evaluation/printWithCriteria/"/>" + type + "/" + selectedClass.id + "/" + selectedClass.course.id + "/" + studentId,
                     target: "_Blank",
                     canSubmit: true,
                     fields:
@@ -666,13 +669,13 @@
                         ],
                     show: function () {
                         this.Super("show", arguments);
-                        //set_evaluation_status();
                     }
                 });
                 criteriaForm_operational.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
                 criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
                 criteriaForm_operational.show();
-                criteriaForm_operational.submit(set_evaluation_status());
+                criteriaForm_operational.submit();
+                criteriaForm_operational.submit(set_evaluation_status(numberOfStudents));
 
             } else {
                 isc.Dialog.create({
@@ -688,66 +691,68 @@
         }
 
         //*****set evaluation status*****
-        function set_evaluation_status() {
+        function set_evaluation_status(numberOfStudents) {
 
-            let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
+            if (numberOfStudents === "single") {
+                let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
 
-            let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
+                let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
 
-            let evaluationData = {};
+                let evaluationData = {};
 
-            switch (selectedTab.id) {
-                case "TabPane_Reaction": {
+                switch (selectedTab.id) {
+                    case "TabPane_Reaction": {
 
-                    evaluationData = {
-                        "idClassStudent": selectedStudent.id,
-                        "reaction": 1,
-                        "learning": selectedStudent.evaluationStatusLearning || 0,
-                        "behavior": selectedStudent.evaluationStatusBehavior || 0,
-                        "results": selectedStudent.evaluationStatusResults || 0
-                    };
+                        evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": 1,
+                            "learning": selectedStudent.evaluationStatusLearning || 0,
+                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                            "results": selectedStudent.evaluationStatusResults || 0
+                        };
 
-                    break;
+                        break;
+                    }
+                    case "TabPane_Learning": {
+
+                        evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": selectedStudent.evaluationStatusReaction || 0,
+                            "learning": 1,
+                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                            "results": selectedStudent.evaluationStatusResults || 0
+                        };
+
+                        break;
+                    }
+                    case "TabPane_Behavior": {
+
+                        evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": selectedStudent.evaluationStatusReaction || 0,
+                            "learning": selectedStudent.evaluationStatusLearning || 0,
+                            "behavior": 1,
+                            "results": selectedStudent.evaluationStatusResults || 0
+                        };
+
+                        break;
+                    }
+                    case "TabPane_Results": {
+
+                        evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": selectedStudent.evaluationStatusReaction || 0,
+                            "learning": selectedStudent.evaluationStatusLearning || 0,
+                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                            "results": 1
+                        };
+
+                        break;
+                    }
                 }
-                case "TabPane_Learning": {
 
-                    evaluationData = {
-                        "idClassStudent": selectedStudent.id,
-                        "reaction": selectedStudent.evaluationStatusReaction || 0,
-                        "learning": 1,
-                        "behavior": selectedStudent.evaluationStatusBehavior || 0,
-                        "results": selectedStudent.evaluationStatusResults || 0
-                    };
-
-                    break;
-                }
-                case "TabPane_Behavior": {
-
-                    evaluationData = {
-                        "idClassStudent": selectedStudent.id,
-                        "reaction": selectedStudent.evaluationStatusReaction || 0,
-                        "learning": selectedStudent.evaluationStatusLearning || 0,
-                        "behavior": 1,
-                        "results": selectedStudent.evaluationStatusResults || 0
-                    };
-
-                    break;
-                }
-                case "TabPane_Results": {
-
-                    evaluationData = {
-                        "idClassStudent": selectedStudent.id,
-                        "reaction": selectedStudent.evaluationStatusReaction || 0,
-                        "learning": selectedStudent.evaluationStatusLearning || 0,
-                        "behavior": selectedStudent.evaluationStatusBehavior || 0,
-                        "results": 1
-                    };
-
-                    break;
-                }
+                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setStudentFormIssuance/", "PUT", JSON.stringify(evaluationData), show_EvaluationActionResult));
             }
-
-            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setStudentFormIssuance/", "PUT", JSON.stringify(evaluationData), show_EvaluationActionResult));
         }
 
         //*****callback for print student form issuance*****

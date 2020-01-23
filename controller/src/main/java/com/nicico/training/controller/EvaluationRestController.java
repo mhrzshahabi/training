@@ -11,6 +11,7 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.model.Goal;
 import com.nicico.training.model.QuestionnaireQuestion;
+import com.nicico.training.model.Skill;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class EvaluationRestController {
     private final DateUtil dateUtil;
     private final ModelMapper modelMapper;
     private final CourseService courseService;
+    private final SkillService skillService;
 
 
     private final TclassService tclassService;
@@ -44,8 +46,8 @@ public class EvaluationRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = {"/{type}/{classId}"})
-    public void printWithCriteria(HttpServletResponse response, @PathVariable String type, @PathVariable Long classId) throws Exception {
+    @PostMapping(value = {"/{type}/{classId}/{courseId}/{studentId}"})
+    public void printWithCriteria(HttpServletResponse response, @PathVariable String type, @PathVariable Long classId, @PathVariable Long courseId, @PathVariable Long studentId) throws Exception {
 
         List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
         teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
@@ -53,7 +55,9 @@ public class EvaluationRestController {
         List<QuestionnaireQuestion> equipmentQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(54L);
         equipmentQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
 
-        CourseDTO.CourseGoals courseGoals = courseService.getCourseGoals(1L);
+        CourseDTO.CourseGoals courseGoals = courseService.getCourseGoals(courseId);
+
+        List<Skill> skillList = skillService.skillList(courseId);
 
         List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
         for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
@@ -64,15 +68,24 @@ public class EvaluationRestController {
             evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
         }
 
-        List<GoalDTO.Info> goals = new ArrayList<>();
         for (Goal goal : courseGoals.getGoalSet()) {
-            goals.add(modelMapper.map(goal, GoalDTO.Info.class));
 
             EvaluationQuestionDTO.Info evaluationQuestionDTO = new EvaluationQuestionDTO.Info();
             evaluationQuestionDTO.setQuestion(goal.getTitleFa());
 
             ParameterValueDTO.Info domain = new ParameterValueDTO.Info();
             domain.setTitle("اهداف");
+            evaluationQuestionDTO.setDomain(domain);
+            evaluationQuestion.add(evaluationQuestionDTO);
+        }
+
+        for (Skill skill : skillList) {
+
+            EvaluationQuestionDTO.Info evaluationQuestionDTO = new EvaluationQuestionDTO.Info();
+            evaluationQuestionDTO.setQuestion(skill.getTitleFa());
+
+            ParameterValueDTO.Info domain = new ParameterValueDTO.Info();
+            domain.setTitle("هدف کلی");
             evaluationQuestionDTO.setDomain(domain);
             evaluationQuestion.add(evaluationQuestionDTO);
         }
@@ -87,7 +100,9 @@ public class EvaluationRestController {
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
 
-        String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classInfo.getClassStudents()) + "," +
+        Set<ClassStudentDTO.AttendanceInfo> classStudent = classInfo.getClassStudentsForEvaluation(studentId);
+
+        String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classStudent) + "," +
                 "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
 
 
