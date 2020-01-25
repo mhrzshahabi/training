@@ -465,10 +465,10 @@ public class SkillService implements ISkillService {
         return skills;
     }
 
-    @Transactional
+
     @Override
-    public List<SkillDTO.Info> listMainObjective(Long mainObjectiveId) {
-        return modelMapper.map(skillDAO.findByCourseMainObjectiveId(mainObjectiveId), new TypeToken<List<SkillDTO.Info>>() {
+    public List<SkillDTO> listMainObjective(Long mainObjectiveId) {
+        return modelMapper.map(skillDAO.findByCourseMainObjectiveId(mainObjectiveId), new TypeToken<List<SkillDTO>>() {
         }.getType());
     }
 
