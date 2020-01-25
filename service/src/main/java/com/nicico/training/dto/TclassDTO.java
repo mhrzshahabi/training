@@ -13,6 +13,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -101,6 +103,23 @@ public class TclassDTO {
         }
 
         private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+
+        public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
+            if (studentId == -1) {
+                return classStudents;
+            } else {
+
+                Set<ClassStudentDTO.AttendanceInfo> findStudent = new HashSet<>();
+                for (ClassStudentDTO.AttendanceInfo student : classStudents) {
+                    if (student.getStudentId().equals(studentId)) {
+                        findStudent.add(student);
+                        break;
+                    }
+                }
+
+                return findStudent;
+            }
+        }
 
         public Integer getStudentCount() {
             if (classStudents != null)

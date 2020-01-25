@@ -5,13 +5,12 @@
 //<script>
     // 1->قبول با نمره
 
-    var Row_Numbers = null
-    var flag1 = null
-    var value_failurereason = null
     var score_value = null //بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
     var classRecord_acceptancelimit = null
     var scoresState_value = null
     var failureReason_value = null
+    var valence_value=null
+    var valence_value_failureReason=null
     var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"}
     var myMap = new Map(Object.entries(map));
     var map1 = {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"}
@@ -163,7 +162,7 @@
                         this.grid.startEditing(this.rowNum, this.colNum + 1)
 
                     }
-
+                        valence_value_failureReason=value
                 },
 
             },
@@ -256,7 +255,52 @@
                 filterOperator: "iContains",
                 canEdit: true,
                 editorType: "SelectItem",
-                valueMap: ["ضعیف", "متوسط", "خوب", "خیلی خوب"],
+                valueMap: {"1001":"ضعیف","1002":"متوسط","1003":"خوب","1004":"خیلی خوب"},
+
+
+                 changed: function (form, item, value)
+                  {
+                         valence_value=value
+                         if(parseFloat(value) >= classRecord_acceptancelimit)
+                        {
+                             ListGrid_Cell_valence_Update(this.grid.getRecord(this.rowNum),value,1)
+                             this.grid.endEditing();
+                             ListGrid_Class_Student.refreshFields();
+                        }
+                                else if(parseFloat(value) < classRecord_acceptancelimit && valence_value_failureReason !=null)
+                                {
+                             ListGrid_Cell_valence_Update(this.grid.getRecord(this.rowNum),value,2)
+                             this.grid.endEditing();
+                             ListGrid_Class_Student.refreshFields();
+                                }
+                                else if(parseFloat(value) < classRecord_acceptancelimit && this.grid.getRecord(this.rowNum).scoresState=="مردود")
+                                 {
+                                     ListGrid_Cell_valence_Update(this.grid.getRecord(this.rowNum),value)
+                                     this.grid.endEditing();
+                                     ListGrid_Class_Student.refreshFields();
+                                 }
+                                else {
+                                 createDialog("info", "لطفا دلایل مردودی راانتخاب کنید", "<spring:message code="message"/>")
+                                 ListGrid_Class_Student.refreshFields();
+                                 }
+
+
+
+                  },
+
+                    editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
+                        if(record.valence != null && record.scoresState !=null && valence_value_failureReason != null)
+                            {
+                                newValue=record.valence
+                                ListGrid_Cell_valence_Update(record,newValue,3)
+                                ListGrid_Class_Student.refreshFields();
+                            }
+
+                    }
+
+
+
+
             }
         ],
 
@@ -273,6 +317,11 @@
             if (fieldName === "failureReason") {
 // return !(scoresState_value == null)
 // return !(record.scoresState === "مردود" && record.failureReason === "غیبت در جلسه امتحان")
+            }
+
+            if (fieldName ==="scoresState")
+            {
+            return !(classRecord.scoringMethod == "1")
             }
 
             if (fieldName === "score") {
@@ -331,10 +380,40 @@
         ListGrid_Class_Student.refreshFields();
     }
 
+     function ListGrid_Cell_valence_Update(record, newValue, a) {
+             record.valence=newValue
+        if(a == 1)
+            {
+                record.scoresState="قبول"
+
+                record.failureReason=null
+            }
+            if ( a== 2)
+            {
+
+              record.scoresState="مردود"
+              record.failureReason=valence_value_failureReason
+            }
+
+            if(a == 3)
+                {
+                  record.failureReason=valence_value_failureReason
+                }
+
+        valence_value_failureReason  ==null
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_valence_Update(rpcResponse)"));
+        ListGrid_Class_Student.refreshFields();
+    }
+
 
     function Edit_Cell_scoresState_Update(resp) {
 
     };
+
+   function Edit_Cell_valence_Update(resp)
+     {
+
+     }
 
 
     function Edit_Cell_failurereason_Update(resp) {
@@ -390,16 +469,20 @@
             if (classRecord.scoringMethod == "1") {
                 ListGrid_Class_Student.showField('valence')
                 ListGrid_Class_Student.hideField('score')
-                ListGrid_Class_Student.getField("scoresState").valueMap = ["مردود", "قبول"]
+                ListGrid_Class_Student.getField('scoresState').valueMap = ["مردود","قبول"]
+                ListGrid_Class_Student.getField('failureReason').valueMap=["عدم کسب حد نصاب نمره","غیبت در جلسات"]
+
             } else if (classRecord.scoringMethod == "3") {
                 score_value = 20;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
+                ListGrid_Class_Student.getField('failureReason').valueMap=["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
             } else if (classRecord.scoringMethod == "2") {
                 score_value = 100;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
-               ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
+                ListGrid_Class_Student.getField('failureReason').valueMap=["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
+                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
             }
 //=================================================
             ListGrid_Class_Student.invalidateCache()

@@ -106,7 +106,7 @@
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_Permission,IButton_Cancel_Permission]
+        members: [IButton_Save_Permission, IButton_Cancel_Permission]
     });
 
     ToolStripButton_Refresh_Permission = isc.ToolStripButtonRefresh.create({
@@ -151,15 +151,18 @@
             {name: "id", hidden: true},
             {
                 name: "title",
-                title: "<spring:message code="title"/>"
+                title: "<spring:message code="title"/>",
+                required: true,
+                length: 255
             },
             {
                 name: "description",
-                title: "<spring:message code="description"/>"
+                title: "<spring:message code="description"/>",
+                length: 255
             },
             {
                 name: "userIds",
-                type: "selectItem",
+                type: "SelectItem",
                 title: "<spring:message code="users"/>",
                 optionDataSource: UserDS_JspWorkGroup,
                 valueField: "id",
@@ -199,7 +202,9 @@
     IButton_Save_JspWorkGroup = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspWorkGroup.valuesHaveChanged() || !DynamicForm_JspWorkGroup.validate())
+            if (!DynamicForm_JspWorkGroup.valuesHaveChanged())
+                Window_JspWorkGroup.close();
+            if (!DynamicForm_JspWorkGroup.validate())
                 return;
             wait_Permission = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlWorkGroup,
@@ -565,10 +570,14 @@
                 name: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
                 title: setTitle(item.columnDataList[i].attributeName),
                 valueMap: item.columnDataList[i].attributeValues,
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 multiple: true,
-                colSpan: 8
+                colSpan: 8,
+                sortField: 0,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
             })
         }
         return DF;

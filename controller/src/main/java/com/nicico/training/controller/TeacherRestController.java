@@ -193,6 +193,41 @@ public class TeacherRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/info/{id}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id)throws IOException {
+        TeacherDTO.Info response = teacherService.get(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/spec-list-grid")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "id", required = false) Long id,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
+
+        final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
+        final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
     @Loggable
     @GetMapping(value = "/fullName-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
@@ -304,9 +339,6 @@ public class TeacherRestController {
 
         final SearchDTO.SearchRq searchRq_foreingLang = new SearchDTO.SearchRq();
         final SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> searchRs_foreingLang = foreignLangService.search(searchRq_foreingLang, Long.valueOf(id));
-
-
-
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
@@ -577,7 +609,10 @@ public class TeacherRestController {
         //table 1 - row 1
         table_1_license = (teacher_educationLevel-1)*5 + 10;
         //table 1 - row 2
-        Set<EmploymentHistoryDTO.Info> employmentHistories = teacherDTO.getEmploymentHistories();
+        SearchDTO.SearchRq searchRq_employmentHistories = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs_employmentHistories = employmentHistoryService.search(searchRq_employmentHistories,id);
+        List<EmploymentHistoryDTO.Info> employmentHistories = searchRs_employmentHistories.getList();
+
         for (EmploymentHistoryDTO.Info employmentHistory : employmentHistories) {
             boolean cat_related = false;
             boolean subCat_related = false;
@@ -610,7 +645,10 @@ public class TeacherRestController {
             table_1_work = 10;
         table_1_work = ((teacher_educationLevel-1)*0.2 + 0.6)*table_1_work;
         //table 1 - row 3 & 4
-        Set<TeachingHistoryDTO.Info> teachingHistories = teacherDTO.getTeachingHistories();
+        SearchDTO.SearchRq searchRq_teachingHistories = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<TeachingHistoryDTO.Info> searchRs_teachingHistories = teachingHistoryService.search(searchRq_teachingHistories,id);
+        List<TeachingHistoryDTO.Info> teachingHistories = searchRs_teachingHistories.getList();
+
         for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
             boolean cat_related = false;
             boolean subCat_related = false;
@@ -646,14 +684,17 @@ public class TeacherRestController {
             table_1_related_training = 1000;
         table_1_related_training /= 100;
         table_1_unRelated_training /= 100;
-        if(table_1_related_training < 0.1)
-            table_1_related_training = 0;
-        if(table_1_unRelated_training < 0.1)
-            table_1_unRelated_training = 0;
+//        if(table_1_related_training < 0.1)
+//            table_1_related_training = 0;
+//        if(table_1_unRelated_training < 0.1)
+//            table_1_unRelated_training = 0;
         table_1_unRelated_training = ((teacher_educationLevel-1)*0.1 + 0.4)*table_1_unRelated_training;
         table_1_related_training = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
         //table 1 - row 5
-        Set<TeacherCertificationDTO.Info> teacherCertifications = teacherDTO.getTeacherCertifications();
+        SearchDTO.SearchRq searchRq_teacherCertifications = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<TeacherCertificationDTO.Info> searchRs_teacherCertifications = teacherCertificationService.search(searchRq_teacherCertifications,id);
+        List<TeacherCertificationDTO.Info> teacherCertifications = searchRs_teacherCertifications.getList();
+
         for (TeacherCertificationDTO.Info teacherCertification : teacherCertifications) {
             boolean cat_related = false;
             boolean subCat_related = false;
@@ -677,8 +718,8 @@ public class TeacherRestController {
         if(table_1_courses > 1000)
             table_1_courses = 1000;
         table_1_courses  /= 100;
-        if(table_1_courses < 0.1)
-            table_1_courses = 0;
+//        if(table_1_courses < 0.1)
+//            table_1_courses = 0;
         if(teacher_educationLevel != 1)
             table_1_courses = ((teacher_educationLevel-1)*0.1 + 1.2)*table_1_courses;
         //table 1 - total
@@ -717,7 +758,10 @@ public class TeacherRestController {
             table_2_grade *= table_2_relation;
 
          //table 3
-        Set<PublicationDTO.Info> publications  = teacherDTO.getPublications();
+        SearchDTO.SearchRq searchRq_publications = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<PublicationDTO.Info> searchRs_publications = publicationService.search(searchRq_publications,id);
+        List<PublicationDTO.Info> publications= searchRs_publications.getList();
+
         for (PublicationDTO.Info publication : publications) {
             boolean cat_related = false;
             boolean subCat_related = false;
@@ -763,7 +807,10 @@ public class TeacherRestController {
                         + table_3_count_translation * 2
                         + table_3_count_note;
         //table 4
-        Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges = teacherDTO.getForeignLangKnowledges();
+        SearchDTO.SearchRq searchRq_foreignLangKnowledges  = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> searchRs_foreignLangKnowledges  = foreignLangService.search(searchRq_foreignLangKnowledges ,id);
+        List<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges = searchRs_foreignLangKnowledges.getList();
+
         for (ForeignLangKnowledgeDTO.Info foreignLangKnowledge : foreignLangKnowledges) {
             if(foreignLangKnowledge.getLangName().equalsIgnoreCase("انگلیسی") || foreignLangKnowledge.getLangName().equalsIgnoreCase("زبان انگلیسی")) {
                 if (foreignLangKnowledge.getLangLevelId() == 0)
