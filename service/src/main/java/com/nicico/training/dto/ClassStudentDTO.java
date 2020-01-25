@@ -54,6 +54,17 @@ public class ClassStudentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("CoursesOfStudent - Info")
+    public static class CoursesOfStudent {
+        private Long id;
+        private TclassDTO.CoursesOfStudent tclass;
+        private StudentDTO.ClassesOfStudentInfo student;
+        private Float score;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ClassStudent - Create")
     public static class Create {
         @ApiModelProperty(required = true)
