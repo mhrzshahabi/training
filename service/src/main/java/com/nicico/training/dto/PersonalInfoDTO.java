@@ -54,6 +54,24 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("PersonalInfoGrid")
+    public static class Grid{
+        private Long id;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String firstNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String lastNameFa;
+        private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
+        private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+        private ContactInfoDTO.Grid contactInfo;
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PersonalInfoInfo")
     public static class Info extends PersonalInfoDTO {
         private Long id;
