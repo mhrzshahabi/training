@@ -8,314 +8,194 @@
 
 // <script>
 
-    var classGridRecordInTrainingFileJsp = null;
-    var causeOfAbsence = [];
-    var sessionInOneDate = [];
-    var sessionsForStudent = [];
-    var filterValuesUnique = [];
-    var filterValuesUnique1 = [];
-    var filterValues = [];
-    var filterValues1 = [];
-    var sessionDateData;
-    var TrainingFileState = {
-        "0": "نامشخص",
-        "1": "حاضر",
-        "2": "حاضر و اضافه کار",
-        "3": "غیبت غیر موجه",
-        "4": "غیبت موجه",
-    };
-    var DataSource_SessionInOneDate = isc.DataSource.create({
-        ID: "TrainingFileDS",
-        clientOnly: true,
-        testData: sessionInOneDate,
-        // dataFormat: "json",
-        // dataURL: TrainingFileUrl + "/session-in-date",
+    var RestDataSource_Student_JspTrainingFile = isc.TrDS.create({
         fields: [
-            {name: "studentId", hidden: true, primaryKey: true},
-            {name: "studentName", type: "text", title: "نام"},
-            {name: "studentFamily", type: "text", title: "نام خانوادگی"},
-            {name: "nationalCode", type: "text", title: "کد ملی"},
-            {name: "company", type: "text", title: "شرکت"},
-            {name: "studentState", type: "text", title: "وضعیت"},
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
+        fetchDataURL: studentUrl + "spec-list/"
     });
-    var DataSource_SessionsForStudent = isc.DataSource.create({
-        ID: "TrainingFileStudentDS",
-        clientOnly: true,
-        testData: sessionsForStudent,
-        // dataFormat: "json",
-        // dataURL: TrainingFileUrl + "/session-in-date",
+    var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
         fields: [
-            {name: "studentId", hidden: true},
-            {name: "sessionId", hidden: true, primaryKey: true},
-            {name: "studentState", hidden:true, type: "text", title: "وضعیت"},
-            {name: "sessionType", title:"نوع جلسه"},
-            {name: "sessionDate", type: "text", title: "تاریخ"},
-            {name: "startHour", type: "text", title: "ساعت شروع"},
-            {name: "endHour", type: "text", title: "ساعت پایان"},
-            {name: "state", type: "text", title: "وضعیت"},
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "tclass.course.titleFa"},
+            {name: "tclass.course.code"},
+            {name: "score"},
+            {name: "tclass.classStatus"},
         ],
+        fetchDataURL: tclassStudentUrl + "classes-of-student/"
     });
-    var RestData_SessionDate_TrainingFileJSP = isc.TrDS.create({
+    var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
+        dataSource: RestDataSource_Student_JspTrainingFile,
+        allowAdvancedCriteria:true,
+        canSelect:false,
+        selectionType: "single",
+        allowFilterExpressions: true,
         fields: [
-            {name: "sessionDate", primaryKey: true},
-            {name: "dayName"},
-        ],
-        autoFetchData: false,
-        fetchDataURL: TrainingFileUrl + "/session-date?id=0"
-    });
-    var RestData_Student_TrainingFileJSP = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "studentId"},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
-            {name: "companyName"},
             {name: "personnelNo"},
             {name: "personnelNo2"},
+            {name: "postTitle"},
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"}
         ],
-        autoFetchData: false,
-        fetchDataURL: TrainingFileUrl + "/students?classId=0"
+        autoFetchData:false,
+        doubleClick: function () {
+            console.log(this.getSelectedRecord().nationalCode)
+            DynamicForm_TrainingFile.editRecord(this.getSelectedRecord());
+            RestDataSource_Course_JspTrainingFile.fetchDataURL = tclassStudentUrl + "/classes-of-student/" + this.getSelectedRecord().nationalCode;
+            ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
+            ListGrid_TrainingFile_TrainingFileJSP.fetchData();
+            Window_StudentSearch_JspTrainingFile.close();
+
+        }
     });
-    var VLayout_Attachment_JspTrainingFile = isc.TrVLayout.create({
-        members:[],
-    });
-    var Window_Attach = isc.Window.create({
-            ID:"attachWindow",
-            title: "علت غیبت",
-            autoSize: false,
-            width: "70%",
-            height:"60%",
-            items:[
-                VLayout_Attachment_JspTrainingFile,
-                isc.TrHLayoutButtons.create({
-                    members:[
-                        isc.IButton.create({
-                            title:"ارسال شماره نامه",
-                            click:function () {
-                                if(ListGrid_JspAttachment.getSelectedRecord() == undefined){
-                                    createDialog("info", "لطفاً رکوردی را انتخاب نمایید.", "پیغام");
-                                }
-                                if(trTrim(ListGrid_JspAttachment.getSelectedRecord().description) != null) {
-                                    absenceForm.setValue("cause", ListGrid_JspAttachment.getSelectedRecord().description);
-                                    attachWindow.close();
-                                    return;
-                                }
-                                createDialog("info", "لطفاً شماره نامه را مشخص نمایید.", "پیغام");
-                            }
-                        })
-                    ]
-                })
-            ],
-            hide() {
-                VLayout_Body_JspAttachment.addMembers([
-                    HLayout_Actions_JspAttachment,
-                    HLayout_Grid_JspAttachment
-                ]);
-                ListGrid_JspAttachment.setShowFilterEditor(true);
-                this.Super("hide",arguments);
-                DynamicForm_JspAttachments.getItem("description").title = "<spring:message code="description"/>";
-                ListGrid_JspAttachment.getField("description").title = "<spring:message code="description"/>";
-            },
-            show(){
-                VLayout_Attachment_JspTrainingFile.addMembers([
-                    HLayout_Actions_JspAttachment,
-                    HLayout_Grid_JspAttachment
-                ]);
-                // ListGrid_JspAttachment.invalidateCache();
-                // VLayout_Attachment_JspTrainingFile.redraw();
-                ListGrid_JspAttachment.getField("description").title = "شماره نامه";
-                this.Super("show",arguments);
-                DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
-            }
+    var Window_StudentSearch_JspTrainingFile = isc.Window.create({
+        autoSize:false,
+        title:"<spring:message code="students.list"/>",
+        width: "100%",
+        placement:"fillPanel",
+        height: 600,
+        items:[
+           ListGrid_StudentSearch_JspTrainingFile
+        ]
     });
     var DynamicForm_TrainingFile = isc.DynamicForm.create({
         ID: "TrainingFileForm",
-        numCols: 6,
+        numCols: 7,
         padding: 10,
+        titleAlign:"left",
+        // wrapItemTitles:true,
         // cellBorder:2,
-        colWidths:[250,200,200,100,100,50],
+        colWidths:[100,150,100,150,100,150,100],
         fields: [
             {
                 name: "personnelNo2",
-                text:"<spring:message code="personnel.no.6.digits"/> ",
+                title:"<spring:message code="personnel.no.6.digits"/>",
                 // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
-            },{
+            },
+            {
                 name: "personnelNo",
-                text:"<spring:message code="personnel.no"/> ",
+                title:"<spring:message code="personnel.no"/> ",
                 // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
-            },{
-                name: "firstName",
-                text:"<spring:message code="personnel.no"/> ",
-                // textBoxStyle: "font-weight:bold; font-color:red;",
-                textAlign: "center",
-                width: "*"
-            },{
-                name: "lastName",
-                text:"<spring:message code="personnel.no"/> ",
-                // textBoxStyle: "font-weight:bold; font-color:red;",
-                textAlign: "center",
-                width: "*"
-            },{
+            },
+            {
                 name: "nationalCode",
-                text:"<spring:message code="personnel.no"/> ",
+                title:"<spring:message code="national.code"/> ",
                 // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
             },
-            // {
-            //     type: "SpacerItem"
-            // },
             {
-                name: "presentAll",
-                title: "تبدیل همه به 'حاضر'",
+                name: "searchBtn",
+                ID: "searchBtnJspTrainingFile",
+                title: "<spring:message code="search"/>",
                 type: "ButtonItem",
+                width:"*",
                 startRow:false,
                 endRow:false,
-                labelAsTitle: true,
-                click (form, item) {
-                        for (let i = 0; i < ListGrid_TrainingFile_TrainingFileJSP.getData().localData.length ; i++) {
-                            for (let j = 5; j < TrainingFileGrid.getAllFields().length; j++) {
-                                if(TrainingFileGrid.getCellRecord(i).studentState != "kh") {
-                                    TrainingFileGrid.setEditValue(i, j, "1");
-                                }
-                            }
+                // labelAsTitle: true,
+                click (form) {
+                    var advancedCriteriaStudentJspTrainingFile = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: []
+                    };
+                    var items = form.getItems();
+                    for (let i = 0; i < items.length; i++) {
+                        if(items[i].getValue() != undefined){
+                            advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})
                         }
+                    }
+                    ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);
+                    Window_StudentSearch_JspTrainingFile.show();
                 }
             },
             {
-                name: "presentExtendAll",
-                title: "تبدیل همه به 'حاضر و اضافه کار'",
-                type: "ButtonItem",
-                startRow:false,
-                endRow:false,
-                labelAsTitle: true,
-                click (form, item) {
-                        for (let i = 0; i < ListGrid_TrainingFile_TrainingFileJSP.getData().localData.length ; i++) {
-                            for (let j = 5; j < TrainingFileGrid.getAllFields().length; j++) {
-                                if(TrainingFileGrid.getCellRecord(i).studentState != "kh") {
-                                    TrainingFileGrid.setEditValue(i, j, "2");
-                                }
-                            }
-                        }
-
-                }
+                name: "firstName",
+                title:"<spring:message code="firstName"/> ",
+                // textBoxStyle: "font-weight:bold; font-color:red;",
+                textAlign: "center",
+                width: "*"
             },
             {
-                name: "refreshBtn",
-                ID: "refreshBtnTrainingFileJsp",
-                // showTitle: false,
-                title: "",
-                prompt:"<spring:message code="refresh"/>",
-                startRow:false,
+                name: "lastName",
+                title:"<spring:message code="lastName"/> ",
+                // textBoxStyle: "font-weight:bold; font-color:red;",
+                textAlign: "center",
+                width: "*"
+            },
+            {
+                type: "SpacerItem"
+            },
+            {
+                type: "SpacerItem"
+            },
+            {
+                name: "clearBtn",
+                title: "<spring:message code="clear"/>",
                 type: "ButtonItem",
-                icon: "[SKIN]/actions/refresh.png",
+                width:"*",
+                startRow:false,
                 endRow:false,
-                click () {
-                    loadPage_TrainingFile()
+                // labelAsTitle: true,
+                click (form, item) {
+                    form.clearValues();
                 }
             },
         ],
+        itemKeyPress: function(item, keyName) {
+            if(keyName == "Enter"){
+                searchBtnJspTrainingFile.click(DynamicForm_TrainingFile);
+            }
+        }
     });
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
         // confirmDiscardEdits: false,
-        dynamicProperties: true,
-        autoSaveEdits: false,
         // allowFilterExpressions: true,
         // allowAdvancedCriteria: true,
+        dataSource: RestDataSource_Course_JspTrainingFile,
         filterOnKeypress: true,
-        // filterLocalData:true,
-        dataSource: "TrainingFileDS",
-        // data:sessionInOneDate,
-        // canEdit: true,
-        modalEditing: true,
-        editEvent: "none",
-        editOnFocus: true,
-        editByCell: true,
-        gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body", isc.TrHLayoutButtons.create({
-            members: [
-                isc.IButtonSave.create({
-                    ID: "saveBtn",
-                    click: function () {
-                        if(TrainingFileGrid.getAllEditRows().length <= 0){
-                            createDialog("[SKIN]error","تغییری رخ نداده است.","خطا");
-                            return;
-                        }
-                        TrainingFileGrid.endEditing();
-                        TrainingFileGrid.saveAllEdits();
-
-
-                        // TrainingFileGrid.endEditing();
-                    }
-                }),
-                isc.IButtonCancel.create({
-                    ID: "cancelBtn",
-                    click: function () {
-                        TrainingFileGrid.discardAllEdits()
-                        // TrainingFileForm.getItem("sessionDate").changed(TrainingFileForm,TrainingFileForm.getItem("sessionDate"),TrainingFileForm.getValue("sessionDate"));
-                    }
-                })
-            ]
-        })],
+        gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
         canHover:true,
-        canEditCell(rowNum, colNum){
-            return colNum >= 5 && TrainingFileGrid.getSelectedRecord().studentState !== "kh";
-        },
-        saveAllEdits(){
-            this.Super("saveAllEdits",arguments);
-            setTimeout(function () {
-                if(TrainingFileForm.getValue("filterType")==1) {
-                    isc.RPCManager.sendRequest({
-                        actionURL: TrainingFileUrl + "/save-TrainingFile?classId=" + classGridRecordInTrainingFileJsp.id + "&date=" + DynamicForm_TrainingFile.getValue("sessionDate"),
-                        willHandleError: true,
-                        httpMethod: "POST",
-                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                        useSimpleHttp: true,
-                        contentType: "application/json; charset=utf-8",
-                        showPrompt: false,
-                        data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
-                        serverOutputAsString: false,
-                        callback: function (resp) {
-                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
-                            } else {
-                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                            }
-
-                        }
-                    });
-                }
-                else if(TrainingFileForm.getValue("filterType")==2) {
-                    isc.RPCManager.sendRequest({
-                        actionURL: TrainingFileUrl + "/student-TrainingFile-save",
-                        willHandleError: true,
-                        httpMethod: "POST",
-                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                        useSimpleHttp: true,
-                        contentType: "application/json; charset=utf-8",
-                        showPrompt: false,
-                        data: JSON.stringify([sessionsForStudent, causeOfAbsence]),
-                        serverOutputAsString: false,
-                        callback: function (resp) {
-                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
-                            } else {
-                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                            }
-
-                        }
-                    });
-                }
-            }, 100)
-        }
-        // fields:[]
+        fields:[
+            {name: "tclass.course.titleFa", title:"<spring:message code='course.title'/>"},
+            {name: "tclass.course.code", title:"<spring:message code='course.code'/>"},
+            {name: "tclass.code", title:"<spring:message code='class.code'/>"},
+            {
+                name: "tclass.classStatus",
+                title:"<spring:message code='class.status'/>",
+                valueMap: {
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                },
+            },
+            {name: "score", title:"<spring:message code='score'/>"},
+            {name: "student.postTitle", title:"<spring:message code="post"/>"},
+        ]
         // optionDataSource: DataSource_SessionInOneDate,
         // autoFetchData:true,
 

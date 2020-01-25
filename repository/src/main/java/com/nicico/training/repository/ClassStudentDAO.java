@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaSpecificationExecutor<ClassStudent> {
 
     @Modifying
@@ -18,4 +20,5 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "where id = :idClassStudent", nativeQuery = true)
     public int setStudentFormIssuance(Long idClassStudent, Integer reaction, Integer learning, Integer behavior, Integer results);
 
+    List<ClassStudent> findByStudentId(Long studentId);
 }
