@@ -151,15 +151,18 @@
             {name: "id", hidden: true},
             {
                 name: "title",
-                title: "<spring:message code="title"/>"
+                title: "<spring:message code="title"/>",
+                required: true,
+                length: 255
             },
             {
                 name: "description",
-                title: "<spring:message code="description"/>"
+                title: "<spring:message code="description"/>",
+                length: 255
             },
             {
                 name: "userIds",
-                type: "selectItem",
+                type: "SelectItem",
                 title: "<spring:message code="users"/>",
                 optionDataSource: UserDS_JspWorkGroup,
                 valueField: "id",
@@ -199,7 +202,9 @@
     IButton_Save_JspWorkGroup = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspWorkGroup.valuesHaveChanged() || !DynamicForm_JspWorkGroup.validate())
+            if (!DynamicForm_JspWorkGroup.valuesHaveChanged())
+                Window_JspWorkGroup.close();
+            if (!DynamicForm_JspWorkGroup.validate())
                 return;
             wait_Permission = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlWorkGroup,
