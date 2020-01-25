@@ -1605,8 +1605,8 @@
                             equalCourseIdList.add(equalCourse[j].idEC);
                         }
                         let mainObjectiveIdList = [];
-                        for (let k = 0; k < mainObjectiveList.length; k++) {
-                            mainObjectiveIdList.add(mainObjectiveList[k].id);
+                        for (let k = 0; k < ListGrid_AllSkill_mainObjective_JspCourse.data.localData.length; k++) {
+                            mainObjectiveIdList.add(ListGrid_AllSkill_mainObjective_JspCourse.data.localData[k].id);
                         }
                         data2.mainObjectiveIds = mainObjectiveIdList;
                         data2.equalCourseListId = equalCourseIdList;
@@ -2656,7 +2656,6 @@
             {
                 DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(sRecord.acceptancelimit)
             }
-
             DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), DynamicForm_course_MainTab.getValue("scoringMethod"));
             setTimeout(function () {
                 ListGrid_Goal_refresh();
@@ -2827,7 +2826,8 @@
                         var varParams = [{
                             "processKey": "courseWorkflow",
                             "cId": sRecord.id,
-                            "mainObjective": sRecord.mainObjective,
+                            "mainObjective": "",
+                            // "mainObjective": sRecord.mainObjective,
                             "titleFa": sRecord.titleFa,
                             "theoryDuration": sRecord.theoryDuration.toString(),
                             "courseCreatorId": "${username}",

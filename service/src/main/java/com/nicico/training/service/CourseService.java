@@ -240,15 +240,14 @@ public class CourseService implements ICourseService {
         Course save = courseDAO.save(course);
         Set<Skill> savedSkills = save.getSkillMainObjectiveSet();
         Set<Skill> savingSkill = new HashSet<>(skillService.getAllByIds(request.getMainObjectiveIds()));
-        if(!savedSkills.equals(savingSkill)) {
-            if(savingSkill.containsAll(savedSkills)){
+        if (!savedSkills.equals(savingSkill)) {
+            if (savingSkill.containsAll(savedSkills)) {
                 for (Skill skill : savingSkill) {
                     skill.setCourseMainObjectiveId(save.getId());
                     skill.setCourseId(save.getId());
                     skillDAO.saveAndFlush(skill);
                 }
-            }
-            else {
+            } else {
                 for (Skill savedSkill : savedSkills) {
                     savedSkill.setCourseMainObjectiveId(null);
                     skillDAO.saveAndFlush(savedSkill);
@@ -654,6 +653,13 @@ public class CourseService implements ICourseService {
         List<Course> course = courseDAO.findAllById(courseId);
         return modelMapper.map(course, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
+    }
+
+    @Transactional
+    @Override
+    public CourseDTO.CourseGoals getCourseGoals(Long courseId) {
+        Course course = courseDAO.findAllById(courseId).get(0);
+        return modelMapper.map(course, CourseDTO.CourseGoals.class);
     }
 
 }

@@ -10,12 +10,12 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.iservice.IJobService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.repository.JobDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,7 @@ public class JobService implements IJobService {
 
     private final JobDAO jobDAO;
     private final ModelMapper modelMapper;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -39,8 +39,7 @@ public class JobService implements IJobService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<JobDTO.Info> search(SearchDTO.SearchRq request) {
-        Long userId = SecurityUtil.getUserId();
-        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), Job.class,userId));
+        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), Job.class, SecurityUtil.getUserId()));
         return SearchUtil.search(jobDAO, request, job -> modelMapper.map(job, JobDTO.Info.class));
     }
 

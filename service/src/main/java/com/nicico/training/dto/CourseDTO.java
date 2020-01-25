@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.Goal;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -263,6 +264,8 @@ public class CourseDTO implements Serializable {
         private List<GoalDTO.Syllabuses> goalSet;
     }
 
+    // ------------------------------
+
     @Getter
     @Setter
     @ApiModel("CourseInfoTupleLite")
@@ -270,5 +273,14 @@ public class CourseDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @ApiModel("CourseGoals")
+    public static class CourseGoals{
+        private List<Goal> goalSet;
     }
 }
