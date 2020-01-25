@@ -49,6 +49,18 @@ public class ClassStudentRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/classes-of-student/{nationalCode}")
+    public ResponseEntity<ISC<ClassStudentDTO.CoursesOfStudent>> classesOfStudentList(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs =
+                classStudentService.searchClassesOfStudent(searchRq, nationalCode, ClassStudentDTO.CoursesOfStudent.class);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/scores-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ScoresInfo>> scoresList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         int startRow = 0;

@@ -198,4 +198,14 @@ public class TclassDTO {
 
     // ------------------------------
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CoursesOfStudent")
+    public static class CoursesOfStudent {
+        private CourseDTO.CourseInfoTupleLite course;
+        private String code;
+        private String classStatus;
+    }
+
 }
