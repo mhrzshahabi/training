@@ -416,7 +416,7 @@ public class SkillService implements ISkillService {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillId);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
         skill.setCourseId(null);
-        if(Objects.equals(skill.getCourseMainObjectiveId(), courseId))
+        if (Objects.equals(skill.getCourseMainObjectiveId(), courseId))
             skill.setCourseMainObjectiveId(null);
         skillDAO.save(skill);
     }
@@ -465,10 +465,9 @@ public class SkillService implements ISkillService {
         return skills;
     }
 
-
-    @Override
     public List<SkillDTO> listMainObjective(Long mainObjectiveId) {
-        return modelMapper.map(skillDAO.findByCourseMainObjectiveId(mainObjectiveId), new TypeToken<List<SkillDTO>>() {
+        List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(mainObjectiveId);
+        return modelMapper.map(skillList, new TypeToken<List<SkillDTO.InfoTuple>>() {
         }.getType());
     }
 
