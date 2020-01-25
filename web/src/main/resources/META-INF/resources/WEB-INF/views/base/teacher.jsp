@@ -22,6 +22,8 @@
     var isTeacherCategoriesChanged = false;
     var isCategoriesChanged;
 
+    var selected_record = null;
+
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -40,7 +42,7 @@
             {name: "personality.contactInfo.homeAddress.id"},
             {name: "personality.contactInfo.workAddress.id"}
         ],
-        fetchDataURL: teacherUrl + "spec-list"
+        fetchDataURL: teacherUrl + "spec-list-grid"
     });
 
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
@@ -180,7 +182,7 @@
             ListGrid_teacher_edit();
         },
         selectionUpdated: function () {
-            refreshSelectedTab_teacher(null);
+            // refreshSelectedTab_teacher(null);
         },
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
@@ -317,14 +319,20 @@
         width: 100,
         orientation: "vertical",
         click: function () {
-            ListGrid_teacher_refresh();
             showAttachViewLoader.hide();
+            Window_Teacher_JspTeacher.close();
+            ListGrid_teacher_refresh();
             setTimeout(function () {
                 ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-            }, 3000);
-            Window_Teacher_JspTeacher.close();
+            }, 2000);
+            // Page.waitFor(ListGrid_Teacher_JspTeacher,"invalidateCache",exitCallBack());
         }
     });
+
+    // function exitCallBack(){
+    //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
+    // }
+
 
     //-----------------------------------------------LayOuts and Tabsets-Window--------------------------------------------
     var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
@@ -362,7 +370,7 @@
             {
                 ID: "academicBK",
                 title: "<spring:message code="academicBK"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"}),
             },
             {
                 ID: "employmentHistory",
@@ -415,9 +423,28 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/otherActivities-tab"})
             },
         ],
-        tabSelected: function (tabNum, tabPane, ID, tab) {
-            if (isc.Page.isLoaded())
-                refreshSelectedTab_teacher(null);
+        tabSelected: function (tabSet, tabNum, tabPane, ID, tab,name) {
+            var teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "attachmentsTab")
+                    loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {
+                        1: "رزومه",
+                        2: "مدرک تحصیلی",
+                        3: "گواهینامه"
+                    });
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "academicBK")
+                    loadPage_AcademicBK(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'teachingHistory')
+                    loadPage_TeachingHistory(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "teacherCertification")
+                    loadPage_TeacherCertification(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "foreignLangKnowledge")
+                    loadPage_ForeignLangKnowledge(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "publication")
+                    loadPage_Publication(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'employmentHistory')
+                    loadPage_EmploymentHistory(teacherId);
+                // if (isc.Page.isLoaded())
+                //     refreshSelectedTab_teacher(null);
         }
     });
 
@@ -736,7 +763,7 @@
 
     //-------------------------------------------------Functions------------------------------------------------
     function ListGrid_teacher_refresh() {
-        refreshSelectedTab_teacher(null);
+        // refreshSelectedTab_teacher(null);
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
     }
@@ -799,8 +826,13 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
+        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "info/" + record.id, "GET", null,
+            "callback: teacher_get_one_result(rpcResponse)"));
 
-        showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personalityId);
+    }
+
+    function Edit_teacher(){
+        showAttach(selected_record.personalityId);
 
         vm.clearValues();
         vm.clearErrors(true);
@@ -819,10 +851,10 @@
         DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId").fetchData();
 
         teacherMethod = "PUT";
-        vm.editRecord(record);
+        vm.editRecord(selected_record);
 
-        var eduMajorValue = record.personality.educationMajorId;
-        var eduOrientationValue = record.personality.educationOrientationId;
+        var eduMajorValue = selected_record.personality.educationMajorId;
+        var eduOrientationValue = selected_record.personality.educationOrientationId;
 
         if (eduOrientationValue === undefined && eduMajorValue === undefined) {
             DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
@@ -839,14 +871,14 @@
         var cityValue_work = undefined;
 
         var HAOCEnable = false;
-        if (record.personality.contactInfo !== undefined) {
-            if (record.personality.contactInfo.homeAddress !== undefined) {
-                if (record.personality.contactInfo.homeAddress.stateId !== undefined)
-                    stateValue_home = record.personality.contactInfo.homeAddress.stateId;
-                if (record.personality.contactInfo.homeAddress.cityId !== undefined)
-                    cityValue_home = record.personality.contactInfo.homeAddress.cityId;
-                if (record.personality.contactInfo.homeAddress.otherCountry !== undefined)
-                    HAOCEnable = record.personality.contactInfo.homeAddress.otherCountry;
+        if (selected_record.personality.contactInfo !== undefined) {
+            if (selected_record.personality.contactInfo.homeAddress !== undefined) {
+                if (selected_record.personality.contactInfo.homeAddress.stateId !== undefined)
+                    stateValue_home = selected_record.personality.contactInfo.homeAddress.stateId;
+                if (selected_record.personality.contactInfo.homeAddress.cityId !== undefined)
+                    cityValue_home = selected_record.personality.contactInfo.homeAddress.cityId;
+                if (selected_record.personality.contactInfo.homeAddress.otherCountry !== undefined)
+                    HAOCEnable = selected_record.personality.contactInfo.homeAddress.otherCountry;
             }
         }
 
@@ -860,14 +892,14 @@
         }
 
         var WAOCEnable = false;
-        if (record.personality.contactInfo !== undefined) {
-            if (record.personality.contactInfo.workAddress !== undefined) {
-                if (record.personality.contactInfo.workAddress.stateId !== undefined)
-                    stateValue_work = record.personality.contactInfo.workAddress.stateId;
-                if (record.personality.contactInfo.workAddress.cityId !== undefined)
-                    cityValue_work = record.personality.contactInfo.workAddress.cityId;
-                if (record.personality.contactInfo.workAddress.otherCountry !== undefined)
-                    WAOCEnable = record.personality.contactInfo.workAddress.otherCountry;
+        if (selected_record.personality.contactInfo !== undefined) {
+            if (selected_record.personality.contactInfo.workAddress !== undefined) {
+                if (selected_record.personality.contactInfo.workAddress.stateId !== undefined)
+                    stateValue_work = selected_record.personality.contactInfo.workAddress.stateId;
+                if (selected_record.personality.contactInfo.workAddress.cityId !== undefined)
+                    cityValue_work = selected_record.personality.contactInfo.workAddress.cityId;
+                if (selected_record.personality.contactInfo.workAddress.otherCountry !== undefined)
+                    WAOCEnable = selected_record.personality.contactInfo.workAddress.otherCountry;
             }
         }
         if (cityValue_work === undefined) {
@@ -919,7 +951,7 @@
         Window_Teacher_JspTeacher.bringToFront();
         TabSet_Bottom_JspTeacher.show();
         TabSet_Bottom_JspTeacher.selectTab(0);
-        refreshSelectedTab_teacher(null);
+        // refreshSelectedTab_teacher(null);
     }
 
     function ListGrid_teacher_add() {
@@ -1023,7 +1055,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-            refreshSelectedTab_teacher(null);
+            // refreshSelectedTab_teacher(null);
         } else if (resp.data === false) {
             createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
         } else {
@@ -1091,6 +1123,11 @@
                 showAttachViewLoader.hide();
             }
         }
+    }
+
+    function teacher_get_one_result(rpcResponse){
+        selected_record = JSON.parse(rpcResponse.data);
+        Edit_teacher();
     }
 
     function checkEmail(email) {
@@ -1336,7 +1373,6 @@
                 loadPage_Publication(teacherId);
             if (typeof loadPage_AcademicBK !== "undefined")
                 loadPage_AcademicBK(teacherId);
-
         }
     }
 

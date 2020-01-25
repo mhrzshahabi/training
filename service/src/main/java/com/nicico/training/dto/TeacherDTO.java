@@ -41,13 +41,51 @@ public class TeacherDTO {
         private Set<CategoryDTO.CategoryInfoTuple> categories;
         private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
         private PersonalInfoDTO.Info personality;
-        private Set<EmploymentHistoryDTO.Info> employmentHistories;
-        private Set<AcademicBKDTO.Info> academicBKs;
-        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
-        private Set<TeachingHistoryDTO.Info> teachingHistories;
-        private Set<TeacherCertificationDTO.Info> teacherCertifications;
-        private Set<PublicationDTO.Info> publications;
+//        private Set<EmploymentHistoryDTO.Info> employmentHistories;
+//        private Set<AcademicBKDTO.Info> academicBKs;
+//        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
+//        private Set<TeachingHistoryDTO.Info> teachingHistories;
+//        private Set<TeacherCertificationDTO.Info> teacherCertifications;
+//        private Set<PublicationDTO.Info> publications;
         private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherGrid")
+    public static class Grid{
+        private Long id;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String teacherCode;
+        private PersonalInfoDTO.Grid personality;
+        private Boolean enableStatus;
+        private Set<CategoryDTO.CategoryInfoTuple> categories;
+        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherSpecRsGrid")
+    public static class TeacherSpecRsGrid {
+        private SpecRsGrid response;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsGrid {
+        private List<Grid> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 
     @Getter
@@ -89,6 +127,7 @@ public class TeacherDTO {
         private SpecRs response;
     }
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -100,6 +139,7 @@ public class TeacherDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
 
     @Getter
     @Setter

@@ -34,6 +34,17 @@ public class ContactInfoDTO {
         private Integer version;
     }
 
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ContactInfoGrid")
+    public static class Grid{
+        private Long id;
+        private String mobile;
+        private Integer version;
+    }
+
     @Getter
     @Setter
     @Accessors(chain = true)
