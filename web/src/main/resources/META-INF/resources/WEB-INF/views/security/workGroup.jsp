@@ -106,7 +106,7 @@
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_Permission,IButton_Cancel_Permission]
+        members: [IButton_Save_Permission, IButton_Cancel_Permission]
     });
 
     ToolStripButton_Refresh_Permission = isc.ToolStripButtonRefresh.create({
@@ -565,10 +565,14 @@
                 name: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
                 title: setTitle(item.columnDataList[i].attributeName),
                 valueMap: item.columnDataList[i].attributeValues,
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 multiple: true,
-                colSpan: 8
+                colSpan: 8,
+                sortField: 0,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
             })
         }
         return DF;
