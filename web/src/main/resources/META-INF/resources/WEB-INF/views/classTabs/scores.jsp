@@ -83,6 +83,19 @@
                     ListGrid_Class_Student.invalidateCache()
                 }
             }),
+            isc.IButton.create({
+               name: "Button",
+                 ID: "Button2",
+                  disabled: true,
+                title: "حذف وضعیت قبولی/دلایل مردودی/نمره",
+                width: "20%",
+                click: function () {
+                var record=ListGrid_Class_Student.getSelectedRecord()
+                ListGrid_Remove_All_Cell(record)
+                ListGrid_Class_Student.invalidateCache()
+                }
+
+            }),
 
             isc.ToolStrip.create({
                 width: "50%",
@@ -402,9 +415,21 @@
         ListGrid_Class_Student.refreshFields();
     }
 
+    function ListGrid_Remove_All_Cell(record) {
+        record.scoresState=null
+        record.failureReason=null
+        record.score=null
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback:Remove_All_Cell(rpcResponse)"));
+        ListGrid_Class_Student.refreshFields();
+    }
+   function Remove_All_Cell(rpcResponse){
 
+   }
     function Edit_Cell_scoresState_Update(resp) {
+         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
+            ListGrid_Class_Student.refreshFields();
+        }
     };
 
     function Edit_Cell_valence_Update(resp) {
@@ -468,6 +493,7 @@
                 ListGrid_Class_Student.getField('scoresState').valueMap = ["مردود", "قبول"]
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["عدم کسب حد نصاب نمره", "غیبت در جلسات"]
                 Button1.setDisabled(true)
+                 Button2.setDisabled(true)
 
             } else if (classRecord.scoringMethod == "3") {
                 score_value = 20;
@@ -476,6 +502,7 @@
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
                 ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
                 Button1.setDisabled(true)
+                Button2.setDisabled(false)
             } else if (classRecord.scoringMethod == "2") {
                 score_value = 100;
                 ListGrid_Class_Student.hideField('valence')
@@ -483,12 +510,14 @@
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
                 ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
                 Button1.setDisabled(true)
+                Button2.setDisabled(false)
             } else if (classRecord.scoringMethod == "4") {
                 ListGrid_Class_Student.hideField('score')
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["غیبت بیش از حد مجاز"]
                 ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول بدون نمره", "مردود"]
                 Button1.setDisabled(false)
+                Button2.setDisabled(true)
             }
 //=================================================
             ListGrid_Class_Student.invalidateCache()

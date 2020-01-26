@@ -13,6 +13,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.PersonalInfoDAO;
+import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -44,7 +45,7 @@ public class TeacherRestController {
     private final ISubCategoryService subCategoryService;
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
-    private final PersonalInfoDAO personalInfoDAO;
+    private final TeacherDAO teacherDAO;
     private final IAcademicBKService academicBKService;
     private final IEmploymentHistoryService employmentHistoryService;
     private final ITeachingHistoryService teachingHistoryService;
@@ -93,23 +94,37 @@ public class TeacherRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_teacher')")
     public ResponseEntity create(@Validated @RequestBody LinkedHashMap request) {
-        List<CategoryDTO.Info> categories = null;
-        List<SubCategoryDTO.Info> subCategories = null;
+        final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
+        Teacher teacher = null;
+        if(tById.isPresent())
+         teacher = tById.get();
+        if(teacher != null) {
+            if (teacher.isInBlackList() == true)
+                return new ResponseEntity<>("duplicateAndBlackList", HttpStatus.NOT_ACCEPTABLE);
+            else if (teacher.isInBlackList() == false)
+                return new ResponseEntity<>("duplicateAndNotBlackList", HttpStatus.NOT_ACCEPTABLE);
+            else
+                return new ResponseEntity<>("", HttpStatus.NOT_ACCEPTABLE);
+        }
+        else {
+            List<CategoryDTO.Info> categories = null;
+            List<SubCategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null)
-            categories = setCats(request);
-        if (request.get("subCategories") != null)
-            subCategories = setSubCats(request);
-        TeacherDTO.Create create = modelMapper.map(request, TeacherDTO.Create.class);
-        if (categories != null && categories.size() > 0)
-            create.setCategories(categories);
-        if (subCategories != null && subCategories.size() > 0)
-            create.setSubCategories(subCategories);
-        create.setInBlackList(false);
-        try {
-            return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            if (request.get("categories") != null)
+                categories = setCats(request);
+            if (request.get("subCategories") != null)
+                subCategories = setSubCats(request);
+            TeacherDTO.Create create = modelMapper.map(request, TeacherDTO.Create.class);
+            if (categories != null && categories.size() > 0)
+                create.setCategories(categories);
+            if (subCategories != null && subCategories.size() > 0)
+                create.setSubCategories(subCategories);
+            create.setInBlackList(false);
+            try {
+                return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
+            } catch (TrainingException ex) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
 
