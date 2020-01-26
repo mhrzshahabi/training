@@ -422,9 +422,9 @@
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback:Remove_All_Cell(rpcResponse)"));
         ListGrid_Class_Student.refreshFields();
     }
-   function Remove_All_Cell(rpcResponse){
+       function Remove_All_Cell(rpcResponse){
 
-   }
+       }
     function Edit_Cell_scoresState_Update(resp) {
          if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 

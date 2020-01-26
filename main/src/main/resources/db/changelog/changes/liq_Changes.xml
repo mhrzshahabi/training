@@ -422,5 +422,10 @@
             <column name="user_ids" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+     <changeSet author="heydaripoor (generated)" id="1580052507513-228">
+        <addColumn tableName="tbl_questionnaire">
+            <column name="f_parameter_value" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
