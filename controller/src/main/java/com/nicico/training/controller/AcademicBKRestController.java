@@ -36,10 +36,14 @@ public class AcademicBKRestController {
 
     @GetMapping(value = "/iscList/{teacherId}")
     public ResponseEntity<ISC<AcademicBKDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
-        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs = academicBKService.search(searchRq, teacherId);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        if(teacherId != null) {
+            Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+            SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+            SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs = academicBKService.search(searchRq, teacherId);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
 

@@ -24,6 +24,11 @@ public class MainFormController {
         return "basic/parameter";
     }
 
+    @RequestMapping("/trainingFile")
+    public String showTrainingFileForm() {
+        return "report/trainingFile";
+    }
+
     @RequestMapping("/oaUser")
     public String showOaUserForm() {
         return "security/user";

@@ -76,4 +76,6 @@ public interface ICourseService {
     CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
 
     List<CourseDTO.Info> getEvaluation(Long courseId);
+
+    CourseDTO.CourseGoals getCourseGoals(Long courseId);
 }

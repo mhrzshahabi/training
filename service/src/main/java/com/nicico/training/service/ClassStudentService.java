@@ -12,6 +12,7 @@ import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
@@ -38,6 +39,32 @@ public class ClassStudentService implements IClassStudentService {
     public ClassStudent getClassStudent(Long id) {
         Optional<ClassStudent> optionalStudent = classStudentDAO.findById(id);
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ClassStudentDTO.ClassStudentInfo> getClassesOfStudent(Long id) {
+        List<ClassStudent> classStudentList = classStudentDAO.findByStudentId(id);
+        return new ModelMapper().map(classStudentList, new TypeToken<List<ClassStudentDTO.CoursesOfStudent>>(){}.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public <T> SearchDTO.SearchRs<T> searchClassesOfStudent(SearchDTO.SearchRq request, String nationalCode, Class<T> infoType) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        if (nationalCode != null) {
+            list.add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    request.getCriteria().setCriteria(list);
+            } else
+                request.setCriteria(criteriaRq);
+        }
+        return SearchUtil.search(classStudentDAO, request, e -> mapper.map(e, infoType));
     }
 
     @Transactional(readOnly = true)

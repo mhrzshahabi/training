@@ -31,7 +31,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        fetchDataURL: parameterValueUrl + "/iscList/49"
+        fetchDataURL: parameterUrl + "/iscList/test"
     });
 
     RestDataSource_QuestionIndicator_JspConfigQuestionnaire = isc.TrDS.create({
@@ -301,7 +301,10 @@
         tabBarThickness: 125,
         tabs: [
             {title: "<spring:message code="question.bank"/>", pane: VLayout_Body_JspConfigQuestionnaire},
-            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})},
+            {
+                title: "<spring:message code="questionnaire"/>",
+                pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})
+            },
         ]
     });
 

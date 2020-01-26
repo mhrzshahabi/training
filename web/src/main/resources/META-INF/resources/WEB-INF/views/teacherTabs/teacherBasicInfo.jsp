@@ -12,6 +12,40 @@
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
 
+    var RestDataSource_BasicInfo_JspTeacher = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "personality.id"},
+            {name: "teacherCode"},
+            {name: "personnelCode"},
+            {name: "personality.firstNameFa"},
+            {name: "personality.lastNameFa"},
+            {name: "personality.educationLevel.titleFa"},
+            {name: "personality.educationMajor.titleFa"},
+            {name: "personality.contactInfo.mobile"},
+            {name: "categories"},
+            {name: "subCategories"},
+            {name: "personality.contactInfo.homeAddress.id"},
+            {name: "personality.contactInfo.workAddress.id"}
+        ],
+        fetchDataURL: teacherUrl + "spec-list"
+    });
+
+    var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eGender/spec-list"
+    });
+
+    var RestDataSource_Emarried_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eMarried/spec-list"
+    });
+
+    var RestDataSource_Emilitary_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eMilitary/spec-list"
+    });
+
     //--------------------------------------------Dynamic Form-----------------------------------------------------
     var vm = isc.ValuesManager.create({});
 

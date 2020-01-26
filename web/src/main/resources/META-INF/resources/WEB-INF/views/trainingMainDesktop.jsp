@@ -23,8 +23,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
-    //<SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
-
+    <%--<SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>--%>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
@@ -645,7 +644,7 @@
                 {
                     title: "<spring:message code="training.file"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/course/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/trainingFile/"/>");
                     }
                 },
             ]

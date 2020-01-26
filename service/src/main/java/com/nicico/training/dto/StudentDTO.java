@@ -199,4 +199,12 @@ public class StudentDTO {
         @ApiModelProperty(required = true)
         private String personnelNo;
     }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - ClassesOfStudentInfo")
+    public static class ClassesOfStudentInfo {
+        private String postTitle;
+    }
 }

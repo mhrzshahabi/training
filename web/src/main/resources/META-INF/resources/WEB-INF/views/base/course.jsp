@@ -2826,7 +2826,8 @@
                         var varParams = [{
                             "processKey": "courseWorkflow",
                             "cId": sRecord.id,
-                            "mainObjective": sRecord.mainObjective,
+                            "mainObjective": "",
+                            // "mainObjective": sRecord.mainObjective,
                             "titleFa": sRecord.titleFa,
                             "theoryDuration": sRecord.theoryDuration.toString(),
                             "courseCreatorId": "${username}",
