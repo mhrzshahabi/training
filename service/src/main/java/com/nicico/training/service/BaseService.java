@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IBaseService;
@@ -128,5 +129,27 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         List<INFO> infoList = new ArrayList<>();
         Optional.ofNullable(eList).ifPresent(entities -> entities.forEach(entity -> infoList.add(modelMapper.map(entity, infoType))));
         return infoList;
+    }
+
+    public static SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
+    }
+
+    public static void setCriteria(SearchDTO.SearchRq request, SearchDTO.CriteriaRq criteria) {
+        if (request.getCriteria() == null) {
+            request.setCriteria(criteria);
+            return;
+        }
+        SearchDTO.CriteriaRq mainCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        mainCriteria.getCriteria().add(criteria);
+        mainCriteria.getCriteria().add(request.getCriteria());
+        mainCriteria.setStart(request.getCriteria().getStart());
+        mainCriteria.setEnd(request.getCriteria().getEnd());
+        request.setCriteria(mainCriteria);
     }
 }

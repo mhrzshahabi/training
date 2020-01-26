@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.JobDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public interface IJobService {
     List<JobDTO.Info> list();
 
     SearchDTO.SearchRs<JobDTO.Info> search(SearchDTO.SearchRq rq);
+
+    SearchDTO.SearchRs<JobDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
 
     TotalResponse<JobDTO.Info> search(NICICOCriteria request);
 

@@ -5,6 +5,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PostGradeDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface IPostGradeService {
     List<PostGradeDTO.Info> list();
 
     SearchDTO.SearchRs<PostGradeDTO.Info> search(SearchDTO.SearchRq rq);
+
+    SearchDTO.SearchRs<PostGradeDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
 }

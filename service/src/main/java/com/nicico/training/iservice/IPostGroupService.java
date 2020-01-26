@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,8 @@ public interface IPostGroupService {
     boolean canDelete(Long postGroupId);
 
     SearchDTO.SearchRs<PostGroupDTO.Info> search(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<PostGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
 
     List<CompetenceDTOOld.Info> getCompetence(Long postGroupID);
 
