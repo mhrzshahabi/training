@@ -31,6 +31,21 @@
         fetchDataURL: teacherUrl + "spec-list"
     });
 
+    var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eGender/spec-list"
+    });
+
+    var RestDataSource_Emarried_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eMarried/spec-list"
+    });
+
+    var RestDataSource_Emilitary_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eMilitary/spec-list"
+    });
+
     //--------------------------------------------Dynamic Form-----------------------------------------------------
     var vm = isc.ValuesManager.create({});
 
