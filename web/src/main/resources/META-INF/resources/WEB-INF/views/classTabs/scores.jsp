@@ -18,6 +18,7 @@
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
+            {name:"tclass.scoringMethod",title:"ghfdhfg"},
             {
                 name: "student.firstName",
                 title: "<spring:message code="firstName"/>",
@@ -36,19 +37,19 @@
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-// {name: "companyName", title: "<spring:message
-        code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-// {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+
             {name: "scoresState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
             {name: "failureReason", title: "<spring:message code="faild.reason"/>", filterOperator: "iContains"},
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
             {name: "valence", title: "روش ارزشی", filterOperator: "iContains"},
+
 
         ],
 
@@ -64,28 +65,47 @@
         }
     });
     var ToolStrip_Actions = isc.ToolStrip.create({
+    ID:"ToolStrip_Actions1",
         width: "100%",
         members: [
 
             isc.Label.create({
                 ID: "totalsLabel_scores"
             }),
+                isc.IButton.create({
+            //      visibleWhen: {
+            //     _constructor: "AdvancedCriteria",
+            //     operator: "and",
+            //     criteria: [
+            //         {fieldName: ListGrid_Class_Student1.tclass.scoringMethod, operator: "greaterOrEqualField", value:"4"}
+            //     ]
+            // },
+               name: "Button",
+              ID:"Button1",
+              disabled: true,
+               title: " تبدیل همه به قبول بدون نمره",
+               width: "14%",
+               click:function() {
+               var record=ListGrid_Class_JspClass.getSelectedRecord();
+               isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +"/setTotalStudentWithOutScore/" + record.id, "PUT", null, "callback: setTotalStudentWithOutScore(rpcResponse)"));
+               ListGrid_Class_Student.invalidateCache()
+            }
+        }),
 
-            isc.LayoutSpacer.create({
-                width: "*"
-            }),
             isc.ToolStrip.create({
-                width: "100%",
+                width: "50%",
                 align: "left",
                 border: '0px',
                 members: [
                     ToolStripButton_Refresh,
                 ]
-            })
+            }),
+
         ]
     });
     //**********************************************************************************
     var ListGrid_Class_Student = isc.TrLG.create({
+        ID: "ListGrid_Class_Student1",
         selectionType: "single",
         editOnFocus: true,
 //------------
@@ -142,6 +162,12 @@
                     } else if (value === "قبول با نمره") {
                         this.grid.startEditing(this.rowNum, this.colNum + 2)
                     }
+                    else if(value ==="قبول بدون نمره")
+                    {
+                    ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum),value)
+                     this.grid.endEditing();
+                        ListGrid_Class_Student.refreshFields();
+                    }
 
                 },
             },
@@ -153,6 +179,12 @@
                 editorType: "SelectItem",
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
                 changed: function (form, item, value) {
+                    if (value === "غیبت بیش از حد مجاز" && scoresState_value === "مردود" && this.grid.getRecord(this.rowNum).tclass.scoringMethod ==="4")
+                        {
+                        ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum),value)
+                        this.grid.endEditing();
+                        ListGrid_Class_Student.refreshFields();
+                        }
                     if (value === "غیبت در جلسه امتحان") {
                         ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
                         this.grid.endEditing();
@@ -301,7 +333,8 @@
 
 
 
-            }
+            },
+             {name:"tclass.scoringMethod",hidden:true},
         ],
 
         dataArrived: function () {
@@ -314,10 +347,19 @@
             var record = this.getRecord(rowNum);
             var fieldName = this.getFieldName(colNum);
 
-            if (fieldName === "failureReason") {
-// return !(scoresState_value == null)
-// return !(record.scoresState === "مردود" && record.failureReason === "غیبت در جلسه امتحان")
-            }
+
+
+            if(fieldName ==="failureReason")
+                {
+                // if(record.scoresState ==="قبول بدون نمره" && record.tclass.scoringMethod ==="4" && scoresState_value !=null)
+                //     {
+                //     return true;
+                //     }
+                //  else if (record.scoresState ==="قبول بدون نمره" && record.tclass.scoringMethod ==="4" )
+                // {
+                //     return false;
+                // }
+                }
 
             if (fieldName ==="scoresState")
             {
@@ -346,7 +388,9 @@
 
     function ListGrid_Cell_scoresState_Update(record, newValue) {
         record.scoresState = newValue
+        record.failureReason=null
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
+
     }
 
     function ListGrid_Cell_failurereason_Update(record, newValue) {
@@ -355,6 +399,7 @@
         record.score = null
         scoresState_value = null
         failureReason_value = null
+
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_failurereason_Update(rpcResponse)"));
         ListGrid_Class_Student.refreshFields();
     }
@@ -415,6 +460,15 @@
 
      }
 
+     function setTotalStudentWithOutScore() {
+
+       if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+            ListGrid_Class_Student.refreshFields();
+        }
+
+}
+
 
     function Edit_Cell_failurereason_Update(resp) {
 
@@ -471,18 +525,30 @@
                 ListGrid_Class_Student.hideField('score')
                 ListGrid_Class_Student.getField('scoresState').valueMap = ["مردود","قبول"]
                 ListGrid_Class_Student.getField('failureReason').valueMap=["عدم کسب حد نصاب نمره","غیبت در جلسات"]
+                  Button1.setDisabled(true)
 
             } else if (classRecord.scoringMethod == "3") {
                 score_value = 20;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
                 ListGrid_Class_Student.getField('failureReason').valueMap=["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
+                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
+                  Button1.setDisabled(true)
             } else if (classRecord.scoringMethod == "2") {
                 score_value = 100;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
                 ListGrid_Class_Student.getField('failureReason').valueMap=["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
                 ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
+                  Button1.setDisabled(true)
+            }
+            else if(classRecord.scoringMethod == "4")
+            {
+              ListGrid_Class_Student.hideField('score')
+               ListGrid_Class_Student.hideField('valence')
+              ListGrid_Class_Student.getField('failureReason').valueMap=["غیبت بیش از حد مجاز"]
+              ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول بدون نمره", "مردود"]
+             Button1.setDisabled(false)
             }
 //=================================================
             ListGrid_Class_Student.invalidateCache()
@@ -491,4 +557,3 @@
             ListGrid_Class_Student.setData([]);
         }
     }
-

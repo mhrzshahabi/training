@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.modelmapper.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ClassStudentService implements IClassStudentService {
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
+
 
     @Transactional(readOnly = true)
     @Override
@@ -122,4 +124,11 @@ public class ClassStudentService implements IClassStudentService {
     public int setStudentFormIssuance(Map<String, Integer> formIssuance) {
         return classStudentDAO.setStudentFormIssuance(Long.parseLong(formIssuance.get("idClassStudent").toString()), formIssuance.get("reaction"), formIssuance.get("learning"), formIssuance.get("behavior"), formIssuance.get("results"));
     }
+
+    @Transactional
+    @Override
+    public void setTotalStudentWithOutScore(Long classId)
+     {
+      classStudentDAO.setTotalStudentWithOutScore(classId);
+     }
 }

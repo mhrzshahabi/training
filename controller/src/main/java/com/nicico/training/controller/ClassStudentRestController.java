@@ -119,4 +119,12 @@ public class ClassStudentRestController {
     public Integer setStudentFormIssuance(@RequestBody Map<String, Integer> formIssuance) {
         return classStudentService.setStudentFormIssuance(formIssuance);
     }
+
+     @Loggable
+     @PutMapping(value = "/setTotalStudentWithOutScore/{classId}")
+     public ResponseEntity setTotalStudentWithOutScore(@PathVariable Long classId)
+     {
+     classStudentService.setTotalStudentWithOutScore(classId);
+     return new ResponseEntity(HttpStatus.OK);
+     }
 }
