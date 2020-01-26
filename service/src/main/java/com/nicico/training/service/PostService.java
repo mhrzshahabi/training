@@ -32,7 +32,6 @@ import static com.nicico.training.service.BaseService.setCriteria;
 public class PostService implements IPostService {
 
     private final PostDAO postDAO;
-    private final PostGroupDAO postGroupDAO;
     private final ModelMapper modelMapper;
     private final IWorkGroupService workGroupService;
     private final IPostGroupService postGroupService;

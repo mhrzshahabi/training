@@ -226,7 +226,7 @@
             },
             {
                 name: "userIds",
-                type: "selectItem",
+                type: "SelectItem",
                 title: "<spring:message code="users"/>",
                 optionDataSource: UserDS_JspWorkGroup,
                 valueField: "id",

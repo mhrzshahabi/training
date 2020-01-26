@@ -7,7 +7,6 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.JobDTO;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

@@ -39,7 +39,7 @@ public class ISC<T> {
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
         String sortBy = rq.getParameter("_sortBy");
-        String[] criteriaList = rq.getParameterValues("criteria");
+        String criteriaList = rq.getParameter("criteria");
         String operator = rq.getParameter("operator");
 
         Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
@@ -55,9 +55,7 @@ public class ISC<T> {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            for (int i = 0; i < criteriaList.length; i++) {
-                criteriaList[i] = "[" + criteriaList[i] + "]";
-            }
+                criteriaList = "[" + criteriaList + "]";
             SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteriaList, new TypeReference<List<SearchDTO.CriteriaRq>>() {
