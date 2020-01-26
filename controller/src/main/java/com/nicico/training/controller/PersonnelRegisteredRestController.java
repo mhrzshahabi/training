@@ -116,8 +116,8 @@ public class PersonnelRegisteredRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_personnelRegistered')")
-    public ResponseEntity<PersonnelRegisteredDTO.PersonnelRegisteredSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                                 @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<PersonnelRegisteredDTO.PersonnelRegisteredSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                                 @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                                  @RequestParam(value = "_constructor", required = false) String constructor,
                                                                                  @RequestParam(value = "operator", required = false) String operator,
                                                                                  @RequestParam(value = "criteria", required = false) String criteria,

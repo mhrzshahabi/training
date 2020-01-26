@@ -68,8 +68,8 @@ public class AddressRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_address')")
-    public ResponseEntity<AddressDTO.AddressSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                         @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<AddressDTO.AddressSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                         @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                          @RequestParam(value = "operator", required = false) String operator,
                                                          @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();

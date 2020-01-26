@@ -6859,7 +6859,7 @@ some LG header-titles to be vertically offset from other headers */
 .specialColOver,
 .recordSummaryCellOver,
 .recordSummaryCellOverDark {
-  background-color: #ffd7a7 !important;
+  background-color: #ffd7a7;
   color: #153560;
 }
 
@@ -6869,7 +6869,7 @@ some LG header-titles to be vertically offset from other headers */
 
 .tallCellOver,
 .tallCellOverDark {
-  background-color: #ffd7a7 !important;
+  background-color: #ffd7a7;
   color: #153560;
 }
 
@@ -6880,13 +6880,13 @@ some LG header-titles to be vertically offset from other headers */
 .specialColSelected,
 .recordSummaryCellSelected,
 .recordSummaryCellSelectedDark {
-  background: #929292 !important;
+  background: #929292;
   color: white;
 }
 
 .tallCellSelected,
 .tallCellSelectedDark {
-  background: #929292 !important;
+  background: #929292;
   color: white;
 }
 
@@ -6897,13 +6897,13 @@ some LG header-titles to be vertically offset from other headers */
 .specialColSelectedOver,
 .recordSummaryCellSelectedOver,
 .recordSummaryCellSelectedOverDark {
-  background-color: #929292 !important;
+  background-color: #929292;
   color: white;
 }
 
 .tallCellSelectedOver,
 .tallCellSelectedOverDark {
-  background-color: #929292 !important;
+  background-color: #929292;
   color: white;
 }
 
@@ -6962,7 +6962,7 @@ some LG header-titles to be vertically offset from other headers */
 .tallCellAltSelectedDark,
 .tallCellAltSelectedOver,
 .tallCellAltSelectedOverDark {
-  background-color: #929292 !important;
+  background-color: #929292;
   color: #153560;
   border-top: none;
   border-bottom: none;
@@ -7033,7 +7033,7 @@ some LG header-titles to be vertically offset from other headers */
 
 .cellOverAltCol,
 .cellOverDarkAltCol {
-  background-color: #ffd7a7 !important;
+  background-color: #ffd7a7;
   color: #153560;
 }
 
@@ -7045,7 +7045,7 @@ some LG header-titles to be vertically offset from other headers */
 .cellPendingSelectedDarkAltCol,
 .cellPendingSelectedOverAltCol,
 .cellPendingSelectedOverDarkAltCol {
-  background: #929292 !important;
+  background: #929292;
   color: white;
 }
 
@@ -7053,7 +7053,7 @@ some LG header-titles to be vertically offset from other headers */
 .cellSelectedOverDarkAltCol,
 .cellPendingSelectedOverAltCol,
 .cellPendingSelectedOverDarkAltCol {
-  background: #929292 !important;
+  background: #929292;
 }
 
 /* ListGrid rollOverCanvas outer glow */
@@ -8820,18 +8820,10 @@ a.calMonthEventLink:active {
   height: 100%;
 }
 
-.header-logo {
-  background-color: #fe9d2a;
-}
-
 .header-logo-title {
   background-color: #dcdeea;
   color: #374b71;
   height: 100%;
-}
-
-.header-exit {
-  background: url("../../../static/img/top-back.svg");
 }
 
 .header-filter span {
@@ -8850,12 +8842,6 @@ a.calMonthEventLink:active {
 
 .header-change-lng span {
   color: #374b71;
-}
-
-.header-label-username {
-  color: #374b71;
-  font-size: 14px;
-  font-weight: bold;
 }
 
 .toolStripButton {
@@ -9039,8 +9025,8 @@ hr {
 }
 
 .main-menu div {
-  background-color: #153560;
-  border-color: #153560;
+  background-color: #324458;
+  border-color: #324458;
 }
 .main-menu div .toolStripButton,
 .main-menu div .toolStripButtonFocused,
@@ -9742,8 +9728,8 @@ hr {
   font-size: 12px;
   padding: 3px 4px 3px 4px;
   border-radius: 3px;
-  background-color: #15356012;
-  border: solid 1px #153560;
+  background-color: #374b71;
+  border: solid 1px #374b71;
 }
 .toolStripButtonExcel:hover,
 .toolStripButtonExcelOver:hover,
@@ -9793,7 +9779,7 @@ hr {
 .toolStripButtonExcelSelectedOpened td,
 .toolStripButtonExcelSelectedDownOpened td,
 .toolStripButtonExcelSelectedOverOpened td {
-  color: #153560;
+  color: #374b71;
   font-weight: bold;
 }
 
@@ -10355,4 +10341,3 @@ input[type="text"].selectItemLiteTextDisabledHint,
 input[type="text"].selectItemLiteTextDisabledHintRTL {
   padding: 13px 0px;
 }
-
