@@ -150,6 +150,7 @@
                 endRow:false,
                 click (form, item) {
                     form.clearValues();
+                    ListGrid_TrainingFile_TrainingFileJSP.setData([]);
                 }
             },
         ],
