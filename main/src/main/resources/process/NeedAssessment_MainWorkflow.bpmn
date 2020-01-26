@@ -15,8 +15,8 @@
         <activiti:formProperty id="workflowStatusCode" name="workflowStatusCode" type="string" expression="${C_WORKFLOW_ENDING_STATUS_CODE}" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <serviceTask id="servicetaskAssignCommitteeBoss" name="تعیین تایید کننده" activiti:delegateExpression="${serviceTaskNeedAssessmentCommittee}"></serviceTask>
-    <userTask id="needAssessmentCommitteeCheck" name="بررسی تایید کننده" activiti:assignee="${needAssessmentCommitteeBoss}">
+    <serviceTask id="servicetaskAssignMainConfirmBoss" name="تعیین تایید کننده" activiti:delegateExpression="${serviceTaskNeedAssessmentMainConfirm}"></serviceTask>
+    <userTask id="needAssessmentMainConfirmCheck" name="بررسی تایید کننده" activiti:assignee="${needAssessmentMainConfirmBoss}">
       <documentation>${needAssessment}</documentation>
       <extensionElements>
         <activiti:formProperty id="cId" name="آی دی پارامتر" type="long" expression="${cId}" required="true"></activiti:formProperty>
@@ -29,7 +29,7 @@
         <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_ENDING_STATUS}" required="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
-    <serviceTask id="servicetaskSetNeedAssessmentStatus" name="تعیین وضعیت نیازسنجی" activiti:delegateExpression="${serviceTaskNeedAssessmentCommittee}"></serviceTask>
+    <serviceTask id="servicetaskSetNeedAssessmentStatus" name="تعیین وضعیت نیازسنجی" activiti:delegateExpression="${serviceTaskNeedAssessmentMainConfirm}"></serviceTask>
     <exclusiveGateway id="confirmGateway" name="Confirm Gateway"></exclusiveGateway>
     <endEvent id="needAssessmentWorkFlowEnd" name="End"></endEvent>
     <userTask id="CreatorCheck" name="بررسی کاربر" activiti:assignee="${needAssessmentCreatorId}">
@@ -45,10 +45,10 @@
       </extensionElements>
     </userTask>
     <exclusiveGateway id="finalgateway" name="Final Gateway"></exclusiveGateway>
-    <serviceTask id="servicetaskNeedSAssessmentCorrection" name="اصلاح / حذف نیازسنجی" activiti:delegateExpression="${serviceTaskNeedAssessmentCommittee}"></serviceTask>
-    <sequenceFlow id="flow1" sourceRef="needAssessmentWorkflowStart" targetRef="servicetaskAssignCommitteeBoss"></sequenceFlow>
-    <sequenceFlow id="flow2" sourceRef="servicetaskAssignCommitteeBoss" targetRef="needAssessmentCommitteeCheck"></sequenceFlow>
-    <sequenceFlow id="flow3" sourceRef="needAssessmentCommitteeCheck" targetRef="servicetaskSetNeedAssessmentStatus"></sequenceFlow>
+    <serviceTask id="servicetaskNeedSAssessmentCorrection" name="اصلاح / حذف نیازسنجی" activiti:delegateExpression="${serviceTaskNeedAssessmentMainConfirm}"></serviceTask>
+    <sequenceFlow id="flow1" sourceRef="needAssessmentWorkflowStart" targetRef="servicetaskAssignMainConfirmBoss"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="servicetaskAssignMainConfirmBoss" targetRef="needAssessmentMainConfirmCheck"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="needAssessmentMainConfirmCheck" targetRef="servicetaskSetNeedAssessmentStatus"></sequenceFlow>
     <sequenceFlow id="flow4" sourceRef="servicetaskSetNeedAssessmentStatus" targetRef="confirmGateway"></sequenceFlow>
     <sequenceFlow id="bossConfirmflow" name="Boss Confirm" sourceRef="confirmGateway" targetRef="needAssessmentWorkFlowEnd">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
@@ -58,7 +58,7 @@
     </sequenceFlow>
     <sequenceFlow id="flow7" sourceRef="CreatorCheck" targetRef="servicetaskNeedSAssessmentCorrection"></sequenceFlow>
     <sequenceFlow id="flow8" sourceRef="servicetaskNeedSAssessmentCorrection" targetRef="finalgateway"></sequenceFlow>
-    <sequenceFlow id="creatorCorrectionflow" name="Creator Correction" sourceRef="finalgateway" targetRef="servicetaskAssignCommitteeBoss">
+    <sequenceFlow id="creatorCorrectionflow" name="Creator Correction" sourceRef="finalgateway" targetRef="servicetaskAssignMainConfirmBoss">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="deleteWorkflowflow" name="Delete Workflow" sourceRef="finalgateway" targetRef="needAssessmentWorkFlowEnd">
@@ -68,12 +68,12 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_needAssessment_MainWorkflow">
     <bpmndi:BPMNPlane bpmnElement="needAssessment_MainWorkflow" id="BPMNPlane_needAssessment_MainWorkflow">
       <bpmndi:BPMNShape bpmnElement="needAssessmentWorkflowStart" id="BPMNShape_needAssessmentWorkflowStart">
-        <omgdc:Bounds height="35.0" width="35.0" x="34.0" y="20.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="20.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetaskAssignCommitteeBoss" id="BPMNShape_servicetaskAssignCommitteeBoss">
+      <bpmndi:BPMNShape bpmnElement="servicetaskAssignMainConfirmBoss" id="BPMNShape_servicetaskAssignMainConfirmBoss">
         <omgdc:Bounds height="61.0" width="131.0" x="120.0" y="7.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="needAssessmentCommitteeCheck" id="BPMNShape_needAssessmentCommitteeCheck">
+      <bpmndi:BPMNShape bpmnElement="needAssessmentMainConfirmCheck" id="BPMNShape_needAssessmentMainConfirmCheck">
         <omgdc:Bounds height="61.0" width="131.0" x="320.0" y="7.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="servicetaskSetNeedAssessmentStatus" id="BPMNShape_servicetaskSetNeedAssessmentStatus">
@@ -95,7 +95,7 @@
         <omgdc:Bounds height="71.0" width="136.0" x="680.0" y="210.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="69.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="65.0" y="37.0"></omgdi:waypoint>
         <omgdi:waypoint x="120.0" y="37.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">

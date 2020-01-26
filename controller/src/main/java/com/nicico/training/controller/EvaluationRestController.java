@@ -3,12 +3,9 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.model.Goal;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.model.Skill;
@@ -17,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -46,8 +45,10 @@ public class EvaluationRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = {"/{type}/{classId}/{courseId}/{studentId}"})
-    public void printWithCriteria(HttpServletResponse response, @PathVariable String type, @PathVariable Long classId, @PathVariable Long courseId, @PathVariable Long studentId) throws Exception {
+    @PostMapping(value = {"/{type}/{classId}/{courseId}/{studentId}/{evaluationType}"})
+    public void printWithCriteria(HttpServletResponse response, @PathVariable String type,
+                                  @PathVariable Long classId, @PathVariable Long courseId,
+                                  @PathVariable Long studentId, @PathVariable String evaluationType) throws Exception {
 
         List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
         teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
@@ -99,6 +100,11 @@ public class EvaluationRestController {
         params.put("classCode", classInfo.getCode());
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
+        params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
+                evaluationType.equals("TabPane_Learning") ? "(یادگیری)" :
+                        evaluationType.equals("TabPane_Behavior") ? "(رفتار)" : "(نتایج)"));
+
+
 
         Set<ClassStudentDTO.AttendanceInfo> classStudent = classInfo.getClassStudentsForEvaluation(studentId);
 
