@@ -190,7 +190,10 @@
                 }],
                 changed: function () {
                     var dateCheck;
-                    dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
+                    if(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate") == null || DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate") == "")
+                        dateCheck = true;
+                    else
+                        dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
                     persianDateCheck = dateCheck;
                     if (dateCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.birthDate", "<spring:message
