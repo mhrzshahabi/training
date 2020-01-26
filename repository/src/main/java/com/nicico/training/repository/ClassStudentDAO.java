@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -21,4 +24,8 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     public int setStudentFormIssuance(Long idClassStudent, Integer reaction, Integer learning, Integer behavior, Integer results);
 
     List<ClassStudent> findByStudentId(Long studentId);
+    @Modifying
+    @Query(value = "update  TBL_CLASS_STUDENT set SCORES_STATE = 'قبول بدون نمره' where CLASS_ID =:id ", nativeQuery = true)
+    void setTotalStudentWithOutScore(@Param("id") Long id);
+
 }

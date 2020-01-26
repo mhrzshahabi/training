@@ -734,7 +734,9 @@ public class TeacherRestController {
 
         // table 2
         int table_2_relation = 0;
-        String teacherMajor = teacher.getPersonality().getEducationMajor().getTitleFa();
+        String teacherMajor = "";
+        if(teacher.getPersonality().getEducationMajor()!= null)
+            teacherMajor = teacher.getPersonality().getEducationMajor().getTitleFa();
         String teacherOrientation = "";
         if(teacher.getPersonality().getEducationOrientation() != null)
             teacherOrientation = teacher.getPersonality().getEducationOrientation().getTitleFa();
