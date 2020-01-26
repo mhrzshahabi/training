@@ -245,17 +245,17 @@ public class CourseService implements ICourseService {
                 for (Skill skill : savingSkill) {
                     skill.setCourseMainObjectiveId(save.getId());
                     skill.setCourseId(save.getId());
-                    skillDAO.saveAndFlush(skill);
+                    skillDAO.save(skill);
                 }
             } else {
                 for (Skill savedSkill : savedSkills) {
                     savedSkill.setCourseMainObjectiveId(null);
-                    skillDAO.saveAndFlush(savedSkill);
+                    skillDAO.save(savedSkill);
                 }
                 for (Skill skill : savingSkill) {
                     skill.setCourseMainObjectiveId(save.getId());
                     skill.setCourseId(save.getId());
-                    skillDAO.saveAndFlush(skill);
+                    skillDAO.save(skill);
                 }
             }
 
