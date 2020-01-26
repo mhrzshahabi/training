@@ -119,7 +119,8 @@ public class EducationOrientationRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
-    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow) {
+    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

@@ -57,7 +57,6 @@
         ],
         autoFetchData:false,
         doubleClick: function () {
-            console.log(this.getSelectedRecord().nationalCode)
             DynamicForm_TrainingFile.editRecord(this.getSelectedRecord());
             RestDataSource_Course_JspTrainingFile.fetchDataURL = tclassStudentUrl + "/classes-of-student/" + this.getSelectedRecord().nationalCode;
             ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
@@ -77,32 +76,26 @@
         ]
     });
     var DynamicForm_TrainingFile = isc.DynamicForm.create({
-        ID: "TrainingFileForm",
         numCols: 7,
         padding: 10,
         titleAlign:"left",
-        // wrapItemTitles:true,
-        // cellBorder:2,
         colWidths:[100,150,100,150,100,150,100],
         fields: [
             {
                 name: "personnelNo2",
                 title:"<spring:message code="personnel.no.6.digits"/>",
-                // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
             },
             {
                 name: "personnelNo",
                 title:"<spring:message code="personnel.no"/> ",
-                // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
             },
             {
                 name: "nationalCode",
                 title:"<spring:message code="national.code"/> ",
-                // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
             },
@@ -114,7 +107,6 @@
                 width:"*",
                 startRow:false,
                 endRow:false,
-                // labelAsTitle: true,
                 click (form) {
                     var advancedCriteriaStudentJspTrainingFile = {
                         _constructor: "AdvancedCriteria",
@@ -134,14 +126,12 @@
             {
                 name: "firstName",
                 title:"<spring:message code="firstName"/> ",
-                // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
             },
             {
                 name: "lastName",
                 title:"<spring:message code="lastName"/> ",
-                // textBoxStyle: "font-weight:bold; font-color:red;",
                 textAlign: "center",
                 width: "*"
             },
@@ -158,9 +148,9 @@
                 width:"*",
                 startRow:false,
                 endRow:false,
-                // labelAsTitle: true,
                 click (form, item) {
                     form.clearValues();
+                    ListGrid_TrainingFile_TrainingFileJSP.setData([]);
                 }
             },
         ],
@@ -173,13 +163,9 @@
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
-        // confirmDiscardEdits: false,
-        // allowFilterExpressions: true,
-        // allowAdvancedCriteria: true,
         dataSource: RestDataSource_Course_JspTrainingFile,
         filterOnKeypress: true,
         gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
-        canHover:true,
         fields:[
             {name: "tclass.course.titleFa", title:"<spring:message code='course.title'/>"},
             {name: "tclass.course.code", title:"<spring:message code='course.code'/>"},
@@ -196,98 +182,14 @@
             {name: "score", title:"<spring:message code='score'/>"},
             {name: "student.postTitle", title:"<spring:message code="post"/>"},
         ]
-        // optionDataSource: DataSource_SessionInOneDate,
-        // autoFetchData:true,
 
     });
     var VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        <%--border: "2px solid blue",--%>
         members: [
-            // DynamicForm_TrainingFile,
             ListGrid_TrainingFile_TrainingFileJSP
         ]
     });
 
-    function sessions_for_one_date(resp) {
-        for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-            DataSource_SessionInOneDate.addData(JSON.parse(resp.data)[i]);
-        }
-        <%--if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-        <%--resp.data--%>
-        <%--}--%>
-        <%--else {--%>
-        <%--isc.say("<spring:message code='error'/>");--%>
-        <%--}--%>
-    }
-
-    function loadPage_TrainingFile() {
-        // if(ListGrid_Class_JspClass.getSelectedRecord() === classGridRecordInTrainingFileJsp){
-        //     return;
-        // }
-        if(TrainingFileGrid.getAllEditRows().length>0){
-            createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
-            return;
-        }
-        if(classGridRecordInTrainingFileJsp == ListGrid_Class_JspClass.getSelectedRecord()){
-            ListGrid_TrainingFile_Refresh();
-            return;
-        }
-        classGridRecordInTrainingFileJsp = ListGrid_Class_JspClass.getSelectedRecord();
-        if (!(classGridRecordInTrainingFileJsp == null)) {
-            // DynamicForm_TrainingFile.setValue("sessionDate", "");
-            DynamicForm_TrainingFile.setValue("TrainingFileTitle", "کلاس " + classGridRecordInTrainingFileJsp.titleClass + " گروه " + classGridRecordInTrainingFileJsp.group);
-            DynamicForm_TrainingFile.setValue("sessionDate","");
-            DynamicForm_TrainingFile.redraw();
-            sessionInOneDate.length = 0;
-            sessionsForStudent.length = 0;
-            ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-        }
-        else{
-            DynamicForm_TrainingFile.setValue("TrainingFileTitle", "");
-            DynamicForm_TrainingFile.redraw();
-            sessionInOneDate.length = 0;
-            sessionsForStudent.length = 0;
-            ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-        }
-    }
-
-    function ListGrid_TrainingFile_Refresh(form = TrainingFileForm) {
-        let oldValue = form.getValue("sessionDate");
-        form.getItem("filterType").changed(form, form.getItem("filterType"), form.getValue("filterType"));
-        form.getItem("sessionDate").click(form, form.getItem("sessionDate"));
-        if(form.getValue("filterType") == 2) {
-            setTimeout(function () {
-                for (let i = 0; i < sessionDateData.allRows.length; i++) {
-                    if (sessionDateData.allRows[i].id == oldValue) {
-                        form.setValue("sessionDate", oldValue);
-                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
-                        return;
-                    }
-                }
-            }, 500)
-        }
-        else{
-            setTimeout(function () {
-                for (let i = 0; i < sessionDateData.allRows.length; i++) {
-                    if (sessionDateData.allRows[i].sessionDate == oldValue) {
-                        form.setValue("sessionDate", oldValue);
-                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
-                        return;
-                    }
-                }
-            }, 500)
-        }
-    }
-
-    // isc.confirm.addProperties({
-    //     buttonClick: function (button, index) {
-    //         this.close();
-    //         if (index === 1) {
-    //             console.log("save click shod")
-    //         }
-    //     }
-    // });
-
-    //</script>
+ //</script>

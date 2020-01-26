@@ -61,52 +61,89 @@
             {
                 name: "educationLevelId",
                 title: "<spring:message code='education.level'/>",
-                type: "selectItem",
                 textAlign: "center",
-                optionDataSource: RestDataSource_EducationLevel_JspAcademicBK,
-                valueField: "id",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
                 displayField: "titleFa",
-                filterFields: ["titleFa"],
+                valueField: "id",
                 required: true,
-                multiple: false,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
-                },
+                optionDataSource: RestDataSource_Education_Level_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
             },
+
             {
                 name: "educationMajorId",
                 title: "<spring:message code='education.major'/>",
-                type: "selectItem",
                 textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
                 required: true,
-                optionDataSource: RestDataSource_EducationMajor_JspAcademicBK,
-                valueField: "id",
+                changeOnKeypress: true,
                 displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Education_Major_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
-                multiple: false,
-                filterLocally: true,
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: true
                 },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
             },
+
             {
                 name: "educationOrientationId",
                 title: "<spring:message code='education.orientation'/>",
-                type: "selectItem",
                 textAlign: "center",
-                optionDataSource: RestDataSource_EducationOrientation_JspAcademicBK,
-                valueField: "id",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
                 displayField: "titleFa",
+                valueField: "id",
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
-                multiple: false,
-                filterLocally: true,
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: true
                 },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
             },
             {
                 name: "duration",
@@ -141,7 +178,23 @@
                     }
                 }]
             }
-        ]
+        ],
+        itemChanged: function (item, newValue) {
+            if (item.name === "educationLevelId" || item.name === "educationMajorId") {
+                var levelId =  DynamicForm_JspAcademicBK.getField("educationLevelId").getValue();
+                var majorId =  DynamicForm_JspAcademicBK.getField("educationMajorId").getValue();
+                if (newValue === undefined) {
+                    DynamicForm_JspAcademicBK.clearValue("educationOrientationId");
+                } else if (levelId !== undefined && majorId !== undefined) {
+                    DynamicForm_JspAcademicBK.clearValue("educationOrientationId");
+                    RestDataSource_EducationOrientation_JspAcademicBK.fetchDataURL = educationUrl +
+                        "orientation/spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
+                    DynamicForm_JspAcademicBK.getField("educationOrientationId").optionDataSource =
+                        RestDataSource_EducationOrientation_JspAcademicBK;
+                    DynamicForm_JspAcademicBK.getField("educationOrientationId").fetchData();
+                }
+            }
+        }
     });
 
     IButton_Save_JspAcademicBK = isc.TrSaveBtn.create({
@@ -334,6 +387,8 @@
         methodAcademicBK = "POST";
         saveActionUrlAcademicBK = academicBKUrl + "/" + teacherIdAcademicBK;
         DynamicForm_JspAcademicBK.clearValues();
+        DynamicForm_JspAcademicBK.getItem("educationOrientationId").setOptionDataSource(null);
+        DynamicForm_JspAcademicBK.clearValue("educationOrientationId");
         Window_JspAcademicBK.show();
     }
 
@@ -342,6 +397,20 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            DynamicForm_JspAcademicBK.getField("educationLevelId").fetchData();
+            DynamicForm_JspAcademicBK.getField("educationMajorId").fetchData();
+            var eduMajorValue = record.educationMajorId;
+            var eduOrientationValue = record.educationOrientationId;
+            var eduLevelValue = record.educationLevelId;
+            if (eduOrientationValue === undefined) {
+                DynamicForm_JspAcademicBK.clearValue("educationOrientationId");
+            }
+            if (eduMajorValue != undefined && eduLevelValue != undefined) {
+                RestDataSource_EducationOrientation_JspAcademicBK.fetchDataURL = educationUrl +
+                    "orientation/spec-list-by-levelId-and-majorId/" + eduLevelValue + ":" + eduMajorValue;
+                DynamicForm_JspAcademicBK.getField("educationOrientationId").optionDataSource = RestDataSource_EducationOrientation_JspAcademicBK;
+                DynamicForm_JspAcademicBK.getField("educationOrientationId").fetchData();
+            }
             methodAcademicBK = "PUT";
             saveActionUrlAcademicBK = academicBKUrl + "/" + record.id;
             DynamicForm_JspAcademicBK.clearValues();

@@ -8,9 +8,9 @@
   height: 100%;
 }
 
-.header-logo {
-  background-color: #fe9d2a;
-}
+//.header-logo {
+//  background-color: #fe9d2a;
+//}
 
 .header-logo-title {
   background-color: #dcdeea;
@@ -19,7 +19,7 @@
 }
 
 .header-exit {
-  background: url("../../../static/img/top-back.svg");
+ // background: url("../../../static/img/top-back.svg");
 }
 
 .header-filter span {
@@ -39,14 +39,12 @@
 .header-change-lng span {
   color: #374b71;
 }
-
-.header-label-username {
-  color: #374b71;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.toolStripButton {
+//.header-label-username{
+//  color:#374b71 ;
+//  font-size: 14px;
+//  font-weight: bold;
+//}
+.toolStripButton{
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.16);
 }
 
@@ -239,9 +237,8 @@ hr {
 }
 
 .main-menu div {
-  background-color: #153560;
-  border-color: #153560;
-
+  background-color: #324458;
+  border-color: #324458;
   .toolStripButton,
   .toolStripButtonFocused,
   .toolStripButtonFocusedOver,
@@ -633,15 +630,13 @@ $window_header_bgColor: #fe9d2a !default;
   font-size: $button_font_size;
   padding: 3px 4px 3px 4px;
   border-radius: 3px;
-  background-color: #15356012;
-  border: solid 1px #153560;
-
-  &:hover {
+  background-color: #374b71;
+  border: solid 1px #374b71;
+  &:hover{
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-
-  td {
-    color: #153560;
+  td{
+    color: #374b71;
     font-weight: bold;
   }
 }
@@ -896,7 +891,7 @@ $window_header_bgColor: #fe9d2a !default;
 .windowBackground,
 .dialogBackground {
   box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, .2) !important;
+  border: 1px solid rgba(0,0,0,.2) !important;
   border-radius: 6px;
   background-color: #fff;
   -webkit-background-clip: padding-box;

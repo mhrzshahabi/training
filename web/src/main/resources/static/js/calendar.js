@@ -406,7 +406,6 @@ window.onclick = function (event) {
         ||  event.target.className == 'datepicker_button datepicker_button__prev-year'
         ||  event.target.className == 'datepicker_button datepicker_button__next-month'
         ||  event.target.className == 'datepicker_button datepicker_button__prev-month'
-
     )) {
 
     } else if (document.getElementById(event.target.id) != null) {
