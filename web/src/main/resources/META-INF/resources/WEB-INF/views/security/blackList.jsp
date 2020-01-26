@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 // <script>
-    // ------------------------------------------- Rest Data Source -------------------------------------------
+    // ------------------------------------------- Rest Data Source ----------------------------------------------------
     var RestDataSource_Teacher_JspBlackList = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -15,8 +15,7 @@
         ],
         fetchDataURL: teacherUrl + "full-spec-list"
     });
-
-    // ------------------------------------------- Menu -------------------------------------------
+    // ------------------------------------------- Menu ----------------------------------------------------------------
     var Menu_ListGrid_JspBlackList = isc.Menu.create({
         width: 150,
         data: [{
@@ -27,10 +26,10 @@
             title: "<spring:message code='add.or.delete.blackList'/>", click: function () {
                 ListGrid_blackList_edit();
             }
-            }
+        }
         ]
     });
-    // ------------------------------------------- ListGrid -------------------------------------------
+    // ------------------------------------------- ListGrid ------------------------------------------------------------
     ListGrid_Teacher_JspBlackList = isc.TrLG.create({
         ID: "blackListLG_blackList",
         dataSource: RestDataSource_Teacher_JspBlackList,
@@ -81,8 +80,7 @@
             }
         }
     });
-
-    // ------------------------------------------- ToolStrip -------------------------------------------
+    // ------------------------------------------- ToolStrip -----------------------------------------------------------
     var ToolStripButton_Refresh_JspBlackList = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_blackList_refresh();
@@ -95,8 +93,7 @@
             ListGrid_blackList_edit();
         }
     });
-
-    // ------------------------------------------- Page UI -------------------------------------------
+    // ------------------------------------------- Page UI -------------------------------------------------------------
     var ToolStrip_Actions_JspBlackList = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -122,7 +119,7 @@
         ]
     });
 
-    //------------------------------------------ Functions --------------------------------------------
+    //------------------------------------------ Functions -------------------------------------------------------------
     function ListGrid_blackList_refresh() {
         ListGrid_Teacher_JspBlackList.invalidateCache();
     }
@@ -133,7 +130,6 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-
         if (record.inBlackList) {
             var Dialog_Remove_Ask = createDialog("ask", "<spring:message code='msg.remove.black.list'/>",
                 "<spring:message code='global.warning'/>");
