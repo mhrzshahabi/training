@@ -1111,24 +1111,6 @@
                 endRow: false,
                 selectionType : "none",
             },
-            {
-                name: "needText",
-                // titleOrientation: "top",
-                // title: "شرح\u200cمشکل /نیاز /درخواست",
-                title: "درخواست",
-                colSpan: 5,
-                rowSpan: 1,
-                readonly: true,
-                type: "textArea",
-                showHintInField: true,
-                hint: "شرح مشکل/نیاز/درخواست",
-                // height: "100",
-                width: "*",
-                length: "*",
-                required: false,
-                endRow: true,
-                wrapTitle: true
-            },
             {name: "id", hidden: true},
             {
                 colSpan: 5,
@@ -1155,18 +1137,6 @@
                     }
 
                 }
-            },
-            {
-                name: "titleEn",
-                title: "<spring:message code="course_en_name"/>",
-                colSpan: 5,
-                // length: "250",
-                // type: 'text',
-                // titleOrientation: "top",
-                keyPressFilter: "[a-z|A-Z|0-9|' ']",
-                // height: "30",
-                width: "*",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "evaluation",
@@ -1553,6 +1523,29 @@
                 changed: function (form, item, value) {
                     ChangeEtechnicalType = true;
                 },
+            },
+            {
+                name: "titleEn",
+                title: "<spring:message code="course_en_name"/>",
+                colSpan: 3,
+                keyPressFilter: "[a-z|A-Z|0-9|' ']",
+                width: "*",
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+            },
+            {
+                name: "needText",
+                title: "درخواست",
+                colSpan: 3,
+                rowSpan: 1,
+                readonly: true,
+                type: "textArea",
+                showHintInField: true,
+                hint: "شرح مشکل/نیاز/درخواست",
+                width: "*",
+                length: "*",
+                required: false,
+                endRow: true,
+                wrapTitle: true
             },
             {
                 name: "description",

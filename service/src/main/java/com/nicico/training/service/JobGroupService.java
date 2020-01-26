@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.nicico.training.service.BaseService.setCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class JobGroupService implements IJobGroupService {
@@ -131,7 +133,13 @@ public class JobGroupService implements IJobGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<JobGroupDTO.Info> search(SearchDTO.SearchRq request) {
-        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), JobGroup.class,SecurityUtil.getUserId()));
+        setCriteria(request, workGroupService.applyPermissions(JobGroup.class, SecurityUtil.getUserId()));
+        return SearchUtil.search(jobGroupDAO, request, jobGroup -> modelMapper.map(jobGroup, JobGroupDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<JobGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
         return SearchUtil.search(jobGroupDAO, request, jobGroup -> modelMapper.map(jobGroup, JobGroupDTO.Info.class));
     }
 

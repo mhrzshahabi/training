@@ -37,7 +37,14 @@
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
-<body dir="rtl">
+<c:choose>
+<c:when test="${pageContext.response.locale == 'fa'}">
+<body class="rtl" dir="rtl">
+</c:when>
+<c:otherwise>
+<body class="ltr" dir="ltr">
+</c:otherwise>
+</c:choose>
 <script type="application/javascript">
     // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
@@ -273,21 +280,21 @@
 
     // -------------------------------------------  Page UI - Header  -----------------------------------------------
     var headerLogo = isc.HTMLFlow.create({
-        width: "50",
+        width: 350,
         height: "100%",
         styleName: "header-logo",
-        contents: "<img width='50' height='50' src='images/nicicoBlack.png'/>"
+        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/></h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
     });
 
-    var headerFlow = isc.HTMLFlow.create({
-        width: "10%",
-        height: "100%",
-        styleName: "mainHeaderStyleOnline header-logo-title",
-        contents: "<span><spring:message code="training.system.version"/></span>"
-    });
+    <%--var headerFlow = isc.HTMLFlow.create({--%>
+        <%--width: "10%",--%>
+        <%--height: "100%",--%>
+        <%--styleName: "mainHeaderStyleOnline header-logo-title",--%>
+        <%--contents: "<span><spring:message code="training.system.version"/></span>"--%>
+    <%--});--%>
 
     var label_Username = isc.Label.create({
-        width: "10%",
+        width: 200,
         dynamicContents: true,
         styleName: "header-label-username",
         contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,
@@ -348,10 +355,30 @@
         members: [languageForm]
     });
 
+    var toggleSwitch = isc.HTMLFlow.create({
+        width: 32,
+        height: "100%",
+        align: "center",
+        styleName: "toggle-switch",
+        contents: "<label class=\"switch-btn\">\n" +
+            "  <input type=\"checkbox\" onchange='onToggleClick(event)'>\n" +
+            "  <span class=\"slider round\"></span>\n" +
+            "</label>"
+    });
+
+    var languageAndToggleHLayout = isc.HLayout.create({
+        width: "5%",
+        align: "center",
+        defaultLayoutAlign: "left",
+        members: [toggleSwitch,languageVLayout]
+    });
+
+
+
     logoutButton = isc.IButton.create({
         width: "100",
         baseStyle: "header-logout",
-        title: "<spring:message code="logout"/>",
+        title: "<span><spring:message code="logout"/></span>",
         icon: "<spring:url value="/images/logout.png"/>",
         click: function () {
             logout();
@@ -361,6 +388,7 @@
     var logoutVLayout = isc.VLayout.create({
         width: "5%",
         align: "center",
+        styleName: "header-logout-Vlayout",
         defaultLayoutAlign: "left",
         members: [logoutButton]
     });
@@ -769,19 +797,20 @@
     // -------------------------------------------  Page UI -----------------------------------------------
 
     var headerExitHLayout = isc.HLayout.create({
-        width: "60%",
+        width: "80%",
         height: "100%",
         align: "center",
         styleName: "header-exit",
-        members: [isc.LayoutSpacer.create({width: "80%"}), userNameHLayout, languageVLayout, logoutVLayout]
+        members: [isc.LayoutSpacer.create({width: "80%"}), userNameHLayout, languageAndToggleHLayout, logoutVLayout]
     });
 
     var headerLayout = isc.HLayout.create({
         width: "100%",
-        minWidth: 1024,
-        height: "52",
-        styleName: "header",
-        members: [headerLogo, headerFlow, headerExitHLayout],
+        height: 50,
+        styleName: "header-top",
+        members: [headerLogo,
+           // headerFlow,
+            headerExitHLayout],
     });
 
     var MainDesktopMenuH = isc.HLayout.create({
@@ -805,6 +834,55 @@
             trainingTabSet,
         ]
     });
+
+
+    var checked = null;
+    function onToggleClick (e){
+        checked = e.target.checked;
+        if(checked)
+        {
+
+            headerLayout.setStyleName('header-top toggle-hide')
+            MainDesktopMenuH.setStyleName('main-menu toggle-hide')
+            headerLayout.setVisibility(false);
+            MainDesktopMenuH.setVisibility(false);
+
+
+        }else {
+            headerLayout.setStyleName('header-top toggle-show')
+            MainDesktopMenuH.setStyleName('main-menu toggle-show')
+            headerLayout.setVisibility(true);
+            MainDesktopMenuH.setVisibility(true);
+        }
+        console.log(checked)
+    }
+
+    document.addEventListener("mousemove", function(event){
+        console.log(event.clientY)
+        if(event.clientY <= 2)
+        {
+            headerLayout.setStyleName('header-top toggle-show')
+            MainDesktopMenuH.setStyleName('main-menu toggle-show')
+            headerLayout.setVisibility(true);
+            MainDesktopMenuH.setVisibility(true);
+
+        }else  if(event.clientY > 100){
+            if(checked){
+                headerLayout.setStyleName('header-top toggle-hide')
+                MainDesktopMenuH.setStyleName('main-menu toggle-hide')
+                headerLayout.setVisibility(false);
+                MainDesktopMenuH.setVisibility(false);
+            }else{
+                headerLayout.setStyleName('header-top toggle-show')
+                MainDesktopMenuH.setStyleName('main-menu toggle-show')
+                headerLayout.setVisibility(true);
+                MainDesktopMenuH.setVisibility(true);
+            }
+
+        }
+    });
+
+
 
     // -------------------------------------------  Functions  -----------------------------------------------
     function logout() {

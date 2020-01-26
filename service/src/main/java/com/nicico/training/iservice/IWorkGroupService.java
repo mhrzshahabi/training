@@ -27,8 +27,11 @@ public interface IWorkGroupService {
     SearchDTO.SearchRs<WorkGroupDTO.Info> search(SearchDTO.SearchRq request);
 
 
+    SearchDTO.CriteriaRq getUnassignedRecordsCriteria(String entityName);
+
+
     List<PermissionDTO.PermissionFormData> getEntityAttributesList(List<String> entityList);
 
 
-    SearchDTO.CriteriaRq applyPermissions(SearchDTO.CriteriaRq criteriaRq, Class entity, Long userId);
+    SearchDTO.CriteriaRq applyPermissions(Class entity, Long userId);
 }

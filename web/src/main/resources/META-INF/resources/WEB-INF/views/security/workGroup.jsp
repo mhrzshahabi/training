@@ -75,6 +75,70 @@
         fetchDataURL: workGroupUrl + "/iscList"
     });
 
+    UnassignedPostDS_JspWorkGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "job.titleFa",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postGrade.titleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "assistance",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "affairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "costCenterCode",
+                title: "<spring:message code="reward.cost.center.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "costCenterTitleFa",
+                title: "<spring:message code="reward.cost.center.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+
+        ],
+        fetchDataURL: postUrl + "/unassigned-iscList"
+    });
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Permissions*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -356,7 +420,7 @@
             ListGrid_WorkGroup_Edit();
         }
     });
-    ToolStripButton_Add_JspWorkGroup = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspWorkGroup = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_WorkGroup_Add();
         }
@@ -393,12 +457,88 @@
             ]
     });
 
+    //--------------------------------------------------------------------------------------------------------------------//
+    //*Unassigned*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    Menu_Unassigned_JspWorkGroup = isc.Menu.create({
+        data: [{
+            title: "<spring:message code='refresh'/>", click: function () {
+                refreshLG(ListGrid_Unassigned_JspWorkGroup);
+            }
+        }]
+    });
+
+    ListGrid_Unassigned_JspWorkGroup = isc.TrLG.create({
+        dataSource: UnassignedPostDS_JspWorkGroup,
+        fields: [
+            {name: "code",},
+            {name: "titleFa",},
+            {name: "job.titleFa",},
+            {name: "postGrade.titleFa",},
+            {name: "area",},
+            {name: "assistance",},
+            {name: "affairs",},
+            {name: "section",},
+            {name: "unit",},
+            {name: "costCenterCode",},
+            {name: "costCenterTitleFa",},
+        ],
+        autoFetchData: true,
+        contextMenu: Menu_Unassigned_JspWorkGroup,
+        allowAdvancedCriteria: true,
+        sortField: 0
+    });
+
+
+    // ToolStrip_Unassigned_JspWorkGroup = isc.ToolStrip.create({
+    //     width: "100%",
+    //     membersMargin: 5,
+    //     members:
+    //         [
+    //             isc.ToolStrip.create({
+    //                 width: "100%",
+    //                 align: "left",
+    //                 border: '0px',
+    //                 members: [
+    //                     isc.ToolStripButtonRefresh.create({
+    //                         click: function () {
+    //                             refreshLG(ListGrid_Unassigned_JspWorkGroup);
+    //                         }
+    //                     })
+    //                 ]
+    //             })
+    //         ]
+    // });
+
+    VLayout_Unassigned_JspWorkGroup = isc.TrVLayout.create({
+        members: [
+            // ToolStrip_Unassigned_JspWorkGroup,
+            ListGrid_Unassigned_JspWorkGroup,
+        ]
+    });
+
+    TabSet_Unassigned_JspWorkGroup = isc.TabSet.create({
+        height: "50%",
+        tabBarPosition: "top",
+        tabs: [
+            {
+                title: "پست های بدون گروه کاری",
+                pane: VLayout_Unassigned_JspWorkGroup
+
+            }
+        ]
+    });
+
     VLayout_Body_JspWorkGroup = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_JspWorkGroup,
-            ListGrid_JspWorkGroup
+            ListGrid_JspWorkGroup,
+            TabSet_Unassigned_JspWorkGroup
         ]
     });
+
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*functions*/

@@ -16,6 +16,8 @@ public interface IJobService {
 
     SearchDTO.SearchRs<JobDTO.Info> search(SearchDTO.SearchRq rq);
 
+    SearchDTO.SearchRs<JobDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
     TotalResponse<JobDTO.Info> search(NICICOCriteria request);
 
 }

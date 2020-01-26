@@ -16,7 +16,11 @@ import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Getter
 @Setter
@@ -35,7 +39,7 @@ public class ISC<T> {
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
         String sortBy = rq.getParameter("_sortBy");
-        String criteria = rq.getParameter("criteria");
+        String criteriaList = rq.getParameter("criteria");
         String operator = rq.getParameter("operator");
 
         Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
@@ -51,10 +55,10 @@ public class ISC<T> {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
+                criteriaList = "[" + criteriaList + "]";
             SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    .setCriteria(objectMapper.readValue(criteriaList, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
             searchRq.setCriteria(criteriaRq);
         }

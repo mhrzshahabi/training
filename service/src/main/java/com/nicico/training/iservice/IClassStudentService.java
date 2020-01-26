@@ -30,4 +30,6 @@ public interface IClassStudentService {
 
     int setStudentFormIssuance(Map<String, Integer> formIssuance);
 
+
+    void setTotalStudentWithOutScore(Long classId);
 }

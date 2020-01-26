@@ -56,4 +56,24 @@ public class EvaluationFormController {
             return null;
     }
 
+    @RequestMapping("/reaction-form")
+    public String loadPageReaction() {
+        return "evaluation/reaction";
+    }
+
+    @RequestMapping("/learning-form")
+    public String loadPageLearning() {
+        return "evaluation/learning";
+    }
+
+    @RequestMapping("/behavioral-form")
+    public String loadPageBehavioral() {
+        return "evaluation/behavioral";
+    }
+
+    @RequestMapping("/results-form")
+    public String loadPageResults() {
+        return "evaluation/results";
+    }
+
 }

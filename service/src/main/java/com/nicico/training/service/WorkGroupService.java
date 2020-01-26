@@ -21,10 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +58,7 @@ public class WorkGroupService implements IWorkGroupService {
         WorkGroup updating = new WorkGroup();
         modelMapper.map(workGroup, updating);
         modelMapper.map(request, updating);
+        updating.setUserIds(request.getUserIds());
         try {
             return modelMapper.map(workGroupDAO.saveAndFlush(updating), WorkGroupDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -169,7 +168,24 @@ public class WorkGroupService implements IWorkGroupService {
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.CriteriaRq applyPermissions(SearchDTO.CriteriaRq criteriaRq, Class entity, Long userId) {
+    public SearchDTO.CriteriaRq getUnassignedRecordsCriteria(String entityName) {
+        List<Permission> permissions = permissionDAO.findByEntityName(entityName);
+        SearchDTO.CriteriaRq rq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        if (permissions.size() == 0)
+            return rq;
+        List<List<Permission>> pGroupByWorkGroup = new ArrayList<>(permissions.stream().collect(Collectors.groupingBy(Permission::getWorkGroupId)).values());
+        pGroupByWorkGroup.forEach(pForOneWG -> {
+            SearchDTO.CriteriaRq criteriaRqs = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
+            pForOneWG.forEach(permission -> permissionToCriteria(criteriaRqs, permission, EOperator.notEqual));
+            if (criteriaRqs.getCriteria().size() > 0)
+                rq.getCriteria().add(criteriaRqs);
+        });
+        return rq;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.CriteriaRq applyPermissions(Class entity, Long userId) {
         String query = "SELECT F_WORK_GROUP FROM TBL_WORK_GROUP_USER_IDS WHERE USER_IDS = " + userId;
         List<Long> workGroupIds = modelMapper.map(entityManager.createNativeQuery(query).getResultList(), new TypeToken<List<Long>>() {
         }.getType());
@@ -177,28 +193,26 @@ public class WorkGroupService implements IWorkGroupService {
         for (Long workGroupId : workGroupIds) {
             SearchDTO.CriteriaRq criteriaRqs = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             List<Permission> permissions = permissionDAO.findByEntityNameAndWorkGroupId(entity.getName(), workGroupId);
-            for (Permission permission : permissions) {
-                try {
-                    Class<?> attributeType = Class.forName(permission.getAttributeType());
-                    List values = new ArrayList();
-                    for (String value : permission.getAttributeValues()) {
-                        values.add(attributeType.cast(value));
-                    }
-                    criteriaRqs.getCriteria().add(makeNewCriteria(permission.getAttributeName(), values, EOperator.equals, null));
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            rq.getCriteria().add(criteriaRqs);
+            permissions.forEach(permission -> permissionToCriteria(criteriaRqs, permission, EOperator.equals));
+            if (criteriaRqs.getCriteria().size() > 0)
+                rq.getCriteria().add(criteriaRqs);
         }
-        if (criteriaRq == null)
-            return rq;
-        SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        criteriaRq1.getCriteria().add(criteriaRq);
-        criteriaRq1.getCriteria().add(rq);
-        criteriaRq1.setStart(criteriaRq.getStart());
-        criteriaRq1.setEnd(criteriaRq.getEnd());
-        return criteriaRq1;
+        if (rq.getCriteria().size() == 0)
+            rq.getCriteria().add(makeNewCriteria("id", 0L, EOperator.equals, null));
+        return rq;
+    }
+
+    private void permissionToCriteria(SearchDTO.CriteriaRq criteriaRqs, Permission permission, EOperator operator) {
+        try {
+            Class<?> attributeType = Class.forName(permission.getAttributeType());
+            List values = new ArrayList();
+            for (String value : permission.getAttributeValues()) {
+                values.add(attributeType.cast(value));
+            }
+            criteriaRqs.getCriteria().add(makeNewCriteria(permission.getAttributeName(), values, operator, null));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {

@@ -39,6 +39,8 @@ public interface IPostGroupService {
 
     SearchDTO.SearchRs<PostGroupDTO.Info> search(SearchDTO.SearchRq request);
 
+    SearchDTO.SearchRs<PostGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
     List<CompetenceDTOOld.Info> getCompetence(Long postGroupID);
 
     List<PostDTO.Info> getPosts(Long postGroupID);
