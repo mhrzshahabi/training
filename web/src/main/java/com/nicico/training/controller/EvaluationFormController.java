@@ -26,7 +26,7 @@ public class EvaluationFormController {
 
     @PostMapping("/printWithCriteria/{type}/{classId}/{courseId}/{studentId}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId, @PathVariable Long courseId, @PathVariable Long studentId) {
-        //String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
+
         String token = request.getParameter("myToken");
 
         final RestTemplate restTemplate = new RestTemplate();
