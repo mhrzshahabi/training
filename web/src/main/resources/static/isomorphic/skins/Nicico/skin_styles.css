@@ -280,6 +280,11 @@ ul {
   padding: 5px;
 }
 
+.canvasHover
+{
+  position: fixed;
+}
+
 /* group label */
 .groupLabel {
   background-color: #fafafa;
@@ -7329,7 +7334,7 @@ some LG header-titles to be vertically offset from other headers */
 .toolStripButtonSelectedDownOpened,
 .toolStripButtonSelectedOverOpened {
   background-color: transparent;
-  border: 1px solid none;
+  border: 1px solid  none;
 }
 
 .toolStripButtonDown,
@@ -9921,7 +9926,7 @@ hr {
   background-position: 0px 0px;
   background: url(./images/pickers/down.png) no-repeat;
   position: absolute;
-  left: 10;
+  left: 10px;
 }
 
 .toolStrip {
