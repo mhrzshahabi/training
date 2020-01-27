@@ -36,6 +36,7 @@
         contextMenu: Menu_ListGrid_JspBlackList,
         sortField: 1,
         sortDirection: "descending",
+        filterOnKeypress: true,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
@@ -74,9 +75,15 @@
             }
         ],
         autoFetchData: true,
+        rowDoubleClick: function () {
+            ListGrid_blackList_edit();
+        },
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.inBlackList) {
                 return "color:red;font-size: 12px;";
+            }
+            if (!record.inBlackList) {
+                return "color:green;font-size: 12px;";
             }
         }
     });
@@ -98,8 +105,15 @@
         width: "100%",
         membersMargin: 5,
         members: [
-            ToolStripButton_Refresh_JspBlackList,
-            ToolStripButton_Edit_JspBlackList
+            ToolStripButton_Edit_JspBlackList,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_JspBlackList
+                ]
+            })
         ]
     });
 
@@ -121,6 +135,8 @@
 
     //------------------------------------------ Functions -------------------------------------------------------------
     function ListGrid_blackList_refresh() {
+        ListGrid_Teacher_JspBlackList.invalidateCache();
+        ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspBlackList.invalidateCache();
     }
 
