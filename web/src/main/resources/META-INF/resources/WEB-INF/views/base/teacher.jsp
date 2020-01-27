@@ -176,6 +176,7 @@
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
         cellHeight: 43,
         filterOperator: "iContains",
+        filterOnKeypress: true,
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
@@ -292,7 +293,6 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
@@ -760,6 +760,7 @@
     //-------------------------------------------------Functions--------------------------------------------------------
     function ListGrid_teacher_refresh() {
         // refreshSelectedTab_teacher(null);
+        ListGrid_Teacher_JspBlackList.invalidateCache();
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
     }
