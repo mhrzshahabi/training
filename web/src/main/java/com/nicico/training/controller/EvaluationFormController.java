@@ -24,9 +24,11 @@ public class EvaluationFormController {
         return "base/evaluation";
     }
 
-    @PostMapping("/printWithCriteria/{type}/{classId}/{courseId}/{studentId}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId, @PathVariable Long courseId, @PathVariable Long studentId) {
-        //String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
+    @PostMapping("/printWithCriteria/{type}/{classId}/{courseId}/{studentId}/{evaluationType}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type,
+                                               @PathVariable Long classId, @PathVariable Long courseId,
+                                               @PathVariable Long studentId, @PathVariable String evaluationType) {
+
         String token = request.getParameter("myToken");
 
         final RestTemplate restTemplate = new RestTemplate();
@@ -45,13 +47,33 @@ public class EvaluationFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
         if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/evaluation/PDF/" + classId + "/" + courseId + "/" + studentId, HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/evaluation/PDF/" + classId + "/" + courseId + "/" + studentId + "/" + evaluationType, HttpMethod.POST, entity, byte[].class);
         else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
         else if (type.equals("html"))
             return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
         else
             return null;
+    }
+
+    @RequestMapping("/reaction-form")
+    public String loadPageReaction() {
+        return "evaluation/reaction";
+    }
+
+    @RequestMapping("/learning-form")
+    public String loadPageLearning() {
+        return "evaluation/learning";
+    }
+
+    @RequestMapping("/behavioral-form")
+    public String loadPageBehavioral() {
+        return "evaluation/behavioral";
+    }
+
+    @RequestMapping("/results-form")
+    public String loadPageResults() {
+        return "evaluation/results";
     }
 
 }

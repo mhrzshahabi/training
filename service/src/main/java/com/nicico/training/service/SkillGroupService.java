@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.nicico.training.service.BaseService.setCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class SkillGroupService implements ISkillGroupService {
@@ -132,7 +134,13 @@ public class SkillGroupService implements ISkillGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<SkillGroupDTO.Info> search(SearchDTO.SearchRq request) {
-        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), SkillGroup.class, SecurityUtil.getUserId()));
+        setCriteria(request, workGroupService.applyPermissions(SkillGroup.class, SecurityUtil.getUserId()));
+        return SearchUtil.search(skillGroupDAO, request, skillGroup -> modelMapper.map(skillGroup, SkillGroupDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<SkillGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
         return SearchUtil.search(skillGroupDAO, request, skillGroup -> modelMapper.map(skillGroup, SkillGroupDTO.Info.class));
     }
 

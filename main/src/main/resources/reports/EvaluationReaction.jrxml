@@ -131,6 +131,9 @@
 		</queryString>
 		<field name="question" class="java.lang.String"/>
 		<field name="domain.title" class="java.lang.String"/>
+		<variable name="Row_Number" class="java.lang.Integer">
+			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="courseCode" class="java.lang.Obj"/>
@@ -138,6 +141,7 @@
 	<parameter name="classCode" class="java.lang.String"/>
 	<parameter name="startDate" class="java.lang.String"/>
 	<parameter name="endDate" class="java.lang.String"/>
+	<parameter name="evaluationType" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -155,11 +159,11 @@
 				<text><![CDATA[شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروي انساني]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="105" y="34" width="350" height="20" uuid="4a348648-d2de-4840-8ee6-615d6cfbbc62"/>
+				<reportElement x="177" y="34" width="200" height="20" uuid="4a348648-d2de-4840-8ee6-615d6cfbbc62"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[فرم ارزيابي اثر بخشي دوره هاي آموزشي (واكنشي)]]></text>
+				<text><![CDATA[فرم ارزيابي اثر بخشي دوره هاي آموزشي]]></text>
 			</staticText>
 			<image>
 				<reportElement key="" x="490" y="10" width="60" height="60" uuid="ffa3f1b9-1c2b-41e1-96b5-9dd00655c46f"/>
@@ -269,6 +273,13 @@
 				</textElement>
 				<text><![CDATA[2 - مشخصات فراگیر]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="95" y="34" width="82" height="20" uuid="5bd25507-2769-492c-a8c8-e72fe3e0af4c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{evaluationType}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -414,7 +425,7 @@
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="" x="4" y="99" width="547" height="61" isPrintWhenDetailOverflows="true" uuid="1123f072-7838-4ed9-8ba3-0a791cffe917">
+				<reportElement key="" x="4" y="99" width="547" height="56" isPrintWhenDetailOverflows="true" uuid="1123f072-7838-4ed9-8ba3-0a791cffe917">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -435,10 +446,10 @@
 								<text><![CDATA[خیلی ضعیف]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="26">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<rectangle>
-								<reportElement x="20" y="10" width="11" height="11" uuid="37241f08-3844-4a04-8ccb-48932bd88385"/>
+								<reportElement x="20" y="8" width="11" height="11" uuid="37241f08-3844-4a04-8ccb-48932bd88385"/>
 							</rectangle>
 						</jr:detailCell>
 					</jr:column>
@@ -453,10 +464,10 @@
 								<text><![CDATA[ضعیف]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="26">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<rectangle>
-								<reportElement x="15" y="10" width="11" height="11" uuid="594fe708-b9a8-4676-a9ea-5bb8f3c4695c"/>
+								<reportElement x="15" y="8" width="11" height="11" uuid="594fe708-b9a8-4676-a9ea-5bb8f3c4695c"/>
 							</rectangle>
 						</jr:detailCell>
 					</jr:column>
@@ -471,10 +482,10 @@
 								<text><![CDATA[متوسط]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="26">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<rectangle>
-								<reportElement x="15" y="10" width="11" height="11" uuid="551797f9-b5f8-4ed9-bf09-f6d2c294d023"/>
+								<reportElement x="15" y="8" width="11" height="11" uuid="551797f9-b5f8-4ed9-bf09-f6d2c294d023"/>
 							</rectangle>
 						</jr:detailCell>
 					</jr:column>
@@ -489,10 +500,10 @@
 								<text><![CDATA[خوب]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="26">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<rectangle>
-								<reportElement x="15" y="10" width="11" height="11" uuid="c83f348f-7836-408b-ad8b-6d2b2981661e"/>
+								<reportElement x="15" y="8" width="11" height="11" uuid="c83f348f-7836-408b-ad8b-6d2b2981661e"/>
 							</rectangle>
 						</jr:detailCell>
 					</jr:column>
@@ -507,27 +518,27 @@
 								<text><![CDATA[خیلی خوب]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="26">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<rectangle>
-								<reportElement x="20" y="10" width="11" height="11" uuid="f1874fab-78ff-4cb7-8cee-b6347db9c701"/>
+								<reportElement x="20" y="8" width="11" height="11" uuid="f1874fab-78ff-4cb7-8cee-b6347db9c701"/>
 							</rectangle>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="280" uuid="4ec41991-bfd0-4b51-bfd4-74a26583bf8c">
+					<jr:column width="250" uuid="4ec41991-bfd0-4b51-bfd4-74a26583bf8c">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="280" height="30" uuid="27661c39-4cf0-4c67-a654-d921a4f44464"/>
+								<reportElement x="0" y="0" width="250" height="30" uuid="27661c39-4cf0-4c67-a654-d921a4f44464"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="B Nazanin" size="11"/>
 								</textElement>
 								<text><![CDATA[سوالات]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="26">
 							<textField>
-								<reportElement x="0" y="0" width="280" height="30" uuid="8d239c99-2dcc-4f10-b0a4-bd0169ec7ec6"/>
+								<reportElement x="0" y="0" width="250" height="26" uuid="8d239c99-2dcc-4f10-b0a4-bd0169ec7ec6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="B Nazanin"/>
 								</textElement>
@@ -546,13 +557,34 @@
 								<text><![CDATA[نوع]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="26">
 							<textField>
-								<reportElement x="0" y="0" width="47" height="30" uuid="7eb36f98-b5a6-44a5-9a68-9a60687dbd30"/>
+								<reportElement x="0" y="0" width="47" height="26" uuid="7eb36f98-b5a6-44a5-9a68-9a60687dbd30"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="B Nazanin"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{domain.title}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="30" uuid="94f6c191-884a-4430-bbf2-914ec01713d3">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="30" height="30" uuid="acd061c3-17c0-4966-82af-b8da0e93b3ca"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin" size="11"/>
+								</textElement>
+								<text><![CDATA[ردیف]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="26">
+							<textField>
+								<reportElement x="0" y="0" width="30" height="26" uuid="97967975-236d-4117-b19d-11df0df2672d"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{Row_Number}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -567,4 +599,29 @@
 			</staticText>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="57">
+			<textField>
+				<reportElement x="7" y="20" width="23" height="17" uuid="4ecbeffd-bc2a-47d5-9b62-a91bf4dfc4da"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="39" y="20" width="23" height="17" uuid="8661113b-b115-4bc8-8e4f-9454f959dc94"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="31" y="20" width="7" height="17" uuid="f06902d6-b447-4171-8e25-bb6b066258f3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[/]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
 </jasperReport>

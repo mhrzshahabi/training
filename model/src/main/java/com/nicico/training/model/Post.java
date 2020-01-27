@@ -43,7 +43,6 @@ public class Post extends Auditable {
     @ManyToMany(mappedBy = "postSet")
     private Set<PostGroup> postGroupSet;
 
-
     @Column(name = "c_area")
     private String area;
 

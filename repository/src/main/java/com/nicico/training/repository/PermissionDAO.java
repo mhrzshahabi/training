@@ -23,4 +23,8 @@ public interface PermissionDAO extends JpaRepository<Permission, Long>, JpaSpeci
     List<Permission> findByEntityNameAndWorkGroupId(
             @Param("entityName") String entityName,
             @Param("workGroupId") Long workGroupId);
+
+    @Transactional
+    List<Permission> findByEntityName(
+            @Param("entityName") String entityName);
 }

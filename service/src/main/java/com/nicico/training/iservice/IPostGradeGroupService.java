@@ -23,6 +23,8 @@ public interface IPostGradeGroupService {
 
     SearchDTO.SearchRs<PostGradeGroupDTO.Info> search(SearchDTO.SearchRq request);
 
+    SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
     List<PostGradeDTO.Info> getPostGrades(Long postGradeGroupID);
 
     void addPostGrades(Long postGradeGroupId, Set<Long> postGradeIds);

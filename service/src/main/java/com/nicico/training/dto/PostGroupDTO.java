@@ -40,6 +40,7 @@ public class PostGroupDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+        private Set<PostDTO.Info> postSet;
 //        private Integer version;
     }
 

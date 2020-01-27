@@ -7,14 +7,15 @@ import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.model.enums.EEnabled;
 import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuestion, Long, QuestionnaireQuestionDTO.Info, QuestionnaireQuestionDTO.Create, QuestionnaireQuestionDTO.Update, QuestionnaireQuestionDTO.Delete, QuestionnaireQuestionDAO> {
 
     @Autowired
@@ -37,6 +38,18 @@ public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuest
             throw new TrainingException(TrainingException.ErrorType.QuestionnaireNotFound);
         }
     }
+
+//    @Override
+//    @Transactional
+//    public List<QuestionnaireQuestionDTO.Info> getByEvaluationTeacherQuestions(Long postId) {
+//
+//        List<QuestionnaireQuestion> questionnaireQuestions = null;
+//        questionnaireQuestions = questionnaireQuestionDAO.findByEvaluationQuestionDomainAndEEnabled(53 , 1);
+//
+//        return modelMapper.map(questionnaireQuestions, new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {
+//        }.getType());
+//
+//    }
 
     public List<QuestionnaireQuestion> getEvaluationQuestion(Long domainId) {
         return questionnaireQuestionDAO.findQuestionnaireQuestionByQuestionnaireVersionAndEvaluationQuestionDomainId(0, domainId);

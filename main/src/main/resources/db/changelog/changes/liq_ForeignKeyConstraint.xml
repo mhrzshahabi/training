@@ -564,4 +564,7 @@
     <changeSet author="poursalehi_mos (generated)" id="1579508164724-228">
         <addForeignKeyConstraint baseColumnNames="f_work_group" baseTableName="tbl_work_group_user_ids" constraintName="FKcc63onsg0qfmph11tldwvgge0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_work_group" validate="true"/>
     </changeSet>
+     <changeSet author="heydaripoor (generated)" id="1580052507513-232">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value" baseTableName="tbl_questionnaire" constraintName="FKh78x3l8we7i7mp5ah8e7mbi9p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

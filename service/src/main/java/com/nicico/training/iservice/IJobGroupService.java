@@ -48,6 +48,8 @@ public interface IJobGroupService {
 
     SearchDTO.SearchRs<JobGroupDTO.Info> search(SearchDTO.SearchRq request);
 
+    SearchDTO.SearchRs<JobGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
     List<CompetenceDTOOld.Info> getCompetence(Long jobGroupID);
 
     List<JobDTO.Info> getJobs(Long jobGroupID);

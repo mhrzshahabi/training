@@ -45,6 +45,8 @@ public interface ISkillGroupService {
 
     SearchDTO.SearchRs<SkillGroupDTO.Info> search(SearchDTO.SearchRq request);
 
+    SearchDTO.SearchRs<SkillGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
     List<CompetenceDTOOld.Info> getCompetence(Long skillGroupID);
 
     List<JobDTO.Info> getJobs(Long skillGroupID);

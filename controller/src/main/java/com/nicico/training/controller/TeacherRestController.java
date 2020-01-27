@@ -53,26 +53,26 @@ public class TeacherRestController {
     private final IPublicationService publicationService;
     private final IForeignLangKnowledgeService foreignLangService;
 
-    private double evaluationGrade = 0.0;
+    private float evaluationGrade = 0;
     private boolean pass = false;
     private String pass_status = "";
-    private double table_1_grade = 0.0;
-    private double table_1_license = 0.0;
-    private double table_1_work = 0.0;
-    private double table_1_related_training = 0.0;
-    private double table_1_unRelated_training = 0.0;
-    private double table_1_courses = 0.0;
-    private double table_1_years = 0.0;
-    private double table_1_related_training_hours = 0.0;
-    private double table_1_unRelated_training_hours = 0.0;
-    private double table_2_grade = 0.0;
-    private double table_3_grade = 0.0;
-    private double table_3_count_book = 0.0;
-    private double table_3_count_project = 0.0;
-    private double table_3_count_article = 0.0;
-    private double table_3_count_translation = 0.0;
-    private double table_3_count_note = 0.0;
-    private double table_4_grade = 0.0;
+    private float table_1_grade = 0;
+    private float table_1_license = 0;
+    private float table_1_work = 0;
+    private float table_1_related_training = 0;
+    private float table_1_unRelated_training = 0;
+    private float table_1_courses = 0;
+    private float table_1_years = 0;
+    private float table_1_related_training_hours = 0;
+    private float table_1_unRelated_training_hours = 0;
+    private float table_2_grade = 0;
+    private float table_3_grade = 0;
+    private float table_3_count_book = 0;
+    private float table_3_count_project = 0;
+    private float table_3_count_article = 0;
+    private float table_3_count_translation = 0;
+    private float table_3_count_note = 0;
+    private float table_4_grade = 0;
 
     // ------------------------------
 
@@ -570,28 +570,28 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
-    public ResponseEntity<Double> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
+    public ResponseEntity<Float> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
 
-        evaluationGrade = 0.0;
+        evaluationGrade = 0;
         pass = false;
         pass_status = "";
-        table_1_grade = 0.0;
-        table_1_license = 0.0;
-        table_1_work = 0.0;
-        table_1_related_training = 0.0;
-        table_1_unRelated_training = 0.0;
-        table_1_courses = 0.0;
-        table_1_years = 0.0;
-        table_1_related_training_hours = 0.0;
-        table_1_unRelated_training_hours = 0.0;
-        table_2_grade = 0.0;
-        table_3_grade = 0.0;
-        table_3_count_book = 0.0;
-        table_3_count_project = 0.0;
-        table_3_count_article = 0.0;
-        table_3_count_translation = 0.0;
-        table_3_count_note = 0.0;
-        table_4_grade = 0.0;
+        table_1_grade = 0;
+        table_1_license = 0;
+        table_1_work = 0;
+        table_1_related_training = 0;
+        table_1_unRelated_training = 0;
+        table_1_courses = 0;
+        table_1_years = 0;
+        table_1_related_training_hours = 0;
+        table_1_unRelated_training_hours = 0;
+        table_2_grade = 0;
+        table_3_grade = 0;
+        table_3_count_book = 0;
+        table_3_count_project = 0;
+        table_3_count_article = 0;
+        table_3_count_translation = 0;
+        table_3_count_note = 0;
+        table_4_grade = 0;
 
         Long CatId = null;
         Long SubCatId = null;
@@ -658,7 +658,8 @@ public class TeacherRestController {
         }
         if(table_1_work > 10)
             table_1_work = 10;
-        table_1_work = ((teacher_educationLevel-1)*0.2 + 0.6)*table_1_work;
+        Double table_1_work_double = ((teacher_educationLevel-1)*0.2 + 0.6)*table_1_work;
+        table_1_work = table_1_work_double.floatValue();
         //table 1 - row 3 & 4
         SearchDTO.SearchRq searchRq_teachingHistories = new SearchDTO.SearchRq();
         SearchDTO.SearchRs<TeachingHistoryDTO.Info> searchRs_teachingHistories = teachingHistoryService.search(searchRq_teachingHistories,id);
@@ -699,12 +700,11 @@ public class TeacherRestController {
             table_1_related_training = 1000;
         table_1_related_training /= 100;
         table_1_unRelated_training /= 100;
-//        if(table_1_related_training < 0.1)
-//            table_1_related_training = 0;
-//        if(table_1_unRelated_training < 0.1)
-//            table_1_unRelated_training = 0;
-        table_1_unRelated_training = ((teacher_educationLevel-1)*0.1 + 0.4)*table_1_unRelated_training;
-        table_1_related_training = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
+
+        Double table_1_unRelated_training_double = ((teacher_educationLevel-1)*0.1 + 0.4)*table_1_unRelated_training;
+        table_1_unRelated_training = table_1_unRelated_training_double.floatValue();
+        Double table_1_related_training_double = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
+        table_1_related_training = table_1_related_training_double.floatValue();
         //table 1 - row 5
         SearchDTO.SearchRq searchRq_teacherCertifications = new SearchDTO.SearchRq();
         SearchDTO.SearchRs<TeacherCertificationDTO.Info> searchRs_teacherCertifications = teacherCertificationService.search(searchRq_teacherCertifications,id);
@@ -733,10 +733,11 @@ public class TeacherRestController {
         if(table_1_courses > 1000)
             table_1_courses = 1000;
         table_1_courses  /= 100;
-//        if(table_1_courses < 0.1)
-//            table_1_courses = 0;
-        if(teacher_educationLevel != 1)
-            table_1_courses = ((teacher_educationLevel-1)*0.1 + 1.2)*table_1_courses;
+
+        if(teacher_educationLevel != 1) {
+            Double table_1_courses_double = ((teacher_educationLevel - 1) * 0.1 + 1.2) * table_1_courses;
+            table_1_courses = table_1_courses_double.floatValue();
+        }
         //table 1 - total
         table_1_grade = table_1_courses +
                         table_1_license +
@@ -762,7 +763,7 @@ public class TeacherRestController {
                     table_2_relation += 1;
         }
             if(teacher_educationLevel == 1)
-                table_2_grade = 2.5;
+                table_2_grade = (float) 2.5;
             else if(teacher_educationLevel == 2)
                 table_2_grade = 6;
             else if(teacher_educationLevel == 3)
@@ -865,6 +866,7 @@ public class TeacherRestController {
             pass_status = "قبول";
         if(!pass)
             pass_status = "رد";
+
 
         return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }

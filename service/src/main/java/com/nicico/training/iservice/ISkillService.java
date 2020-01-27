@@ -32,6 +32,8 @@ public interface ISkillService {
 
     SearchDTO.SearchRs<SkillDTO.Info> search(SearchDTO.SearchRq request);
 
+    SearchDTO.SearchRs<SkillDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
     // ---------------
     String getMaxSkillCode(String skillCodeStart);
 

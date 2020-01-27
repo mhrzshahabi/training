@@ -7,12 +7,12 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-
 // <script>
+
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
-    var gridState;
+    // var gridState;
     var attachName;
     var attachNameTemp;
     var nationalCodeCheck = true;
@@ -22,12 +22,10 @@
     var selectedRecordPersonalID = null;
     var isTeacherCategoriesChanged = false;
     var isCategoriesChanged;
-
     var selected_record = null;
     var selectedRecordID = null;
 
-    //----------------------------------------------------Rest Data Sources-------------------------------------------
-
+    //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -45,21 +43,6 @@
             {name: "personality.contactInfo.workAddress.id"}
         ],
         fetchDataURL: teacherUrl + "spec-list-grid"
-    });
-
-    var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: enumUrl + "eGender/spec-list"
-    });
-
-    var RestDataSource_Emarried_JspTeacher = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: enumUrl + "eMarried/spec-list"
-    });
-
-    var RestDataSource_Emilitary_JspTeacher = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: enumUrl + "eMilitary/spec-list"
     });
 
     var RestDataSource_Category_JspTeacher = isc.TrDS.create({
@@ -104,9 +87,25 @@
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
 
-
+    var RestDataSource_BasicInfo_JspTeacher = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "personality.id"},
+            {name: "teacherCode"},
+            {name: "personnelCode"},
+            {name: "personality.firstNameFa"},
+            {name: "personality.lastNameFa"},
+            {name: "personality.educationLevel.titleFa"},
+            {name: "personality.educationMajor.titleFa"},
+            {name: "personality.contactInfo.mobile"},
+            {name: "categories"},
+            {name: "subCategories"},
+            {name: "personality.contactInfo.homeAddress.id"},
+            {name: "personality.contactInfo.workAddress.id"}
+        ],
+        fetchDataURL: teacherUrl + "spec-list"
+    });
     //----------------------------------------------------Menu-------------------------------------------------------
-
     var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
         width: 150,
         data: [{
@@ -169,16 +168,13 @@
             }
         ]
     });
-
-    //----------------------------------------------------ListGrid---------------------------------------------------
-
-
+    //----------------------------------------------------ListGrid------------------------------------------------------
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
-        cellHeight:43,
+        cellHeight: 43,
         filterOperator: "iContains",
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
@@ -301,7 +297,7 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
-    //-----------------------------------------------Save and Close Buttons--------------------------------------------
+    //-----------------------------------------------Save and Close Buttons---------------------------------------------
     IButton_Teacher_Save_And_Close_JspTeacher = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code="save.and.close"/>",
@@ -334,9 +330,7 @@
     // function exitCallBack(){
     //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
     // }
-
-
-    //-----------------------------------------------LayOuts and Tabsets-Window--------------------------------------------
+    //-----------------------------------------------LayOuts and Tabsets and Window-------------------------------------
     var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
@@ -427,7 +421,7 @@
         ],
         tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
             var teacherId;
-            if (selectedRecordID  != null) {
+            if (selectedRecordID != null) {
                 teacherId = selectedRecordID;
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "attachmentsTab")
                     loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {
@@ -470,7 +464,7 @@
         })]
     });
 
-    //----------------------------------------- Evaluation -----------------------------------------------------------
+    //----------------------------------------- Evaluation -------------------------------------------------------------
     IButton_Evaluation_Show_JspTeacher = isc.IButton.create({
         title: "<spring:message code='cal.eval.grade'/>",
         width: 130,
@@ -658,9 +652,7 @@
     function teacher_evaluate_action_result(resp) {
         DynamicForm_Evaluation_JspTeacher.setValue("evaluationNumber", resp.data);
     }
-
-    //----------------------------------------------ToolStrips and Layout-Grid----------------------------------------
-
+    //----------------------------------------------ToolStrips and Layout-Grid------------------------------------------
     var ToolStripButton_Refresh_JspTeacher = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_teacher_refresh();
@@ -686,7 +678,6 @@
     });
 
     var ToolStripButton_Print_JspTeacher = isc.ToolStripButtonPrint.create({
-//icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
@@ -704,7 +695,7 @@
             }
             DynamicForm_Evaluation_JspTeacher.clearValues();
             DynamicForm_Evaluation_JspTeacher.setValue("teacherCode", record.teacherCode),
-            Window_Evaluation_JspTeacher.show();
+                Window_Evaluation_JspTeacher.show();
         }
     });
 
@@ -766,7 +757,7 @@
         ]
     });
 
-    //-------------------------------------------------Functions------------------------------------------------
+    //-------------------------------------------------Functions--------------------------------------------------------
     function ListGrid_teacher_refresh() {
         // refreshSelectedTab_teacher(null);
         ListGrid_Teacher_JspTeacher.invalidateCache();
@@ -787,9 +778,7 @@
         var teacherSaveUrl = teacherUrl;
 
         if (teacherMethod.localeCompare("PUT") === 0) {
-            // var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
             teacherSaveUrl += selectedRecordID;
-            // teacherSaveUrl += teacherRecord.id;
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_save_edit_result(rpcResponse)"));
         }
@@ -814,18 +803,15 @@
         var teacherSaveUrl = teacherUrl;
 
         if (teacherMethod.localeCompare("PUT") === 0) {
-            // var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
-            // teacherSaveUrl += teacherRecord.id;
             teacherSaveUrl += selectedRecordID;
         }
         isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
-                "callback: teacher_saveClose_result(rpcResponse)"));
+            "callback: teacher_saveClose_result(rpcResponse)"));
 
-            Window_Teacher_JspTeacher.close();
+        Window_Teacher_JspTeacher.close();
     }
 
     function ListGrid_teacher_edit() {
-
         // gridState = ListGrid_Teacher_JspTeacher.getSelectedState();
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         selected_record = record;
@@ -835,10 +821,9 @@
         }
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "info/" + record.id, "GET", null,
             "callback: teacher_get_one_result(rpcResponse)"));
-
     }
 
-    function Edit_teacher(){
+    function Edit_teacher() {
         showAttach(selected_record.personalityId);
 
         vm.clearValues();
@@ -869,8 +854,7 @@
                 "orientation/spec-list-by-levelId-and-majorId/" + eduLevelValue + ":" + eduMajorValue;
             DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource = RestDataSource_Education_Orientation_JspTeacher;
             DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
-        }
-        else if (eduMajorValue !== undefined && eduLevelValue == undefined) {
+        } else if (eduMajorValue !== undefined && eduLevelValue == undefined) {
             RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl +
                 "major/spec-list-by-majorId/" + eduMajorValue;
             DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource = RestDataSource_Education_Orientation_JspTeacher;
@@ -1079,7 +1063,7 @@
         }
     }
 
-    function teacher_saveClose_result(resp){
+    function teacher_saveClose_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             if (resp.data === "") {
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
@@ -1096,38 +1080,35 @@
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
             }
+        } else if (resp.httpResponseText == "duplicateAndBlackList") {
+            createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
+        } else if (resp.httpResponseText == "duplicateAndNotBlackList") {
+            createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
         }
-     else if(resp.httpResponseText == "duplicateAndBlackList") {
-        createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
-    }
-    else if(resp.httpResponseText == "duplicateAndNotBlackList") {
-        createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
-    }
     }
 
     function teacher_save_add_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                responseID = JSON.parse(resp.data).id;
-                vm.setValue("id", responseID);
-                // gridState = "[{id:" + responseID + "}]";
-                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                    "<spring:message code="msg.command.done"/>");
-                addAttach(JSON.parse(resp.data).personality.id);
-                showAttach(JSON.parse(resp.data).personality.id);
-                selectedRecordID = responseID;
-                loadPage_AcademicBK(responseID);
-                TabSet_Bottom_JspTeacher.show();
-                TabSet_Bottom_JspTeacher.selectTab(0);
-                TabSet_Bottom_JspTeacher.disable();
-                setTimeout(function () {
-                      TabSet_Bottom_JspTeacher.enable();
-                }, 300);
-                teacherMethod = "PUT";
-            }
-         else if(resp.httpResponseText == "duplicateAndBlackList") {
+            responseID = JSON.parse(resp.data).id;
+            vm.setValue("id", responseID);
+            // gridState = "[{id:" + responseID + "}]";
+            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
+                "<spring:message code="msg.command.done"/>");
+            addAttach(JSON.parse(resp.data).personality.id);
+            showAttach(JSON.parse(resp.data).personality.id);
+            selectedRecordID = responseID;
+            selected_record = JSON.parse(resp.data);
+            loadPage_AcademicBK(responseID);
+            TabSet_Bottom_JspTeacher.show();
+            TabSet_Bottom_JspTeacher.selectTab(0);
+            TabSet_Bottom_JspTeacher.disable();
+            setTimeout(function () {
+                TabSet_Bottom_JspTeacher.enable();
+            }, 300);
+            teacherMethod = "PUT";
+        } else if (resp.httpResponseText == "duplicateAndBlackList") {
             createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
-        }
-        else if(resp.httpResponseText == "duplicateAndNotBlackList") {
+        } else if (resp.httpResponseText == "duplicateAndNotBlackList") {
             createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
         }
     }
@@ -1148,20 +1129,20 @@
         }
     }
 
-    function teacher_get_one_result(rpcResponse){
+    function teacher_get_one_result(rpcResponse) {
         selected_record = JSON.parse(rpcResponse.data);
         Edit_teacher();
     }
 
     function checkEmail(email) {
-            if(email == null || email == "")
-                return true;
-            else
-                return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
+        if (email == null || email == "")
+            return true;
+        else
+            return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
     }
 
     function checkMobile(mobile) {
-        if(mobile == null || mobile == "")
+        if (mobile == null || mobile == "")
             return true;
         else
             return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
@@ -1376,6 +1357,7 @@
             }
         }
     }
+
     // function setUrlTab_teacher(teacherId){
     //     RestDataSource_JspAcademicBK.fetchDataURL = academicBKUrl + "/iscList/" + teacherId;
     //     RestDataSource_JspEmploymentHistory.fetchDataURL = employmentHistoryUrl + "/iscList/" + teacherId;

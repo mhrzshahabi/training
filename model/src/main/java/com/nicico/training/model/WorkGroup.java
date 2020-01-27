@@ -28,7 +28,7 @@ public class WorkGroup extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @OneToMany(mappedBy = "workGroup", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Permission> permissions;
 
     @ElementCollection

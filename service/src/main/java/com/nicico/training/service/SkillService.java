@@ -6,10 +6,12 @@ com.nicico.training.service
     */
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.ISkillGroupService;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.*;
@@ -22,6 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+import static com.nicico.training.service.BaseService.setCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +41,7 @@ public class SkillService implements ISkillService {
     private final CategoryDAO categoryDAO;
     private final SubCategoryDAO subCategoryDAO;
     private final IWorkGroupService workGroupService;
+    private final ISkillGroupService skillGroupService;
     private String saveType = "";
 
     @Transactional(readOnly = true)
@@ -109,7 +116,17 @@ public class SkillService implements ISkillService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<SkillDTO.Info> search(SearchDTO.SearchRq request) {
-        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), Skill.class, SecurityUtil.getUserId()));
+
+        SearchDTO.CriteriaRq skillCriteria = workGroupService.applyPermissions(Skill.class, SecurityUtil.getUserId());
+        List<SkillGroupDTO.Info> skillGroups = skillGroupService.search(new SearchDTO.SearchRq()).getList();
+        skillCriteria.getCriteria().add(makeNewCriteria("skillGroupSet", skillGroups.stream().map(SkillGroupDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
+        setCriteria(request, skillCriteria);
+        return SearchUtil.search(skillDAO, request, skill -> modelMapper.map(skill, SkillDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<SkillDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
         return SearchUtil.search(skillDAO, request, skill -> modelMapper.map(skill, SkillDTO.Info.class));
     }
 
