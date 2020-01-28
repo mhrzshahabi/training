@@ -16,7 +16,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_training_place", schema = "TRAINING")
+@Table(name = "tbl_training_place")
 public class TrainingPlace extends Auditable {
 
     @Id
@@ -31,8 +31,8 @@ public class TrainingPlace extends Auditable {
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @Column(name = "n_capacity")
-    private Integer capacity;
+    @Column(name = "c_capacity")
+    private String capacity;
 
     @Column(name = "e_place_type", insertable = false, updatable = false)
     private EPlaceType ePlaceType;
@@ -62,6 +62,4 @@ public class TrainingPlace extends Auditable {
 
     @Column(name = "c_description", length = 500)
     private String description;
-
-
 }

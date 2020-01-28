@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,15 +9,14 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class CityDTO {
+
     @NotEmpty
     @ApiModelProperty(required = true)
     private String name;
@@ -31,22 +29,21 @@ public class CityDTO {
     @Accessors(chain = true)
     @ApiModel("CityInfo")
     public static class Info extends CityDTO {
+        @NotEmpty
+        @ApiModelProperty(required = true)
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
-        private StateDTO.StateInfoTuple state;
+        private Integer version;
+        private StateDTO.Info state;
     }
 
-    @Getter
-	@Setter
-	@ApiModel("CityInfoTuple")
-	public static class CityInfoTuple {
-	    private String name;
-	    private StateDTO.StateInfoTuple state;
-	    private Long stateId;
-	}
+//    @Getter
+//	@Setter
+//	@ApiModel("CityInfoTuple")
+//	public static class CityInfoTuple {
+//	    private String name;
+//	    private StateDTO.StateInfoTuple state;
+//	    private Long stateId;
+//	}
     // ------------------------------
 
     @Getter

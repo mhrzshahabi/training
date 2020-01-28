@@ -34,8 +34,8 @@ spring:
     port: 6379
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 30MB
+      max-request-size: 30MB
 
 
 server:
@@ -75,8 +75,8 @@ spring:
   profiles: Production
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: training
-    password: training
+    username: n_training
+    password: n_training
   redis:
     host: apps.icico.net.ir
     password: nicico
@@ -100,8 +100,10 @@ nicico:
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
-    upload-class: /var/nicico/${spring.application.name}/upload/class
-    upload-class-deleted: /var/nicico/${spring.application.name}/upload/class/deleted
+    upload-class: /var/nicico/${spring.application.name}/upload/Tclass
+    upload-class-deleted: /var/nicico/${spring.application.name}/upload/Tclass/deleted
+    upload-teacher: /var/nicico/${spring.application.name}/upload/Teacher
+    upload-teacher-deleted: /var/nicico/${spring.application.name}/upload/Teacher/deleted
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
@@ -137,8 +139,10 @@ nicico:
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
-    upload-class: /var/nicico/${spring.application.name}/upload/class
-    upload-class-deleted: /var/nicico/${spring.application.name}/upload/class/deleted
+    upload-class: /var/nicico/${spring.application.name}/upload/Tclass
+    upload-class-deleted: /var/nicico/${spring.application.name}/upload/Tclass/deleted
+    upload-teacher: /var/nicico/${spring.application.name}/upload/Teacher
+    upload-teacher-deleted: /var/nicico/${spring.application.name}/upload/Teacher/deleted
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
@@ -176,9 +180,12 @@ nicico:
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:
-    upload-class: c:/nicico/${spring.application.name}/upload/class
-    upload-class-deleted: c:/nicico/${spring.application.name}/upload/class/deleted
+    upload-class: c:/nicico/${spring.application.name}/upload/Tclass
+    upload-class-deleted: c:/nicico/${spring.application.name}/upload/Tclass/deleted
+    upload-teacher: c:/nicico/${spring.application.name}/upload/Teacher
+    upload-teacher-deleted: c:/nicico/${spring.application.name}/upload/Teacher/deleted
     upload-person-img: c:/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: c:/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: c:/nicico/${spring.application.name}/upload/bpmn
     upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn/img
+    upload-post: c:/nicico/${spring.application.name}/upload/post

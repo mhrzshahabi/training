@@ -1,6 +1,8 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TermDTO;
@@ -109,6 +111,14 @@ public class TermService implements ITermService {
         }
         return String.valueOf(max);
     }
+
+    @Transactional
+    @Override
+    public TotalResponse<TermDTO.Info> search(NICICOCriteria request) {
+        return SearchUtil.search(termDAO, request, job -> mapper.map(job, TermDTO.Info.class));
+    }
+
+
 }
 
 

@@ -9,6 +9,7 @@ com.nicico.training.iservice
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,9 @@ public interface ISkillService {
     SkillDTO.Info get(Long id);
 
     List<SkillDTO.Info> list();
+
+    @Transactional
+    List<SkillDTO.Info> listCourseIsNull();
 
     SkillDTO.Info create(SkillDTO.Create request);
 
@@ -30,36 +34,51 @@ public interface ISkillService {
     // ---------------
     String getMaxSkillCode(String skillCodeStart);
 
-    List<CourseDTO.Info> getCourses(Long skillID);
+    CourseDTO.Info getCourses(Long skillID);
+
     List<CourseDTO.Info> getUnAttachedCourses(Long skillID, Pageable pageable);
+
     Integer getUnAttachedCoursesCount(Long skillID);
-//    List<CompetenceDTO.Info> getCompetences(Long skillID);
+
+    //    List<CompetenceDTO.Info> getCompetences(Long skillID);
 //    List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID, Pageable pageable);
 //    Integer getUnAttachedCompetencesCount(Long skillID);
     List<SkillGroupDTO.Info> getSkillGroups(Long skillID);
+
     List<NeedAssessmentDTO.Info> getNeedAssessment(Long skillID);
+
     List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID, Pageable pageable);
+
     Integer getUnAttachedSkillGroupsCount(Long skillID);
 //    List<JobDTO.Info> getJobs(Long skillID);
 
 
     CategoryDTO.Info getCategory(Long skillID);
+
     SubCategoryDTO.Info getSubCategory(Long skillID);
+
     SkillLevelDTO.Info getSkillLevel(Long skillID);
 
     boolean isSkillDeletable(Long skillId);
-    void removeSkillGroup(Long skillGroupId,Long skillId);
-    void removeSkillGroups(List<Long> skillGroupIds,Long skillId);
-    void addSkillGroup(Long skillGroupId,Long skillId);
-    void addSkillGroups(List<Long>  request, Long skillId);
+
+    void removeSkillGroup(Long skillGroupId, Long skillId);
+
+    void removeSkillGroups(List<Long> skillGroupIds, Long skillId);
+
+    void addSkillGroup(Long skillGroupId, Long skillId);
+
+    void addSkillGroups(List<Long> request, Long skillId);
 
 //    void removeCompetence(Long competenceId,Long skillId);
 //    void removeCompetences(List<Long> competenceIds,Long skillId);
 //    void addCompetence(Long competenceId,Long skillId);
 //    void addCompetences(List<Long>  ids, Long skillId);
 
-    void removeCourse(Long courseId,Long skillId);
-    void removeCourses(List<Long> courseIds,Long skillId);
-    void addCourse(Long courseId,Long skillId);
-    void addCourses(List<Long>  ids, Long skillId);
+    void removeCourse(Long courseId, Long skillId);
+
+    void removeCourses(List<Long> courseIds, Long skillId);
+
+    void addCourse(Long courseId, Long skillId);
+
+    void addCourses(List<Long> ids, Long skillId);
 }

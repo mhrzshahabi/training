@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/user")
 public class UserFormController {
-private final OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
-	@RequestMapping("/show-form")
-	public String showForm() {
-		return "base/user";
-	}
+    @RequestMapping("/show-form")
+    public String showForm() {
+        return "base/user";
+    }
 }

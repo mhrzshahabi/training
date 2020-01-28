@@ -37,8 +37,8 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center", width: "20%"},
-            {name: "practicalDuration", title: "مدت زمان عملی", type:"float" ,align: "center", width: "20%"},
-            {name: "theoreticalDuration", title: "مدت زمان تئوری", type:"float" ,align: "center", width: "20%"}
+            {name: "practicalDuration", title: "مدت زمان عملی", type: "float", align: "center", width: "20%"},
+            {name: "theoreticalDuration", title: "مدت زمان تئوری", type: "float", align: "center", width: "20%"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -150,15 +150,15 @@
                 min: 0,
                 max: 300,
                 step: 0.5,
-                change: function (form, item, value) {
-                    if (methodSyllabus == "PUT") {
-                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
-                    } else {
-                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
-                    }
-                    Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
-                    // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
-                },
+                // change: function (form, item, value) {
+                //     if (methodSyllabus == "PUT") {
+                //         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
+                //     } else {
+                //         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
+                //     }
+                //     // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
+                //     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
+                // },
             },
             {
                 name: "theoreticalDuration",
@@ -170,15 +170,15 @@
                 min: 0,
                 max: 300,
                 step: 0.5,
-                change: function (form, item, value) {
-                    if (methodSyllabus == "PUT") {
-                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + (ListGrid_Syllabus_Goal.getSelectedRecord().theoreticalDuration) + value;
-                    } else {
-                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + (ListGrid_Syllabus_Goal.getSelectedRecord().theoreticalDuration) + value;
-                    }
-                    Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
-                    // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
-                },
+                // change: function (form, item, value) {
+                //     if (methodSyllabus == "PUT") {
+                //         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + (ListGrid_Syllabus_Goal.getSelectedRecord().theoreticalDuration) + value;
+                //     } else {
+                //         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + (ListGrid_Syllabus_Goal.getSelectedRecord().theoreticalDuration) + value;
+                //     }
+                //     // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
+                //     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
+                // },
             }],
         keyPress: function () {
             if (isc.EventHandler.getKey() == "Enter") {
@@ -187,9 +187,9 @@
         }
     });
 
-    var IButton_Goal_Save = isc.Button.create({
+    var IButton_Goal_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-        icon: "[SKIN]/actions/save.png",
+        //icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
@@ -224,9 +224,9 @@
 
         }
     });
-    var IButton_Syllabus_Save = isc.Button.create({
+    var IButton_Syllabus_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-        icon: "[SKIN]/actions/save.png",
+        //icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Syllabus.validate();
             if (DynamicForm_Syllabus.hasErrors()) {
@@ -273,7 +273,7 @@
                                     message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
                                     icon: "[SKIN]ask.png",
                                     title: "سوال؟",
-                                    buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
+                                    buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({title: "خیر"})],
                                     buttonClick: function (button, index) {
                                         if (index) {
                                             this.close();
@@ -301,11 +301,11 @@
     });
 
     var Hlayout_Goal_SaveOrExit = isc.TrHLayoutButtons.create({
-        members: [IButton_Goal_Save, isc.Button.create({
+        members: [IButton_Goal_Save, isc.IButtonCancel.create({
             ID: "IButton_Goal_Exit",
             title: "لغو",
             // prompt: "",
-            icon: "<spring:url value="remove.png"/>",
+            // icon: "<spring:url value="remove.png"/>",
             // orientation: "vertical",
             click: function () {
                 DynamicForm_Goal.clearValues();
@@ -322,7 +322,7 @@
         // align: "center",
         // padding: 10,
         // membersMargin: 10,
-        members: [IButton_Syllabus_Save, isc.Button.create({
+        members: [IButton_Syllabus_Save, isc.IButtonCancel.create({
             ID: "IButton_Syllabus_Exit",
             title: "لغو",
             prompt: "",
@@ -447,19 +447,20 @@
             }]
     });
 
-    var ListGrid_Goal = isc.ListGrid.create({
+    var ListGrid_Goal = isc.TrLG.create({
         width: "*",
         height: "100%",
         // border: "2px solid gray",
         dataSource: RestDataSource_CourseGoal,
         // dataSource: goalCourseDS,
         contextMenu: Menu_ListGrid_Goal,
+        // autoFitWidthApproach:"both",
         doubleClick: function () {
             ListGrid_Goal_Edit();
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی هدف", align: "center"},
+            {name: "titleFa", title: "نام فارسی هدف", align: "center", autoFitWidth: true},
             {name: "titleEn", title: "نام لاتین هدف ", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -475,25 +476,15 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
-    var ListGrid_Syllabus_Goal = isc.ListGrid.create({
+    var ListGrid_Syllabus_Goal = isc.TrLG.create({
         width: "*",
         height: "100%",
-        // border: "2px solid gray",
+        // canHover:true,
+        // autoFitWidthApproach:"both",
         dataSource: RestDataSource_Syllabus,
-        // groupByField:"goal.titleFa", groupStartOpen:"all",
         showGridSummary: true,
-        // showGroupSummary:true,
         contextMenu: Menu_ListGrid_Syllabus_Goal,
-
         doubleClick: function () {
             ListGrid_Syllabus_Goal_Edit();
         },
@@ -507,40 +498,42 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "کد سرفصل", align: "center", hidden: true},
-            {name: "titleFa", title: "نام فارسی سرفصل", align: "center"},
-            {name: "titleEn", title: "نام لاتین سرفصل", align: "center"},
+            {
+                name: "titleFa", title: "نام فارسی سرفصل", align: "center",
+                autoFitWidth: true,
+            },
+            {
+                name: "titleEn", title: "نام لاتین سرفصل", align: "center",
+            },
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
             {
                 name: "practicalDuration",
                 title: "مدت زمان عملی",
                 align: "center",
                 summaryFunction: "sum",
-                format : "#.## ساعت"
+                format: "#.## ساعت"
             },
             {
                 name: "theoreticalDuration",
                 title: "مدت زمان تئوری",
                 align: "center",
                 summaryFunction: "sum",
-                format : "#.## ساعت"
+                format: "#.## ساعت"
             },
             {name: "version", title: "version", canEdit: false, hidden: true},
-            {name: "goal.titleFa", hidden: true}
+            {
+                name: "goal.titleFa", hidden: true,
+                autoFitWidth: true,
+            }
         ],
         sortField: "goalId",
         sortDirection: "descending",
-        dataPageSize: 50,
+        // dataPageSize: 50,
         autoFetchData: false,
         showFilterEditor: true,
+        allowFilterExpressions: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        allowAdvancedCriteria: true,
     });
     var ListGrid_GoalAll = isc.ListGrid.create({
         width: "100%",
@@ -635,22 +628,22 @@
             addToListGrid()
         }
     });
-    var ToolStripButton_Syllabus_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Syllabus_Edit = isc.ToolStripButtonEdit.create({
+
         title: "ویرایش",
         click: function () {
             ListGrid_Syllabus_Goal_Edit();
         }
     });
-    var ToolStripButton_Syllabus_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Syllabus_Add = isc.ToolStripButtonAdd.create({
+
         title: "ایجاد",
         click: function () {
             ListGrid_Syllabus_Goal_Add();
         }
     });
-    var ToolStripButton_Syllabus_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Syllabus_Remove = isc.ToolStripButtonRemove.create({
+
         title: "حذف",
         click: function () {
             ListGrid_Syllabus_Goal_Remove();
@@ -662,7 +655,7 @@
         showShadow: true,
         shadowDepth: 10
     });
-    var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
+    var ToolStripButton_Syllabus_Print = isc.ToolStripButtonPrint.create({
         // icon: "[SKIN]/RichTextEditor/print.png",
         autoDraw: false,
         width: 100,
@@ -686,19 +679,19 @@
                     click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
                 }])
             } else {
-                    Menu_Print_GoalJsp.setData([{
+                Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
                     click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'
-                    }, {
+                }, {
                     title: "اهداف دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
                     click: 'window.open("goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
-                    }, {isSeparator: true}, {
+                }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
                     click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'
-                    }, {
+                }, {
                     title: "سرفصل هاي دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
                     click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
-                    },
+                },
                     {
                         title: "سرفصل هاي هدف " + '"' + ListGrid_Goal.getSelectedRecord().titleFa + '"',
                         click: 'window.open("syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
@@ -706,16 +699,16 @@
             }
         }
     });
-    var ToolStripButton_Goal_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+    var ToolStripButton_Goal_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "[SKIN]/actions/refresh.png",
         title: "بازخوانی",
         click: function () {
             ListGrid_Goal_refresh();
             ListGrid_Syllabus_Goal_refresh();
         }
     });
-    var ToolStripButton_Goal_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Goal_Edit = isc.ToolStripButtonEdit.create({
+
         title: "ویرایش",
         prompt: "اخطار<br/>ویرایش هدف در تمامی دوره های ارضا کننده هدف نیز اعمال خواهد شد.",
         hoverWidth: 320,
@@ -723,8 +716,8 @@
             ListGrid_Goal_Edit();
         }
     });
-    var ToolStripButton_Goal_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
+
         title: "ایجاد",
         prompt: "تعریف هدف جدید برای دوره مذکور",
         hoverWidth: 160,
@@ -732,8 +725,8 @@
             ListGrid_Goal_Add();
         }
     });
-    var ToolStripButton_Goal_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Goal_Remove = isc.ToolStripButtonRemove.create({
+
         title: "حذف",
         prompt: "اخطار<br/>هدف انتخاب شده از تمامی دوره های موجود حذف خواهد شد.",
         hoverWidth: 280,
@@ -741,8 +734,8 @@
             ListGrid_Goal_Remove();
         }
     });
-    var ToolStripButton_Goal_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/plus.png",
+    var ToolStripButton_Goal_Print = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/plus.png",
         prompt: "افزودن اهداف انتخاب شده به دوره مذکور و یا گرفتن اهداف انتخاب شده از دوره مذکور",
         hoverWidth: "12%",
         title: "افزودن",
@@ -757,17 +750,17 @@
             <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
         }
     });
-    var ToolStripButton_Add_Vertical = isc.ToolStripButton.create({
-        icon: "[SKIN]/TransferIcons/left.png",
-        title: "",
+    var ToolStripButton_Add_Vertical = isc.IconButton.create({
+        icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+        showButtonTitle:false,
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
         click: function () {
             addToListGrid()
         }
     });
-    var ToolStripButton_Remove_Vertical = isc.ToolStripButton.create({
-        icon: "[SKIN]/TransferIcons/right.png",
-        title: "",
+    var ToolStripButton_Remove_Vertical = isc.IconButton.create({
+        icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+        showButtonTitle:false,
         prompt: "حذف اهداف انتخاب شده از دوره مذکور",
         click: function () {
             removeAsListGrid();
@@ -775,18 +768,36 @@
     });
     var ToolStrip_Actions_Goal = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Goal_Refresh, "separator", ToolStripButton_Goal_Add, ToolStripButton_Goal_Edit, ToolStripButton_Goal_Remove, ToolStripButton_Goal_Print]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Goal_Add,
+            ToolStripButton_Goal_Edit,
+            ToolStripButton_Goal_Remove,
+            ToolStripButton_Goal_Print,
+            "separator",
+            ToolStripButton_Goal_Refresh,
+        ]
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Syllabus_Print, "separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Syllabus_Add,
+            ToolStripButton_Syllabus_Edit,
+            ToolStripButton_Syllabus_Remove,
+            "separator",
+            ToolStripButton_Syllabus_Print
+        ]
     });
     var ToolStrip_Vertical_Goals = isc.ToolStrip.create({
         width: "100%",
         height: "100%",
         align: "center",
         vertical: "center",
-        members: [ToolStripButton_Add_Vertical, ToolStripButton_Remove_Vertical]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add_Vertical,
+            ToolStripButton_Remove_Vertical]
     });
 
     var VLayout_Grid_GoalAll = isc.VLayout.create({
@@ -815,7 +826,6 @@
             VLayout_Grid_Goal_JspGoal
         ]
     });
-
     var Window_AddGoal = isc.Window.create({
         title: "افزودن هدف",
         width: "90%",
@@ -881,10 +891,10 @@
         var record = ListGrid_Goal.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.no.records.selected'/> !",
+                message: "هدفی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -901,7 +911,7 @@
                 serverOutputAsString: false,
                 callback: function (resp) {
                     var courses = JSON.parse(resp.data);
-                    if(courses.length>1) {
+                    if (courses.length > 1) {
                         for (let i = 0; i < courses.length; i++) {
                             if (courses.get(i).titleFa != DynamicForm_course_MainTab.getItem("titleFa")._value) {
                                 names = names + " و دوره " + getFormulaMessage(courses.get(i).titleFa, 2, "red", "b");
@@ -909,13 +919,12 @@
                         }
                         names = names.substr(2);
                         createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
-                    }
-                    else{
+                    } else {
                         var Dialog_Delete = isc.Dialog.create({
                             message: "با حذف هدف " + getFormulaMessage(record.titleFa, 2, "red", "b"),
                             icon: "[SKIN]ask.png",
-                            title: "اخطار",
-                            buttons: [isc.Button.create({title: "موافقم"}), isc.Button.create({
+                            title: "<spring:message code="verify.delete"/>",
+                            buttons: [isc.IButtonSave.create({title: "موافقم"}), isc.IButtonCancel.create({
                                 title: "مخالفم"
                             })],
                             buttonClick: function (button, index) {
@@ -937,7 +946,8 @@
                                         callback: function (resp) {
                                             wait.close();
                                             if (resp.httpResponseCode == 200) {
-                                                ListGrid_Goal.invalidateCache();
+                                                ListGrid_Goal_refresh();
+                                                ListGrid_Syllabus_Goal_refresh();
                                                 simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                                             } else {
                                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
@@ -947,23 +957,21 @@
                                 }
                             }
                         });
-                        }
-
+                    }
                 }
             });
-            ListGrid_Syllabus_Goal_refresh();
+
         }
     };
 
     function ListGrid_Goal_Edit() {
         var record = ListGrid_Goal.getSelectedRecord();
-        // selectedRecord = ListGrid_Goal.getRowNum(record);
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است.",
+                message: "هدفی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -973,7 +981,7 @@
             urlGoal = goalUrl + record.id;
             DynamicForm_Goal.clearValues();
             DynamicForm_Goal.editRecord(record);
-            Window_Goal.setTitle("ویرایش هدف");
+            Window_Goal.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
         }
     };
@@ -999,7 +1007,7 @@
                 message: "لطفاً ابتدا اطلاعات دوره را وارد کنید.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1008,7 +1016,7 @@
             methodGoal = "POST";
             urlGoal = goalUrl + "create/" + ListGrid_Course.getSelectedRecord().id;
             DynamicForm_Goal.clearValues();
-            Window_Goal.setTitle("ایجاد هدف");
+            Window_Goal.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
         }
     };
@@ -1017,10 +1025,10 @@
         var record = ListGrid_Syllabus_Goal.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.no.records.selected'/> !",
+                message: "سرفصلی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1029,8 +1037,8 @@
             var Dialog_Delete = isc.Dialog.create({
                 message: "<spring:message code='msg.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
-                title: "هشدار",
-                buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
+                title: "<spring:message code="verify.delete"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
                     title: "<spring:message
         code='global.no'/>"
                 })],
@@ -1081,7 +1089,7 @@
                 message: "هدف مرتبط انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1091,8 +1099,8 @@
             urlSyllabus = syllabusUrl;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
-            Window_Syllabus.setTitle("ایجاد سرفصل");
-            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + 2) + " ساعت می باشد.");
+            Window_Syllabus.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="syllabus"/>");
+            // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + 2) + " ساعت می باشد.");
             Window_Syllabus.show();
         }
     };
@@ -1104,7 +1112,7 @@
                 message: "سرفصلی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1114,19 +1122,19 @@
             urlSyllabus = syllabusUrl + sRecord.id;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
-            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + " ساعت می باشد.");
-            Window_Syllabus.setTitle("ویرایش سرفصل");
+            // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + " ساعت می باشد.");
+            Window_Syllabus.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="syllabus"/>");
             Window_Syllabus.show();
         }
     };
 
     function ListGrid_Syllabus_Goal_refresh() {
-        var record = ListGrid_Syllabus_Goal.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_Syllabus_Goal.selectRecord(record);
-        }
-        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + ListGrid_Course.getSelectedRecord().id
+        // var record = ListGrid_Syllabus_Goal.getSelectedRecord();
+        // if (record == null || record.id == null) {
+        // } else {
+        //     ListGrid_Syllabus_Goal.selectRecord(record);
+        // }
+        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + ListGrid_Course.getSelectedRecord().id;
         ListGrid_Syllabus_Goal.invalidateCache();
         ListGrid_Syllabus_Goal.fetchData();
         evalDomain();
@@ -1139,7 +1147,7 @@
                 message: "دوره اي انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1151,7 +1159,7 @@
                     message: "هدفي انتخاب نشده است.",
                     icon: "[SKIN]ask.png",
                     title: "پیغام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1186,13 +1194,13 @@
         }
     }
 
-    function removeAsListGrid(){
+    function removeAsListGrid() {
         if (ListGrid_Course.getSelectedRecord() == null || ListGrid_Course.getSelectedRecord().id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1204,7 +1212,7 @@
                     message: "هدفي انتخاب نشده است.",
                     icon: "[SKIN]ask.png",
                     title: "پیغام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1240,4 +1248,5 @@
             }
         }
     }
-//</script>
+
+    // </script>

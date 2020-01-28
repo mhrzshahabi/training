@@ -1,9 +1,5 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:roya
-*/
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,39 +8,82 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class StudentDTO {
-    
-    @ApiModelProperty(required = true)
-    private String studentID;
 
     @ApiModelProperty(required = true)
-    private String fullNameFa;
-
+    private String firstName;
     @ApiModelProperty(required = true)
-    private String fullNameEn;
+    private String lastName;
+    @ApiModelProperty(required = true)
+    private String nationalCode;
+    @ApiModelProperty(required = true)
+    private String companyName;
+    @ApiModelProperty(required = true)
+    private String personnelNo;
+    private String personnelNo2;
+    private String fatherName;
+    private String birthCertificateNo;
+    private String birthDate;
+    private Integer age;
+    private String birthPlace;
+    private String employmentDate;
+    private String postTitle;
+    private String postCode;
+    private String postAssignmentDate;
+    private String complexTitle;
+    private String operationalUnitTitle;
+    private String employmentTypeTitle;
+    private String maritalStatusTitle;
+    private String workPlaceTitle;
+    private String workTurnTitle;
+    private String educationLevelTitle;
+    private String jobNo;
+    private String jobTitle;
+    private Integer employmentStatusId;
+    private String employmentStatus;
+    private String contractNo;
+    private String educationMajorTitle;
+    private String gender;
+    private String militaryStatus;
+    private String educationLicenseType;
+    private String departmentTitle;
+    private String departmentCode;
+    private String contractDescription;
+    private String workYears;
+    private String workMonths;
+    private String workDays;
+    private String insuranceCode;
+    private String postGradeTitle;
+    private String postGradeCode;
+    private String ccpCode;
+    private String ccpArea;
+    private String ccpAssistant;
+    private String ccpAffairs;
+    private String ccpSection;
+    private String ccpUnit;
+    private String ccpTitle;
+    private String scoresState;
+    private String failureReason;
+    private Float score;
 
-    private String personalID;
-    private String department;
-    private String license;
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - Info")
+    public static class Info extends StudentDTO {
+        private Long id;
+    }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("StudentInfo")
-    public static class Info extends StudentDTO {
-        private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
+    @ApiModel("Student - Create")
+    public static class Create extends StudentDTO {
     }
 
     // ------------------------------
@@ -52,16 +91,7 @@ public class StudentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("StudentCreateRq")
-    public static class Create extends StudentDTO {
-       }
-
-    // ------------------------------
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("StudentUpdateRq")
+    @ApiModel("Student - Update")
     public static class Update extends StudentDTO {
     }
 
@@ -70,8 +100,18 @@ public class StudentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("StudentDeleteRq")
+    @ApiModel("Student - Delete")
     public static class Delete {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private List<Long> ids;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Student - Ids")
+    public static class Ids {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
@@ -83,7 +123,7 @@ public class StudentDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("StudentSpecRs")
+    @ApiModel("Student - SpecRs")
     public static class StudentSpecRs {
         private SpecRs response;
     }
@@ -100,5 +140,63 @@ public class StudentDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - ClassStudentInfo")
+    public static class ClassStudentInfo {
+        private Long id;
+        @ApiModelProperty(required = true)
+        private String firstName;
+        @ApiModelProperty(required = true)
+        private String lastName;
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        @ApiModelProperty(required = true)
+        private String personnelNo;
+        private String personnelNo2;
+        private String postTitle;
+        private String ccpArea;
+        private String ccpAssistant;
+        private String ccpAffairs;
+        private String ccpSection;
+        private String ccpUnit;
+    }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - Attendance")
+    public static class AttendanceInfo {
+        private Long id;
+        @ApiModelProperty(required = true)
+        private String firstName;
+        @ApiModelProperty(required = true)
+        private String lastName;
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        @ApiModelProperty(required = true)
+        private String personnelNo;
+        private String personnelNo2;
+        @ApiModelProperty(required = true)
+        private String companyName;
+    }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - Scores")
+    public static class ScoresInfo {
+        private Long id;
+        @ApiModelProperty(required = true)
+        private String firstName;
+        @ApiModelProperty(required = true)
+        private String lastName;
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        @ApiModelProperty(required = true)
+        private String personnelNo;
     }
 }

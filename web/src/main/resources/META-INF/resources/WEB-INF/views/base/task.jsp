@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-// <script>
-var dummy;
+// script
+    var dummy;
     var teacherMethod = "POST";
     var teacherWait;
 
@@ -63,7 +63,7 @@ var dummy;
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-     var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
+    var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleEn"},
@@ -144,12 +144,12 @@ var dummy;
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
+            {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
             {
                 name: "personality.fullName",
                 title: "<spring:message code='firstName.lastName'/>",
                 align: "center",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 formatCellValue: function (value, record) {
                     return record.personality.firstNameFa + " " + record.personality.lastNameFa;
                 }
@@ -159,7 +159,7 @@ var dummy;
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
 
 
@@ -303,8 +303,6 @@ var dummy;
             },
 
 
-
-
             {
                 name: "personality.nationality",
                 title: "<spring:message code='nationality'/>",
@@ -314,8 +312,6 @@ var dummy;
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
             },
-
-
 
 
             {
@@ -387,7 +383,7 @@ var dummy;
                 title: "<spring:message code='education.orientation'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
-                hidden:true,
+                hidden: true,
                 width: "*",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -415,7 +411,7 @@ var dummy;
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
-                hidden:true,
+                hidden: true,
                 width: "*",
                 title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
@@ -466,7 +462,7 @@ var dummy;
             },
 
 
-       ],
+        ],
         itemChanged: function (item, newValue) {
 
         }
@@ -515,7 +511,6 @@ var dummy;
             }
         }
     });
-
 
 
     var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
@@ -615,7 +610,6 @@ var dummy;
         membersMargin: 10,
         members: [TabSet_BasicInfo_JspTeacher, TabSet_Photo_JspTeacher]
     });
-
 
 
     var Window_Teacher_JspTeacher = isc.Window.create({
@@ -732,10 +726,10 @@ var dummy;
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.not.selected.record'/>",
+                message: "<spring:message code='msg.no.records.selected'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function () {
                     this.close();
                 }
@@ -749,7 +743,6 @@ var dummy;
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
 
             DynamicForm_BasicInfo_JspTeacher.getItem("personality.educationOrientationId").setOptionDataSource(null);
-
 
 
             teacherMethod = "PUT";
@@ -822,10 +815,10 @@ var dummy;
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.not.selected.record'/>",
+                message: "<spring:message code='msg.no.records.selected'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -835,7 +828,7 @@ var dummy;
                 message: "<spring:message code='msg.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='msg.remove.title'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='yes'/>"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='yes'/>"}), isc.IButtonCancel.create({
                     title: "<spring:message code='no'/>"
                 })],
                 buttonClick: function (button, index) {
@@ -996,11 +989,6 @@ var dummy;
     };
 
 
-
-
-
-
-
     function checkCodeMeli(code) {
         if (code == "undefined" && code == null && code == "")
             return false;
@@ -1017,10 +1005,6 @@ var dummy;
         return (s < 2 && c == s) || (s >= 2 && c == (11 - s));
         return true;
     };
-
-
-
-
 
 
     function showAttach(pId) {

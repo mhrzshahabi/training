@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
 
     var studentMethod = "POST";
     var studentWait;
@@ -86,27 +86,27 @@
                 name: "fullNameFa",
                 title: "<spring:message code='student.persian.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "fullNameEn",
                 title: "<spring:message code='student.english.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "personalID",
                 title: "<spring:message code='personal.ID'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "department",
                 title: "<spring:message code='department'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
-            {name: "license", title: "<spring:message code='degree'/>", align: "center", filterOperator: "contains"},
+            {name: "license", title: "<spring:message code='degree'/>", align: "center", filterOperator: "iContains"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         sortField: 1,
@@ -195,21 +195,21 @@
 
     });
 
-    var IButton_Student_Exit_JspStudent = isc.IButton.create({
+    var IButton_Student_Exit_JspStudent = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+        //icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Student_JspStudent.close();
         }
     });
 
-    var IButton_Student_Save_JspStudent = isc.IButton.create({
+    var IButton_Student_Save_JspStudent = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='save'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+        //icon: "pieces/16/save.png",
         click: function () {
 
             DynamicForm_Student_JspStudent.validate();
@@ -266,40 +266,40 @@
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ToolStripButton_Refresh_JspStudent = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Refresh_JspStudent = isc.ToolStripButtonRefresh.create({
+        //icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code='refresh'/>",
         click: function () {
             ListGrid_student_refresh();
         }
     });
 
-    var ToolStripButton_Edit_JspStudent = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Edit_JspStudent = isc.ToolStripButtonEdit.create({
+
         title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_student_edit();
         }
     });
 
-    var ToolStripButton_Add_JspStudent = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Add_JspStudent = isc.ToolStripButtonAdd.create({
+
         title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_student_add();
         }
     });
 
-    var ToolStripButton_Remove_JspStudent = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove_JspStudent = isc.ToolStripButtonRemove.create({
+
         title: "<spring:message code='remove'/>",
         click: function () {
             ListGrid_student_remove();
         }
     });
 
-    var ToolStripButton_Print_JspStudent = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print_JspStudent = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             ListGrid_student_print("pdf");
@@ -308,12 +308,22 @@
 
     var ToolStrip_Actions_JspStudent = isc.ToolStrip.create({
         width: "100%",
+        membersMargin: 5,
         members: [
-            ToolStripButton_Refresh_JspStudent,
             ToolStripButton_Add_JspStudent,
             ToolStripButton_Edit_JspStudent,
             ToolStripButton_Remove_JspStudent,
-            ToolStripButton_Print_JspStudent]
+            ToolStripButton_Print_JspStudent,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_JspStudent
+                ]
+            }),
+
+        ]
     });
 
     var HLayout_Actions_Student_JspStudent = isc.HLayout.create({
@@ -347,7 +357,7 @@
                 message: "<spring:message code='msg.record.not.selected'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -357,7 +367,7 @@
                 message: "<spring:message code='msg.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='msg.remove.title'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='yes'/>"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='yes'/>"}), isc.IButtonCancel.create({
                     title: "<spring:message code='no'/>"
                 })],
                 buttonClick: function (button, index) {
@@ -384,7 +394,7 @@
                 message: "<spring:message code='msg.record.not.selected'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -462,8 +472,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        }
-        else if (resp.data == false) {
+        } else if (resp.data == false) {
             var ERROR = isc.Dialog.create({
                 message: "<spring:message code='msg.student.remove.error'/>",
                 icon: "[SKIN]stop.png",
@@ -472,8 +481,7 @@
             setTimeout(function () {
                 ERROR.close();
             }, 3000);
-        }
-        else {
+        } else {
             var ERROR = isc.Dialog.create({
                 message: "<spring:message code='msg.record.remove.failed'/>",
                 icon: "[SKIN]stop.png",

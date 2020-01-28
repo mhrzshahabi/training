@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
+    <SCRIPT SRC=../../../../../static/imagesOld/frameworkMessages_fa.properties></SCRIPT>
 </head>
 <script type="application/javascript">
 
@@ -24,12 +24,9 @@
             for (i = 0; i < mainTabSet.tabs.length; i++) {
 
                 if (title == mainTabSet.getTab(i).title) {
-                    if(title == "دوره")
-                    {
-                        for (j = 0; j < mainTabSet.tabs.length; j++)
-                        {
-                            if(mainTabSet.getTab(j).title.substr(0,5)=="اهداف")
-                            {
+                    if (title == "دوره") {
+                        for (j = 0; j < mainTabSet.tabs.length; j++) {
+                            if (mainTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
                                 mainTabSet.removeTab(j);
                             }
                         }
@@ -223,12 +220,12 @@
             this.Super("closeClick", arguments);
         },
 
-        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name){
+        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
             var tabTitle = ID.title;
-            if(tabTitle.substr(0,5) == "اهداف"){
+            if (tabTitle.substr(0, 5) == "اهداف") {
                 setTimeout(function () {
 
-                    RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id +"/goal";
+                    RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
                     ListGrid_Goal.fetchData();
                     ListGrid_Goal.invalidateCache();
                     RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
@@ -237,13 +234,13 @@
 
                 }, 100);
             }
-            if(tabTitle.substr(0,4) == "دوره"){
+            if (tabTitle.substr(0, 4) == "دوره") {
                 setTimeout(function () {
                     ListGrid_CourseCompetence.invalidateCache();
                     ListGrid_CourseSkill.invalidateCache();
                     ListGrid_CourseJob.invalidateCache();
                     ListGrid_CourseGoal.invalidateCache();
-                    if(courseId != ""){
+                    if (courseId != "") {
                         RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();

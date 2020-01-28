@@ -5,7 +5,6 @@ com.nicico.training.dto
 @Time :1:12 PM
     */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,8 +20,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class SkillDTO {
 
     @NotNull
@@ -50,6 +48,7 @@ public class SkillDTO {
 
     @ApiModelProperty()
     private String description;
+    private Long courseId;
 
     @Getter
     @Setter

@@ -8,15 +8,20 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.service.ClassAlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +42,8 @@ public class TclassRestController {
     private final ITclassService tclassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
+    private final ClassAlarmService classAlarmService;
+    private final StudentDAO studentDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -70,8 +77,14 @@ public class TclassRestController {
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Long id) {
-        tclassService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        try {
+            tclassService.delete(id);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
@@ -90,7 +103,7 @@ public class TclassRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -114,6 +127,13 @@ public class TclassRestController {
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
 
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
+                tclassDTO.setHasWarning("alarm");
+            else
+                tclassDTO.setHasWarning("");
+        }
+
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
@@ -133,69 +153,26 @@ public class TclassRestController {
         return new ResponseEntity<>(tclassService.search(request), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/student")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<StudentDTO.StudentSpecRs> getStudents(@RequestParam("classID") String classID) {
-        Long classId = Long.parseLong(classID);
 
-        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
-
-        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-        specResponse.setData(studentList)
-                .setStartRow(0)
-                .setEndRow(studentList.size())
-                .setTotalRows(studentList.size());
-
-        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-    @Loggable
-    @GetMapping(value = "/otherStudent")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<StudentDTO.StudentSpecRs> getOtherStudents(@RequestParam("classID") String classID) {
-        Long classId = Long.parseLong(classID);
-
-        List<StudentDTO.Info> studentList = tclassService.getOtherStudents(classId);
-
-        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-        specResponse.setData(studentList)
-                .setStartRow(0)
-                .setEndRow(studentList.size())
-                .setTotalRows(studentList.size());
-
-        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/removeStudent/{studentId}/{classId}")
-    //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity removeStudent(@PathVariable Long studentId, @PathVariable Long classId) {
-        tclassService.removeStudent(studentId, classId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/addStudent/{studentId}/{classId}")
-//    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity addStudent(@PathVariable Long studentId, @PathVariable Long classId) {
-        tclassService.addStudent(studentId, classId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/addStudents/{classId}")
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addStudents(@Validated @RequestBody StudentDTO.Delete request, @PathVariable Long classId) {
-        tclassService.addStudents(request, classId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/otherStudent")
+////    @PreAuthorize("hasAuthority('r_tclass')")
+//    public ResponseEntity<StudentDTO.StudentSpecRs> getOtherStudents(@RequestParam("classID") String classID) {
+//        Long classId = Long.parseLong(classID);
+//
+//        List<StudentDTO.Info> studentList = tclassService.getOtherStudents(classId);
+//
+//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
+//        specResponse.setData(studentList)
+//                .setStartRow(0)
+//                .setEndRow(studentList.size())
+//                .setTotalRows(studentList.size());
+//
+//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
@@ -212,7 +189,6 @@ public class TclassRestController {
         }
 
         final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tclassService.search(searchRq);
-
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
 
@@ -227,8 +203,40 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/end_group/{courseId}/{termId}")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId,@PathVariable Long termId) {
-        return new ResponseEntity<>(tclassService.getEndGroup(courseId,termId), HttpStatus.OK);
+    public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId, @PathVariable Long termId) {
+        return new ResponseEntity<>(tclassService.getEndGroup(courseId, termId), HttpStatus.OK);
+    }
+
+/////////////////////
+    //////////////////////////
+    ////////////////////////////
+
+    @Loggable
+    @PostMapping(value = "/checkStudentInClass/{nationalCode}/{classId}")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<Long> checkStudentInClass(@PathVariable String nationalCode, @PathVariable Long classId) {
+
+        if (((studentDAO.findOneByNationalCodeInClass(nationalCode, classId)) != null)) {
+            return null;
+        }
+        List<Long> classList = (studentDAO.findOneByNationalCodeInClass(nationalCode, classId));
+        return new ResponseEntity<Long>((MultiValueMap<String, String>) classList, HttpStatus.OK);
+
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/checkEndingClass/{classId}")
+    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException{
+
+        return classAlarmService.checkAlarmsForEndingClass(classId, response);
+
+    }
+
+    @Loggable
+    @GetMapping(value = "/getWorkflowEndingStatusCode/{classId}")
+    public Integer getWorkflowEndingStatusCode(@PathVariable Long classId){
+        return tclassService.getWorkflowEndingStatusCode(classId);
     }
 
 

@@ -7,8 +7,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,77 +25,87 @@ public class ClassFormController {
         return "base/class";
     }
 
-    @PostMapping("/printWithCriteria/{type}")
-	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+    @GetMapping("/printWithCriteria/{type}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
-		else
-			return null;
-	}
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
 
-	@RequestMapping("/sessions-tab")
-	public String sessionsTab() {
-		return "classTabs/sessions";
-	}
+    @RequestMapping("/sessions-tab")
+    public String sessionsTab() {
+        return "classTabs/sessions";
+    }
 
-	@RequestMapping("/alarms-tab")
-	public String alarmsTab() {
-		return "classTabs/alarms";
-	}
+    @RequestMapping("/alarms-tab")
+    public String alarmsTab() {
+        return "classTabs/alarms";
+    }
 
-	@RequestMapping("/licenses-tab")
-	public String licensesTab() {
-		return "classTabs/licenses";
-	}
+    @RequestMapping("/licenses-tab")
+    public String licensesTab() {
+        return "classTabs/licenses";
+    }
 
-	@RequestMapping("/attendance-tab")
-	public String attendanceTab() {
-		return "classTabs/attendance";
-	}
+    @RequestMapping("/attendance-tab")
+    public String attendanceTab() {
+        return "classTabs/attendance";
+    }
 
-	@RequestMapping("/exam-tab")
-	public String examTab() {
-		return "classTabs/exam";
-	}
+    @RequestMapping("/exam-tab")
+    public String examTab() {
+        return "classTabs/exam";
+    }
 
-	@RequestMapping("/teachers-tab")
-	public String teachersTab() {
-		return "classTabs/teachers";
-	}
+    @RequestMapping("/teachers-tab")
+    public String teachersTab() {
+        return "classTabs/teachers";
+    }
 
-	@RequestMapping("/assessment-tab")
-	public String assessmentTab() {
-		return "classTabs/assessment";
-	}
+    @RequestMapping("/assessment-tab")
+    public String assessmentTab() {
+        return "classTabs/assessment";
+    }
 
-	@RequestMapping("/checkList-tab")
-	public String checkListTab() {
-		return "classTabs/checkList";
-	}
+    @RequestMapping("/checkList-tab")
+    public String checkListTab() {
+        return "classTabs/checkList";
+    }
 
-	@RequestMapping("/attachments-tab")
-	public String attachmentsTab() {
-		return "classTabs/classAttachments";
-	}
+    @RequestMapping("/attachments-tab")
+    public String attachmentsTab() {
+        return "base/attachments";
+    }
+
+    @RequestMapping("/student")
+    public String showStudentsForm() {
+        return "classTabs/student";
+    }
+
+    @RequestMapping("/scores-tab")
+    public String scoresTab() {
+        return "classTabs/scores";
+    }
 }

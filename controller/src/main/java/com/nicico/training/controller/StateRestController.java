@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -35,6 +38,16 @@ public class StateRestController {
 //    @PreAuthorize("hasAuthority('r_state')")
     public ResponseEntity<List<StateDTO.Info>> list() {
         return new ResponseEntity<>(stateService.list(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<StateDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<StateDTO.Info> searchRs = stateService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
@@ -71,8 +84,8 @@ public class StateRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_state')")
     public ResponseEntity<StateDTO.StateSpecRs> list(@RequestParam("_startRow") Integer startRow,
-    @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator,
-    @RequestParam(value = "criteria", required = false) String criteria) {
+                                                     @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator,
+                                                     @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -104,11 +117,7 @@ public class StateRestController {
     @Transactional
     @GetMapping(value = "/spec-list-by-stateId/{id}")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
-    public ResponseEntity<CityDTO.CitySpecRs> listByStateId(@RequestParam("_startRow") Integer startRow,
-                                                                            @RequestParam("_endRow") Integer endRow,
-                                                                            @RequestParam(value = "operator", required = false) String operator,
-                                                                            @RequestParam(value = "criteria", required = false) String criteria,
-                                                                            @PathVariable Long id) {
+    public ResponseEntity<CityDTO.CitySpecRs> listByStateId(@PathVariable Long id) {
         List<CityDTO.Info> cities = stateService.listByStateId(id);
         final CityDTO.SpecRs specResponse = new CityDTO.SpecRs();
         specResponse.setData(cities)
@@ -117,7 +126,7 @@ public class StateRestController {
                 .setTotalRows(cities.size());
         final CityDTO.CitySpecRs specRs = new CityDTO.CitySpecRs();
         specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 

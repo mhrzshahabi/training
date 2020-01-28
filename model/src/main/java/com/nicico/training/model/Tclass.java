@@ -76,18 +76,18 @@ public class Tclass extends Auditable {
     @Column(name = "f_institute")
     private Long instituteId;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "f_institute_organizer", insertable = false, updatable = false)
+    private Institute organizer;
+
+    @Column(name = "f_institute_organizer")
+    private Long organizerId;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_class_training_place",
             joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")})
     private Set<TrainingPlace> trainingPlaceSet;
-
-    @Transient
-    public List<Long> getTrainingPlaceIds() {
-        List<Long> ids = new ArrayList<>();
-        trainingPlaceSet.forEach(c->ids.add(c.getId()));
-        return ids;
-    }
 
     @Column(name = "n_group", nullable = false)
     private Long group;
@@ -101,31 +101,22 @@ public class Tclass extends Auditable {
 
     @Column(name = "c_teaching_brand")
     private String teachingBrand;//نحوه آموزش
-
     @Column(name = "c_start_date", nullable = false)
     private String startDate;
-
     @Column(name = "c_end_date", nullable = false)
     private String endDate;
-
     @Column(name = "b_saturday")
     private Boolean saturday;
-
     @Column(name = "b_sunday")
     private Boolean sunday;
-
     @Column(name = "b_monday")
     private Boolean monday;
-
     @Column(name = "b_tuesday")
     private Boolean tuesday;
-
     @Column(name = "b_wednesday")
     private Boolean wednesday;
-
     @Column(name = "b_thursday")
     private Boolean thursday;
-
     @Column(name = "b_friday")
     private Boolean friday;
     @Column(name = "b_first")
@@ -134,17 +125,39 @@ public class Tclass extends Auditable {
     private Boolean second;
     @Column(name = "b_third")
     private Boolean third;
-
+    @Column(name = "b_fourth")
+    private Boolean fourth;
+    @Column(name = "b_fifth")
+    private Boolean fifth;
     @Column(name = "c_topology")
-    private String topology;//چیدمان
+    private String topology;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @JoinTable(name = "tbl_student_class",
-            joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
-    private List<Student> studentSet;
+    @Column(name = "c_workflow_ending_status")
+    private String workflowEndingStatus;
+    @Column(name = "c_workflow_ending_status_code")
+    private Integer workflowEndingStatusCode;
 
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<ClassStudent> classStudents;
 
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<ClassSession> classSessions;
 
+    @Transient
+    public List<Long> getTrainingPlaceIds() {
+        List<Long> ids = new ArrayList<>();
+        trainingPlaceSet.forEach(c -> ids.add(c.getId()));
+        return ids;
+    }
+
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private String hasWarning;
+
+    @Transient
+    public String getHasWarning() {
+        return "";
+    }
 
 }

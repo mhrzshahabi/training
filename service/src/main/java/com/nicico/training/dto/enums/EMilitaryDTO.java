@@ -1,6 +1,5 @@
 package com.nicico.training.dto.enums;/* com.nicico.training.dto*/
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.EMilitary;
 import io.swagger.annotations.ApiModel;
@@ -11,8 +10,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class EMilitaryDTO {
 
     @Getter
@@ -30,8 +28,8 @@ public class EMilitaryDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
         private EMilitary[] data = EMilitary.values();
-        private Integer startRow=0;
-        private Integer endRow= EMilitary.values().length;
+        private Integer startRow = 0;
+        private Integer endRow = EMilitary.values().length;
         private Integer totalRows = EMilitary.values().length;
     }
 

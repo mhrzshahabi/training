@@ -55,6 +55,12 @@ public class Course extends Auditable {
     @Column(name = "n_min_teacher_degree")
     private String minTeacherDegree;
 
+    @Column(name = "c_evaluation")
+    private String evaluation;
+
+    @Column(name = "c_behavioral_level")
+    private String behavioralLevel;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
@@ -69,34 +75,42 @@ public class Course extends Auditable {
     @Column(name = "subcategory_id")
     private Long subCategoryId;
 
-    @ManyToMany(mappedBy = "courseSet")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Skill> skillSet;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "tbl_course_goal",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_goal_id", referencedColumnName = "id")})
     private List<Goal> goalSet;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
     private List<Course> perCourseList;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
     private List<Course> perCourseListOf;
+
     @Column(name = "e_run_type")
     private ERunType eRunType;
+
     @Column(name = "e_level_type")
     private ELevelType eLevelType;
+
     @Column(name = "e_theo_type")
     private ETheoType eTheoType;
+
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
+
     @Column(name = "c_pre_course")
     private String preCourse;
 
@@ -110,8 +124,10 @@ public class Course extends Auditable {
 //    private Long attitude = Long.valueOf(0);
     @Column(name = "c_equal_course")
     private String equalCourse;
+
     @Column(name = "c_need_text")
     private String needText;
+
     @OneToMany()
     @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Set<EqualCourse> equalCourseSet;
@@ -121,12 +137,21 @@ public class Course extends Auditable {
     @Setter(AccessLevel.NONE)
     private Boolean hasGoal;
 
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Boolean hasSkill;
+
 //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
 //    private Course preCourse;
 //
 //    @OneToMany(mappedBy="preCourse")
 //    private List<Course> preCourseList = new ArrayList<>();
+    @Column(name = "c_workflow_status")
+    private String workflowStatus;
+    @Column(name = "c_workflow_status_code")
+    private Integer workflowStatusCode;
 
     @PreRemove
     private void preRemove() {
@@ -135,7 +160,13 @@ public class Course extends Auditable {
 
     @Transient
     public Boolean getHasGoal() {
-        if(goalSet == null)return false;
+        if (goalSet == null) return true;
         else return goalSet.isEmpty();
+    }
+
+    @Transient
+    public Boolean getHasSkill() {
+        if (skillSet == null) return true;
+        else return skillSet.isEmpty();
     }
 }

@@ -19,42 +19,41 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/course")
 public class CourseFormController {
-	private final OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
-	@RequestMapping("/show-form")
-	public String showForm() {
-		return "base/course";
-	}
+    @RequestMapping("/show-form")
+    public String showForm() {
+        return "base/course";
+    }
 
-	@PostMapping("/printWithCriteria/{type}")
-	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
-//		String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
-		String token = request.getParameter("myToken");
+    @PostMapping("/printWithCriteria/{type}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
+        String token = request.getParameter("myToken");
 
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
-		else
-			return null;
-	}
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
 
 	/*@RequestMapping("/print/{type}")
 	public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
@@ -105,51 +104,50 @@ public class CourseFormController {
 	}*/
 
 
-	@PostMapping("/printGoalsAndSyllabus")
-	public ResponseEntity<?> printGoalsAndSyllabus(final HttpServletRequest request) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+    @PostMapping("/printGoalsAndSyllabus")
+    public ResponseEntity<?> printGoalsAndSyllabus(final HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-		return restTemplate.exchange(restApiUrl + "/api/course/GoalsAndSyllabus/pdf", HttpMethod.POST, entity, byte[].class);
-	}
+        return restTemplate.exchange(restApiUrl + "/api/course/GoalsAndSyllabus/pdf", HttpMethod.POST, entity, byte[].class);
+    }
 
 
-	@GetMapping("/testCourse/{courseId}/{type}/{token}")
-	public ResponseEntity<?> printTestCourse(final HttpServletRequest request, @PathVariable String courseId, @PathVariable String type, @PathVariable String token) {
+    @GetMapping("/testCourse/{courseId}/{type}/{token}")
+    public ResponseEntity<?> printTestCourse(final HttpServletRequest request, @PathVariable String courseId, @PathVariable String type, @PathVariable String token) {
 //		String token = (String) request.getSession().getAttribute("AccessToken");
 
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-		return restTemplate.exchange(restApiUrl + "/api/course/printTest/"+courseId, HttpMethod.GET, entity, byte[].class);
-	}
-
+        return restTemplate.exchange(restApiUrl + "/api/course/printTest/" + courseId, HttpMethod.GET, entity, byte[].class);
+    }
 
 
 }

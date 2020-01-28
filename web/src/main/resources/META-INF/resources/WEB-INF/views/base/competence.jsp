@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-// <script>
+// script
 
     let competenceMethod_competence;
 
@@ -43,22 +43,22 @@
     // ------------------------------------------- ToolStrip -------------------------------------------
     CompetenceTS_competence = isc.ToolStrip.create({
         members: [
-            isc.TrRefreshBtn.create({
+            isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refresh_competence();
                 }
             }),
-            isc.TrCreateBtn.create({
+            isc.ToolStripButtonAdd.create({
                 click: function () {
                     showNewForm_competence();
                 }
             }),
-            isc.TrEditBtn.create({
+            isc.ToolStripButtonEdit.create({
                 click: function () {
                     showEditForm_competence();
                 }
             }),
-            isc.TrRemoveBtn.create({
+            isc.ToolStripButtonRemove.create({
                 click: function () {
                     showRemoveForm_competence();
                 }
@@ -106,7 +106,7 @@
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: competenceUrl + "iscList"
+        fetchDataURL: competenceUrl + "/iscList"
     });
 
     CompetenceLG_competence = isc.TrLG.create({
@@ -239,7 +239,7 @@
         let competenceAction = '<spring:message code="created"/>';
         if (competenceMethod_competence.localeCompare("PUT") == 0) {
             let record = CompetenceLG_competence.getSelectedRecord();
-            competenceSaveUrl += record.id;
+            competenceSaveUrl += "/" + record.id;
             competenceAction = '<spring:message code="edited"/>';
         }
         let data = CompetenceDF_competence.getValues();
@@ -257,7 +257,7 @@
                     this.close();
                     if (index == 0) {
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(competenceUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '<spring:message code="removed"/>', '" + record.titleFa + "')")
+                            TrDSRequest(competenceUrl + "/" + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '<spring:message code="removed"/>', '" + record.titleFa + "')")
                         );
                     }
                 }

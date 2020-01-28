@@ -32,9 +32,10 @@ public class Goal extends Auditable {
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goal")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "goal")
     private Set<Syllabus> syllabusSet;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "goalSet")
     private List<Course> courseSet;
+
 }

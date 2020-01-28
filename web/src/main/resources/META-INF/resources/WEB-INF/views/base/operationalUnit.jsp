@@ -7,11 +7,11 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     // <<========== Global - Variables ==========
     {
-    var operational_method = "POST";
+        var operational_method = "POST";
     }
     // ============ Global - Variables ========>>
 
@@ -114,13 +114,13 @@
                     name: "unitCode",
                     title: "<spring:message code="unitCode"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 },
                 {
                     name: "operationalUnit",
                     title: "<spring:message code="unitName"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }
             ],
             doubleClick: function () {
@@ -133,40 +133,40 @@
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
-        var ToolStripButton_Refresh = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/refresh.png",
+        var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+            // icon: "[SKIN]/actions/refresh.png",
             title: "<spring:message code="refresh"/>",
             click: function () {
                 ListGrid_operational.invalidateCache();
             }
         });
 
-        var ToolStripButton_Add = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/add.png",
+        var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+
             title: "<spring:message code="create"/>",
             click: function () {
                 create_OperationalUnit();
             }
         });
 
-        var ToolStripButton_Edit = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/edit.png",
+        var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+
             title: "<spring:message code="edit"/>",
             click: function () {
                 show_OperationalUnitEditForm();
             }
         });
 
-        var ToolStripButton_Remove = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/remove.png",
+        var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+
             title: "<spring:message code="remove"/>",
             click: function () {
                 remove_OperationalUnit();
             }
         });
 
-        var ToolStripButton_Print = isc.ToolStripButton.create({
-            icon: "[SKIN]/RichTextEditor/print.png",
+        var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
+            //icon: "[SKIN]/RichTextEditor/print.png",
             title: "<spring:message code="print"/>",
             click: function () {
                 print_OperationalUnitListGrid("pdf");
@@ -175,7 +175,22 @@
 
         var ToolStrip_operational = isc.ToolStrip.create({
             width: "100%",
-            members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+            membersMargin: 5,
+            members: [
+                ToolStripButton_Add,
+                ToolStripButton_Edit,
+                ToolStripButton_Remove,
+                ToolStripButton_Print,
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh
+                    ]
+                })
+
+            ]
         });
     }
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
@@ -208,7 +223,7 @@
         var create_Buttons = isc.MyHLayoutButtons.create({
             members:
                 [
-                    isc.Button.create
+                    isc.IButtonSave.create
                     ({
                         title: "<spring:message code="save"/> ",
                         click: function () {
@@ -219,7 +234,7 @@
                             }
                         }
                     }),
-                    isc.Button.create
+                    isc.IButtonCancel.create
                     ({
                         title: "<spring:message code="cancel"/>",
                         click: function () {
@@ -231,7 +246,7 @@
 
         //*****create insert/update window*****
         var Window_OperationalUnit = isc.Window.create({
-            title: "<spring:message code="create"/> ",
+            title: "<spring:message code="operational.unit"/> ",
             width: "40%",
             minWidth: 500,
             visibility: "hidden",
@@ -272,7 +287,6 @@
         function create_OperationalUnit() {
             operational_method = "POST";
             DynamicForm_OperationalUnit.clearValues();
-            Window_OperationalUnit.setTitle("<spring:message code="create"/>");
             Window_OperationalUnit.show();
         }
 
@@ -295,10 +309,10 @@
 
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "<spring:message code="msg.not.selected.record"/>",
+                    message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
-                    title: "<spring:message code="course_Warning"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    title: "<spring:message code="global.message"/>",
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -308,7 +322,6 @@
                 operational_method = "PUT";
                 DynamicForm_OperationalUnit.clearValues();
                 DynamicForm_OperationalUnit.editRecord(record);
-                Window_OperationalUnit.setTitle("<spring:message code="edit"/>");
                 Window_OperationalUnit.show();
             }
         }
@@ -329,10 +342,10 @@
             var record = ListGrid_operational.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "<spring:message code="msg.not.selected.record"/>",
+                    message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
-                    title: "<spring:message code="course_Warning"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    title: "<spring:message code="global.message"/>",
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -340,6 +353,7 @@
             } else {
                 isc.MyYesNoDialog.create({
                     message: "<spring:message code="global.grid.record.remove.ask"/>",
+                    title: "<spring:message code="verify.delete"/>",
                     buttonClick: function (button, index) {
                         this.close();
                         if (index === 0) {
@@ -395,7 +409,7 @@
 
         //*****print*****
         function print_OperationalUnitListGrid(type) {
-            var advancedCriteria_course = ListGrid_operational.getCriteria();
+            var advancedCriteria_unit = ListGrid_operational.getCriteria();
             var criteriaForm_course = isc.DynamicForm.create({
                 method: "POST",
                 action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
@@ -407,7 +421,7 @@
                         {name: "myToken", type: "hidden"}
                     ]
             });
-            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
+            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
             criteriaForm_course.setValue("myToken", "<%=accessToken%>");
             criteriaForm_course.show();
             criteriaForm_course.submitForm();

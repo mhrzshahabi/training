@@ -1,6 +1,5 @@
 package com.nicico.training.dto.enums;/* com.nicico.training.dto*/
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.EMarried;
 import io.swagger.annotations.ApiModel;
@@ -11,8 +10,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class EMarriedDTO {
 
     @Getter
@@ -30,8 +28,8 @@ public class EMarriedDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
         private EMarried[] data = EMarried.values();
-        private Integer startRow=0;
-        private Integer endRow= EMarried.values().length;
+        private Integer startRow = 0;
+        private Integer endRow = EMarried.values().length;
         private Integer totalRows = EMarried.values().length;
     }
 

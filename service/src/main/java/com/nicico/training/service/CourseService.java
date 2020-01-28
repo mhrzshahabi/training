@@ -25,6 +25,7 @@ import static java.lang.Math.round;
 public class CourseService implements ICourseService {
 
     private final ModelMapper modelMapper;
+    private final GoalService goalService;
     private final GoalDAO goalDAO;
     private final EducationLevelDAO educationLevelDAO;
     private final TeacherDAO teacherDAO;
@@ -132,7 +133,7 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public void setPreCourse(Long id, List<Long> preCourseListId){
+    public void setPreCourse(Long id, List<Long> preCourseListId) {
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         List<Course> allById = courseDAO.findAllById(preCourseListId);
@@ -143,7 +144,7 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public void setEqualCourse(Long id, List<String> equalCourseList){
+    public void setEqualCourse(Long id, List<String> equalCourseList) {
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String s1 = Joiner.on(',').join(equalCourseList);
@@ -158,22 +159,24 @@ public class CourseService implements ICourseService {
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String s = course.getEqualCourse();
         if (s != null) {
-            String nameEQ1;
+            StringBuilder nameEQ1;
             List<String> myList = new ArrayList<>(Arrays.asList(s.split(",")));
             for (String idEQ1 : myList) {
-                nameEQ1 = "";
+                nameEQ1 = new StringBuilder();
                 List<Long> x = Arrays.stream(idEQ1.split("_"))
                         .map(Long::parseLong)
                         .collect(Collectors.toList());
                 for (Long j : x) {
                     Optional<Course> pById = courseDAO.findById(j);
-                    Course equalCourse = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-                    nameEQ1 = nameEQ1 + " و " + "'" + equalCourse.getTitleFa() + "'";
+                    if (pById.isPresent()) {
+                        Course equalCourse = pById.get();
+                        nameEQ1.append(" و ").append("'").append(equalCourse.getTitleFa()).append("(").append(equalCourse.getCode()).append(")").append("'");
+                    }
                 }
-                nameEQ1 = nameEQ1.substring(3);
+                nameEQ1 = new StringBuilder(nameEQ1.substring(3));
                 Map<String, String> map = new HashMap<>();
                 map.put("idEC", idEQ1);
-                map.put("nameEC", nameEQ1);
+                map.put("nameEC", nameEQ1.toString());
                 listOut.add(map);
             }
         }
@@ -185,7 +188,7 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-        if(courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()){
+        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
             course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
@@ -200,8 +203,7 @@ public class CourseService implements ICourseService {
 //            course.setEqualCourse(s1);
             Course course1 = courseDAO.saveAndFlush(course);
             return modelMapper.map(course1, CourseDTO.Info.class);
-        }
-        else
+        } else
             return null;
     }
 
@@ -231,14 +233,16 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public void delete(Long id) {
-        courseDAO.deleteById(id);
+        Optional<Course> byId = courseDAO.findById(id);
+        Course course = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        courseDAO.delete(course);
     }
 
     @Transactional
     @Override
     public void delete(CourseDTO.Delete request) {
-        final List<Course> cAllById = courseDAO.findAllById(request.getIds());
-        courseDAO.deleteAll(cAllById);
+        final List<Course> course = courseDAO.findAllById(request.getIds());
+        courseDAO.deleteAll(course);
     }
 
     @Transactional(readOnly = true)
@@ -392,8 +396,6 @@ public class CourseService implements ICourseService {
     }
 
 
-
-
     //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
 //                for (Competence competence : competenceSet) {
 //                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
@@ -402,7 +404,7 @@ public class CourseService implements ICourseService {
 //                        jobSet.add(job);
 //                    }
 //                }
-                //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
+    //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
 
 //            }
 //            Set<Competence> competenceSet = skill.getCompetenceSet();
@@ -575,9 +577,10 @@ public class CourseService implements ICourseService {
         return "دانشی: " + round(a * 100 / (sumAll)) + "%     " + "نگرشی: " + round(c * 100 / (sumAll)) + "%    " + "مهارتی: " + round(b * 100 / (sumAll)) + "%";
     }
 
+
     @Transactional(readOnly = true)
     @Override
-    public List<TeacherDTO.Info> getTeachers(Long courseId) {
+    public List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId) {
         final Optional<Course> optionalCourse = courseDAO.findById(courseId);
         final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String minTeacherDegree = course.getMinTeacherDegree();
@@ -585,9 +588,39 @@ public class CourseService implements ICourseService {
         EducationLevel educationLevel = byTitleFa.get(0);
         Long categoryId = course.getCategoryId();
         List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(categoryId, educationLevel.getCode());
-        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.Info>>() {
+        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.TeacherFullNameTuple>>() {
         }.getType());
     }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode) {
+        return courseDAO.updateCourseState(courseId, workflowStatus, workflowStatusCode);
+    }
+
+
+    //---------------------heydari---------------------------
+    //
+    @Transactional()
+    @Override
+    public CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request) {
+        Optional<Course> optionalCourse = courseDAO.findById(id);
+        Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        currentCourse.setEvaluation(request.getEvaluation());
+        currentCourse.setBehavioralLevel(request.getBehavioralLevel());
+        return modelMapper.map(courseDAO.save(currentCourse), CourseDTO.Info.class);
+
+    }
+
+    @Transactional
+    @Override
+    public List<CourseDTO.Info> getEvaluation(Long courseId) {
+        List<Course> course = courseDAO.findAllById(courseId);
+        return modelMapper.map(course, new TypeToken<List<CourseDTO.Info>>() {
+        }.getType());
+    }
+
 }
 
 

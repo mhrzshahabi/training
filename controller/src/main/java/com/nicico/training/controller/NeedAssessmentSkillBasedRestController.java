@@ -1,25 +1,23 @@
-
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedAssessmentSkillBasedDTO;
 import com.nicico.training.service.NeedAssessmentSkillBasedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -28,8 +26,6 @@ import java.util.List;
 public class NeedAssessmentSkillBasedRestController {
 
     private final NeedAssessmentSkillBasedService needAssessmentSkillBasedService;
-    private final ModelMapper modelMapper;
-    private final ObjectMapper objectMapper;
 
     @Loggable
     @GetMapping("/list")
@@ -45,45 +41,16 @@ public class NeedAssessmentSkillBasedRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/spec-list")
-//    @PreAuthorize("hasAuthority('r_educationLevel')")
-    public ResponseEntity<NeedAssessmentSkillBasedDTO.NeedAssessmentSkillBasedSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                       @RequestParam("_endRow") Integer endRow,
-                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq;
-        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-            request.setCriteria(criteriaRq);
-        }
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
-
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-
-        SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> response = needAssessmentSkillBasedService.search(request);
-
-        final NeedAssessmentSkillBasedDTO.SpecRs specResponse = new NeedAssessmentSkillBasedDTO.SpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
-                .setTotalRows(response.getTotalCount().intValue());
-
-        final NeedAssessmentSkillBasedDTO.NeedAssessmentSkillBasedSpecRs specRs = new NeedAssessmentSkillBasedDTO.NeedAssessmentSkillBasedSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    @GetMapping(value = "/iscFullList/{objectType}:{objectId}")
+    public ResponseEntity<ISC<NeedAssessmentSkillBasedDTO.Info>> fullList(HttpServletRequest iscRq,
+                                                                          @PathVariable String objectType,
+                                                                          @PathVariable Long objectId) throws IOException {
+        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> searchRs = needAssessmentSkillBasedService.deepSearch(searchRq, objectType, objectId);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
 
     @Loggable
     @GetMapping("/{id}")
@@ -92,27 +59,61 @@ public class NeedAssessmentSkillBasedRestController {
     }
 
     @Loggable
-    @PostMapping
-    public ResponseEntity create(@RequestBody Object req) {
-        try {
-            NeedAssessmentSkillBasedDTO.Create create = modelMapper.map(req, NeedAssessmentSkillBasedDTO.Create.class);
-            return new ResponseEntity<>(needAssessmentSkillBasedService.create(create), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_FOUND);
+    @PostMapping(value = "/add-all")
+    public ResponseEntity addAll(@Validated @RequestBody NeedAssessmentSkillBasedDTO.Create[] request) {
+
+        List<Long> notAddedList = new ArrayList<>();
+        List<NeedAssessmentSkillBasedDTO.Info> addedList = new ArrayList<>();
+        for (NeedAssessmentSkillBasedDTO.Create creating : request) {
+            try {
+                addedList.add(needAssessmentSkillBasedService.create(creating));
+            } catch (TrainingException ex) {
+                notAddedList.add(creating.getSkillId());
+            }
         }
+        if (notAddedList.isEmpty())
+            return new ResponseEntity<>(addedList, HttpStatus.OK);
+        return new ResponseEntity<>(notAddedList, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<NeedAssessmentSkillBasedDTO.Info> update(@PathVariable Long id, @RequestBody Object req) {
-        NeedAssessmentSkillBasedDTO.Update update = modelMapper.map(req, NeedAssessmentSkillBasedDTO.Update.class);
-        return new ResponseEntity<>(needAssessmentSkillBasedService.update(id, update), HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody NeedAssessmentSkillBasedDTO.Update request) {
+        try {
+            return new ResponseEntity<>(needAssessmentSkillBasedService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        needAssessmentSkillBasedService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            needAssessmentSkillBasedService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
+
+    @Loggable
+    @DeleteMapping(value = "/remove-all/{ids}")
+    public ResponseEntity delete(@PathVariable Set<Long> ids) {
+        List<Long> notDeletedList = new ArrayList<>();
+        List<Long> deletedList = new ArrayList<>();
+        for (Long deleting : ids) {
+            try {
+                needAssessmentSkillBasedService.delete(deleting);
+                deletedList.add(deleting);
+            } catch (TrainingException | DataIntegrityViolationException e) {
+                notDeletedList.add(deleting);
+            }
+        }
+        if (notDeletedList.isEmpty())
+            return new ResponseEntity<>(deletedList, HttpStatus.OK);
+        return new ResponseEntity<>(notDeletedList, HttpStatus.NOT_ACCEPTABLE);
+    }
+
 }

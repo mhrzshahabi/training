@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CheckListDAO extends JpaRepository<CheckList, Long>, JpaSpecificationExecutor<CheckList> {
+
+
 }

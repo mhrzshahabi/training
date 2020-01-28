@@ -13,7 +13,9 @@ abaspour 9803
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
+    var doDeleteTaskButton = null;
     var viewDocButton = null;
+    var targetUrl = null;
     var taskActionsDS = isc.RestDataSource.create({
         fields: [
             {name: "REJECTVAL", type: "text", required: true},
@@ -28,14 +30,14 @@ abaspour 9803
         jsonPrefix: "",
         jsonSuffix: "",
 
-	});
+    });
 
     <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
     <c:if test="${taskFormVariable.objectType == 'SelectItem' && taskFormVariable.dsName != null}">
-   // var ${taskFormVariable.dsName} =
+    // var ${taskFormVariable.dsName} =
     isc.RestDataSource.create({
         fields: [
-            <%--{name: "crDate", title: "تاریخ ایجاد",type:"text"},--%>
+            <%--{name: "crDate", title: "<spring:message code="creation.date"/>",type:"text"},--%>
             {name: "id", title: "id", type: "text"},
             <%--{name: "assignee", title: "assignee", type: "text"},--%>
             <%--{name: "recom", title: "recom", type: "text"}--%>
@@ -61,7 +63,11 @@ abaspour 9803
     </c:if>
 
     <c:if test="${taskFormVariable.id =='target'}">
+
     <spring:url value="${taskFormVariable.value}" var="addDocumentUrl"/>
+
+    <%--var targetUrl = "${taskFormVariable.value}";--%>
+
     </c:if>
 
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
@@ -75,10 +81,17 @@ abaspour 9803
         align: "center",
         width: "150",
         click: function () {
+
             var data = taskStartConfirmForm.getValues();
-            class_userCartableId=data.cId;
-            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
-            <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
+            workflowRecordId = data.cId;
+            trainingTabSet.removeTab(targetTitleFa)
+            createTab(targetTitleFa, "${addDocumentUrl}");
+            // taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
+            // taskConfirmationWindow.maximize();
+            taskConfirmationWindow.top= "0";
+            taskConfirmationWindow.minimize();
+
+            workflowParameters = {"taskId": "${id}", "usr": "${username}", "workflowdata" : taskStartConfirmForm.getValues()};
         }
     });
     </c:if>
@@ -144,6 +157,8 @@ abaspour 9803
                 <c:when test="${taskFormVariable.id =='targetTitleFa'}">,
                 type: "hidden" </c:when>
                 <c:when test="${taskFormVariable.id =='cId'}">,
+                type: "hidden" </c:when>
+                <c:when test="${taskFormVariable.id =='DELETE'}">,
                 type: "hidden" </c:when>
                 <c:when test="${fn:startsWith(taskFormVariable.id,'role')}">,
                 type: "hidden" </c:when>
@@ -275,10 +290,11 @@ abaspour 9803
                 message: "آیا اطمینان دارید؟",
                 icon: "[SKIN]ask.png",
                 buttons: [
-                    isc.Button.create({title: "بله"}),
-                    isc.Button.create({title: "خیر"})
+                    isc.IButtonSave.create({title: "<spring:message code="yes"/>"}),
+                    isc.IButtonCancel.create({title: "<spring:message code="global.no"/>"})
                 ],
                 buttonClick: function (button, index) {
+                    console.log(index);
                     if (index == 0 && v == true) {
                         taskStartConfirmForm.setValue("REJECT", "N");
                         taskStartConfirmForm.setValue("REJECTVAL", " ");
@@ -294,7 +310,7 @@ abaspour 9803
                                 ndat[pr] = data[pr];
 
                         isc.RPCManager.sendRequest({
-                            actionURL: workflowUrl + "doUserTask",
+                            actionURL: workflowUrl + "/doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,
@@ -304,16 +320,15 @@ abaspour 9803
                             params: {"taskId": "${id}", "usr": "${username}"},
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
+                                console.log(RpcResponse_o);
                                 if (RpcResponse_o.data == 'success') {
-                                    //------------------------------------------------------------------
-                                     trainingTabSet.removeTab(targetTitleFa);
-                                    createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
-                                    //-----------------------------------------------------------------------
-                                    isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
+
+                                    // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
+                                    isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
-                                    userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");
-                                    <c:set var="cartableCount" value="${cartableCount -1}"/>
+                                    <%--userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");--%>
+                                    <%--<c:set var="cartableCount" value="${cartableCount -1}"/>--%>
                                 } else {
                                     <%--isc.say(RpcResponse_o.data);--%>
                                 }
@@ -329,16 +344,16 @@ abaspour 9803
 
     isc.IButton.create
     ({
-        ID: "doCancelUserTaskButton",
-        icon: "[SKIN]actions/edit.png",
-        title: "بستن",
-        align: "center",
-        width: "150",
-        click: function () {
-            taskConfirmationWindow.hide();
-            trainingTabSet.removeTab(targetTitleFa);
-            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
-}
+            ID: "doCancelUserTaskButton",
+            icon: "[SKIN]actions/edit.png",
+            title: "بستن",
+            align: "center",
+            width: "150",
+            click: function () {
+                taskConfirmationWindow.hide();
+                <%--trainingTabSet.removeTab(targetTitleFa);--%>
+                <%--createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);--%>
+            }
         }
     );
 
@@ -411,7 +426,7 @@ abaspour 9803
                                         rejectTaskForm.setValue("REJECT", "Y");
                                         var data = rejectTaskForm.getValues();
                                         isc.RPCManager.sendRequest({
-                                            actionURL: workflowUrl + "doUserTask",
+                                            actionURL: workflowUrl + "/doUserTask",
                                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                             httpMethod: "POST",
                                             useSimpleHttp: true,
@@ -422,10 +437,10 @@ abaspour 9803
                                             serverOutputAsString: false,
                                             callback: function (RpcResponse_o) {
                                                 if (RpcResponse_o.data == 'success') {
-                                                    isc.say("تعریف " + targetTitleFa + " عودت داده شد.");
+                                                    isc.say( targetTitleFa + " عودت داده شد.");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
-                                                    userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");
+                                                    <%--userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");--%>
                                                 }
                                             }
                                         });
@@ -451,6 +466,58 @@ abaspour 9803
     });
     </c:if>
 
+    <c:if test="${taskFormVariable.id =='DELETE'}">
+    doDeleteTaskButton = isc.IButton.create({
+        icon: "[SKIN]actions/edit.png", title: "حذف گردش کار", align: "center", width: "150",
+        click: function () {
+
+            isc.MyYesNoDialog.create({
+                message: "<spring:message code="course.remove.from.workflow.ask"/>",
+                title: "<spring:message code="message"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        taskStartConfirmForm.setValue("REJECT", "Y");
+                        taskStartConfirmForm.setValue("REJECTVAL", "حذف از گردش کار");
+                        var data = taskStartConfirmForm.getValues();
+                        var odat = taskStartConfirmForm.getOldValues();
+                        var ndat = {};
+                        for (var pr in data)
+                            if (pr.startsWith("recom")) {
+                                if (!odat.hasOwnProperty(pr) || (odat.hasOwnProperty(pr) && !(odat[pr] == data[pr]))) {
+                                    ndat[pr] = (data[pr].startsWith("(${username})") ? data[pr] : "(${username})" + data[pr]);
+                                }
+                            } else if (!pr.startsWith("rRRR"))
+                                ndat[pr] = data[pr];
+
+                        isc.RPCManager.sendRequest({
+                            actionURL: workflowUrl + "/doUserTask",
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            httpMethod: "POST",
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            showPrompt: false,
+                            data: JSON.stringify(ndat),
+                            params: {"taskId": "${id}", "usr": "${username}"},
+                            serverOutputAsString: false,
+                            callback: function (RpcResponse_o) {
+                                console.log(RpcResponse_o);
+                                if (RpcResponse_o.data == 'success') {
+
+                                    isc.say("گردش کار حذف شد.");
+                                    taskConfirmationWindow.hide();
+                                    ListGrid_UserTaskList.invalidateCache();
+
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
+    </c:if>
+
     </c:forEach>
 
     isc.HLayout.create({
@@ -459,10 +526,11 @@ abaspour 9803
         align: "center",
         membersMargin: 10,
         members: [
+            doDeleteTaskButton,
             viewDocButton,
             doStartTaskButton,
             doRejectTaskButton,
-          doCancelUserTaskButton
+            doCancelUserTaskButton
         ]
     });
     isc.HTMLFlow.create({

@@ -7,12 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PersonalInfoDAO extends JpaRepository<PersonalInfo, Long>, JpaSpecificationExecutor<PersonalInfo> {
 
     @Transactional
-    List<PersonalInfo> findByNationalCode(@Param("nationalCode") String nationalCode);
-
+    Optional<PersonalInfo> findByNationalCode(@Param("nationalCode") String nationalCode);
 }

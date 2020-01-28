@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+// script
 
     // -------------------------------------------  Menu -------------------------------------------
     JobMenu_job = isc.Menu.create({
@@ -31,10 +31,10 @@
                     refreshJobLG_job();
                 }
             }),
-           /* isc.TrPrintBtn.create({
-                click: function () {
-                }
-            }),*/
+            /* isc.TrPrintBtn.create({
+                 click: function () {
+                 }
+             }),*/
         ]
     });
 
@@ -42,10 +42,10 @@
     JobDS_job = isc.RestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "contains"},
-            {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     JobLG_job = isc.TrLG.create({
@@ -64,8 +64,6 @@
     isc.VLayout.create({
         members: [JobTS_job, JobLG_job],
     });
-
-
 
 
     <%@ page contentType="text/html;charset=UTF-8" %>
@@ -118,12 +116,12 @@
     let DS_Job_job = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان شغل", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "عنوان انگليسي", align: "center", filterOperator: "contains"},
-            {name: "code", title: "کد شغل", align: "center", filterOperator: "contains"},
-            {name: "costCenter", title: "مرکز هزينه", align: "center", filterOperator: "contains"},
-            {name: "description", title: "توضيحات", align: "center", filterOperator: "contains"}],
-        fetchDataURL: jobUrl + "spec-list"
+            {name: "titleFa", title: "عنوان شغل", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "عنوان انگليسي", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "کد شغل", align: "center", filterOperator: "iContains"},
+            {name: "costCenter", title: "مرکز هزينه", align: "center", filterOperator: "iContains"},
+            {name: "description", title: "توضيحات", align: "center", filterOperator: "iContains"}],
+        fetchDataURL: jobUrl + "/spec-list"
     });
 
     let LG_Job_job = isc.MyListGrid.create({
@@ -532,7 +530,7 @@
             return;
         }
         let jobData = DF_Job_job.getValues();
-        let jobSaveUrl = jobUrl;
+        let jobSaveUrl = jobUrl + "/";
         if (jobMethod.localeCompare("PUT") == 0) {
             let jobRecord = LG_Job_job.getSelectedRecord();
             jobSaveUrl += jobRecord.id;
@@ -572,7 +570,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(MyDsRequest(jobUrl + record.id, "DELETE", null, "callback: show_JobActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(MyDsRequest(jobUrl + "/" + record.id, "DELETE", null, "callback: show_JobActionResult(rpcResponse)"));
                     }
                 }
             });
@@ -582,7 +580,7 @@
     function refresh_JobCompetenceListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_JobCompetence_job.fetchDataURL = jobUrl + record.id + "/job-competence/spec-list";
+            DS_JobCompetence_job.fetchDataURL = jobUrl + "/" + record.id + "/job-competence/spec-list";
             LG_JobCompetence_job.invalidateCache();
             LG_JobCompetence_job.fetchData();
         } else {
@@ -593,7 +591,7 @@
     function refresh_SkillListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_Skill_job.fetchDataURL = jobUrl + record.id + "/skills/spec-list";
+            DS_Skill_job.fetchDataURL = jobUrl + "/" + record.id + "/skills/spec-list";
             LG_Skill_job.invalidateCache();
             LG_Skill_job.fetchData();
         } else {
@@ -604,7 +602,7 @@
     function refresh_SkillGroupListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_SkillGroup_job.fetchDataURL = jobUrl + record.id + "/skillGroups/spec-list";
+            DS_SkillGroup_job.fetchDataURL = jobUrl + "/" + record.id + "/skillGroups/spec-list";
             LG_SkillGroup_job.invalidateCache();
             LG_SkillGroup_job.fetchData();
         } else {
@@ -615,7 +613,7 @@
     function refresh_CourseListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_Course_job.fetchDataURL = jobUrl + record.id + "/courses/spec-list";
+            DS_Course_job.fetchDataURL = jobUrl + "/" + record.id + "/courses/spec-list";
             LG_Course_job.invalidateCache();
             LG_Course_job.fetchData();
         } else {
@@ -636,7 +634,7 @@
 
             DF_JobCompetenceType_job.clearValues();
 
-            DS_Competence_job.fetchDataURL = competenceUrl + "job/not/" + record.id + "/spec-list";
+            DS_Competence_job.fetchDataURL = competenceUrl + "/job/not/" + record.id + "/spec-list";
             LG_Competence_job.invalidateCache();
             LG_Competence_job.fetchData();
             LG_Competence_job.show();
@@ -654,8 +652,14 @@
         if (jobCompetenceMethod_job.localeCompare("POST") == 0) {
             let competenceRecords = LG_Competence_job.getSelectedRecords();
             if (checkRecord(competenceRecords, true, 'حداقل يک شايستگي شغلي را انتخاب نمائيد.')) {
-                let data = {"jobId": jobId, "competenceIds": competenceRecords.map(r => r.id), "eJobCompetenceTypeId": eJobCompetenceTypeId};
-                isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "job", jobCompetenceMethod_job, JSON.stringify(data), "callback: show_JobCompetenceActionResult(rpcResponse)"));
+                let data = {"jobId": jobId, "competenceIds": competenceRecords.map(r = > r.id
+            ),
+                "eJobCompetenceTypeId"
+            :
+                eJobCompetenceTypeId
+            }
+                ;
+                isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "/job", jobCompetenceMethod_job, JSON.stringify(data), "callback: show_JobCompetenceActionResult(rpcResponse)"));
             }
         } else {
             let competenceId = DF_CompetenceInfo_job.getValue('competence.id');
@@ -698,7 +702,7 @@
                     message: "آیا رکورد انتخاب شده حذف گردد؟",
                     buttonClick: function (button, index) {
                         this.close();
-                        actionUrl = jobCompetenceUrl + jobRecord.id + "/" + competenceRecord.competence.id;
+                        actionUrl = jobCompetenceUrl + "/" +jobRecord.id + "/" + competenceRecord.competence.id;
                         if (index == 0) {
                             isc.RPCManager.sendRequest(MyDsRequest(actionUrl, "DELETE", null, "callback: show_JobCompetenceActionResult(rpcResponse)"));
                         }
@@ -744,7 +748,7 @@
     function show_JobCompetenceActionResult(resp) {
         respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
-            var MyOkDialog_job =  isc.MyOkDialog.create({
+            var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
             });
 

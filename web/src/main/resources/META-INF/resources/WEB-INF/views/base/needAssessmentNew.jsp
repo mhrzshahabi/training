@@ -7,15 +7,15 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     var productRevenue_facets = [
 
         {
-            id:"a4",
-            title:"a4",
-            values:[
-                {id:"sum", title:"All Regions"},
+            id: "a4",
+            title: "a4",
+            values: [
+                {id: "sum", title: "All Regions"},
                 // {id:"North", parentId:"sum", title:"North"},
                 // {id:"South", parentId:"sum", title:"South"},
                 // {id:"East", parentId:"sum", title:"East"},
@@ -24,28 +24,28 @@
         },
 
         {
-            id:"a1",
-            title:"a1",
-            values:[
-                {id:"Actual", title:"Actual"}
+            id: "a1",
+            title: "a1",
+            values: [
+                {id: "Actual", title: "Actual"}
             ]
         },
 
         {
-            id:"a2",
-            title:"a2",
-            width:150,
-            values:[
-                {id:"sum", title:"All Years"},
+            id: "a2",
+            title: "a2",
+            width: 150,
+            values: [
+                {id: "sum", title: "All Years"},
             ]
         },
 
         {
-            id:"a3",
-            title:"a3",
-            width:175,
-            values:[
-                {id:"sum", title:"All Products"}
+            id: "a3",
+            title: "a3",
+            width: 175,
+            values: [
+                {id: "sum", title: "All Products"}
             ]
         }
     ];
@@ -55,9 +55,9 @@
     )
 
     var productData = [
-        {a1:"مهارت", a2:"دانشی", a3:"شایستگی برنامه نویسی", a4:"عملکرد ضروری", value:"توانایی"},
-        {a1:"مهارت", a2:"مهارتی", a3:"شایستگی برنامه نویسی", a4:"عملکرد بهبود", value:"آشنایی"},
-        {a1:"مهارت", a2:"نگرشی", a3:"شایستگی برنامه نویسی", a4:"عملکرد توسعه", value:"مهارتییس"},
+        {a1: "مهارت", a2: "دانشی", a3: "شایستگی برنامه نویسی", a4: "عملکرد ضروری", value: "توانایی"},
+        {a1: "مهارت", a2: "مهارتی", a3: "شایستگی برنامه نویسی", a4: "عملکرد بهبود", value: "آشنایی"},
+        {a1: "مهارت", a2: "نگرشی", a3: "شایستگی برنامه نویسی", a4: "عملکرد توسعه", value: "مهارتییس"},
 
     ];
     // var productRevenue_facets = [
@@ -98,25 +98,25 @@
     // ]
 
     var NeedAssessmentDF_First = isc.DynamicForm.create({
-        numCols:8,
+        numCols: 8,
         margin: 20,
-        border:"2px solid red",
-        fields:[
+        border: "2px solid red",
+        fields: [
             {
-              type:"SpacerItem",
-                colSpan:2
+                type: "SpacerItem",
+                colSpan: 2
             },
             {
-                name:"alignment", type:"radioGroup", showTitle:false,
-                valueMap:["شغل","گروه شغلی","پست","گروه پستی"], defaultValue:"center",
-                change:"countryList.getField('countryCode').align = value; countryList.markForRedraw()",
-                align:"center",
+                name: "alignment", type: "radioGroup", showTitle: false,
+                valueMap: ["شغل", "گروه شغلی", "پست", "گروه پستی"], defaultValue: "center",
+                change: "countryList.getField('countryCode').align = value; countryList.markForRedraw()",
+                align: "center",
                 // colSpan:1
             },
             {
-                name:"combo", type:"TrComboAutoRefresh", showTitle:false,
-                width:"250",
-                align:"center",
+                name: "combo", type: "TrComboAutoRefresh", showTitle: false,
+                width: "250",
+                align: "center",
 
             }
         ]
@@ -168,22 +168,22 @@
     //     }
     // });
     var NeedAssessmentCG_First = isc.CubeGrid.create({
-        ID:"report",
+        ID: "report",
 
         // Don't draw this CubeGrid - it will be written into a Layout with the facet-control
         // UI components
-        autoDraw:false,
+        autoDraw: false,
 
         // data configuration
-        facets:         productRevenue_facets, // defined above
-        dataSource:     productData,      // defined in datasource file productRevenue.ds.xml
-        valueProperty:  "value",
+        facets: productRevenue_facets, // defined above
+        dataSource: productData,      // defined in datasource file productRevenue.ds.xml
+        valueProperty: "value",
         // cellIdProperty: "cellID",
         // hiliteProperty: "_hilite",
 
         // initial facet layout
-        rowFacets:        ["a3", "a4"],
-        columnFacets:     ["a2","a1"],
+        rowFacets: ["a3", "a4"],
+        columnFacets: ["a2", "a1"],
         // fixedFacetValues: {Scenarios:"Budget"},
 
         // hover tips
@@ -191,26 +191,26 @@
         // cellHoverHTML:"if (record != null) return 'cell value: '+record.value+'<br>cell ID: '+record.cellID;",
         // hoverProperties:{width:150, height:20},
 
-        enableCharting:			true,
+        enableCharting: true,
         // showFacetValueContextMenus:	true,
         // showFacetContextMenus:		true,
         // showCellContextMenus:		true,
         // valueTitle:"Sales",
 
         // misc settings for this application
-        canCollapseFacets:true,
-        canMinimizeFacets:true,
-        autoSelectValues:"both",	// both, cols, row, none
-        rowHeaderGridMode:true,
-        canMoveFacets:true
+        canCollapseFacets: true,
+        canMinimizeFacets: true,
+        autoSelectValues: "both",	// both, cols, row, none
+        rowHeaderGridMode: true,
+        canMoveFacets: true
 
     });
 
     isc.VLayout.create({
         // autoDraw:true,
-        border:"2px solid red",
+        border: "2px solid red",
         width: "100%",
         height: "100%",
         // membersMargin:10,
-        members: [NeedAssessmentDF_First,NeedAssessmentCG_First],
+        members: [NeedAssessmentDF_First, NeedAssessmentCG_First],
     });

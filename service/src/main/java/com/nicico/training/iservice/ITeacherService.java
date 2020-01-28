@@ -1,34 +1,41 @@
 package com.nicico.training.iservice;
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.model.Teacher;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface ITeacherService {
 
-	TeacherDTO.Info get(Long id);
+    TeacherDTO.Info get(Long id);
 
-	List<TeacherDTO.Info> list();
+    Teacher getTeacher(Long id);
 
-	TeacherDTO.Info create(TeacherDTO.Create request);
+    List<TeacherDTO.Info> list();
 
-	TeacherDTO.Info update(Long id, TeacherDTO.Update request);
+    TeacherDTO.Info create(TeacherDTO.Create request);
 
-	void delete(Long id);
+    TeacherDTO.Info update(Long id, TeacherDTO.Update request);
 
-	void delete(TeacherDTO.Delete request);
+    void delete(Long id);
 
-	SearchDTO.SearchRs<TeacherDTO.Info> search(SearchDTO.SearchRq request);
+    void delete(TeacherDTO.Delete request);
 
-	SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<TeacherDTO.Info> search(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request);
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request);
 
-    void addCategories(CategoryDTO.Delete  request, Long teacherId);
+    SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request);
 
-	List<Long> getCategories(Long teacherId);
+    public void changeBlackListStatus(Boolean inBlackList, Long id);
+
 }

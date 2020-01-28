@@ -14,6 +14,7 @@ import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.service.CourseService;
+import com.nicico.training.service.GoalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -30,6 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,10 +44,12 @@ public class CourseRestController {
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
+    private final GoalService goalService;
     private final ICourseService iCourseService;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final CourseDAO courseDAO;
+    private final ModelMapper modelMapper;
 
     // ---------------------------------
     @Loggable
@@ -120,9 +124,10 @@ public class CourseRestController {
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
         if (check) {
+            List<GoalDTO.Info> goals = courseService.getgoal(id);
+            goals.forEach(g -> goalService.delete(g.getId()));
             courseService.deletGoal(id);
             courseService.delete(id);
-
         }
 
         // courseService.delete(id);
@@ -140,11 +145,12 @@ public class CourseRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_course')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                       @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) Long id,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -160,12 +166,18 @@ public class CourseRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
         SearchDTO.SearchRs<CourseDTO.Info> response = courseService.search(request);
-
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -235,7 +247,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId){
+    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId) {
         List<JobDTO.Info> job = courseService.getJob(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(job)
@@ -247,7 +259,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/post/{courseId}")
-    public ResponseEntity<ISC.Response> getPost(@PathVariable Long courseId){
+    public ResponseEntity<ISC.Response> getPost(@PathVariable Long courseId) {
         List<PostDTO.Info> post = courseService.getPost(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(post)
@@ -391,7 +403,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = {"/printTest/{courseId}"})
-    public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable Long courseId) throws Exception {
+    public void printGoalsAndSyllabus(HttpServletResponse response, @PathVariable Long courseId) throws Exception {
         final Map<String, Object> params = new HashMap<>();
         String domain = courseService.getDomain(courseId);
         List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
@@ -412,19 +424,22 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         params.put("courseId", courseId);
         params.put("domain", domain);
-        params.put("preCourse",preCourse);
+        params.put("preCourse", preCourse);
         params.put("equalCourse", equalCourse);
         params.put("eRun", eRun.getTitleFa());
-        params.put("theo",eTheo.getTitleFa());
+        params.put("theo", eTheo.getTitleFa());
         reportUtil.export("/reports/test1.jasper", params, response);
     }
 
     @Loggable
     @GetMapping(value = "/get_teachers/{id}")
-    public ResponseEntity<TeacherDTO.TeacherSpecRs> getTeachers(@PathVariable Long id) {
-        List<TeacherDTO.Info> infoList = courseService.getTeachers(id);
-        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
-        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
+        List<TeacherDTO.TeacherFullNameTuple> infoList = new ArrayList<>();
+        if (id != 0) {
+            infoList = courseService.getTeachers(id);
+        }
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(infoList)
                 .setStartRow(0)
                 .setEndRow(infoList.size())
@@ -433,4 +448,28 @@ public class CourseRestController {
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    //---------------------heydari---------------------------
+    @Loggable
+    @PutMapping(value = "evaluation/{id}")
+    public ResponseEntity<CourseDTO.Info> updateEvaluation(@PathVariable Long id, @RequestBody Object request) {
+        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
+        return new ResponseEntity<>(courseService.updateEvaluation(id, update), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "getEvaluation/{id}")
+    public ResponseEntity<CourseDTO.SpecRs> getEvaluation(@PathVariable Long id) {
+        List<CourseDTO.Info> list = courseService.getEvaluation(id);
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity(specRs, HttpStatus.OK);
+    }
+
+
 }

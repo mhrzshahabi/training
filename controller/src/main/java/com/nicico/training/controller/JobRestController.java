@@ -29,12 +29,11 @@ import java.util.List;
 @RequestMapping("/api/job/")
 public class JobRestController {
 
-    private final JobService jobService;
     final ObjectMapper objectMapper;
     final CourseService courseService;
     final DateUtil dateUtil;
     final ReportUtil reportUtil;
-
+    private final JobService jobService;
 
     @GetMapping("list")
     public ResponseEntity<List<JobDTO.Info>> list() {
@@ -46,32 +45,4 @@ public class JobRestController {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(jobService.search(nicicoCriteria), HttpStatus.OK);
     }
-
-//    @Loggable
-//    @PostMapping(value = {"/print/{type}"})
-//    public void printWithCriteria(HttpServletResponse response,
-//                                  @PathVariable String type,
-//                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
-//
-//        final SearchDTO.CriteriaRq criteriaRq;
-//        final SearchDTO.SearchRq searchRq;
-//        if (criteriaStr == null || criteriaStr.equalsIgnoreCase("{}")) {
-//            searchRq = new SearchDTO.SearchRq();
-//        } else {
-//            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-//            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-//        }
-//
-//        final SearchDTO.SearchRs<JobDTO.Info> searchRs = jobService.search(searchRq);
-//
-//        final Map<String, Object> params = new HashMap<>();
-//        params.put("todayDate", DateUtil.todayDate());
-//
-//        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-//
-//        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/EducationOrientationByCriteria.jasper", params, jsonDataSource, response);
-//    }
-
 }

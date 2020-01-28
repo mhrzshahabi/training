@@ -109,7 +109,7 @@ public class JobGroupService implements IJobGroupService {
         JobGroup updating = new JobGroup();
         modelMapper.map(jobGroup, updating);
         modelMapper.map(request, updating);
-        return modelMapper.map(jobGroupDAO.saveAndFlush(updating),JobGroupDTO.Info.class);
+        return modelMapper.map(jobGroupDAO.saveAndFlush(updating), JobGroupDTO.Info.class);
     }
 
     @Transactional
@@ -176,7 +176,7 @@ public class JobGroupService implements IJobGroupService {
         Set<Job> jobs = jobGroup.getJobSet();
         ArrayList<JobDTO.Info> jobList = new ArrayList<>();
         for (Job job : jobs) {
-            jobList.add(modelMapper.map(job,JobDTO.Info.class));
+            jobList.add(modelMapper.map(job, JobDTO.Info.class));
         }
 //        JobDTO.Info info = new JobDTO.Info();
 //      --------------------------------------- By f.ghazanfari - start ---------------------------------------

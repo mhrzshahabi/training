@@ -9,10 +9,11 @@ import java.util.Map;
 
 public interface ICourseService {
 
-	CourseDTO.Info get(Long id);
+    CourseDTO.Info get(Long id);
 
-	List<CourseDTO.Info> list();
-	List<CourseDTO.Info> preCourseList(Long id);
+    List<CourseDTO.Info> list();
+
+    List<CourseDTO.Info> preCourseList(Long id);
 
     @Transactional
     void setPreCourse(Long id, List<Long> preCourseList);
@@ -22,22 +23,24 @@ public interface ICourseService {
 
     List<Map> equalCourseList(Long id);
 
-	CourseDTO.Info create(CourseDTO.Create request);
+    CourseDTO.Info create(CourseDTO.Create request);
 
-	CourseDTO.Info update(Long id, CourseDTO.Update request);
+    CourseDTO.Info update(Long id, CourseDTO.Update request);
 
-	void delete(Long id);
+    void delete(Long id);
 
-	void delete(CourseDTO.Delete request);
+    void delete(CourseDTO.Delete request);
 
-	SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request);
 
     //-------jafari--------
     SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request);
 
     List<GoalDTO.Info> getgoal(Long courseId);
-	List<GoalDTO.Info> getGoalWithOut(Long courseId);
-	List<SkillDTO.Info> getSkill(Long courseId);
+
+    List<GoalDTO.Info> getGoalWithOut(Long courseId);
+
+    List<SkillDTO.Info> getSkill(Long courseId);
 
 
     List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
@@ -52,17 +55,25 @@ public interface ICourseService {
 
     String getMaxCourseCode(String str);
 
-	void  getCourseIdvGoalsId(Long courseId, List<Long> goalIdList);
+    void getCourseIdvGoalsId(Long courseId, List<Long> goalIdList);
 
-	void removeCourseSGoal(Long courseId, List<Long> goalIdList);
+    void removeCourseSGoal(Long courseId, List<Long> goalIdList);
 
-	boolean  checkForDelete(Long id);
+    boolean checkForDelete(Long id);
 
-	void deletGoal(Long id);
+    void deletGoal(Long id);
 
     @Transactional
     String getDomain(Long id);
 
     @Transactional(readOnly = true)
-    List<TeacherDTO.Info> getTeachers(Long courseId);
+    List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId);
+
+    int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
+
+    //---------------------heydari---------------------------
+
+    CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
+
+    List<CourseDTO.Info> getEvaluation(Long courseId);
 }

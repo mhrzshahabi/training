@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,8 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ContactInfoDTO {
 
     private String email;
@@ -31,18 +29,29 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfo")
     public static class Info extends ContactInfoDTO {
         private Long id;
-        private AddressDTO.AddressInfoTuple homeAddress;
-        private AddressDTO.AddressInfoTuple workAddress;
+        private AddressDTO.Info homeAddress;
+        private AddressDTO.Info workAddress;
+        private Integer version;
     }
 
     @Getter
     @Setter
-    @ApiModel("ContactInfoInfoTuple")
-    static class ContactInfoInfoTuple extends ContactInfoDTO {
+    @Accessors(chain = true)
+    @ApiModel("ManagerContactInfo")
+    public static class ManagerContactInfo {
         private Long id;
-        private AddressDTO.AddressInfoTuple homeAddress;
-        private AddressDTO.AddressInfoTuple workAddress;
+        private String email;
+        private String mobile;
+    }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ContactInfoCreateOrUpdateRq")
+    public static class CreateOrUpdate extends ContactInfoDTO {
+        private Long id;
+        private AddressDTO.CreateOrUpdate homeAddress;
+        private AddressDTO.CreateOrUpdate workAddress;
     }
 
     @Getter
@@ -50,8 +59,9 @@ public class ContactInfoDTO {
     @Accessors(chain = true)
     @ApiModel("ContactInfoCreateRq")
     public static class Create extends ContactInfoDTO {
-        private AddressDTO.Create homeAddress;
-        private AddressDTO.Create workAddress;
+        private Long id;
+        private AddressDTO.CreateOrUpdate homeAddress;
+        private AddressDTO.CreateOrUpdate workAddress;
     }
 
     @Getter
@@ -60,8 +70,8 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfoUpdateRq")
     public static class Update extends ContactInfoDTO {
         private Long id;
-        private AddressDTO.Update homeAddress;
-        private AddressDTO.Update workAddress;
+        private AddressDTO.CreateOrUpdate homeAddress;
+        private AddressDTO.CreateOrUpdate workAddress;
     }
 
     @Getter

@@ -2,15 +2,43 @@ package com.nicico.training;
 
 import com.nicico.copper.common.IErrorCode;
 import com.nicico.copper.common.NICICOException;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
 public class TrainingException extends NICICOException {
 
     @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private String msg;
+
+    public TrainingException(IErrorCode errorCode) {
+        super(errorCode);
+    }
+
+    // ------------------------------
+
+    public TrainingException(ErrorType errorCode) {
+        this(errorCode, null);
+    }
+
+    public TrainingException(ErrorType errorCode, String field) {
+        super(errorCode, field);
+    }
+
+    public TrainingException(ErrorType errorCode, String field, String msg) {
+
+        super(errorCode, field);
+        setMsg(msg);
+    }
+
+    @Getter
     @RequiredArgsConstructor
     public enum ErrorType implements IErrorCode {
+
+        NotFound(404),
         SkillLevelNotFound(404),
         SkillStandardNotFound(404),
         SkillStandardCategoryNotFound(404),
@@ -46,6 +74,7 @@ public class TrainingException extends NICICOException {
         CommitteeNotFound(404),
         TermNotFound(404),
         CheckListNotFound(404),
+        BehavioralGoalNotFound(404),
         ClassCheckListNotFound(404),
         CheckListItemNotFound(404),
         CompanyNotFound(404),
@@ -57,8 +86,20 @@ public class TrainingException extends NICICOException {
         DuplicateRecord(404),
         NotDeletable(404),
         JobGroupNotFound(404),
+        DCCNotFound(404),
         PostGroupNotFound(404),
-        OperationalUnitDuplicateRecord(406);
+        OperationalUnitDuplicateRecord(406),
+        PersonnelRegisteredNotFound(404),
+        WrongPostalCode(404),
+        ScoresNotFound(404),
+        AttendanceNotFound(404),
+        ParameterNotFound(404),
+        QuestionnaireNotFound(404),
+        Unknown(500),
+        Unauthorized(401),
+        Forbidden(403),
+        RecordAlreadyExists(405),
+        UpdatingInvalidOldVersion(400);
 
         private final Integer httpStatusCode;
 
@@ -66,21 +107,5 @@ public class TrainingException extends NICICOException {
         public String getName() {
             return name();
         }
-
-
-    }
-
-    // ------------------------------
-
-    public TrainingException(IErrorCode errorCode) {
-        super(errorCode);
-    }
-
-    public TrainingException(ErrorType errorCode) {
-        this(errorCode, null);
-    }
-
-    public TrainingException(ErrorType errorCode, String field) {
-        super(errorCode, field);
     }
 }

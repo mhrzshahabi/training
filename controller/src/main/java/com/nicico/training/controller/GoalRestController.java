@@ -37,7 +37,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/goal")
 public class GoalRestController {
-    
+
     private final IGoalService goalService;
     private final ICourseService courseService;
     private final ObjectMapper objectMapper;
@@ -63,8 +63,8 @@ public class GoalRestController {
     @Loggable
     @PostMapping(value = "create/{courseId}")
 //    @PreAuthorize("hasAuthority('c_goal')")
-    public ResponseEntity<GoalDTO.Info> create(@Validated @RequestBody GoalDTO.Create request,@PathVariable Long courseId) {
-        return new ResponseEntity<>(goalService.create(request,courseId), HttpStatus.CREATED);
+    public ResponseEntity<GoalDTO.Info> create(@Validated @RequestBody GoalDTO.Create request, @PathVariable Long courseId) {
+        return new ResponseEntity<>(goalService.create(request, courseId), HttpStatus.CREATED);
     }
 
     @Loggable
@@ -98,8 +98,7 @@ public class GoalRestController {
                                                    @RequestParam(value = "_constructor", required = false) String constructor,
                                                    @RequestParam(value = "operator", required = false) String operator,
                                                    @RequestParam(value = "criteria", required = false) String criteria,
-                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException
-    {
+                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -169,7 +168,7 @@ public class GoalRestController {
         final SyllabusDTO.SpecRs specResponse = new SyllabusDTO.SpecRs();
         specResponse.setData(syllabusList)
                 .setStartRow(0)
-                .setEndRow( syllabusList.size())
+                .setEndRow(syllabusList.size())
                 .setTotalRows(syllabusList.size());
 
         final SyllabusDTO.SyllabusSpecRs specRs = new SyllabusDTO.SyllabusSpecRs();
@@ -189,9 +188,9 @@ public class GoalRestController {
 
     @Loggable
     @GetMapping(value = {"/print-one-course/{courseId}/{type}"})
-    public void printOneCourse (HttpServletResponse response,
-                                @PathVariable Long courseId,
-                                @PathVariable String type) throws Exception {
+    public void printOneCourse(HttpServletResponse response,
+                               @PathVariable Long courseId,
+                               @PathVariable String type) throws Exception {
         List<GoalDTO.Info> getGoal = courseService.getgoal(courseId);
         CourseDTO.Info info = courseService.get(courseId);
         final Map<String, Object> params = new HashMap<>();

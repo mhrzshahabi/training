@@ -36,6 +36,20 @@ public class StudentService implements IStudentService {
 
     @Transactional(readOnly = true)
     @Override
+    public Student getStudent(Long id) {
+        final Optional<Student> gById = studentDAO.findById(id);
+        return gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Student getStudentByPersonnelNo(String personnelNo) {
+        final Optional<Student> student = studentDAO.findByPersonnelNo(personnelNo);
+        return student.orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<StudentDTO.Info> list() {
         final List<Student> gAll = studentDAO.findAll();
         return modelMapper.map(gAll, new TypeToken<List<StudentDTO.Info>>() {
@@ -86,4 +100,4 @@ public class StudentService implements IStudentService {
         return modelMapper.map(saved, StudentDTO.Info.class);
     }
 
-   }
+}

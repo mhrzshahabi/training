@@ -24,6 +24,6 @@ public class OperationalUnit extends Auditable {
     @Column(name = "c_unitcode", unique = true)
     private String unitCode;
 
-    @Column(name="c_operational_unit", unique = true)
+    @Column(name = "c_operational_unit", unique = true)
     private String operationalUnit;
 }

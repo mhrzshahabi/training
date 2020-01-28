@@ -19,42 +19,40 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/term")
 public class TermFormController {
 
-private final OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
 
-
-	@RequestMapping("/show-form")
-	public String showForm() {
-		return "base/term";
-	}
-
+    @RequestMapping("/show-form")
+    public String showForm() {
+        return "base/term";
+    }
 
 
-	@PostMapping("/printWithCriteria/{type}")
-	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		//String token = (String) request.getSession().getAttribute("AccessToken");
-		String token=(String) request.getParameter("token");
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-	   final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+    @PostMapping("/printWithCriteria/{type}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        String token = (String) request.getParameter("token");
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
-		else
-			return null;
-	}
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
 }

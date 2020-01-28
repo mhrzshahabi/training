@@ -30,9 +30,7 @@ public interface IClassCheckListService {
 
     SearchDTO.SearchRs<ClassCheckListDTO.Info> search(SearchDTO.SearchRq request);
 
-
-    List<ClassCheckListDTO.Info> fillTable(Long classId);
-
+    List<ClassCheckListDTO.Info> fillTable(Long classId, Long checklist_id);
 
     TotalResponse<ClassCheckListDTO.Info> newSearch(MultiValueMap criteria);
 
@@ -41,4 +39,6 @@ public interface IClassCheckListService {
 
 
     ClassCheckListDTO.Info updateDescriptionCheck(MultiValueMap<String, String> body) throws IOException;
+
+
 }

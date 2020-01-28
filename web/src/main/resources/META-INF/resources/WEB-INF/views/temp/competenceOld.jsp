@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
 
     let competenceMethod_competence;
     let jobCompetenceMethod_competence;
@@ -29,7 +29,7 @@
                 title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                     show_CompetenceRemoveForm_competence();
                 }
-            }, ]
+            },]
     });
     //****************************************************************************************************************
     // RestDataSource & ListGrid
@@ -42,7 +42,7 @@
             {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
             {name: "ecompetenceInputType.titleFa", title: "نوع ورودي", align: "center"},
             {name: "description", title: "توضيحات", align: "center"}],
-        fetchDataURL: competenceUrl + "spec-list"
+        fetchDataURL: competenceUrl + "/spec-list"
     });
 
     let LG_Competence_competence = isc.MyListGrid.create({
@@ -169,7 +169,7 @@
         ],
     });
 
-    let LG_Course_competence  = isc.MyListGrid.create({
+    let LG_Course_competence = isc.MyListGrid.create({
         dataSource: DS_Course_competence,
         doubleClick: function () {
         },
@@ -424,7 +424,7 @@
         if (showDialog) {
             title = title ? title : "";
             msg = msg ? msg : "رکوردی انتخاب نشده است!";
-            var  MyOkDialog_job = isc.MyOkDialog.create({
+            var MyOkDialog_job = isc.MyOkDialog.create({
                 message: msg,
                 title: title,
             });
@@ -558,7 +558,7 @@
 
             DF_JobCompetenceType_competence.clearValues();
 
-            DS_Job_competence.fetchDataURL = jobUrl + "competence/not/" + record.id + "/spec-list";
+            DS_Job_competence.fetchDataURL = jobUrl + "/competence/not/" + record.id + "/spec-list";
             LG_Job_competence.invalidateCache();
             LG_Job_competence.fetchData();
             LG_Job_competence.show();
@@ -577,9 +577,12 @@
             let jobRecords = LG_Job_competence.getSelectedRecords();
             if (checkRecord_competence(jobRecords, true, 'حداقل يک شغل را انتخاب نمائيد.')) {
                 let data = {
-                        "competenceId": competenceId, "jobIds": jobRecords.map(r => r.id), "eJobCompetenceTypeId":
-                        eJobCompetenceTypeId
-                    }
+                    "competenceId": competenceId, "jobIds": jobRecords.map(r = > r.id
+            ),
+                "eJobCompetenceTypeId"
+            :
+                eJobCompetenceTypeId
+            }
                 ;
                 isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "competence", jobCompetenceMethod_competence, JSON.stringify(data), "callback: show_JobCompetenceActionResult_competence(rpcResponse)"));
             }

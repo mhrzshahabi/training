@@ -59,11 +59,11 @@ public class JobGroupFormController {
                 return null;
         } else {
             if (type.equals("pdf"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/pdf/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/pdf/" + id, HttpMethod.GET, entity, byte[].class);
             else if (type.equals("excel"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/excel/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/excel/" + id, HttpMethod.GET, entity, byte[].class);
             else if (type.equals("html"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/html/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/html/" + id, HttpMethod.GET, entity, byte[].class);
             else
                 return null;
         }

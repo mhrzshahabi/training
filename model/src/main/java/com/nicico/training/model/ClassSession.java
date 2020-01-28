@@ -33,6 +33,9 @@ public class ClassSession extends Auditable {
     @Column(name = "c_day_code")
     private String dayCode;
 
+    @Column(name = "c_day_name")
+    private String dayName;
+
     @Column(name = "c_session_date")
     private String sessionDate;
 
@@ -45,8 +48,11 @@ public class ClassSession extends Auditable {
     @Column(name = "c_session_type_id")
     private Integer SessionTypeId;
 
+    @Column(name = "c_session_type")
+    private String sessionType;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="f_institute_id", insertable = false, updatable = false)
+    @JoinColumn(name = "f_institute_id", insertable = false, updatable = false)
     private Institute institute;
 
     @Column(name = "f_institute_id")
@@ -68,6 +74,9 @@ public class ClassSession extends Auditable {
 
     @Column(name = "c_session_state")
     private Integer sessionState;
+
+    @Column(name = "c_session_state_fa")
+    private String sessionStateFa;
 
     @Column(name = "c_description")
     private String description;

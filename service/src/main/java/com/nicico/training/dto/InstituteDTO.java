@@ -3,7 +3,6 @@ package com.nicico.training.dto;
 @Author:roya
 */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.dto.enums.EInstituteTypeDTO;
 import com.nicico.training.dto.enums.ELicenseTypeDTO;
@@ -21,10 +20,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class InstituteDTO {
-    
+
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
@@ -87,12 +85,12 @@ public class InstituteDTO {
     @ApiModel("InstituteInfo")
     public static class Info extends InstituteDTO {
         private Long id;
-//        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
+        //        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
 //        private Set<EquipmentDTO.Info> equipmentSet;
 //        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
 //        private Set<InstituteAccountDTO.Info> instituteAccountSet;
         private PersonalInfoDTO.Info manager;
-        private InstituteDTO.Info  parentInstitute;
+        private InstituteDTO.Info parentInstitute;
         private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
         private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
         private CityDTO.Info city;
@@ -109,7 +107,7 @@ public class InstituteDTO {
         Set<Long> equipmentIds;
         Set<Long> trainingPlaceIds;
         Set<Long> teacherIds;
-       }
+    }
 
     // ------------------------------
 
@@ -149,11 +147,30 @@ public class InstituteDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<InstituteDTO.Info> data;
+    public static class SpecRs<T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InstituteTitle {
+        private String titleFa;
+        private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InstituteWithTrainingPlace {
+        private Long id;
+        private String titleFa;
+        private List<TrainingPlaceDTO.TrainingPlaceTitle> trainingPlaceSet;
     }
 }

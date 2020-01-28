@@ -13,7 +13,6 @@ import com.nicico.training.dto.SyllabusDTO;
 import com.nicico.training.iservice.IGoalService;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.Goal;
-import com.nicico.training.model.Syllabus;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.GoalDAO;
 import com.nicico.training.repository.SyllabusDAO;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -81,15 +79,16 @@ public class GoalService implements IGoalService {
         final Optional<Goal> one = goalDAO.findById(id);
         final Goal goal = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         List<Course> courses = goal.getCourseSet();
-
+        if (courses.size() > 1) {
+            return;
+        }
         for (Course course : courses) {
             course.getGoalSet().remove(goal);
         }
-
-        Set<Syllabus> syllabusSet = goal.getSyllabusSet();
-        for (Syllabus syllabus : syllabusSet) {
-           syllabusDAO.delete(syllabus);
-        }
+//        Set<Syllabus> syllabusSet = goal.getSyllabusSet();
+//        for (Syllabus syllabus : syllabusSet) {
+//            syllabusDAO.delete(syllabus);
+//        }
         goalDAO.delete(goal);
     }
 
@@ -122,7 +121,7 @@ public class GoalService implements IGoalService {
 
     @Transactional
     @Override
-    public List<CourseDTO.Info> getCourses(Long goalId){
+    public List<CourseDTO.Info> getCourses(Long goalId) {
         final Optional<Goal> ssById = goalDAO.findById(goalId);
         final Goal goal = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
         List<CourseDTO.Info> courses = new ArrayList<>();

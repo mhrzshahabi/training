@@ -21,19 +21,21 @@
     Menu_ListGrid_term = isc.Menu.create({
         data: [
             {
-                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+                title: "<spring:message code="refresh"/>",
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
                     ListGrid_Term.invalidateCache();
                 }
             }, {
-                     <sec:authorize access="hasAuthority('PERMISSION')">
-                     </sec:authorize>
+                <sec:authorize access="hasAuthority('PERMISSION')">
+                </sec:authorize>
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
                     show_TermNewForm();
                     <sec:authorize access="hasAuthority('PERMISSION')">
                     </sec:authorize>
                 }
             }, {
-               title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
                     show_TermEditForm();
                 }
             }, {
@@ -45,11 +47,15 @@
                     print_TermListGrid("pdf");
                 }
             }, {
-                title: "<spring:message code="print.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
+                title: "<spring:message code="print.excel"/>",
+                icon: "<spring:url value="excel.png"/>",
+                click: function () {
                     print_TermListGrid("excel")
                 }
             }, {
-                title: "<spring:message code="print.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
+                title: "<spring:message code="print.html"/>",
+                icon: "<spring:url value="html.png"/>",
+                click: function () {
                     print_TermListGrid("html");
                 }
             }]
@@ -70,6 +76,7 @@
             {name: "titleFa"},
             {name: "startDate"},
             {name: "endDate"},
+            {name: "description"}
         ], dataFormat: "json",
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
@@ -82,12 +89,19 @@
         doubleClick: function () {
         },
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center", filterOperator: "contains"},
-            {name: "titleFa", title: "نام ", align: "center", filterOperator: "contains"},
-            {name: "startDate", title: "شروع", align: "center", filterOperator: "contains"},
-            {name: "endDate", title: "پایان", align: "center", filterOperator: "contains"},
-            {name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
+           // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
+            {
+                name: "startDate",
+                title: "<spring:message code="start.date"/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+
+            {name: "endDate", title: "<spring:message code="end.date"/>", align: "center", filterOperator: "iContains"},
+
+            {name: "description",title: "<spring:message code="description"/>",align: "center",filterOperator: "iContains"},
         ],
         doubleClick: function () {
             DynamicForm_Term.clearValues();
@@ -107,20 +121,21 @@
         fields: [{name: "id", hidden: true},
             {
                 name: "code",
-                title: "کد",
+                title: "<spring:message code="code"/>",
                 disabled: true,
                 canEdit: false,
-                hint: "کد به صورت اتوماتیک ایجاد می شود", showHintInField: true,
+                hint: "<spring:message code="msg.generated.automatically.code"/>", showHintInField: true,
                 width: "*",
                 height: 35
-            }, {
+            }
+            , {
                 name: "titleFa",
-                title: "نام فارسی",
+                title: "<spring:message code="title"/>",
                 required: true,
                 type: 'text',
                 readonly: true,
                 height: 35,
-                requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
+// requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
 // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
                 width: "*",// hint: "Persian/فارسی", showHintInField: true,
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
@@ -129,7 +144,7 @@
             {
                 name: "startDate",
                 height: 35,
-                title: "تاریخ شروع",
+                title: "<spring:message code="start.date"/>",
                 ID: "startDate_jspTerm",
                 type: 'text',
                 required: true,
@@ -141,7 +156,7 @@
                 },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                        click: function () {
+                    click: function () {
                         closeCalendarWindow();
                         displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
                     }
@@ -153,7 +168,8 @@
                         if (term_method == "POST")
                             getTermCodeRequest(startdate.substr(0, 4));
                     } else
-                        simpleDialog("پیام", "تاریخ شروع وارد نشده است.", 3000, "say");
+
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.start.date.not.entered"/>", 3000, "say");
                 },
                 blur: function () {
                     var dateCheck = false;
@@ -167,7 +183,7 @@
                     var endDate = DynamicForm_Term.getValue("endDate");
                     var startDate = DynamicForm_Term.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
-                        // DynamicForm_Term.clearFieldErrors("endDate", true);
+// DynamicForm_Term.clearFieldErrors("endDate", true);
                         DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                         DynamicForm_Term.getItem("endDate").setValue();
                         endDateCheckTerm = false;
@@ -177,7 +193,7 @@
             {
                 name: "endDate",
                 height: 35,
-                title: "تاریخ پایان",
+                title: "<spring:message code="end.date"/>",
                 ID: "endDate_jspTerm",
                 type: 'text',
                 enabled: false,
@@ -224,7 +240,7 @@
             },
             {
                 name: "description",
-                title: "توضیحات",
+                title: "<spring:message code="description"/>",
                 type: "textArea",
                 colSpan: 3,
                 height: "50",
@@ -238,25 +254,18 @@
         title: "دوره",
         width: 500,
         items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
-            members: [isc.Button.create({
+            members: [isc.IButtonSave.create({
                 title: "ذخیره",
-               // icon: "pieces/16/save.png",
-
                 click: function () {
-
-
                     if (term_method == "PUT") {
                         edit_Term();
                     } else {
-
-
                         save_Term();
                     }
                 }
 
-            }), isc.Button.create({
+            }), isc.IButtonCancel.create({
                 title: "لغو",
-             //   icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     Window_term.close();
                 }
@@ -267,41 +276,41 @@
     //**********************************************************************************
     //ToolStripButton
     //**********************************************************************************
-    var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+// icon: "<spring:url value="refresh.png"/>",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_Term.invalidateCache();
         }
     });
-    var ToolStripButton_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+//icon: "[SKIN]/actions/edit.png",
+        title: "<spring:message code="edit"/>",
         click: function () {
 
             show_TermEditForm();
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
+    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+
+        title: "<spring:message code="create"/>",
         click: function () {
             term_method = "POST";
             show_TermNewForm();
 
         }
     });
-    var ToolStripButton_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+//icon: "[SKIN]/actions/remove.png",
+        title: "<spring:message code="remove"/>",
         click: function () {
             show_TermRemoveForm()
         }
     });
 
-    var ToolStripButton_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ",
+    var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
+//icon: "[SKIN]/RichTextEditor/print.png",
+        title: "<spring:message code="print"/>",
         click: function () {
             <%--"<spring:url value="/term/printWithCriteria/pdf" var="printUrl"/>"--%>
             <%--      window.open('${printUrl}');--%>
@@ -314,7 +323,20 @@
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            ToolStripButton_Print,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh,
+                ]
+            })
+        ]
     });
     //***********************************************************************************
     //HLayout
@@ -346,7 +368,7 @@
     function show_TermNewForm() {
         term_method = "POST";
         DynamicForm_Term.clearValues();
-        Window_term.setTitle("<spring:message code="create"/>");
+        Window_term.setTitle("<spring:message code="create.term"/>");
         Window_term.show();
     };
 
@@ -355,23 +377,20 @@
         var record = ListGrid_Term.getSelectedRecord();
 
         if (record == null || record.id == null) {
-
-
             isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                title: "<spring:message code="message"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
             });
         } else {
-
             term_method = "PUT";
             DynamicForm_Term.clearValues();
             DynamicForm_Term.editRecord(record);
-            Window_term.setTitle("<spring:message code="edit"/>");
+            Window_term.setTitle("<spring:message code="edit.term"/>");
             Window_term.show();
 
         }
@@ -401,9 +420,9 @@
 
             if (resp.data.length > 0) {
                 var OK = isc.Dialog.create({
-                    message: getFormulaMessage(resp.data, 2, "red", "I") + " با ترم وارد شده تداخل دارد",
+                    message: getFormulaMessage(resp.data, 2, "red", "I") + "<spring:message code="msg.conflict.term"/>",
                     icon: "[SKIN]say.png",
-                    title: "انجام فرمان"
+                    title: "<spring:message code="warning"/>",
                 });
                 setTimeout(function () {
                     OK.close();
@@ -420,9 +439,9 @@
             }
         } else {
             var OK = isc.Dialog.create({
-                message: "ارتباط با سرور قطع می باشد",
+                message: "<spring:message code="msg.error.connecting.to.server"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                title: "<spring:message code="global.form.command.done"/>",
             });
             setTimeout(function () {
                 OK.close();
@@ -456,7 +475,8 @@
                     DynamicForm_Term.setValue("code", termYear + "-" + (parseInt(termCode) + 1));
 
                 } else {
-                    simpleDialog("خطا", "پاسخی از سرور دریافت نشد.", 3000, "error");
+                    simpleDialog("<spring:message code="warning"/>", "<spring:message
+        code="msg.error.connecting.to.server"/>", 3000, "error");
                 }
 
             },
@@ -473,7 +493,7 @@
         var termCode1 = DynamicForm_Term.getValue("code");
 
         if (startDate1.substr(0, 4) != termCode1.substr(0, 4)) {
-            simpleDialog("پیام", "کد با تاریخ شروع همخوانی ندارد.", 3000, "say");
+            simpleDialog("<spring:message code="warning"/>", "<spring:message code="msg.cod.not.match"/>", 3000, "say");
             return;
         }
         if (!DynamicForm_Term.validate()) {
@@ -489,9 +509,9 @@
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             if (resp.data.length > 0) {
                 var OK = isc.Dialog.create({
-                    message: getFormulaMessage(resp.data, 3, "red", "I") + " با ترم وارد شده تداخل دارد",
+                    message: getFormulaMessage(resp.data, 2, "red", "I") + "<spring:message code="msg.conflict.term"/>",
                     icon: "[SKIN]say.png",
-                    title: "انجام فرمان"
+                    title: "<spring:message code="warning"/>",
                 });
                 setTimeout(function () {
                     OK.close();
@@ -512,23 +532,15 @@
     function show_TermRemoveForm() {
         var record = ListGrid_Term.getSelectedRecord();
         if (record == null || record.id == null) {
-
-            isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            isc.MyYesNoDialog.create({
-                message: "آیا رکورد انتخاب شده حذف گردد؟",
+            var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(TrDSRequest(termUrl + record.id, "DELETE", null, "callback: show_TermActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(termUrl + record.id, "DELETE", null, "callback: term_delete_result(rpcResponse)"));
                     }
                 }
             });
@@ -540,28 +552,55 @@
         var respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
             ListGrid_Term.invalidateCache();
-            var MyOkDialog_job = isc.MyOkDialog.create({
-                message: "عمليات با موفقيت اجرا شد.",
-
+            var OK = isc.Dialog.create({
+                message: "<spring:message code="global.form.request.successful"/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="global.form.command.done"/>"
             });
 
             setTimeout(function () {
-                MyOkDialog_term.close();
+                OK.close();
 
-            }, 3000);
+            }, 2000);
 
             Window_term.close();
 
         } else {
-            var MyOkDialog_term = isc.MyOkDialog.create({
-                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
-            });
+            if (respCode == 400) {
+                var OK = isc.Dialog.create({
+                    message: "<spring:message code="msg.delete.childRecord"/>",
+                    icon: "[SKIN]say.png",
+                    title: "<spring:message code="error"/>"
+                });
 
-            setTimeout(function () {
-                MyOkDialog_term.close();
-            }, 3000);
+                setTimeout(function () {
+                    OK.close();
+                }, 2000);
+            }
         }
     };
+
+
+
+    function term_delete_result(resp) {
+
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            ListGrid_Term.invalidateCache();
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.fk-class-term-cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
+        }
+    }
+
 
     function print_TermListGrid(type) {
 
@@ -574,13 +613,13 @@
             fields:
                 [
                     {name: "CriteriaStr", type: "hidden"},
-                    {name:"token",type:"hidden"}
+                    {name: "token", type: "hidden"}
                 ]
 
         })
-         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-         criteriaForm.setValue("token","<%= accessToken %>")
-         criteriaForm.show();
-         criteriaForm.submitForm();
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.show();
+        criteriaForm.submitForm();
     };
 

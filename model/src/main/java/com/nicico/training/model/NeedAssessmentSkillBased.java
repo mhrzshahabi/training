@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.enums.ENeedAssessmentPriority;
@@ -57,7 +56,7 @@ public class NeedAssessmentSkillBased<E> extends Auditable {
     @Column(name = "f_object_id", nullable = false)
     private Long objectId;
 
-    @Column(name = "c_object_type", insertable = false, updatable = false)
-    String objectType;
+    @Column(name = "c_object_type")
+    private String objectType;
 
 }

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class SkillRestController {
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
             maxSkillCode = skillService.getMaxSkillCode(create.getCode());
-            if (maxSkillCode == null || (maxSkillCode.length() != 8 && !maxSkillCode.equals("0")))
+            if (maxSkillCode == null)
                 throw new Exception("Skill with this Code wrong");
             maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
             maxId++;
@@ -84,7 +85,6 @@ public class SkillRestController {
 
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         }
 
     }
@@ -104,11 +104,11 @@ public class SkillRestController {
 //    @PreAuthorize("hasAuthority('d_skill')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
 
-        boolean flag = false;
+        boolean flag = true;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            flag = skillService.isSkillDeletable(id);
+//            flag = skillService.isSkillDeletable(id);
             if (flag)
                 skillService.delete(id);
         } catch (Exception e) {
@@ -580,10 +580,11 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "{skillId}/courses")
 //    @PreAuthorize("hasAnyAuthority('r_course')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> getCourses(@PathVariable Long skillId) {
+    public ResponseEntity<CourseDTO.CourseSpecRs> getCourse(@PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<CourseDTO.Info> courses = skillService.getCourses(skillId);
+        List<CourseDTO.Info> courses = new ArrayList<>();
+        courses.add(skillService.getCourses(skillId));
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
@@ -609,7 +610,6 @@ public class SkillRestController {
                                                                        @PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-
         Integer pageSize = endRow - startRow;
         Integer pageNumber = (endRow - 1) / pageSize;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -634,7 +634,8 @@ public class SkillRestController {
     public ResponseEntity<CourseDTO.CourseSpecRs> getAttachedCourses(@RequestParam("skillId") String skillID) {
         Long skillId = Long.parseLong(skillID);
 
-        List<CourseDTO.Info> courses = skillService.getCourses(skillId);
+        List<CourseDTO.Info> courses = new ArrayList<>();
+        courses.add(skillService.getCourses(skillId));
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)

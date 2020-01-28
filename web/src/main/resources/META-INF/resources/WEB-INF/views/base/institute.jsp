@@ -3,11 +3,11 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
     <%
-        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-    %>
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
     var instituteMethod = "POST";
     var reqMethod = "POST";
@@ -24,7 +24,6 @@
 
     var RestDataSource_Institute_Institute = isc.TrDS.create({
         fields: [
-
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},
@@ -363,7 +362,7 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         doubleClick: function () {
             ListGrid_Institute_Institute_Edit();
         },
@@ -562,43 +561,43 @@
                 name: "titleFa",
                 title: "<spring:message code='global.titleFa'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "titleEn",
                 title: "<spring:message code='global.titleEn'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "manager.firstNameFa",
                 title: "<spring:message code='manager.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "manager.lastNameFa",
                 title: "<spring:message code='manager.family'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "parentInstitute.titleFa",
                 title: "<spring:message code='institute.parent'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "einstituteType.titleFa",
                 title: "<spring:message code='institute.type'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "elicenseType.titleFa",
                 title: "<spring:message code='diploma.type'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             }
         ],
         sortDirection: "descending",
@@ -622,31 +621,31 @@
                 name: "firstNameFa",
                 title: "<spring:message code='firstName'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "lastNameFa",
                 title: "<spring:message code='lastName'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "fatherName",
                 title: "<spring:message code='father.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "birthDate",
                 title: "<spring:message code='birth.date'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             }
 
         ],
@@ -797,7 +796,7 @@
                 title: "<spring:message code='institute.type'/>",
                 width: "*",
                 textAlign: "center",
-                editorType: "ComboBoxItem",
+                editorType: "SelectItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -823,7 +822,7 @@
                 title: "<spring:message code='diploma.type'/>",
                 colSpan: 2,
                 textAlign: "center",
-                editorType: "ComboBoxItem",
+                editorType: "SelectItem",
                 width: "*",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -1165,20 +1164,20 @@
         members: [DynamicForm_Institute_Institute_Address]
     });
 
-    var IButton_Institute_Institute_Exit = isc.IButton.create({
+    var IButton_Institute_Institute_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_Institute.close();
         }
     });
-    var IButton_Institute_Institute_Save = isc.IButton.create({
+    var IButton_Institute_Institute_Save = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='save'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+// icon: "pieces/16/save.png",
         click: function () {
 
 
@@ -1273,21 +1272,21 @@
     /*picklist ...*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var IButton_Institute_InstituteList_Exit = isc.IButton.create({
+    var IButton_Institute_InstituteList_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_InstituteList.close();
         }
     });
 
-    var IButton_Institute_InstituteList_Choose = isc.IButton.create({
+    var IButton_Institute_InstituteList_Choose = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='selectfromlist'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
             Function_Institute_InstituteList_Selected();
         }
@@ -1349,7 +1348,7 @@
                 message: "هیچ مرکز آموزشی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1367,21 +1366,21 @@
     }
 
 
-    var IButton_Institute_PersonalList_Exit = isc.IButton.create({
+    var IButton_Institute_PersonalList_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_PersonalList.close();
         }
     });
 
-    var IButton_Institute_PersonalList_Choose = isc.IButton.create({
+    var IButton_Institute_PersonalList_Choose = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='selectfromlist'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
             Function_Institute_PersonalList_Selected();
         }
@@ -1443,7 +1442,7 @@
                 message: "هیچ فردی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1491,28 +1490,28 @@
         }
     });
 
-    var IButton_Institute_EquipmentList_Exit = isc.IButton.create({
+    var IButton_Institute_EquipmentList_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+// icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_EquipmentList.close();
         }
     });
 
-    var IButton_Institute_EquipmentList_Choose = isc.IButton.create({
+    var IButton_Institute_EquipmentList_Choose = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='selectfromlist'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
             Function_Institute_EquipmentList_Selected(equipmentDestUrl);
         }
     });
 
 
-    var ToolStripButton_Institute_Equipment_Add = isc.TrCreateBtn.create({
+    var ToolStripButton_Institute_Equipment_Add = isc.ToolStripButtonAdd.create({
         title: "<spring:message code="btn.append"/>",
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
@@ -1521,7 +1520,7 @@
                     message: "لطفا یک مرکز آموزشی را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1532,7 +1531,7 @@
             }
         }
     });
-    var ToolStripButton_Institute_Equipment_Delete = isc.TrRemoveBtn.create({
+    var ToolStripButton_Institute_Equipment_Delete = isc.ToolStripButtonRemove.create({
         click: function () {
             var record = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1540,7 +1539,7 @@
                     message: "لطفا یک تجهیز را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1643,11 +1642,11 @@
     function Function_Institute_EquipmentList_Selected_CallBack(resp) {
         if (resp.data == "true") {
             if (equipmentDestUrl == "training-place-equipment") {
-                // RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
+// RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
                 ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
                 ListGrid_Institute_TrainingPlece_Equipment.fetchData();
             } else if (equipmentDestUrl == "institute-equipment") {
-                // RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + masterId + "/equipments"
+// RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + masterId + "/equipments"
                 ListGrid_Institute_Attached_Equipment.invalidateCache();
                 ListGrid_Institute_Attached_Equipment.fetchData();
             }
@@ -1685,11 +1684,11 @@
     function Function_Institute_Equipment_Remove_CallBack(resp) {
         if (resp.data == "true") {
             if (equipmentDestUrl == "training-place-equipment") {
-                // RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
+// RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
                 ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
                 ListGrid_Institute_TrainingPlece_Equipment.fetchData();
             } else if (equipmentDestUrl == "institute-equipment") {
-                // RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + masterId + "/equipments"
+// RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + masterId + "/equipments"
                 ListGrid_Institute_Attached_Equipment.invalidateCache();
                 ListGrid_Institute_Attached_Equipment.fetchData();
             }
@@ -1726,28 +1725,28 @@
         }
     });
 
-    var IButton_Institute_TeacherList_Exit = isc.IButton.create({
+    var IButton_Institute_TeacherList_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_TeacherList.close();
         }
     });
 
-    var IButton_Institute_TeacherList_Choose = isc.IButton.create({
+    var IButton_Institute_TeacherList_Choose = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='selectfromlist'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
             Function_Institute_TeacherList_Selected();
         }
     });
 
 
-    var ToolStripButton_Institute_Teacher_Add = isc.TrCreateBtn.create({
+    var ToolStripButton_Institute_Teacher_Add = isc.ToolStripButtonAdd.create({
         title: "<spring:message code="btn.append"/>",
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
@@ -1756,7 +1755,7 @@
                     message: "لطفا یک مرکز آموزشی را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1766,7 +1765,7 @@
             }
         }
     });
-    var ToolStripButton_Institute_Teacher_Delete = isc.TrRemoveBtn.create({
+    var ToolStripButton_Institute_Teacher_Delete = isc.ToolStripButtonRemove.create({
         click: function () {
             var record = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1774,7 +1773,7 @@
                     message: "لطفا یک استاد را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -2062,7 +2061,7 @@
             },
         ],
         itemChanged: function (item, newValue) {
-//            alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
+// alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
             if (item.name == "bankId") {
                 if (newValue == undefined) {
                     DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
@@ -2082,20 +2081,20 @@
 
     });
 
-    var IButton_Institute_Institute_Account_Exit = isc.IButton.create({
+    var IButton_Institute_Institute_Account_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+// icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_Account.close();
         }
     });
-    var IButton_Institute_Institute_Account_Save = isc.IButton.create({
+    var IButton_Institute_Institute_Account_Save = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='save'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
             Function_Institute_Account_Save();
         }
@@ -2140,17 +2139,17 @@
         })]
     });
 
-    var ToolStripButton_Institute_Account_Add = isc.TrCreateBtn.create({
+    var ToolStripButton_Institute_Account_Add = isc.ToolStripButtonAdd.create({
         click: function () {
             Function_Institute_Account_Add();
         }
     });
-    var ToolStripButton_Institute_Account_Remove = isc.TrRemoveBtn.create({
+    var ToolStripButton_Institute_Account_Remove = isc.ToolStripButtonRemove.create({
         click: function () {
             Function_Institute_Account_Remove();
         }
     });
-    var ToolStripButton_Institute_Account_Edit = isc.TrEditBtn.create({
+    var ToolStripButton_Institute_Account_Edit = isc.ToolStripButtonEdit.create({
         click: function () {
             Function_Institute_Account_Edit();
         }
@@ -2170,7 +2169,7 @@
                 message: "حساب برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -2180,7 +2179,7 @@
                 message: "آيا مي خواهيد اين حساب حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خير"
                 })],
                 buttonClick: function (button, index) {
@@ -2207,7 +2206,7 @@
                 message: "حساب برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -2237,7 +2236,7 @@
                 message: "مرکز آموزشی برای ورود حسابهایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -2367,7 +2366,7 @@
                 title: "<spring:message code='place.type'/>",
                 width: "*",
                 textAlign: "center",
-                editorType: "ComboBoxItem",
+                editorType: "SelectItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -2393,7 +2392,7 @@
                 title: "<spring:message code='place.shape'/>",
                 width: "*",
                 textAlign: "center",
-                editorType: "ComboBoxItem",
+                editorType: "SelectItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -2431,20 +2430,20 @@
         ]
     });
 
-    var IButton_Institute_Institute_TrainingPlace_Exit = isc.IButton.create({
+    var IButton_Institute_Institute_TrainingPlace_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_TrainingPlace.close();
         }
     });
-    var IButton_Institute_Institute_TrainingPlace_Save = isc.IButton.create({
+    var IButton_Institute_Institute_TrainingPlace_Save = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='save'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
             Function_Institute_TrainingPlace_Save();
         }
@@ -2487,17 +2486,17 @@
         })]
     });
 
-    var ToolStripButton_Institute_TrainingPlace_Add = isc.TrCreateBtn.create({
+    var ToolStripButton_Institute_TrainingPlace_Add = isc.ToolStripButtonAdd.create({
         click: function () {
             Function_Institute_TrainingPlace_Add();
         }
     });
-    var ToolStripButton_Institute_TrainingPlace_Remove = isc.TrRemoveBtn.create({
+    var ToolStripButton_Institute_TrainingPlace_Remove = isc.ToolStripButtonRemove.create({
         click: function () {
             Function_Institute_TrainingPlace_Remove();
         }
     });
-    var ToolStripButton_Institute_TrainingPlace_Edit = isc.TrEditBtn.create({
+    var ToolStripButton_Institute_TrainingPlace_Edit = isc.ToolStripButtonEdit.create({
         click: function () {
             Function_Institute_TrainingPlace_Edit();
         }
@@ -2507,7 +2506,9 @@
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_TrainingPlace_Add, ToolStripButton_Institute_TrainingPlace_Edit, ToolStripButton_Institute_TrainingPlace_Remove
+            ToolStripButton_Institute_TrainingPlace_Add,
+            ToolStripButton_Institute_TrainingPlace_Edit,
+            ToolStripButton_Institute_TrainingPlace_Remove
         ]
     });
 
@@ -2518,7 +2519,7 @@
                 message: "محل آموزشی برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -2528,7 +2529,7 @@
                 message: "آيا مي خواهيد اين محل آموزشی حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خير"
                 })],
                 buttonClick: function (button, index) {
@@ -2555,7 +2556,7 @@
                 message: "محل آموزشی برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -2565,7 +2566,7 @@
             DynamicForm_Institute_Institute_TrainingPlace.clearValues();
             DynamicForm_Institute_Institute_TrainingPlace.editRecord(record);
             reqMethod = "PUT";
-            Window_Institute_TrainingPlace.setTitle(" ویرایش محل آموزشی  " + getFormulaMessage(ListGrid_Institute_TrainingPlace.getSelectedRecord().titleFa, 3, "red", "I"));
+            Window_Institute_TrainingPlace.setTitle(" ویرایش محل آموزشی " + getFormulaMessage(ListGrid_Institute_TrainingPlace.getSelectedRecord().titleFa, 3, "red", "I"));
             Window_Institute_TrainingPlace.show();
             Window_Institute_TrainingPlace.bringToFront();
         }
@@ -2578,7 +2579,7 @@
                 message: "مرکز آموزشی برای ورود محل های آموزشی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -2804,7 +2805,7 @@
             },
         ],
         itemChanged: function (item, newValue) {
-//            alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
+// alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
             if (item.name == "bankId") {
                 if (newValue == undefined) {
                     DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
@@ -2824,20 +2825,20 @@
 
     });
 
-    var IButton_Institute_TrainingPlace_Equipment_Exit = isc.IButton.create({
+    var IButton_Institute_TrainingPlace_Equipment_Exit = isc.IButtonCancel.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_Account.close();
         }
     });
-    var IButton_Institute_TrainingPlace_Equipment_Save = isc.IButton.create({
+    var IButton_Institute_TrainingPlace_Equipment_Save = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code='save'/>",
         align: "center",
-        icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
             Function_Institute_Account_Save();
         }
@@ -2884,7 +2885,7 @@
     });
 
 
-    var ToolStripButton_Institute_TrainingPlace_Equipment_Add = isc.TrCreateBtn.create({
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Add = isc.ToolStripButtonAdd.create({
         title: "<spring:message code="btn.append"/>",
         click: function () {
             var record = ListGrid_Institute_TrainingPlace.getSelectedRecord();
@@ -2893,7 +2894,7 @@
                     message: "لطفا یک محل آموزشی را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -2904,7 +2905,7 @@
             }
         }
     });
-    var ToolStripButton_Institute_TrainingPlace_Equipment_Remove = isc.TrRemoveBtn.create({
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Remove = isc.ToolStripButtonRemove.create({
         click: function () {
             Function_Institute_TrainingPlace_Equipment_Remove();
         }
@@ -2930,7 +2931,7 @@
                 for (i = 0; i < equipmentRecords.getLength(); i++) {
                     equipmentIds.add(equipmentRecords[i].id);
                 }
-                // var JSONObj = {"ids": skillGroupIds};
+// var JSONObj = {"ids": skillGroupIds};
                 isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_TrainingPlace_Url + "remove-equipment-list/" + equipmentIds + "/" + trainingPlaceId, "DELETE", null, "callback: Function_Institute_TrainingPlace_Equipment_Remove_CallBack(rpcResponse)"));
 
             } else {
@@ -2938,7 +2939,7 @@
                 var trainingPlaceId = trainingPlaceRecord.id;
                 var equipmentRecord = ListGrid_Institute_TrainingPlece_Equipment.getSelectedRecord();
                 var equipmentId = equipmentRecord.id;
-                // var JSONObj = {"ids": courseIds};
+// var JSONObj = {"ids": courseIds};
                 isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_TrainingPlace_Url + "remove-equipment/" + equipmentId + "/" + trainingPlaceId, "DELETE", null, "callback: Function_Institute_TrainingPlace_Equipment_Remove_CallBack(rpcResponse)"));
             }
         }
@@ -2957,35 +2958,35 @@
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ToolStripButton_Institute_Institute_Refresh = isc.TrRefreshBtn.create({
+    var ToolStripButton_Institute_Institute_Refresh = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Institute_Institute_refresh();
         }
     });
-    var ToolStripButton_Institute_Institute_Edit = isc.TrEditBtn.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Institute_Institute_Edit = isc.ToolStripButtonEdit.create({
+//icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_Institute_Institute_Edit();
         }
     });
-    var ToolStripButton_Institute_Institute_Add = isc.TrCreateBtn.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Institute_Institute_Add = isc.ToolStripButtonAdd.create({
+
         title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_Institute_Institute_Add();
         }
     });
-    var ToolStripButton_Institute_Institute_Remove = isc.TrRemoveBtn.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Institute_Institute_Remove = isc.ToolStripButtonRemove.create({
+//icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code='remove'/>",
         click: function () {
             ListGrid_Institute_Institute_Remove();
         }
     });
 
-    var ToolStripButton_Institute_Institute_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Institute_Institute_Print = isc.ToolStripButtonPrint.create({
+//icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             ListGrid_institute_print("pdf");
@@ -2994,12 +2995,21 @@
 
     var ToolStrip_Institute_Institute_Actions = isc.ToolStrip.create({
         width: "100%",
+        membersMargin: 5,
         members: [
-            ToolStripButton_Institute_Institute_Refresh,
             ToolStripButton_Institute_Institute_Add,
             ToolStripButton_Institute_Institute_Edit,
             ToolStripButton_Institute_Institute_Remove,
-            ToolStripButton_Institute_Institute_Print]
+            ToolStripButton_Institute_Institute_Print,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Institute_Institute_Refresh
+                ]
+            })
+        ]
     });
 
     var HLayout_Institute_Institute_Action = isc.HLayout.create({
@@ -3115,7 +3125,7 @@
                 message: "مرکز آموزشی برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -3125,7 +3135,7 @@
                 message: "آيا مي خواهيد اين مرکز آموزشی حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خير"
                 })],
                 buttonClick: function (button, index) {
@@ -3152,15 +3162,16 @@
                 message: "مرکز آموزشی برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
             });
         } else {
-            DynamicForm_Institute_Institute.clearValues();
-DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
-DynamicForm_Institute_Institute_Address.getItem("stateId").fetchData();
+            ValuesManager_Institute_InstituteValue.clearValues();
+            ValuesManager_Institute_InstituteValue.clearErrors();
+            DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
+            DynamicForm_Institute_Institute_Address.getItem("stateId").fetchData();
 
             ValuesManager_Institute_InstituteValue.editRecord(record);
 
@@ -3181,7 +3192,7 @@ DynamicForm_Institute_Institute_Address.getItem("stateId").fetchData();
             }
 
             instituteMethod = "PUT";
-            Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().code, 3, "red", "I"));
+            Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().titleFa, 3, "red", "I"));
             Window_Institute_Institute.show();
         }
     };

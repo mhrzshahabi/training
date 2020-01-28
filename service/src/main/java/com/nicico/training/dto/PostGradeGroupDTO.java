@@ -1,4 +1,3 @@
-
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,7 +28,7 @@ public class PostGradeGroupDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGradeGroup - Info")
-    public static class Info  extends PostGradeGroupDTO{
+    public static class Info extends PostGradeGroupDTO {
         private Long id;
         private Set<PostGradeDTO.Info> postGradesList;
     }

@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,8 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class AddressDTO {
 
     private String restAddr;
@@ -33,16 +31,32 @@ public class AddressDTO {
     @ApiModel("AddressInfo")
     public static class Info extends AddressDTO {
         private Long id;
-        private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state;
+        private CityDTO.Info city;
+        private StateDTO.Info state;
+        private Integer version;
     }
 
     @Getter
     @Setter
-    @ApiModel("AddressInfoTuple")
-    static class AddressInfoTuple extends AddressDTO {
-        private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state;
+    @Accessors(chain = true)
+    @ApiModel("CompanyAddress")
+    public static class CompanyAddress {
+        private Long id;
+        private String restAddr;
+        private String postalCode;
+        private String phone;
+        private String fax;
+        private String webSite;
+        private Long cityId;
+        private Long stateId;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AddressCreateOrUpdateRq")
+    public static class CreateOrUpdate extends AddressDTO {
+        private Long id;
     }
 
     @Getter
@@ -50,6 +64,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @ApiModel("AddressCreateRq")
     public static class Create extends AddressDTO {
+        private Long id;
     }
 
     @Getter
@@ -57,6 +72,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @ApiModel("AddressUpdateRq")
     public static class Update extends AddressDTO {
+        private Long id;
     }
 
     @Getter

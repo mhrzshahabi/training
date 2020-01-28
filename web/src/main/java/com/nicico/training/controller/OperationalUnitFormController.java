@@ -3,7 +3,6 @@ package com.nicico.training.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,15 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/operational-unit")
 public class OperationalUnitFormController {
 
-    private final OAuth2AuthorizedClientService authorizedClientService;
-
     @RequestMapping("/show-form")
     public String showForm() {
         return "base/operationalUnit";
     }
 
     @PostMapping("/printWithCriteria/{type}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
 //		String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
         String token = request.getParameter("myToken");
 
@@ -44,13 +41,13 @@ public class OperationalUnitFormController {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-        if(type.equals("pdf"))
+        if (type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("excel"))
+        else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("html"))
+        else if (type.equals("html"))
             return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
         else
             return null;

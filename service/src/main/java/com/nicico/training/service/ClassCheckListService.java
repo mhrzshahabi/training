@@ -10,7 +10,6 @@ import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.iservice.IClassCheckListService;
 import com.nicico.training.model.CheckListItem;
 import com.nicico.training.model.ClassCheckList;
-import com.nicico.training.repository.CheckListDAO;
 import com.nicico.training.repository.CheckListItemDAO;
 import com.nicico.training.repository.ClassCheckListDAO;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,6 @@ public class ClassCheckListService implements IClassCheckListService {
 
     private final ClassCheckListDAO classCheckListDAO;
     private final CheckListItemDAO checkListItemDAO;
-    private final CheckListDAO checkListDAO;
     private final ModelMapper mapper;
 
     @Transactional(readOnly = true)
@@ -92,33 +90,37 @@ public class ClassCheckListService implements IClassCheckListService {
 
     @Transactional
     @Override
-    public List<ClassCheckListDTO.Info> fillTable(Long classId) {
+    public List<ClassCheckListDTO.Info> fillTable(Long classId, Long checkListId) {
 
-        List<ClassCheckList> classCheckList = new ArrayList<>();
-        List<Long> checkListItemIdsByTclassId = classCheckListDAO.getCheckListItemIdsByTclassId(classId);
-        //لیستی از checklistItemID را از جدول classchecklist  بر می گرداند که tclassid برابر با classid است
+        List<ClassCheckList> ClassCheckListArray = new ArrayList<>();
 
-        final List<CheckListItem> checkListItemTotal = checkListItemDAO.findAll();
+        List<Long> checkListItemIdsByTclassId = classCheckListDAO.getCheckListItemIdsByTclassId(classId);   //لیست تمام چک لیست های مربوط به این کلاس گرفته شده
 
-        for (CheckListItem x : checkListItemTotal) {
-            if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted()==null) ) {
-                ClassCheckList classCheckList1 = new ClassCheckList();
-                classCheckList1.setTclassId(classId);
-                classCheckList1.setCheckListItemId(x.getId());
-                classCheckList.add(classCheckList1);
+        List<CheckListItem> checkListItemsListId = checkListItemDAO.getCheckListItemsByCheckListId(checkListId);//لیست تمام چک لیست ایتم ها ی مربوط به چک لیست مورد نظر
+
+
+        for (CheckListItem x : checkListItemsListId) {
+            if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted() == null)) {
+                ClassCheckList classCheckList = new ClassCheckList();
+                classCheckList.setTclassId(classId);
+                classCheckList.setCheckListItemId(x.getId());
+                ClassCheckListArray.add(classCheckList);
             }
 
         }
-        List<ClassCheckList> save = classCheckListDAO.saveAll(classCheckList);
+        List<ClassCheckList> save = classCheckListDAO.saveAll(ClassCheckListArray);
         return mapper.map(save, new TypeToken<List<ClassCheckListDTO.Info>>() {
         }.getType());
+
+
     }
 
- @Transactional
+
+    @Transactional
     @Override
-    public TotalResponse<ClassCheckListDTO.Info> newSearch(MultiValueMap criteria){
-                final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        TotalResponse<ClassCheckListDTO.Info> search = SearchUtil.search(classCheckListDAO, nicicoCriteria, e ->  mapper.map(e, ClassCheckListDTO.Info.class));
+    public TotalResponse<ClassCheckListDTO.Info> newSearch(MultiValueMap criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        TotalResponse<ClassCheckListDTO.Info> search = SearchUtil.search(classCheckListDAO, nicicoCriteria, e -> mapper.map(e, ClassCheckListDTO.Info.class));
         return search;
 
     }
@@ -126,14 +128,13 @@ public class ClassCheckListService implements IClassCheckListService {
     @Transactional
     @Override
     public ClassCheckListDTO.Info updateDescription(Long id, ClassCheckListDTO.Update request) throws IOException {
-    Optional<ClassCheckList> optionalCheckListItem = classCheckListDAO.findById(id);
+        Optional<ClassCheckList> optionalCheckListItem = classCheckListDAO.findById(id);
         ClassCheckList currentClassCheckList = optionalCheckListItem.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ClassCheckListNotFound));
         ClassCheckList classCheckList = new ClassCheckList();
         mapper.map(currentClassCheckList, classCheckList);
         mapper.map(request, classCheckList);
-        return mapper.map(classCheckListDAO.saveAndFlush(classCheckList),ClassCheckListDTO.Info.class);
+        return mapper.map(classCheckListDAO.saveAndFlush(classCheckList), ClassCheckListDTO.Info.class);
     }
-
 
 
     @Transactional

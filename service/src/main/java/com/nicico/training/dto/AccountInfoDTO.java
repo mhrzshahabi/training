@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,8 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class AccountInfoDTO {
 
     private String accountNumber;
@@ -31,22 +29,23 @@ public class AccountInfoDTO {
     @ApiModel("AccountInfo")
     public static class Info extends AccountInfoDTO {
         private Long id;
+        private Integer version;
     }
-
 
     @Getter
     @Setter
-    @ApiModel("AccountInfoInfoTuple")
-    static class AccountInfoInfoTuple extends AccountInfoDTO {
+    @Accessors(chain = true)
+    @ApiModel("AccountInfoCreateOrUpdateRq")
+    public static class CreateOrUpdate extends AccountInfoDTO {
         private Long id;
     }
-
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountInfoCreateRq")
     public static class Create extends AccountInfoDTO {
+        private Long id;
     }
 
     @Getter
@@ -54,6 +53,7 @@ public class AccountInfoDTO {
     @Accessors(chain = true)
     @ApiModel("AccountInfoUpdateRq")
     public static class Update extends AccountInfoDTO {
+        private Long id;
     }
 
     @Getter

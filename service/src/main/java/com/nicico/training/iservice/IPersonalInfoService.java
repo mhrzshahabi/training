@@ -2,11 +2,14 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
+import com.nicico.training.model.PersonalInfo;
 
 import java.util.List;
 
 public interface IPersonalInfoService {
     PersonalInfoDTO.Info get(Long id);
+
+    PersonalInfo getPersonalInfo(Long id);
 
     List<PersonalInfoDTO.Info> list();
 
@@ -22,5 +25,7 @@ public interface IPersonalInfoService {
 
     PersonalInfoDTO.Info getOneByNationalCode(String nationalCode);
 
-    PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.Create request);
+    PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.CreateOrUpdate request);
+
+    void modify(PersonalInfoDTO.CreateOrUpdate request, PersonalInfo personalInfo);
 }

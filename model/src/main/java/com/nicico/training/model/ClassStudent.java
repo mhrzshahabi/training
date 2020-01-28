@@ -1,0 +1,56 @@
+package com.nicico.training.model;
+
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import javax.persistence.*;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Entity
+@Table(name = "tbl_class_student",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"student_id", "class_id"})})
+public class ClassStudent extends Auditable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_student_seq")
+    @SequenceGenerator(name = "class_student_seq", sequenceName = "seq_class_student_id", allocationSize = 1)
+    @Column(name = "id", precision = 10)
+    private Long id;
+
+    @Column(name = "scores_state")
+    private String scoresState;
+
+    @Column(name = "failure_reason")
+    private String failureReason;
+
+    @Column(name = "score")
+    private Float score;
+
+    @Column(name = "applicant_company_name", nullable = false)
+    private String applicantCompanyName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "presence_type_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue presenceType;
+
+    @Column(name = "presence_type_id")
+    private Long presenceTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
+
+    @Column(name = "student_id", insertable = false, updatable = false)
+    private Long studentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id", nullable = false)
+    private Tclass tclass;
+
+    @Column(name = "class_id", insertable = false, updatable = false)
+    private Long tclassId;
+}

@@ -6,22 +6,18 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.StudentDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Student;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.model.TrainingPlace;
-import com.nicico.training.repository.StudentDAO;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.repository.TrainingPlaceDAO;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -31,15 +27,29 @@ public class TclassService implements ITclassService {
     private final ModelMapper modelMapper;
     private final TclassDAO tclassDAO;
     private final StudentDAO studentDAO;
-    private final TeacherDAO teacherDAO;
+    private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
+    private final AttachmentService attachmentService;
 
     @Transactional(readOnly = true)
     @Override
     public TclassDTO.Info get(Long id) {
+        return modelMapper.map(getTClass(id), TclassDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Tclass getTClass(Long id) {
+        final Optional<Tclass> gById = tclassDAO.findById(id);
+        return gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Tclass getEntity(Long id) {
         final Optional<Tclass> gById = tclassDAO.findById(id);
         final Tclass tclass = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
-        return modelMapper.map(tclass, TclassDTO.Info.class);
+        return tclass;
     }
 
     @Transactional(readOnly = true)
@@ -82,6 +92,10 @@ public class TclassService implements ITclassService {
     @Override
     public void delete(Long id) {
         tclassDAO.deleteById(id);
+        List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
+        for (AttachmentDTO.Info attachment : attachmentInfoList) {
+            attachmentService.delete(attachment.getId());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -97,76 +111,92 @@ public class TclassService implements ITclassService {
         return modelMapper.map(saved, TclassDTO.Info.class);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional()
     @Override
-    public List<StudentDTO.Info> getStudents(Long classID) {
+    public List<ClassStudentDTO.AttendanceInfo> getStudents(Long classID) {
         final Optional<Tclass> ssById = tclassDAO.findById(classID);
         final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
 
-        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-        Optional.ofNullable(tclass.getStudentSet())
-                .ifPresent(students ->
-                        students.forEach(student ->
-                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
+        List<ClassStudentDTO.AttendanceInfo> studentInfoSet = new ArrayList<>();
+        Optional.ofNullable(tclass.getClassStudents())
+                .ifPresent(classStudents ->
+                        classStudents.forEach(cs ->
+                                {
+                                    if(cs.getPresenceTypeId() != 104)
+                                        studentInfoSet.add(modelMapper.map(cs, ClassStudentDTO.AttendanceInfo.class));
+                                }
                         ));
         return studentInfoSet;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<StudentDTO.Info> getOtherStudents(Long classID) {
-        final Optional<Tclass> ssById = tclassDAO.findById(classID);
-        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<StudentDTO.Info> getOtherStudents(Long classID) {
+//        final Optional<Tclass> ssById = tclassDAO.findById(classID);
+//        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+//
+//        List<Student> currentStudent = tclass.getStudentSet();
+//        List<Student> allStudent = studentDAO.findAll();
+//        List<Student> otherStudent = new ArrayList<>();
+//
+//        for (Student student : allStudent) {
+//            if (!currentStudent.contains(student))
+//                otherStudent.add(student);
+//        }
+//
+//        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
+//        Optional.of(otherStudent)
+//                .ifPresent(students ->
+//                        students.forEach(student ->
+//                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
+//                        ));
+//        return studentInfoSet;
+//    }
 
-        List<Student> currentStudent = tclass.getStudentSet();
-        List<Student> allStudent = studentDAO.findAll();
-        List<Student> otherStudent = new ArrayList<>();
 
-        for (Student student : allStudent) {
-            if (!currentStudent.contains(student))
-                otherStudent.add(student);
-        }
+//    @Transactional
+//    @Override
+//    public void addStudent(Long studentId, Long classId) {
+//        Tclass tclass = tclassDAO.getOne(classId);
+//        Student student = studentDAO.getOne(studentId);
+//
+//        tclass.getStudentSet().add(student);
+//    }
 
-        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-        Optional.of(otherStudent)
-                .ifPresent(students ->
-                        students.forEach(student ->
-                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
-                        ));
-        return studentInfoSet;
-    }
-
-    @Transactional
-    @Override
-    public void removeStudent(Long studentId, Long classId) {
-        Tclass tclass = tclassDAO.getOne(classId);
-        Student student = studentDAO.getOne(studentId);
-        tclass.getStudentSet().remove(student);
-    }
-
-    @Transactional
-    @Override
-    public void addStudent(Long studentId, Long classId) {
-        Tclass tclass = tclassDAO.getOne(classId);
-        Student student = studentDAO.getOne(studentId);
-        tclass.getStudentSet().add(student);
-    }
 
     @Transactional
     @Override
     public void delete(TclassDTO.Delete request) {
         final List<Tclass> gAllById = tclassDAO.findAllById(request.getIds());
-        tclassDAO.deleteAll(gAllById);
+        for (Tclass tclass : gAllById) {
+            delete(tclass.getId());
+        }
     }
 
-    @Transactional
+//    @Transactional
+//    @Override
+//    public void addStudents(StudentDTO.Delete request, Long classId) {
+//        Tclass tclass = tclassDAO.getOne(classId);
+//        List<Student> gAllById = studentDAO.findAllById(request.getIds());
+//        for (Student student : gAllById) {
+//            tclass.getStudentSet().add(student);
+//        }
+//    }
+
+    @Transactional(readOnly = true)
     @Override
-    public void addStudents(StudentDTO.Delete request, Long classId) {
-        Tclass tclass = tclassDAO.getOne(classId);
-        List<Student> gAllById = studentDAO.findAllById(request.getIds());
-        for (Student student : gAllById) {
-            tclass.getStudentSet().add(student);
+    public Long sessionsHourSum(Long classId) {
+        List<ClassSessionDTO.Info> sessions = classSessionService.loadSessions(classId);
+        Long sum = 0L;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        for (ClassSessionDTO.Info session : sessions) {
+            try {
+                sum += sdf.parse(session.getSessionEndHour()).getTime() - sdf.parse(session.getSessionStartHour()).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
+        return sum;
     }
 
 
@@ -176,12 +206,24 @@ public class TclassService implements ITclassService {
         List<Tclass> classes = tclassDAO.findByCourseIdAndTermId(courseId, termId);
         Long max = 0L;
         for (Tclass aClass : classes) {
-            if(aClass.getGroup()>max){
-                max= aClass.getGroup();
+            if (aClass.getGroup() > max) {
+                max = aClass.getGroup();
             }
         }
-        return max+1;
+        return max + 1;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode )
+    {
+      return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
+    }
+
+    @Override
+    public Integer getWorkflowEndingStatusCode(Long classId)
+    {
+        return tclassDAO.getWorkflowEndingStatusCode(classId);
+    }
 
 }

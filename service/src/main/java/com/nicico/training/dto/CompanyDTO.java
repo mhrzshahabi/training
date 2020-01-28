@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,22 +9,21 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class CompanyDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String titleFa;
-    @ApiModelProperty(required = true)
     private String email;
-    @ApiModelProperty(required = true)
     private String workDomain;
+    private String companyId;
+    private String economicalId;
+    private String registerId;
 
     @Getter
     @Setter
@@ -33,13 +31,9 @@ public class CompanyDTO implements Serializable {
     @ApiModel("CompanyInfo")
     public static class Info extends CompanyDTO {
         private Long id;
-        private PersonalInfoDTO.PersonalInfoInfoTuple manager;
-        private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
-        private AddressDTO.AddressInfoTuple address;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
+        private PersonalInfoDTO.CompanyManager manager;
+        private AccountInfoDTO.Info accountInfo;
+        private AddressDTO.CompanyAddress address;
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;
@@ -51,9 +45,9 @@ public class CompanyDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CompanyCreateRq")
     public static class Create extends CompanyDTO {
-        private PersonalInfoDTO.Create manager;
+        private PersonalInfoDTO.CompanyManager manager;
         private AccountInfoDTO.Create accountInfo;
-        private AddressDTO.Create address;
+        private AddressDTO.CompanyAddress address;
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;
