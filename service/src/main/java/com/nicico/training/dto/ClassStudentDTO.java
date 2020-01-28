@@ -162,6 +162,10 @@ public class ClassStudentDTO implements Serializable {
         }
         private Long presenceTypeId;
         private Long id;
+        private Integer evaluationStatusReaction;
+        private Integer evaluationStatusLearning;
+        private Integer evaluationStatusBehavior;
+        private Integer evaluationStatusResults;
     }
 
     @Getter

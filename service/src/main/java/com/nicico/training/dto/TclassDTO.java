@@ -13,10 +13,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -119,6 +116,21 @@ public class TclassDTO {
 
                 return findStudent;
             }
+        }
+
+        public String getNumberOfStudentEvaluation() {
+
+            int studentEvaluations = 0;
+            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) != 0 ||
+                        Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) != 0 ||
+                Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) != 0 ||
+                Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) != 0) {
+                    studentEvaluations++;
+                }
+            }
+
+            return studentEvaluations + "/" + classStudents.size();
         }
 
         public Integer getStudentCount() {
