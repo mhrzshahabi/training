@@ -573,7 +573,7 @@
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="student"/>",
+                    title: "<spring:message code="other-student"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/personnelRegistered/show-form"/>");
                     }
