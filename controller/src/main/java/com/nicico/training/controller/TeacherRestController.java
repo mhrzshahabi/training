@@ -315,29 +315,12 @@ public class TeacherRestController {
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
-//        SearchDTO.CriteriaRq criteriaRq_Not_In_BlackList = teacherService.makeNewCriteria("inBlackList", false, EOperator.equals, null);
-//        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-//        searchRq = new SearchDTO.SearchRq();
         if (criteriaStr.equalsIgnoreCase("{}")) {
             searchRq = new SearchDTO.SearchRq();
         } else {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
-
-//        //        SearchDTO.CriteriaRq criteriaRq_Not_In_BlackList = teacherService.makeNewCriteria("inBlackList", false, EOperator.equals, null);
-//        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-//
-////        if (!criteriaStr.equalsIgnoreCase("{}")) {
-////            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-////            criteriaRqList.add(criteriaRq);
-////            criteriaRqList.add(criteriaRq_Not_In_BlackList);
-////            searchRq.setCriteria(new SearchDTO.CriteriaRq());
-////            searchRq.getCriteria().setCriteria(criteriaRqList);
-////        } else {
-////           searchRq.setCriteria(criteriaRq_Not_In_BlackList);
-////        }
-
         final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.deepSearch(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
