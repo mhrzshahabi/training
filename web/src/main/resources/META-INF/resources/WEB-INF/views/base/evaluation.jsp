@@ -175,7 +175,7 @@
                 },
                 {
                     name: "numberOfStudentEvaluation",
-                    title: "ارزیابی شده",
+                    title: "<spring:message code='evaluated'/>",
                     filterOperator: "iContains",
                     autoFitWidth: true
                 },
@@ -188,7 +188,7 @@
                 },
                 {
                     name: "course.evaluation",
-                    title: "نوع ارزیابی",
+                    title: "<spring:message code='evaluation.type'/>",
                     align: "center",
                     filterOperator: "iContains",
                     autoFitWidth: true,
@@ -233,7 +233,6 @@
         });
 
 
-        //*****VAKONESH*****
         var RestDataSource_evaluation_student = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
@@ -298,22 +297,22 @@
                 },
                 {
                     name: "evaluationStatusReaction",
-                    title: "وضعیت ارزیابی واکنشی",
+                    title: "<spring:message code="evaluation.reaction.status"/>",
                     filterOperator: "iContains"
                 },
                 {
                     name: "evaluationStatusLearning",
-                    title: "وضعیت ارزیابی یادگیری",
+                    title: "<spring:message code="evaluation.learning.status"/>",
                     filterOperator: "iContains"
                 },
                 {
                     name: "evaluationStatusBehavior",
-                    title: "وضعیت ارزیابی رفتاری",
+                    title: "<spring:message code="evaluation.behavioral.status"/>",
                     filterOperator: "iContains"
                 },
                 {
                     name: "evaluationStatusResults",
-                    title: "وضعیت ارزیابی نتایج",
+                    title: "<spring:message code="evaluation.results.status"/>",
                     filterOperator: "iContains"
                 }
             ]
@@ -387,18 +386,6 @@
                     return "background-color : #b7dee8";
 
             }
-            //,
-            // gridComponents: [StudentTS_student, "filterEditor", "header", "body"]
-            <%--,--%>
-            <%-- dataChanged: function () {--%>
-            <%--     this.Super("dataChanged", arguments);--%>
-            <%--     totalRows = this.data.getLength();--%>
-            <%--     if (totalRows >= 0 && this.data.lengthIsKnown()) {--%>
-            <%--         StudentsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");--%>
-            <%--     } else {--%>
-            <%--         StudentsCount_student.setContents("&nbsp;");--%>
-            <%--     }--%>
-            <%-- }--%>
         });
 
 
@@ -434,14 +421,14 @@
 
         //*****evaluation toolStrip*****
         var ToolStripButton_FormIssuance = isc.ToolStripButton.create({
-            title: "صدور فرم برای یک فراگیر",
+            title: "<spring:message code="student.form.issuance"/>",
             click: function () {
-                 print_Student_FormIssuance("pdf", "single");
+                print_Student_FormIssuance("pdf", "single");
             }
         });
 
         var ToolStripButton_FormIssuanceForAll = isc.ToolStripButton.create({
-            title: "صدور فرم برای همه",
+            title: "<spring:message code="students.form.issuance"/>",
             click: function () {
                 print_Student_FormIssuance("pdf", "all");
             }
@@ -579,23 +566,23 @@
             tabs: [
                 {
                     id: "TabPane_Reaction",
-                    title: "واکنشی",
+                    title: "<spring:message code="evaluation.reaction"/>",
                     pane: VLayout_Body_evaluation
                 }
                 ,
                 {
                     id: "TabPane_Learning",
-                    title: "یادگیری",
+                    title: "<spring:message code="evaluation.learning"/>",
                     pane: VLayout_Body_evaluation
                 },
                 {
                     id: "TabPane_Behavior",
-                    title: "رفتار",
+                    title: "<spring:message code="evaluation.behavioral"/>",
                     pane: VLayout_Body_evaluation
                 },
                 {
                     id: "TabPane_Results",
-                    title: "نتایج",
+                    title: "<spring:message code="evaluation.results"/>",
                     pane: VLayout_Body_evaluation
                 }
             ],
@@ -659,20 +646,21 @@
         //*****print student form issuance*****
         function print_Student_FormIssuance(type, numberOfStudents) {
 
-            if(Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Reaction" && ListGrid_evaluation_class.getSelectedRecord().classStatus !=="3" )
-            {
-                isc.Dialog.create({
-                    message: "اين كلاس هنوز خاتمه اوليه نخورده است",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="global.message"/>",
-                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
 
-                return;
-            }
+            <%--if(Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Reaction" && ListGrid_evaluation_class.getSelectedRecord().classStatus !=="3" )--%>
+            <%--{--%>
+            <%--    isc.Dialog.create({--%>
+            <%--        message: "اين كلاس هنوز خاتمه اوليه نخورده است",--%>
+            <%--        icon: "[SKIN]ask.png",--%>
+            <%--        title: "<spring:message code="global.message"/>",--%>
+            <%--        buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],--%>
+            <%--        buttonClick: function (button, index) {--%>
+            <%--            this.close();--%>
+            <%--        }--%>
+            <%--    });--%>
+
+            <%--    return;--%>
+            <%--}--%>
 
             if (ListGrid_evaluation_student.getTotalRows() > 0) {
                 let selectedClass = ListGrid_evaluation_class.getSelectedRecord();
@@ -717,10 +705,9 @@
                         }
                     });
                 }
-            }
-            else {
+            } else {
                 isc.Dialog.create({
-                    message: "کلاس فاقد فراگیر می باشد",
+                    message: "<spring:message code="no.student.class"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="global.message"/>",
                     buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
@@ -752,7 +739,7 @@
 
                     ListGrid_evaluation_student.getSelectedRecords().forEach(function (selectedStudent) {
                         listOfStudent.push(selectedStudent);
-                    })
+                    });
 
                     ListGrid_evaluation_student.deselectAllRecords();
                     callback(listOfStudent);
