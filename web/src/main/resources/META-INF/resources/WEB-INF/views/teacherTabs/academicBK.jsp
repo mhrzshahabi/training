@@ -51,14 +51,6 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "academicGrade",
-                title: "<spring:message code='academic.grade'/>",
-            },
-            {
-                name: "collageName",
-                title: "<spring:message code='collage.name'/>",
-            },
-            {
                 name: "educationLevelId",
                 title: "<spring:message code='education.level'/>",
                 textAlign: "center",
@@ -146,6 +138,14 @@
                 ]
             },
             {
+                name: "collageName",
+                title: "<spring:message code='collage.name'/>",
+            },
+            {
+                name: "academicGrade",
+                title: "<spring:message code='academic.grade'/>",
+            },
+            {
                 name: "duration",
                 title: "<spring:message code='duration'/>",
                 type: "IntegerItem",
@@ -176,7 +176,7 @@
                             return DynamicForm_JspAcademicBK.getValue("persianDate") === undefined;
                         return checkBirthDate(value);
                     }
-                }]
+                }],
             }
         ],
         itemChanged: function (item, newValue) {
@@ -271,7 +271,7 @@
         autoFetchData: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
@@ -315,7 +315,6 @@
             {
                 name: "persianDate",
                 title: "<spring:message code='graduation.date'/>",
-                canFilter: false,
                 canSort: false
             },
             {name: "academicGrade", title: "<spring:message code='academic.grade'/>"},

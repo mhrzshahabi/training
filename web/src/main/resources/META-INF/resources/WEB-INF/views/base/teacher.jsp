@@ -37,8 +37,8 @@
             {name: "personality.educationLevel.titleFa"},
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
-            {name: "categories"},
-            {name: "subCategories"},
+            {name: "categories",  filterOperator: "inSet"},
+            {name: "subCategories",  filterOperator: "inSet"},
             {name: "personality.contactInfo.homeAddress.id"},
             {name: "personality.contactInfo.workAddress.id"}
         ],
@@ -209,50 +209,24 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    var cat = value[0].titleFa.toString();
-                    for (var i = 1; i < value.length; i++) {
-                        cat += "، " + value[i].titleFa;
-                    }
-                    return cat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.categories.length === 0)
-                        return;
-                    value.categories.sort();
-                    var cat = value.categories[0].titleFa.toString();
-                    for (var i = 1; i < value.categories.length; i++) {
-                        cat += "، " + value.categories[i].titleFa;
-                    }
-                    return cat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_Category_JspTeacher,
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                multiple: true,
+                filterLocally: false
             },
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    var subCat = value[0].titleFa.toString();
-                    for (var i = 1; i < value.length; i++) {
-                        subCat += "، " + value[i].titleFa;
-                    }
-                    return subCat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.subCategories.length === 0)
-                        return;
-                    value.subCategories.sort();
-                    var subCat = value.subCategories[0].titleFa.toString();
-                    for (var i = 1; i < value.subCategories.length; i++) {
-                        subCat += "، " + value.subCategories[i].titleFa;
-                    }
-                    return subCat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                multiple: true,
+                filterLocally: false
             },
             {
                 name: "personality.educationLevel.titleFa",
@@ -283,10 +257,12 @@
                 name: "enableStatus",
                 title: "<spring:message code='status'/>",
                 align: "center",
-                type: "boolean",
-                canFilter: false
+                type: "boolean"
             }
         ],
+        filterEditorSubmit: function () {
+            ListGrid_Teacher_JspTeacher.invalidateCache();
+        },
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

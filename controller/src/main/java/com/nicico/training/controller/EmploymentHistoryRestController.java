@@ -1,5 +1,7 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -10,8 +12,10 @@ import com.nicico.training.dto.SubCategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IEmploymentHistoryService;
 import com.nicico.training.iservice.ISubCategoryService;
+import com.nicico.training.model.EmploymentHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +39,7 @@ public class EmploymentHistoryRestController {
     private final ISubCategoryService subCategoryService;
     private final ICategoryService categoryService;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -47,8 +52,75 @@ public class EmploymentHistoryRestController {
     public ResponseEntity<ISC<EmploymentHistoryDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+//        iscRq.setDistinct(true);
         SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs = employmentHistoryService.search(searchRq, teacherId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/spec-list-grid/{teacherId}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<EmploymentHistoryDTO.EmploymentHistorySpecRsGrid> gridList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                        @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                        @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                        @RequestParam(value = "operator", required = false) String operator,
+                                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                                        @RequestParam(value = "id", required = false) Long id,
+                                                                        @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                        @PathVariable Long teacherId) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+        request.setDistinct(true);
+        SearchDTO.SearchRs<EmploymentHistoryDTO.Grid> response = employmentHistoryService.deepSearchGrid(request,teacherId);
+
+        final EmploymentHistoryDTO.SpecRsGrid specResponse = new EmploymentHistoryDTO.SpecRsGrid();
+        final EmploymentHistoryDTO.EmploymentHistorySpecRsGrid specRs = new EmploymentHistoryDTO.EmploymentHistorySpecRsGrid();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                 @RequestParam(value = "id", required = false) Long id,
+                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        return request;
     }
 
     @Loggable
