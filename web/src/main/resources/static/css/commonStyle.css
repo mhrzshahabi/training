@@ -689,6 +689,9 @@
     text-align: center;
 }
 
+#file_JspAttachments  {
+    display: none;
+}
 #file-upload  {
     display: none;
 }

@@ -101,7 +101,7 @@
         dataSource: RestDataSourceEducationOrientation,
         contextMenu: Menu_ListGrid_EducationOrientation,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -204,7 +204,7 @@
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
-    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.orientation'/>",
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
@@ -355,7 +355,7 @@
         dataSource: RestDataSourceEducationMajor,
         contextMenu: Menu_ListGrid_EducationMajor,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -416,7 +416,7 @@
                 DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
-    var ToolStripButton_Add_EducationMajor = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationMajor = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.major'/>",
                 DynamicForm_EducationMajor, Window_EducationMajor);
@@ -568,7 +568,7 @@
         dataSource: RestDataSourceEducationLevel,
         contextMenu: Menu_ListGrid_EducationLevel,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -638,7 +638,7 @@
                 DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
-    var ToolStripButton_Add_EducationLevel = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationLevel = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.level'/>",
                 DynamicForm_EducationLevel, Window_EducationLevel);

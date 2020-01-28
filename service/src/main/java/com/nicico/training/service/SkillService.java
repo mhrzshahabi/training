@@ -116,7 +116,6 @@ public class SkillService implements ISkillService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<SkillDTO.Info> search(SearchDTO.SearchRq request) {
-
         SearchDTO.CriteriaRq skillCriteria = workGroupService.applyPermissions(Skill.class, SecurityUtil.getUserId());
         List<SkillGroupDTO.Info> skillGroups = skillGroupService.search(new SearchDTO.SearchRq()).getList();
         skillCriteria.getCriteria().add(makeNewCriteria("skillGroupSet", skillGroups.stream().map(SkillGroupDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));

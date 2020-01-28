@@ -192,6 +192,11 @@
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
         },
+        NotAllowedInFileNameChar: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
+            expression: /^((?![/\\?%*:|"<>.]).)*$/,
+        },
         EmailValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.email.address"/>",
@@ -854,7 +859,7 @@
             headerLayout.setVisibility(true);
             MainDesktopMenuH.setVisibility(true);
         }
-        console.log(checked)
+        // console.log(checked)
     }
 
     document.addEventListener("mousemove", function(event){

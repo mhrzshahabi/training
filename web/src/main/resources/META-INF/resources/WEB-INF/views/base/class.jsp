@@ -2002,8 +2002,9 @@
                     break;
                 }
                 case "classAttachmentsTab": {
+                    let readOnly = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب", 4: "نامه غیبت موجه"});
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب", 4: "نامه غیبت موجه"}, readOnly);
                     break;
                 }
                 case "classScoresTab": {
@@ -2167,8 +2168,6 @@
 
         var sRecord = selectedRecord;
 
-        console.log(sRecord);
-
         if (sRecord !== null && sRecord.id !== null && class_workflowParameters !== null) {
 
             if (sRecord.workflowEndingStatusCode === -1 || sRecord.workflowEndingStatusCode === -2) {
@@ -2197,7 +2196,6 @@
                     params: {"taskId": class_workflowParameters.taskId, "usr": class_workflowParameters.usr},
                     serverOutputAsString: false,
                     callback: function (RpcResponse_o) {
-                        console.log(RpcResponse_o);
                         if (RpcResponse_o.data === 'success') {
 
                             ListGrid_Class_refresh();
