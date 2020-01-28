@@ -228,7 +228,7 @@ public class TeacherRestController {
                                                          @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
-
+        request.setDistinct(true);
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
@@ -321,8 +321,7 @@ public class TeacherRestController {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
-
-        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.deepSearch(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
@@ -742,11 +741,8 @@ public class TeacherRestController {
         table_1_grade = table_1_courses +
                         table_1_license +
                         table_1_related_training +
-                        table_1_related_training_hours +
                         table_1_unRelated_training +
-                        table_1_work +
-                        table_1_years +
-                        table_1_unRelated_training_hours;
+                        table_1_work;
 
         // table 2
         int table_2_relation = 0;

@@ -141,6 +141,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     }
 
     public static void setCriteria(SearchDTO.SearchRq request, SearchDTO.CriteriaRq criteria) {
+        request.setDistinct(true);
         if (request.getCriteria() == null) {
             request.setCriteria(criteria);
             return;
