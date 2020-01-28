@@ -46,7 +46,7 @@
             {name: "scoresState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
             {name: "failureReason", title: "<spring:message code="faild.reason"/>", filterOperator: "iContains"},
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
-            {name: "valence", title: "روش ارزشی", filterOperator: "iContains"},
+            {name: "valence",title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
         ],
     });
     //**********************************************************************************
@@ -75,7 +75,7 @@
                 name: "Button",
                 ID: "Button1",
                 disabled: true,
-                title: " تبدیل همه به قبول بدون نمره",
+                title: "<spring:message code="change.all.to.pass.with.out.score"/>",
                 width: "14%",
                 click: function () {
                     var record = ListGrid_Class_JspClass.getSelectedRecord();
@@ -87,7 +87,7 @@
                name: "Button",
                  ID: "Button2",
                   disabled: true,
-                title: "حذف وضعیت قبولی/دلایل مردودی/نمره",
+                title: "<spring:message code="delete.scoreState.failureReason.score"/>",
                 width: "20%",
                 click: function () {
                 var record=ListGrid_Class_Student.getSelectedRecord()
@@ -248,7 +248,7 @@
                                     ListGrid_Cell_score_Update(record, newValue, 4);
                                 } else {
 
-                                    createDialog("info", "لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید", "<spring:message code="message"/>")
+                                    createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
                                     ListGrid_Cell_score_Update(record, null, 2);
                                     ListGrid_Class_Student.refreshFields();
                                 }
@@ -263,7 +263,7 @@
                             ListGrid_Class_Student.refreshFields();
 
                         } else {
-                            createDialog("info", "لطفا نمره راصحیح وارد کنید", "<spring:message code="message"/>")
+                            createDialog("info","<spring:message code="enter.current.score"/>", "<spring:message code="message"/>")
                             return false;
                         }
 
@@ -301,7 +301,7 @@
                         this.grid.endEditing();
                         ListGrid_Class_Student.refreshFields();
                     } else {
-                        createDialog("info", "لطفا دلایل مردودی راانتخاب کنید", "<spring:message code="message"/>")
+                        createDialog("info", "<spring:message code="choose.failureReason"/>", "<spring:message code="message"/>")
                         ListGrid_Class_Student.refreshFields();
                     }
                 },
@@ -322,7 +322,7 @@
 
         dataArrived: function () {
             var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-            return (myMap.get(classRecord.scoringMethod) === "ارزشی") ? totalsLabel_scores.setContents("روش نمره دهی" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "حد قبولی" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>") : totalsLabel_scores.setContents("روش نمره دهی" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "حد قبولی" + ":&nbsp;<b>" + (classRecord.acceptancelimit) + "</b>");
+            return (myMap.get(classRecord.scoringMethod) === "ارزشی") ? totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>") : totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + (classRecord.acceptancelimit) + "</b>");
         },
         gridComponents: [ToolStrip_Actions, "filterEditor", "header", "body"],
 
