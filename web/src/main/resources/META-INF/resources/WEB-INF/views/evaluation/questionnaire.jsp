@@ -58,16 +58,27 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name:"questionnaireTypeId",hidden:true},
+            {name:"questionnaireType.title",title:"<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: questionnaireUrl + "/iscList",
+    });
+
+    QuestionnaireTypeDS_Questionnaire=isc.TrDS.create({
+    ID:"QuestionnaireTypeDS_Questionnaire",
+    fields:[
+        {name:"id",primaryKey:true,hidden:true},
+        {name:"title",title:"<spring:message code="title"/>",required:true,filterOperator:"iContains",autoFitWidth: true}
+    ],
+     fetchDataURL: parameterValueUrl + "/iscList/143",
     });
 
     QuestionnaireLG_questionnaire = isc.TrLG.create({
         ID: "QuestionnaireLG_questionnaire",
         dataSource: QuestionnaireDS_questionnaire,
         autoFetchData: true,
-        fields: [{name: "title"}, {name: "description"},],
+        fields: [{name: "title"},{name:"questionnaireType.title"},{name: "description"}],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="questionnaire"/>" + "</b></span>",}),
             QuestionnaireTS_questionnaire, "filterEditor", "header", "body"
@@ -116,7 +127,9 @@
         ID: "QuestionnaireDF_questionnaire",
         fields: [
             {name: "id", hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
+             {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
+            {name:"questionnaireTypeId",title:"<spring:message code="type"/>",required:true, type: "select", optionDataSource: QuestionnaireTypeDS_Questionnaire,
+                valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,}},
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
         ]
     });

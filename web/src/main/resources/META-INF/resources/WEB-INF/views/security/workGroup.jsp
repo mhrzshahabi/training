@@ -139,6 +139,82 @@
         fetchDataURL: postUrl + "/unassigned-iscList"
     });
 
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    //*Unassigned*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    Menu_Unassigned_JspWorkGroup = isc.Menu.create({
+        data: [{
+            title: "<spring:message code='refresh'/>", click: function () {
+                refreshLG(ListGrid_Unassigned_JspWorkGroup);
+            }
+        }]
+    });
+
+    ListGrid_Unassigned_JspWorkGroup = isc.TrLG.create({
+        dataSource: UnassignedPostDS_JspWorkGroup,
+        fields: [
+            {name: "code",},
+            {name: "titleFa",},
+            {name: "job.titleFa",},
+            {name: "postGrade.titleFa",},
+            {name: "area",},
+            {name: "assistance",},
+            {name: "affairs",},
+            {name: "section",},
+            {name: "unit",},
+            {name: "costCenterCode",},
+            {name: "costCenterTitleFa",},
+        ],
+        autoFetchData: true,
+        contextMenu: Menu_Unassigned_JspWorkGroup,
+        allowAdvancedCriteria: true,
+        sortField: 0
+    });
+
+
+    ToolStrip_Unassigned_JspWorkGroup = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members:
+            [
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        isc.ToolStripButtonRefresh.create({
+                            click: function () {
+                                refreshLG(ListGrid_Unassigned_JspWorkGroup);
+                            }
+                        })
+                    ]
+                })
+            ]
+    });
+
+    VLayout_Unassigned_JspWorkGroup = isc.TrVLayout.create({
+        members: [
+            ToolStrip_Unassigned_JspWorkGroup,
+            ListGrid_Unassigned_JspWorkGroup,
+        ]
+    });
+
+    Window_Unassigned_JspWorkGroup = isc.Window.create({
+        placement: "fillScreen",
+        minWidth: "1024",
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        title: "<spring:message code='unassignedPostToWorkGroup'/>",
+        items: [VLayout_Unassigned_JspWorkGroup]
+    });
+
+    function Show_Unassigned_Posts_JspWorkGroup() {
+        Window_Unassigned_JspWorkGroup.show();
+    }
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Permissions*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -329,6 +405,10 @@
             title: "<spring:message code="permissions"/>", click: function () {
                 Add_Permission_To_WorkGroup_Jsp();
             }
+        }, {
+            title: "<spring:message code='unassignedPostToWorkGroup'/>", click: function () {
+                Show_Unassigned_Posts_JspWorkGroup();
+            }
         }
         ]
     });
@@ -436,6 +516,12 @@
             Add_Permission_To_WorkGroup_Jsp();
         }
     });
+    ToolStripButton_Unassigned_Jsp = isc.ToolStripButton.create({
+        title: "<spring:message code='unassignedPostToWorkGroup'/>",
+        click: function () {
+            Show_Unassigned_Posts_JspWorkGroup();
+        }
+    });
 
     ToolStrip_Actions_JspWorkGroup = isc.ToolStrip.create({
         width: "100%",
@@ -446,6 +532,7 @@
                 ToolStripButton_Edit_JspWorkGroup,
                 ToolStripButton_Remove_JspWorkGroup,
                 ToolStripButton_Add_Permission_To_WorkGroup_Jsp,
+                ToolStripButton_Unassigned_Jsp,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -457,88 +544,12 @@
             ]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    //*Unassigned*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
-    Menu_Unassigned_JspWorkGroup = isc.Menu.create({
-        data: [{
-            title: "<spring:message code='refresh'/>", click: function () {
-                refreshLG(ListGrid_Unassigned_JspWorkGroup);
-            }
-        }]
-    });
-
-    ListGrid_Unassigned_JspWorkGroup = isc.TrLG.create({
-        dataSource: UnassignedPostDS_JspWorkGroup,
-        fields: [
-            {name: "code",},
-            {name: "titleFa",},
-            {name: "job.titleFa",},
-            {name: "postGrade.titleFa",},
-            {name: "area",},
-            {name: "assistance",},
-            {name: "affairs",},
-            {name: "section",},
-            {name: "unit",},
-            {name: "costCenterCode",},
-            {name: "costCenterTitleFa",},
-        ],
-        autoFetchData: true,
-        contextMenu: Menu_Unassigned_JspWorkGroup,
-        allowAdvancedCriteria: true,
-        sortField: 0
-    });
-
-
-    // ToolStrip_Unassigned_JspWorkGroup = isc.ToolStrip.create({
-    //     width: "100%",
-    //     membersMargin: 5,
-    //     members:
-    //         [
-    //             isc.ToolStrip.create({
-    //                 width: "100%",
-    //                 align: "left",
-    //                 border: '0px',
-    //                 members: [
-    //                     isc.ToolStripButtonRefresh.create({
-    //                         click: function () {
-    //                             refreshLG(ListGrid_Unassigned_JspWorkGroup);
-    //                         }
-    //                     })
-    //                 ]
-    //             })
-    //         ]
-    // });
-
-    VLayout_Unassigned_JspWorkGroup = isc.TrVLayout.create({
-        members: [
-            // ToolStrip_Unassigned_JspWorkGroup,
-            ListGrid_Unassigned_JspWorkGroup,
-        ]
-    });
-
-    TabSet_Unassigned_JspWorkGroup = isc.TabSet.create({
-        height: "50%",
-        tabBarPosition: "top",
-        tabs: [
-            {
-                title: "پست های بدون گروه کاری",
-                pane: VLayout_Unassigned_JspWorkGroup
-
-            }
-        ]
-    });
-
     VLayout_Body_JspWorkGroup = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_JspWorkGroup,
             ListGrid_JspWorkGroup,
-            TabSet_Unassigned_JspWorkGroup
         ]
     });
-
-
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*functions*/

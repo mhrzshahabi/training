@@ -1,5 +1,6 @@
 package com.nicico.training.iservice;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.model.Teacher;
@@ -35,5 +36,7 @@ public interface ITeacherService {
     public void changeBlackListStatus(Boolean inBlackList, Long id);
 
     SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request);
+
+    public SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList);
 
 }

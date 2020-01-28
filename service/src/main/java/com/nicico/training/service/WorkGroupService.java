@@ -24,6 +24,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class WorkGroupService implements IWorkGroupService {
@@ -213,14 +215,5 @@ public class WorkGroupService implements IWorkGroupService {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(operator);
-        criteriaRq.setFieldName(fieldName);
-        criteriaRq.setValue(value);
-        criteriaRq.setCriteria(criteriaRqList);
-        return criteriaRq;
     }
 }

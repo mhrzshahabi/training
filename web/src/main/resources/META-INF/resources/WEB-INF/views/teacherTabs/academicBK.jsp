@@ -150,7 +150,7 @@
                 title: "<spring:message code='duration'/>",
                 type: "IntegerItem",
                 keyPressFilter: "[0-9]",
-                hint: "<spring:message code='hour'/>",
+                hint: "<spring:message code='work.years'/>",
                 showHintInField: true,
                 length: 5
             },
