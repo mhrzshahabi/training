@@ -345,7 +345,8 @@
         ]
     });
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
-        tabBarPosition: "top",
+        // tabBarPosition: "top",
+        showResizeBar: true,
         titleEditorTopOffset: 2,
         width: "100%",
         height: "60%",

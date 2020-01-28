@@ -315,6 +315,9 @@ public class TeacherRestController {
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
+//        SearchDTO.CriteriaRq criteriaRq_Not_In_BlackList = teacherService.makeNewCriteria("inBlackList", false, EOperator.equals, null);
+//        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+//        searchRq = new SearchDTO.SearchRq();
         if (criteriaStr.equalsIgnoreCase("{}")) {
             searchRq = new SearchDTO.SearchRq();
         } else {
@@ -322,7 +325,20 @@ public class TeacherRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+//        //        SearchDTO.CriteriaRq criteriaRq_Not_In_BlackList = teacherService.makeNewCriteria("inBlackList", false, EOperator.equals, null);
+//        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+//
+////        if (!criteriaStr.equalsIgnoreCase("{}")) {
+////            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+////            criteriaRqList.add(criteriaRq);
+////            criteriaRqList.add(criteriaRq_Not_In_BlackList);
+////            searchRq.setCriteria(new SearchDTO.CriteriaRq());
+////            searchRq.getCriteria().setCriteria(criteriaRqList);
+////        } else {
+////           searchRq.setCriteria(criteriaRq_Not_In_BlackList);
+////        }
+
+        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.deepSearch(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
@@ -742,11 +758,8 @@ public class TeacherRestController {
         table_1_grade = table_1_courses +
                         table_1_license +
                         table_1_related_training +
-                        table_1_related_training_hours +
                         table_1_unRelated_training +
-                        table_1_work +
-                        table_1_years +
-                        table_1_unRelated_training_hours;
+                        table_1_work;
 
         // table 2
         int table_2_relation = 0;
