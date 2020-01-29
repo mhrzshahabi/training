@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -45,10 +46,10 @@ public class EvaluationRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = {"/{type}/{classId}/{courseId}/{studentId}/{evaluationType}"})
+    @PostMapping(value = {"/{type}/{classId}/{courseId}/{studentId}/{evaluationType}/{evaluationReturnDate}"})
     public void printWithCriteria(HttpServletResponse response, @PathVariable String type,
                                   @PathVariable Long classId, @PathVariable Long courseId,
-                                  @PathVariable Long studentId, @PathVariable String evaluationType) throws Exception {
+                                  @PathVariable Long studentId, @PathVariable String evaluationType, @PathVariable String evaluationReturnDate) throws Exception {
 
         List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
         teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
@@ -61,13 +62,15 @@ public class EvaluationRestController {
         List<Skill> skillList = skillService.skillList(courseId);
 
         List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
-        for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
-            evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
-        }
+        if (!evaluationType.equals("TabPane_Behavior") && !evaluationType.equals("TabPane_Learning"))
+            for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
+                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+            }
 
-        for (QuestionnaireQuestion questionnaireQuestion : equipmentQuestionnaireQuestion) {
-            evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
-        }
+        if (!evaluationType.equals("TabPane_Behavior") && !evaluationType.equals("TabPane_Learning"))
+            for (QuestionnaireQuestion questionnaireQuestion : equipmentQuestionnaireQuestion) {
+                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+            }
 
         for (Goal goal : courseGoals.getGoalSet()) {
 
@@ -93,6 +96,15 @@ public class EvaluationRestController {
 
         TclassDTO.Info classInfo = tclassService.get(classId);
 
+        if (evaluationReturnDate.equals("noDate")) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.MONTH, 1);
+            evaluationReturnDate = DateUtil.convertMiToKh(formatter.format(calendar.getTime()));
+        }
+
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
         params.put("courseCode", classInfo.getCourse().getCode());
@@ -100,10 +112,10 @@ public class EvaluationRestController {
         params.put("classCode", classInfo.getCode());
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
+        params.put("returnDate", evaluationReturnDate.replace("-", "/"));
         params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
-                evaluationType.equals("TabPane_Learning") ? "(یادگیری)" :
-                        evaluationType.equals("TabPane_Behavior") ? "(رفتار)" : "(نتایج)"));
-
+                evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :
+                        evaluationType.equals("TabPane_Behavior") ? "(رفتاری)" : "(نتایج)"));
 
 
         Set<ClassStudentDTO.AttendanceInfo> classStudent = classInfo.getClassStudentsForEvaluation(studentId);

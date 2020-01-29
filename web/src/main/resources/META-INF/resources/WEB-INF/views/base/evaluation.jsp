@@ -15,6 +15,186 @@
     }
     // ============ Global - Variables ========>>
 
+    // <<-------------------------------------- Create - Window ------------------------------------
+    {
+
+        EvaluationDS_PersonList = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "companyName",
+                    title: "<spring:message code="company.name"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "postTitle",
+                    title: "<spring:message code="post"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "ccpArea",
+                    title: "<spring:message code="reward.cost.center.area"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAssistant",
+                    title: "<spring:message code="reward.cost.center.assistant"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAffairs",
+                    title: "<spring:message code="reward.cost.center.affairs"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpSection",
+                    title: "<spring:message code="reward.cost.center.section"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpUnit",
+                    title: "<spring:message code="reward.cost.center.unit"/>",
+                    filterOperator: "iContains"
+                },
+            ],
+            fetchDataURL: personnelUrl + "/iscList",
+        });
+
+        EvaluationLIstGrid_PeronalLIst = isc.TrLG.create({
+            dataSource: EvaluationDS_PersonList,
+            selectionType: "single",
+            fields: [
+                {name: "id", hidden: true},
+                {name: "firstName"},
+                {name: "lastName"},
+                {name: "nationalCode"},
+                {name: "companyName"},
+                {name: "personnelNo"},
+                {name: "personnelNo2"},
+                {name: "postTitle"},
+                {name: "ccpArea"},
+                {name: "ccpAssistant"},
+                {name: "ccpAffairs"},
+                {name: "ccpSection"},
+                {name: "ccpUnit"},
+            ],
+            // gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
+            dataChanged: function () {
+                this.Super("dataChanged", arguments);
+                totalRows = this.data.getLength();
+                if (totalRows >= 0 && this.data.lengthIsKnown()) {
+                    PersonnelsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                } else {
+                    PersonnelsCount_student.setContents("&nbsp;");
+                }
+            },
+            selectionAppearance: "checkbox",
+            selectionUpdated: function () {
+
+                SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
+
+                    if (!nationalCodeExists(current.nationalCode)) {
+                        if (checkIfAlreadyExist(current)) {
+                            return accumulator
+                        } else {
+                            current.applicantCompanyName = current.companyName;
+                            current.presenceTypeId = studentDefaultPresenceId;
+                            current.registerTypeId = 1;
+                            return accumulator.concat([current]);
+                        }
+
+                        function checkIfAlreadyExist(currentVal) {
+                            return accumulator.some(function (item) {
+                                return (item.nationalCode === currentVal.nationalCode);
+                            });
+                        }
+                    } else {
+                        isc.Dialog.create({
+                            message: "<spring:message code="student.is.duplicate"/>",
+                            icon: "[SKIN]stop.png",
+                            title: "<spring:message code="message"/>",
+                            buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                    }
+
+                }, []));
+
+                // var record = PersonnelsRegLG_student.getSelectedRecord();
+                // checkStudentDuplicateNationalCode(record.getValue("nationalCode"));
+
+                // var record = PersonnelsRegLG_student.getSelectedRecord().getValue("nationalCode");
+                //  checkStudentDuplicateNationalCode();
+            }
+        });
+
+        var personnel_List_VLayout = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            autoDraw: false,
+            border: "0px solid red", layoutMargin: 5,
+            members: [
+                isc.SectionStack.create({
+                    sections: [{
+                        title: "<spring:message code="all.persons"/>",
+                        expanded: true,
+                        canCollapse: false,
+                        align: "center",
+                        items: [
+                            EvaluationLIstGrid_PeronalLIst
+                        ]
+                    }]
+                }),
+            ]
+        });
+
+        EvaluationWin_PersonList = isc.Window.create({
+            width: 1024,
+            height: 600,
+            minWidth: 1024,
+            minHeight: 600,
+            autoSize: false,
+            visibility: "hidden",
+            items: [
+                personnel_List_VLayout
+            ]
+        });
+    }
+    // ---------------------------------------- Create - Window ---------------------------------->>
+
     // <<-------------------------------------- Create - contextMenu ------------------------------------------
     {
         Menu_ListGrid_evaluation_class = isc.Menu.create({
@@ -424,6 +604,10 @@
             title: "<spring:message code="student.form.issuance"/>",
             click: function () {
                 print_Student_FormIssuance("pdf", "single");
+
+                // EvaluationWin_PersonList.show();
+                // EvaluationLIstGrid_PeronalLIst.invalidateCache();
+                // EvaluationLIstGrid_PeronalLIst.fetchData();
             }
         });
 
@@ -454,6 +638,7 @@
                 ListGrid_evaluation_student.invalidateCache();
             }
         });
+
 
         var ToolStrip_evaluation = isc.ToolStrip.create({
             width: "100%",
@@ -547,6 +732,42 @@
             members: [ToolStrip_evaluation]
         });
 
+        var DynamicForm_ReturnDate = isc.DynamicForm.create({
+            width: "150px",
+            height: "10px",
+            padding: 0,
+            fields: [
+                {
+                    name: "evaluationReturnDate",
+                    title: "<spring:message code='return.date'/>",
+                    ID: "evaluation_ReturnDate",
+                    width: "150px",
+                    hint: "----/--/--",
+                    keyPressFilter: "[0-9/]",
+                    showHintInField: true,
+                    icons: [{
+                        src: "<spring:url value="calendar.png"/>",
+                        click: function (form) {
+                            closeCalendarWindow();
+                            displayDatePicker('evaluation_ReturnDate', this, 'ymd', '/');
+                        }
+                    }],
+                    textAlign: "center",
+                    click: function (form) {
+
+                    },
+                    changed: function (form, item, value) {
+
+                        if (checkDate(value) === false) {
+                            form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
+                        } else {
+                            form.clearFieldErrors("sessionDate", true);
+                        }
+                    }
+                }
+            ]
+        });
+
         var Hlayout_Grid_evaluation = isc.HLayout.create({
             width: "100%",
             height: "100%",
@@ -556,7 +777,7 @@
         var VLayout_Body_evaluation = isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [HLayout_Actions_evaluation, Hlayout_Grid_evaluation]
+            members: [DynamicForm_ReturnDate, HLayout_Actions_evaluation, Hlayout_Grid_evaluation]
         });
 
         var Detail_Tab_Evaluation = isc.TabSet.create({
@@ -671,12 +892,13 @@
                 if (numberOfStudents === "all" || (numberOfStudents === "single" && selectedStudent !== null && selectedStudent !== undefined)) {
 
                     let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
+                    let returnDate = evaluation_ReturnDate._value !== undefined ? evaluation_ReturnDate._value.replaceAll("/", "-") : "noDate";
 
                     //*****print*****
                     var advancedCriteria_unit = ListGrid_evaluation_student.getCriteria();
                     var criteriaForm_operational = isc.DynamicForm.create({
                         method: "POST",
-                        action: "<spring:url value="/evaluation/printWithCriteria/"/>" + type + "/" + selectedClass.id + "/" + selectedClass.course.id + "/" + studentId + "/" + selectedTab.id,
+                        action: "<spring:url value="/evaluation/printWithCriteria/"/>" + type + "/" + selectedClass.id + "/" + selectedClass.course.id + "/" + studentId + "/" + selectedTab.id + "/" + returnDate,
                         target: "_Blank",
                         canSubmit: true,
                         fields:
