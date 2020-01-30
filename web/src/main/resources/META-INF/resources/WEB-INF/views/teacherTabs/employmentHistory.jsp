@@ -274,52 +274,24 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let cat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        cat += "، " + value[i].titleFa;
-                    }
-                    return cat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.categories.length === 0)
-                        return;
-                    value.categories.sort();
-                    let cat = value.categories[0].titleFa.toString();
-                    for (let i = 1; i < value.categories.length; i++) {
-                        cat += "، " + value.categories[i].titleFa;
-                    }
-                    return cat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_Category_JspEmploymentHistory,
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                multiple: true,
+                filterLocally: false
             },
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let subCat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        subCat += "، " + value[i].titleFa;
-                    }
-                    return subCat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.subCategories.length === 0)
-                        return;
-                    value.subCategories.sort();
-                    let subCat = value.subCategories[0].titleFa.toString();
-                    for (let i = 1; i < value.subCategories.length; i++) {
-                        subCat += "، " + value.subCategories[i].titleFa;
-                    }
-                    return subCat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                multiple: true,
+                filterLocally: false
             },
             {
                 name: "persianStartDate",

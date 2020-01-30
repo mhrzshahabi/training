@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EmploymentHistoryDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IEmploymentHistoryService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.EmploymentHistory;
@@ -116,4 +117,30 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<EmploymentHistoryDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request, Long teacherId) {
+
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("teacherId", teacherId, EOperator.equals, null);
+
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else {
+                criteriaRqList.add(criteriaRq);
+                request.getCriteria().setCriteria(criteriaRqList);
+            }
+        } else
+            request.setCriteria(criteriaRq);
+
+
+        SearchDTO.SearchRs<EmploymentHistoryDTO.Grid> searchRs = SearchUtil.search(employmentHistoryDAO, request, needAssessment -> modelMapper.map(needAssessment,
+                EmploymentHistoryDTO.Grid.class));
+
+        return searchRs;
+    }
+
+
 }

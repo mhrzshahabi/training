@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.SubCategory;
 import com.nicico.training.model.TeacherCertification;
 import com.nicico.training.model.TeachingHistory;
 import io.swagger.annotations.ApiModel;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -61,9 +63,22 @@ public class TeacherDTO {
         private String teacherCode;
         private PersonalInfoDTO.Grid personality;
         private Boolean enableStatus;
-        private Set<CategoryDTO.CategoryInfoTuple> categories;
-        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private Set<CategoryDTO.Info> categories;
+        private Set<SubCategoryDTO.Info> subCategories;
         private Integer version;
+
+        public List<Long> getCategories() {
+            if (categories == null)
+                return null;
+            return categories.stream().map(CategoryDTO.Info::getId).collect(Collectors.toList());
+        }
+
+        public List<Long> getSubCategories() {
+            if (subCategories == null)
+                return null;
+            return subCategories.stream().map(SubCategoryDTO.Info::getId).collect(Collectors.toList());
+        }
+
     }
 
     @Getter
