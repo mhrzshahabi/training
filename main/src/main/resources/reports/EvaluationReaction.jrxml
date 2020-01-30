@@ -179,6 +179,7 @@
 	<parameter name="endDate" class="java.lang.String"/>
 	<parameter name="evaluationType" class="java.lang.String"/>
 	<parameter name="returnDate" class="java.lang.String"/>
+	<parameter name="evaluationAudience" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -189,14 +190,14 @@
 	<pageHeader>
 		<band height="201" splitType="Stretch">
 			<staticText>
-				<reportElement x="105" y="6" width="350" height="20" uuid="5f206d2b-4d4f-4333-97c5-abedd5e10fe0"/>
+				<reportElement x="105" y="4" width="350" height="20" uuid="5f206d2b-4d4f-4333-97c5-abedd5e10fe0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروي انساني]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="177" y="34" width="200" height="20" uuid="4a348648-d2de-4840-8ee6-615d6cfbbc62"/>
+				<reportElement x="200" y="32" width="200" height="20" uuid="4a348648-d2de-4840-8ee6-615d6cfbbc62"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="14" isBold="true"/>
 				</textElement>
@@ -293,7 +294,7 @@
 			<textField>
 				<reportElement x="3" y="138" width="101" height="20" uuid="dd86f4ed-9906-4826-b648-9a574050669b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="B Nazanin" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{returnDate}]]></textFieldExpression>
 			</textField>
@@ -311,11 +312,18 @@
 				<text><![CDATA[2 - مشخصات فراگیر]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="95" y="34" width="82" height="20" uuid="5bd25507-2769-492c-a8c8-e72fe3e0af4c"/>
+				<reportElement x="118" y="32" width="82" height="20" uuid="5bd25507-2769-492c-a8c8-e72fe3e0af4c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{evaluationType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="55" width="211" height="20" uuid="c5cb936c-4d3d-468e-bd49-e4b9d1c4d053"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{evaluationAudience}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

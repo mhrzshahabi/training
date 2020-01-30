@@ -13,11 +13,9 @@ import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -46,10 +44,17 @@ public class EvaluationRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = {"/{type}/{classId}/{courseId}/{studentId}/{evaluationType}/{evaluationReturnDate}"})
+    @PostMapping(value = {"/{type}/{classId}"})
     public void printWithCriteria(HttpServletResponse response, @PathVariable String type,
-                                  @PathVariable Long classId, @PathVariable Long courseId,
-                                  @PathVariable Long studentId, @PathVariable String evaluationType, @PathVariable String evaluationReturnDate) throws Exception {
+                                  @PathVariable Long classId, @RequestParam(value = "printData") String printData) throws Exception {
+
+        JSONObject jsonObject = new JSONObject(printData);
+        Long courseId = Long.parseLong(jsonObject.get("courseId").toString());
+        Long studentId = Long.parseLong(jsonObject.get("studentId").toString());
+        String evaluationType = jsonObject.get("evaluationType").toString();
+        String evaluationReturnDate = jsonObject.get("evaluationReturnDate").toString();
+        String evaluationAudience = jsonObject.get("evaluationAudience").toString();
+
 
         List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
         teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
@@ -99,7 +104,7 @@ public class EvaluationRestController {
         if (evaluationReturnDate.equals("noDate")) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();
-            Calendar calendar=Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.MONTH, 1);
             evaluationReturnDate = DateUtil.convertMiToKh(formatter.format(calendar.getTime()));
@@ -112,6 +117,7 @@ public class EvaluationRestController {
         params.put("classCode", classInfo.getCode());
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
+        params.put("evaluationAudience", evaluationAudience.equals("null") ? "" : "مخاطب : " + evaluationAudience);
         params.put("returnDate", evaluationReturnDate.replace("-", "/"));
         params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
                 evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :
