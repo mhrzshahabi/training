@@ -17,4 +17,6 @@ public interface IEmploymentHistoryService {
     void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId);
 
     void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId);
+
+    SearchDTO.SearchRs<EmploymentHistoryDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request, Long teacherId);
 }

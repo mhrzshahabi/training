@@ -763,12 +763,12 @@
                 operator: "and",
                 criteria: [{fieldName: "courseId", operator: "isNull"}]
             };
+            ListGrid_AllSkill_JspCourse.invalidateCache();
             ListGrid_AllSkill_JspCourse.setImplicitCriteria(advancedCriteriaJspCourse);
             ListGrid_AllSkill_JspCourse.fetchData(advancedCriteriaJspCourse);
-            ListGrid_AllSkill_JspCourse.invalidateCache();
+            ListGridOwnSkill_JspCourse.invalidateCache();
             ListGridOwnSkill_JspCourse.setImplicitCriteria({"courseId": courseRecord.id});
             ListGridOwnSkill_JspCourse.fetchData({"courseId": courseRecord.id});
-            ListGridOwnSkill_JspCourse.invalidateCache();
             labelSkill.contents = "مهارت های دوره  " + getFormulaMessage(courseRecord.titleFa, "2", "red", "b");
             labelSkill.redraw();
             // Window_AddSkill.show();

@@ -8,7 +8,7 @@
 %>
 
 // <script>
-
+    var localQuestions;
     // <<========== Global - Variables ==========
     {
         var evaluation_method = "POST";
@@ -179,8 +179,72 @@
 
     // <<-------------------------------------- Create - contextMenu ------------------------------------------
     {
-        Menu_ListGrid_evaluation_class = isc.Menu.create({
+        var Menu_ListGrid_evaluation_class = isc.Menu.create({
             data: [
+                {
+                    title: "<spring:message code="refresh"/>123",
+                    icon: "<spring:url value="refresh.png"/>",
+                    click: function () {
+                        isc.RPCManager.sendRequest({
+                            actionURL: configQuestionnaireUrl + "/iscList" ,
+                            httpMethod: "GET",
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            showPrompt: false,
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                localQuestions = JSON.parse(resp.data).response.data;
+                                var DynamicForm_Questions_Title_JspEvaluation = isc.DynamicForm.create({
+                                    validateOnExit: true,
+                                    height: "20%",
+                                    colWidths:["29%","68%"],
+                                    width:"100%",
+                                    borderRadius: "6px",
+                                    border:"2px solid red",
+                                    // titleAlign:"left",
+                                    padding: 10,
+                                    fields: [
+                                        {name: teacherNam}
+                                    ],
+                                });
+                                var DynamicForm_Questions_Body_JspEvaluation = isc.DynamicForm.create({
+                                    validateOnExit: true,
+                                    height: "70%",
+                                    colWidths:["29%","68%"],
+                                    width:"100%",
+                                    borderRadius: "6px",
+                                    border:"2px solid red",
+                                    // titleAlign:"left",
+                                    padding: 10,
+                                    fields: [],
+                                });
+                                var Window_Questions_JspEvaluation = isc.Window.create({
+                                    placement: "fillScreen",
+                                    items: [
+                                        DynamicForm_Questions_Title_JspEvaluation,
+                                        DynamicForm_Questions_Body_JspEvaluation
+                                    ],
+                                    minWidth: 1024,
+                                })
+                                let itemList = [];
+                                for (let i = 0; i <localQuestions.length ; i++) {
+                                    let item = {};
+                                    item.name = "QU" + localQuestions[i].id;
+                                    item.title = localQuestions[i].question;
+                                    item.type = "radioGroup";
+                                    item.vertical = false,
+                                    item.fillHorizontalSpace = true,
+                                    item.valueMap = ["خوب", "خیلی خوب", "عالی", "ضعیف", "هیچی"];
+                                    // item.colSpan = ,
+                                    itemList.add(item);
+                                }
+                                DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                                Window_Questions_JspEvaluation.show();
+                            }
+                        });
+                    }
+                },
                 {
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
@@ -238,6 +302,7 @@
     }
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
 
+
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
 
@@ -269,6 +334,7 @@
             width: "100%",
             height: "100%",
             dataSource: RestDataSource_evaluation_class,
+            contextMenu: Menu_ListGrid_evaluation_class,
             canAddFormulaFields: false,
             autoFetchData: true,
             showFilterEditor: true,
@@ -276,6 +342,7 @@
             allowFilterExpressions: true,
             filterOnKeypress: true,
             sortField: 0,
+
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {

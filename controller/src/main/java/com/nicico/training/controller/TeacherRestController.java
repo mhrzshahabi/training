@@ -228,7 +228,7 @@ public class TeacherRestController {
                                                          @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
-
+        request.setDistinct(true);
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
