@@ -821,7 +821,7 @@
     function print_CommitteeListGrid(type) {
         var advancedCriteria = ListGrid_Committee.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
-            method: "GET",
+            method: "POST",
             action: "<spring:url value="/committee/printCommitteeWithMember/"/>" + type,
             target: "_Blank",
             canSubmit: true,

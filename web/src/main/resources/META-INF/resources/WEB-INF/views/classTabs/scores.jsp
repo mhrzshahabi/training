@@ -16,7 +16,7 @@
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
-            {name: "tclass.scoringMethod", title: "ghfdhfg"},
+            {name: "tclass.scoringMethod"},
             {
                 name: "student.firstName",
                 title: "<spring:message code="firstName"/>",
@@ -121,7 +121,7 @@
 
 //------
         canSelectCells: true,
-        sortField: 0,
+      //  sortField: 0,
         dataSource: RestDataSource_ClassStudent,
         fields: [
             {
@@ -201,6 +201,7 @@
 
             {
                 name: "score",
+                ID:"score1",
                 title: "<spring:message code="score"/>",
                 filterOperator: "iContains",
                 canEdit: true,
@@ -317,7 +318,7 @@
 
 
             },
-            {name: "tclass.scoringMethod", hidden: true},
+
         ],
 
         dataArrived: function () {
@@ -493,7 +494,7 @@
                 ListGrid_Class_Student.getField('scoresState').valueMap = ["مردود", "قبول"]
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["عدم کسب حد نصاب نمره", "غیبت در جلسات"]
                 Button1.setDisabled(true)
-                 Button2.setDisabled(true)
+                Button2.setDisabled(true)
 
             } else if (classRecord.scoringMethod == "3") {
                 score_value = 20;
