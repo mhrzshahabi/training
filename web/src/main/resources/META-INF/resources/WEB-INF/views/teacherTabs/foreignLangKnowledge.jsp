@@ -17,6 +17,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "langName", filterOperator: "iContains"},
+            {name: "langLevelId", filterOperator: "equals"},
             {name: "langLevel.titleFa"},
             {name: "instituteName"},
             {name: "duration"},
@@ -26,7 +27,7 @@
     });
 
     var RestDataSource_ElangLevel_JspTeacher = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields:[{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: enumUrl + "eLangLevel/spec-list"
     });
 
@@ -45,7 +46,8 @@
             {
                 name: "langName",
                 title: "<spring:message code="foreign.language"/>",
-                required: true
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "langLevelId",
@@ -53,6 +55,7 @@
                 title: "<spring:message code="knowledge.level"/>",
                 textAlign: "center",
                 width: "*",
+                required: true,
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultToFirstOption: true,
@@ -75,11 +78,17 @@
             },
             {
                 name: "instituteName",
-                title: "<spring:message code="institute.place"/>"
+                title: "<spring:message code="institute.place"/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "duration",
-                title: "<spring:message code="duration"/>"
+                title: "<spring:message code="duration"/>",
+                type: "IntegerItem",
+                keyPressFilter: "[0-9]",
+                hint: "<spring:message code='hour'/>",
+                showHintInField: true,
+                length: 5
             },
             {
                 name: "persianStartDate",
@@ -205,24 +214,20 @@
     ListGrid_JspForeignLangKnowledge = isc.TrLG.create({
         dataSource: RestDataSource_JspForeignLangKnowledge,
         contextMenu: Menu_JspForeignLangKnowledge,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
         fields: [
             {
                 name: "langName",
                 title: "<spring:message code='foreign.language'/>",
             },
             {
-                name: "langLevel.titleFa",
-                title:"<spring:message code='knowledge.level'/>"
+                name: "langLevelId",
+                title:"<spring:message code='knowledge.level'/>",
+                type: "IntegerItem",
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_ElangLevel_JspTeacher,
+                filterOnKeypress: true
             },
             {
                 name: "instituteName",
@@ -235,19 +240,29 @@
             {
                 name: "persianStartDate",
                 title: "<spring:message code='start.date'/>",
-                canFilter: false,
                 canSort: false
             },
             {
                 name: "persianEndDate",
                 title: "<spring:message code='end.date'/>",
-                canFilter: false,
                 canSort: false
             }
         ],
         rowDoubleClick: function () {
             ListGrid_ForeignLangKnowledge_Edit();
-        }
+        },
+        align: "center",
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     ToolStripButton_Refresh_JspForeignLangKnowledge = isc.ToolStripButtonRefresh.create({

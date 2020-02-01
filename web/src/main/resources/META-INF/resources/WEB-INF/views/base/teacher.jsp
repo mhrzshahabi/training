@@ -736,10 +736,9 @@
 
     //-------------------------------------------------Functions--------------------------------------------------------
     function ListGrid_teacher_refresh() {
-        // refreshSelectedTab_teacher(null);
-        ListGrid_Teacher_JspBlackList.invalidateCache();
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
+        ListGrid_Teacher_JspBlackList.invalidateCache();
     }
 
     function Teacher_Save_Button_Click_JspTeacher() {

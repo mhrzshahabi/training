@@ -38,6 +38,7 @@
                 name: "fileName",
                 title: "<spring:message code="attach.file.name"/>",
                 required: true,
+                length: 50,
                 keyPressFilter: /^((?![/\\?%*:|"<>.]).)*$/
             },
             {
@@ -46,11 +47,19 @@
                 title: "<spring:message code='attach.file.format'/>",
                 required: true,
                 filterOnKeypress: true,
-                editorType: "SelectItem",
+                editorType: "ComboBoxItem",
+                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                textAlign: "center",
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
                 pickListProperties: {
-                    showFilterEditor: false
+                    showFilterEditor: true
                 },
                 filterOperator: "iContains",
                 pickListFields: [
@@ -59,7 +68,8 @@
             },
             {
                 name: "description",
-                title: "<spring:message code="description"/>"
+                title: "<spring:message code="description"/>",
+                length: 255
             }
         ]
     });
