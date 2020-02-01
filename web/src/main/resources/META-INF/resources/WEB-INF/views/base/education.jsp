@@ -245,7 +245,6 @@
     var IButton_EducationOrientation_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationOrientation.validate();
             if (DynamicForm_EducationOrientation.hasErrors()) {
                 return;
             }
@@ -810,8 +809,7 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var responseID = JSON.parse(resp.data).id;
             var gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             if (resp.context.actionURL.contains("major")) {
                 edu_after_save(ListGrid_EducationMajor, Window_EducationMajor, gridState);
             } else if ((resp.context.actionURL).contains("level")) {
@@ -825,13 +823,11 @@
         } else {
             let respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else if (resp.httpResponseCode === 406 && respText === "NotEditable") {
                 createDialog("info", "<spring:message code='msg.education.orientation.edit.error'/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
     }
@@ -840,8 +836,7 @@
         waitEducation.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_Education_refresh(listGridEducation);
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
