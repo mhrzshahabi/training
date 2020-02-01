@@ -122,8 +122,8 @@
      //
      // },
 
-         doubleClick: function () {
-         show_CommitteEditForm();
+           recordDoubleClick: function () {
+             show_CommitteEditForm();
         },
 
       selectionUpdated: function () {
