@@ -140,10 +140,13 @@
             {
                 name: "collageName",
                 title: "<spring:message code='collage.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "academicGrade",
                 title: "<spring:message code='academic.grade'/>",
+                keyPressFilter: "[0-9.]",
+                length: "10"
             },
             {
                 name: "duration",
@@ -306,8 +309,9 @@
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_EducationOrientation_JspAcademicBK
-            }
-          ,
+            },
+            {name: "collageName", title: "<spring:message code='collage.name'/>"},
+            {name: "academicGrade", title: "<spring:message code='academic.grade'/>"},
             {
                 name: "duration",
                 title: "<spring:message code='duration'/>"
@@ -316,9 +320,7 @@
                 name: "persianDate",
                 title: "<spring:message code='graduation.date'/>",
                 canSort: false
-            },
-            {name: "academicGrade", title: "<spring:message code='academic.grade'/>"},
-            {name: "collageName", title: "<spring:message code='collage.name'/>"}
+            }
         ],
         rowDoubleClick: function () {
             ListGrid_AcademicBK_Edit();
