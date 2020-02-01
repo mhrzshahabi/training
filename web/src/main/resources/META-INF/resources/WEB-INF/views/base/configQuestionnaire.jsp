@@ -86,7 +86,8 @@
                         name: "code",
                         title: "<spring:message code="code"/>",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: true,
+                        autoFitWidthApproach: "both",
                     }
                 ]
             },
@@ -115,6 +116,8 @@
                     {
                         name: "evalStatus",
                         title: "<spring:message code="evaluation.index.evalStatus"/>",
+                        autoFitWidth: true,
+                        autoFitWidthApproach: "both",
                         valueMap:
                             {
                                 "0": "<spring:message code='deActive'/>",
@@ -163,7 +166,7 @@
     });
 
     Window_JspConfigQuestionnaire = isc.Window.create({
-        width: "500",
+        width: "700",
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='question'/>",
@@ -246,6 +249,8 @@
                 return "color:red;font-size: 12px;";
             if (record.domain.code === "EQP")
                 return "color:blue;font-size: 12px;";
+            if (record.domain.code === "CLASS")
+                return "color:black;font-size: 12px;";
         },
         filterEditorSubmit: function () {
             ListGrid_JspConfigQuestionnaire.invalidateCache();
