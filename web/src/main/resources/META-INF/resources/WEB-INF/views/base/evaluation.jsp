@@ -1,4 +1,5 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+<%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -182,11 +183,12 @@
         var Menu_ListGrid_evaluation_class = isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="refresh"/>123",
+                    title: "<spring:message code="evaluation.teacher.supervisor"/>",
                     icon: "<spring:url value="refresh.png"/>",
                     click: function () {
+                        let criteria= '{"fieldName":"domainId","operator":"equals","value":54}';
                         isc.RPCManager.sendRequest({
-                            actionURL: configQuestionnaireUrl + "/iscList" ,
+                            actionURL: configQuestionnaireUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria="+ criteria ,
                             httpMethod: "GET",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
@@ -197,48 +199,70 @@
                                 localQuestions = JSON.parse(resp.data).response.data;
                                 var DynamicForm_Questions_Title_JspEvaluation = isc.DynamicForm.create({
                                     validateOnExit: true,
-                                    height: "20%",
-                                    colWidths:["29%","68%"],
+                                    // height: "10%",
+                                    numCols: 6,
+                                    // colWidths:["29%","68%"],
                                     width:"100%",
-                                    borderRadius: "6px",
-                                    border:"2px solid red",
+                                    borderRadius: "10px 10px 0px 0px",
+                                    border:"1px solid black",
                                     // titleAlign:"left",
                                     padding: 10,
                                     fields: [
-                                        {name: teacherNam}
+                                        {name: "code", title:"<spring:message code="class.code"/>:",canEdit: false},
+                                        {name: "titleClass", title:"<spring:message code='class.title'/>:",canEdit: false},
+                                        {name: "startDate", title:"<spring:message code='start.date'/>:", canEdit: false},
+                                        {name: "teacher", title:"<spring:message code='teacher'/>:", canEdit: false},
+                                        {name: "institute.titleFa", title:"<spring:message code='institute'/>:", canEdit: false},
+                                        {name: "user", title:"<spring:message code='user'/>:", canEdit: false},
                                     ],
                                 });
                                 var DynamicForm_Questions_Body_JspEvaluation = isc.DynamicForm.create({
                                     validateOnExit: true,
-                                    height: "70%",
+                                    // height: "*",
                                     colWidths:["29%","68%"],
                                     width:"100%",
-                                    borderRadius: "6px",
-                                    border:"2px solid red",
+                                    // borderRadius: "10px 0px",
+                                    // borderBottom:"2px solid red",
                                     // titleAlign:"left",
                                     padding: 10,
                                     fields: [],
                                 });
+                                var IButton_Questions_Save = isc.IButtonSave.create({
+                                    click:function () {
+
+                                    }
+                                });
                                 var Window_Questions_JspEvaluation = isc.Window.create({
                                     placement: "fillScreen",
+                                    title: "<spring:message code="evaluation.teacher.supervisor"/>",
                                     items: [
                                         DynamicForm_Questions_Title_JspEvaluation,
-                                        DynamicForm_Questions_Body_JspEvaluation
+                                        DynamicForm_Questions_Body_JspEvaluation,
+                                        isc.TrHLayoutButtons.create({
+                                            members:[IButton_Questions_Save, isc.IButtonCancel.create({
+                                                click: function () {
+                                                    Window_Questions_JspEvaluation.close();
+                                                }
+                                            })]
+                                        })
                                     ],
                                     minWidth: 1024,
                                 })
                                 let itemList = [];
                                 for (let i = 0; i <localQuestions.length ; i++) {
                                     let item = {};
-                                    item.name = "QU" + localQuestions[i].id;
-                                    item.title = localQuestions[i].question;
+                                    item.name = "Q" + localQuestions[i].id;
+                                    item.title = (i+1).toString() + "- " + localQuestions[i].question;
                                     item.type = "radioGroup";
-                                    item.vertical = false,
-                                    item.fillHorizontalSpace = true,
-                                    item.valueMap = ["خوب", "خیلی خوب", "عالی", "ضعیف", "هیچی"];
+                                    item.vertical = false;
+                                    item.required = true;
+                                    item.fillHorizontalSpace = true;
+                                    item.valueMap = ["خیلی ضعیف", "ضعیف", "متوسط", "خوب", "عالی"];
                                     // item.colSpan = ,
                                     itemList.add(item);
                                 }
+                                DynamicForm_Questions_Title_JspEvaluation.editRecord(ListGrid_evaluation_class.getSelectedRecord());
+                                DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
                                 DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
                                 Window_Questions_JspEvaluation.show();
                             }
