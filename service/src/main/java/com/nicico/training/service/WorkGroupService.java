@@ -157,7 +157,7 @@ public class WorkGroupService implements IWorkGroupService {
                     Permission attributeData = new Permission();
                     attributeData.setAttributeName(field.getName());
                     attributeData.setAttributeType(field.getType().getName());
-                    valuesQuery = "SELECT DISTINCT " + columnName + " FROM " + tableName;
+                    valuesQuery = "SELECT DISTINCT " + columnName + " FROM " + tableName + " ORDER BY " + columnName;
                     attributeData.setAttributeValues(entityManager.createNativeQuery(valuesQuery).getResultList());
                     attributeData.setEntityName(entityType.getName());
                     columnDataList.add(modelMapper.map(attributeData, PermissionDTO.Info.class));
