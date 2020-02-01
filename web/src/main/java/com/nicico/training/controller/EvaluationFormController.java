@@ -24,10 +24,8 @@ public class EvaluationFormController {
         return "base/evaluation";
     }
 
-    @PostMapping("/printWithCriteria/{type}/{classId}/{courseId}/{studentId}/{evaluationType}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type,
-                                               @PathVariable Long classId, @PathVariable Long courseId,
-                                               @PathVariable Long studentId, @PathVariable String evaluationType) {
+    @PostMapping("/printWithCriteria/{type}/{classId}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId) {
 
         String token = request.getParameter("myToken");
 
@@ -41,13 +39,14 @@ public class EvaluationFormController {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        map.add("printData", request.getParameter("printData"));
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
         if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/evaluation/PDF/" + classId + "/" + courseId + "/" + studentId + "/" + evaluationType, HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/evaluation/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
         else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
         else if (type.equals("html"))

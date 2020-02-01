@@ -66,28 +66,17 @@ public class EmploymentHistoryDTO {
         private Integer version;
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
-    }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("EmploymentHistory - Grid")
-    public static class Grid{
-        private Long id;
-        private Integer version;
-        private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
-
-        public List<Long> getCategories() {
+        public List<Long> getCategoriesIds() {
             if (categories == null)
                 return null;
-            return categories.stream().map(CategoryDTO.Info::getId).collect(Collectors.toList());
+            return categories.stream().map(CategoryDTO.CategoryInfoTuple::getId).collect(Collectors.toList());
         }
 
-        public List<Long> getSubCategories() {
+        public List<Long> getSubCategoriesIds() {
             if (subCategories == null)
                 return null;
-            return subCategories.stream().map(SubCategoryDTO.Info::getId).collect(Collectors.toList());
+            return subCategories.stream().map(SubCategoryDTO.SubCategoryInfoTuple::getId).collect(Collectors.toList());
         }
     }
 
@@ -125,21 +114,22 @@ public class EmploymentHistoryDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("EmploymentHistory - RsGrid")
-    public static class EmploymentHistorySpecRsGrid {
-        private EmploymentHistoryDTO.SpecRsGrid response;
-    }
-
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRsGrid {
-        private List<EmploymentHistoryDTO.Grid> data;
+    public static class SpecRs {
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("EmploymentHistorySpecRs")
+    public static class EmploymentHistorySpecRs {
+        private SpecRs response;
+    }
+
+
 }

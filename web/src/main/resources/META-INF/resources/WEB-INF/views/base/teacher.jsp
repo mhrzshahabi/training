@@ -174,9 +174,6 @@
         height: "100%",
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
-        cellHeight: 43,
-        filterOperator: "iContains",
-        filterOnKeypress: true,
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
@@ -263,6 +260,9 @@
         filterEditorSubmit: function () {
             ListGrid_Teacher_JspTeacher.invalidateCache();
         },
+        cellHeight: 43,
+        filterOperator: "iContains",
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

@@ -109,15 +109,38 @@
                 name: item.parameterValueList[i].id + "_JspConfig",
                 title: item.parameterValueList[i].title,
                 value: item.parameterValueList[i].value,
-                type: item.parameterValueList[i].type,
                 prompt: item.parameterValueList[i].description,
-                required: true,
+                type: setType(item.parameterValueList[i].type),
                 keyPressFilter: setKeyPressFilter(item.parameterValueList[i].type),
                 colSpan: setColSpan(item.parameterValueList[i].type),
+                validators: setValidators(item.parameterValueList[i].type),
+                required: true,
                 titleOrientation: "top"
             })
         }
         return DF;
+    }
+
+    function setValidators(type) {
+        switch (type) {
+            case "percent":
+                return [{
+                    type: "regexp",
+                    errorMessage: "<spring:message code="msg.field.percent"/>",
+                    expression: /^(([0-9]?[0-9])|100)$/,
+                }];
+            default:
+                return null;
+        }
+    }
+
+    function setType(type) {
+        switch (type) {
+            case "percent":
+                return "IntegerItem";
+            default:
+                return type;
+        }
     }
 
     function setKeyPressFilter(type) {
@@ -125,6 +148,7 @@
             case "text":
             case "TextItem":
                 return "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]";
+            case "percent":
             case "IntegerItem":
             case "integer":
                 return "[0-9]";
@@ -162,6 +186,8 @@
     }
 
     function DynamicForm_Config_edit() {
+        if (DynamicForm_JspConfig.hasErrors())
+            return;
         var fields = DynamicForm_JspConfig.getAllFields();
         var toUpdate = [];
         for (var i = 0; i < fields.length; i++) {

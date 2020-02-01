@@ -30,6 +30,7 @@ public class WorkGroupRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setDistinct(true);
         SearchDTO.SearchRs<WorkGroupDTO.Info> searchRs = workGroupService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
