@@ -136,8 +136,8 @@
     //------------------------------------------ Functions -------------------------------------------------------------
     function ListGrid_blackList_refresh() {
         ListGrid_Teacher_JspBlackList.invalidateCache();
+        ListGrid_Teacher_JspBlackList.filterByEditor();
         ListGrid_Teacher_JspTeacher.invalidateCache();
-        ListGrid_Teacher_JspBlackList.invalidateCache();
     }
 
     function ListGrid_blackList_edit() {
