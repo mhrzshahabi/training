@@ -272,9 +272,9 @@
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
                 name: "subCategoriesIds",
@@ -283,9 +283,9 @@
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
                 name: "persianStartDate",
@@ -306,7 +306,7 @@
         },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

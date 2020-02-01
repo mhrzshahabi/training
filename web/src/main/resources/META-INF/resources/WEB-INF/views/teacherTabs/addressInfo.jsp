@@ -108,7 +108,9 @@
 
             {
                 name: "personality.contactInfo.homeAddress.fax",
-                title: "<spring:message code='telefax'/>"
+                title: "<spring:message code='telefax'/>",
+                keyPressFilter: "[0-9]",
+                length: "11"
             },
 
             {
@@ -132,7 +134,9 @@
             {
                 name: "personality.contactInfo.personalWebSite",
                 title: "<spring:message code='personal.website'/>",
-                stopOnError: true
+                stopOnError: true,
+                keyPressFilter: "[a-z|A-Z |]",
+                length: "30"
             }
 
         ],
