@@ -120,7 +120,7 @@
         ID: "ListGrid_Class_Student1",
         selectionType: "single",
         editOnFocus: true,
-
+        showRowNumbers: false,
 //------------
         editByCell: true,
         editEvent: "click",
