@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -67,6 +68,17 @@ public class TeachingHistoryDTO {
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
         private EducationLevelDTO.Info educationLevel;
+        public List<Long> getCategoriesIds() {
+            if (categories == null)
+                return null;
+            return categories.stream().map(CategoryDTO.CategoryInfoTuple::getId).collect(Collectors.toList());
+        }
+
+        public List<Long> getSubCategoriesIds() {
+            if (subCategories == null)
+                return null;
+            return subCategories.stream().map(SubCategoryDTO.SubCategoryInfoTuple::getId).collect(Collectors.toList());
+        }
     }
 
     @Getter

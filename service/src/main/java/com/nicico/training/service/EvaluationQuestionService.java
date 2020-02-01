@@ -1,11 +1,14 @@
 package com.nicico.training.service;
 
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.model.EvaluationIndex;
 import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.repository.EvaluationQuestionDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +30,11 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
     public EvaluationQuestionDTO.Info create(EvaluationQuestionDTO.Create rq, List<Long> indexIds) {
         final EvaluationQuestion entity = modelMapper.map(rq, EvaluationQuestion.class);
         entity.setEvaluationIndices(getIndices(indexIds));
-        return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        try {
+            return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -36,7 +43,11 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
         modelMapper.map(currentEntity, entity);
         modelMapper.map(rq, entity);
         entity.setEvaluationIndices(getIndices(indexIds));
-        return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        try {
+            return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     private List<EvaluationIndex> getIndices(List<Long> indexIds) {
