@@ -115,17 +115,18 @@
                     {
                         name: "evalStatus",
                         title: "<spring:message code="evaluation.index.evalStatus"/>",
-                        filterOperator: "iContains"
+                        canFilter: false
+                        // filterOperator: "iContains"
                     }
                 ]
             }
         ]
     });
 
-    IButton_Save_JspConfigQuestionnaire = isc.TrSaveBtn.create({
+    IButton_Save_JspConfigQuestionnaire = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspConfigQuestionnaire.valuesHaveChanged()) {
+            if (!DynamicForm_JspConfigQuestionnaire.valuesHaveChanged() && methodConfigQuestionnaire === "PUT") {
                 Window_JspConfigQuestionnaire.close();
                 return;
             }
@@ -143,7 +144,7 @@
         }
     });
 
-    IButton_Cancel_JspConfigQuestionnaire = isc.TrCancelBtn.create({
+    IButton_Cancel_JspConfigQuestionnaire = isc.IButtonCancel.create({
         click: function () {
             DynamicForm_JspConfigQuestionnaire.clearValues();
             Window_JspConfigQuestionnaire.close();

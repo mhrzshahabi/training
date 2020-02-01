@@ -34,6 +34,7 @@ public class EvaluationQuestionRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<TotalResponse<EvaluationQuestionDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        nicicoCriteria.setDistinct(true);
         return new ResponseEntity<>(evaluationQuestionService.search(nicicoCriteria), HttpStatus.OK);
     }
 
