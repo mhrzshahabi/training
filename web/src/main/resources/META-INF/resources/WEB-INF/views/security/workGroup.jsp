@@ -721,13 +721,14 @@
                 name: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
                 title: setTitle(item.columnDataList[i].attributeName),
                 valueMap: item.columnDataList[i].attributeValues,
-                type: "SelectItem",
+                type: "MultiComboBoxItem",
                 textAlign: "center",
                 multiple: true,
                 colSpan: 8,
-                sortField: 0,
+                titleOrientation: "top",
+                addUnknownValues: false,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
             })
         }
