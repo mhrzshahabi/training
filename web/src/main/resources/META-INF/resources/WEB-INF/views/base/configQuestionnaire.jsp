@@ -395,12 +395,11 @@
                 OK.close();
             }, 3000);
         } else {
-            let errors = JSON.parse(resp.httpResponseText).errors;
-            let message = "";
-            for (let i = 0; i < errors.length; i++) {
-                message += errors[i].message + "<br/>";
+            if (resp.httpResponseCode === 406) {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
-            createDialog("info", message);
         }
     }
 
