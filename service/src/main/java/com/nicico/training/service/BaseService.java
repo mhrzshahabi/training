@@ -9,9 +9,10 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IBaseService;
 import com.nicico.training.repository.BaseDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -83,7 +84,11 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     @Transactional
     public INFO create(CREATE rq) {
         final E entity = modelMapper.map(rq, entityType);
-        return modelMapper.map(dao.save(entity), infoType);
+        try {
+            return modelMapper.map(dao.save(entity), infoType);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Override
@@ -93,7 +98,11 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         final E currentEntity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         modelMapper.map(currentEntity, entity);
         modelMapper.map(rq, entity);
-        return modelMapper.map(dao.save(entity), infoType);
+        try {
+            return modelMapper.map(dao.save(entity), infoType);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Override
@@ -101,26 +110,26 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     public INFO delete(ID id) {
         final Optional<E> optional = dao.findById(id);
         final E entity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        dao.deleteById(id);
-        return modelMapper.map(entity, infoType);
+        try {
+            dao.deleteById(id);
+            return modelMapper.map(entity, infoType);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Override
     @Transactional
     public Boolean isExist(ID id) {
         final Optional<E> optional = dao.findById(id);
-        if (optional.isPresent())
-            return true;
-        return false;
+        return optional.isPresent();
     }
 
     @Override
     @Transactional
     public E get(ID id) {
         final Optional<E> optional = dao.findById(id);
-        if (optional.isPresent())
-            return optional.get();
-        return null;
+        return optional.orElse(null);
     }
 
     @Override

@@ -679,7 +679,6 @@
     var IButton_EducationLevel_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationLevel.validate();
             if (DynamicForm_EducationLevel.hasErrors()) {
                 return;
             }

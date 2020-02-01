@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.service.EvaluationQuestionService;
 import lombok.RequiredArgsConstructor;
@@ -40,18 +41,27 @@ public class EvaluationQuestionRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<EvaluationQuestionDTO.Info> create(@RequestBody LinkedHashMap rq) {
+    public ResponseEntity create(@RequestBody LinkedHashMap rq) {
         List<Long> indexIds = setIndexIds(rq);
-        EvaluationQuestionDTO.Create create = modelMapper.map(rq, EvaluationQuestionDTO.Create.class);
-        return new ResponseEntity<>(evaluationQuestionService.create(create, indexIds), HttpStatus.OK);
+        try {
+            EvaluationQuestionDTO.Create create = modelMapper.map(rq, EvaluationQuestionDTO.Create.class);
+            return new ResponseEntity<>(evaluationQuestionService.create(create, indexIds), HttpStatus.OK);
+        } catch (
+                TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<EvaluationQuestionDTO.Info> update(@PathVariable Long id, @RequestBody LinkedHashMap rq) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody LinkedHashMap rq) {
         List<Long> indexIds = setIndexIds(rq);
-        EvaluationQuestionDTO.Update update = modelMapper.map(rq, EvaluationQuestionDTO.Update.class);
-        return new ResponseEntity<>(evaluationQuestionService.update(id, update, indexIds), HttpStatus.OK);
+        try {
+            EvaluationQuestionDTO.Update update = modelMapper.map(rq, EvaluationQuestionDTO.Update.class);
+            return new ResponseEntity<>(evaluationQuestionService.update(id, update, indexIds), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable

@@ -21,7 +21,7 @@ public class EvaluationQuestion extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_question", nullable = false)
+    @Column(name = "c_question", nullable = false, unique = true)
     private String question;
 
     @ManyToOne(fetch = FetchType.EAGER)
