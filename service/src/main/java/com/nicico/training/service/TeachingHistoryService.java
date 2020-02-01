@@ -90,6 +90,7 @@ public class TeachingHistoryService implements ITeachingHistoryService {
     public SearchDTO.SearchRs<TeachingHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        request.setDistinct(true);
         if (teacherId != null) {
             list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
@@ -100,6 +101,18 @@ public class TeachingHistoryService implements ITeachingHistoryService {
                     request.getCriteria().setCriteria(list);
             } else
                 request.setCriteria(criteriaRq);
+        }
+        for (SearchDTO.CriteriaRq  criteriaRq : request.getCriteria().getCriteria()) {
+            if(criteriaRq.getFieldName() != null) {
+                if (criteriaRq.getFieldName().equalsIgnoreCase("subCategoriesIds"))
+                    criteriaRq.setFieldName("subCategories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("categoriesIds"))
+                    criteriaRq.setFieldName("categories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("persianStartDate"))
+                    criteriaRq.setFieldName("startDate");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("persianEndDate"))
+                    criteriaRq.setFieldName("endDate");
+            }
         }
         return SearchUtil.search(teachingHistoryDAO, request, teachingHistory -> modelMapper.map(teachingHistory, TeachingHistoryDTO.Info.class));
     }

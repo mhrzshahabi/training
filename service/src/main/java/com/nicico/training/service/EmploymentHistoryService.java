@@ -90,6 +90,7 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
     public SearchDTO.SearchRs<EmploymentHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        request.setDistinct(true);
         if (teacherId != null) {
             list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
@@ -100,6 +101,19 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
                     request.getCriteria().setCriteria(list);
             } else
                 request.setCriteria(criteriaRq);
+        }
+
+        for (SearchDTO.CriteriaRq  criteriaRq : request.getCriteria().getCriteria()) {
+            if(criteriaRq.getFieldName() != null) {
+                if (criteriaRq.getFieldName().equalsIgnoreCase("subCategoriesIds"))
+                    criteriaRq.setFieldName("subCategories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("categoriesIds"))
+                    criteriaRq.setFieldName("categories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("persianStartDate"))
+                    criteriaRq.setFieldName("startDate");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("persianEndDate"))
+                    criteriaRq.setFieldName("endDate");
+            }
         }
         return SearchUtil.search(employmentHistoryDAO, request, employmentHistory -> modelMapper.map(employmentHistory, EmploymentHistoryDTO.Info.class));
     }
@@ -116,30 +130,6 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
         criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public SearchDTO.SearchRs<EmploymentHistoryDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request, Long teacherId) {
-
-        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("teacherId", teacherId, EOperator.equals, null);
-
-        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        if (request.getCriteria() != null) {
-            if (request.getCriteria().getCriteria() != null)
-                request.getCriteria().getCriteria().add(criteriaRq);
-            else {
-                criteriaRqList.add(criteriaRq);
-                request.getCriteria().setCriteria(criteriaRqList);
-            }
-        } else
-            request.setCriteria(criteriaRq);
-
-
-        SearchDTO.SearchRs<EmploymentHistoryDTO.Grid> searchRs = SearchUtil.search(employmentHistoryDAO, request, needAssessment -> modelMapper.map(needAssessment,
-                EmploymentHistoryDTO.Grid.class));
-
-        return searchRs;
     }
 
 

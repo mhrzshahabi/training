@@ -38,7 +38,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
-            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", type: "boolean"}
+            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", filterOperator: "iContains"}
         ],
         fetchDataURL: evaluationIndexUrl + "/iscList"
     });
@@ -86,7 +86,8 @@
                         name: "code",
                         title: "<spring:message code="code"/>",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: true,
+                        autoFitWidthApproach: "both",
                     }
                 ]
             },
@@ -115,17 +116,23 @@
                     {
                         name: "evalStatus",
                         title: "<spring:message code="evaluation.index.evalStatus"/>",
-                        filterOperator: "iContains"
+                        autoFitWidth: true,
+                        autoFitWidthApproach: "both",
+                        valueMap:
+                            {
+                                "0": "<spring:message code='deActive'/>",
+                                "1": "<spring:message code='active'/>"
+                            }
                     }
                 ]
             }
         ]
     });
 
-    IButton_Save_JspConfigQuestionnaire = isc.TrSaveBtn.create({
+    IButton_Save_JspConfigQuestionnaire = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspConfigQuestionnaire.valuesHaveChanged()) {
+            if (!DynamicForm_JspConfigQuestionnaire.valuesHaveChanged() && methodConfigQuestionnaire === "PUT") {
                 Window_JspConfigQuestionnaire.close();
                 return;
             }
@@ -143,7 +150,7 @@
         }
     });
 
-    IButton_Cancel_JspConfigQuestionnaire = isc.TrCancelBtn.create({
+    IButton_Cancel_JspConfigQuestionnaire = isc.IButtonCancel.create({
         click: function () {
             DynamicForm_JspConfigQuestionnaire.clearValues();
             Window_JspConfigQuestionnaire.close();
@@ -159,7 +166,7 @@
     });
 
     Window_JspConfigQuestionnaire = isc.Window.create({
-        width: "500",
+        width: "700",
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='question'/>",
@@ -242,6 +249,8 @@
                 return "color:red;font-size: 12px;";
             if (record.domain.code === "EQP")
                 return "color:blue;font-size: 12px;";
+            if (record.domain.code === "CLASS")
+                return "color:black;font-size: 12px;";
         },
         filterEditorSubmit: function () {
             ListGrid_JspConfigQuestionnaire.invalidateCache();
@@ -366,21 +375,19 @@
     function ConfigQuestionnaire_save_result(resp) {
         waitConfigQuestionnaire.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             ListGrid_ConfigQuestionnaire_refresh();
             Window_JspConfigQuestionnaire.close();
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
-            } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+            let errors = JSON.parse(resp.httpResponseText).errors;
+            let message = "";
+            for (let i = 0; i < errors.length; i++) {
+                message += errors[i].message + "<br/>";
             }
+            createDialog("info", message);
         }
     }
 
@@ -388,14 +395,12 @@
         waitConfigQuestionnaire.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_ConfigQuestionnaire_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            let respText = resp.httpResponseText;
-            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+            if (resp.httpResponseCode === 406) {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
