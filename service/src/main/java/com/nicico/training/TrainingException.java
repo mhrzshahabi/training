@@ -103,7 +103,9 @@ public class TrainingException extends NICICOException {
         NeedsAssessmentNotFound(404),
         NeedsAssessmentDomainNotFound(404),
         NeedsAssessmentPriorityNotFound(404),
-        UpdatingInvalidOldVersion(400);
+        UpdatingInvalidOldVersion(400),
+        EvaluationNotFound(404),
+        EvaluationAnswerNotFound(404);
 
         private final Integer httpStatusCode;
 

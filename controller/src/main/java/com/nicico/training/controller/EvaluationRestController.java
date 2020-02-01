@@ -3,6 +3,8 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
@@ -15,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +41,7 @@ public class EvaluationRestController {
     private final ModelMapper modelMapper;
     private final CourseService courseService;
     private final SkillService skillService;
+    private final EvaluationService evaluationService;
 
 
     private final TclassService tclassService;
@@ -137,5 +143,37 @@ public class EvaluationRestController {
     }
 
     //*********************************
+
+
+//    @Loggable
+//    @GetMapping(value = "/iscList")
+//    public ResponseEntity<TotalResponse<EvaluationDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
+//        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+//        return new ResponseEntity<>(evaluationService.search(nicicoCriteria), HttpStatus.OK);
+//    }
+//
+//    @Loggable
+//    @PostMapping
+//    public ResponseEntity<EvaluationDTO.Info> create(@RequestBody Object rq) {
+//        EvaluationDTO.Create create = modelMapper.map(rq, EvaluationDTO.Create.class);
+//        return new ResponseEntity<>(evaluationService.create(create), HttpStatus.OK);
+//    }
+//
+//    @Loggable
+//    @PutMapping("/{id}")
+//    public ResponseEntity<EvaluationDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
+//        EvaluationDTO.Update update = modelMapper.map(rq, EvaluationDTO.Update.class);
+//        return new ResponseEntity<>(evaluationService.update(id, update), HttpStatus.OK);
+//    }
+//
+//    @Loggable
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity delete(@PathVariable Long id) {
+//        try {
+//            return new ResponseEntity<>(evaluationService.delete(id), HttpStatus.OK);
+//        } catch (Exception ex) {
+//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+//        }
+//    }
 
 }
