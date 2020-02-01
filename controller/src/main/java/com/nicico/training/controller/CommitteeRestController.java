@@ -200,8 +200,7 @@ public class CommitteeRestController {
 
     @Loggable
     @DeleteMapping(value = "/removeMembers/{committeeId}/{personIds}")
-    //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeSkills(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
+     public ResponseEntity<Void> removeSkills(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
         committeeService.removeMembers(committeeId, personIds);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -209,7 +208,6 @@ public class CommitteeRestController {
 
     @Loggable
     @GetMapping(value = "/{committeeId}/getMembers")
-//    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs> getMember(@PathVariable Long committeeId) {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -225,11 +223,6 @@ public class CommitteeRestController {
 
         final PersonalInfoDTO.CompetenceSpecRs specRs = new PersonalInfoDTO.CompetenceSpecRs();
         specRs.setResponse(specResponse);
-
-
-//        final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
-//        specRs.setResponse(specResponse);
-
         return new ResponseEntity<>(specRs, HttpStatus.OK);
 
     }
@@ -256,53 +249,14 @@ public class CommitteeRestController {
     }
 
 
-//
-//    @Loggable
-//    @PostMapping(value = {"/printCommitteeWithMember/{type}"})
-//    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
-//        Map<String, Object> params = new HashMap<>();
-//        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
-//    }
 
     @Loggable
-    @GetMapping(value = {"/printCommitteeWithMember/{type}"})
-    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+    @PostMapping(value = {"/printCommitteeWithMember/{type}"})
+    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
     }
-
-//
-    //--------------
-//
-//    @Loggable
-//   @PostMapping(value = {"/printCommitteeWithMember/{type}"})
-//    public void printAll(HttpServletResponse response,
-//                                  @PathVariable String type,
-//                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
-//
-//        final SearchDTO.CriteriaRq criteriaRq;
-//        final SearchDTO.SearchRq searchRq;
-//        if (criteriaStr.equalsIgnoreCase("{}")) {
-//            searchRq = new SearchDTO.SearchRq();
-//        } else {
-//            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-//            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-//        }
-//
-//        final SearchDTO.SearchRs<CommitteeDTO.Info> searchRs = committeeService.search(searchRq);
-//
-//        final Map<String, Object> params = new HashMap<>();
-//        params.put("todayDate", dateUtil.todayDate());
-//
-//        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-//
-//        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/CommitteeWithMember.jasper", params, jsonDataSource, response);
-//    }
-//    //---------------
 
 
     @Loggable

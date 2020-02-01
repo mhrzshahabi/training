@@ -77,4 +77,7 @@
     <changeSet author="poursalehi_mos (generated)" id="1579591108637-230">
         <addUniqueConstraint columnNames="c_entity_name, c_attribute_name, f_work_group" constraintName="UK4j8yaq7g75egwp5yf760qn3ss" tableName="tbl_permission"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1580539582304-231">
+        <addUniqueConstraint columnNames="c_question" constraintName="UC_TBL_EVALUATION_QUESTIONC_QUESTION_COL" tableName="tbl_evaluation_question"/>
+    </changeSet>
 </databaseChangeLog>

@@ -30,13 +30,11 @@ public class TermFormController {
 
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-
         String token = (String) request.getParameter("token");
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
         final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
-
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();

@@ -328,7 +328,7 @@
                         title: "<spring:message code='date'/>",
                         ID: "sessionDate_jspSession",
                         required: true,
-                        hint: "YYYY/MM/DD",
+                        hint: "----/--/--",
                         keyPressFilter: "[0-9/]",
                         showHintInField: true,
                         icons: [{
