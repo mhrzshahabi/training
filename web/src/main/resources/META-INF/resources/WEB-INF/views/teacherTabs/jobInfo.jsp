@@ -39,6 +39,7 @@
             {
                 name: "personality.contactInfo.workAddress.webSite",
                 title: "<spring:message code='website'/>",
+                keyPressFilter: "[a-z|A-Z |]",
                 length: "30"
             },
 
@@ -124,7 +125,9 @@
             },
             {
                 name: "personality.contactInfo.workAddress.fax",
-                title: "<spring:message code='telefax'/>"
+                title: "<spring:message code='telefax'/>",
+                keyPressFilter: "[0-9]",
+                length: "11"
             }
         ],
         itemChanged: function (item, newValue) {

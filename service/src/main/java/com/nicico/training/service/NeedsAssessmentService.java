@@ -18,10 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, NeedsAssessmentDTO.Info, NeedsAssessmentDTO.Create, NeedsAssessmentDTO.Update, NeedsAssessmentDTO.Delete, NeedsAssessmentDAO> {
 
-    @Autowired
-    private CompetenceService competenceService;
-    @Autowired
-    private ParameterValueService parameterValueService;
+//    @Autowired
+//    private CompetenceService competenceService;
+//    @Autowired
+//    private ParameterValueService parameterValueService;
+//    @Autowired
+//    private SkillService skillService;
 
     @Autowired
     NeedsAssessmentService(NeedsAssessmentDAO competenceDAO) {
@@ -30,15 +32,15 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
 
     @Transactional
     public NeedsAssessmentDTO.Info checkAndCreate(NeedsAssessmentDTO.Create rq) {
-        if (!competenceService.isExist(rq.getCompetenceId())) {
-            throw new TrainingException(TrainingException.ErrorType.CompetenceNotFound);
-        }
-        if (!parameterValueService.isExist(rq.getNeedsAssessmentDomainId())) {
-            throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentDomainNotFound);
-        }
-        if (!parameterValueService.isExist(rq.getNeedsAssessmentPriorityId())) {
-            throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentPriorityNotFound);
-        }
+//        if (!competenceService.isExist(rq.getCompetenceId())) {
+//            throw new TrainingException(TrainingException.ErrorType.CompetenceNotFound);
+//        }
+//        if (!parameterValueService.isExist(rq.getNeedsAssessmentDomainId())) {
+//            throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentDomainNotFound);
+//        }
+//        if (!parameterValueService.isExist(rq.getNeedsAssessmentPriorityId())) {
+//            throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentPriorityNotFound);
+//        }
         return create(rq);
     }
 }

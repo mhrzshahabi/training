@@ -83,7 +83,6 @@
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
 
-
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
@@ -150,25 +149,32 @@
     });
 
     isc.defineClass("LgLabel", Label);
-    isc.LgLabel.addProperties({height: "27", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2});
+    isc.LgLabel.addProperties({height: "27", align: "center", showEdges: true, edgeSize: 2, customEdges: []});
+
+    isc.DetailViewer.addProperties({wrapValues: false});
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
-        alternateRecordStyles: true,
-        showFilterEditor: true,
         autoFitWidthApproach: "both",
+        alternateRecordStyles: true,
         showClippedValuesOnHover: true,
-        hoverMoveWithMouse: true,
-        showRowNumbers: true,
-        canAutoFitFields: false,
-        filterOnKeypress: false,
         leaveScrollbarGap: false,
+
+        showRowNumbers: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 50,
             align: "center"
         },
+
+        showFilterEditor: true,
+        filterOnKeypress: false,
+
+        preventDuplicates: true,
+        duplicateDragMessage: "<spring:message code="msg.can't.transfer.duplicated.data"/>",
+
         sortField: 0,
+        canAutoFitFields: false,
     });
 
     TrValidators = {
@@ -440,12 +446,12 @@
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="department"/>",
-                    click: function () {
-                        createTab(this.title, '<spring:url value="/department/show-form"/>');
-                    }
-                },
+                <%--{--%>
+                <%--    title: "<spring:message code="department"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, '<spring:url value="/department/show-form"/>');--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
@@ -794,9 +800,6 @@
         minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton],
-        tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            tabPane.redraw();
-        }
     });
 
     // -------------------------------------------  Page UI -----------------------------------------------
