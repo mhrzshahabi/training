@@ -446,12 +446,12 @@
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="department"/>",
-                    click: function () {
-                        createTab(this.title, '<spring:url value="/department/show-form"/>');
-                    }
-                },
+                <%--{--%>
+                <%--    title: "<spring:message code="department"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, '<spring:url value="/department/show-form"/>');--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
