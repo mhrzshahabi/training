@@ -36,6 +36,7 @@ public class EvaluationRestController {
     private final ModelMapper modelMapper;
     private final CourseService courseService;
     private final SkillService skillService;
+    private final EvaluationService evaluationService;
 
 
     private final TclassService tclassService;
@@ -137,5 +138,37 @@ public class EvaluationRestController {
     }
 
     //*********************************
+
+
+//    @Loggable
+//    @GetMapping(value = "/iscList")
+//    public ResponseEntity<TotalResponse<EvaluationDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
+//        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+//        return new ResponseEntity<>(evaluationService.search(nicicoCriteria), HttpStatus.OK);
+//    }
+//
+//    @Loggable
+//    @PostMapping
+//    public ResponseEntity<EvaluationDTO.Info> create(@RequestBody Object rq) {
+//        EvaluationDTO.Create create = modelMapper.map(rq, EvaluationDTO.Create.class);
+//        return new ResponseEntity<>(evaluationService.create(create), HttpStatus.OK);
+//    }
+//
+//    @Loggable
+//    @PutMapping("/{id}")
+//    public ResponseEntity<EvaluationDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
+//        EvaluationDTO.Update update = modelMapper.map(rq, EvaluationDTO.Update.class);
+//        return new ResponseEntity<>(evaluationService.update(id, update), HttpStatus.OK);
+//    }
+//
+//    @Loggable
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity delete(@PathVariable Long id) {
+//        try {
+//            return new ResponseEntity<>(evaluationService.delete(id), HttpStatus.OK);
+//        } catch (Exception ex) {
+//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+//        }
+//    }
 
 }

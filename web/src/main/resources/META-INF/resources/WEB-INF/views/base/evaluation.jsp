@@ -691,14 +691,17 @@
             title: "send to committee",
             click: function () {
                 sendNeedAssessment_CommitteeToWorkflow();
-            }
+            },
+            visibility: "hidden"
+
         });
 
         var ToolStripButton_Confirm = isc.ToolStripButton.create({
             title: "send to main confirm",
             click: function () {
                 sendNeedAssessment_MainWorkflow();
-            }
+            },
+            visibility: "hidden"
         });
 
         var ToolStripButton_RefreshIssuance = isc.ToolStripButtonRefresh.create({
