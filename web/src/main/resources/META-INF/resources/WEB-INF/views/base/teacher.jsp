@@ -936,6 +936,7 @@
 
         selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         loadPage_AcademicBK(selectedRecordID);
+        clearTabFilters();
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
         TabSet_Bottom_JspTeacher.show();
@@ -967,6 +968,7 @@
         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = false;
         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
         TabSet_Bottom_JspTeacher.hide();
+        clearTabFilters();
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
         // clearTabs();
@@ -1305,7 +1307,6 @@
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameEn", personality.firstNameEn);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameEn", personality.lastNameEn);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.fatherName", personality.fatherName);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personality.birthDate);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthLocation", personality.birthLocation);
@@ -1344,6 +1345,25 @@
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
             }
         }
+    }
+
+    function  clearTabFilters(){
+        ListGrid_JspAcademicBK.clearFilterValues();
+        ListGrid_JspEmploymentHistory.clearFilterValues();
+        ListGrid_JspTeachingHistory.clearFilterValues();
+        ListGrid_JspTeacherCertification.clearFilterValues();
+        ListGrid_JspPublication.clearFilterValues();
+        ListGrid_JspForeignLangKnowledge.clearFilterValues();
+        ListGrid_JspAttachment.clearFilterValues();
+
+        ListGrid_JspAcademicBK.filterByEditor();
+        ListGrid_JspEmploymentHistory.filterByEditor();
+        ListGrid_JspTeachingHistory.filterByEditor();
+        ListGrid_JspTeacherCertification.filterByEditor();
+        ListGrid_JspPublication.filterByEditor();
+        ListGrid_JspForeignLangKnowledge.filterByEditor();
+        ListGrid_JspAttachment.filterByEditor();
+
     }
 
     // function setUrlTab_teacher(teacherId){
