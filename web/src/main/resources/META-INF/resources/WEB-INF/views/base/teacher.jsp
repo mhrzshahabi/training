@@ -40,7 +40,8 @@
             {name: "categories",  filterOperator: "inSet"},
             {name: "subCategories",  filterOperator: "inSet"},
             {name: "personality.contactInfo.homeAddress.id"},
-            {name: "personality.contactInfo.workAddress.id"}
+            {name: "personality.contactInfo.workAddress.id"},
+            {name: "personality.educationLevelId"}
         ],
         fetchDataURL: teacherUrl + "spec-list-grid"
     });
@@ -56,12 +57,12 @@
     });
 
     var RestDataSource_Education_Level_JspTeacher = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleEn"}, {name: "titleFa"}],
-        fetchDataURL: educationUrl + "level/spec-list"
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationUrl + "level/iscList"
     });
 
     var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleEn"}, {name: "titleFa"}],
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
         fetchDataURL: educationUrl + "major/spec-list"
     });
 
@@ -231,7 +232,12 @@
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
-                }
+                },
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "titleFa",
+                filterOperator: "equals",
+                optionDataSource: RestDataSource_Education_Level_JspTeacher
             },
             {
                 name: "personality.educationMajor.titleFa",
@@ -239,7 +245,12 @@
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
-                }
+                },
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "titleFa",
+                filterOperator: "equals",
+                optionDataSource: RestDataSource_Education_Major_JspTeacher
             },
             {
                 name: "personality.contactInfo.mobile",
@@ -642,7 +653,7 @@
         }
     });
 
-    var ToolStripButton_Add_JspTeacher = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_JspTeacher = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_teacher_add();
         }

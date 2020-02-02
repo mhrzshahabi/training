@@ -329,7 +329,7 @@
             ListGrid_EmploymentHistory_Edit();
         }
     });
-    ToolStripButton_Add_JspEmploymentHistory = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspEmploymentHistory = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_EmploymentHistory_Add();
         }

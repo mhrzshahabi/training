@@ -276,7 +276,7 @@
             ListGrid_ForeignLangKnowledge_Edit();
         }
     });
-    ToolStripButton_Add_JspForeignLangKnowledge = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspForeignLangKnowledge = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_ForeignLangKnowledge_Add();
         }
