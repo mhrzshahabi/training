@@ -612,8 +612,6 @@
             }
         ],
         itemChanged: function (item) {
-            console.log('dsdsdsd');
-            console.log(item);
             if (item.name === "attachPic") {
                 showTempAttach();
                 setTimeout(function () {

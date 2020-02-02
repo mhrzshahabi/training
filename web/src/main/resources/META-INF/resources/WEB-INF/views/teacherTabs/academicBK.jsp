@@ -335,7 +335,7 @@
             ListGrid_AcademicBK_Edit();
         }
     });
-    ToolStripButton_Add_JspAcademicBK = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspAcademicBK = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_AcademicBK_Add();
         }

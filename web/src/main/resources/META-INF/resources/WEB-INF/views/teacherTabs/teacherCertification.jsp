@@ -354,7 +354,7 @@
             ListGrid_TeacherCertification_Edit();
         }
     });
-    ToolStripButton_Add_JspTeacherCertification = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspTeacherCertification = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_TeacherCertification_Add();
         }
