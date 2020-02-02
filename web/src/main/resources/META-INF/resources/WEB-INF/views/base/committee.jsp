@@ -102,7 +102,7 @@
                 }
             }
             , {isSeparator: true}, {
-                title: "<spring:message code="memberlist"/>", click: function () {
+                title: "<spring:message code="memberList"/>", click: function () {
                     ToolStripButton_Member.click();
 
                 }
@@ -122,8 +122,8 @@
      //
      // },
 
-         doubleClick: function () {
-         show_CommitteEditForm();
+           recordDoubleClick: function () {
+             show_CommitteEditForm();
         },
 
       selectionUpdated: function () {
@@ -418,7 +418,7 @@
         width: "50%",
         sections: [
             {
-                title: "<spring:message code="memberlist"/>",
+                title: "<spring:message code="memberList"/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -482,7 +482,7 @@
     });
 
     var Window_Add_User_TO_Committee = isc.Window.create({
-        title: "<spring:message code="memberlist"/>",
+        title: "<spring:message code="memberList"/>",
         width: "900",
         height: "400",
         autoSize: true,
@@ -508,7 +508,7 @@
 
     var ToolStripButton_Member = isc.ToolStripButton.create({
 
-        title: "<spring:message code="memberlist"/>",
+        title: "<spring:message code="memberList"/>",
         click: function () {
             var record = ListGrid_Committee.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -821,7 +821,7 @@
     function print_CommitteeListGrid(type) {
         var advancedCriteria = ListGrid_Committee.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
-            method: "GET",
+            method: "POST",
             action: "<spring:url value="/committee/printCommitteeWithMember/"/>" + type,
             target: "_Blank",
             canSubmit: true,

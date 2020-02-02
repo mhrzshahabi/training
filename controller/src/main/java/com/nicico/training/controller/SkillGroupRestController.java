@@ -93,8 +93,8 @@ public class SkillGroupRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_skill_group')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                               @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                               @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                @RequestParam(value = "_constructor", required = false) String constructor,
                                                                @RequestParam(value = "operator", required = false) String operator,
                                                                @RequestParam(value = "criteria", required = false) String criteria,
@@ -152,18 +152,18 @@ public class SkillGroupRestController {
 //    @Loggable
 //    @GetMapping(value = "/{skillGroupId}/getCompetences")
 ////    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long skillGroupId) {
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long skillGroupId) {
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 //
-//        List<CompetenceDTO.Info> list = skillGroupService.getCompetence(skillGroupId);
+//        List<CompetenceDTOOld.Info> list = skillGroupService.getCompetence(skillGroupId);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(list)
 //                .setStartRow(0)
 //                .setEndRow( list.size())
 //                .setTotalRows(list.size());
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs,HttpStatus.OK);

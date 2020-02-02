@@ -101,7 +101,7 @@
         dataSource: RestDataSourceEducationOrientation,
         contextMenu: Menu_ListGrid_EducationOrientation,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -204,7 +204,7 @@
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
-    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.orientation'/>",
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
@@ -245,7 +245,6 @@
     var IButton_EducationOrientation_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationOrientation.validate();
             if (DynamicForm_EducationOrientation.hasErrors()) {
                 return;
             }
@@ -355,7 +354,7 @@
         dataSource: RestDataSourceEducationMajor,
         contextMenu: Menu_ListGrid_EducationMajor,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -416,7 +415,7 @@
                 DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
-    var ToolStripButton_Add_EducationMajor = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationMajor = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.major'/>",
                 DynamicForm_EducationMajor, Window_EducationMajor);
@@ -568,7 +567,7 @@
         dataSource: RestDataSourceEducationLevel,
         contextMenu: Menu_ListGrid_EducationLevel,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -638,7 +637,7 @@
                 DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
-    var ToolStripButton_Add_EducationLevel = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationLevel = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.level'/>",
                 DynamicForm_EducationLevel, Window_EducationLevel);
@@ -680,7 +679,6 @@
     var IButton_EducationLevel_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationLevel.validate();
             if (DynamicForm_EducationLevel.hasErrors()) {
                 return;
             }
@@ -810,8 +808,7 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var responseID = JSON.parse(resp.data).id;
             var gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             if (resp.context.actionURL.contains("major")) {
                 edu_after_save(ListGrid_EducationMajor, Window_EducationMajor, gridState);
             } else if ((resp.context.actionURL).contains("level")) {
@@ -825,13 +822,11 @@
         } else {
             let respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else if (resp.httpResponseCode === 406 && respText === "NotEditable") {
                 createDialog("info", "<spring:message code='msg.education.orientation.edit.error'/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
     }
@@ -840,8 +835,7 @@
         waitEducation.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_Education_refresh(listGridEducation);
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);

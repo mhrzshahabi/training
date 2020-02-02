@@ -6,7 +6,7 @@ com.nicico.training.iservice
     */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
@@ -45,7 +45,9 @@ public interface ISkillGroupService {
 
     SearchDTO.SearchRs<SkillGroupDTO.Info> search(SearchDTO.SearchRq request);
 
-    List<CompetenceDTO.Info> getCompetence(Long skillGroupID);
+    SearchDTO.SearchRs<SkillGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
+    List<CompetenceDTOOld.Info> getCompetence(Long skillGroupID);
 
     List<JobDTO.Info> getJobs(Long skillGroupID);
 

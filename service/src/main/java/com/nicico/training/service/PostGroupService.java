@@ -7,14 +7,16 @@ com.nicico.training.service
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
 import com.nicico.training.iservice.IPostGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.PostGroup;
-import com.nicico.training.repository.CompetenceDAO;
+import com.nicico.training.repository.CompetenceDAOOld;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.PostGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.nicico.training.service.BaseService.setCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class PostGroupService implements IPostGroupService {
@@ -33,7 +37,8 @@ public class PostGroupService implements IPostGroupService {
     private final ModelMapper modelMapper;
     private final PostGroupDAO postGroupDAO;
     private final PostDAO postDAO;
-    private final CompetenceDAO competenceDAO;
+    private final CompetenceDAOOld competenceDAO;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -122,6 +127,13 @@ public class PostGroupService implements IPostGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PostGroupDTO.Info> search(SearchDTO.SearchRq request) {
+        setCriteria(request, workGroupService.applyPermissions(PostGroup.class, SecurityUtil.getUserId()));
+        return SearchUtil.search(postGroupDAO, request, postGroup -> modelMapper.map(postGroup, PostGroupDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<PostGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
         return SearchUtil.search(postGroupDAO, request, postGroup -> modelMapper.map(postGroup, PostGroupDTO.Info.class));
     }
 
@@ -129,7 +141,7 @@ public class PostGroupService implements IPostGroupService {
 
     private PostGroupDTO.Info save(PostGroup postGroup, Set<Long> postIds) {
         final Set<Post> posts = new HashSet<>();
-//        final Set<Competence> competences = new HashSet<>();
+//        final Set<CompetenceOld> competences = new HashSet<>();
         Optional.ofNullable(postIds)
                 .ifPresent(postIdSet -> postIdSet
                         .forEach(postId ->
@@ -153,11 +165,11 @@ public class PostGroupService implements IPostGroupService {
 
     @Override
     @Transactional
-    public List<CompetenceDTO.Info> getCompetence(Long postGroupId) {
+    public List<CompetenceDTOOld.Info> getCompetence(Long postGroupId) {
         final Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(postGroupId);
         final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
 
-//        return modelMapper.map(postGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTO.Info>>() {}.getType());
+//        return modelMapper.map(postGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTOOld.Info>>() {}.getType());
         return null;
     }
 
@@ -166,7 +178,7 @@ public class PostGroupService implements IPostGroupService {
     public List<PostDTO.Info> getPosts(Long postGroupID) {
         final Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(postGroupID);
         final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
-//        Set<Competence> competenceSet = postGroup.getCompetenceSet();
+//        Set<CompetenceOld> competenceSet = postGroup.getCompetenceSet();
         Set<Post> posts = postGroup.getPostSet();
         ArrayList<PostDTO.Info> postList = new ArrayList<>();
         for (Post post : posts) {
@@ -174,7 +186,7 @@ public class PostGroupService implements IPostGroupService {
         }
 //        PostDTO.Info info = new PostDTO.Info();
 //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        for (Competence competence:postGroup.getCompetenceSet()
+//        for (CompetenceOld competence:postGroup.getCompetenceSet()
 //             ) {
 //
 //            for (PostCompetence postCompetence:competence.getPostCompetenceSet()
@@ -191,7 +203,7 @@ public class PostGroupService implements IPostGroupService {
     @Override
     @Transactional
     public boolean canDelete(Long postGroupId) {
-        List<CompetenceDTO.Info> competences = getCompetence(postGroupId);
+        List<CompetenceDTOOld.Info> competences = getCompetence(postGroupId);
         if (competences.isEmpty() || competences.size() == 0)
             return true;
         else
@@ -214,8 +226,8 @@ public class PostGroupService implements IPostGroupService {
 
 //        Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(postGroupId);
 //        final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
-//        final Optional<Competence> optionalCompetence = competenceDAO.findById(competenceId);
-//        final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+//        final Optional<CompetenceOld> optionalCompetence = competenceDAO.findById(competenceId);
+//        final CompetenceOld competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
 //        postGroup.getCompetenceSet().remove(competence);
     }
 

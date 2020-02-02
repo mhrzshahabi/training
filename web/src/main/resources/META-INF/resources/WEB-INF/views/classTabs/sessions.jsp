@@ -328,7 +328,7 @@
                         title: "<spring:message code='date'/>",
                         ID: "sessionDate_jspSession",
                         required: true,
-                        hint: "YYYY/MM/DD",
+                        hint: "----/--/--",
                         keyPressFilter: "[0-9/]",
                         showHintInField: true,
                         icons: [{
@@ -516,7 +516,7 @@
         var create_Buttons = isc.MyHLayoutButtons.create({
             members:
                 [
-                    isc.Button.create
+                    isc.IButtonSave.create
                     ({
                         title: "<spring:message code="save"/> ",
                         icon: "[SKIN]/actions/save.png",
@@ -528,7 +528,7 @@
                             }
                         }
                     }),
-                    isc.Button.create
+                    isc.IButtonCancel.create
                     ({
                         title: "<spring:message code="cancel"/>",
                         icon: "[SKIN]/actions/cancel.png",
@@ -585,7 +585,7 @@
                     message: "<spring:message code="msg.record.select.class.ask"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }

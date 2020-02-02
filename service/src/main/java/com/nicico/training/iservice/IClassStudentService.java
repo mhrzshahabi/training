@@ -6,10 +6,17 @@ import com.nicico.training.model.ClassStudent;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IClassStudentService {
 
     ClassStudent getClassStudent(Long id);
+
+    @Transactional(readOnly = true)
+    List<ClassStudentDTO.ClassStudentInfo> getClassesOfStudent(Long id);
+
+    @Transactional(readOnly = true)
+    <T> SearchDTO.SearchRs<T> searchClassesOfStudent(SearchDTO.SearchRq request, String nationalCode, Class<T> infoType);
 
     <T> SearchDTO.SearchRs<T> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<T> infoType);
 
@@ -21,4 +28,8 @@ public interface IClassStudentService {
 
     void delete(ClassStudentDTO.Delete request);
 
+    int setStudentFormIssuance(Map<String, Integer> formIssuance);
+
+
+    void setTotalStudentWithOutScore(Long classId);
 }

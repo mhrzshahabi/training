@@ -9,10 +9,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +44,28 @@ public class TclassRestController {
     private final ObjectMapper objectMapper;
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
+
+
+//    @Loggable
+//    @GetMapping(value = "/student/{classId}")
+////    @PreAuthorize("hasAuthority('r_tclass')")
+//    public ResponseEntity<StudentDTO.StudentSpecRs> getStudentsByClassID(@PathVariable String classID) {
+//        Long classId = Long.parseLong(classID);
+//
+//        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
+//
+//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
+//        specResponse.setData(studentList)
+//                .setStartRow(0)
+//                .setEndRow(studentList.size())
+//                .setTotalRows(studentList.size());
+//
+//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
+
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -98,8 +120,8 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
@@ -227,7 +249,7 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/checkEndingClass/{classId}")
-    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException{
+    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException {
 
         return classAlarmService.checkAlarmsForEndingClass(classId, response);
 
@@ -235,9 +257,8 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/getWorkflowEndingStatusCode/{classId}")
-    public Integer getWorkflowEndingStatusCode(@PathVariable Long classId){
+    public Integer getWorkflowEndingStatusCode(@PathVariable Long classId) {
         return tclassService.getWorkflowEndingStatusCode(classId);
     }
-
 
 }

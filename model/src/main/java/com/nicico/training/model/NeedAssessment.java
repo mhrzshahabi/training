@@ -34,7 +34,7 @@ public class NeedAssessment extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_competence_id", insertable = false, updatable = false)
-    private Competence competence;
+    private CompetenceOld competence;
 
     @Column(name = "f_competence_id")
     private Long competenceId;

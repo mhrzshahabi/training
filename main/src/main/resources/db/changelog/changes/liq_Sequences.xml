@@ -190,5 +190,21 @@
     <changeSet author="ghazanfari_f (generated)" id="1578736120553-210">
         <createSequence sequenceName="seq_questionnaire_question_id"/>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579090320851-210">
+        <createSequence sequenceName="seq_needs_assessment_id"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579438870666-219">
+        <createSequence sequenceName="seq_permission_id"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579438870666-220">
+        <createSequence sequenceName="seq_work_group_id"/>
+    </changeSet>
+
+    <changeSet author="rastegari_h (generated)" id="1580556360989-229">
+        <createSequence sequenceName="evaluation_answer_seq_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-230">
+        <createSequence sequenceName="evaluation_seq_id"/>
+    </changeSet>
 
 </databaseChangeLog>

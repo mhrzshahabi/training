@@ -1,14 +1,11 @@
 /*
-ghazanfari_f, 9/7/2019, 10:52 AM
+ghazanfari_f,
+1/14/2020,
+1:55 PM
 */
 package com.nicico.training.repository;
 
 import com.nicico.training.model.Competence;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface CompetenceDAO extends JpaRepository<Competence, Long>, JpaSpecificationExecutor<Competence> {
-
+public interface CompetenceDAO extends BaseDAO<Competence, Long> {
 }

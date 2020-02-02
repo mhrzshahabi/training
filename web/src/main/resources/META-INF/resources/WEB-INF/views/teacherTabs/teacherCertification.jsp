@@ -21,8 +21,10 @@
             {name: "companyName", filterOperator: "iContains"},
             {name: "companyLocation", filterOperator: "iContains"},
             {name: "duration"},
-            {name: "categories", filterOperator: "iContains"},
-            {name: "subCategories", filterOperator: "iContains"},
+            {name: "categories"},
+            {name: "subCategories"},
+            {name: "categoriesIds", filterOperator: "inSet"},
+            {name: "subCategoriesIds", filterOperator: "inSet"},
             {name: "persianStartDate"},
             {name: "persianEndDate"}
         ]
@@ -51,14 +53,18 @@
             {
                 name: "courseTitle",
                 title: "<spring:message code='course.title'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                required: true
             },
             {
                 name: "companyName",
                 title: "<spring:message code='company.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "companyLocation",
                 title: "<spring:message code='location.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "categories",
@@ -67,6 +73,7 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -106,6 +113,7 @@
                 disabled: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -200,6 +208,7 @@
     IButton_Save_JspTeacherCertification = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+            DynamicForm_JspTeacherCertification.validate();
             if (!DynamicForm_JspTeacherCertification.valuesHaveChanged() || !DynamicForm_JspTeacherCertification.validate())
                 return;
             waitTeacherCertification = createDialog("wait");
@@ -263,17 +272,6 @@
     ListGrid_JspTeacherCertification = isc.TrLG.create({
         dataSource: RestDataSource_JspTeacherCertification,
         contextMenu: Menu_JspTeacherCertification,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
         fields: [
             {
                 name: "courseTitle",
@@ -288,54 +286,26 @@
                 title: "<spring:message code='location.name'/>",
             },
             {
-                name: "categories",
+                name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let cat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        cat += "، " + value[i].titleFa;
-                    }
-                    return cat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.categories.length === 0)
-                        return;
-                    value.categories.sort();
-                    let cat = value.categories[0].titleFa.toString();
-                    for (let i = 1; i < value.categories.length; i++) {
-                        cat += "، " + value.categories[i].titleFa;
-                    }
-                    return cat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_Category_JspTeacherCertification,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true,
             },
             {
-                name: "subCategories",
+                name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let subCat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        subCat += "، " + value[i].titleFa;
-                    }
-                    return subCat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.subCategories.length === 0)
-                        return;
-                    value.subCategories.sort();
-                    let subCat = value.subCategories[0].titleFa.toString();
-                    for (let i = 1; i < value.subCategories.length; i++) {
-                        subCat += "، " + value.subCategories[i].titleFa;
-                    }
-                    return subCat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true,
             },
             {
                 name: "duration",
@@ -345,19 +315,32 @@
             {
                 name: "persianStartDate",
                 title: "<spring:message code='start.date'/>",
-                canFilter: false,
                 canSort: false
             },
             {
                 name: "persianEndDate",
                 title: "<spring:message code='end.date'/>",
-                canFilter: false,
                 canSort: false
             }
         ],
+        filterEditorSubmit: function () {
+            ListGrid_JspTeacherCertification.invalidateCache();
+        },
         doubleClick: function () {
             ListGrid_TeacherCertification_Edit();
-        }
+        },
+        align: "center",
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     ToolStripButton_Refresh_JspTeacherCertification = isc.ToolStripButtonRefresh.create({

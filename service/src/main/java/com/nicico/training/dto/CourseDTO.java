@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.Goal;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -55,9 +56,6 @@ public class CourseDTO implements Serializable {
     private String description;
 
     @ApiModelProperty(required = true)
-    private String mainObjective;
-
-    @ApiModelProperty(required = true)
     private String needText;
 
     @ApiModelProperty(required = true)
@@ -69,6 +67,10 @@ public class CourseDTO implements Serializable {
     private String evaluation;
 
     private String behavioralLevel;
+
+    private String scoringMethod;
+
+    private String acceptancelimit;
 //    @ApiModelProperty(required = true)
 //    private List<Long> preCourse;
 
@@ -113,6 +115,8 @@ public class CourseDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        private String evaluation;
+
     }
 
     // ------------------------------
@@ -143,6 +147,8 @@ public class CourseDTO implements Serializable {
 
         @ApiModelProperty(required = true)
         private Long subCategoryId;
+
+        private List<Long> mainObjectiveIds;
 //
 //        @ApiModelProperty(required = true)
 //        private List<Long> preCourseListId;
@@ -192,6 +198,8 @@ public class CourseDTO implements Serializable {
         private String evaluation;
 
         private String behavioralLevel;
+
+        private List<Long> mainObjectiveIds;
 
     }
 
@@ -254,5 +262,25 @@ public class CourseDTO implements Serializable {
     public static class GoalsWithSyllabus extends CourseDTO {
         private ETechnicalType eTechnicalType;
         private List<GoalDTO.Syllabuses> goalSet;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @ApiModel("CourseInfoTupleLite")
+    public static class CourseInfoTupleLite {
+        private Long id;
+        private String code;
+        private String titleFa;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @ApiModel("CourseGoals")
+    public static class CourseGoals{
+        private List<Goal> goalSet;
     }
 }

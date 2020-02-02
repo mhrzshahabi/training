@@ -4,6 +4,7 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.ClassStudent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -12,7 +13,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -61,6 +62,8 @@ public class TclassDTO {
     private List<Long> trainingPlaceIds;
     private String workflowEndingStatus;
     private Integer workflowEndingStatusCode;
+    private String scoringMethod;
+    private String acceptancelimit;
 
 
     @Getter
@@ -68,6 +71,8 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
+
+        private InstituteDTO.InstituteInfoTuple institute;
         //        private Date createdDate;
 //        private String createdBy;
 //        @Getter(AccessLevel.NONE)
@@ -93,9 +98,59 @@ public class TclassDTO {
             else
                 return " ";
         }
+
+        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+
+        public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
+            if (studentId == -1) {
+                return classStudents;
+            } else {
+
+                Set<ClassStudentDTO.AttendanceInfo> findStudent = new HashSet<>();
+                for (ClassStudentDTO.AttendanceInfo student : classStudents) {
+                    if (student.getStudentId().equals(studentId)) {
+                        findStudent.add(student);
+                        break;
+                    }
+                }
+
+                return findStudent;
+            }
+        }
+
+        public String getNumberOfStudentEvaluation() {
+
+            int studentEvaluations = 0;
+            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) != 0 ||
+                        Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) != 0 ||
+                Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) != 0 ||
+                Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) != 0) {
+                    studentEvaluations++;
+                }
+            }
+
+            return studentEvaluations + "/" + classStudents.size();
+        }
+
+        public Integer getStudentCount() {
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
+        }
     }
 
     // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassScore")
+    public static class ScoreInfo {
+        private String scoringMethod;
+        private String acceptancelimit;
+    }
 
     @Getter
     @Setter
@@ -139,7 +194,7 @@ public class TclassDTO {
         private SpecRs response;
     }
 
-    // ---------------
+    // ------------------------------
 
     @Getter
     @Setter
@@ -152,4 +207,17 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CoursesOfStudent")
+    public static class CoursesOfStudent {
+        private CourseDTO.CourseInfoTupleLite course;
+        private String code;
+        private String classStatus;
+    }
+
 }

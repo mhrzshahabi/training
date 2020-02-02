@@ -7,14 +7,16 @@ com.nicico.training.service
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
 import com.nicico.training.iservice.IJobGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.JobGroup;
-import com.nicico.training.repository.CompetenceDAO;
+import com.nicico.training.repository.CompetenceDAOOld;
 import com.nicico.training.repository.JobDAO;
 import com.nicico.training.repository.JobGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.nicico.training.service.BaseService.setCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class JobGroupService implements IJobGroupService {
@@ -33,7 +37,8 @@ public class JobGroupService implements IJobGroupService {
     private final ModelMapper modelMapper;
     private final JobGroupDAO jobGroupDAO;
     private final JobDAO jobDAO;
-    private final CompetenceDAO competenceDAO;
+    private final CompetenceDAOOld competenceDAO;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -128,6 +133,13 @@ public class JobGroupService implements IJobGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<JobGroupDTO.Info> search(SearchDTO.SearchRq request) {
+        setCriteria(request, workGroupService.applyPermissions(JobGroup.class, SecurityUtil.getUserId()));
+        return SearchUtil.search(jobGroupDAO, request, jobGroup -> modelMapper.map(jobGroup, JobGroupDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<JobGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
         return SearchUtil.search(jobGroupDAO, request, jobGroup -> modelMapper.map(jobGroup, JobGroupDTO.Info.class));
     }
 
@@ -135,7 +147,7 @@ public class JobGroupService implements IJobGroupService {
 
     private JobGroupDTO.Info save(JobGroup jobGroup, Set<Long> jobIds) {
         final Set<Job> jobs = new HashSet<>();
-//        final Set<Competence> competences = new HashSet<>();
+//        final Set<CompetenceOld> competences = new HashSet<>();
         Optional.ofNullable(jobIds)
                 .ifPresent(jobIdSet -> jobIdSet
                         .forEach(jobId ->
@@ -159,11 +171,11 @@ public class JobGroupService implements IJobGroupService {
 
     @Override
     @Transactional
-    public List<CompetenceDTO.Info> getCompetence(Long jobGroupId) {
+    public List<CompetenceDTOOld.Info> getCompetence(Long jobGroupId) {
         final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupId);
         final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
 
-//        return modelMapper.map(jobGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTO.Info>>() {}.getType());
+//        return modelMapper.map(jobGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTOOld.Info>>() {}.getType());
         return null;
     }
 
@@ -172,7 +184,7 @@ public class JobGroupService implements IJobGroupService {
     public List<JobDTO.Info> getJobs(Long jobGroupID) {
         final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupID);
         final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
-//        Set<Competence> competenceSet = jobGroup.getCompetenceSet();
+//        Set<CompetenceOld> competenceSet = jobGroup.getCompetenceSet();
         Set<Job> jobs = jobGroup.getJobSet();
         ArrayList<JobDTO.Info> jobList = new ArrayList<>();
         for (Job job : jobs) {
@@ -180,7 +192,7 @@ public class JobGroupService implements IJobGroupService {
         }
 //        JobDTO.Info info = new JobDTO.Info();
 //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        for (Competence competence:jobGroup.getCompetenceSet()
+//        for (CompetenceOld competence:jobGroup.getCompetenceSet()
 //             ) {
 //
 //            for (JobCompetence jobCompetence:competence.getJobCompetenceSet()
@@ -197,7 +209,7 @@ public class JobGroupService implements IJobGroupService {
     @Override
     @Transactional
     public boolean canDelete(Long jobGroupId) {
-        List<CompetenceDTO.Info> competences = getCompetence(jobGroupId);
+        List<CompetenceDTOOld.Info> competences = getCompetence(jobGroupId);
         if (competences.isEmpty() || competences.size() == 0)
             return true;
         else
@@ -220,8 +232,8 @@ public class JobGroupService implements IJobGroupService {
 
 //        Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupId);
 //        final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
-//        final Optional<Competence> optionalCompetence = competenceDAO.findById(competenceId);
-//        final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+//        final Optional<CompetenceOld> optionalCompetence = competenceDAO.findById(competenceId);
+//        final CompetenceOld competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
 //        jobGroup.getCompetenceSet().remove(competence);
     }
 

@@ -19,8 +19,10 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "companyName", filterOperator: "iContains"},
             {name: "jobTitle", filterOperator: "iContains"},
-            {name: "categories", filterOperator: "iContains"},
-            {name: "subCategories", filterOperator: "iContains"},
+            {name: "categoriesIds", filterOperator: "inSet"},
+            {name: "subCategoriesIds", filterOperator: "inSet"},
+            {name: "categories"},
+            {name: "subCategories"},
             {name: "persianStartDate"},
             {name: "persianEndDate"}
         ]
@@ -47,12 +49,15 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
-            },
-            {
                 name: "jobTitle",
                 title: "<spring:message code='job.title'/>",
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+            },
+            {
+                name: "companyName",
+                title: "<spring:message code='company.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "categories",
@@ -64,6 +69,7 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
+                required: true,
                 filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
@@ -98,6 +104,7 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
@@ -185,6 +192,7 @@
     IButton_Save_JspEmploymentHistory = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+            DynamicForm_JspEmploymentHistory.validate();
             if (!DynamicForm_JspEmploymentHistory.valuesHaveChanged() || !DynamicForm_JspEmploymentHistory.validate())
                 return;
             waitEmploymentHistory = createDialog("wait");
@@ -248,92 +256,66 @@
     ListGrid_JspEmploymentHistory = isc.TrLG.create({
         dataSource: RestDataSource_JspEmploymentHistory,
         contextMenu: Menu_JspEmploymentHistory,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
         fields: [
-            {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
-            },
             {
                 name: "jobTitle",
                 title: "<spring:message code='job.title'/>",
             },
             {
-                name: "categories",
-                title: "<spring:message code='category'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let cat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        cat += "، " + value[i].titleFa;
-                    }
-                    return cat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.categories.length === 0)
-                        return;
-                    value.categories.sort();
-                    let cat = value.categories[0].titleFa.toString();
-                    for (let i = 1; i < value.categories.length; i++) {
-                        cat += "، " + value.categories[i].titleFa;
-                    }
-                    return cat;
-                }
+                name: "companyName",
+                title: "<spring:message code='company.name'/>",
             },
             {
-                name: "subCategories",
+                name: "categoriesIds",
+                title: "<spring:message code='category'/>",
+                type: "selectItem",
+                optionDataSource: RestDataSource_Category_JspEmploymentHistory,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true
+            },
+            {
+                name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let subCat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        subCat += "، " + value[i].titleFa;
-                    }
-                    return subCat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.subCategories.length === 0)
-                        return;
-                    value.subCategories.sort();
-                    let subCat = value.subCategories[0].titleFa.toString();
-                    for (let i = 1; i < value.subCategories.length; i++) {
-                        subCat += "، " + value.subCategories[i].titleFa;
-                    }
-                    return subCat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
                 name: "persianStartDate",
                 title: "<spring:message code='start.date'/>",
-                canFilter: false,
                 canSort: false
             },
             {
                 name: "persianEndDate",
                 title: "<spring:message code='end.date'/>",
-                canFilter: false,
                 canSort: false
             }
         ],
         doubleClick: function () {
             ListGrid_EmploymentHistory_Edit();
-        }
+        },
+        filterEditorSubmit: function () {
+            ListGrid_JspEmploymentHistory.invalidateCache();
+        },
+        align: "center",
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     ToolStripButton_Refresh_JspEmploymentHistory = isc.ToolStripButtonRefresh.create({

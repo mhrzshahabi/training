@@ -20,4 +20,8 @@ public interface IPostService {
     Page<Post> listByJobId(Long jobId, Pageable pageable);
 
     SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq rq);
+
+    SearchDTO.SearchRs<PostDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<PostDTO.Info> unassignedSearch(SearchDTO.SearchRq request);
 }

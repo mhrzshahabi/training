@@ -86,8 +86,7 @@
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_term,
         autoFetchData: true,
-        doubleClick: function () {
-        },
+
         fields: [
            // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
@@ -103,7 +102,7 @@
 
             {name: "description",title: "<spring:message code="description"/>",align: "center",filterOperator: "iContains"},
         ],
-        doubleClick: function () {
+        recordDoubleClick: function () {
             DynamicForm_Term.clearValues();
             show_TermEditForm();
         },

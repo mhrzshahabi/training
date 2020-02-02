@@ -23,8 +23,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
-
+    <%--<SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>--%>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
@@ -38,7 +37,14 @@
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
-<body dir="rtl">
+<c:choose>
+<c:when test="${pageContext.response.locale == 'fa'}">
+<body class="rtl" dir="rtl">
+</c:when>
+<c:otherwise>
+<body class="ltr" dir="ltr">
+</c:otherwise>
+</c:choose>
 <script type="application/javascript">
     // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
@@ -74,6 +80,8 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
+    const needsAssessmentUrl = rootUrl + "/needsAssessment";
+    const workGroupUrl = rootUrl + "/work-group";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -86,10 +94,16 @@
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
     isc.RPCManager.allowCrossDomainCalls = true;
-    isc.FileLoader.loadLocale("fa");
-    isc.FileLoader.cacheLocale("fa");
+    // isc.FileLoader.loadLocale("fa");
+    // isc.FileLoader.cacheLocale("fa");
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
-    isc.SelectItem.addProperties({height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false});
+    isc.SelectItem.addProperties({
+        height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false, pickListProperties: {
+            showFilterEditor: true,
+            alternateRecordStyles: true,
+            autoFitWidthApproach: "both",
+        },
+    });
     isc.SpinnerItem.addProperties({height: 27, length: 255, width: "*"});
     isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 27, length: 500, width: "*"});
@@ -102,7 +116,7 @@
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleAlign: "right", titleSuffix: "",
         requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
-        readOnlyDisplay: "static", padding: 10
+        readOnlyDisplay: "static", padding: 10, canTabToIcons: false,
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
@@ -135,23 +149,32 @@
     });
 
     isc.defineClass("LgLabel", Label);
-    isc.LgLabel.addProperties({height: "30", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2});
+    isc.LgLabel.addProperties({height: "27", align: "center", showEdges: true, edgeSize: 2, customEdges: []});
+
+    isc.DetailViewer.addProperties({wrapValues: false});
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
-        alternateRecordStyles: true,
-        showFilterEditor: true,
         autoFitWidthApproach: "both",
+        alternateRecordStyles: true,
         showClippedValuesOnHover: true,
-        hoverMoveWithMouse: true,
+        leaveScrollbarGap: false,
+
         showRowNumbers: true,
-        canAutoFitFields: false,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 50,
             align: "center"
         },
+
+        showFilterEditor: true,
+        filterOnKeypress: false,
+
+        preventDuplicates: true,
+        duplicateDragMessage: "<spring:message code="msg.can't.transfer.duplicated.data"/>",
+
         sortField: 0,
+        canAutoFitFields: false,
     });
 
     TrValidators = {
@@ -174,6 +197,11 @@
             type: "regexp",
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
+        },
+        NotAllowedInFileNameChar: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
+            expression: /^((?![/\\?%*:|"<>.]).)*$/,
         },
         EmailValidate: {
             type: "regexp",
@@ -263,21 +291,21 @@
 
     // -------------------------------------------  Page UI - Header  -----------------------------------------------
     var headerLogo = isc.HTMLFlow.create({
-        width: "50",
+        width: 350,
         height: "100%",
         styleName: "header-logo",
-        contents: "<img width='50' height='50' src='images/nicicoBlack.png'/>"
+        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/></h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
     });
 
-    var headerFlow = isc.HTMLFlow.create({
-        width: "10%",
-        height: "100%",
-        styleName: "mainHeaderStyleOnline header-logo-title",
-        contents: "<span><spring:message code="training.system.version"/></span>"
-    });
+    <%--var headerFlow = isc.HTMLFlow.create({--%>
+        <%--width: "10%",--%>
+        <%--height: "100%",--%>
+        <%--styleName: "mainHeaderStyleOnline header-logo-title",--%>
+        <%--contents: "<span><spring:message code="training.system.version"/></span>"--%>
+    <%--});--%>
 
     var label_Username = isc.Label.create({
-        width: "10%",
+        width: 200,
         dynamicContents: true,
         styleName: "header-label-username",
         contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,
@@ -338,10 +366,30 @@
         members: [languageForm]
     });
 
+    var toggleSwitch = isc.HTMLFlow.create({
+        width: 32,
+        height: "100%",
+        align: "center",
+        styleName: "toggle-switch",
+        contents: "<label class=\"switch-btn\">\n" +
+            "  <input type=\"checkbox\" onchange='onToggleClick(event)'>\n" +
+            "  <span class=\"slider round\"></span>\n" +
+            "</label>"
+    });
+
+    var languageAndToggleHLayout = isc.HLayout.create({
+        width: "5%",
+        align: "center",
+        defaultLayoutAlign: "left",
+        members: [toggleSwitch,languageVLayout]
+    });
+
+
+
     logoutButton = isc.IButton.create({
         width: "100",
         baseStyle: "header-logout",
-        title: "<spring:message code="logout"/>",
+        title: "<span><spring:message code="logout"/></span>",
         icon: "<spring:url value="/images/logout.png"/>",
         click: function () {
             logout();
@@ -351,6 +399,7 @@
     var logoutVLayout = isc.VLayout.create({
         width: "5%",
         align: "center",
+        styleName: "header-logout-Vlayout",
         defaultLayoutAlign: "left",
         members: [logoutButton]
     });
@@ -360,15 +409,16 @@
     basicInfoTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
-<%--                <sec:authorize access="hasAuthority('parameter_r')">--%>
+                <%--                <sec:authorize access="hasAuthority('parameter_r')">--%>
                 {
                     title: "<spring:message code="parameter"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }
                 },
-<%--                </sec:authorize>--%>
+                <%--                </sec:authorize>--%>
                 {
                     title: "<spring:message code="skill.categorize"/>",
                     click: function () {
@@ -396,20 +446,33 @@
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="department"/>",
-                    click: function () {
-                        createTab(this.title, '<spring:url value="/department/show-form"/>');
-                    }
-                },
+                <%--{--%>
+                <%--    title: "<spring:message code="department"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, '<spring:url value="/department/show-form"/>');--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
 
-    needAssessmentTSMB = isc.ToolStripMenuButton.create({
+    needsAssessmentTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
+                {
+                    title: "<spring:message code="competence"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/competence/"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="needs.assessment"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
+                    }
+                },
                 {
                     title: "<spring:message code="job"/>",
                     click: function () {
@@ -475,6 +538,7 @@
     designingTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="course"/>",
@@ -510,6 +574,7 @@
     runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="run"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="class"/>",
@@ -519,7 +584,7 @@
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="student"/>",
+                    title: "<spring:message code="other-student"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/personnelRegistered/show-form"/>");
                     }
@@ -545,6 +610,7 @@
     evaluationTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="evaluation.index.title"/>",
@@ -558,6 +624,12 @@
                         createTab(this.title, "<spring:url value="/web/config-questionnaire"/>");
                     },
                 },
+                {
+                    title: "<spring:message code="evaluation"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
+                    }
+                }
             ]
         }),
     });
@@ -565,6 +637,7 @@
     cartableTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="cartable"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="personal"/>",
@@ -605,13 +678,22 @@
     reportTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="report"/>",
         menu: isc.Menu.create({
-            data: []
+            placement: "none",
+            data: [
+                {
+                    title: "<spring:message code="training.file"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/trainingFile/"/>");
+                    }
+                },
+            ]
         }),
     });
 
     securityTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="security"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 <%--{--%>
                 <%--    title: "<spring:message code="user.plural"/>",--%>
@@ -631,6 +713,12 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
                     }
+                },
+                {
+                    title: "<spring:message code="workGroup"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/work-group"/>");
+                    },
                 },
                 {isSeparator: true},
                 {
@@ -679,7 +767,7 @@
         shadowColor: "#153560",
         members: [
             basicInfoTSMB,
-            needAssessmentTSMB,
+            needsAssessmentTSMB,
             designingTSMB,
             runTSMB,
             evaluationTSMB,
@@ -711,28 +799,31 @@
     trainingTabSet = isc.TabSet.create({
         minWidth: 1024,
         tabs: [],
-        tabBarControls: [closeAllButton]
+        tabBarControls: [closeAllButton],
     });
 
     // -------------------------------------------  Page UI -----------------------------------------------
 
     var headerExitHLayout = isc.HLayout.create({
-        width: "60%",
+        width: "80%",
         height: "100%",
         align: "center",
         styleName: "header-exit",
-        members: [isc.LayoutSpacer.create({width: "80%"}), userNameHLayout, languageVLayout, logoutVLayout]
+        members: [isc.LayoutSpacer.create({width: "80%"}), userNameHLayout, languageAndToggleHLayout, logoutVLayout]
     });
 
     var headerLayout = isc.HLayout.create({
         width: "100%",
-        height: "52",
-        styleName: "header",
-        members: [headerLogo, headerFlow, headerExitHLayout],
+        height: 50,
+        styleName: "header-top",
+        members: [headerLogo,
+           // headerFlow,
+            headerExitHLayout],
     });
 
     var MainDesktopMenuH = isc.HLayout.create({
         width: "100%",
+        minWidth: 1024,
         height: "4%",
         styleName: "main-menu",
         align: "center",
@@ -743,13 +834,65 @@
 
     isc.TrVLayout.create({
         autoDraw: true,
-        styleName: "relativePosition",
+        //styleName: "relativePosition",
+       // overflow: "auto",
+        width: "100%",
+        height: "100%",
         members: [
             headerLayout,
             MainDesktopMenuH,
             trainingTabSet,
         ]
     });
+
+
+    var checked = null;
+    function onToggleClick (e){
+        checked = e.target.checked;
+        if(checked)
+        {
+
+            headerLayout.setStyleName('header-top toggle-hide')
+            MainDesktopMenuH.setStyleName('main-menu toggle-hide')
+            headerLayout.setVisibility(false);
+            MainDesktopMenuH.setVisibility(false);
+
+
+        }else {
+            headerLayout.setStyleName('header-top toggle-show')
+            MainDesktopMenuH.setStyleName('main-menu toggle-show')
+            headerLayout.setVisibility(true);
+            MainDesktopMenuH.setVisibility(true);
+        }
+        // console.log(checked)
+    }
+
+    document.addEventListener("mousemove", function(event){
+        // console.log(event.clientY)
+        if(event.clientY <= 2)
+        {
+            headerLayout.setStyleName('header-top toggle-show')
+            MainDesktopMenuH.setStyleName('main-menu toggle-show')
+            headerLayout.setVisibility(true);
+            MainDesktopMenuH.setVisibility(true);
+
+        }else  if(event.clientY > 100){
+            if(checked){
+                headerLayout.setStyleName('header-top toggle-hide')
+                MainDesktopMenuH.setStyleName('main-menu toggle-hide')
+                headerLayout.setVisibility(false);
+                MainDesktopMenuH.setVisibility(false);
+            }else{
+                headerLayout.setStyleName('header-top toggle-show')
+                MainDesktopMenuH.setStyleName('main-menu toggle-show')
+                headerLayout.setVisibility(true);
+                MainDesktopMenuH.setVisibility(true);
+            }
+
+        }
+    });
+
+
 
     // -------------------------------------------  Functions  -----------------------------------------------
     function logout() {
@@ -767,7 +910,14 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.ViewLoader.create({viewURL: url, handleError(rpcRequest, rpcResponse) {createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>")}}),
+                pane: isc.ViewLoader.create({
+                    viewURL: url, handleError(rpcRequest, rpcResponse) {
+                        console.log('******************************************* Add Tab Error *******************************************');
+                        console.log(rpcResponse);
+                        console.log('*****************************************************************************************************');
+                        createDialog("info", "خطا در ایجاد تب")
+                    }
+                }),
                 canClose: true,
             });
             createTab(title, url);
@@ -1239,6 +1389,8 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
+
+
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

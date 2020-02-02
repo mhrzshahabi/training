@@ -68,6 +68,8 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name:"scoringMethod"},
+            {name:"acceptancelimit"},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
@@ -195,24 +197,40 @@
         height: "100%",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
+        // dataPageSize: 50,
+        // allowAdvancedCriteria: true,
+        // allowFilterExpressions: true,
+        // filterOnKeypress: true,
+        // selectionType: "single",
+
 // showRecordComponents: true,
 // showRecordComponentsByCell: true,
         selectionType: "single",
         <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
         <%--groupByText: "<spring:message code='groupByText'/>",--%>
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
+        styleName: 'expandList-tapBar',
+        cellHeight:43,
+        autoFetchData: true,
+        alternateRecordStyles: true,
+        canExpandRecords: true,
+        canExpandMultipleRecords: false,
+        wrapCells: true,
+        showRollOver: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        expansionMode:"related",
+        autoFitExpandField: true,
+        virtualScrolling: true,
+        loadOnExpand: true,
+        loaded: false,
         initialSort: [
 // {property: "createdBy", direction: "ascending"},
             {property: "code", direction: "descending", primarySort: true}
         ],
-        selectionUpdated: function (record) {
-            refreshSelectedTab_class(tabSetClass.getSelectedTab());
-        },
+        // selectionUpdated: function (record) {
+        //     refreshSelectedTab_class(tabSetClass.getSelectedTab());
+        // },
         doubleClick: function () {
             ListGrid_class_edit();
 
@@ -315,15 +333,31 @@
         ],
 
         getCellCSSText:function (record, rowNum, colNum) {
-
-            if (record.classStatus === "1")
-                return "background-color: #EDEDED;";
-            else if (record.classStatus === "3")
-                return "background-color: #C7E1FF;";
+            if (this.isSelected(record)){
+                return "background-color: #fe9d2a;";
+            }else{
+                if (record.classStatus === "1")
+                    return "background-color: #a5a5a5;";
+                else if (record.classStatus === "3")
+                   return "background-color: #C7E1FF;";
+            }
         },
         dataArrived:function () {
             selectWorkflowRecord();
-        }
+        },
+        getExpansionComponent : function (record) {
+             ListGrid_Class_JspClass.selectSingleRecord (record)
+            refreshSelectedTab_class(tabSetClass.getSelectedTab());
+            var layout = isc.VLayout.create({
+                styleName: "expand-layout",
+                height: 300,
+                padding: 0,
+                membersMargin: 0,
+                members: [HLayout_Tab_Class]
+            });
+
+            return layout;
+        },
     });
 
     var VM_JspClass = isc.ValuesManager.create({});
@@ -365,6 +399,18 @@
                 ],
                 changed: function (form, item, value) {
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
+                    form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod);
+                    //==============
+                    DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                   if(item.getSelectedRecord().scoringMethod == "1")
+                   {
+                     form.setValue("acceptancelimit_a",item.getSelectedRecord().acceptancelimit);
+                   }
+                   else
+                   {
+                    form.setValue("acceptancelimit",item.getSelectedRecord().acceptancelimit);
+                   }
+                    //==================
                     form.clearValue("teacherId");
                     evalGroup();
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
@@ -628,6 +674,7 @@
 
                 }
             },
+
             {
                 name: "group",
                 title: "<spring:message code="group"/>:",
@@ -679,22 +726,13 @@
                 pickListWidth: 250,
                 colSpan: 1,
                 showTitle: false,
-// width:"250",
-// align: "center",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
-// addUnknownValues:false,
                 displayField: "titleFa",
                 valueField: "id",
-// cachePickListResults:false,
-// autoFetchData:false,
-// autoFetchData:false,
                 filterFields: ["titleFa", "capacity"],
                 textMatchStyle: "substring",
-// pickListPlacement: "fillScreen",
-// pickListWidth:300,
                 textAlign: "center",
                 pickListFields: [
-// {name:"instituteTitleFa"},
                     {name: "titleFa"},
                     {name: "capacity"}
                 ],
@@ -711,6 +749,89 @@
                     }
 // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
 // return {category:category};
+                }
+            },
+              {
+            name:"scoringMethod",
+            colSpan: 1,
+            required:true,
+            title:"روش نمره دهی",
+            textAlign: "center",
+            valueMap: {
+                    "1": "ارزشی",
+                    "2": "نمره از صد",
+                    "3": "نمره از بیست",
+                    "4": "بدون نمره",
+                },
+                   change: function (form, item, value) {
+                    if (value == "1") {
+                      form.getItem("acceptancelimit").validators = [{}];
+                        form.getItem("acceptancelimit").hide();
+                         form.getItem("acceptancelimit").setValue();
+                        form.getItem("acceptancelimit_a").show();
+                        form.getItem("acceptancelimit_a").enable();
+                        form.getItem("acceptancelimit_a").setRequired(true);
+                        form.getItem("acceptancelimit_a").setDisabled(false);
+                    }
+                    else if(value =="2")
+                    {
+                         form.getItem("acceptancelimit").validators=[{
+                            type: "integerRange", min: 0, max: 100,
+                            errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
+                          },{type : "required", errorMessage:"نمره را وارد کنید",
+                          }]
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").enable();
+                        form.getItem("acceptancelimit").setRequired(true);
+                        form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setValue();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                     form.getItem("acceptancelimit").setDisabled(false);
+                    }
+                    else if(value == "3")
+                    {
+                           form.getItem("acceptancelimit").validators = [{
+                                type: "regexp",
+                                errorMessage: "<spring:message code="msg.validate.score"/>",
+                                expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
+                            },{type : "required"}];
+                     form.getItem("acceptancelimit").show();
+                     form.getItem("acceptancelimit").enable();
+                     form.getItem("acceptancelimit").setRequired(true);
+                     form.getItem("acceptancelimit_a").hide();
+                     form.getItem("acceptancelimit_a").setValue();
+                     form.getItem("acceptancelimit_a").setRequired(false);
+                     form.getItem("acceptancelimit").setDisabled(false);
+
+                    }
+                    else if(value =="4") {
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").setValue();
+                        form.getItem("acceptancelimit").setRequired(false);
+                        form.getItem("acceptancelimit").setDisabled(true);
+                        form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setValue();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                    }
+                },
+            },
+          {
+                name: "acceptancelimit",
+                title: "حد نمره قبولی",
+              required:true,
+          },
+            {
+                name: "acceptancelimit_a",
+                colSpan: 2,
+              required:true,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap: {
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
                 }
             },
         ],
@@ -1115,6 +1236,10 @@
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
+              if (data.scoringMethod == "1") {
+
+                  data.acceptancelimit = data.acceptancelimit_a
+              }
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
@@ -1596,7 +1721,7 @@
 
     var HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
-        height: "40%",
+        height: "100%",
         members: [TabSet_Class]
     });
 
@@ -1604,7 +1729,7 @@
         members: [
             HLayout_Actions_Class_JspClass,
             HLayout_Grid_Class_JspClass,
-            HLayout_Tab_Class
+           // HLayout_Tab_Class
         ]
     });
 
@@ -1628,7 +1753,6 @@
                     }
                 }
             });
-
         }
     }
 
@@ -1648,6 +1772,18 @@
                 url = classUrl + record.id;
                 Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
+                 //=========================
+                 DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"),DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                 if(ListGrid_Class_JspClass.getSelectedRecord().scoringMethod == "1")
+                   {
+
+                     DynamicForm_Class_JspClass.setValue("acceptancelimit_a",ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                   }
+                   else
+                   {
+                    DynamicForm_Class_JspClass.setValue("acceptancelimit",ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                   }
+                   //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
                 getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
             }
@@ -1866,8 +2002,9 @@
                     break;
                 }
                 case "classAttachmentsTab": {
+                    let readOnly = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب", 4: "نامه غیبت موجه"});
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب", 4: "نامه غیبت موجه"}, readOnly);
                     break;
                 }
                 case "classScoresTab": {
@@ -2031,8 +2168,6 @@
 
         var sRecord = selectedRecord;
 
-        console.log(sRecord);
-
         if (sRecord !== null && sRecord.id !== null && class_workflowParameters !== null) {
 
             if (sRecord.workflowEndingStatusCode === -1 || sRecord.workflowEndingStatusCode === -2) {
@@ -2061,7 +2196,6 @@
                     params: {"taskId": class_workflowParameters.taskId, "usr": class_workflowParameters.usr},
                     serverOutputAsString: false,
                     callback: function (RpcResponse_o) {
-                        console.log(RpcResponse_o);
                         if (RpcResponse_o.data === 'success') {
 
                             ListGrid_Class_refresh();

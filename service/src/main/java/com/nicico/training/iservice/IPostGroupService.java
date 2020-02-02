@@ -1,7 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
 
@@ -39,7 +39,9 @@ public interface IPostGroupService {
 
     SearchDTO.SearchRs<PostGroupDTO.Info> search(SearchDTO.SearchRq request);
 
-    List<CompetenceDTO.Info> getCompetence(Long postGroupID);
+    SearchDTO.SearchRs<PostGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
+    List<CompetenceDTOOld.Info> getCompetence(Long postGroupID);
 
     List<PostDTO.Info> getPosts(Long postGroupID);
 

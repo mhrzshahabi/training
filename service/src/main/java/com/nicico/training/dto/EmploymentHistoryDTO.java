@@ -1,6 +1,8 @@
 package com.nicico.training.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.training.model.EmploymentHistory;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -63,6 +66,18 @@ public class EmploymentHistoryDTO {
         private Integer version;
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+
+        public List<Long> getCategoriesIds() {
+            if (categories == null)
+                return null;
+            return categories.stream().map(CategoryDTO.CategoryInfoTuple::getId).collect(Collectors.toList());
+        }
+
+        public List<Long> getSubCategoriesIds() {
+            if (subCategories == null)
+                return null;
+            return subCategories.stream().map(SubCategoryDTO.SubCategoryInfoTuple::getId).collect(Collectors.toList());
+        }
     }
 
     @Getter
@@ -94,4 +109,27 @@ public class EmploymentHistoryDTO {
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("EmploymentHistorySpecRs")
+    public static class EmploymentHistorySpecRs {
+        private SpecRs response;
+    }
+
+
 }

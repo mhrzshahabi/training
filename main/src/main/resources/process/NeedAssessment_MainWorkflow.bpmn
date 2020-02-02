@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="needAssessment_MainWorkflow" name="بررسی نیازسنجی توسط تایید کننده اصلی" isExecutable="true">
+    <startEvent id="needAssessmentWorkflowStart" name="Start" activiti:initiator="${username}">
+      <extensionElements>
+        <activiti:formProperty id="cId" name="آی دی پارامتر" type="long" required="true"></activiti:formProperty>
+        <activiti:formProperty id="needAssessment" name="نیازسنجی" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="needAssessmentCreatorId" name="needAssessmentCreatorId" type="string" writable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="needAssessmentCreator" name="ایجاد کننده" type="string" writable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="REJECT" name="REJECT" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="target" name="target" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_ENDING_STATUS}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatusCode" name="workflowStatusCode" type="string" expression="${C_WORKFLOW_ENDING_STATUS_CODE}" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <serviceTask id="servicetaskAssignMainConfirmBoss" name="تعیین تایید کننده" activiti:delegateExpression="${serviceTaskNeedAssessmentMainConfirm}"></serviceTask>
+    <userTask id="needAssessmentMainConfirmCheck" name="بررسی تایید کننده" activiti:assignee="${needAssessmentMainConfirmBoss}">
+      <documentation>${needAssessment}</documentation>
+      <extensionElements>
+        <activiti:formProperty id="cId" name="آی دی پارامتر" type="long" expression="${cId}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="needAssessment" name="نیازسنجی" type="string" expression="${needAssessment}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="needAssessmentCreator" name="ایجاد کننده" type="string" expression="${needAssessmentCreator}" writable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" expression="${REJECTVAL}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="REJECT" name="REJECT" type="string" expression="${REJECT}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_ENDING_STATUS}" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <serviceTask id="servicetaskSetNeedAssessmentStatus" name="تعیین وضعیت نیازسنجی" activiti:delegateExpression="${serviceTaskNeedAssessmentMainConfirm}"></serviceTask>
+    <exclusiveGateway id="confirmGateway" name="Confirm Gateway"></exclusiveGateway>
+    <endEvent id="needAssessmentWorkFlowEnd" name="End"></endEvent>
+    <userTask id="CreatorCheck" name="بررسی کاربر" activiti:assignee="${needAssessmentCreatorId}">
+      <documentation>${REJECTVAL}</documentation>
+      <extensionElements>
+        <activiti:formProperty id="cId" name="آی دی پارامتر" type="long" expression="${cId}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="needAssessment" name="نیازسنجی" type="string" expression="${needAssessment}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" expression="${REJECTVAL}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_ENDING_STATUS}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="DELETE" name="DELETE" type="string" default="delete" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="finalgateway" name="Final Gateway"></exclusiveGateway>
+    <serviceTask id="servicetaskNeedSAssessmentCorrection" name="اصلاح / حذف نیازسنجی" activiti:delegateExpression="${serviceTaskNeedAssessmentMainConfirm}"></serviceTask>
+    <sequenceFlow id="flow1" sourceRef="needAssessmentWorkflowStart" targetRef="servicetaskAssignMainConfirmBoss"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="servicetaskAssignMainConfirmBoss" targetRef="needAssessmentMainConfirmCheck"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="needAssessmentMainConfirmCheck" targetRef="servicetaskSetNeedAssessmentStatus"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="servicetaskSetNeedAssessmentStatus" targetRef="confirmGateway"></sequenceFlow>
+    <sequenceFlow id="bossConfirmflow" name="Boss Confirm" sourceRef="confirmGateway" targetRef="needAssessmentWorkFlowEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bossRejectflow" name="Boss Reject" sourceRef="confirmGateway" targetRef="CreatorCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="CreatorCheck" targetRef="servicetaskNeedSAssessmentCorrection"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="servicetaskNeedSAssessmentCorrection" targetRef="finalgateway"></sequenceFlow>
+    <sequenceFlow id="creatorCorrectionflow" name="Creator Correction" sourceRef="finalgateway" targetRef="servicetaskAssignMainConfirmBoss">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="deleteWorkflowflow" name="Delete Workflow" sourceRef="finalgateway" targetRef="needAssessmentWorkFlowEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_needAssessment_MainWorkflow">
+    <bpmndi:BPMNPlane bpmnElement="needAssessment_MainWorkflow" id="BPMNPlane_needAssessment_MainWorkflow">
+      <bpmndi:BPMNShape bpmnElement="needAssessmentWorkflowStart" id="BPMNShape_needAssessmentWorkflowStart">
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetaskAssignMainConfirmBoss" id="BPMNShape_servicetaskAssignMainConfirmBoss">
+        <omgdc:Bounds height="61.0" width="131.0" x="120.0" y="7.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="needAssessmentMainConfirmCheck" id="BPMNShape_needAssessmentMainConfirmCheck">
+        <omgdc:Bounds height="61.0" width="131.0" x="320.0" y="7.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetaskSetNeedAssessmentStatus" id="BPMNShape_servicetaskSetNeedAssessmentStatus">
+        <omgdc:Bounds height="61.0" width="131.0" x="530.0" y="7.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="confirmGateway" id="BPMNShape_confirmGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="727.0" y="17.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="needAssessmentWorkFlowEnd" id="BPMNShape_needAssessmentWorkFlowEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="880.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CreatorCheck" id="BPMNShape_CreatorCheck">
+        <omgdc:Bounds height="63.0" width="136.0" x="680.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="finalgateway" id="BPMNShape_finalgateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="729.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetaskNeedSAssessmentCorrection" id="BPMNShape_servicetaskNeedSAssessmentCorrection">
+        <omgdc:Bounds height="71.0" width="136.0" x="680.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="65.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="251.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="451.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="530.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="661.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="727.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="bossConfirmflow" id="BPMNEdge_bossConfirmflow">
+        <omgdi:waypoint x="767.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="880.0" y="37.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="65.0" x="778.0" y="44.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="bossRejectflow" id="BPMNEdge_bossRejectflow">
+        <omgdi:waypoint x="747.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="748.0" y="100.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="58.0" x="680.0" y="66.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="748.0" y="163.0"></omgdi:waypoint>
+        <omgdi:waypoint x="748.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="748.0" y="281.0"></omgdi:waypoint>
+        <omgdi:waypoint x="749.0" y="330.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="creatorCorrectionflow" id="BPMNEdge_creatorCorrectionflow">
+        <omgdi:waypoint x="729.0" y="350.0"></omgdi:waypoint>
+        <omgdi:waypoint x="185.0" y="349.0"></omgdi:waypoint>
+        <omgdi:waypoint x="185.0" y="68.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="89.0" x="621.0" y="331.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="deleteWorkflowflow" id="BPMNEdge_deleteWorkflowflow">
+        <omgdi:waypoint x="769.0" y="350.0"></omgdi:waypoint>
+        <omgdi:waypoint x="897.0" y="349.0"></omgdi:waypoint>
+        <omgdi:waypoint x="897.0" y="55.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="80.0" x="780.0" y="331.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

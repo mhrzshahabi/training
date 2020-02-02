@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -43,9 +44,6 @@ public class Course extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @Column(name = "c_main_objective")
-    private String mainObjective;
-
     @Column(name = "n_min_teacher_eval_score")
     private String minTeacherEvalScore;
 
@@ -75,8 +73,18 @@ public class Course extends Auditable {
     @Column(name = "subcategory_id")
     private Long subCategoryId;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course")
     private Set<Skill> skillSet;
+
+    @OneToMany(mappedBy = "courseMainObjective")
+    private Set<Skill> skillMainObjectiveSet;
+
+//    @Transient
+//    public List<Long> getMainObjectiveIds() {
+//        List<Long> ids = new ArrayList<>();
+//        skillMainObjectiveSet.forEach(c -> ids.add(c.getId()));
+//        return ids;
+//    }
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;
@@ -114,6 +122,12 @@ public class Course extends Auditable {
     @Column(name = "c_pre_course")
     private String preCourse;
 
+    @Column(name = "scoring_method")
+    private String scoringMethod;
+
+    @Column(name = "c_acceptance_limit")
+    private String acceptancelimit;
+
     //    @Transient
 //    private Long knowledge = Long.valueOf(0);
 //
@@ -142,7 +156,7 @@ public class Course extends Auditable {
     @Setter(AccessLevel.NONE)
     private Boolean hasSkill;
 
-//    @ManyToOne(cascade={CascadeType.ALL})
+    //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
 //    private Course preCourse;
 //

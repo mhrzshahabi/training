@@ -69,6 +69,13 @@ public class Skill extends Auditable {
 
     //-------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @JoinColumn(name = "f_main_objective_course", insertable = false, updatable = false)
+    private Course courseMainObjective;
+
+    @Column(name = "f_main_objective_course")
+    private Long courseMainObjectiveId;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Course course;
 

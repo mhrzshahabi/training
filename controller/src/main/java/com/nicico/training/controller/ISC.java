@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
+
 @Getter
 @Setter
 public class ISC<T> {
@@ -35,7 +36,7 @@ public class ISC<T> {
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
         String sortBy = rq.getParameter("_sortBy");
-        String criteria = rq.getParameter("criteria");
+        String[] criteriaList = rq.getParameterValues("criteria");
         String operator = rq.getParameter("operator");
 
         Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
@@ -51,10 +52,14 @@ public class ISC<T> {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
+            StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
+            for (int i = 1; i < criteriaList.length; i++) {
+                criteria.append(",").append(criteriaList[i]);
+            }
+            criteria.append("]");
             SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    .setCriteria(objectMapper.readValue(criteria.toString(), new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
             searchRq.setCriteria(criteriaRq);
         }

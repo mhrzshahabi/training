@@ -5,6 +5,7 @@
 
     var studentRemoveWait;
     var studentDefaultPresenceId = 103;
+    var evalData;
 
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
@@ -24,6 +25,11 @@
                     removeStudent_student();
                 }
             },
+            {
+                title: "<spring:message code="evaluation"/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                    evaluationStudent_student();
+                }
+            },
         ]
     });
 
@@ -39,6 +45,12 @@
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     removeStudent_student();
+                }
+            }),
+            isc.ToolStripButtonRemove.create({
+                title: "<spring:message code="evaluation"/>",
+                click: function () {
+                    evaluationStudent_student();
                 }
             }),
             isc.LayoutSpacer.create({width: "*"}),
@@ -535,7 +547,7 @@
                         SelectedPersonnelsLG_student,
                         isc.TrHLayoutButtons.create({
                             members: [
-                                isc.IButton.create({
+                                isc.IButtonSave.create({
                                     top: 260,
                                     title: "<spring:message code='save'/>",
                                     align: "center",
@@ -556,7 +568,7 @@
 
                                         SelectedPersonnelsLG_student.data.clearAll();
                                     }
-                                }), isc.IButton.create({
+                                }), isc.IButtonCancel.create({
                                     top: 260,
                                     title: "<spring:message code='cancel'/>",
                                     align: "center",
@@ -573,6 +585,28 @@
                 }
                 ]
             }),
+        ]
+    });
+
+    var evaluationViewloader = isc.ViewLoader.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: true,
+        loadingMessage: " "
+    });
+
+    var  evaluationWindowViewloader  = isc.Window.create({
+        width: 800,
+        height: 900,
+        autoSize:false,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            evaluationViewloader
         ]
     });
 
@@ -741,5 +775,85 @@
             }, 3000);
         }
     }
+    
+    
+    
+    
+    function  evaluationStudent_student() {
 
-    // </script>
+        var studentId = StudentsLG_student.getSelectedRecord();
+        var classId = ListGrid_Class_JspClass.getSelectedRecord();
+        if (studentId == null || studentId == undefined || classId == null || classId == undefined ) {
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='global.grid.record.not.selected'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+        else {
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/checkEvaluationStudentInClass/" + studentId.student.id + "/" + classId.id , "GET",
+            null, "callback: student_evaluation_class_findOne_result(rpcResponse)"));
+        }
+    }
+
+    function student_evaluation_class_findOne_result(resp) {
+        if (resp == null || resp == undefined || resp.data == "") {
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='msg.operation.error'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        } else {
+            evalData = resp.data;
+            // var studentId = StudentsLG_student.getSelectedRecord().student.id;
+            // var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+
+            var studentRecord = StudentsLG_student.getSelectedRecord();
+            var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            switch (evalData) {
+                case "1": {
+                    // evaluationViewloader.setViewURL("evaluation/reaction-form"+ studentId + "/" + classId);
+
+                    evaluationViewloader.setViewURL("evaluation/reaction-form");
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.reaction"/>");
+                    evaluationWindowViewloader.show();
+                    setTimeout(function () {
+                        loadPage_reaction();
+                    }, 100);
+
+                    break;
+                }
+                case "2": {
+                    evaluationViewloader.setViewURL("evaluation/learning-form");
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.learning"/>");
+                    evaluationWindowViewloader.show();
+                    break;
+                }
+                case "3": {
+                    evaluationViewloader.setViewURL("evaluation/behavioral-form");
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.behavioral"/>");
+                    evaluationWindowViewloader.show();
+                    break;
+                }
+                case "4": {
+                    evaluationViewloader.setViewURL("evaluation/results-form");
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.results"/>");
+                    evaluationWindowViewloader.show();
+                    break;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+    //

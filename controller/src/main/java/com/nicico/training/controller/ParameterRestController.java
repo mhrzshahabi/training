@@ -5,6 +5,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ParameterDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,6 +23,12 @@ public class ParameterRestController {
 
     private final ParameterService parameterService;
     private final ModelMapper modelMapper;
+
+    @Loggable
+    @GetMapping("/iscList/{code}")
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getByCode(@PathVariable String code) {
+        return new ResponseEntity<>(parameterService.getByCode(code), HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping("/list")

@@ -43,9 +43,9 @@ public interface ICourseService {
     List<SkillDTO.Info> getSkill(Long courseId);
 
 
-    List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
+    List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId);
 
-    List<CompetenceDTO.Info> getCompetence(Long courseId);
+    List<CompetenceDTOOld.Info> getCompetence(Long courseId);
 
     List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
 
@@ -76,4 +76,6 @@ public interface ICourseService {
     CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
 
     List<CourseDTO.Info> getEvaluation(Long courseId);
+
+    CourseDTO.CourseGoals getCourseGoals(Long courseId);
 }

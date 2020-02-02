@@ -20,6 +20,7 @@ public class QuestionnaireDTO implements Serializable {
     @ApiModelProperty(required = true)
     private String title;
     private String description;
+    private Long questionnaireTypeId;
 
     @Getter
     @Setter
@@ -28,6 +29,7 @@ public class QuestionnaireDTO implements Serializable {
     public static class Info extends QuestionnaireDTO {
         private Long id;
         private Integer version;
+        private ParameterValueDTO.MinInfo questionnaireType;
     }
 
     @Getter

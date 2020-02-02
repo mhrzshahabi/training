@@ -11,9 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IAttendanceService;
-import com.nicico.training.model.ClassStudent;
 import com.nicico.training.service.ClassSessionService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +40,7 @@ public class AttendanceRestController {
     private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
     private final TclassService tclassService;
-//    private final ClassStudent classStudent;
+    //    private final ClassStudent classStudent;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
@@ -208,8 +206,8 @@ public class AttendanceRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_attendance')")
-    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                               @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                               @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                @RequestParam(value = "_constructor", required = false) String constructor,
                                                                @RequestParam(value = "operator", required = false) String operator,
                                                                @RequestParam(value = "criteria", required = false) String criteria,

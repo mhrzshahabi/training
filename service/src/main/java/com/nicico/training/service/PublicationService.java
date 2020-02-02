@@ -90,6 +90,7 @@ public class PublicationService implements IPublicationService {
     public SearchDTO.SearchRs<PublicationDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        request.setDistinct(true);
         if (teacherId != null) {
             list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
@@ -100,6 +101,16 @@ public class PublicationService implements IPublicationService {
                     request.getCriteria().setCriteria(list);
             } else
                 request.setCriteria(criteriaRq);
+        }
+        for (SearchDTO.CriteriaRq  criteriaRq : request.getCriteria().getCriteria()) {
+            if(criteriaRq.getFieldName() != null) {
+                if (criteriaRq.getFieldName().equalsIgnoreCase("subCategoriesIds"))
+                    criteriaRq.setFieldName("subCategories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("categoriesIds"))
+                    criteriaRq.setFieldName("categories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("persianPublicationDate"))
+                    criteriaRq.setFieldName("publicationDate");
+            }
         }
         return SearchUtil.search(publicationDAO, request, publication -> modelMapper.map(publication, PublicationDTO.Info.class));
     }

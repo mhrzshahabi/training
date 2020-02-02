@@ -65,4 +65,19 @@
     <changeSet author="poursalehi_mos (generated)" id="1578745091553-207">
         <addUniqueConstraint columnNames="student_id, class_id" constraintName="UKfy8smett519jvh2g2n4y8lwhj" tableName="tbl_class_student"/>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1578999572650-210">
+        <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_COMPETENCEC_TITLE_COL" tableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579090320851-213">
+        <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_PARAMETERC_TITLE_COL" tableName="tbl_parameter"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579591108637-229">
+        <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_WORK_GROUPC_TITLE_COL" tableName="tbl_work_group"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579591108637-230">
+        <addUniqueConstraint columnNames="c_entity_name, c_attribute_name, f_work_group" constraintName="UK4j8yaq7g75egwp5yf760qn3ss" tableName="tbl_permission"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1580539582304-231">
+        <addUniqueConstraint columnNames="c_question" constraintName="UC_TBL_EVALUATION_QUESTIONC_QUESTION_COL" tableName="tbl_evaluation_question"/>
+    </changeSet>
 </databaseChangeLog>

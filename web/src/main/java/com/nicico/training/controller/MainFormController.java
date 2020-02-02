@@ -6,6 +6,7 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,11 @@ public class MainFormController {
     @RequestMapping("/parameter")
     public String showParameterForm() {
         return "basic/parameter";
+    }
+
+    @RequestMapping("/trainingFile")
+    public String showTrainingFileForm() {
+        return "report/trainingFile";
     }
 
     @RequestMapping("/oaUser")
@@ -61,11 +67,6 @@ public class MainFormController {
     @RequestMapping("/post-group")
     public String showPostGroupForm() {
         return "base/post-group";
-    }
-
-    @RequestMapping("/competence")
-    public String showCompetenceForm() {
-        return "base/competence";
     }
 
     @RequestMapping("/needAssessment")
@@ -125,6 +126,21 @@ public class MainFormController {
     @RequestMapping("/questionnaire")
     public String showQuestionnaireForm() {
         return "evaluation/questionnaire";
+    }
+
+    @GetMapping("/competence")
+    public String showCompetenceForm() {
+        return "needsAssessment/competence";
+    }
+
+    @GetMapping("/needsAssessment")
+    public String showNeedsAssessmentForm() {
+        return "needsAssessment/needsAssessment";
+    }
+
+    @RequestMapping("/work-group")
+    public String showWorkGroupForm() {
+        return "security/workGroup";
     }
 
 }

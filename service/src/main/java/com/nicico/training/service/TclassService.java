@@ -4,12 +4,19 @@ package com.nicico.training.service;
 */
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.*;
+import com.nicico.training.model.Tclass;
+import com.nicico.training.model.TrainingPlace;
+import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.repository.TrainingPlaceDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -104,6 +111,28 @@ public class TclassService implements ITclassService {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.Info> searchById(SearchDTO.SearchRq request, Long classId) {
+
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        if (classId != null) {
+            list.add(makeNewCriteria("id", classId, EOperator.equals, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    request.getCriteria().setCriteria(list);
+            } else
+                request.setCriteria(criteriaRq);
+        }
+
+        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
+
+    }
+
     // ------------------------------
 
     private TclassDTO.Info save(Tclass tclass) {
@@ -122,7 +151,7 @@ public class TclassService implements ITclassService {
                 .ifPresent(classStudents ->
                         classStudents.forEach(cs ->
                                 {
-                                    if(cs.getPresenceTypeId() != 104)
+                                    if (!cs.getPresenceType().getCode().equals("kh"))
                                         studentInfoSet.add(modelMapper.map(cs, ClassStudentDTO.AttendanceInfo.class));
                                 }
                         ));
@@ -215,15 +244,23 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode )
-    {
-      return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
+    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode) {
+        return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
     }
 
     @Override
-    public Integer getWorkflowEndingStatusCode(Long classId)
-    {
+    public Integer getWorkflowEndingStatusCode(Long classId) {
         return tclassDAO.getWorkflowEndingStatusCode(classId);
+    }
+
+
+    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
     }
 
 }
