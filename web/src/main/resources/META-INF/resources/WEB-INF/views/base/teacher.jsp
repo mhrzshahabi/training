@@ -3,10 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-
 // <script>
 
     var teacherMethod = "POST";
@@ -37,8 +33,8 @@
             {name: "personality.educationLevel.titleFa"},
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
-            {name: "categories",  filterOperator: "inSet"},
-            {name: "subCategories",  filterOperator: "inSet"},
+            {name: "categories", filterOperator: "inSet"},
+            {name: "subCategories", filterOperator: "inSet"},
             {name: "personality.contactInfo.homeAddress.id"},
             {name: "personality.contactInfo.workAddress.id"},
             {name: "personality.educationLevelId"}
@@ -640,6 +636,7 @@
     function teacher_evaluate_action_result(resp) {
         DynamicForm_Evaluation_JspTeacher.setValue("evaluationNumber", resp.data);
     }
+
     //----------------------------------------------ToolStrips and Layout-Grid------------------------------------------
     var ToolStripButton_Refresh_JspTeacher = isc.ToolStripButtonRefresh.create({
         click: function () {
@@ -1347,7 +1344,7 @@
         }
     }
 
-    function  clearTabFilters(){
+    function clearTabFilters() {
         ListGrid_JspAcademicBK.clearFilterValues();
         ListGrid_JspEmploymentHistory.clearFilterValues();
         ListGrid_JspTeachingHistory.clearFilterValues();
