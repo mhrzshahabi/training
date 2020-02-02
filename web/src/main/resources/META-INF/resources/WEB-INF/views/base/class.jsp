@@ -763,6 +763,12 @@
                     "3": "نمره از بیست",
                     "4": "بدون نمره",
                 },
+
+                  changed:function()
+                  {
+                    let record = ListGrid_Class_JspClass.getSelectedRecord();
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/"+ record.id,"GET", null, "callback:GetScoreState(rpcResponse)"));
+                  },
                    change: function (form, item, value) {
                     if (value == "1") {
                       form.getItem("acceptancelimit").validators = [{}];
@@ -1958,6 +1964,20 @@
         } else {
             isc.say("<spring:message code='error'/>");
         }
+    }
+
+    function GetScoreState(resp) {
+              let respText =resp.data
+         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+         }
+         else  if (resp.httpResponseCode === 406)
+         {
+
+             createDialog("info", "کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی فعلی ثبت شده اگر روش نمره دهی را تغییر دادید در ثبت نمرات این فراگیران توجه کنید", "<spring:message code="message"/>")
+
+         }
+
     }
 
     function Add_Student() {

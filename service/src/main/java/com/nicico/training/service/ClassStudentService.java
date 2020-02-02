@@ -158,4 +158,13 @@ public class ClassStudentService implements IClassStudentService {
      {
       classStudentDAO.setTotalStudentWithOutScore(classId);
      }
+
+     @Transactional
+     @Override
+     public Long getScoreState(Long classId)
+     {
+        final List<Long> classStudentList=classStudentDAO.getScoreState(classId);
+         return Long.valueOf(classStudentList.size());
+
+     }
 }
