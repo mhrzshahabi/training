@@ -82,6 +82,7 @@
     const tclassStudentUrl = rootUrl + "/class-student";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
+    const evaluationUrl = rootUrl + "/evaluation";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
