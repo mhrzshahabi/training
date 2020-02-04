@@ -389,7 +389,7 @@
             ListGrid_Post_Grade_Group_edit();
         }
     });
-    var ToolStripButton_Add_Post_Grade_Group_Jsp = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_Post_Grade_Group_Jsp = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Post_Grade_Group_add();
         }
