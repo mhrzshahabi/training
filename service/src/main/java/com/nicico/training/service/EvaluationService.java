@@ -78,29 +78,25 @@ public class EvaluationService implements IEvaluationService {
         evaluation.setEvaluatorTypeId(42L);
         evaluation.setDescription("desc");
 
+//        HashMap<String, String> evaluationAnswer = modelMapper.map(evaluationData.get("evaluationAnswerList"), HashMap.class);
+//        List<EvaluationAnswer> evaluationAnswerList = new ArrayList<>();
+//
+//        evaluationAnswer.forEach((questionId, answer) -> {
+//            EvaluationAnswer evalAnswer = new EvaluationAnswer();
+//            evalAnswer.setAnswerId(Long.parseLong(answer));
+//            evalAnswer.setQuestionnaireQuestionId(Long.parseLong(questionId.replace("Q", "")));
+//            evalAnswer.setCreatedDate(date);
+//            evalAnswer.setCreatedBy("h.ras");
+//            evalAnswer.setVersion(0);
+//
+//            evalAnswer.setEvaluation(evaluation);
+//
+//            evaluationAnswerList.add(evalAnswer);
+//        });
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
+//        evaluation.setEvaluationAnswerList(evaluationAnswerList);
 
-      //  evaluation.setCreatedDate(formatter.format(date));
-        evaluation.setCreatedBy("h.ras");
-
-        HashMap<String, String> evaluationAnswer = modelMapper.map(evaluationData.get("evaluationAnswerList"), HashMap.class);
-        List<EvaluationAnswer> evaluationAnswerList = new ArrayList<>();
-
-        evaluationAnswer.forEach((questionId, answer) -> {
-            EvaluationAnswer evalAnswer = new EvaluationAnswer();
-            evalAnswer.setAnswerId(Long.parseLong(answer));
-            evalAnswer.setQuestionnaireQuestionId(Long.parseLong(questionId.replace("Q", "")));
-
-            evalAnswer.setEvaluation(evaluation);
-
-            evaluationAnswerList.add(evalAnswer);
-        });
-
-        evaluation.setEvaluationAnswerList(evaluationAnswerList);
-
-        return save(evaluation);
+        return save(modelMapper.map(evaluation, Evaluation.class));
     }
 
     @Transactional
@@ -141,6 +137,7 @@ public class EvaluationService implements IEvaluationService {
     private EvaluationDTO.Info save(Evaluation evaluation) {
 
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
-        return modelMapper.map(saved, EvaluationDTO.Info.class);
+//        return modelMapper.map(saved, EvaluationDTO.Info.class);
+        return null;
     }
 }

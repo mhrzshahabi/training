@@ -17,22 +17,15 @@ import java.util.List;
 @Accessors(chain = true)
 public class EvaluationAnswerDTO implements Serializable {
 
-    @NotEmpty
     @ApiModelProperty(required = true)
-    private String title;
-    private String code;
-    private String type;
-    private String value;
-    private String description;
+    private Long evaluationId;
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("EvaluationAnswer - Info")
-    public static class MinInfo {
-        private Long id;
-        private String title;
-    }
+    @ApiModelProperty(required = true)
+    private Long questionnaireQuestionId;
+
+    @ApiModelProperty(required = true)
+    private Long answerId;
+
 
     @Getter
     @Setter
@@ -40,7 +33,6 @@ public class EvaluationAnswerDTO implements Serializable {
     @ApiModel("EvaluationAnswer - Info")
     public static class Info extends EvaluationAnswerDTO {
         private Long id;
-        private Integer version;
     }
 
     @Getter
@@ -48,8 +40,7 @@ public class EvaluationAnswerDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("EvaluationAnswer - Create")
     public static class Create extends EvaluationAnswerDTO {
-        @ApiModelProperty(required = true)
-        private Long parameterId;
+
     }
 
     @Getter

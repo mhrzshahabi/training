@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -19,28 +20,28 @@ import java.util.List;
 @Accessors(chain = true)
 public class EvaluationDTO implements Serializable {
 
-    private Long id;
-    private Tclass tclass;
-    private Long classId;
-    private Long evaluatorId;
-    private ParameterValue evaluatorType;
-    private Long evaluatorTypeId;
-    private Long evaluatedId;
-    private ParameterValue evaluatedType;
-    private Long evaluatedTypeId;
-    private ParameterValue evaluationLevel;
-    private Long evaluationLevelId;
-    private String description;
-    private List<EvaluationAnswer> evaluationAnswerList;
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("Evaluation - Info")
-    public static class MinInfo {
-        private Long id;
-        private String title;
-    }
+    @ApiModelProperty(required = true)
+    private Long classId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatorId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatorTypeId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatedId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatedTypeId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluationLevelId;
+
+    private String description;
+//    private List<EvaluationAnswer> evaluationAnswerList;
+
 
     @Getter
     @Setter
@@ -48,7 +49,6 @@ public class EvaluationDTO implements Serializable {
     @ApiModel("Evaluation - Info")
     public static class Info extends EvaluationDTO {
         private Long id;
-        private Integer version;
     }
 
     @Getter
