@@ -5,12 +5,14 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +41,18 @@ public class NeedsAssessmentReportsService {
     @Transactional(readOnly = true)
 //    @Override
     public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostId(Long postId) {
+        PersonnelDTO.Info student = personnelService.getByPostCode(postId).get(0);
+        List<ClassStudent> takenCourses = classStudentReportService.searchCoursesOfStudentByNationalCode(student.getNationalCode());
+
+
         List<NeedAssessmentSkillBased> needAssessmentSkillBases = getNeedsAssessmentByPostId(postId);
         needAssessmentSkillBases = needAssessmentSkillBases.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
-        List<NeedsAssessmentReportsDTO.NeedsCourses> courses =
-                needAssessmentSkillBases.stream().map(NA -> modelMapper.map(NA.getSkill().getCourse(), NeedsAssessmentReportsDTO.NeedsCourses.class))
-                        .collect(Collectors.toList());
+        List mustTakeCourses = needAssessmentSkillBases.stream().map(NA -> NA.getSkill().getCourse()).collect(Collectors.toList());
+
+
+
+        List<NeedsAssessmentReportsDTO.NeedsCourses> courses = modelMapper.map(mustTakeCourses, new TypeToken<List<NeedsAssessmentReportsDTO.NeedsCourses>>() {
+        }.getType());
         for (int i = 0; i < courses.size(); i++) {
             courses.get(i).setEneedAssessmentPriorityId(needAssessmentSkillBases.get(i).getEneedAssessmentPriorityId());
         }
