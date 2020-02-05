@@ -344,7 +344,7 @@ public class TclassDTO {
                     for (EvaluationAnswer answer : answers) {
                         double weight = 1.0;
                         double grade = 1.0;
-                        if(answer.getQuestionArea().getCode().equals(-100)){
+                        if(answer.getQuestionSource().getCode().equals(-100)){
                             Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                             QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                             weight = questionnaireQuestion.getWeight();
