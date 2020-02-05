@@ -20,6 +20,7 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
 
     @Autowired
     private CompetenceService competenceService;
+
     @Autowired
     private ParameterValueService parameterValueService;
 

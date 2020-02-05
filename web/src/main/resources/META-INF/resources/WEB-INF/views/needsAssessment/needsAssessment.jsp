@@ -3,22 +3,50 @@
 
 // <script>
 
-    var temp;
-
-    // ------------------------------------------- ToolStrip -------------------------------------------
-    CompetenceTS_needsAssessment = isc.ToolStrip.create({
-        ID: "CompetenceTS_needsAssessment",
+    var editing = false;
+    var RestDataSourceNeedsAssessment = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "objectType", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "skill.titleFa", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "needsAssessmentDomain.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "needsAssessmentPriority.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+        ],
+        fetchDataURL: needsAssessmentUrl + "/iscList",
+    });
+    var ToolStrip_NeedsAssessment_JspNeedAssessment = isc.ToolStrip.create({
         members: [
-            isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_needsAssessment); }}),
-            isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
-            isc.LayoutSpacer.create({width: "*"}),
-            isc.Label.create({ID: "CompetenceLGCount_needsAssessment"}),
+            isc.ToolStripButtonAdd.create({
+                click(){
+                    Window_NeedsAssessment_JspNeedsAssessment.show()
+                }
+            }),
+            isc.ToolStripButtonEdit.create({
+                click() {
+                    Window_NeedsAssessment_JspNeedsAssessment.show()
+                }
+            })
         ]
     });
+    var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
+        autoFetchData: true,
+        fields:[
+            {name: "objectType", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "skill.titleFa", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "needsAssessmentDomain.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "needsAssessmentPriority.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+        ],
+        dataSource: RestDataSourceNeedsAssessment,
+        gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
+    });
 
-    // ------------------------------------------- DataSource & ListGrid -------------------------------------------
 
-    // NeedsAssessmentTarget
+    //----------------------components of window--------------------------
+
     NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
         fields: [
@@ -28,8 +56,6 @@
         ],
         fetchDataURL: parameterValueUrl + "/iscList/103",
     });
-
-    // Job
     JobDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -38,8 +64,6 @@
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
-
-    // JobGroup
     JobGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -47,8 +71,6 @@
         ],
         fetchDataURL: jobGroupUrl + "spec-list"
     });
-
-    // Post
     PostDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -66,8 +88,6 @@
         ],
         fetchDataURL: postUrl + "/iscList"
     });
-
-    // PostGroup
     PostGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -75,8 +95,6 @@
         ],
         fetchDataURL: postGroupUrl + "/spec-list"
     });
-
-    // PostGrade
     PostGradeDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -85,8 +103,6 @@
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
-
-    // PostGradeGroup
     PostGradeGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -94,34 +110,6 @@
         ],
         fetchDataURL: postGradeGroupUrl + "spec-list"
     });
-
-    // Competence
-    CompetenceDS_needsAssessment = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
-        ],
-        fetchDataURL: competenceUrl + "/iscList",
-    });
-
-    CompetenceLG_needsAssessment = isc.TrLG.create({
-        ID: "CompetenceLG_needsAssessment",
-        dataSource: CompetenceDS_needsAssessment,
-        autoFetchData: true,
-        selectionAppearance: "checkbox",
-        showRowNumbers: false,
-        border: "1px solid",
-        fields: [{name: "title"}, {name: "competenceType.title"},],
-        gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
-            CompetenceTS_needsAssessment, "filterEditor", "header", "body"
-        ],
-        canDragRecordsOut: true,
-        dragDataAction: "none",
-    });
-
-    // Skill
     SkillDS_needsAssessment = isc.TrDS.create({
         ID: "SkillDS_needsAssessment",
         fields: [
@@ -134,13 +122,132 @@
         ],
         fetchDataURL: skillUrl + "/spec-list"
     });
+    var RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment = isc.TrDS.create({
+        fields:[
+            {name: "id", primaryKey:true},
+            {name:"code"},
+            {name:"title"}
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"parameter.code\",\"operator\":\"equals\",\"value\":\"NeedsAssessmentPriority\"}"
+    })
+    var RestDataSource_Competence_JspNeedsAssessment = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+        ],
+        fetchDataURL: competenceUrl + "/iscList",
+    });
 
+    var DataSource_Competence_JspNeedsAssessment = isc.DataSource.create({
+        clientOnly: true,
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+        ],
+        // fetchDataURL: competenceUrl + "/iscList",
+    });
+    var KnowledgeSkillDS_needsAssessment = isc.DataSource.create({
+        ID: "KnowledgeSkillDS_needsAssessment",
+        fields: [
+            {name: "id", hidden: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "needsAssessmentDomainId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "skillId", primaryKey: true, title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "competenceId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "objectId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "objectType", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+        ],
+        clientOnly: true,
+    });
+
+    CompetenceTS_needsAssessment = isc.ToolStrip.create({
+        ID: "CompetenceTS_needsAssessment",
+        members: [
+            isc.ToolStripButtonRefresh.create({
+                click: function () { refreshLG(ListGrid_Competence_JspNeedsAssessment); }
+            }),
+            isc.ToolStripButtonAdd.create({
+                title:"افزودن",
+                click: function () {
+                    if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId")!=null) {
+                        ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
+                        ListGrid_AllCompetence_JspNeedsAssessment.invalidateCache();
+                        Window_AddCompetence.show();
+                    }
+                    else {
+                        createDialog("info","<spring:message code='msg.no.records.selected'/>");
+                    }
+                }
+            }),
+            // isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
+            isc.LayoutSpacer.create({width: "*"}),
+            isc.Label.create({ID: "CompetenceLGCount_needsAssessment"}),
+        ]
+    });
+
+    var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
+        ID: "ListGrid_AllCompetence_JspNeedsAssessment",
+        dataSource: RestDataSource_Competence_JspNeedsAssessment,
+        selectionType: "single",
+        selectionAppearance: "checkbox",
+        filterOnKeypress: true,
+        canDragRecordsOut: true,
+        dragDataAction: "none",
+        canAcceptDroppedRecords: true,
+        fields: [
+            {name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}
+        ],
+        gridComponents: ["filterEditor", "header", "body"],
+        // selectionUpdated: "ListGrid_Competence_JspNeedsAssessment.setData(this.getSelection())"
+        selectionChanged(record, state) {
+            if (state == true) {
+                if (checkSaveData(record, DataSource_Competence_JspNeedsAssessment, "id")) {
+                    ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+                    return;
+                }
+                createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+            }
+        }
+    });
+    var ListGrid_Competence_JspNeedsAssessment = isc.TrLG.create({
+        ID: "ListGrid_Competence_JspNeedsAssessment",
+        dataSource: DataSource_Competence_JspNeedsAssessment,
+        autoFetchData: true,
+        selectionType:"single",
+
+        // selectionAppearance: "checkbox",
+        showRowNumbers: false,
+        border: "1px solid",
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
+        gridComponents: [
+            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
+            CompetenceTS_needsAssessment, "header", "body"
+        ],
+        canRemoveRecords:true,
+        canDragRecordsOut: true,
+        dragDataAction: "none",
+        removeRecordClick(rowNum){
+            alert(rowNum);
+            this.Super("removeRecordClick", arguments);
+        },
+        dataChanged(){
+            editing = true;
+            this.Super("dataChanged",arguments);
+        },
+        selectionUpdated(record){
+            fetchDataDomainsGrid();
+        }
+    });
     SkillLG_needsAssessment = isc.TrLG.create({
         ID: "SkillLG_needsAssessment",
         dataSource: SkillDS_needsAssessment,
         autoFetchData: true,
-        selectionAppearance: "checkbox",
+        // selectionAppearance: "checkbox",
         showRowNumbers: false,
+        selectionType:"single",
         border: "1px solid",
         fields: [{name: "titleFa"}, {name: "category.titleFa"}, {name: "subCategory.titleFa"},],
         gridComponents: [
@@ -152,96 +259,192 @@
         hoverMode: "details",
         canDragRecordsOut: true,
     });
-
-    // Selected Competence
-    SelectedCompetenceLG_needsAssessment = isc.TrLG.create({
-        ID: "SelectedCompetenceLG_needsAssessment",
+    var ListGrid_Knowledge_JspNeedsAssessment = isc.TrLG.create({
+        ID: "ListGrid_Knowledge_JspNeedsAssessment",
+        autoFetchData:false,
+        dataSource: KnowledgeSkillDS_needsAssessment,
         showRowNumbers: false,
-        fields: [{name: "id", hidden: true}, {name: "title"},],
-        showHeader: false,
-        preventDuplicates: true,
-        canAcceptDroppedRecords: true,
-        recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            if (sourceWidget.ID === 'CompetenceLG_needsAssessment') {
-                for (i = 0; i < dropRecords.length; i++)
-                    this.addData({'id': dropRecords[i].id, 'title': dropRecords[i].title});
-            }
-        }
-    });
-
-    // Selected  Skill - Knowledge
-    KnowledgeSkillDS_needsAssessment = isc.TrDS.create({
+        selectionType:"single",
+        implicitCriteria:{"needsAssessmentDomainId":108},
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "titleFa"},
+            {
+                name: "needsAssessmentPriorityId",
+                canEdit:true,
+                valueField: "id",
+                displayField: "title",
+                optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
+                // modalEditing: true,
+                // valueMap:["عملکرد ضروری","عملکرد توسعه ای","عملکرد بهبود"]
+            }
         ],
-    });
-
-    KnowledgeSkillLG_needsAssessment = isc.TrLG.create({
-        ID: "KnowledgeSkillLG_needsAssessment",
-        // dataSource: KnowledgeSkillDS_needsAssessment,
-        showRowNumbers: false,
-        fields: [{name: "titleFa"}, {name: "needsAssessmentPriority.title"}],
         gridComponents: [
             "filterEditor", "header", "body"
         ],
         width: "25%",
         canAcceptDroppedRecords: true,
+        canHover: true,
+        showHoverComponents: true,
+        hoverMode: "details",
+        canRemoveRecords:true,
+        showFilterEditor:false,
         recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            var record = SelectedCompetenceLG_needsAssessment.getSelectedRecord();
+            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
                 if (sourceWidget.ID === 'SkillLG_needsAssessment') {
-                    for (i = 0; i < dropRecords.length; i++)
-                        this.addData({'id': dropRecords[i].id, 'titleFa': dropRecords[i].titleFa, 'needsAssessmentPriority.title': 'عملکردی ضروری'});
+                    for (let i = 0; i < dropRecords.length; i++) {
+                        let data = {
+                            objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
+                            objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
+                            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
+                            skillId: dropRecords[i].id,
+                            titleFa: dropRecords[i].titleFa,
+                            needsAssessmentPriorityId: 111,
+                            needsAssessmentDomainId:108
+                        };
+                        createNeedsAssessmentRecords(data);
+                        // fetchDataDomainsGrid();
+                        // this.fetchData();
+                    }
                 }
             }
+        },
+        dataChanged(){
+            editing = true;
+            this.Super("dataChanged",arguments);
+        }
+    });
+    var ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
+        ID: "ListGrid_Ability_JspNeedsAssessment",
+        dataSource: KnowledgeSkillDS_needsAssessment,
+        autoFetchData:false,
+        showRowNumbers: false,
+        selectionType:"single",
+        fields: [
+            {name: "titleFa"},
+            {
+                name: "needsAssessmentPriorityId",
+                canEdit:true,
+                valueField: "id",
+                displayField: "title",
+                optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
+            }
+        ],
+        gridComponents: [
+            "filterEditor", "header", "body"
+        ],
+        width: "25%",
+        canAcceptDroppedRecords: true,
+        canHover: true,
+        showHoverComponents: true,
+        hoverMode: "details",
+        canRemoveRecords:true,
+        showFilterEditor:false,
+        implicitCriteria:{"needsAssessmentDomainId":109},
+        recordDrop(dropRecords, targetRecord, index, sourceWidget) {
+            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+            if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
+                if (sourceWidget.ID === 'SkillLG_needsAssessment') {
+                    for (let i = 0; i < dropRecords.length; i++) {
+                        let data = {
+                            objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
+                            objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
+                            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
+                            skillId: dropRecords[i].id,
+                            titleFa: dropRecords[i].titleFa,
+                            needsAssessmentPriorityId: 111,
+                            needsAssessmentDomainId:109
+                        };
+                        // KnowledgeSkillDS_needsAssessment.addData(data);
+                        createNeedsAssessmentRecords(data);
+                        // this.fetchData();
+                        // fetchDataDomainsGrid();
+                    }
+                }
+            }
+        },
+        dataChanged(){
+            editing = true;
+            this.Super("dataChanged",arguments);
+        }
+    });
+    var ListGrid_Attitude_JspNeedsAssessment = isc.TrLG.create({
+        ID: "ListGrid_Attitude_JspNeedsAssessment",
+        dataSource: KnowledgeSkillDS_needsAssessment,
+        showRowNumbers: false,
+        autoFetchData:false,
+        selectionType:"single",
+        fields: [
+            {name: "titleFa"},
+            {
+                name: "needsAssessmentPriorityId",
+                canEdit:true,
+                valueField: "id",
+                displayField: "title",
+                optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
+            }
+        ],
+        gridComponents: [
+            "filterEditor", "header", "body"
+        ],
+        width: "25%",
+        canAcceptDroppedRecords: true,
+        canHover: true,
+        showHoverComponents: true,
+        hoverMode: "details",
+        canRemoveRecords:true,
+        showFilterEditor:false,
+        implicitCriteria:{"needsAssessmentDomainId":110},
+        recordDrop(dropRecords, targetRecord, index, sourceWidget) {
+            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+            if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
+                if (sourceWidget.ID === 'SkillLG_needsAssessment') {
+                    for (let i = 0; i < dropRecords.length; i++) {
+                        let data = {
+                            objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
+                            objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
+                            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
+                            skillId: dropRecords[i].id,
+                            titleFa: dropRecords[i].titleFa,
+                            needsAssessmentPriorityId: 111,
+                            needsAssessmentDomainId:110
+                        };
+                        // KnowledgeSkillDS_needsAssessment.addData(data);
+                        createNeedsAssessmentRecords(data);
+                        // this.fetchData();
+                        // fetchDataDomainsGrid()
+                    }
+                }
+            }
+        },
+        dataChanged(){
+            editing = true;
+            this.Super("dataChanged",arguments);
         }
     });
 
-    // Selected  Skill - Ability
-    AbilitySkillDS_needsAssessment = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-        ],
-    });
+    //--------------------------------------------------------------------
 
-    AbilitySkillLG_needsAssessment = isc.TrLG.create({
-        ID: "AbilitySkillDS_needsAssessment",
-        dataSource: AbilitySkillDS_needsAssessment,
-        showRowNumbers: false,
-        fields: [{name: "titleFa"}, {name: "needsAssessmentPriority.title"}],
-        gridComponents: [
-            "filterEditor", "header", "body"
-        ],
-        width: "25%",
-    });
-
-    // Selected  Skill - Attitude
-    AttitudeSkillDS_needsAssessment = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-        ],
-    });
-
-    AttitudeSkillLG_needsAssessment = isc.TrLG.create({
-        ID: "AttitudeSkillDS_needsAssessment",
-        dataSource: AttitudeSkillDS_needsAssessment,
-        showRowNumbers: false,
-        fields: [{name: "titleFa"}, {name: "needsAssessmentPriority.title"}],
-        gridComponents: [
-            "filterEditor", "header", "body"
-        ],
-        width: "25%",
-    });
-
-    // ------------------------------------------- Page UI -------------------------------------------
-    isc.TrVLayout.create({
-        members: [
+    var Window_AddCompetence = isc.Window.create({
+        title: "<spring:message code="skill.plural.list"/>",
+        width: "40%",
+        height: "50%",
+        keepInParentRect: true,
+        isModal: false,
+        autoSize: false,
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    ListGrid_AllCompetence_JspNeedsAssessment
+                ]
+            })]
+    })
+    var Window_NeedsAssessment_JspNeedsAssessment = isc.Window.create({
+        title: "<spring:message code="needs.assessment"/>",
+        minWidth: 1024,
+        keepInParentRect: true,
+        placement:"fillPanel",
+        items:[
             isc.DynamicForm.create({
                 ID: "NeedsAssessmentTargetDF_needsAssessment",
                 numCols: 2,
@@ -254,6 +457,7 @@
                         pickListFields: [{name: "title"}],
                         defaultToFirstOption: true,
                         changed: function (form, item, value) {
+                            ListGrid_Competence_JspNeedsAssessment.setData([]);
                             form.getItem("objectId").clearValue();
                             updateObjectIdLG(form, value);
                         },
@@ -288,54 +492,80 @@
             isc.TrHLayout.create({
                 members: [
                     isc.TrVLayout.create({
-                        width: "15%",
-                        members: [CompetenceLG_needsAssessment, SkillLG_needsAssessment]
+                        width: "25%",
+                        members: [ListGrid_Competence_JspNeedsAssessment, SkillLG_needsAssessment]
                     }),
-                    isc.TrVLayout.create({
-                        width: "10%",
-                        members: [
-                            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence"/>" + "</b></span>"}),
-                            SelectedCompetenceLG_needsAssessment
-                        ]
-                    }),
-                    KnowledgeSkillLG_needsAssessment,
-                    AbilitySkillLG_needsAssessment,
-                    AttitudeSkillLG_needsAssessment
+                    <%--isc.TrVLayout.create({--%>
+                    <%--width: "10%",--%>
+                    <%--members: [--%>
+                    <%--isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence"/>" + "</b></span>"}),--%>
+                    <%--SelectedListGrid_Competence_JspNeedsAssessment--%>
+                    <%--]--%>
+                    <%--}),--%>
+                    ListGrid_Knowledge_JspNeedsAssessment,
+                    ListGrid_Ability_JspNeedsAssessment,
+                    ListGrid_Attitude_JspNeedsAssessment
 
                 ]
             }),
         ]
     });
 
-    // ------------------------------------------- Functions -------------------------------------------
-    function updateObjectIdLG(form, value) {
-        switch (value) {
-            case 'Job':
-                form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
-                break;
-            case 'JobGroup':
-                form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
-                break;
-            case 'Post':
-                form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [
-                    {name: "code"}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
-                    {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
-                ];
-                break;
-            case 'PostGroup':
-                form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
-                break;
-            case 'PostGrade':
-                form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
-                break;
-            case 'PostGradeGroup':
-                form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
-                break;
+    isc.TrVLayout.create({
+        members: [ListGrid_NeedsAssessment_JspNeedAssessment],
+    });
+
+    function createNeedsAssessmentRecords(data) {
+        // fetchDataDomainsGrid();
+        if(!checkSaveData(data, KnowledgeSkillDS_needsAssessment)){
+            createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+            return;
         }
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "POST", JSON.stringify(data),function(resp){
+            if (resp.httpResponseCode != 200){
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                return;
+            }
+            KnowledgeSkillDS_needsAssessment.addData(data);
+            fetchDataDomainsGrid();
+        }))
+    }
+
+    function fetchDataDomainsGrid(){
+        let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+        if(record != null) {
+            ListGrid_Knowledge_JspNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGrid_Knowledge_JspNeedsAssessment.invalidateCache();
+
+            ListGrid_Ability_JspNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGrid_Ability_JspNeedsAssessment.invalidateCache();
+
+            ListGrid_Attitude_JspNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGrid_Attitude_JspNeedsAssessment.invalidateCache();
+        }
+    }
+
+    function checkSaveData(data, dataSource, field = "skillId", objectType = null) {
+        if(!objectType) {
+            if(dataSource.testData.find(f => f[field] === data[field]) != null) {
+                return false;
+            }
+            return true;
+        }
+        else{
+            if(dataSource.testData.find(f => f[field] === data[field] && f["objectType"] === data["objectType"]) != null){
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function editNeedsAssessmentRecord(objectId, objectType) {
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "GET",function(resp){
+            if (resp.httpResponseCode != 200){
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                return;
+            }
+            fetchDataDomainsGrid();
+        }))
     }
