@@ -51,6 +51,10 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     @Override
     public EvaluationDTO.Info create(EvaluationDTO.Create request) {
+
+        return save(modelMapper.map(request, Evaluation.class));
+
+
 //        final Evaluation evaluation = modelMapper.map(request, Evaluation.class);
 //        return save(evaluation);
 
@@ -67,16 +71,16 @@ public class EvaluationService implements IEvaluationService {
 //
 //        session.save(parent);
 
-        HashMap evaluationData = modelMapper.map(request, HashMap.class);
-
-        Evaluation evaluation = new Evaluation();
-        evaluation.setClassId(Long.parseLong(evaluationData.get("id").toString()));
-        evaluation.setEvaluatedId(1L);
-        evaluation.setEvaluatedTypeId(42L);
-        evaluation.setEvaluationLevelId(42L);
-        evaluation.setEvaluatorId(1L);
-        evaluation.setEvaluatorTypeId(42L);
-        evaluation.setDescription("desc");
+//        HashMap evaluationData = modelMapper.map(request, HashMap.class);
+//
+//        Evaluation evaluation = new Evaluation();
+//        evaluation.setClassId(Long.parseLong(evaluationData.get("id").toString()));
+//        evaluation.setEvaluatedId(1L);
+//        evaluation.setEvaluatedTypeId(42L);
+//        evaluation.setEvaluationLevelId(42L);
+//        evaluation.setEvaluatorId(1L);
+//        evaluation.setEvaluatorTypeId(42L);
+//        evaluation.setDescription("desc");
 
 //        HashMap<String, String> evaluationAnswer = modelMapper.map(evaluationData.get("evaluationAnswerList"), HashMap.class);
 //        List<EvaluationAnswer> evaluationAnswerList = new ArrayList<>();
@@ -96,7 +100,7 @@ public class EvaluationService implements IEvaluationService {
 
 //        evaluation.setEvaluationAnswerList(evaluationAnswerList);
 
-        return save(modelMapper.map(evaluation, Evaluation.class));
+//        return save(modelMapper.map(evaluation, Evaluation.class));
     }
 
     @Transactional
