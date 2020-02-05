@@ -4,6 +4,14 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.TrainingException;
+import com.nicico.training.iservice.IEvaluationService;
+import com.nicico.training.iservice.IQuestionnaireQuestionService;
+import com.nicico.training.model.Evaluation;
+import com.nicico.training.model.EvaluationAnswer;
+import com.nicico.training.model.QuestionnaireQuestion;
+import com.nicico.training.repository.QuestionnaireQuestionDAO;
+import com.nicico.training.service.EvaluationService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -63,6 +71,7 @@ public class TclassDTO {
     private Integer workflowEndingStatusCode;
     private String scoringMethod;
     private String acceptancelimit;
+
 
     @Getter
     @Setter
@@ -240,6 +249,8 @@ public class TclassDTO {
         private Long instituteId;
         private String classStatus;
 //        private String evaluationStatus;
+        IEvaluationService evaluationService;
+        QuestionnaireQuestionDAO questionnaireQuestionDAO;
 
         public String getTeacher() {
             if (teacher != null)
@@ -321,6 +332,44 @@ public class TclassDTO {
                 return 0;
         }
 
+        public Double getStudentGradeToTeacher(){
+            double result = 0.0;
+            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
+                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
+                    Evaluation evaluation = evaluationService.getStudentEvaluationForTeacher(classStudent.getId(), teacherId, classStudent.getStudentId());
+                    List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
+                    double totalGrade = 0.0;
+                    double totalWeight = 0.0;
+                    for (EvaluationAnswer answer : answers) {
+                        double weight = 1.0;
+                        double grade = 1.0;
+                        if(answer.getQuestionArea().getCode().equals(-100)){
+                            Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
+                            QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                            weight = questionnaireQuestion.getWeight();
+                        }
+                        if(answer.getAnswer().getCode().equals("-1"))
+                            grade = 100;
+                        else if(answer.getAnswer().getCode().equals("-2"))
+                            grade = 80;
+                        else if(answer.getAnswer().getCode().equals("-3"))
+                            grade = 60;
+                        else if(answer.getAnswer().getCode().equals("-4"))
+                            grade = 40;
+                        else if(answer.getAnswer().getCode().equals("-5"))
+                            grade = 20;
+                        else if(answer.getAnswer().getCode().equals("-6"))
+                            grade = 0;
+                        totalGrade += grade*weight;
+                        totalWeight += weight;
+                    }
+                    result += (totalGrade/totalWeight);
+                }
+            }
+            result /= getNumberOfFilledReactionEvaluationForms();
+            return result;
+        }
     }
 
     @Getter

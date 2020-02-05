@@ -140,4 +140,11 @@ public class EvaluationService implements IEvaluationService {
 //        return modelMapper.map(saved, EvaluationDTO.Info.class);
         return null;
     }
+
+    @Override
+    public Evaluation getStudentEvaluationForTeacher(Long classId,Long teacherId,Long studentId){
+        Evaluation evaluation;
+//        evaluationDAO.getOne();
+        return null;
+    }
 }

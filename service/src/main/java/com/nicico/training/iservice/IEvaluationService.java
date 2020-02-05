@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EvaluationDTO;
+import com.nicico.training.model.Evaluation;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface IEvaluationService {
     void delete(EvaluationDTO.Delete request);
 
     SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request);
+
+    Evaluation getStudentEvaluationForTeacher(Long classId,Long teacherId,Long studentId);
 }
