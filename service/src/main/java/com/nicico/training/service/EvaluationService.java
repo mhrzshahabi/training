@@ -50,7 +50,7 @@ public class EvaluationService implements IEvaluationService {
 
     @Transactional
     @Override
-    public EvaluationDTO.Info create(Object request) {
+    public EvaluationDTO.Info create(EvaluationDTO.Create request) {
 //        final Evaluation evaluation = modelMapper.map(request, Evaluation.class);
 //        return save(evaluation);
 

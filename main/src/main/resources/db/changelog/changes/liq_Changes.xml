@@ -441,5 +441,16 @@
     <changeSet author="rastegari_h (generated)" id="1580876638274-297">
         <dropColumn columnName="F_QUESTIONNAIRE_QUESTION_ID" tableName="TBL_EVALUATION_ANSWER"/>
     </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580899903748-238">
+        <addColumn tableName="tbl_evaluation_answer">
+            <column name="f_question_source_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580899903748-258">
+        <dropForeignKeyConstraint baseTableName="TBL_EVALUATION_ANSWER" constraintName="FKR59F56TMRJGRFX49ALCP4HH3E"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580899903748-296">
+        <dropColumn columnName="F_QUESTION_AREA_ID" tableName="TBL_EVALUATION_ANSWER"/>
+    </changeSet>
 
 </databaseChangeLog>

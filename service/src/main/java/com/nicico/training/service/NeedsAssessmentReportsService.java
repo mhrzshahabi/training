@@ -41,16 +41,17 @@ public class NeedsAssessmentReportsService {
     @Transactional(readOnly = true)
 //    @Override
     public List<NeedAssessmentSkillBased> getNeedsAssessmentByPostId(Long postId) {
-        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
-        addCriteria(criteriaRq, "Post", postId);
-        List<NeedAssessmentSkillBased> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
-        needsAssessmentList.sort(Comparator.comparingInt(a -> NeedAssessmentSkillBased.priorityList.indexOf(a.getObjectType())));
-        List<NeedAssessmentSkillBased> withoutDuplicate = new ArrayList<>();
-        needsAssessmentList.forEach(needsAssessment -> {
-            if (withoutDuplicate.stream().noneMatch(wd -> wd.getSkill().equals(needsAssessment.getSkill())))
-                withoutDuplicate.add(needsAssessment);
-        });
-        return withoutDuplicate;
+//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
+//        addCriteria(criteriaRq, "Post", postId);
+//        List<NeedAssessmentSkillBased> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
+//        needsAssessmentList.sort(Comparator.comparingInt(a -> NeedAssessmentSkillBased.priorityList.indexOf(a.getObjectType())));
+//        List<NeedAssessmentSkillBased> withoutDuplicate = new ArrayList<>();
+//        needsAssessmentList.forEach(needsAssessment -> {
+//            if (withoutDuplicate.stream().noneMatch(wd -> wd.getSkill().equals(needsAssessment.getSkill())))
+//                withoutDuplicate.add(needsAssessment);
+//        });
+//        return withoutDuplicate;
+        return null;
     }
 
 
