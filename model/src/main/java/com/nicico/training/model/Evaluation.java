@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -59,4 +60,8 @@ public class Evaluation extends Auditable {
 
     @Column(name = "c_description")
     private String description;
+
+    @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL)
+    private List<EvaluationAnswer> evaluationAnswerList;
+
 }
