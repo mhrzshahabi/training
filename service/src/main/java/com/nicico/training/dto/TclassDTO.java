@@ -4,7 +4,6 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.ClassStudent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -21,7 +20,7 @@ import java.util.*;
 public class TclassDTO {
 
     //    @ApiModelProperty(required = true)
-//    private Long courseId;
+    //    private Long courseId;
 
     private Long minCapacity;
     private Long maxCapacity;
@@ -65,7 +64,6 @@ public class TclassDTO {
     private String scoringMethod;
     private String acceptancelimit;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -74,15 +72,15 @@ public class TclassDTO {
 
         private InstituteDTO.InstituteInfoTuple institute;
         //        private Date createdDate;
-//        private String createdBy;
-//        @Getter(AccessLevel.NONE)
-//        private Date lastModifiedDate;
-//        public String getLastModifiedDate(){
-//            if(lastModifiedDate == null){
-//                return createdDate.toString();
-//            }
-//            return lastModifiedDate.toString();
-//        }
+        //        private String createdBy;
+        //        @Getter(AccessLevel.NONE)
+        //        private Date lastModifiedDate;
+        //        public String getLastModifiedDate(){
+        //            if(lastModifiedDate == null){
+        //                return createdDate.toString();
+        //            }
+        //            return lastModifiedDate.toString();
+        //        }
         private String lastModifiedBy;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
@@ -277,10 +275,44 @@ public class TclassDTO {
                     studentEvaluations++;
                 }
             }
-
             return studentEvaluations;
         }
 
+        public Integer getNumberOfFilledReactionEvaluationForms(){
+            int result = 0;
+            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
+                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
+                    result++;
+                }
+            return result;
+        }
+
+        public Integer getNumberOfInCompletedReactionEvaluationForms(){
+            int result = 0;
+            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
+                    result++;
+                }
+            return result;
+        }
+
+        public Integer getNumberOfEmptyReactionEvaluationForms(){
+            int result = 0;
+            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 ||
+                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 0)
+                    result++;
+            }
+            return result;
+        }
+
+        public Double getPercenetOfFilledReactionEvaluationForms(){
+            double r1 = getNumberOfFilledReactionEvaluationForms();
+            double r2 = getNumberOfFilledReactionEvaluationForms() + getNumberOfEmptyReactionEvaluationForms();
+            double result = (r1/r2)*100;
+            return result;
+        }
 
         public Integer getStudentCount() {
             if (classStudents != null)
