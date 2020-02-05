@@ -427,5 +427,19 @@
             <column name="f_parameter_value" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580876638274-238">
+        <addColumn tableName="tbl_evaluation_answer">
+            <column name="f_evaluation_question_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="rastegari_h (generated)" id="1580876638274-239">
+        <addColumn tableName="tbl_evaluation_answer">
+            <column name="f_question_area_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580876638274-297">
+        <dropColumn columnName="F_QUESTIONNAIRE_QUESTION_ID" tableName="TBL_EVALUATION_ANSWER"/>
+    </changeSet>
 
 </databaseChangeLog>

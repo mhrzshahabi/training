@@ -514,6 +514,7 @@
 
             ],
             selectionUpdated: function () {
+
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
 
                 set_Evaluation_Tabset_status();
