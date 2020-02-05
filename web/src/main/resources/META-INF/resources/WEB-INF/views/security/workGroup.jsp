@@ -228,14 +228,14 @@
         }
     });
 
-    IButton_Save_Permission = isc.TrSaveBtn.create({
+    IButton_Save_Permission = isc.IButtonSave.create({
         top: 260,
         click: function () {
             DynamicForm_WorkGroup_edit();
         }
     });
 
-    IButton_Cancel_Permission = isc.TrCancelBtn.create({
+    IButton_Cancel_Permission = isc.IButtonCancel.create({
         click: function () {
             Windows_Permissions_Permission.close();
         }
@@ -339,7 +339,7 @@
         ]
     });
 
-    IButton_Save_JspWorkGroup = isc.TrSaveBtn.create({
+    IButton_Save_JspWorkGroup = isc.IButtonSave.create({
         top: 260,
         click: function () {
             if (!DynamicForm_JspWorkGroup.valuesHaveChanged())
@@ -354,7 +354,7 @@
         }
     });
 
-    IButton_Cancel_JspWorkGroup = isc.TrCancelBtn.create({
+    IButton_Cancel_JspWorkGroup = isc.IButtonCancel.create({
         click: function () {
             DynamicForm_JspWorkGroup.clearValues();
             Window_JspWorkGroup.close();

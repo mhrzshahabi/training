@@ -3,20 +3,18 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IPostService;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.JobDAO;
-import com.nicico.training.repository.NeedAssessmentSkillBasedDAO;
-import com.nicico.training.repository.PostDAO;
-import com.nicico.training.repository.PostGradeDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -26,16 +24,36 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequiredArgsConstructor
 public class NeedsAssessmentReportsService {
 
+    private final ModelMapper modelMapper;
 
     private final PostDAO postDAO;
     private final JobDAO jobDAO;
     private final PostGradeDAO postGradeDAO;
     private final NeedAssessmentSkillBasedDAO needsAssessmentDAO;
+    private final CourseDAO courseDAO;
+
+    private final IPostService postService;
+    private final ClassStudentReportService classStudentReportService;
+    private final IPersonnelService personnelService;
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<Course> getCoursesByPostId(Long postId) {
-        return getNeedsAssessmentByPostId(postId).stream().map(NA -> NA.getSkill().getCourse()).collect(Collectors.toList());
+    public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostId(Long postId) {
+        List<NeedAssessmentSkillBased> needAssessmentSkillBases = getNeedsAssessmentByPostId(postId);
+        needAssessmentSkillBases = needAssessmentSkillBases.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
+        List<NeedsAssessmentReportsDTO.NeedsCourses> courses =
+                needAssessmentSkillBases.stream().map(NA -> modelMapper.map(NA.getSkill().getCourse(), NeedsAssessmentReportsDTO.NeedsCourses.class))
+                        .collect(Collectors.toList());
+        for (int i = 0; i < courses.size(); i++) {
+            courses.get(i).setEneedAssessmentPriorityId(needAssessmentSkillBases.get(i).getEneedAssessmentPriorityId());
+        }
+        return courses;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostCode(String postCode) {
+        return getCoursesByPostId(postService.getByPostCode(postCode).getId());
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +69,24 @@ public class NeedsAssessmentReportsService {
                 withoutDuplicate.add(needsAssessment);
         });
         return withoutDuplicate;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> search(SearchDTO.SearchRq request, String postCode) {
+        List<NeedsAssessmentReportsDTO.NeedsCourses> courses = getCoursesByPostCode(postCode);
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) courses.size());
+        rs.setList(courses);
+        return rs;
+
+
+//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+//        if (request.getCriteria() != null)
+//            criteriaRq.getCriteria().add(request.getCriteria());
+//        criteriaRq.getCriteria().add(makeNewCriteria("id", courses.stream().map(Course::getId).collect(Collectors.toList()), EOperator.equals, null));
+//        request.setCriteria(criteriaRq);
+//        return SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.Info.class));
     }
 
 
