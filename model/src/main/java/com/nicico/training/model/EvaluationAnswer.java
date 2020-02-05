@@ -36,12 +36,12 @@ public class EvaluationAnswer extends Auditable {
     private Long evaluationQuestionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_question_area_id", insertable = false, updatable = false)
-    private ParameterValue questionArea;
+    @JoinColumn(name = "f_question_source_id", insertable = false, updatable = false)
+    private ParameterValue questionSource;
 
     @NotNull
-    @Column(name = "f_question_area_id")
-    private Long questionAreaId;
+    @Column(name = "f_question_source_id")
+    private Long questionSourceId;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

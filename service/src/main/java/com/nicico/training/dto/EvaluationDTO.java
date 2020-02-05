@@ -40,8 +40,6 @@ public class EvaluationDTO implements Serializable {
     private Long evaluationLevelId;
 
     private String description;
-//    private List<EvaluationAnswer> evaluationAnswerList;
-
 
     @Getter
     @Setter
@@ -56,7 +54,7 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Create")
     public static class Create extends EvaluationDTO {
-
+        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
     }
 
     @Getter
@@ -64,6 +62,7 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Update")
     public static class Update extends Create {
+        private Long id;
         private Integer version;
     }
 

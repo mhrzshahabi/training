@@ -21,11 +21,13 @@ public class EvaluationAnswerDTO implements Serializable {
     private Long evaluationId;
 
     @ApiModelProperty(required = true)
-    private Long questionnaireQuestionId;
+    private Long evaluationQuestionId;
+
+    @ApiModelProperty(required = true)
+    private Long questionAreaId;
 
     @ApiModelProperty(required = true)
     private Long answerId;
-
 
     @Getter
     @Setter
@@ -48,6 +50,7 @@ public class EvaluationAnswerDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("EvaluationAnswer - Update")
     public static class Update extends Create {
+        private Long id;
         private Integer version;
     }
 

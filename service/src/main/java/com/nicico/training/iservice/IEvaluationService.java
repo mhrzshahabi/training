@@ -12,7 +12,7 @@ public interface IEvaluationService {
 
     List<EvaluationDTO.Info> list();
 
-    EvaluationDTO.Info create(Object request);
+    EvaluationDTO.Info create(EvaluationDTO.Create request);
 
     EvaluationDTO.Info update(Long id, EvaluationDTO.Update request);
 

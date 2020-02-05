@@ -186,7 +186,7 @@
                     title: "<spring:message code="evaluation.teacher.supervisor"/>",
                     icon: "<spring:url value="refresh.png"/>",
                     click: function () {
-                        let criteria = '{"fieldName":"domainId","operator":"equals","value":54}';
+                        let criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"}';
                         isc.RPCManager.sendRequest({
                             actionURL: configQuestionnaireUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria,
                             httpMethod: "GET",
@@ -268,7 +268,10 @@
                                     }
                                 });
                                 var Window_Questions_JspEvaluation = isc.Window.create({
-                                    placement: "fillScreen",
+                                    // placement: "fillScreen",
+                                    width:1024,
+                                    height:768,
+                                    keepInParentRect: true,
                                     title: "<spring:message code="evaluation.teacher.supervisor"/>",
                                     items: [
                                         DynamicForm_Questions_Title_JspEvaluation,
@@ -1201,6 +1204,7 @@
                     }, 600);
             }
         }
+
 
         //*****Load student for tabs*****
         function loadSelectedTab_data(tab) {
