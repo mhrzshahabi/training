@@ -35,6 +35,8 @@ public interface ITclassService {
 
     SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request);
 
+    SearchDTO.SearchRs<TclassDTO.EvaluatedInfo> evaluatedSearch(SearchDTO.SearchRq request);
+
     SearchDTO.SearchRs<TclassDTO.Info> searchById(SearchDTO.SearchRq request, Long classId);
 
 //    List<StudentDTO.Info> getStudents(Long classID);

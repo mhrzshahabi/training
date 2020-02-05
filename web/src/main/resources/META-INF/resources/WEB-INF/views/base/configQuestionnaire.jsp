@@ -268,7 +268,7 @@
             ListGrid_ConfigQuestionnaire_Edit();
         }
     });
-    ToolStripButton_Add_JspConfigQuestionnaire = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspConfigQuestionnaire = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_ConfigQuestionnaire_Add();
         }

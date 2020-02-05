@@ -386,7 +386,7 @@
             ListGrid_TeachingHistory_Edit();
         }
     });
-    ToolStripButton_Add_JspTeachingHistory = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspTeachingHistory = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_TeachingHistory_Add();
         }

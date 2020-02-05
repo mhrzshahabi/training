@@ -630,6 +630,12 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
                     }
+                },
+                {
+                    title: "<spring:message code="evaluation.analysis"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");
+                    }
                 }
             ]
         }),

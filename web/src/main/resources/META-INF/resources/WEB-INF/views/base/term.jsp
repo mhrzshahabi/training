@@ -454,7 +454,7 @@
 
     function getTermCodeRequest(termYear) {
         isc.RPCManager.sendRequest({
-            actionURL: " http://localhost:8080/training/api/term/getCode/" + termYear,
+            actionURL: termUrl+"getCode/" + termYear,
             httpMethod: "GET",
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             useSimpleHttp: true,

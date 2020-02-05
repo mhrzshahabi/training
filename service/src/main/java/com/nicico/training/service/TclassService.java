@@ -7,11 +7,9 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AttachmentDTO;
-import com.nicico.training.dto.ClassSessionDTO;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.TrainingPlace;
 import com.nicico.training.repository.StudentDAO;
@@ -109,6 +107,41 @@ public class TclassService implements ITclassService {
     @Override
     public SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.EvaluatedInfo> evaluatedSearch(SearchDTO.SearchRq request) {
+        SearchDTO.CriteriaRq criteriaRq = null;
+
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else {
+                criteriaRqList.add(criteriaRq);
+                request.getCriteria().setCriteria(criteriaRqList);
+            }
+        } else
+            request.setCriteria(criteriaRq);
+
+        SearchDTO.SearchRs<TclassDTO.EvaluatedInfo> searchRs = SearchUtil.search(tclassDAO, request, needAssessment -> modelMapper.map(needAssessment,
+                TclassDTO.EvaluatedInfo.class));
+
+        List<TclassDTO.EvaluatedInfo> unAcceptedClasses = new ArrayList<>();
+        for (TclassDTO.EvaluatedInfo tClass : searchRs.getList()) {
+            int accepted = tClass.getNumberOfStudentCompletedEvaluation();
+            if(accepted == 0) {
+                unAcceptedClasses.add(tClass);
+                searchRs.setTotalCount(searchRs.getTotalCount()-1);
+            }
+        }
+
+        for (TclassDTO.EvaluatedInfo unAcceptedClass : unAcceptedClasses) {
+            searchRs.getList().remove(unAcceptedClass);
+        }
+
+        return searchRs;
     }
 
     @Transactional(readOnly = true)

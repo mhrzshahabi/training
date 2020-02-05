@@ -150,14 +150,22 @@ public class ClassStudentRestController {
         return new ResponseEntity<Long>(evalList.get(0), HttpStatus.OK);
 
     }
-
-
-
      @Loggable
      @PutMapping(value = "/setTotalStudentWithOutScore/{classId}")
      public ResponseEntity setTotalStudentWithOutScore(@PathVariable Long classId)
      {
      classStudentService.setTotalStudentWithOutScore(classId);
      return new ResponseEntity(HttpStatus.OK);
+     }
+
+     @Loggable
+     @GetMapping(value ="/getScoreState/{classId}")
+     public  ResponseEntity getScoreState(@PathVariable Long classId)
+     {
+       if(classStudentService.getScoreState(classId)== 0)
+        return new ResponseEntity<Long>(classStudentService.getScoreState(classId),HttpStatus.OK);
+        else
+        return  new ResponseEntity<Long>(classStudentService.getScoreState(classId),HttpStatus.NOT_ACCEPTABLE);
+    
      }
 }

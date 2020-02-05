@@ -349,7 +349,7 @@
             ListGrid_Publication_Edit();
         }
     });
-    ToolStripButton_Add_JspPublication = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspPublication = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Publication_Add();
         }
