@@ -79,9 +79,8 @@ public class TermRestController {
             termService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
-            System.out.println("Test");
             return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
 
     }

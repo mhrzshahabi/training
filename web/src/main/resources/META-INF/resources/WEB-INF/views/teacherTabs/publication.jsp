@@ -18,12 +18,15 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "subjectTitle"},
+            {name: "publicationSubjectType.titleFa"},
+            {name: "publicationSubjectTypeId", filterOperator: "equals"},
             {name: "categories"},
             {name: "subCategories"},
+            {name: "categoriesIds", filterOperator: "inSet"},
+            {name: "subCategoriesIds", filterOperator: "inSet"},
             {name: "persianPublicationDate"},
             {name: "publicationLocation"},
-            {name: "publisher"},
-            {name: "publicationSubjectType.titleFa"}
+            {name: "publisher"}
         ]
     });
 
@@ -56,46 +59,15 @@
             {
                 name: "subjectTitle",
                 title: "<spring:message code='subject.title'/>",
-                required: true
-            },
-            {
-                name: "publicationLocation",
-                title:"<spring:message code='publication.location'/>"
-            },
-            {
-                name: "publisher",
-                title: "<spring:message code='publisher'/>"
-            },
-            {
-                name: "persianPublicationDate",
-                ID: "publication_publicationDate_JspPublication",
-                title: "<spring:message code='publication.date'/>",
-                hint: todayDate,
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('publication_publicationDate_JspPublication', this, 'ymd', '/');
-                    }
-                }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if(value != null && value != undefined)
-                            return checkBirthDate(value);
-                        else
-                            return true;
-                    }
-                }]
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "publicationSubjectTypeId",
                 type: "IntegerItem",
                 title: "<spring:message code="publication.subject.type"/>",
                 textAlign: "center",
+                required: true,
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -189,6 +161,41 @@
                         this.fetchData();
                     }
                 }
+            },
+            {
+                name: "publicationLocation",
+                title:"<spring:message code='publication.location'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+            },
+            {
+                name: "publisher",
+                title: "<spring:message code='publisher'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+            },
+            {
+                name: "persianPublicationDate",
+                ID: "publication_publicationDate_JspPublication",
+                title: "<spring:message code='publication.date'/>",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('publication_publicationDate_JspPublication', this, 'ymd', '/');
+                    }
+                }],
+                validators: [{
+                    type: "custom",
+                    errorMessage: "<spring:message code='msg.correct.date'/>",
+                    condition: function (item, validator, value) {
+                        if(value != null && value != undefined)
+                            return checkBirthDate(value);
+                        else
+                            return true;
+                    }
+                }]
             }
         ]
     });
@@ -260,19 +267,42 @@
     ListGrid_JspPublication = isc.TrLG.create({
         dataSource: RestDataSource_JspPublication,
         contextMenu: Menu_JspPublication,
-        dataPageSize: 50,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
         fields: [
             {
                 name: "subjectTitle",
                 title: "<spring:message code='subject.title'/>",
+            },
+            {
+                name: "publicationSubjectTypeId",
+                title:"<spring:message code='publication.subject.type'/>",
+                type: "IntegerItem",
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_EPublicationSubjectType_JspTeacher,
+                filterOnKeypress: true
+            },
+            {
+                name: "categoriesIds",
+                title: "<spring:message code='category'/>",
+                type: "selectItem",
+                optionDataSource: RestDataSource_Category_JspPublication,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true
+            },
+            {
+                name: "subCategoriesIds",
+                title: "<spring:message code='subcategory'/>",
+                type: "selectItem",
+                optionDataSource: RestDataSource_SubCategory_JspPublication,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
                 name: "publicationLocation",
@@ -283,69 +313,29 @@
                 title: "<spring:message code='publisher'/>"
             },
             {
-                name: "publicationSubjectType.titleFa",
-                title:"<spring:message code='publication.subject.type'/>"
-            },
-            {
                 name: "persianPublicationDate",
                 title: "<spring:message code='publication.date'/>",
-                canFilter: false,
                 canSort: false
-            },
-            {
-                name: "categories",
-                title: "<spring:message code='category'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    var cat = value[0].titleFa.toString();
-                    for (var i = 1; i < value.length; i++) {
-                        cat += "، " + value[i].titleFa;
-                    }
-                    return cat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.categories.length === 0)
-                        return;
-                    value.categories.sort();
-                    var cat = value.categories[0].titleFa.toString();
-                    for (var i = 1; i < value.categories.length; i++) {
-                        cat += "، " + value.categories[i].titleFa;
-                    }
-                    return cat;
-                }
-            },
-            {
-                name: "subCategories",
-                title: "<spring:message code='subcategory'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    var subCat = value[0].titleFa.toString();
-                    for (var i = 1; i < value.length; i++) {
-                        subCat += "، " + value[i].titleFa;
-                    }
-                    return subCat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.subCategories.length === 0)
-                        return;
-                    value.subCategories.sort();
-                    var subCat = value.subCategories[0].titleFa.toString();
-                    for (var i = 1; i < value.subCategories.length; i++) {
-                        subCat += "، " + value.subCategories[i].titleFa;
-                    }
-                    return subCat;
-                }
             }
         ],
         rowDoubleClick: function () {
             ListGrid_Publication_Edit();
-        }
+        },
+        filterEditorSubmit: function () {
+            ListGrid_JspPublication.invalidateCache();
+        },
+        align: "center",
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     ToolStripButton_Refresh_JspPublication = isc.ToolStripButtonRefresh.create({
@@ -359,7 +349,7 @@
             ListGrid_Publication_Edit();
         }
     });
-    ToolStripButton_Add_JspPublication = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspPublication = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Publication_Add();
         }

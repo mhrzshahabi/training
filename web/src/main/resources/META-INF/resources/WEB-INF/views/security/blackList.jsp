@@ -37,13 +37,14 @@
         sortField: 1,
         sortDirection: "descending",
         filterOnKeypress: true,
+        filterOperator: "iContains",
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
                 name: "inBlackList",
                 type: "boolean",
-                canFilter: false,
-                hidden: true
+                hidden: true,
+                canFilter: false
             },
             {
                 name: "teacherCode",
@@ -70,8 +71,7 @@
                 name: "enableStatus",
                 title: "<spring:message code='status'/>",
                 align: "center",
-                type: "boolean",
-                canFilter: false
+                type: "boolean"
             }
         ],
         autoFetchData: true,
@@ -136,8 +136,8 @@
     //------------------------------------------ Functions -------------------------------------------------------------
     function ListGrid_blackList_refresh() {
         ListGrid_Teacher_JspBlackList.invalidateCache();
+        ListGrid_Teacher_JspBlackList.filterByEditor();
         ListGrid_Teacher_JspTeacher.invalidateCache();
-        ListGrid_Teacher_JspBlackList.invalidateCache();
     }
 
     function ListGrid_blackList_edit() {

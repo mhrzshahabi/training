@@ -200,7 +200,7 @@ public class CommitteeRestController {
 
     @Loggable
     @DeleteMapping(value = "/removeMembers/{committeeId}/{personIds}")
-     public ResponseEntity<Void> removeSkills(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
+     public ResponseEntity<Void> removeMembers(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
         committeeService.removeMembers(committeeId, personIds);
         return new ResponseEntity(HttpStatus.OK);
     }

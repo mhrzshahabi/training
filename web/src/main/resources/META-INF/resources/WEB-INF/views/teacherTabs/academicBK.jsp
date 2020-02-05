@@ -274,7 +274,7 @@
         autoFetchData: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
@@ -284,7 +284,6 @@
                 name: "educationLevelId",
                 title: "<spring:message code='education.level'/>",
                 type: "IntegerItem",
-                filterOnKeypress: true,
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
@@ -294,7 +293,6 @@
                 name: "educationMajorId",
                 title: "<spring:message code='education.major'/>",
                 type: "IntegerItem",
-                filterOnKeypress: true,
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
@@ -304,7 +302,6 @@
                 name: "educationOrientationId",
                 title: "<spring:message code='education.orientation'/>",
                 type: "IntegerItem",
-                filterOnKeypress: true,
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
@@ -338,7 +335,7 @@
             ListGrid_AcademicBK_Edit();
         }
     });
-    ToolStripButton_Add_JspAcademicBK = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspAcademicBK = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_AcademicBK_Add();
         }

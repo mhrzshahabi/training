@@ -312,7 +312,6 @@
                 name: "educationLevelId",
                 type: "IntegerItem",
                 title: "<spring:message code='education.level'/>",
-                filterOnKeypress: true,
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
@@ -325,9 +324,9 @@
                 optionDataSource: RestDataSource_Category_JspTeachingHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
                 name: "subCategoriesIds",
@@ -336,9 +335,9 @@
                 optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
                 name: "duration",
@@ -364,7 +363,7 @@
         },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -387,7 +386,7 @@
             ListGrid_TeachingHistory_Edit();
         }
     });
-    ToolStripButton_Add_JspTeachingHistory = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspTeachingHistory = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_TeachingHistory_Add();
         }

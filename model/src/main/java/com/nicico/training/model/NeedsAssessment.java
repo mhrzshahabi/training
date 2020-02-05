@@ -1,7 +1,7 @@
 /*
 ghazanfari_f,
-1/15/2020,
-1:35 PM
+1/26/2020,
+5:24 PM
 */
 package com.nicico.training.model;
 
@@ -12,23 +12,25 @@ import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.MetaValue;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Accessors(chain = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_needs_assessment")
-public class NeedsAssessment extends Auditable {
+public class NeedsAssessment<E> extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_needs_assessment_id")
     @SequenceGenerator(name = "seq_needs_assessment_id", sequenceName = "seq_needs_assessment_id", allocationSize = 1)
     private Long id;
 
-    @Any(metaColumn = @Column(name = "c_object_type", nullable = false), fetch = FetchType.EAGER)
+    @Any(metaColumn = @Column(name = "c_object_type", nullable = false), fetch = FetchType.LAZY)
     @AnyMetaDef(idType = "long", metaType = "string",
             metaValues = {
                     @MetaValue(value = "Job", targetEntity = Job.class),
@@ -39,7 +41,7 @@ public class NeedsAssessment extends Auditable {
                     @MetaValue(value = "PostGradeGroup", targetEntity = PostGradeGroup.class),
             })
     @JoinColumn(name = "f_object", nullable = false, insertable = false, updatable = false)
-    private Object object;
+    private E object;
 
     @Column(name = "f_object")
     private Long objectId;
@@ -74,4 +76,15 @@ public class NeedsAssessment extends Auditable {
 
     @Column(name = "f_parameter_value_needs_assessment_priority")
     private Long needsAssessmentPriorityId;
+
+    public static List<String> priorityList = new ArrayList<String>() {
+        {
+            add("Post");
+            add("PostGroup");
+            add("Job");
+            add("JobGroup");
+            add("PostGrade");
+            add("PostGradeGroup");
+        }
+    };
 }

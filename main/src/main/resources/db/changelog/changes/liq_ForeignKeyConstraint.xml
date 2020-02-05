@@ -567,4 +567,32 @@
      <changeSet author="heydaripoor (generated)" id="1580052507513-232">
         <addForeignKeyConstraint baseColumnNames="f_parameter_value" baseTableName="tbl_questionnaire" constraintName="FKh78x3l8we7i7mp5ah8e7mbi9p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-237">
+        <addForeignKeyConstraint baseColumnNames="f_questionnaire_question_id" baseTableName="tbl_evaluation_answer" constraintName="FK3cm1maapov9w84o5kud9t3gmo" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_questionnaire_question" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-238">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_evaluation" constraintName="FK4wyvntk90byoyxfxi4ywrksbb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-239">
+        <addForeignKeyConstraint baseColumnNames="f_answer_id" baseTableName="tbl_evaluation_answer" constraintName="FKalkwji3d9v60mxyj8toak4b93" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-240">
+        <addForeignKeyConstraint baseColumnNames="f_evaluation_level_id" baseTableName="tbl_evaluation" constraintName="FKfhpgrw4mstb364v5elapa67l7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-241">
+        <addForeignKeyConstraint baseColumnNames="f_evaluated_type_id" baseTableName="tbl_evaluation" constraintName="FKgcftr9yhvg2mfcre0617phy3g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-242">
+        <addForeignKeyConstraint baseColumnNames="f_evaluator_type_id" baseTableName="tbl_evaluation" constraintName="FKt43x3rqb76kaf6usv2h16xvfl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580556360989-243">
+        <addForeignKeyConstraint baseColumnNames="f_evaluation_id" baseTableName="tbl_evaluation_answer" constraintName="FKu54bh5jm2se8wsvjbmc8a1a7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_evaluation" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580876638274-243">
+        <addForeignKeyConstraint baseColumnNames="f_question_area_id" baseTableName="tbl_evaluation_answer" constraintName="FKr59f56tmrjgrfx49alcp4hh3e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1580899903748-242">
+        <addForeignKeyConstraint baseColumnNames="f_question_source_id" baseTableName="tbl_evaluation_answer" constraintName="FKrdfjcda1wvt0dkinny9rbubj9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

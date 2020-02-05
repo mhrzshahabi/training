@@ -115,7 +115,7 @@ public class TermService implements ITermService {
     @Transactional
     @Override
     public TotalResponse<TermDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(termDAO, request, job -> mapper.map(job, TermDTO.Info.class));
+        return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Info.class));
     }
 
 

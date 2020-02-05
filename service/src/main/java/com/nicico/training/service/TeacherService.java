@@ -180,13 +180,12 @@ public class TeacherService implements ITeacherService {
         if (request.getCriteria() != null) {
             if (request.getCriteria().getCriteria() != null)
                 request.getCriteria().getCriteria().add(criteriaRq);
-            else {
+          else {
                 criteriaRqList.add(criteriaRq);
                 request.getCriteria().setCriteria(criteriaRqList);
             }
         } else
             request.setCriteria(criteriaRq);
-
 
         SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = SearchUtil.search(teacherDAO, request, needAssessment -> modelMapper.map(needAssessment,
                 TeacherDTO.Grid.class));
