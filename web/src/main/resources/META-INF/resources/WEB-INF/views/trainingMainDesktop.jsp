@@ -637,7 +637,13 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");
                     }
-                }
+                },
+                 {
+                    title: "<spring:message code="evaluation.Coefficient"/>",
+                    click: function () {
+                        createTab(this.title,"<spring:url value="/evaluationCoefficient/show-form"/>");
+                    }
+                  }
             ]
         }),
     });
