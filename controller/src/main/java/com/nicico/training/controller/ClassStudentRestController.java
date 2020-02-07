@@ -160,12 +160,12 @@ public class ClassStudentRestController {
 
      @Loggable
      @GetMapping(value ="/getScoreState/{classId}")
-     public  ResponseEntity getScoreState(@PathVariable Long classId)
+     public  ResponseEntity<List<Long>>  getScoreState(@PathVariable Long classId)
      {
-       if(classStudentService.getScoreState(classId)== 0)
-        return new ResponseEntity<Long>(classStudentService.getScoreState(classId),HttpStatus.OK);
+       if(classStudentService.getScoreState(classId).size()== 0)
+        return new ResponseEntity(classStudentService.getScoreState(classId),HttpStatus.OK);
         else
-        return  new ResponseEntity<Long>(classStudentService.getScoreState(classId),HttpStatus.NOT_ACCEPTABLE);
+        return  new ResponseEntity(classStudentService.getScoreState(classId),HttpStatus.NOT_ACCEPTABLE);
     
      }
 }

@@ -767,7 +767,7 @@
                   changed:function()
                   {
                     let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/"+ record.id,"GET", null, "callback:GetScoreState(rpcResponse)"));
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/"+ record.id,"GET", null, "callback:GetScoreState(rpcResponse,'"+record.id+"' )"));
                   },
                    change: function (form, item, value) {
                     if (value == "1") {
@@ -1965,18 +1965,26 @@
             isc.say("<spring:message code='error'/>");
         }
     }
-
-    function GetScoreState(resp) {
-              let respText =resp.data
-         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
+    var abc;
+    function GetScoreState(resp,a) {
+         abc=new Array()
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
          }
          else  if (resp.httpResponseCode === 406)
          {
 
-             createDialog("info", "کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی فعلی ثبت شده اگر روش نمره دهی را تغییر دادید در ثبت نمرات این فراگیران توجه کنید", "<spring:message code="message"/>")
+          //alert(JSON.pars(resp.httpResponseText))
+          var Dialog_Remove_scoreState = createDialog("ask", + "کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده آیا می خواهید با تغییر روش نمره دهی نمرات ثبت شده برای فراگیران این کلاس حذف شوند؟",
+                "<spring:message code="verify.delete"/>");
+              Dialog_Remove_scoreState.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index == 0) {
 
-         }
+                    }
+                }
+            });
+        }
 
     }
 

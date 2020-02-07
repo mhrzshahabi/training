@@ -79,4 +79,14 @@ public class ParameterValueDTO implements Serializable {
         private Long id;
         private String value;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("UpdateParameterValue")
+    public static class UpdateParameterValue
+    {
+     private String code;
+     private String value;
+    }
 }
