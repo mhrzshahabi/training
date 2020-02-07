@@ -30,13 +30,19 @@ public class EvaluationAnswer extends Auditable {
     @Column(name = "f_evaluation_id")
     private Long evaluationId;
 
+    ////it can be SkillId, GoalId and QuestionnaireQuestionId
+    @NotNull
+    @Column(name = "f_evaluation_question_id")
+    private Long evaluationQuestionId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_questionnaire_question_id", insertable = false, updatable = false)
-    private QuestionnaireQuestion questionnaireQuestion;
+    @JoinColumn(name = "f_question_source_id", insertable = false, updatable = false)
+    private ParameterValue questionSource;
 
     @NotNull
-    @Column(name = "f_questionnaire_question_id")
-    private Long questionnaireQuestionId;
+    @Column(name = "f_question_source_id")
+    private Long questionSourceId;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_answer_id", insertable = false, updatable = false)

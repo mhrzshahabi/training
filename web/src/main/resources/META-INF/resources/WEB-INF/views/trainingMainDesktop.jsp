@@ -82,6 +82,8 @@
     const tclassStudentUrl = rootUrl + "/class-student";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
+    const evaluationUrl = rootUrl + "/evaluation";
+    const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -630,13 +632,12 @@
                         createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
                     }
                 },
-
-                  {
-                    title: "<spring:message code="evaluation.Coefficient"/>",
+                {
+                    title: "<spring:message code="evaluation.analysis"/>",
                     click: function () {
-                        createTab(this.title,"<spring:url value="/evaluationCoefficient/show-form"/>");
+                        createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");
                     }
-                  }
+                }
             ]
         }),
     });
@@ -691,6 +692,12 @@
                     title: "<spring:message code="training.file"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/trainingFile/"/>");
+                    }
+                },
+                {
+                    title: "مشاهده نیازسنجی افراد",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/needsAssessment-by-one-person"/>");
                     }
                 },
             ]

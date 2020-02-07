@@ -55,7 +55,7 @@
                 {
                     name: "personnelNo2",
                     title: "<spring:message code="personnel.no.6.digits"/>",
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 {
                     name: "postTitle",
@@ -87,7 +87,7 @@
                     name: "ccpUnit",
                     title: "<spring:message code="reward.cost.center.unit"/>",
                     filterOperator: "iContains"
-                },
+                }
             ],
             fetchDataURL: personnelUrl + "/iscList",
         });
@@ -108,7 +108,7 @@
                 {name: "ccpAssistant"},
                 {name: "ccpAffairs"},
                 {name: "ccpSection"},
-                {name: "ccpUnit"},
+                {name: "ccpUnit"}
             ],
             selectionAppearance: "checkbox"
         });
@@ -186,9 +186,9 @@
                     title: "<spring:message code="evaluation.teacher.supervisor"/>",
                     icon: "<spring:url value="refresh.png"/>",
                     click: function () {
-                        let criteria= '{"fieldName":"domainId","operator":"equals","value":54}';
+                        let criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"}';
                         isc.RPCManager.sendRequest({
-                            actionURL: configQuestionnaireUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria="+ criteria ,
+                            actionURL: configQuestionnaireUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria,
                             httpMethod: "GET",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
@@ -197,67 +197,105 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 localQuestions = JSON.parse(resp.data).response.data;
+                                var vm_JspEvaluation = isc.ValuesManager.create({});
                                 var DynamicForm_Questions_Title_JspEvaluation = isc.DynamicForm.create({
                                     validateOnExit: true,
                                     // height: "10%",
                                     numCols: 6,
+                                    valuesManager: vm_JspEvaluation,
                                     // colWidths:["29%","68%"],
-                                    width:"100%",
+                                    width: "100%",
                                     borderRadius: "10px 10px 0px 0px",
-                                    border:"1px solid black",
+                                    border: "1px solid black",
                                     // titleAlign:"left",
                                     padding: 10,
                                     fields: [
-                                        {name: "code", title:"<spring:message code="class.code"/>:",canEdit: false},
-                                        {name: "titleClass", title:"<spring:message code='class.title'/>:",canEdit: false},
-                                        {name: "startDate", title:"<spring:message code='start.date'/>:", canEdit: false},
-                                        {name: "teacher", title:"<spring:message code='teacher'/>:", canEdit: false},
-                                        {name: "institute.titleFa", title:"<spring:message code='institute'/>:", canEdit: false},
-                                        {name: "user", title:"<spring:message code='user'/>:", canEdit: false},
-                                    ],
+                                        {name: "code", title: "<spring:message code="class.code"/>:", canEdit: false},
+                                        {
+                                            name: "titleClass",
+                                            title: "<spring:message code='class.title'/>:",
+                                            canEdit: false
+                                        },
+                                        {
+                                            name: "startDate",
+                                            title: "<spring:message code='start.date'/>:",
+                                            canEdit: false
+                                        },
+                                        {name: "teacher", title: "<spring:message code='teacher'/>:", canEdit: false},
+                                        {
+                                            name: "institute.titleFa",
+                                            title: "<spring:message code='institute'/>:",
+                                            canEdit: false
+                                        },
+                                        {name: "user", title: "<spring:message code='user'/>:", canEdit: false}
+                                    ]
                                 });
                                 var DynamicForm_Questions_Body_JspEvaluation = isc.DynamicForm.create({
                                     validateOnExit: true,
                                     // height: "*",
-                                    colWidths:["29%","68%"],
-                                    width:"100%",
+                                    valuesManager: vm_JspEvaluation,
+                                    colWidths: ["29%", "68%"],
+                                    width: "100%",
                                     // borderRadius: "10px 0px",
                                     // borderBottom:"2px solid red",
                                     // titleAlign:"left",
                                     padding: 10,
-                                    fields: [],
+                                    fields: []
                                 });
                                 var IButton_Questions_Save = isc.IButtonSave.create({
-                                    click:function () {
+                                    click: function () {
+                                        // let data = vm_JspEvaluation.getValues();
+
+                                        let data = DynamicForm_Questions_Title_JspEvaluation.getValues()
+                                        data.evaluationAnswerList = DynamicForm_Questions_Body_JspEvaluation.getValues();
+
+                                        data.record = ListGrid_evaluation_class.getSelectedRecord();
+                                        data.evaluator = "${username}";
+                                        isc.RPCManager.sendRequest({
+                                            actionURL: evaluationUrl,
+                                            httpMethod: "POST",
+                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                            useSimpleHttp: true,
+                                            contentType: "application/json; charset=utf-8",
+                                            showPrompt: false,
+                                            serverOutputAsString: false,
+                                            data: JSON.stringify(data),
+                                            callback: function (resp) {
+                                                alert(resp.httpResponseCode)
+                                            }
+                                        });
 
                                     }
                                 });
                                 var Window_Questions_JspEvaluation = isc.Window.create({
-                                    placement: "fillScreen",
+                                    // placement: "fillScreen",
+                                    width:1024,
+                                    height:768,
+                                    keepInParentRect: true,
                                     title: "<spring:message code="evaluation.teacher.supervisor"/>",
                                     items: [
                                         DynamicForm_Questions_Title_JspEvaluation,
                                         DynamicForm_Questions_Body_JspEvaluation,
                                         isc.TrHLayoutButtons.create({
-                                            members:[IButton_Questions_Save, isc.IButtonCancel.create({
+                                            members: [IButton_Questions_Save, isc.IButtonCancel.create({
                                                 click: function () {
                                                     Window_Questions_JspEvaluation.close();
                                                 }
                                             })]
                                         })
                                     ],
-                                    minWidth: 1024,
-                                })
+                                    minWidth: 1024
+                                });
                                 let itemList = [];
-                                for (let i = 0; i <localQuestions.length ; i++) {
+                                for (let i = 0; i < localQuestions.length; i++) {
                                     let item = {};
                                     item.name = "Q" + localQuestions[i].id;
-                                    item.title = (i+1).toString() + "- " + localQuestions[i].question;
+                                    item.title = (i + 1).toString() + "- " + localQuestions[i].question;
                                     item.type = "radioGroup";
                                     item.vertical = false;
-                                    item.required = true;
+                                    // item.required = true;
                                     item.fillHorizontalSpace = true;
-                                    item.valueMap = ["خیلی ضعیف", "ضعیف", "متوسط", "خوب", "عالی"];
+                                    item.valueMap = {0: "خیلی ضعیف", 1: "ضعیف", 2: "متوسط", 3: "خوب", 4: "عالی"};
                                     // item.colSpan = ,
                                     itemList.add(item);
                                 }
@@ -457,8 +495,8 @@
                     valueMap: {
                         "1": "برنامه ریزی",
                         "2": "در حال اجرا",
-                        "3": "پایان یافته",
-                    },
+                        "3": "پایان یافته"
+                    }
                 },
                 {name: "createdBy", hidden: true},
                 {name: "createdDate", hidden: true},
@@ -479,6 +517,7 @@
 
             ],
             selectionUpdated: function () {
+
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
 
                 set_Evaluation_Tabset_status();
@@ -1165,6 +1204,7 @@
                     }, 600);
             }
         }
+
 
         //*****Load student for tabs*****
         function loadSelectedTab_data(tab) {

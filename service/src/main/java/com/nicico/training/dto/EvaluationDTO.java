@@ -1,5 +1,9 @@
 package com.nicico.training.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.EvaluationAnswer;
+import com.nicico.training.model.ParameterValue;
+import com.nicico.training.model.Tclass;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -16,22 +20,26 @@ import java.util.List;
 @Accessors(chain = true)
 public class EvaluationDTO implements Serializable {
 
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private String title;
-    private String code;
-    private String type;
-    private String value;
-    private String description;
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("Evaluation - Info")
-    public static class MinInfo {
-        private Long id;
-        private String title;
-    }
+    @ApiModelProperty(required = true)
+    private Long classId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatorId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatorTypeId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatedId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluatedTypeId;
+
+    @ApiModelProperty(required = true)
+    private Long evaluationLevelId;
+
+    private String description;
 
     @Getter
     @Setter
@@ -39,7 +47,6 @@ public class EvaluationDTO implements Serializable {
     @ApiModel("Evaluation - Info")
     public static class Info extends EvaluationDTO {
         private Long id;
-        private Integer version;
     }
 
     @Getter
@@ -47,8 +54,7 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Create")
     public static class Create extends EvaluationDTO {
-        @ApiModelProperty(required = true)
-        private Long parameterId;
+        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
     }
 
     @Getter
@@ -56,6 +62,7 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Update")
     public static class Update extends Create {
+        private Long id;
         private Integer version;
     }
 
@@ -68,4 +75,31 @@ public class EvaluationDTO implements Serializable {
         @ApiModelProperty(required = true)
         List<Long> ids;
     }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("EvaluationSpecRs")
+    public static class EvaluationSpecRs {
+        private EvaluationDTO.SpecRs response;
+    }
+
+    // ---------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    //-----------------------
 }

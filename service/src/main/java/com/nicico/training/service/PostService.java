@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -51,6 +53,13 @@ public class PostService implements IPostService {
     @Override
     public Page<Post> listByJobId(Long jobId, Pageable pageable) {
         return postDAO.findAllByJobId(jobId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Post getByPostCode(String postCode) {
+        Optional<Post> optionalPost = postDAO.findByCode(postCode);
+        return optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional(readOnly = true)
