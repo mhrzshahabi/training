@@ -169,6 +169,20 @@ public class CourseService implements ICourseService {
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
         course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
+
+        ////////////////////////////////////////////////////////////////////////
+        List<EqualCourse> equalCourses = new ArrayList<>();
+        for (String eqId : equalCourseListId) {
+            EqualCourse equalCourse = new EqualCourse();
+            equalCourse.setCourseId(course.getId());
+            equalCourse.setEqualAndList(modelMapper.map(eqId.split("_"), new TypeToken<List<Long>>() {
+            }.getType()));
+            equalCourses.add(equalCourse);
+        }
+        course.setEqualCourses(equalCourses);
+        ////////////////////////////////////////////////////////////////////////
+
+
         Course save = courseDAO.save(course);
         Set<Skill> savedSkills = save.getSkillMainObjectiveSet();
         Set<Skill> savingSkill = new HashSet<>(skillService.getAllByIds(request.getMainObjectiveIds()));

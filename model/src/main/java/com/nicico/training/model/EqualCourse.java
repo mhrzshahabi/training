@@ -28,6 +28,10 @@ public class EqualCourse extends Auditable {
     @Column(name = "list_equal_and_course")
     private List<Long> equalAndList = new ArrayList<>();
 
-    @Column(name = "f_course")
+    @Column(name = "f_course", nullable = false)
     private Long courseId;
+
+    @ManyToOne
+    @JoinColumn(name = "f_course", insertable = false, updatable = false, nullable = false)
+    private Course course;
 }
