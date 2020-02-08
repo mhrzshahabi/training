@@ -12,7 +12,6 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class NeedsAssessmentReportsDTO implements Serializable {
 
-
     @Getter
     @Setter
     @ApiModel("NeedsAssessment - Courses")

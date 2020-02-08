@@ -4,6 +4,13 @@
 
 // <script>
 
+    var postCode = null;
+    var totalDuration = [0, 0, 0];
+    var passedDuration = [0, 0, 0];
+    var passedStatusId = "216";
+
+    var temp;
+
     //--------------------------------------------------------------------------------------------------------------------//
     //*personel form*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -113,9 +120,39 @@
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
         title: "انتخاب",
         click: function () {
+            if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
+                postCode = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
+                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode;
+                // CourseDS_NABOP.fetchData(null, setSummaries, null);
+                // CoursesLG_NABOP.invalidateCache();
+                refreshLG(CoursesLG_NABOP);
+            } else {
+                postCode = null;
+                CourseDS_NABOP.fetchDataURL = null;
+                CoursesLG_NABOP.setData([]);
+                createDialog("info", "<spring:message code="personnel.without.postCode"/>");
+                return;
+            }
             Window_Personnel_NABOP.close();
         }
     });
+
+    function setSummaries(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+        } else {
+            let errors = JSON.parse(resp.httpResponseText).errors;
+            let message = "";
+            for (let i = 0; i < errors.length; i++) {
+                message += errors[i].message + "<br/>";
+            }
+            createDialog("info", message);
+        }
+    }
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
@@ -142,7 +179,7 @@
 
     Window_Personnel_NABOP = isc.Window.create({
         placement: "fillScreen",
-        title: "پرسنل",
+        title: "<spring:message code="personnel"/>",
         canDragReposition: true,
         align: "center",
         autoDraw: false,
@@ -168,6 +205,15 @@
                 {name: "titleFa", title: "<spring:message code="title"/>"}
             ],
         fetchDataURL: enumUrl + "eNeedAssessmentPriority/spec-list"
+    });
+
+    StatusDS_NABOP = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
     });
 
     CourseDS_NABOP = isc.TrDS.create({
@@ -205,12 +251,14 @@
             }
 
         ],
-        fetchDataURL: needsAssessmentReportsUrl + "/courses-for-post/84031244.5",
+        // fetchDataURL: needsAssessmentReportsUrl + "/courses-for-post/84031244.5",
     });
 
     Menu_Courses_NABOP = isc.Menu.create({
         data: [{
             title: "<spring:message code="refresh"/>", click: function () {
+                if (postCode == null)
+                    return;
                 refreshLG(CoursesLG_NABOP);
             }
         }]
@@ -219,15 +267,54 @@
     CoursesLG_NABOP = isc.TrLG.create({
         dataSource: CourseDS_NABOP,
         contextMenu: Menu_Courses_NABOP,
-        autoFetchData: true,
+        // autoFetchData: true,
         selectionType: "single",
+        filterLocally: true,
+
+        alternateRecordStyles: true,
+        showAllRecords: true,
+        groupByField: "eneedAssessmentPriorityId",
+        groupStartOpen: "all",
+        showGroupSummary: true,
+
+
         fields: [
             {name: "id", hidden: true},
             {name: "code"},
             {name: "titleFa"},
-            {name: "theoryDuration"},
+            {
+                name: "theoryDuration",
+                showGroupSummary: true,
+                summaryFunction: [
+                    function (records) {
+                        let total = 0;
+                        for (var i = 0; i < records.length; i++) {
+                            var record = records[i];
+                            total += record.theoryDuration;
+                        }
+                        totalDuration[record.eneedAssessmentPriorityId] = total;
+                        return "<spring:message code="duration.hour.sum"/>" + total;
+                    },
+                    function (records) {
+                        let passed = 0;
+                        for (var i = 0; i < records.length; i++) {
+                            var record = records[i];
+                            if (record.status === passedStatusId)
+                                passed += record.theoryDuration;
+                        }
+                        passedDuration[record.eneedAssessmentPriorityId] = passed;
+                        return "<spring:message code="duration.hour.sum.passed"/>" + passed;
+                    },
+                    function (records) {
+                        if (totalDuration[records[0].eneedAssessmentPriorityId] === 0)
+                            return 0;
+                        return "<spring:message code="duration.percent.passed"/>" + Math.round(passedDuration[records[0].eneedAssessmentPriorityId] / totalDuration[records[0].eneedAssessmentPriorityId] * 100);
+                    }
+                ]
+            },
             {
                 name: "eneedAssessmentPriorityId",
+                hidden: true,
                 type: "IntegerItem",
                 filterOnKeypress: true,
                 editorType: "SelectItem",
@@ -242,17 +329,35 @@
                     {name: "titleFa", width: "30%"}
                 ],
             },
-            {name: "status"},
+            {
+                name: "status",
+                type: "IntegerItem",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: StatusDS_NABOP,
+                addUnknownValues: false,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+
         ],
     });
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
         click: function () {
-            // refreshLG();
+            if (postCode == null)
+                return;
+            refreshLG(CoursesLG_NABOP);
         }
     });
     ToolStripButton_ShowPersonnel_NABOP = isc.ToolStripButton.create({
-        title: "انتخاب پرسنل",
+        title: "<spring:message code="personnel.choose"/>",
         click: function () {
             PersonnelsLG_NABOP.fetchData();
             Window_Personnel_NABOP.show();
@@ -278,12 +383,11 @@
 
     Main_VLayout_NABOP = isc.TrVLayout.create({
         border: "2px solid blue",
-        members: [ToolStrip_Actions_NABOP, CoursesLG_NABOP]//, HLayout_Courses_NABOP]
+        members: [ToolStrip_Actions_NABOP, CoursesLG_NABOP]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
-
 
     //</script>

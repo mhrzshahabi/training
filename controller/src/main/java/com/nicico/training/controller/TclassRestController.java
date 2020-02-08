@@ -198,7 +198,7 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<TclassDTO.EvaluatedInfo> response = tclassService.evaluatedSearch(request);
+        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> response = tclassService.evaluatedSearch(request);
 
         final TclassDTO.EvaluatedSpecRs specResponse = new TclassDTO.EvaluatedSpecRs();
         final TclassDTO.TclassEvaluatedSpecRs specRs = new TclassDTO.TclassEvaluatedSpecRs();
@@ -303,6 +303,12 @@ public class TclassRestController {
     @GetMapping(value = "/getWorkflowEndingStatusCode/{classId}")
     public Integer getWorkflowEndingStatusCode(@PathVariable Long classId) {
         return tclassService.getWorkflowEndingStatusCode(classId);
+    }
+
+    @Loggable
+    @GetMapping(value = "/evaluationResult/{classId}")
+    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getEvaluationResult(@PathVariable Long classId) {
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getEvaluationResult(classId), HttpStatus.OK);
     }
 
 }
