@@ -5,21 +5,31 @@ ghazanfari_f,
 */
 package com.nicico.training.utility;
 
+import com.nicico.training.model.Category;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.modelmapper.ModelMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
 
+@RequiredArgsConstructor
 public class ExcelUtil {
 
-    static String datafilePath = "F:\\System\\Training\\Data\\TrainingData1.xlsx";
+    static String datafilePath = "F:\\System\\Training\\Data\\TrainingData1Copy.xlsx";
+
+    private static ModelMapper modelMapper;
 
     public static void main(String[] args) {
         importCategoryData();
+    }
+
+    public static void assignCategory(Row row) {
+        Category category = new Category();
     }
 
     public static void importCategoryData() {
@@ -28,13 +38,13 @@ public class ExcelUtil {
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             XSSFSheet sheet = workbook.getSheet("Category");
             Iterator<Row> rowIterator = sheet.iterator();
-            for(int i = 0; i<2; i++)
-                rowIterator.next();
+            rowIterator.next();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-//                For each row, iterate through all the columns
                 Iterator<Cell> cellIterator = row.cellIterator();
+
                 while (cellIterator.hasNext()) {
+
                     Cell cell = cellIterator.next();
                     //Check the cell type and format accordingly
                     switch (cell.getCellType()) {
