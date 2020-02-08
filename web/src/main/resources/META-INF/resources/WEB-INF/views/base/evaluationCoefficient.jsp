@@ -5,11 +5,11 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+//<script>
 
-var z1z2Data = [];
+    var z1z2Data = [];
 
-var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
+    var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
@@ -28,7 +28,7 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             z1z2Data = (JSON.parse(resp.data)).response.data;
             for (var j = 0; j < z1z2Data.length; j++) {
-                DynamicForm_Evaluation_Coefficient.setValue(z1z2Data[j].code,z1z2Data[j].value);
+                DynamicForm_Evaluation_Coefficient.setValue(z1z2Data[j].code, z1z2Data[j].value);
                 DynamicForm_Evaluation_Coefficient.getItem(z1z2Data[j].code).ID = z1z2Data[j].id + "_Coefficient";
             }
         } else {
@@ -36,32 +36,38 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
         }
     }
 
-  isc.DynamicForm.create({
+    isc.DynamicForm.create({
         ID: "DynamicForm_Evaluation_Coefficient",
-        width:"80%",
+        width: "100%",
 
-        showEdges:true,
+        showEdges: true,
 
-         edgeSize: 2,
+        edgeSize: 2,
 
         fields: [{name: "id", hidden: true},
 
-            {type: "BlurbItem", value: "1- فرمول ارزیابی استاد بعد از تدریس دوره = (نمره ارزیابی فراگیران به استاد) *  Z2 + (نمره ارزیابی مسئول آموزش به استاد) * Z1  "},
             {
+                type: "BlurbItem",
+                value: "1- فرمول ارزیابی استاد بعد از تدریس دوره = (نمره ارزیابی فراگیران به استاد) *  Z2 + (نمره ارزیابی مسئول آموزش به استاد) * Z1  "
+            },
+            {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "z1",
-                title: "(نمره ارزیابی مسئول آموزش به استاد)Z1",
+                title: "ضریب  نمره ارزیابی مسئول آموزش به استاد &nbsp;(Z1)",
                 required: true,
             },
             , {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "z2",
-                title: "(نمره ارزیابی فراگیران به استاد)Z2",
+                title: "ضریب نمره ارزیابی فراگیران به استاد &nbsp;(Z2)",
                 required: true,
             },
             {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "minScore_ET",
@@ -69,58 +75,67 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
                 required: true,
             },
             {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "minQus_ET",
                 title: "حد نصاب پرسشنامه ها",
                 required: true,
             },
-//======================================================================================
-              {type: "RowSpacerItem"},
+// //======================================================================================
+            {type: "RowSpacerItem"},
             {
-            type: "BlurbItem", value: "2- فرمول ارزیابی واکنش کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط استاد)*Z3 +(نمره ارزیابی فراگیران به استاد)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1"
+                type: "BlurbItem",
+                value: "2- فرمول ارزیابی واکنش کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط استاد)*Z3 +(نمره ارزیابی فراگیران به استاد)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1"
             },
             {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "z3",
-                title: "(نمره ارزیابی فراگیران به محتوای دوره)Z1",
+                title: "ضریب نمره ارزیابی فراگیران به محتوای دوره &nbsp;(Z1)",
                 required: true,
             },
             {
+                width: "200",
                 hint: "%",
                 mask: "##",
-                 name: "z4",
-                title: "(نمره ارزیابی فراگیران به استاد)Z2",
+                name: "z4",
+                title: "ضریب نمره ارزیابی فراگیران به استاد&nbsp;(Z2)",
                 required: true,
             },
             {
-               hint: "%",
+                width: "200",
+                hint: "%",
                 mask: "##",
-                 name: "z5",
-                title: "(نمره ارزیابی دوره توسط استاد)Z3",
+                name: "z5",
+                title: "ضریب نمره ارزیابی دوره توسط استاد&nbsp;(Z3)",
                 required: true,
             },
             {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "z6",
-                title: "(نمره ارزیابی فراگیران به امکانات و سازماندهی)Z4",
+                title: "ضریب نمره ارزیابی فراگیران به امکانات و سازماندهی&nbsp;(Z4)",
                 required: true,
             },
-             {
-                type:"integer",
+            {
+                width: "200",
+                type: "integer",
                 hint: "%",
                 mask: "###",
                 name: "minScore_ER",
                 title: "حد نصاب قابل قبول برای واکنش",
                 required: true,
-                change:function (form,item,value) {
-                if(value>100)
-                {item.setValue()}
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
                 }
             },
-             {
+            {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "minQus_ER",
@@ -131,20 +146,23 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
             {type: "RowSpacerItem"},
             {type: "BlurbItem", value: "3- فرمول ارزیابی یادگیری کلاس"},
 
-           {
+            {
+                width: "200",
                 mask: "##",
                 name: "minPreTest_EL",
                 title: "حد نصاب پیش آزمون",
                 required: true,
             },
 
-           {
+            {
+                width: "200",
                 mask: "##",
-                name:"minPasTest_EL",
+                name: "minPasTest_EL",
                 title: "حد نصاب پس آزمون",
                 required: true,
             },
-             {
+            {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "minQus_EL",
@@ -152,30 +170,34 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
                 required: true,
             },
 //====================================================================================
-             {type: "RowSpacerItem"},
+            {type: "RowSpacerItem"},
             {type: "BlurbItem", value: "4- فرمول ارزیابی تغییر رفتار"},
-             {
+            {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "z7",
                 title: "(نمره ارزیابی بالا دست)Z1",
                 required: true,
-             },
+            },
             {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "z8",
                 title: "(نمره ارزیابی فراگیران)Z2",
                 required: true,
             },
-             {
+            {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "minScore_EB",
                 title: "حدقبولی نمره ارزیابی رفتاری",
                 required: true,
             },
-             {
+            {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "minScore_PreTestEB",
@@ -183,7 +205,8 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
                 required: true,
             },
 
-             {
+            {
+                width: "200",
                 hint: "%",
                 mask: "##",
                 name: "minQus_EB",
@@ -196,62 +219,57 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
 
     });
 
- var Window_Evaluation_Coefficient=isc.Window.create({
+    var Window_Evaluation_Coefficient = isc.Window.create({
 
         placement: "fillScreen",
-            	 title:"",
-            	 showCloseButton:false,
-            	 showMaximizeButton:false,
-                 canDragReposition: false,
-                 showMinimizeButton:false,
-            	 canDragResize: false,
-            	 closeClick:false,
-            	 minimize:false,
+        title: "",
+        showCloseButton: false,
+        showMaximizeButton: false,
+        canDragReposition: false,
+        showMinimizeButton: false,
+        canDragResize: false,
+        closeClick: false,
+        minimize: false,
 
         items: [DynamicForm_Evaluation_Coefficient, isc.MyHLayoutButtons.create({
             members: [isc.IButtonSave.create({
                 title: "ذخیره",
                 click: function () {
-                var fields = DynamicForm_Evaluation_Coefficient.getFields();
-                var toUpdate = [];
+                    var fields = DynamicForm_Evaluation_Coefficient.getFields();
+                    var toUpdate = [];
 
-                for (var i = 0; i < fields.length; i++) {
-                    if (fields[i].getID().startsWith("isc"))
-                        continue;
-                    toUpdate.add({
-                        "id": ((fields[i].getID()).split('_'))[0],
-                        "value": fields[i].getValue()
-                    });
+                    for (var i = 0; i < fields.length; i++) {
+                        if (fields[i].getID().startsWith("isc"))
+                            continue;
+                        toUpdate.add({
+                            "id": ((fields[i].getID()).split('_'))[0],
+                            "value": fields[i].getValue()
+                        });
+                    }
+                    if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) > 100) {
+                        createDialog("info", "جمع ضرایب فرمول یک بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                        return;
+                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z3")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z4")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z5")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z6")) > 100) {
+                        createDialog("info", "جمع ضرایب فرمول دو بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                        return;
+                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) > 100) {
+                        createDialog("info", "جمع ضرایب فرمول چهار بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                        return;
+                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPasTest_EL")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPreTest_EL")) > 100) {
+                        createDialog("info", "جمع حد نصاب فرمول سه بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                        return;
+                    } else {
+                        var parameterValue = parameterValueUrl + "/edit-config-list"
+                        isc.RPCManager.sendRequest(TrDSRequest(parameterValue, "PUT", JSON.stringify(toUpdate), "callback:show_Result(rpcResponse)"));
+                       // trainingTabSet.removeTab(trainingTabSet.getSelectedTab())
+                       DynamicForm_Evaluation_Coefficient.refreshFields();
+
+                    }
                 }
-                if(parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) +parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) != 100 )
-                    {
-                    createDialog("info", "جمع ضرایب فرمول یک بیشتر از 100 می باشد", "<spring:message code="message"/>")
-                    return;
-                    }
-                    else  if(parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z3")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z4")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z5")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z6")) != 100)
-                    {
-                    createDialog("info", "جمع ضرایب فرمول دو بیشتر از 100 می باشد", "<spring:message code="message"/>")
-                    return;
-                    }
-                    else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) != 100)
-                    {
-                    createDialog("info", "جمع ضرایب فرمول چهار بیشتر از 100 می باشد", "<spring:message code="message"/>")
-                    return;
-                    }else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPasTest_EL")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPreTest_EL")) != 100)
-                    {
-                    createDialog("info", "جمع حد نصاب فرمول سه بیشتر از 100 می باشد", "<spring:message code="message"/>")
-                    return;
-                    }
-                    else
-                       {
-                          var parameterValue=parameterValueUrl +"/edit-config-list"
-                          isc.RPCManager.sendRequest(TrDSRequest(parameterValue, "PUT", JSON.stringify(toUpdate), "callback:show_Result(rpcResponse)"));
-                       }
-                  }
             }), isc.IButtonCancel.create({
-                title: "لغو",
+                title: "بستن",
                 click: function () {
-
+                    trainingTabSet.removeTab(trainingTabSet.getSelectedTab())
 
                 }
             })],
@@ -259,26 +277,26 @@ var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
     })
 
 
-   // ======================================
-   // var Hlayout_Body=isc.HLayout.create({
-   // width:"50%",
-   // height:"50%",
-   // leaveScrollbarGap:"false",
-   // members:[DynamicForm_Evaluation_Coefficient]
-   // })
-   // var Hlayout_Body2=isc.HLayout.create({
-   // height:"50%",
-   // width:"50%",
-   // leaveScrollbarGap:"true",
-   // members:[,isc.IButtonCancel.create({
-   //              title: "لغو",
-   //              click: function () {
-   //                  Window_Evaluation_Coefficient.close();
-   //              }
-   //          })]
-   // })
-   //  var Vlayout_Body = isc.VLayout.create({
-   // height:"100%",
-   // width:"100%",
-   //      members: [Hlayout_Body2,Hlayout_Body],
-   //  })
+    // ======================================
+    // var Hlayout_Body=isc.HLayout.create({
+    // width:"50%",
+    // height:"50%",
+    // leaveScrollbarGap:"false",
+    // members:[DynamicForm_Evaluation_Coefficient]
+    // })
+    // var Hlayout_Body2=isc.HLayout.create({
+    // height:"50%",
+    // width:"50%",
+    // leaveScrollbarGap:"true",
+    // members:[,isc.IButtonCancel.create({
+    //              title: "لغو",
+    //              click: function () {
+    //                  Window_Evaluation_Coefficient.close();
+    //              }
+    //          })]
+    // })
+    //  var Vlayout_Body = isc.VLayout.create({
+    // height:"100%",
+    // width:"100%",
+    //      members: [Hlayout_Body2,Hlayout_Body],
+    //  })
