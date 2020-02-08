@@ -4,20 +4,23 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.IQuestionnaireQuestionService;
-import com.nicico.training.model.Evaluation;
-import com.nicico.training.model.EvaluationAnswer;
-import com.nicico.training.model.QuestionnaireQuestion;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import com.nicico.training.service.EvaluationService;
+import com.nicico.training.service.ParameterService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -233,8 +236,8 @@ public class TclassDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TclassEvaluatedInfo")
-    public static class EvaluatedInfo{
+    @ApiModel("TclassEvaluatedInfoGrid")
+    public static class EvaluatedInfoGrid{
         private Long id;
         private String code;
         private CourseDTO.CourseInfoTuple course;
@@ -248,15 +251,21 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple institute;
         private Long instituteId;
         private String classStatus;
-//        private String evaluationStatus;
-        IEvaluationService evaluationService;
-        QuestionnaireQuestionDAO questionnaireQuestionDAO;
+        private String evaluationStatus;
 
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
+        }
+
+
+        public Integer getStudentCount() {
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
         }
 
         public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
@@ -295,7 +304,7 @@ public class TclassDTO {
                 if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
                         Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
                     result++;
-                }
+            }
             return result;
         }
 
@@ -304,13 +313,13 @@ public class TclassDTO {
             for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
                 if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
                     result++;
-                }
+            }
             return result;
         }
 
         public Integer getNumberOfEmptyReactionEvaluationForms(){
             int result = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+            for (ClassStudentDTO.AttendanceInfo  classStudent : classStudents) {
                 if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 ||
                         Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 0)
                     result++;
@@ -324,52 +333,15 @@ public class TclassDTO {
             double result = (r1/r2)*100;
             return result;
         }
+    }
 
-        public Integer getStudentCount() {
-            if (classStudents != null)
-                return classStudents.size();
-            else
-                return 0;
-        }
-
-        public Double getStudentGradeToTeacher(){
-            double result = 0.0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
-                    Evaluation evaluation = evaluationService.getStudentEvaluationForTeacher(classStudent.getId(), teacherId, classStudent.getStudentId());
-                    List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
-                    double totalGrade = 0.0;
-                    double totalWeight = 0.0;
-                    for (EvaluationAnswer answer : answers) {
-                        double weight = 1.0;
-                        double grade = 1.0;
-                        if(answer.getQuestionSource().getCode().equals(-100)){
-                            Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                            QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                            weight = questionnaireQuestion.getWeight();
-                        }
-                        if(answer.getAnswer().getCode().equals("-1"))
-                            grade = 100;
-                        else if(answer.getAnswer().getCode().equals("-2"))
-                            grade = 80;
-                        else if(answer.getAnswer().getCode().equals("-3"))
-                            grade = 60;
-                        else if(answer.getAnswer().getCode().equals("-4"))
-                            grade = 40;
-                        else if(answer.getAnswer().getCode().equals("-5"))
-                            grade = 20;
-                        else if(answer.getAnswer().getCode().equals("-6"))
-                            grade = 0;
-                        totalGrade += grade*weight;
-                        totalWeight += weight;
-                    }
-                    result += (totalGrade/totalWeight);
-                }
-            }
-            result /= getNumberOfFilledReactionEvaluationForms();
-            return result;
-        }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ReactionEvaluationResult")
+    public static class ReactionEvaluationResult{
+        boolean FERPass;
+        boolean FETPass;
     }
 
     @Getter
@@ -386,7 +358,7 @@ public class TclassDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class EvaluatedSpecRs {
-        private List<TclassDTO.EvaluatedInfo> data;
+        private List<TclassDTO.EvaluatedInfoGrid> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

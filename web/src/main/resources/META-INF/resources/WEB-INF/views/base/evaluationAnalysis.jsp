@@ -136,9 +136,7 @@
             {name: "percenetOfFilledReactionEvaluationForms", hidden: true}
         ],
         selectionUpdated: function () {
-            load_evluation_analysis_data();
-            set_evaluation_analysis_tabset_status();
-            Detail_Tab_Evaluation_Analysis.selectTab(0);
+            fill_evaluation_result();
         }
     });
 
@@ -340,11 +338,22 @@
         }
     }
 
-    function load_evluation_analysis_data() {
-        var classRecord = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("studentCount").setValue(classRecord.studentCount);
-        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfFilledReactionEvaluationForms").setValue(classRecord.numberOfFilledReactionEvaluationForms);
-        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(classRecord.numberOfInCompletedReactionEvaluationForms);
-        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(classRecord.numberOfEmptyReactionEvaluationForms);
-        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(classRecord.percenetOfFilledReactionEvaluationForms);
+    function load_evluation_analysis_data(record) {
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfFilledReactionEvaluationForms").setValue(record.numberOfFilledReactionEvaluationForms);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(record.numberOfEmptyReactionEvaluationForms);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(record.percenetOfFilledReactionEvaluationForms);
     }
+
+    function fill_evaluation_result() {
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "evaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+            "callback: fill_evaluation_result_resp(rpcResponse)"));
+    }
+
+    function fill_evaluation_result_resp(resp){
+        load_evluation_analysis_data(JSON.parse(rpcResponse.data));
+        set_evaluation_analysis_tabset_status();
+        Detail_Tab_Evaluation_Analysis.selectTab(0);
+    }
+
