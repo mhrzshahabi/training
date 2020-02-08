@@ -41,7 +41,6 @@
         width: "100%",
 
         showEdges: true,
-
         edgeSize: 2,
 
         fields: [{name: "id", hidden: true},
@@ -53,34 +52,52 @@
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                required: true,
+                mask:"###",
                 name: "z1",
                 title: "ضریب  نمره ارزیابی مسئول آموزش به استاد &nbsp;(Z1)",
-                required: true,
+                 change:function(form,item,value) {
+                if(value>100)
+                    {item.setValue()}
+                }
+
             },
             , {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "z2",
                 title: "ضریب نمره ارزیابی فراگیران به استاد &nbsp;(Z2)",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "minScore_ET",
                 title: "حد قبولی نمره ارزیابی استاد",
                 required: true,
+                change:function(item,value) {
+                if(value>100)
+                    {item.setValue()}
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "minQus_ET",
                 title: "حد نصاب پرسشنامه ها",
                 required: true,
+                 change:function(item,value) {
+                if(value>100)
+                    {item.setValue()}
+                }
             },
 // //======================================================================================
             {type: "RowSpacerItem"},
@@ -91,34 +108,54 @@
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "z3",
                 title: "ضریب نمره ارزیابی فراگیران به محتوای دوره &nbsp;(Z1)",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "z4",
                 title: "ضریب نمره ارزیابی فراگیران به استاد&nbsp;(Z2)",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "z5",
                 title: "ضریب نمره ارزیابی دوره توسط استاد&nbsp;(Z3)",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "z6",
                 title: "ضریب نمره ارزیابی فراگیران به امکانات و سازماندهی&nbsp;(Z4)",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
@@ -137,37 +174,59 @@
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "minQus_ER",
                 title: "حد نصاب پرسشنامه ها",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
 //=================================================================================================
             {type: "RowSpacerItem"},
             {type: "BlurbItem", value: "3- فرمول ارزیابی یادگیری کلاس"},
 
             {
+                hint: "%",
                 width: "200",
-                mask: "##",
+                mask: "###",
                 name: "minPreTest_EL",
                 title: "حد نصاب پیش آزمون",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
 
             {
+                hint: "%",
                 width: "200",
-                mask: "##",
+                mask: "###",
                 name: "minPasTest_EL",
                 title: "حد نصاب پس آزمون",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "minQus_EL",
                 title: "حد نصاب پرسشنامه ها",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
 //====================================================================================
             {type: "RowSpacerItem"},
@@ -175,10 +234,15 @@
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "z7",
                 title: "(نمره ارزیابی بالا دست)Z1",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
@@ -187,31 +251,51 @@
                 name: "z8",
                 title: "(نمره ارزیابی فراگیران)Z2",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "minScore_EB",
                 title: "حدقبولی نمره ارزیابی رفتاری",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "minScore_PreTestEB",
                 title: "حد قبولی نمره پیش آزمون",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
 
             {
                 width: "200",
                 hint: "%",
-                mask: "##",
+                mask: "###",
                 name: "minQus_EB",
                 title: "حد نصاب پرسشنامه ها",
                 required: true,
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
             },
 
 
@@ -235,6 +319,13 @@
             members: [isc.IButtonSave.create({
                 title: "ذخیره",
                 click: function () {
+
+                 DynamicForm_Evaluation_Coefficient.validate();
+            if (DynamicForm_Evaluation_Coefficient.hasErrors()) {
+
+                return;
+            }
+
                     var fields = DynamicForm_Evaluation_Coefficient.getFields();
                     var toUpdate = [];
 
@@ -246,23 +337,23 @@
                             "value": fields[i].getValue()
                         });
                     }
-                    if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) > 100) {
-                        createDialog("info", "جمع ضرایب فرمول یک بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                    if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) != 100) {
+                        createDialog("info", "جمع ضرایب فرمول یک باید 100 شود", "<spring:message code="message"/>")
                         return;
-                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z3")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z4")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z5")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z6")) > 100) {
-                        createDialog("info", "جمع ضرایب فرمول دو بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z3")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z4")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z5")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z6")) != 100) {
+                        createDialog("info", "جمع ضرایب فرمول دو باید 100 شود", "<spring:message code="message"/>")
                         return;
-                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) > 100) {
-                        createDialog("info", "جمع ضرایب فرمول چهار بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) != 100) {
+                        createDialog("info", "جمع ضرایب فرمول چهارباید 100 شود", "<spring:message code="message"/>")
                         return;
-                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPasTest_EL")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPreTest_EL")) > 100) {
-                        createDialog("info", "جمع حد نصاب فرمول سه بیشتر از 100 می باشد", "<spring:message code="message"/>")
+                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPasTest_EL")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("minPreTest_EL")) != 100) {
+                        createDialog("info", "جمع حد نصاب فرمول سه باید 100 شود", "<spring:message code="message"/>")
                         return;
                     } else {
                         var parameterValue = parameterValueUrl + "/edit-config-list"
                         isc.RPCManager.sendRequest(TrDSRequest(parameterValue, "PUT", JSON.stringify(toUpdate), "callback:show_Result(rpcResponse)"));
-                       // trainingTabSet.removeTab(trainingTabSet.getSelectedTab())
-                       DynamicForm_Evaluation_Coefficient.refreshFields();
+                        DynamicForm_Evaluation_Coefficient.refreshFields();
+
 
                     }
                 }
@@ -276,7 +367,13 @@
         }),]
     })
 
+    function show_Result(resp) {
+    if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201)
+        {
+         createDialog("info", "اطلاعات با موفقیت ثبت شد", "<spring:message code="message"/>")
+        }
 
+}
     // ======================================
     // var Hlayout_Body=isc.HLayout.create({
     // width:"50%",
