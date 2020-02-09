@@ -70,6 +70,7 @@
             {name: "id", primaryKey: true},
             {name:"scoringMethod"},
             {name:"acceptancelimit"},
+            {name:"startEvaluation"},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
@@ -398,8 +399,17 @@
                     {name: "createdBy"}
                 ],
                 changed: function (form, item, value) {
+                    form.getItem("startEvaluation").setDisabled(false)
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
                     form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod);
+                    if(item.getSelectedRecord().startEvaluation != null)
+                    {
+                     form.setValue("startEvaluation",item.getSelectedRecord().startEvaluation)
+                    }
+                    else{
+                    form.getItem("startEvaluation").setDisabled(true)
+                      form.getItem("startEvaluation").setValue()
+                    }
                     //==============
                     DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
                    if(item.getSelectedRecord().scoringMethod == "1")
@@ -826,6 +836,7 @@
                 title: "حد نمره قبولی",
               required:true,
           },
+
             {
                 name: "acceptancelimit_a",
                 colSpan: 2,
@@ -839,6 +850,15 @@
                     "1003": "خوب",
                     "1004": "خيلي خوب",
                 }
+            },
+             {
+            name:"startEvaluation",
+            title:"<spring:message code="start.evaluation"/>",
+            textAlign: "center",
+             hint: "&nbsp;ماه",
+             valueMap: {
+                    "1": "1","2": "2","3": "3","4": "4","5": "5","6": "6","7": "7","8": "8","9": "9","10": "10","11": "11","12": "12"
+                    }
             },
         ],
     });

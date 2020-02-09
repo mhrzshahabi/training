@@ -23,11 +23,7 @@
             {name: "course.evaluation"},
             {name: "evaluationStatus"},
             {name: "course.id"},
-            {name: "instituteId"},
-            {name: "numberOfFilledReactionEvaluationForms"},
-            {name: "numberOfInCompletedReactionEvaluationForms"},
-            {name: "numberOfEmptyReactionEvaluationForms"},
-            {name: "percenetOfFilledReactionEvaluationForms"}
+            {name: "instituteId"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
     });
@@ -36,7 +32,6 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_evaluationAnalysis_class,
-        // contextMenu: Menu_ListGrid_evaluationAnalysis_class,
         canAddFormulaFields: false,
         autoFetchData: true,
         showFilterEditor: true,
@@ -129,11 +124,7 @@
                     "4": "نتایج"
                 }
             },
-            {name: "evaluationStatus", hidden: true},
-            {name: "numberOfFilledReactionEvaluationForms", hidden: true},
-            {name: "numberOfInCompletedReactionEvaluationForms", hidden: true},
-            {name: "numberOfEmptyReactionEvaluationForms", hidden: true},
-            {name: "percenetOfFilledReactionEvaluationForms", hidden: true}
+            {name: "evaluationStatus", hidden: true}
         ],
         selectionUpdated: function () {
             fill_evaluation_result();
@@ -182,19 +173,19 @@
         valuesManager: "vm",
         fields: [
             {
-                name: "s",
+                name: "FERGrade",
                 title: "نمره ارزیابی واکنشی کلاس"
             },
             {
-                name: "n",
+                name: "FETGrade",
                 title: "نمره ارزیابی استاد بعد از تدریس دوره"
             },
             {
-                name: "n",
+                name: "FECRGrade",
                 title: "نمره اثربخشی"
             },
             {
-                name: "t",
+                name: "FECRPass",
                 title: "تائید/عدم تائید"
             }
         ]
@@ -344,6 +335,11 @@
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(record.numberOfEmptyReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(record.percenetOfFilledReactionEvaluationForms);
+
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.FERGrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.FETGrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRGrade").setValue(record.FECRGrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRPass").setValue(record.FECRPass);
     }
 
     function fill_evaluation_result() {
@@ -352,7 +348,7 @@
     }
 
     function fill_evaluation_result_resp(resp){
-        load_evluation_analysis_data(JSON.parse(rpcResponse.data));
+        load_evluation_analysis_data(JSON.parse(resp.data));
         set_evaluation_analysis_tabset_status();
         Detail_Tab_Evaluation_Analysis.selectTab(0);
     }

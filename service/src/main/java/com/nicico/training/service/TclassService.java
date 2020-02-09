@@ -37,13 +37,17 @@ public class TclassService implements ITclassService {
     private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
+
+    //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     private final IEvaluationService evaluationService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterService parameterService;
     boolean FERPass = false;
     boolean FETPass = false;
-    private Set<ClassStudent> classStudents;
+    boolean FECRPass = false;
+    Set<ClassStudent> classStudents;
     Long teacherId;
+    //----------------------------------------------- Reaction Evaluation ----------------------------------------------
 
     @Transactional(readOnly = true)
     @Override
@@ -306,50 +310,55 @@ public class TclassService implements ITclassService {
 
     @Override
     @Transactional
-    public TclassDTO.ReactionEvaluationResult getEvaluationResult(Long classId) {
+    public TclassDTO.ReactionEvaluationResult getEvaluationResult(Long classId){
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
         teacherId = tclass.getTeacherId();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass,TclassDTO.ReactionEvaluationResult.class);
+
+        evaluationResult.setStudentCount(getStudentCount());
+
+        evaluationResult.setFERGrade(getFERGrade());
+//        evaluationResult.setFERPass(FERPass);
+//        evaluationResult.setFETGrade(getFETGrade());
+//        evaluationResult.setFETPass(FETPass);
+//        evaluationResult.setFECRGrade(getFECRGrade(evaluationResult.getFERGrade()));
+//        evaluationResult.setFECRPass(FECRPass);
+
+        evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms());
+        evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms());
+        evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms());
+        evaluationResult.setPercenetOfFilledReactionEvaluationForms(getPercenetOfFilledReactionEvaluationForms());
         return evaluationResult;
     }
-    //-------------------------------------------------------------- Evaluation ----------------------------------------
+    //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     public Double getStudentsGradeToTeacher(){
         double result = 0.0;
         for (ClassStudent classStudent : classStudents) {
-            if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
-                    Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
-                Evaluation evaluation = evaluationService.getStudentEvaluationForTeacher(classStudent.getId(), teacherId, classStudent.getStudentId());
+            if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2) {
+                Evaluation evaluation = evaluationService.getStudentEvaluationForClass(classStudent.getId(),classStudent.getStudentId());
                 List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
                 double totalGrade = 0.0;
                 double totalWeight = 0.0;
                 for (EvaluationAnswer answer : answers) {
                     double weight = 1.0;
                     double grade = 1.0;
-                    if(answer.getQuestionSource().getCode().equals(-100)){
+                    if(answer.getQuestionSource().getCode().equals("3")){
                         Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                         QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//                        if(questionnaireQuestion.getEvaluationQuestion().getDomain().equals(1)) // teacher
+//                        if(questionnaireQuestion.getEvaluationQuestion().getDomain().equals(2))  //Goals
+//                        if(questionnaireQuestion.getEvaluationQuestion().getDomain().equals(3)) //Facilities
                         weight = questionnaireQuestion.getWeight();
                     }
-                    if(answer.getAnswer().getCode().equals("-1"))
-                        grade = 100;
-                    else if(answer.getAnswer().getCode().equals("-2"))
-                        grade = 80;
-                    else if(answer.getAnswer().getCode().equals("-3"))
-                        grade = 60;
-                    else if(answer.getAnswer().getCode().equals("-4"))
-                        grade = 40;
-                    else if(answer.getAnswer().getCode().equals("-5"))
-                        grade = 20;
-                    else if(answer.getAnswer().getCode().equals("-6"))
-                        grade = 0;
+                    grade = Double.parseDouble(answer.getAnswer().getValue());
                     totalGrade += grade*weight;
                     totalWeight += weight;
                 }
                 result += (totalGrade/totalWeight);
             }
         }
-        result /= getNumberOfFilledReactionEvaluationForms();
+        result /= getNumberOfCompletedReactionEvaluationForms();
         return result;
     }
 
@@ -430,14 +439,23 @@ public class TclassService implements ITclassService {
         return result;
     }
 
-    public boolean getFETPass(){
-        getFETGrade();
-        return  FETPass;
-    }
-
-    public boolean getFERPass(){
-        getFERGrade();
-        return FERPass;
+    public double getFECRGrade(double ferGrade){
+        double result = 0.0;
+        double FECRZ = 0.0;
+        TotalResponse<ParameterValueDTO.Info> parameters =  parameterService.getByCode("FEC_R");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("FECRZ"))
+                FECRZ = Double.parseDouble(parameterValue.getValue());
+//            else if (parameterValue.getCode().equalsIgnoreCase("minScore_ET "))
+//                minScore_ET  = Double.parseDouble(parameterValue.getValue());
+//            else if (parameterValue.getCode().equalsIgnoreCase("minQus_ET"))
+//                minQus_ET = Double.parseDouble(parameterValue.getValue());
+        }
+        result = ferGrade * FECRZ;
+//        if (result>=minScore_ET && getPercenetOfFilledReactionEvaluationForms()>=minQus_ET)
+//            FECRPass = true;
+        return result;
     }
 
     public Integer getStudentCount() {
@@ -479,6 +497,15 @@ public class TclassService implements ITclassService {
         return result;
     }
 
+    public Integer getNumberOfCompletedReactionEvaluationForms(){
+        int result = 0;
+        for (ClassStudent classStudent : classStudents) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2)
+                result++;
+        }
+        return result;
+    }
+
     public Integer getNumberOfEmptyReactionEvaluationForms(){
         int result = 0;
         for (ClassStudent  classStudent : classStudents) {
@@ -495,6 +522,6 @@ public class TclassService implements ITclassService {
         double result = (r1/r2)*100;
         return result;
     }
-    ///-----------------------------------------------------------------------------------------------------------------
+    ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
 
 }

@@ -5,19 +5,19 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+//<script>
 
     var z1z2Data = [];
 
-    var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
-            {name: "value", title: "<spring:message code="value"/>", filterOperator: "iContains"}
-        ],
-        // fetchDataURL: parameterUrl + "/iscList/z1z2"
-    });
+    <%--var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({--%>
+    <%--    fields: [--%>
+    <%--        {name: "id", primaryKey: true, hidden: true},--%>
+    <%--        {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},--%>
+    <%--        {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"},--%>
+    <%--        {name: "value", title: "<spring:message code="value"/>", filterOperator: "iContains"}--%>
+    <%--    ],--%>
+    <%--    // fetchDataURL: parameterUrl + "/iscList/z1z2"--%>
+    <%--});--%>
 
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FET", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FER", "GET", null, setZ1Z2Data));
@@ -55,7 +55,6 @@
             {
                 width: "200",
                 hint: "%",
-                // required: true,
                 mask: "###",
                 name: "z1",
                 title: "ضریب نمره ارزیابی مسئول آموزش به استاد &nbsp;(Z1)",
@@ -72,7 +71,6 @@
                 mask: "###",
                 name: "z2",
                 title: "ضریب نمره ارزیابی فراگیران به استاد &nbsp;(Z2)",
-                // required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -98,7 +96,6 @@
                 mask: "###",
                 name: "minQusET",
                 title: "حد نصاب پرسشنامه ها",
-                //  required: true,
                 change: function (item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -117,7 +114,6 @@
                 mask: "###",
                 name: "z3",
                 title: "ضریب نمره ارزیابی فراگیران به محتوای دوره &nbsp;(Z1)",
-                //  required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -130,7 +126,6 @@
                 mask: "###",
                 name: "z4",
                 title: "ضریب نمره ارزیابی فراگیران به استاد&nbsp;(Z2)",
-                // required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -143,7 +138,6 @@
                 mask: "###",
                 name: "z5",
                 title: "ضریب نمره ارزیابی دوره توسط استاد&nbsp;(Z3)",
-                // required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -156,7 +150,6 @@
                 mask: "###",
                 name: "z6",
                 title: "ضریب نمره ارزیابی فراگیران به امکانات و سازماندهی&nbsp;(Z4)",
-                // required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -170,7 +163,6 @@
                 mask: "###",
                 name: "minScoreER",
                 title: "حد نصاب قابل قبول برای واکنش",
-                // required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -183,7 +175,6 @@
                 mask: "###",
                 name: "minQusER",
                 title: "حد نصاب پرسشنامه ها",
-                // required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -200,7 +191,6 @@
                 mask: "###",
                 name: "minPreTestEL",
                 title: "حد نصاب پیش آزمون",
-                // required: true,
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -211,10 +201,9 @@
             {
                 hint: "%",
                 width: "200",
-                // mask: "###",
                 name: "minPasTestEL",
                 title: "حد نصاب پس آزمون",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -227,7 +216,7 @@
                 mask: "###",
                 name: "minQusEL",
                 title: "حد نصاب پرسشنامه ها",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -243,7 +232,7 @@
                 mask: "###",
                 name: "z7",
                 title: "(ضریب نمره ارزیابی بالا دست)Z1",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -256,7 +245,7 @@
                 mask: "##",
                 name: "z8",
                 title: "(ضریب نمره ارزیابی فراگیران)Z2",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -269,7 +258,7 @@
                 mask: "###",
                 name: "minScoreEB",
                 title: "حدقبولی نمره ارزیابی رفتاری",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -282,7 +271,7 @@
                 mask: "###",
                 name: "minScorePreTestEB",
                 title: "حد قبولی نمره پیش آزمون",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -296,7 +285,7 @@
                 mask: "###",
                 name: "minQusEB",
                 title: "حد نصاب پرسشنامه ها",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -312,7 +301,7 @@
                 mask: "###",
                 name: "FECRZ",
                 title: "ضریب نمره ارزیابی واکنشی کلاس",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -328,7 +317,7 @@
                 mask: "###",
                 name: "FECLZ1",
                 title: "ضریب ارزیابی واکنش دوره",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -341,7 +330,7 @@
                 mask: "###",
                 name: "FECLZ2",
                 title: "ضریب نمره ارزیابی یادگیری",
-                // required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -357,7 +346,7 @@
                 mask: "###",
                 name: "FECBZ1",
                 title: "ضریب نمره ارزیابی واکنش دوره",
-                //required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -370,7 +359,7 @@
                 mask: "###",
                 name: "FECBZ2",
                 title: "ضریب نمره ارزیابی یادگیری",
-                //  required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -383,7 +372,7 @@
                 mask: "###",
                 name: "FECBZ3",
                 title: "ضریب نمره رفتار",
-                //  required: true,
+
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()

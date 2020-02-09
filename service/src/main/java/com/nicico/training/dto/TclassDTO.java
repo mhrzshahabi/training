@@ -74,6 +74,7 @@ public class TclassDTO {
     private Integer workflowEndingStatusCode;
     private String scoringMethod;
     private String acceptancelimit;
+    private Integer startEvaluation;
 
 
     @Getter
@@ -260,29 +261,11 @@ public class TclassDTO {
                 return " ";
         }
 
-
         public Integer getStudentCount() {
             if (classStudents != null)
                 return classStudents.size();
             else
                 return 0;
-        }
-
-        public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
-            if (studentId == -1) {
-                return classStudents;
-            } else {
-
-                Set<ClassStudentDTO.AttendanceInfo> findStudent = new HashSet<>();
-                for (ClassStudentDTO.AttendanceInfo student : classStudents) {
-                    if (student.getStudentId().equals(studentId)) {
-                        findStudent.add(student);
-                        break;
-                    }
-                }
-
-                return findStudent;
-            }
         }
 
         public Integer getNumberOfStudentCompletedEvaluation() {
@@ -298,41 +281,22 @@ public class TclassDTO {
             return studentEvaluations;
         }
 
-        public Integer getNumberOfFilledReactionEvaluationForms(){
-            int result = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
-                    result++;
-            }
-            return result;
-        }
-
-        public Integer getNumberOfInCompletedReactionEvaluationForms(){
-            int result = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
-                    result++;
-            }
-            return result;
-        }
-
-        public Integer getNumberOfEmptyReactionEvaluationForms(){
-            int result = 0;
-            for (ClassStudentDTO.AttendanceInfo  classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 0)
-                    result++;
-            }
-            return result;
-        }
-
-        public Double getPercenetOfFilledReactionEvaluationForms(){
-            double r1 = getNumberOfFilledReactionEvaluationForms();
-            double r2 = getNumberOfFilledReactionEvaluationForms() + getNumberOfEmptyReactionEvaluationForms();
-            double result = (r1/r2)*100;
-            return result;
-        }
+        //        public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
+//            if (studentId == -1) {
+//                return classStudents;
+//            } else {
+//
+//                Set<ClassStudentDTO.AttendanceInfo> findStudent = new HashSet<>();
+//                for (ClassStudentDTO.AttendanceInfo student : classStudents) {
+//                    if (student.getStudentId().equals(studentId)) {
+//                        findStudent.add(student);
+//                        break;
+//                    }
+//                }
+//
+//                return findStudent;
+//            }
+//        }
     }
 
     @Getter
@@ -342,6 +306,15 @@ public class TclassDTO {
     public static class ReactionEvaluationResult{
         boolean FERPass;
         boolean FETPass;
+        boolean FECRPass;
+        Integer studentCount;
+        double FERGrade;
+        double FETGrade;
+        double FECRGrade;
+        Integer numberOfFilledReactionEvaluationForms;
+        Integer numberOfInCompletedReactionEvaluationForms;
+        Integer numberOfEmptyReactionEvaluationForms;
+        double percenetOfFilledReactionEvaluationForms;
     }
 
     @Getter
