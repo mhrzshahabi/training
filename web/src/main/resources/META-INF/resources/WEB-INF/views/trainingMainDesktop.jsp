@@ -701,7 +701,7 @@
                     }
                 },
                 {
-                    title: "مشاهده نیازسنجی افراد",
+                    title: "<spring:message code="personnel.needsAssessment.courses.report"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needsAssessment-by-one-person"/>");
                     }
