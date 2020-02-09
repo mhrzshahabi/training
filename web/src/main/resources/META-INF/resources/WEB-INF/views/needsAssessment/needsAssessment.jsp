@@ -469,6 +469,10 @@
           ListGridNeedsAssessment_Refresh();
           this.Super("close",arguments)
         },
+        show(){
+            // updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
+            this.Super("show",arguments)
+        },
         items:[
             isc.DynamicForm.create({
                 ID: "NeedsAssessmentTargetDF_needsAssessment",
@@ -478,7 +482,9 @@
                         name: "objectType",
                         showTitle: false,
                         optionDataSource: NeedsAssessmentTargetDS_needsAssessment,
-                        valueField: "code", displayField: "title",
+                        valueField: "code",
+                        displayField: "title",
+                        autoFetchData: false,
                         pickListFields: [{name: "title"}],
                         defaultToFirstOption: true,
                         changed: function (form, item, value, oldValue) {
@@ -494,7 +500,11 @@
                         showTitle: false,
                         optionDataSource: JobDs_needsAssessment,
                         valueField: "id", displayField: "titleFa",
+                        autoFetchData: false,
                         pickListFields: [{name: "code"}, {name: "titleFa"}],
+                        click: function(form){
+                            // updateObjectIdLG(form, form.getValue("objectType"));
+                        },
                         changed: function (form, item, value, oldValue) {
                             if(value != oldValue){
                                 editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"))
@@ -575,6 +585,7 @@
                 form.getItem("objectId").pickListFields = [{name: "titleFa"}];
                 break;
         }
+        form.getItem("objectId").fetchData();
     }
 
     function createNeedsAssessmentRecords(data) {
