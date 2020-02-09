@@ -48,14 +48,16 @@ public class NeedsAssessmentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Info")
-    public static class Info<E> extends NeedsAssessmentDTO {
+    public static class Info extends NeedsAssessmentDTO {
         private Long id;
         private Integer version;
+        private String objectName;
+        private String objectCode;
         private CompetenceDTO.Info competence;
         private SkillDTO.Info skill;
         private ParameterValueDTO.MinInfo needsAssessmentDomain;
         private ParameterValueDTO.MinInfo needsAssessmentPriority;
-        private E object;
+//        private E object;
     }
 
     @Getter
@@ -63,6 +65,8 @@ public class NeedsAssessmentDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Create")
     public static class Create extends NeedsAssessmentDTO {
+        private String objectName;
+        private String objectCode;
 //        private String Action;
     }
 

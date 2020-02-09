@@ -74,7 +74,7 @@ public class NeedsAssessmentReportsService {
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
         addCriteria(criteriaRq, "Post", postId);
         List<NeedAssessmentSkillBased> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
-        needsAssessmentList.sort(Comparator.comparingInt(a -> NeedAssessmentSkillBased.priorityList.indexOf(a.getObjectType())));
+//        needsAssessmentList.sort(Comparator.comparingInt(a -> NeedAssessmentSkillBased.priorityList.indexOf(a.getObjectType())));
         List<NeedAssessmentSkillBased> withoutDuplicate = new ArrayList<>();
         needsAssessmentList.forEach(needsAssessment -> {
             if (withoutDuplicate.stream().noneMatch(wd -> wd.getSkill().equals(needsAssessment.getSkill())))
@@ -93,8 +93,8 @@ public class NeedsAssessmentReportsService {
         return rs;
     }
 
-
-    private void addCriteria(SearchDTO.CriteriaRq criteriaRq, String objectType, Long objectId) {
+    @Transactional(readOnly = true)
+    public void addCriteria(SearchDTO.CriteriaRq criteriaRq, String objectType, Long objectId) {
         Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         list.add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
