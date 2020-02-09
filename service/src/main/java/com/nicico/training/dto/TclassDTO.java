@@ -74,6 +74,7 @@ public class TclassDTO {
     private Integer workflowEndingStatusCode;
     private String scoringMethod;
     private String acceptancelimit;
+    private Integer startEvaluation;
 
 
     @Getter

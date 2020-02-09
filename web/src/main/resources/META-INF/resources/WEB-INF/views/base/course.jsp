@@ -1141,10 +1141,10 @@
             {
                 name: "evaluation",
                 title: "<spring:message code="evaluation.level"/>",
-                colSpan: 2,
+                colSpan: 1,
                 textAlign: "center",
                 type: "select",
-                endRow: true,
+                endRow: false,
                 //     defaultValue: "1",
                 valueMap: {
                     "1": "واکنش",
@@ -1154,11 +1154,33 @@
                 },
                 change: function (form, item, value, oldValue) {
                     if (value === "3")
-                        DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(false);
+                    {
+                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(false);
+                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(false);
+                         DynamicForm_course_MainTab.getItem("startEvaluation").enable();
+                         DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(true);
+                    }
                     else
+                    {
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(true);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(true);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(false);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setValue()
+                    }
                 }
             },
+
+            {
+            name:"startEvaluation",
+            title:"<spring:message code="start.evaluation"/>",
+            required:true,
+            textAlign: "center",
+             hint: "&nbsp;ماه",
+             valueMap: {
+                    1: "1",2: "2",3: "3",4: "4",5: "5",6: "6",7: "7",8: "8",9: "9",10: "10",11: "11",12: "12"
+                    }
+            },
+
             {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>",
@@ -1179,8 +1201,7 @@
                 title: "روش نمره دهی",
                 colSpan: 1,
                 required:true,
-              //defaultValue: "3",
-                textAlign: "center",
+               textAlign: "center",
                 valueMap: {
                     "1": "ارزشی",
                     "2": "نمره از صد",
@@ -2481,6 +2502,7 @@
         vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
         DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
+        DynamicForm_course_MainTab.getItem("startEvaluation").disable();
         // DynamicForm_course_MainTab.getItem("acceptancelimit_a").disable();
         Window_course.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="course"/>");
         equalCourse.length = 0;
@@ -2634,8 +2656,10 @@
             }
             if (DynamicForm_course_MainTab.getValue("evaluation") === "3") {
                 DynamicForm_course_MainTab.getItem("behavioralLevel").enable();
+                 DynamicForm_course_MainTab.getItem("startEvaluation").enable();
             } else {
                 DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
+                 DynamicForm_course_MainTab.getItem("startEvaluation").disable();
             }
 
 
