@@ -1,9 +1,11 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IEvaluation;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.IEvaluationService;
@@ -31,7 +33,7 @@ public class EvaluationService implements IEvaluationService {
     private final ModelMapper modelMapper;
     private final EvaluationDAO evaluationDAO;
     private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter = new EnumsConverter.EDomainTypeConverter();
-
+    private final ParameterService parameterService;
     @Transactional(readOnly = true)
     @Override
     public EvaluationDTO.Info get(Long id) {
@@ -142,9 +144,15 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public Evaluation getStudentEvaluationForTeacher(Long classId,Long teacherId,Long studentId){
-        Evaluation evaluation;
-//        evaluationDAO.getOne();
-        return null;
+    public Evaluation getStudentEvaluationForClass(Long classId,Long studentId){
+        Long evaluatorTypeId = null;
+        TotalResponse<ParameterValueDTO.Info> parameters =  parameterService.getByCode("EvaluatorType");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if(parameterValue.getCode().equalsIgnoreCase("3"))
+                evaluatorTypeId = parameterValue.getId();
+        }
+        return evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(
+                classId,studentId,evaluatorTypeId).get(0);
     }
 }
