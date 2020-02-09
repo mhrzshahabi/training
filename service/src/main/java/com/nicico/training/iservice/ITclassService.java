@@ -35,7 +35,7 @@ public interface ITclassService {
 
     SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request);
 
-    SearchDTO.SearchRs<TclassDTO.EvaluatedInfo> evaluatedSearch(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> evaluatedSearch(SearchDTO.SearchRq request);
 
     SearchDTO.SearchRs<TclassDTO.Info> searchById(SearchDTO.SearchRq request, Long classId);
 
@@ -55,4 +55,6 @@ public interface ITclassService {
     int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode);
 
     Integer getWorkflowEndingStatusCode(Long classId);
+
+    public TclassDTO.ReactionEvaluationResult getEvaluationResult(Long classId);
 }

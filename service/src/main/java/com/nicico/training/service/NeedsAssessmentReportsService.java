@@ -32,29 +32,32 @@ public class NeedsAssessmentReportsService {
     private final JobDAO jobDAO;
     private final PostGradeDAO postGradeDAO;
     private final NeedAssessmentSkillBasedDAO needsAssessmentDAO;
-    private final CourseDAO courseDAO;
 
     private final IPostService postService;
     private final ClassStudentReportService classStudentReportService;
     private final IPersonnelService personnelService;
+    private final ParameterValueService parameterValueService;
 
     @Transactional(readOnly = true)
 //    @Override
     public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostId(Long postId) {
-        PersonnelDTO.Info student = personnelService.getByPostCode(postId).get(0);
-        List<ClassStudent> takenCourses = classStudentReportService.searchCoursesOfStudentByNationalCode(student.getNationalCode());
+        Long passedCodeId = parameterValueService.getId("Passed");
 
+        PersonnelDTO.Info student = personnelService.getByPostCode(postId).get(0);
 
         List<NeedAssessmentSkillBased> needAssessmentSkillBases = getNeedsAssessmentByPostId(postId);
         needAssessmentSkillBases = needAssessmentSkillBases.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
-        List mustTakeCourses = needAssessmentSkillBases.stream().map(NA -> NA.getSkill().getCourse()).collect(Collectors.toList());
-
-
+        List<Course> mustTakeCourses = needAssessmentSkillBases.stream().map(NA -> NA.getSkill().getCourse()).collect(Collectors.toList());
 
         List<NeedsAssessmentReportsDTO.NeedsCourses> courses = modelMapper.map(mustTakeCourses, new TypeToken<List<NeedsAssessmentReportsDTO.NeedsCourses>>() {
         }.getType());
+
+        Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
+
         for (int i = 0; i < courses.size(); i++) {
             courses.get(i).setEneedAssessmentPriorityId(needAssessmentSkillBases.get(i).getEneedAssessmentPriorityId());
+            if (classStudentReportService.isPassedCoursesOfStudentByNationalCode(mustTakeCourses.get(i), passedCourseIds))
+                courses.get(i).setStatus(passedCodeId.toString());
         }
         return courses;
     }
@@ -88,14 +91,6 @@ public class NeedsAssessmentReportsService {
         rs.setTotalCount((long) courses.size());
         rs.setList(courses);
         return rs;
-
-
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        if (request.getCriteria() != null)
-//            criteriaRq.getCriteria().add(request.getCriteria());
-//        criteriaRq.getCriteria().add(makeNewCriteria("id", courses.stream().map(Course::getId).collect(Collectors.toList()), EOperator.equals, null));
-//        request.setCriteria(criteriaRq);
-//        return SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.Info.class));
     }
 
     @Transactional(readOnly = true)
