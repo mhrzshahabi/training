@@ -42,7 +42,7 @@ public class TclassService implements ITclassService {
     private final ParameterService parameterService;
     boolean FERPass = false;
     boolean FETPass = false;
-    private Set<ClassStudent> classStudents;
+    Set<ClassStudent> classStudents;
     Long teacherId;
 
     @Transactional(readOnly = true)
@@ -311,6 +311,9 @@ public class TclassService implements ITclassService {
         classStudents = tclass.getClassStudents();
         teacherId = tclass.getTeacherId();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass,TclassDTO.ReactionEvaluationResult.class);
+        evaluationResult.setStudentCount(getStudentCount());
+        evaluationResult.setFERPass(FERPass);
+        evaluationResult.setFETPass(FETPass);
         return evaluationResult;
     }
     //-------------------------------------------------------------- Evaluation ----------------------------------------

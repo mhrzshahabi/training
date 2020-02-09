@@ -342,6 +342,7 @@ public class TclassDTO {
     public static class ReactionEvaluationResult{
         boolean FERPass;
         boolean FETPass;
+        Integer studentCount;
     }
 
     @Getter
