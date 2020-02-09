@@ -4,6 +4,8 @@
 // <script>
 
     var editing = false;
+    var skillData = [];
+    var competenceData = [];
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -25,6 +27,7 @@
             }),
             isc.ToolStripButtonEdit.create({
                 click() {
+                    editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId,ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                     Window_NeedsAssessment_JspNeedsAssessment.show()
                 }
             })
@@ -146,6 +149,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
         ],
+        testData: competenceData,
         // fetchDataURL: competenceUrl + "/iscList",
     });
     var DataSource_Skill_JspNeedsAssessment = isc.DataSource.create({
@@ -160,6 +164,7 @@
             {name: "objectId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
             {name: "objectType", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
         ],
+        testData: skillData,
         clientOnly: true,
     });
 
@@ -231,7 +236,7 @@
         dragDataAction: "none",
         removeRecordClick(rowNum){
             alert(rowNum);
-            this.Super("removeRecordClick", arguments);
+            // this.Super("removeRecordClick", arguments);
         },
         dataChanged(){
             editing = true;
@@ -444,6 +449,10 @@
         minWidth: 1024,
         keepInParentRect: true,
         placement:"fillPanel",
+        close(){
+          clearAllGrid();
+          this.Super("close",arguments)
+        },
         items:[
             isc.DynamicForm.create({
                 ID: "NeedsAssessmentTargetDF_needsAssessment",
@@ -456,10 +465,12 @@
                         valueField: "code", displayField: "title",
                         pickListFields: [{name: "title"}],
                         defaultToFirstOption: true,
-                        changed: function (form, item, value) {
-                            ListGrid_Competence_JspNeedsAssessment.setData([]);
-                            form.getItem("objectId").clearValue();
-                            updateObjectIdLG(form, value);
+                        changed: function (form, item, value, oldValue) {
+                            if(value != oldValue) {
+                                clearAllGrid()
+                                form.getItem("objectId").clearValue();
+                                updateObjectIdLG(form, value);
+                            }
                         },
                     },
                     {
@@ -469,6 +480,7 @@
                         valueField: "id", displayField: "titleFa",
                         pickListFields: [{name: "code"}, {name: "titleFa"}],
                         changed: function (form, item, value) {
+
                         },
                     },
                 ]
@@ -514,6 +526,38 @@
     isc.TrVLayout.create({
         members: [ListGrid_NeedsAssessment_JspNeedAssessment],
     });
+
+    function updateObjectIdLG(form, value) {
+        switch (value) {
+            case 'Job':
+                form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
+                form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
+                break;
+            case 'JobGroup':
+                form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
+                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                break;
+            case 'Post':
+                form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
+                form.getItem("objectId").pickListFields = [
+                    {name: "code"}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
+                    {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
+                ];
+                break;
+            case 'PostGroup':
+                form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
+                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                break;
+            case 'PostGrade':
+                form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
+                form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
+                break;
+            case 'PostGradeGroup':
+                form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
+                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                break;
+        }
+    }
 
     function createNeedsAssessmentRecords(data) {
         // fetchDataDomainsGrid();
@@ -561,11 +605,45 @@
     }
 
     function editNeedsAssessmentRecord(objectId, objectType) {
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "GET",function(resp){
+        let criteria = [
+            '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
+            '{"fieldName":"objectId","operator":"equals","value":'+objectId+'}'
+        ];
+        updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType)
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
             if (resp.httpResponseCode != 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
+            let data = JSON.parse(resp.data).list;
+            for (let i = 0; i < data.length; i++) {
+                let competence = {};
+                let skill = {};
+                competence.id = data[i].competenceId;
+                competence.title = data[i].competence.title;
+                competence.competenceType = data[i].competence.competenceType;
+                DataSource_Competence_JspNeedsAssessment.addData(competence);
+                skill.titleFa = data[i].skill.titleFa;
+                skill.needsAssessmentPriorityId = data[i].needsAssessmentPriorityId;
+                skill.needsAssessmentDomainId = data[i].needsAssessmentDomainId;
+                skill.skillId = data[i].skillId;
+                skill.competenceId = data[i].competenceId;
+                skill.objectId = data[i].objectId;
+                skill.objectType = data[i].objectType;
+                DataSource_Skill_JspNeedsAssessment.addData(skill);
+            }
+            ListGrid_Competence_JspNeedsAssessment.fetchData();
+            NeedsAssessmentTargetDF_needsAssessment.editRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord())
+
             fetchDataDomainsGrid();
         }))
+    }
+
+    function clearAllGrid() {
+        competenceData.length = 0;
+        skillData.length = 0;
+        ListGrid_Competence_JspNeedsAssessment.setData([]);
+        ListGrid_Knowledge_JspNeedsAssessment.setData([]);
+        ListGrid_Attitude_JspNeedsAssessment.setData([]);
+        ListGrid_Ability_JspNeedsAssessment.setData([]);
     }

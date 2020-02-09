@@ -5,6 +5,8 @@ ghazanfari_f,
 */
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.model.NeedsAssessment;
@@ -27,6 +29,12 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     @Autowired
     NeedsAssessmentService(NeedsAssessmentDAO competenceDAO) {
         super(new NeedsAssessment(), competenceDAO);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(dao, request, na -> modelMapper.map(na, NeedsAssessmentDTO.Info.class));
     }
 
     @Transactional
