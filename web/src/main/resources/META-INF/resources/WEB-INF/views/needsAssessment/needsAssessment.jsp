@@ -22,6 +22,7 @@
         members: [
             isc.ToolStripButtonAdd.create({
                 click(){
+                    NeedsAssessmentTargetDF_needsAssessment.clearValues()
                     Window_NeedsAssessment_JspNeedsAssessment.show()
                 }
             }),
@@ -155,7 +156,7 @@
     var DataSource_Skill_JspNeedsAssessment = isc.DataSource.create({
         ID: "DataSource_Skill_JspNeedsAssessment",
         fields: [
-            {name: "id", hidden: true},
+            {name: "id"},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
             {name: "needsAssessmentDomainId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
@@ -235,8 +236,15 @@
         canDragRecordsOut: true,
         dragDataAction: "none",
         removeRecordClick(rowNum){
-            alert(rowNum);
-            // this.Super("removeRecordClick", arguments);
+            let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
+            data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
+            data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
+            for (let i = 0; i < data.length; i++) {
+                if(removeRecord_JspNeedsAssessment(data[i])){
+                    return;
+                }
+                DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
+            }
         },
         dataChanged(){
             editing = true;
@@ -293,6 +301,9 @@
         hoverMode: "details",
         canRemoveRecords:true,
         showFilterEditor:false,
+        removeRecordClick(rowNum){
+            removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
+        },
         recordDrop(dropRecords, targetRecord, index, sourceWidget) {
             let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
@@ -346,6 +357,9 @@
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":109},
+        removeRecordClick(rowNum){
+            removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
+        },
         recordDrop(dropRecords, targetRecord, index, sourceWidget) {
             let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
@@ -400,6 +414,9 @@
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":110},
+        removeRecordClick(rowNum){
+            removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
+        },
         recordDrop(dropRecords, targetRecord, index, sourceWidget) {
             let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
@@ -479,8 +496,10 @@
                         optionDataSource: JobDs_needsAssessment,
                         valueField: "id", displayField: "titleFa",
                         pickListFields: [{name: "code"}, {name: "titleFa"}],
-                        changed: function (form, item, value) {
-
+                        changed: function (form, item, value, oldValue) {
+                            if(value != oldValue){
+                                editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"))
+                            }
                         },
                     },
                 ]
@@ -570,6 +589,7 @@
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
+            data.id = JSON.parse(resp.data).id
             DataSource_Skill_JspNeedsAssessment.addData(data);
             fetchDataDomainsGrid();
         }))
@@ -605,24 +625,23 @@
     }
 
     function editNeedsAssessmentRecord(objectId, objectType) {
-        let criteria = [
-            '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
-            '{"fieldName":"objectId","operator":"equals","value":'+objectId+'}'
-        ];
-        updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType)
+        // let criteria = [
+        //     '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
+        //     '{"fieldName":"objectId","operator":"equals","value":'+objectId+'}'
+        // ];
+        updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, objectType)
+        clearAllGrid();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
             if (resp.httpResponseCode != 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
             let data = JSON.parse(resp.data).list;
+            let flags  = [];
             for (let i = 0; i < data.length; i++) {
-                let competence = {};
                 let skill = {};
-                competence.id = data[i].competenceId;
-                competence.title = data[i].competence.title;
-                competence.competenceType = data[i].competence.competenceType;
-                DataSource_Competence_JspNeedsAssessment.addData(competence);
+                let competence = {};
+                skill.id = data[i].id;
                 skill.titleFa = data[i].skill.titleFa;
                 skill.needsAssessmentPriorityId = data[i].needsAssessmentPriorityId;
                 skill.needsAssessmentDomainId = data[i].needsAssessmentDomainId;
@@ -631,10 +650,17 @@
                 skill.objectId = data[i].objectId;
                 skill.objectType = data[i].objectType;
                 DataSource_Skill_JspNeedsAssessment.addData(skill);
+                if( flags[data[i].competenceId]) continue;
+                flags[data[i].competenceId] = true;
+                // outPut.push(data[i].competenceId);
+                competence.id = data[i].competenceId;
+                competence.title = data[i].competence.title;
+                competence.competenceType = data[i].competence.competenceType;
+                DataSource_Competence_JspNeedsAssessment.addData(competence);
             }
             ListGrid_Competence_JspNeedsAssessment.fetchData();
-            NeedsAssessmentTargetDF_needsAssessment.editRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord())
-
+            NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId);
+            NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", objectType);
             fetchDataDomainsGrid();
         }))
     }
@@ -646,4 +672,14 @@
         ListGrid_Knowledge_JspNeedsAssessment.setData([]);
         ListGrid_Attitude_JspNeedsAssessment.setData([]);
         ListGrid_Ability_JspNeedsAssessment.setData([]);
+    }
+
+    function removeRecord_JspNeedsAssessment(record) {
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null,function(resp){
+            if(resp.httpResponseCode != 200){
+                return true;
+            }
+            DataSource_Skill_JspNeedsAssessment.removeData(record);
+            // return false;
+        }));
     }

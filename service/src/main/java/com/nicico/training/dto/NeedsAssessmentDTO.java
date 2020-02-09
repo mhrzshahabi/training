@@ -63,6 +63,8 @@ public class NeedsAssessmentDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Create")
     public static class Create extends NeedsAssessmentDTO {
+        private String objectName;
+        private String objectCode;
 //        private String Action;
     }
 
