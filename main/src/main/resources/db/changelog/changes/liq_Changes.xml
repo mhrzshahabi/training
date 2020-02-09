@@ -457,5 +457,10 @@
             <column name="start_evaluation" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1581234403178-240">
+        <addColumn tableName="tbl_class">
+            <column name="start_evaluation" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

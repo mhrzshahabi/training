@@ -1156,12 +1156,16 @@
                     if (value === "3")
                     {
                          DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(false);
-                        DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(false);
+                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(false);
+                         DynamicForm_course_MainTab.getItem("startEvaluation").enable();
+                         DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(true);
                     }
                     else
                     {
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(true);
-                      DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(true);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(true);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(false);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setValue()
                     }
                 }
             },
@@ -1169,11 +1173,11 @@
             {
             name:"startEvaluation",
             title:"<spring:message code="start.evaluation"/>",
-            defaultValue:"3",
+            required:true,
             textAlign: "center",
              hint: "&nbsp;ماه",
              valueMap: {
-                    "1": "1","2": "2","3": "3","4": "4","5": "5","6": "6","7": "7","8": "8","9": "9","10": "10","11": "11","12": "12"
+                    1: "1",2: "2",3: "3",4: "4",5: "5",6: "6",7: "7",8: "8",9: "9",10: "10",11: "11",12: "12"
                     }
             },
 
@@ -1197,8 +1201,7 @@
                 title: "روش نمره دهی",
                 colSpan: 1,
                 required:true,
-              //defaultValue: "3",
-                textAlign: "center",
+               textAlign: "center",
                 valueMap: {
                     "1": "ارزشی",
                     "2": "نمره از صد",
