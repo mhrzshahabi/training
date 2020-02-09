@@ -61,18 +61,18 @@ public class OperationalUnitRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<OperationalUnitDTO.Info> create(@RequestBody OperationalUnitDTO.Create req) {
+    public ResponseEntity<OperationalUnitDTO.Info> create(@RequestBody OperationalUnitDTO.Create req, HttpServletResponse response) {
         OperationalUnitDTO.Create create = modelMapper.map(req, OperationalUnitDTO.Create.class);
-        return new ResponseEntity<>(operationalUnitService.create(create), HttpStatus.CREATED);
+        return new ResponseEntity<>(operationalUnitService.create(create, response), HttpStatus.CREATED);
     }
 
     //*********************************
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<OperationalUnitDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<OperationalUnitDTO.Info> update(@PathVariable Long id, @RequestBody Object request, HttpServletResponse response) {
         OperationalUnitDTO.Update update = modelMapper.map(request, OperationalUnitDTO.Update.class);
-        return new ResponseEntity<>(operationalUnitService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(operationalUnitService.update(id, update, response), HttpStatus.OK);
     }
 
     //*********************************

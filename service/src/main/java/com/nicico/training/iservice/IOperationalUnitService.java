@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.OperationalUnitDTO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface IOperationalUnitService {
@@ -11,9 +12,9 @@ public interface IOperationalUnitService {
 
     List<OperationalUnitDTO.Info> list();
 
-    OperationalUnitDTO.Info create(OperationalUnitDTO.Create request);
+    OperationalUnitDTO.Info create(OperationalUnitDTO.Create request, HttpServletResponse response);
 
-    OperationalUnitDTO.Info update(Long id, OperationalUnitDTO.Update request);
+    OperationalUnitDTO.Info update(Long id, OperationalUnitDTO.Update request, HttpServletResponse response);
 
     void delete(Long id);
 

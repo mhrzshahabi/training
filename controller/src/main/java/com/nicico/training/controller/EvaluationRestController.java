@@ -9,7 +9,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.EvaluationAnswer;
 import com.nicico.training.model.Goal;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.model.Skill;
@@ -207,8 +206,43 @@ public class EvaluationRestController {
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<EvaluationDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        EvaluationDTO.Update update = (new ModelMapper()).map(request, EvaluationDTO.Update.class);
-        return new ResponseEntity<>(evaluationService.update(id, update), HttpStatus.OK);
+//        EvaluationDTO.Update update = (new ModelMapper()).map(request, EvaluationDTO.Update.class);
+//        return new ResponseEntity<>(evaluationService.update(id, update), HttpStatus.OK);
+
+        EvaluationDTO.Update update = new EvaluationDTO.Update();
+        update.setId(44L);
+        update.setClassId(21L);
+        update.setEvaluatorId(113L);
+        update.setEvaluatorTypeId(187L);
+        update.setEvaluatedId(114L);
+        update.setEvaluatedTypeId(188L);
+        update.setEvaluationLevelId(156L);
+        update.setDescription("desc_update");
+
+        ////////////////////////////////////////////////////////
+
+        List<EvaluationAnswerDTO.Create> evaluationAnswers = new ArrayList<>();
+
+        EvaluationAnswerDTO.Create evaluationAnswer = new EvaluationAnswerDTO.Create();
+        evaluationAnswer.setEvaluationId(null);
+        evaluationAnswer.setEvaluationQuestionId(10L);
+        evaluationAnswer.setQuestionSourceId(199L);
+        evaluationAnswer.setAnswerId(205L);
+
+        evaluationAnswers.add(evaluationAnswer);
+        update.setEvaluationAnswerList(evaluationAnswers);
+
+        EvaluationAnswerDTO.Create evaluationAnswer1 = new EvaluationAnswerDTO.Create();
+        evaluationAnswer1.setEvaluationId(null);
+        evaluationAnswer1.setEvaluationQuestionId(11L);
+        evaluationAnswer1.setQuestionSourceId(200L);
+        evaluationAnswer1.setAnswerId(206L);
+
+        evaluationAnswers.add(evaluationAnswer1);
+        update.setEvaluationAnswerList(evaluationAnswers);
+
+        return new ResponseEntity<>(evaluationService.update(44L, update), HttpStatus.CREATED);
+
     }
 
     @Loggable

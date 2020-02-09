@@ -268,6 +268,32 @@
 
                                     }
                                 });
+                                var IButton_Questions_Edit = isc.IButtonSave.create({
+                                    title: "ویرایش",
+                                    click: function () {
+                                        // let data = vm_JspEvaluation.getValues();
+
+                                        let data = DynamicForm_Questions_Title_JspEvaluation.getValues()
+                                        data.evaluationAnswerList = DynamicForm_Questions_Body_JspEvaluation.getValues();
+
+                                        data.record = ListGrid_evaluation_class.getSelectedRecord();
+                                        data.evaluator = "${username}";
+                                        isc.RPCManager.sendRequest({
+                                            actionURL: evaluationUrl + "/" + 29,
+                                            httpMethod: "PUT",
+                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                            useSimpleHttp: true,
+                                            contentType: "application/json; charset=utf-8",
+                                            showPrompt: false,
+                                            serverOutputAsString: false,
+                                            data: JSON.stringify(data),
+                                            callback: function (resp) {
+                                                alert(resp.httpResponseCode)
+                                            }
+                                        });
+
+                                    }
+                                });
                                 var Window_Questions_JspEvaluation = isc.Window.create({
                                     placement: "fillScreen",
                                     title: "<spring:message code="evaluation.teacher.supervisor"/>",
@@ -275,7 +301,7 @@
                                         DynamicForm_Questions_Title_JspEvaluation,
                                         DynamicForm_Questions_Body_JspEvaluation,
                                         isc.TrHLayoutButtons.create({
-                                            members: [IButton_Questions_Save, isc.IButtonCancel.create({
+                                            members: [IButton_Questions_Save, IButton_Questions_Edit, isc.IButtonCancel.create({
                                                 click: function () {
                                                     Window_Questions_JspEvaluation.close();
                                                 }

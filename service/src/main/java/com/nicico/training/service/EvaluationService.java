@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.iservice.IEvaluation;
 import com.nicico.training.iservice.IEvaluationService;
@@ -13,6 +14,7 @@ import com.nicico.training.model.Goal;
 import com.nicico.training.model.Evaluation;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.CourseDAO;
+import com.nicico.training.repository.EvaluationAnswerDAO;
 import com.nicico.training.repository.EvaluationDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,6 +32,7 @@ public class EvaluationService implements IEvaluationService {
 
     private final ModelMapper modelMapper;
     private final EvaluationDAO evaluationDAO;
+    private final EvaluationAnswerDAO evaluationAnswerDAO;
     private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter = new EnumsConverter.EDomainTypeConverter();
 
     @Transactional(readOnly = true)
@@ -53,54 +56,6 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info create(EvaluationDTO.Create request) {
 
         return save(modelMapper.map(request, Evaluation.class));
-
-
-//        final Evaluation evaluation = modelMapper.map(request, Evaluation.class);
-//        return save(evaluation);
-
-
-//        Parent parent = new Parent();
-//...
-//        Child c1 = new Child();
-//...
-//        c1.setParent(parent);
-//
-//        List<Child> children = new ArrayList<Child>();
-//        children.add(c1);
-//        parent.setChildren(children);
-//
-//        session.save(parent);
-
-//        HashMap evaluationData = modelMapper.map(request, HashMap.class);
-//
-//        Evaluation evaluation = new Evaluation();
-//        evaluation.setClassId(Long.parseLong(evaluationData.get("id").toString()));
-//        evaluation.setEvaluatedId(1L);
-//        evaluation.setEvaluatedTypeId(42L);
-//        evaluation.setEvaluationLevelId(42L);
-//        evaluation.setEvaluatorId(1L);
-//        evaluation.setEvaluatorTypeId(42L);
-//        evaluation.setDescription("desc");
-
-//        HashMap<String, String> evaluationAnswer = modelMapper.map(evaluationData.get("evaluationAnswerList"), HashMap.class);
-//        List<EvaluationAnswer> evaluationAnswerList = new ArrayList<>();
-//
-//        evaluationAnswer.forEach((questionId, answer) -> {
-//            EvaluationAnswer evalAnswer = new EvaluationAnswer();
-//            evalAnswer.setAnswerId(Long.parseLong(answer));
-//            evalAnswer.setQuestionnaireQuestionId(Long.parseLong(questionId.replace("Q", "")));
-//            evalAnswer.setCreatedDate(date);
-//            evalAnswer.setCreatedBy("h.ras");
-//            evalAnswer.setVersion(0);
-//
-//            evalAnswer.setEvaluation(evaluation);
-//
-//            evaluationAnswerList.add(evalAnswer);
-//        });
-
-//        evaluation.setEvaluationAnswerList(evaluationAnswerList);
-
-//        return save(modelMapper.map(evaluation, Evaluation.class));
     }
 
     @Transactional
@@ -108,11 +63,18 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update request) {
         final Optional<Evaluation> sById = evaluationDAO.findById(id);
         final Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
+
         Evaluation updating = new Evaluation();
         modelMapper.map(evaluation, updating);
         modelMapper.map(request, updating);
 
-        return save(updating);
+        updating.setVersion(evaluation.getVersion());
+
+        for (EvaluationAnswer evaluationAnswer : updating.getEvaluationAnswerList()) {
+            evaluationAnswer.setEvaluationId(id);
+        }
+
+        return modelMapper.map(evaluationDAO.save(updating), EvaluationDTO.Info.class);
     }
 
     @Transactional
@@ -135,13 +97,21 @@ public class EvaluationService implements IEvaluationService {
         return SearchUtil.search(evaluationDAO, request, evaluation -> modelMapper.map(evaluation, EvaluationDTO.Info.class));
     }
 
-
     // ------------------------------
-
     private EvaluationDTO.Info save(Evaluation evaluation) {
 
+        List<EvaluationAnswer> evaluationAnswers = evaluation.getEvaluationAnswerList();
+
+        evaluation.setEvaluationAnswerList(null);
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
-//        return modelMapper.map(saved, EvaluationDTO.Info.class);
-        return null;
+
+        Long evaluationId = saved.getId();
+        for (EvaluationAnswer evaluationAnswer : evaluationAnswers) {
+            evaluationAnswer.setEvaluationId(evaluationId);
+        }
+
+        evaluationAnswerDAO.saveAll(evaluationAnswers);
+
+        return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
 }
