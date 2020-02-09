@@ -4,11 +4,21 @@
 // <script>
 
     var editing = false;
+    var priorityList = {
+        "Post": "پست",
+        "PostGroup": "گروه پستی",
+        "Job": "شغل",
+        "JobGroup": "گروه شغلی",
+        "PostGrade": "رده پستی",
+        "PostGradeGroup": "گروه رده پستی",
+    }
     var skillData = [];
     var competenceData = [];
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "objectType", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competence.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
@@ -27,6 +37,7 @@
                 }
             }),
             isc.ToolStripButtonEdit.create({
+                ID: "editButtonJspNeedsAsessment",
                 click() {
                     editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId,ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                     Window_NeedsAssessment_JspNeedsAssessment.show()
@@ -35,17 +46,24 @@
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
+        groupByField:["objectType", "objectName", "competence.title"],
+        groupStartOpen: "none",
         autoFetchData: true,
         fields:[
-            {name: "objectType", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competence.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
+            {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true, valueMap: priorityList},
+            {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true},
+            {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", hidden: true},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
-            {name: "skill.titleFa", title: "<spring:message code="type"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentDomain.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentPriority.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
+            {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
+            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
         ],
         dataSource: RestDataSourceNeedsAssessment,
-        gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"]
+        gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
+        recordDoubleClick(){
+            editButtonJspNeedsAsessment.click()
+        }
     });
 
 
@@ -120,9 +138,9 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
+            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: skillUrl + "/spec-list"
     });
@@ -159,11 +177,11 @@
             {name: "id"},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentDomainId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "skillId", primaryKey: true, title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "competenceId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "objectId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "objectType", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "needsAssessmentDomainId", filterOperator: "iContains"},
+            {name: "skillId", primaryKey: true, filterOperator: "iContains"},
+            {name: "competenceId", filterOperator: "iContains"},
+            {name: "objectId", filterOperator: "iContains"},
+            {name: "objectType", filterOperator: "iContains"},
         ],
         testData: skillData,
         clientOnly: true,
@@ -204,7 +222,8 @@
         dragDataAction: "none",
         canAcceptDroppedRecords: true,
         fields: [
-            {name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "competenceType.title", title: "<spring:message code="type"/>"}
         ],
         gridComponents: ["filterEditor", "header", "body"],
         // selectionUpdated: "ListGrid_Competence_JspNeedsAssessment.setData(this.getSelection())"
@@ -262,7 +281,11 @@
         showRowNumbers: false,
         selectionType:"single",
         border: "1px solid",
-        fields: [{name: "titleFa"}, {name: "category.titleFa"}, {name: "subCategory.titleFa"},],
+        fields: [
+            {name: "titleFa"},
+            {name: "category.titleFa"},
+            {name: "subCategory.titleFa"}
+        ],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["B"]}),
             "filterEditor", "header", "body"
@@ -309,16 +332,7 @@
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        let data = {
-                            objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
-                            objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
-                            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
-                            skillId: dropRecords[i].id,
-                            titleFa: dropRecords[i].titleFa,
-                            needsAssessmentPriorityId: 111,
-                            needsAssessmentDomainId:108
-                        };
-                        createNeedsAssessmentRecords(data);
+                        createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 108));
                         // fetchDataDomainsGrid();
                         // this.fetchData();
                     }
@@ -365,17 +379,9 @@
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        let data = {
-                            objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
-                            objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
-                            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
-                            skillId: dropRecords[i].id,
-                            titleFa: dropRecords[i].titleFa,
-                            needsAssessmentPriorityId: 111,
-                            needsAssessmentDomainId:109
-                        };
+                        createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 109));
                         // DataSource_Skill_JspNeedsAssessment.addData(data);
-                        createNeedsAssessmentRecords(data);
+                        // createNeedsAssessmentRecords(data);
                         // this.fetchData();
                         // fetchDataDomainsGrid();
                     }
@@ -422,17 +428,9 @@
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        let data = {
-                            objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
-                            objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
-                            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
-                            skillId: dropRecords[i].id,
-                            titleFa: dropRecords[i].titleFa,
-                            needsAssessmentPriorityId: 111,
-                            needsAssessmentDomainId:110
-                        };
+                        createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 110));
                         // DataSource_Skill_JspNeedsAssessment.addData(data);
-                        createNeedsAssessmentRecords(data);
+                        // createNeedsAssessmentRecords(data);
                         // this.fetchData();
                         // fetchDataDomainsGrid()
                     }
@@ -468,6 +466,7 @@
         placement:"fillPanel",
         close(){
           clearAllGrid();
+          ListGridNeedsAssessment_Refresh();
           this.Super("close",arguments)
         },
         items:[
@@ -682,4 +681,23 @@
             DataSource_Skill_JspNeedsAssessment.removeData(record);
             // return false;
         }));
+    }
+
+    function createData_JspNeedsAssessment(record, DomainId, PriorityId = 111) {
+        let data = {
+            objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
+            objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
+            objectName: NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord().titleFa,
+            objectCode: NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord().code,
+            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
+            skillId: record.id,
+            titleFa: record.titleFa,
+            needsAssessmentPriorityId: PriorityId,
+            needsAssessmentDomainId: DomainId
+        }
+        return data;
+    }
+
+    function ListGridNeedsAssessment_Refresh() {
+        ListGrid_NeedsAssessment_JspNeedAssessment.invalidateCache();
     }
