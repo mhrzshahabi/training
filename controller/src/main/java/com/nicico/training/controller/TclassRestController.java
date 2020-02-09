@@ -308,7 +308,7 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/evaluationResult/{classId}")
     public ResponseEntity<TclassDTO.ReactionEvaluationResult> getEvaluationResult(@PathVariable Long classId) {
-        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getEvaluationResult(classId), HttpStatus.OK);
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId), HttpStatus.OK);
     }
 
 }

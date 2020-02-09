@@ -56,5 +56,5 @@ public interface ITclassService {
 
     Integer getWorkflowEndingStatusCode(Long classId);
 
-    public TclassDTO.ReactionEvaluationResult getEvaluationResult(Long classId);
+    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId);
 }

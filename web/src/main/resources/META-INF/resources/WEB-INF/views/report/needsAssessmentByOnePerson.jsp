@@ -1,13 +1,20 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
 // <script>
 
     var postCode = null;
-    var totalDuration = [0, 0, 0];
-    var passedDuration = [0, 0, 0];
+    var totalDuration = [0, 0, 0, 0];
+    var passedDuration = [0, 0, 0, 0];
+    var percentDuration = [0, 0, 0, 0];
     var passedStatusId = "216";
+    var groupedRecords = [];
 
     var temp;
 
@@ -137,22 +144,10 @@
                 createDialog("info", "<spring:message code="personnel.without.postCode"/>");
                 return;
             }
+            groupedRecords = [];
             Window_Personnel_NABOP.close();
         }
     });
-
-    function setSummaries(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
-        } else {
-            let errors = JSON.parse(resp.httpResponseText).errors;
-            let message = "";
-            for (let i = 0; i < errors.length; i++) {
-                message += errors[i].message + "<br/>";
-            }
-            createDialog("info", message);
-        }
-    }
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
@@ -261,6 +256,23 @@
                     return;
                 refreshLG(CoursesLG_NABOP);
             }
+        }, {
+            isSeparator: true
+        }, {
+            title: "<spring:message code="format.pdf"/>",
+            click: function () {
+                print_NABOP("pdf");
+            }
+        }, {
+            title: "<spring:message code="format.excel"/>",
+            click: function () {
+                print_NABOP("excel");
+            }
+        }, {
+            title: "<spring:message code="format.html"/>",
+            click: function () {
+                print_NABOP("html");
+            }
         }]
     });
 
@@ -307,8 +319,11 @@
                     },
                     function (records) {
                         if (totalDuration[records[0].eneedAssessmentPriorityId] === 0)
-                            return 0;
-                        return "<spring:message code="duration.percent.passed"/>" + Math.round(passedDuration[records[0].eneedAssessmentPriorityId] / totalDuration[records[0].eneedAssessmentPriorityId] * 100);
+                            percentDuration[records[0].eneedAssessmentPriorityId] = 0;
+                        else
+                            percentDuration[records[0].eneedAssessmentPriorityId] = Math.round(passedDuration[records[0].eneedAssessmentPriorityId] / totalDuration[records[0].eneedAssessmentPriorityId] * 100);
+                        groupedRecords.addList(records);
+                        return "<spring:message code="duration.percent.passed"/>" + percentDuration[records[0].eneedAssessmentPriorityId];
                     }
                 ]
             },
@@ -363,6 +378,12 @@
             Window_Personnel_NABOP.show();
         }
     });
+    ToolStripButton_Print_NABOP = isc.ToolStripButtonPrint.create({
+        title: "<spring:message code='print'/>",
+        click: function () {
+            print_NABOP("pdf");
+        }
+    });
 
     ToolStrip_Actions_NABOP = isc.ToolStrip.create({
         width: "100%",
@@ -370,6 +391,7 @@
         members:
             [
                 ToolStripButton_ShowPersonnel_NABOP,
+                ToolStripButton_Print_NABOP,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -389,5 +411,78 @@
     //--------------------------------------------------------------------------------------------------------------------//
     //*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
+
+    function print_NABOP(type) {
+        let selectedPerson = PersonnelsLG_NABOP.getSelectedRecord();
+        if (selectedPerson == null) {
+            createDialog("info", "<spring:message code="personnel.not.selected"/>");
+            return;
+        }
+        let records = [];
+        records [0] = [];
+        records [1] = [];
+        records [2] = [];
+        records [3] = [];
+        for (let i = 0; i < groupedRecords.length; i++) {
+            records[groupedRecords[i].eneedAssessmentPriorityId].add({
+                "id": groupedRecords[i].id,
+                "code": groupedRecords[i].code,
+                "titleFa": groupedRecords[i].titleFa,
+                "theoryDuration": groupedRecords[i].theoryDuration,
+                "eneedAssessmentPriorityId": groupedRecords[i].eneedAssessmentPriorityId,
+                "status": groupedRecords[i].status
+            });
+        }
+        let personnel = {
+            "id": selectedPerson.id,
+            "firstName": selectedPerson.firstName,
+            "lastName": selectedPerson.lastName,
+            "nationalCode": selectedPerson.nationalCode,
+            "companyName": selectedPerson.companyName,
+            "personnelNo": selectedPerson.personnelNo,
+            "personnelNo2": selectedPerson.personnelNo2,
+        };
+        temp = records;
+        var criteriaForm_course = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="web/personnel-needs-assessment-report-print/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "essentialRecords", type: "hidden"},
+                    {name: "improvingRecords", type: "hidden"},
+                    {name: "developmentalRecords", type: "hidden"},
+                    {name: "totalHours", type: "hidden"},
+                    {name: "passedHours", type: "hidden"},
+                    {name: "passedPercent", type: "hidden"},
+                    {name: "personnel", type: "hidden"},
+                    {name: "myToken", type: "hidden"}
+                ]
+        });
+        criteriaForm_course.setValue("essentialRecords", JSON.stringify(records[1]));
+        criteriaForm_course.setValue("improvingRecords", JSON.stringify(records[2]));
+        criteriaForm_course.setValue("developmentalRecords", JSON.stringify(records[3]));
+        criteriaForm_course.setValue("totalHours", JSON.stringify(totalDuration));
+        criteriaForm_course.setValue("passedHours", JSON.stringify(passedDuration));
+        criteriaForm_course.setValue("passedPercent", JSON.stringify(percentDuration));
+        criteriaForm_course.setValue("personnel", JSON.stringify(personnel));
+        criteriaForm_course.setValue("myToken", "<%=accessToken%>");
+        criteriaForm_course.show();
+        criteriaForm_course.submitForm();
+    }
+
+    // function setSummaries(resp) {
+    //     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+    //
+    //     } else {
+    //         let errors = JSON.parse(resp.httpResponseText).errors;
+    //         let message = "";
+    //         for (let i = 0; i < errors.length; i++) {
+    //             message += errors[i].message + "<br/>";
+    //         }
+    //         createDialog("info", message);
+    //     }
+    // }
 
     //</script>
