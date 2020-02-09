@@ -37,6 +37,8 @@ public class TclassService implements ITclassService {
     private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
+
+    //----------------------------------------------- Evaluation -------------------------------------------------------
     private final IEvaluationService evaluationService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterService parameterService;
@@ -44,6 +46,7 @@ public class TclassService implements ITclassService {
     boolean FETPass = false;
     Set<ClassStudent> classStudents;
     Long teacherId;
+    //----------------------------------------------- Evaluation -------------------------------------------------------
 
     @Transactional(readOnly = true)
     @Override
@@ -312,11 +315,17 @@ public class TclassService implements ITclassService {
         teacherId = tclass.getTeacherId();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass,TclassDTO.ReactionEvaluationResult.class);
         evaluationResult.setStudentCount(getStudentCount());
-        evaluationResult.setFERPass(FERPass);
-        evaluationResult.setFETPass(FETPass);
+//        evaluationResult.setFERPass(FERPass);
+//        evaluationResult.setFETPass(FETPass);
+//        evaluationResult.setFERGrade(getFERGrade());
+//        evaluationResult.setFETGrade(getFETGrade());
+        evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms());
+        evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms());
+        evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms());
+        evaluationResult.setPercenetOfFilledReactionEvaluationForms(getPercenetOfFilledReactionEvaluationForms());
         return evaluationResult;
     }
-    //-------------------------------------------------------------- Evaluation ----------------------------------------
+    //----------------------------------------------- Evaluation -------------------------------------------------------
     public Double getStudentsGradeToTeacher(){
         double result = 0.0;
         for (ClassStudent classStudent : classStudents) {
@@ -329,23 +338,12 @@ public class TclassService implements ITclassService {
                 for (EvaluationAnswer answer : answers) {
                     double weight = 1.0;
                     double grade = 1.0;
-                    if(answer.getQuestionSource().getCode().equals(-100)){
+                    if(answer.getQuestionSource().getCode().equals("3")){
                         Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                         QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                         weight = questionnaireQuestion.getWeight();
                     }
-                    if(answer.getAnswer().getCode().equals("-1"))
-                        grade = 100;
-                    else if(answer.getAnswer().getCode().equals("-2"))
-                        grade = 80;
-                    else if(answer.getAnswer().getCode().equals("-3"))
-                        grade = 60;
-                    else if(answer.getAnswer().getCode().equals("-4"))
-                        grade = 40;
-                    else if(answer.getAnswer().getCode().equals("-5"))
-                        grade = 20;
-                    else if(answer.getAnswer().getCode().equals("-6"))
-                        grade = 0;
+                    grade = Double.parseDouble(answer.getAnswer().getValue());
                     totalGrade += grade*weight;
                     totalWeight += weight;
                 }
@@ -498,6 +496,6 @@ public class TclassService implements ITclassService {
         double result = (r1/r2)*100;
         return result;
     }
-    ///-----------------------------------------------------------------------------------------------------------------
+    ///---------------------------------------------- Evaluation -------------------------------------------------------
 
 }

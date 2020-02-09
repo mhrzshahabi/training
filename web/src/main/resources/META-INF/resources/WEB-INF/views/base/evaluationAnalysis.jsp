@@ -23,11 +23,7 @@
             {name: "course.evaluation"},
             {name: "evaluationStatus"},
             {name: "course.id"},
-            {name: "instituteId"},
-            {name: "numberOfFilledReactionEvaluationForms"},
-            {name: "numberOfInCompletedReactionEvaluationForms"},
-            {name: "numberOfEmptyReactionEvaluationForms"},
-            {name: "percenetOfFilledReactionEvaluationForms"}
+            {name: "instituteId"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
     });
@@ -129,11 +125,7 @@
                     "4": "نتایج"
                 }
             },
-            {name: "evaluationStatus", hidden: true},
-            {name: "numberOfFilledReactionEvaluationForms", hidden: true},
-            {name: "numberOfInCompletedReactionEvaluationForms", hidden: true},
-            {name: "numberOfEmptyReactionEvaluationForms", hidden: true},
-            {name: "percenetOfFilledReactionEvaluationForms", hidden: true}
+            {name: "evaluationStatus", hidden: true}
         ],
         selectionUpdated: function () {
             fill_evaluation_result();

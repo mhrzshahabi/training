@@ -343,6 +343,12 @@ public class TclassDTO {
         boolean FERPass;
         boolean FETPass;
         Integer studentCount;
+        double FERGrade;
+        double FETGrade;
+        Integer numberOfFilledReactionEvaluationForms;
+        Integer numberOfInCompletedReactionEvaluationForms;
+        Integer numberOfEmptyReactionEvaluationForms;
+        double percenetOfFilledReactionEvaluationForms;
     }
 
     @Getter
