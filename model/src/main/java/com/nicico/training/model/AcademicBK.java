@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Setter
 @Getter
@@ -42,8 +41,8 @@ public class AcademicBK extends Auditable {
     @Column(name = "f_education_orienation")
     private Long educationOrientationId;
 
-    @Column(name = "d_date")
-    private Date date;
+    @Column(name = "c_date")
+    private String date;
 
     @Column(name = "c_duration")
     private String duration;

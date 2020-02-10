@@ -24,8 +24,8 @@
             {name: "subCategories"},
             {name: "categoriesIds", filterOperator: "inSet"},
             {name: "subCategoriesIds", filterOperator: "inSet"},
-            {name: "persianStartDate"},
-            {name: "persianEndDate"},
+            {name: "startDate"},
+            {name: "endDate"},
             {name: "companyName", filterOperator: "iContains"}
         ]
     });
@@ -176,7 +176,7 @@
                 length: 5
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 ID: "teachingHistories_startDate_JspTeachingHistory",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
@@ -194,13 +194,13 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspTeachingHistory.getValue("persianEndDate") === undefined;
+                            return DynamicForm_JspTeachingHistory.getValue("endDate") === undefined;
                         return checkBirthDate(value);
                     }
                 }]
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 ID: "teachingHistories_endDate_JspTeachingHistory",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
@@ -218,14 +218,14 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspTeachingHistory.getValue("persianStartDate") === undefined;
+                            return DynamicForm_JspTeachingHistory.getValue("startDate") === undefined;
                         if (!checkDate(value))
                             return false;
-                        if (DynamicForm_JspTeachingHistory.hasFieldErrors("persianStartDate"))
+                        if (DynamicForm_JspTeachingHistory.hasFieldErrors("startDate"))
                             return true;
-                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianStartDate"));
-                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                        let startDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("startDate"));
+                        let endDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("endDate"));
+                        return Date.compareDates(startDate, endDate) === 1;
                     }
                 }]
             }
@@ -345,12 +345,12 @@
                 filterOperator: "equals"
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 canSort: false
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 title: "<spring:message code='end.date'/>",
                 canSort: false
             }

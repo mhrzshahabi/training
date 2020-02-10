@@ -105,6 +105,8 @@
                 name: "personnelCode",
                 title: "<spring:message code='personnel.no'/>",
                 disabled: true,
+                keyPressFilter: "[0-9]",
+                length: "10",
                 blur: function () {
                     var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
                     fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
@@ -540,7 +542,7 @@
                 name: "personality.nationality",
                 title: "<spring:message code='nationality'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "100"
+                length: "50"
             },
             {
                 name: "personality.description",

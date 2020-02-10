@@ -21,8 +21,8 @@
             {name: "langLevel.titleFa"},
             {name: "instituteName"},
             {name: "duration"},
-            {name: "persianStartDate"},
-            {name: "persianEndDate"}
+            {name: "startDate"},
+            {name: "endDate"}
         ]
     });
 
@@ -91,7 +91,7 @@
                 length: 5
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 ID: "foreignLangKnowledge_startDate_JspForeignLangKnowledge",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
@@ -109,13 +109,13 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return  DynamicForm_JspForeignLangKnowledge.getValue("persianEndDate") === undefined;
+                            return  DynamicForm_JspForeignLangKnowledge.getValue("endDate") === undefined;
                         return checkBirthDate(value);
                     }
                 }]
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 ID: "foreignLangKnowledge_endDate_JspForeignLangKnowledge",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
@@ -133,14 +133,14 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return  DynamicForm_JspForeignLangKnowledge.getValue("persianStartDate") === undefined;
+                            return  DynamicForm_JspForeignLangKnowledge.getValue("startDate") === undefined;
                         if (!checkDate(value))
                             return false;
-                        if ( DynamicForm_JspForeignLangKnowledge.hasFieldErrors("persianStartDate"))
+                        if ( DynamicForm_JspForeignLangKnowledge.hasFieldErrors("startDate"))
                             return true;
-                        var persianStartDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("persianStartDate"));
-                        var persianEndDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                        var startDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("startDate"));
+                        var endDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("endDate"));
+                        return Date.compareDates(startDate, endDate) === 1;
                     }
                 }]
             }
@@ -238,12 +238,12 @@
                 title: "<spring:message code="duration"/>"
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 canSort: false
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 title: "<spring:message code='end.date'/>",
                 canSort: false
             }

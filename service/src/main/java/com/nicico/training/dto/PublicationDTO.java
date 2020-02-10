@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.enums.EPublicationSubjectTypeDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,9 +9,6 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,28 +20,11 @@ public class PublicationDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String subjectTitle;
-    private Date publicationDate;
+    private String publicationDate;
     private String publicationLocation;
     private String publisher;
     private Long teacherId;
     private Integer publicationSubjectTypeId;
-
-
-    public String getPersianPublicationDate() {
-        if (publicationDate == null)
-            return null;
-        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-        return DateUtil.convertMiToKh(ft.format(publicationDate));
-    }
-
-    public void setPersianPublicationDate(String persianStartDate) {
-        try {
-            this.publicationDate = new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(persianStartDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Getter
     @Setter

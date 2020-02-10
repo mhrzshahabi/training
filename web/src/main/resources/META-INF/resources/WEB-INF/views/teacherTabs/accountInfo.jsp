@@ -49,7 +49,7 @@
                 name: "personality.accountInfo.cartNumber",
                 title: "<spring:message code='cart.number'/>",
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "16"
             },
 
             {
