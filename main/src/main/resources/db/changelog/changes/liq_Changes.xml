@@ -523,12 +523,12 @@
             <column name="c_start_date" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1581350316585-239">
+    <changeSet author="poursalehi_mos (generated)" id="1581350874042-239">
         <createTable tableName="tbl_class_pre_course_test_question">
             <column name="f_course_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="pre_course_test_question" type="VARCHAR2(255 CHAR)"/>
+            <column name="pre_course_test_question" type="VARCHAR2(1000 CHAR)"/>
         </createTable>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1581350316585-240">
