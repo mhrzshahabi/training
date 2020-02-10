@@ -10,10 +10,5 @@ public interface OperationalUnitDAO extends JpaRepository<OperationalUnit, Long>
 
     boolean existsByUnitCodeOrOperationalUnit(String unitCode, String operationalUnit);
 
-    boolean existsByUnitCodeOrOperationalUnitAndIdNot(String unitCode, String operationalUnit, Long Id);
-
-    boolean existsByUnitCodeOrOperationalUnitAndIdIsNot(String unitCode, String operationalUnit, Long Id);
-
     boolean existsByUnitCodeAndIdIsNotOrOperationalUnitAndIdIsNot(String unitCode, Long Id1, String operationalUnit, Long Id2);
-
 }

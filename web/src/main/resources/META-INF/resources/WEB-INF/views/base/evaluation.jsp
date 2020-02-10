@@ -893,11 +893,7 @@
                     },
                     changed: function (form, item, value) {
 
-                        if (checkDate(value) === false) {
-                            form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
-                        } else {
-                            form.clearFieldErrors("sessionDate", true);
-                        }
+                        evaluation_check_date();
                     }
                 }
             ]
@@ -988,6 +984,19 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
+        //*****check date is valid*****
+        function evaluation_check_date() {
+
+            DynamicForm_ReturnDate.clearFieldErrors("evaluationReturnDate", true);
+
+            if (DynamicForm_ReturnDate.getValue("evaluationReturnDate") !== undefined && !checkDate(DynamicForm_ReturnDate.getValue("evaluationReturnDate"))) {
+                DynamicForm_ReturnDate.addFieldErrors("evaluationReturnDate", "<spring:message code='msg.correct.date'/>", true);
+            } else if (DynamicForm_ReturnDate.getValue("evaluationReturnDate") < ListGrid_evaluation_class.getSelectedRecord().startDate) {
+                DynamicForm_ReturnDate.addFieldErrors("evaluationReturnDate", "<spring:message code='return.date.before.class.start.date'/>", true);
+            } else {
+                DynamicForm_ReturnDate.clearFieldErrors("evaluationReturnDate", true);
+            }
+        }
 
         //*****show action result function*****
         var MyOkDialog_Operational;
@@ -1000,6 +1009,12 @@
         }
 
         function set_print_Status(numberOfStudents) {
+
+            evaluation_check_date();
+
+            if (DynamicForm_ReturnDate.hasErrors())
+                return;
+
             if (Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Behavior") {
                 ealuation_numberOfStudents = numberOfStudents;
                 let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();

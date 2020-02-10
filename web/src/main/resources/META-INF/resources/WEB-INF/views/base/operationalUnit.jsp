@@ -208,6 +208,7 @@
                         type: "text",
                         required: true,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                        validators: [TrValidators.NotEmpty],
                         length: 10
                     },
                     {
@@ -216,6 +217,7 @@
                         type: "text",
                         required: true,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                        validators: [TrValidators.NotEmpty],
                         length: 100
                     }
                 ]
