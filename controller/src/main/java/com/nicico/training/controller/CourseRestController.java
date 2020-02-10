@@ -10,9 +10,11 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.repository.CourseDAO;
+import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.GoalService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,7 @@ public class CourseRestController {
     private final ObjectMapper objectMapper;
     private final CourseDAO courseDAO;
     private final ModelMapper modelMapper;
+    private final SkillDAO skillDAO;
 
     // ---------------------------------
     @Loggable
@@ -471,5 +474,22 @@ public class CourseRestController {
         return new ResponseEntity(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/getCourseMainObjective/{courseId}")
+    public String getCourseMainObjective(@PathVariable Long courseId, HttpServletResponse response) throws IOException {
+
+        StringBuilder mainObjective =new StringBuilder();
+        List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(courseId);
+
+        for (Skill skill : skillList) {
+
+           if( mainObjective.length() > 0 )
+               mainObjective.append("_");
+
+            mainObjective.append(skill.getTitleFa());
+        }
+
+        return mainObjective.toString();
+    }
 
 }
