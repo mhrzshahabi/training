@@ -204,7 +204,7 @@
 
             {name: "name", title: "<spring:message code="work.name"/>", width: "30%"},
             {name: "description", title: "<spring:message code="description"/>", width: "70%"},
-            {name: "id", title: "id", type: "text", width: "1%"},
+            {name: "id", title: "id", type: "text", width: "1%", hidden: true},
         ],
         sortField: 0,
         dataPageSize: 50,

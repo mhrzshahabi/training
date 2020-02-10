@@ -267,6 +267,32 @@
 
                                     }
                                 });
+                                var IButton_Questions_Edit = isc.IButtonSave.create({
+                                    title: "ویرایش",
+                                    click: function () {
+                                        // let data = vm_JspEvaluation.getValues();
+
+                                        let data = DynamicForm_Questions_Title_JspEvaluation.getValues()
+                                        data.evaluationAnswerList = DynamicForm_Questions_Body_JspEvaluation.getValues();
+
+                                        data.record = ListGrid_evaluation_class.getSelectedRecord();
+                                        data.evaluator = "${username}";
+                                        isc.RPCManager.sendRequest({
+                                            actionURL: evaluationUrl + "/" + 29,
+                                            httpMethod: "PUT",
+                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                            useSimpleHttp: true,
+                                            contentType: "application/json; charset=utf-8",
+                                            showPrompt: false,
+                                            serverOutputAsString: false,
+                                            data: JSON.stringify(data),
+                                            callback: function (resp) {
+                                                alert(resp.httpResponseCode)
+                                            }
+                                        });
+
+                                    }
+                                });
                                 var Window_Questions_JspEvaluation = isc.Window.create({
                                     // placement: "fillScreen",
                                     width:1024,
@@ -277,7 +303,7 @@
                                         DynamicForm_Questions_Title_JspEvaluation,
                                         DynamicForm_Questions_Body_JspEvaluation,
                                         isc.TrHLayoutButtons.create({
-                                            members: [IButton_Questions_Save, isc.IButtonCancel.create({
+                                            members: [IButton_Questions_Save, IButton_Questions_Edit, isc.IButtonCancel.create({
                                                 click: function () {
                                                     Window_Questions_JspEvaluation.close();
                                                 }
@@ -869,11 +895,7 @@
                     },
                     changed: function (form, item, value) {
 
-                        if (checkDate(value) === false) {
-                            form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
-                        } else {
-                            form.clearFieldErrors("sessionDate", true);
-                        }
+                        evaluation_check_date();
                     }
                 }
             ]
@@ -964,6 +986,19 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
+        //*****check date is valid*****
+        function evaluation_check_date() {
+
+            DynamicForm_ReturnDate.clearFieldErrors("evaluationReturnDate", true);
+
+            if (DynamicForm_ReturnDate.getValue("evaluationReturnDate") !== undefined && !checkDate(DynamicForm_ReturnDate.getValue("evaluationReturnDate"))) {
+                DynamicForm_ReturnDate.addFieldErrors("evaluationReturnDate", "<spring:message code='msg.correct.date'/>", true);
+            } else if (DynamicForm_ReturnDate.getValue("evaluationReturnDate") < ListGrid_evaluation_class.getSelectedRecord().startDate) {
+                DynamicForm_ReturnDate.addFieldErrors("evaluationReturnDate", "<spring:message code='return.date.before.class.start.date'/>", true);
+            } else {
+                DynamicForm_ReturnDate.clearFieldErrors("evaluationReturnDate", true);
+            }
+        }
 
         //*****show action result function*****
         var MyOkDialog_Operational;
@@ -976,6 +1011,12 @@
         }
 
         function set_print_Status(numberOfStudents) {
+
+            evaluation_check_date();
+
+            if (DynamicForm_ReturnDate.hasErrors())
+                return;
+
             if (Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Behavior") {
                 ealuation_numberOfStudents = numberOfStudents;
                 let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
