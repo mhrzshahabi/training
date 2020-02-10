@@ -19,7 +19,7 @@
             {name: "educationLevelId"},
             {name: "educationMajorId"},
             {name: "educationOrientationId"},
-            {name: "persianDate"},
+            {name: "date"},
             {name: "duration"},
             {name: "academicGrade"},
             {name: "collageName"}
@@ -158,7 +158,7 @@
                 length: 5
             },
             {
-                name: "persianDate",
+                name: "date",
                 ID: "academicBK_date_JspAcademicBK",
                 title: "<spring:message code='graduation.date'/>",
                 hint: todayDate,
@@ -176,7 +176,7 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspAcademicBK.getValue("persianDate") === undefined;
+                            return DynamicForm_JspAcademicBK.getValue("date") === undefined;
                         return checkBirthDate(value);
                     }
                 }],
@@ -314,7 +314,7 @@
                 title: "<spring:message code='duration'/>"
             },
             {
-                name: "persianDate",
+                name: "date",
                 title: "<spring:message code='graduation.date'/>",
                 canSort: false
             }

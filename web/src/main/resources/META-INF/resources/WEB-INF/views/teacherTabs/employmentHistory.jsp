@@ -23,8 +23,8 @@
             {name: "subCategoriesIds", filterOperator: "inSet"},
             {name: "categories"},
             {name: "subCategories"},
-            {name: "persianStartDate"},
-            {name: "persianEndDate"}
+            {name: "startDate"},
+            {name: "endDate"}
         ]
     });
 
@@ -133,7 +133,7 @@
                 }
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 ID: "employmentHistories_startDate_JspEmploymentHistory",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
@@ -151,13 +151,13 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspEmploymentHistory.getValue("persianEndDate") === undefined;
+                            return DynamicForm_JspEmploymentHistory.getValue("endDate") === undefined;
                         return checkBirthDate(value);
                     }
                 }]
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 ID: "employmentHistories_endDate_JspEmploymentHistory",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
@@ -175,14 +175,14 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspEmploymentHistory.getValue("persianStartDate") === undefined;
+                            return DynamicForm_JspEmploymentHistory.getValue("startDate") === undefined;
                         if (!checkDate(value))
                             return false;
-                        if (DynamicForm_JspEmploymentHistory.hasFieldErrors("persianStartDate"))
+                        if (DynamicForm_JspEmploymentHistory.hasFieldErrors("startDate"))
                             return true;
-                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianStartDate"));
-                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                        let startDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("startDate"));
+                        let endDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("endDate"));
+                        return Date.compareDates(startDate, endDate) === 1;
                     }
                 }]
             }
@@ -288,12 +288,12 @@
                 filterOnKeypress: true
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 canSort: false
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 title: "<spring:message code='end.date'/>",
                 canSort: false
             }

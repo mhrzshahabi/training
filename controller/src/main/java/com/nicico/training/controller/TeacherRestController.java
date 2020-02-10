@@ -644,14 +644,14 @@ public class TeacherRestController {
             }
             if(cat_related && subCat_related){
                 if(employmentHistory.getEndDate() != null && employmentHistory.getStartDate()!=null) {
-                    Long years = Long.parseLong(employmentHistory.getPersianEndDate().substring(0,4)) -
-                                Long.parseLong(employmentHistory.getPersianStartDate().substring(0,4)) + 1;
+                    Long years = Long.parseLong(employmentHistory.getEndDate().substring(0,4)) -
+                                Long.parseLong(employmentHistory.getStartDate().substring(0,4)) + 1;
                     table_1_work += years;
                 }
             }
             if(employmentHistory.getEndDate() != null && employmentHistory.getStartDate()!=null) {
-                Long years = Long.parseLong(employmentHistory.getPersianEndDate().substring(0,4)) -
-                        Long.parseLong(employmentHistory.getPersianStartDate().substring(0,4)) + 1;
+                Long years = Long.parseLong(employmentHistory.getEndDate().substring(0,4)) -
+                        Long.parseLong(employmentHistory.getStartDate().substring(0,4)) + 1;
                 table_1_years += years;
             }
         }
