@@ -594,5 +594,8 @@
     <changeSet author="rastegari_h (generated)" id="1580899903748-242">
         <addForeignKeyConstraint baseColumnNames="f_question_source_id" baseTableName="tbl_evaluation_answer" constraintName="FKrdfjcda1wvt0dkinny9rbubj9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581350316585-243">
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_class_pre_course_test_question" constraintName="FKs5neciahgfdvu25u5tr3ocpx2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

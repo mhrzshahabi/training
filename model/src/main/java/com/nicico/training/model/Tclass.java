@@ -138,7 +138,7 @@ public class Tclass extends Auditable {
     @Column(name = "c_acceptance_limit")
     private String acceptancelimit;
 
-    @Column(name="start_evaluation")
+    @Column(name = "start_evaluation")
     private Integer startEvaluation;
 
     @Column(name = "c_workflow_ending_status")
@@ -151,6 +151,14 @@ public class Tclass extends Auditable {
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ClassSession> classSessions;
+
+    @ElementCollection
+    @CollectionTable(name = "tbl_class_pre_course_test_question", joinColumns = @JoinColumn(name = "f_course_id"))
+    @Column(name = "pre_course_test_question")
+    private List<String> preCourseTestQuestions;
+
+    @Column(name = "pre_course_test")
+    private Boolean preCourseTest;
 
     @Transient
     public List<Long> getTrainingPlaceIds() {
