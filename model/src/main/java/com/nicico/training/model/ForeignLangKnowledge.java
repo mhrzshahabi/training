@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Setter
 @Getter
@@ -34,11 +33,11 @@ public class ForeignLangKnowledge extends Auditable {
     @Column(name = "e_level")
     private Integer langLevelId;
 
-    @Column(name = "d_start_date")
-    private Date startDate;
+    @Column(name = "c_start_date")
+    private String startDate;
 
-    @Column(name = "d_end_date")
-    private Date endDate;
+    @Column(name = "c_end_date")
+    private String endDate;
 
     @Column(name = "c_institute_name")
     private String instituteName;

@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -47,11 +46,11 @@ public class TeachingHistory extends Auditable {
     @Column(name = "n_duration", precision = 5)
     private Integer duration;
 
-    @Column(name = "d_start_date")
-    private Date startDate;
+    @Column(name = "c_start_date")
+    private String startDate;
 
-    @Column(name = "d_end_date")
-    private Date endDate;
+    @Column(name = "c_end_date")
+    private String endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)
