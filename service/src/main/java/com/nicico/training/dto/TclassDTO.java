@@ -4,12 +4,23 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.training.TrainingException;
+import com.nicico.training.iservice.IEvaluationService;
+import com.nicico.training.iservice.IQuestionnaireQuestionService;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.QuestionnaireQuestionDAO;
+import com.nicico.training.service.EvaluationService;
+import com.nicico.training.service.ParameterService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -63,6 +74,8 @@ public class TclassDTO {
     private Integer workflowEndingStatusCode;
     private String scoringMethod;
     private String acceptancelimit;
+    private Integer startEvaluation;
+
 
     @Getter
     @Setter
@@ -224,8 +237,8 @@ public class TclassDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TclassEvaluatedInfo")
-    public static class EvaluatedInfo{
+    @ApiModel("TclassEvaluatedInfoGrid")
+    public static class EvaluatedInfoGrid{
         private Long id;
         private String code;
         private CourseDTO.CourseInfoTuple course;
@@ -239,7 +252,7 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple institute;
         private Long instituteId;
         private String classStatus;
-//        private String evaluationStatus;
+        private String evaluationStatus;
 
         public String getTeacher() {
             if (teacher != null)
@@ -248,21 +261,11 @@ public class TclassDTO {
                 return " ";
         }
 
-        public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
-            if (studentId == -1) {
-                return classStudents;
-            } else {
-
-                Set<ClassStudentDTO.AttendanceInfo> findStudent = new HashSet<>();
-                for (ClassStudentDTO.AttendanceInfo student : classStudents) {
-                    if (student.getStudentId().equals(studentId)) {
-                        findStudent.add(student);
-                        break;
-                    }
-                }
-
-                return findStudent;
-            }
+        public Integer getStudentCount() {
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
         }
 
         public Integer getNumberOfStudentCompletedEvaluation() {
@@ -278,49 +281,40 @@ public class TclassDTO {
             return studentEvaluations;
         }
 
-        public Integer getNumberOfFilledReactionEvaluationForms(){
-            int result = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
-                    result++;
-                }
-            return result;
-        }
+        //        public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
+//            if (studentId == -1) {
+//                return classStudents;
+//            } else {
+//
+//                Set<ClassStudentDTO.AttendanceInfo> findStudent = new HashSet<>();
+//                for (ClassStudentDTO.AttendanceInfo student : classStudents) {
+//                    if (student.getStudentId().equals(studentId)) {
+//                        findStudent.add(student);
+//                        break;
+//                    }
+//                }
+//
+//                return findStudent;
+//            }
+//        }
+    }
 
-        public Integer getNumberOfInCompletedReactionEvaluationForms(){
-            int result = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3)
-                    result++;
-                }
-            return result;
-        }
-
-        public Integer getNumberOfEmptyReactionEvaluationForms(){
-            int result = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 0)
-                    result++;
-            }
-            return result;
-        }
-
-        public Double getPercenetOfFilledReactionEvaluationForms(){
-            double r1 = getNumberOfFilledReactionEvaluationForms();
-            double r2 = getNumberOfFilledReactionEvaluationForms() + getNumberOfEmptyReactionEvaluationForms();
-            double result = (r1/r2)*100;
-            return result;
-        }
-
-        public Integer getStudentCount() {
-            if (classStudents != null)
-                return classStudents.size();
-            else
-                return 0;
-        }
-
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ReactionEvaluationResult")
+    public static class ReactionEvaluationResult{
+        boolean FERPass;
+        boolean FETPass;
+        boolean FECRPass;
+        Integer studentCount;
+        double FERGrade;
+        double FETGrade;
+        double FECRGrade;
+        Integer numberOfFilledReactionEvaluationForms;
+        Integer numberOfInCompletedReactionEvaluationForms;
+        Integer numberOfEmptyReactionEvaluationForms;
+        double percenetOfFilledReactionEvaluationForms;
     }
 
     @Getter
@@ -337,7 +331,7 @@ public class TclassDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class EvaluatedSpecRs {
-        private List<TclassDTO.EvaluatedInfo> data;
+        private List<TclassDTO.EvaluatedInfoGrid> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

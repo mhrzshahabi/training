@@ -128,6 +128,9 @@ public class Course extends Auditable {
     @Column(name = "c_acceptance_limit")
     private String acceptancelimit;
 
+    @Column(name="start_evaluation")
+    private Integer startEvaluation;
+
     //    @Transient
 //    private Long knowledge = Long.valueOf(0);
 //
@@ -142,9 +145,8 @@ public class Course extends Auditable {
     @Column(name = "c_need_text")
     private String needText;
 
-    @OneToMany()
-    @JoinColumn(name = "f_course", insertable = false, updatable = false)
-    private Set<EqualCourse> equalCourseSet;
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EqualCourse> equalCourses;
 
     @Transient
     @Getter(AccessLevel.NONE)

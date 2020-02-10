@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -161,10 +158,10 @@ public class ClassStudentService implements IClassStudentService {
 
      @Transactional
      @Override
-     public Long getScoreState(Long classId)
+     public List<Long> getScoreState(Long classId)
      {
         final List<Long> classStudentList=classStudentDAO.getScoreState(classId);
-         return Long.valueOf(classStudentList.size());
+         return classStudentList;
 
      }
 }

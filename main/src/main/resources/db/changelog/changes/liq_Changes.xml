@@ -452,5 +452,25 @@
     <changeSet author="rastegari_h (generated)" id="1580899903748-296">
         <dropColumn columnName="F_QUESTION_AREA_ID" tableName="TBL_EVALUATION_ANSWER"/>
     </changeSet>
+     <changeSet author="heydaripoor (generated)" id="1581228365224-240">
+        <addColumn tableName="tbl_course">
+            <column name="start_evaluation" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1581234403178-240">
+        <addColumn tableName="tbl_class">
+            <column name="start_evaluation" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1581242886150-240">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="c_object_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1581242886150-241">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="c_object_name" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -34,5 +34,5 @@ public interface IClassStudentService {
     void setTotalStudentWithOutScore(Long classId);
 
 
-    Long getScoreState(Long classId);
+    List<Long> getScoreState(Long classId);
 }

@@ -8,6 +8,8 @@ import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.MetaValue;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -58,5 +60,16 @@ public class NeedAssessmentSkillBased<E> extends Auditable {
 
     @Column(name = "c_object_type")
     private String objectType;
+
+    public static List<String> priorityList = new ArrayList<String>() {
+        {
+            add("Post");
+            add("PostGroup");
+            add("Job");
+            add("JobGroup");
+            add("PostGrade");
+            add("PostGradeGroup");
+        }
+    };
 
 }
