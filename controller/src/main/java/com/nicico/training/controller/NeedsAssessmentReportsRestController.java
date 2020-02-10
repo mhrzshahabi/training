@@ -53,22 +53,25 @@ public class NeedsAssessmentReportsRestController {
                                   @RequestParam(value = "essentialRecords") String essentialRecords,
                                   @RequestParam(value = "improvingRecords") String improvingRecords,
                                   @RequestParam(value = "developmentalRecords") String developmentalRecords,
-                                  @RequestParam(value = "totalHours") List<String> totalHours,
-                                  @RequestParam(value = "passedHours") List<String> passedHours,
-                                  @RequestParam(value = "passedPercent") List<String> passedPercent,
+                                  @RequestParam(value = "totalEssentialHours") String totalEssentialHours,
+                                  @RequestParam(value = "passedEssentialHours") String passedEssentialHours,
+                                  @RequestParam(value = "totalImprovingHours") String totalImprovingHours,
+                                  @RequestParam(value = "passedImprovingHours") String passedImprovingHours,
+                                  @RequestParam(value = "totalDevelopmentalHours") String totalDevelopmentalHours,
+                                  @RequestParam(value = "passedDevelopmentalHours") String passedDevelopmentalHours,
                                   @RequestParam(value = "personnel") List<String> personnel) throws Exception {
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
-        params.put("essentialTotal", totalHours.get(1));
-        params.put("essentialPassed", passedHours.get(1));
-        params.put("essentialPercent", passedPercent.get(1));
-        params.put("improvingTotal", totalHours.get(2));
-        params.put("improvingPassed", passedHours.get(2));
-        params.put("improvingPercent", passedPercent.get(2));
-        params.put("developmentalTotal", totalHours.get(3).substring(0, totalHours.get(3).length() - 1));
-        params.put("developmentalPassed", passedHours.get(3).substring(0, passedHours.get(3).length() - 1));
-        params.put("developmentalPercent", passedPercent.get(3).substring(0, passedPercent.get(3).length() - 1));
+        params.put("essentialTotal", totalEssentialHours);
+        params.put("essentialPassed", passedEssentialHours);
+        params.put("essentialPercent", totalEssentialHours.equals("0") ? "0" : String.valueOf(Math.round(Float.valueOf(passedEssentialHours) / Float.valueOf(totalEssentialHours) * 100)));
+        params.put("improvingTotal", totalImprovingHours);
+        params.put("improvingPassed", passedImprovingHours);
+        params.put("improvingPercent", totalImprovingHours.equals("0") ? "0" : String.valueOf(Math.round(Float.valueOf(passedImprovingHours) / Float.valueOf(totalImprovingHours) * 100)));
+        params.put("developmentalTotal", totalDevelopmentalHours);
+        params.put("developmentalPassed", passedDevelopmentalHours);
+        params.put("developmentalPercent", totalDevelopmentalHours.equals("0") ? "0" : String.valueOf(Math.round(Float.valueOf(passedDevelopmentalHours) / Float.valueOf(totalDevelopmentalHours) * 100)));
 
         String data = "{" +
                 "\"essentialDS\": " + essentialRecords + "," +
