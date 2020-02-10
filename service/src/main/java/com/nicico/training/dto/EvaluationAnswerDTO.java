@@ -24,7 +24,7 @@ public class EvaluationAnswerDTO implements Serializable {
     private Long evaluationQuestionId;
 
     @ApiModelProperty(required = true)
-    private Long questionAreaId;
+    private Long questionSourceId;
 
     @ApiModelProperty(required = true)
     private Long answerId;
