@@ -6,7 +6,6 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -134,11 +133,14 @@
         }
     });
 
+    var vm_reaction_evaluation = isc.ValuesManager.create({});
+
     DynamicForm_Reaction_EvaluationAnalysis_Header = isc.DynamicForm.create({
         height: "100%",
         align: "right",
         canSubmit: true,
         titleWidth: 120,
+        valuesManager: vm_reaction_evaluation,
         titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
@@ -189,6 +191,7 @@
         titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
+        valuesManager: vm_reaction_evaluation,
         styleName: "teacher-form",
         numCols: 8,
         margin: 10,
@@ -265,6 +268,16 @@
         height: "25",
         title: "چاپ خلاصه نتیجه ارزیابی واکنشی",
         click: function () {
+            var obj1 = vm_reaction_evaluation.getValues();
+            var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+            delete obj1['studentCount'];
+            var obj1_str = JSON.stringify(obj1);
+            var obj2_str = JSON.stringify(obj2);
+            obj1_str = obj1_str.substr(0,obj1_str.length-1);
+            obj1_str = obj1_str + ",";
+            obj2_str = obj2_str.substr(1,obj2_str.length);
+            var object = obj1_str + obj2_str;
+            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluation"/>",null,object);
         }
     });
 
