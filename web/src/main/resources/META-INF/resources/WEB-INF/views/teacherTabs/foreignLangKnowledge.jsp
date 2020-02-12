@@ -8,7 +8,9 @@
     var saveActionUrlForeignLangKnowledge;
     var waitForeignLangKnowledge;
     var teacherIdForeignLangKnowledge = null;
-
+    var startDateCheck_JSPLang = true;
+    var endDateCheck_JSPLang = true;
+    var dateCheck_Order_JSPLang = true;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -97,6 +99,7 @@
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
+                length: 10,
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
@@ -105,15 +108,26 @@
                         displayDatePicker('foreignLangKnowledge_startDate_JspForeignLangKnowledge', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return  DynamicForm_JspForeignLangKnowledge.getValue("endDate") === undefined;
-                        return checkBirthDate(value);
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    var endDate = form.getValue("endDate");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        startDateCheck_JSPLang = false;
+                        dateCheck_Order_JSPLang = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        dateCheck_Order_JSPLang = false;
+                        startDateCheck_JSPLang = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        startDateCheck_JSPLang = true;
+                        dateCheck_Order_JSPLang = true;
+                        form.clearFieldErrors("startDate", true);
                     }
-                }]
+                }
             },
             {
                 name: "endDate",
@@ -122,28 +136,46 @@
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('foreignLangKnowledge_endDate_JspForeignLangKnowledge', this, 'ymd', '/');
+                    click: function (form) {
+                        if (!(form.getValue("startDate"))) {
+                            dialogTeacher = isc.MyOkDialog.create({
+                                message: "ابتدا تاریخ شروع را انتخاب کنید",
+                            });
+                            dialogTeacher.addProperties({
+                                buttonClick: function () {
+                                    this.close();
+                                    form.getItem("startDate").selectValue();
+                                }
+                            });
+                        } else {
+                            closeCalendarWindow();
+                            displayDatePicker('foreignLangKnowledge_endDate_JspForeignLangKnowledge', this, 'ymd', '/');
+                        }
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return  DynamicForm_JspForeignLangKnowledge.getValue("startDate") === undefined;
-                        if (!checkDate(value))
-                            return false;
-                        if ( DynamicForm_JspForeignLangKnowledge.hasFieldErrors("startDate"))
-                            return true;
-                        var startDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("startDate"));
-                        var endDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("endDate"));
-                        return Date.compareDates(startDate, endDate) === 1;
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("startDate");
+                    if (dateCheck === false) {
+                        endDateCheck_JSPLang = false;
+                        dateCheck_Order_JSPLang = true;
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (value < startDate) {
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDateCheck_JSPLang = true;
+                        dateCheck_Order_JSPLang = false;
+                    } else {
+                        form.clearFieldErrors("endDate", true);
+                        endDateCheck_JSPLang = true;
+                        dateCheck_Order_JSPLang = true;
                     }
-                }]
+                }
             }
         ]
     });
@@ -152,8 +184,43 @@
         top: 260,
         click: function () {
             DynamicForm_JspForeignLangKnowledge.validate();
-            if (!DynamicForm_JspForeignLangKnowledge.valuesHaveChanged() || !DynamicForm_JspForeignLangKnowledge.validate())
+            if (!DynamicForm_JspForeignLangKnowledge.valuesHaveChanged() ||
+                !DynamicForm_JspForeignLangKnowledge.validate() ||
+                dateCheck_Order_JSPLang == false ||
+                dateCheck_Order_JSPLang == false ||
+                endDateCheck_JSPLang == false ||
+                startDateCheck_JSPLang == false) {
+
+                if (dateCheck_Order_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (dateCheck_Order_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("startDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDateCheck_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
+                if (startDateCheck_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("startDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
+                if (DynamicForm_JspForeignLangKnowledge.getValue("startDate") != undefined && DynamicForm_JspForeignLangKnowledge.getValue("endDate") == undefined){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
+                }
                 return;
+            }
+
+            if (DynamicForm_JspForeignLangKnowledge.getValue("startDate") != undefined && DynamicForm_JspForeignLangKnowledge.getValue("endDate") == undefined) {
+                DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
+                return;
+            }
             waitForeignLangKnowledge = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlForeignLangKnowledge,
                 methodForeignLangKnowledge,

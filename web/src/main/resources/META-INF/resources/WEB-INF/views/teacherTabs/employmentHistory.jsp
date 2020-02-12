@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
     var methodEmploymentHistory = "GET";
     var saveActionUrlEmploymentHistory;
@@ -11,8 +11,7 @@
     var isCategoriesChanged = false;
     var startDateCheck_JSPEmpHistory = true;
     var endDateCheck_JSPEmpHistory = true;
-    var startDateCheck_Order_JSPEmpHistory = true;
-    var endDateCheck_Order_JSPEmpHistory = true;
+    var dateCheck_Order_JSPEmpHistory = true;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -151,23 +150,23 @@
                         displayDatePicker('employmentHistories_startDate_JspEmploymentHistory', this, 'ymd', '/');
                     }
                 }],
-    editorExit: function (form, item, value) {
+                editorExit: function (form, item, value) {
                     var dateCheck;
                     var endDate = form.getValue("endDate");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
                         startDateCheck_JSPEmpHistory = false;
-                        startDateCheck_Order_JSPEmpHistory = true;
+                        dateCheck_Order_JSPEmpHistory = true;
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
-                        startDateCheck_Order_JSPEmpHistory = false;
+                        dateCheck_Order_JSPEmpHistory = false;
                         startDateCheck_JSPEmpHistory = true;
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     } else {
                         startDateCheck_JSPEmpHistory = true;
-                        startDateCheck_Order_JSPEmpHistory = true;
+                        dateCheck_Order_JSPEmpHistory = true;
                         form.clearFieldErrors("startDate", true);
                     }
                 }
@@ -199,24 +198,24 @@
                         }
                     }
                 }],
-        editorExit: function (form, item, value) {
+                editorExit: function (form, item, value) {
                     var dateCheck;
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("startDate");
                     if (dateCheck === false) {
                         endDateCheck_JSPEmpHistory = false;
-                        endDateCheck_Order_JSPEmpHistory = true;
+                        dateCheck_Order_JSPEmpHistory = true;
                         form.clearFieldErrors("endDate", true);
                         form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (value < startDate) {
                         form.clearFieldErrors("endDate", true);
                         form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                         endDateCheck_JSPEmpHistory = true;
-                        endDateCheck_Order_JSPEmpHistory = false;
+                        dateCheck_Order_JSPEmpHistory = false;
                     } else {
                         form.clearFieldErrors("endDate", true);
                         endDateCheck_JSPEmpHistory = true;
-                        endDateCheck_Order_JSPEmpHistory = true;
+                        dateCheck_Order_JSPEmpHistory = true;
                     }
                 }
             }
@@ -229,25 +228,42 @@
             DynamicForm_JspEmploymentHistory.validate();
             if (!DynamicForm_JspEmploymentHistory.valuesHaveChanged() ||
                 !DynamicForm_JspEmploymentHistory.validate() ||
-                endDateCheck_Order_JSPEmpHistory == false ||
-                startDateCheck_Order_JSPEmpHistory == false ||
+                dateCheck_Order_JSPEmpHistory == false ||
+                dateCheck_Order_JSPEmpHistory == false ||
                 endDateCheck_JSPEmpHistory == false ||
                 startDateCheck_JSPEmpHistory == false) {
 
-                if (endDateCheck_Order_JSPEmpHistory == false) {
+                if (dateCheck_Order_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
                     DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                }
-                if (startDateCheck_Order_JSPEmpHistory == false) {
+                    }
+                if (dateCheck_Order_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("startDate", true);
                     DynamicForm_JspEmploymentHistory.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                 }
-                if (endDateCheck_JSPEmpHistory == false) {
+                if (endDateCheck_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
                     DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                 }
-                if (startDateCheck_JSPEmpHistory == false) {
+
+                if (startDateCheck_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("startDate", true);
                     DynamicForm_JspEmploymentHistory.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
+                if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
+                    DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
                 }
                 return;
             }
+
+            if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
+                DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
+                DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
+                return;
+            }
+
             waitEmploymentHistory = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlEmploymentHistory,
                 methodEmploymentHistory,
