@@ -69,11 +69,11 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TclassDTO.PreCourseQuestion> getPreCourseTestQuestions(Long classId) {
+    public List<String> getPreCourseTestQuestions(Long classId) {
         Tclass tclass = getTClass(classId);
         if (tclass.getPreCourseTestQuestions().isEmpty())
             return new ArrayList<>();
-        return tclass.getPreCourseTestQuestions().stream().map(TclassDTO.PreCourseQuestion::new).collect(Collectors.toList());
+        return tclass.getPreCourseTestQuestions();
     }
 
     @Transactional()

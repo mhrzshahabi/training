@@ -8,7 +8,7 @@
     let saveActionUrl_PCTQ;
     let wait_PCTQ;
     let classId_PCTQ = null;
-    let questions_PCTQ = null;
+    let questions_PCTQ = [];
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -109,8 +109,13 @@
         showRecordComponentsByCell: true,
         validateOnChange: true,
         validateByCell: true,
-        // canSort: false,
+        canSort: false,
+        sortField: 0,
         fields: [
+            {
+                name: "order",
+                hidden: true,
+            },
             {
                 name: "question",
                 title: "<spring:message code='question'/>",
@@ -121,7 +126,7 @@
                         errorMessage: "<spring:message code="class.preCourseTestQuestion.length.limit"/>"
                     },
                     {type: "required", errorMessage: "<spring:message code="msg.field.is.required"/>"}
-                ],
+                ]
             }
         ],
         rowDoubleClick: function () {
@@ -256,7 +261,13 @@
     function setQuestionsLGData_PCTQ(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let questions = (JSON.parse(resp.data));
-            questions_PCTQ = (JSON.parse(resp.data)).map(q =>{});
+            questions_PCTQ = [];
+            for (let i = 0; i < questions.length; i++) {
+                questions_PCTQ.add({
+                    "order": i,
+                    "question": questions[i]
+                })
+            }
             questionsLG_PCTQ.setData(questions_PCTQ);
         } else {
 
@@ -267,8 +278,7 @@
         if (id != null) {
             classId_PCTQ = id;
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "preCourse-test-questions/" + classId_PCTQ, "GET", null, setQuestionsLGData_PCTQ));
-        }
-        else{
+        } else {
             classId_PCTQ = null;
             questionsLG_PCTQ.setData([]);
         }

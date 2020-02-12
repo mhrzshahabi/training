@@ -335,13 +335,4 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("preCourseQuestion")
-    @AllArgsConstructor
-    public static class PreCourseQuestion {
-        String question;
-    }
-
 }

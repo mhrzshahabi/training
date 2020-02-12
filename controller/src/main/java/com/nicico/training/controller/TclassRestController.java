@@ -313,7 +313,7 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/preCourse-test-questions/{classId}")
-    public ResponseEntity<List<TclassDTO.PreCourseQuestion>> getPreCourseTestQuestions(@PathVariable Long classId) {
+    public ResponseEntity<List<String>> getPreCourseTestQuestions(@PathVariable Long classId) {
         return new ResponseEntity<>(tclassService.getPreCourseTestQuestions(classId), HttpStatus.OK);
     }
 

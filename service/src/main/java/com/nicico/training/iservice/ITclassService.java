@@ -17,7 +17,7 @@ public interface ITclassService {
 
     Tclass getTClass(Long id);
 
-    List<TclassDTO.PreCourseQuestion> getPreCourseTestQuestions(Long tclassId);
+    List<String> getPreCourseTestQuestions(Long tclassId);
 
     void updatePreCourseTestQuestions(Long classId, List<String> preCourseTestQuestions);
 
