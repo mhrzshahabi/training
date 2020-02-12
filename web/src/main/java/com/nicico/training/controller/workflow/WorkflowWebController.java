@@ -113,6 +113,7 @@ public class WorkflowWebController {
 
     @GetMapping(value = {"/getUserTaskHistoryForm/{id}"})
     public String getUserTaskHistoryForm(@PathVariable String id, ModelMap modelMap) {
+        modelMap.remove("pId");
         modelMap.addAttribute("pId", id);
         return "workflow/processInstanceHistoryDetailForm";
     }

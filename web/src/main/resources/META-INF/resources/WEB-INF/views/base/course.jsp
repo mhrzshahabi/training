@@ -2843,8 +2843,7 @@
                         var varParams = [{
                             "processKey": "courseWorkflow",
                             "cId": sRecord.id,
-                            "mainObjective": courseMainObjective,
-                            // "mainObjective": sRecord.mainObjective,
+                            "mainObjective": sRecord.titleFa + " (" + courseMainObjective + ") ",
                             "titleFa": sRecord.titleFa,
                             "theoryDuration": sRecord.theoryDuration.toString(),
                             "courseCreatorId": "${username}",
@@ -2855,7 +2854,7 @@
                             "targetTitleFa": "دوره",
                             "workflowStatus": "ثبت اولیه",
                             "workflowStatusCode": "0"
-                        }]
+                        }];
 
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
@@ -2868,7 +2867,7 @@
 
     function startProcess_callback(resp) {
 
-        if (resp.httpResponseCode == 200) {
+        if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
             ListGrid_Course_refresh()
         } else {
