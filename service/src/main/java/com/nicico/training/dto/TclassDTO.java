@@ -14,10 +14,7 @@ import com.nicico.training.service.EvaluationService;
 import com.nicico.training.service.ParameterService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -336,6 +333,15 @@ public class TclassDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("preCourseQuestion")
+    @AllArgsConstructor
+    public static class PreCourseQuestion {
+        String question;
     }
 
 }

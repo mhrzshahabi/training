@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class EmploymentHistoryService implements IEmploymentHistoryService {
@@ -103,8 +105,8 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
                 request.setCriteria(criteriaRq);
         }
 
-        for (SearchDTO.CriteriaRq  criteriaRq : request.getCriteria().getCriteria()) {
-            if(criteriaRq.getFieldName() != null) {
+        for (SearchDTO.CriteriaRq criteriaRq : request.getCriteria().getCriteria()) {
+            if (criteriaRq.getFieldName() != null) {
                 if (criteriaRq.getFieldName().equalsIgnoreCase("subCategoriesIds"))
                     criteriaRq.setFieldName("subCategories");
                 if (criteriaRq.getFieldName().equalsIgnoreCase("categoriesIds"))
@@ -122,15 +124,5 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
         final EmploymentHistory saved = employmentHistoryDAO.saveAndFlush(employmentHistory);
         return modelMapper.map(saved, EmploymentHistoryDTO.Info.class);
     }
-
-    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(operator);
-        criteriaRq.setFieldName(fieldName);
-        criteriaRq.setValue(value);
-        criteriaRq.setCriteria(criteriaRqList);
-        return criteriaRq;
-    }
-
 
 }

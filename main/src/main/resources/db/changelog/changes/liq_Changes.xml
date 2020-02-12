@@ -536,5 +536,35 @@
             <column name="pre_course_test" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581488540251-214">
+        <addNotNullConstraint columnDataType="varchar(1000 CHAR)" columnName="pre_course_test_question" tableName="tbl_class_pre_course_test_question"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581507288272-239">
+        <addColumn tableName="tbl_class_pre_course_test_question">
+            <column name="c_pre_course_test_question" type="varchar2(1000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581507288272-240">
+        <addColumn tableName="tbl_class_pre_course_test_question">
+            <column name="n_order" type="number(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581507288272-241">
+        <createIndex indexName="IX_null" tableName="tbl_class_pre_course_test_question" unique="true">
+            <column name="f_course_id"/>
+            <column name="n_order"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_course_id, n_order" forIndexName="IX_null" tableName="tbl_class_pre_course_test_question"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581507288272-265">
+        <dropUniqueConstraint constraintName="UKIIGKRRKJ67BD3G60I4WGW0MI2" tableName="TBL_CLASS_PRE_COURSE_TEST_QUESTION"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581507288272-308">
+        <dropColumn columnName="PRE_COURSE_TEST_QUESTION" tableName="TBL_CLASS_PRE_COURSE_TEST_QUESTION"/>
+    </changeSet>
 
 </databaseChangeLog>
