@@ -31,7 +31,7 @@ public class NeedsAssessmentReportsService {
     private final PostDAO postDAO;
     private final JobDAO jobDAO;
     private final PostGradeDAO postGradeDAO;
-    private final NeedAssessmentSkillBasedDAO needsAssessmentDAO;
+    private final NeedsAssessmentDAO needsAssessmentDAO;
 
     private final IPostService postService;
     private final ClassStudentReportService classStudentReportService;
@@ -45,18 +45,36 @@ public class NeedsAssessmentReportsService {
 
         PersonnelDTO.Info student = personnelService.getByPostCode(postId).get(0);
 
-        List<NeedAssessmentSkillBased> needAssessmentSkillBases = getNeedsAssessmentByPostId(postId);
-        needAssessmentSkillBases = needAssessmentSkillBases.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
-        List<Course> mustTakeCourses = needAssessmentSkillBases.stream().map(NA -> NA.getSkill().getCourse()).collect(Collectors.toList());
+        List<NeedsAssessment> needsAssessmentList = getNeedsAssessmentByPostId(postId);
+        needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
+        List<Course> mustTakeCourses = needsAssessmentList.stream().map(NA -> NA.getSkill().getCourse()).collect(Collectors.toList());
 
         List<NeedsAssessmentReportsDTO.NeedsCourses> courses = modelMapper.map(mustTakeCourses, new TypeToken<List<NeedsAssessmentReportsDTO.NeedsCourses>>() {
         }.getType());
 
+        for (int i = 1; i < courses.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (courses.get(i).getId().equals(courses.get(j).getId())) {
+                    if (needsAssessmentList.get(i).getNeedsAssessmentPriorityId().equals(needsAssessmentList.get(j).getNeedsAssessmentPriorityId())) {
+                        courses.remove(i);
+                        needsAssessmentList.remove(i--);
+                        break;
+                    }
+                    NeedsAssessmentReportsDTO.NeedsCourses newCourse = new NeedsAssessmentReportsDTO.NeedsCourses();
+                    modelMapper.map(courses.get(i), newCourse);
+                    courses.remove(i);
+                    courses.add(i, newCourse);
+                    break;
+                }
+            }
+        }
+
         Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
+        Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
 
         for (int i = 0; i < courses.size(); i++) {
-            courses.get(i).setEneedAssessmentPriorityId(needAssessmentSkillBases.get(i).getEneedAssessmentPriorityId());
-            if (classStudentReportService.isPassedCoursesOfStudentByNationalCode(mustTakeCourses.get(i), passedCourseIds))
+            courses.get(i).setNeedsAssessmentPriorityId(needsAssessmentList.get(i).getNeedsAssessmentPriorityId());
+            if (classStudentReportService.isPassedCoursesOfStudentByNationalCode(mustTakeCourses.get(i), isPassed))
                 courses.get(i).setStatus(passedCodeId.toString());
         }
         return courses;
@@ -70,12 +88,12 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedAssessmentSkillBased> getNeedsAssessmentByPostId(Long postId) {
+    public List<NeedsAssessment> getNeedsAssessmentByPostId(Long postId) {
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
         addCriteria(criteriaRq, "Post", postId);
-        List<NeedAssessmentSkillBased> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
-//        needsAssessmentList.sort(Comparator.comparingInt(a -> NeedAssessmentSkillBased.priorityList.indexOf(a.getObjectType())));
-        List<NeedAssessmentSkillBased> withoutDuplicate = new ArrayList<>();
+        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
+        needsAssessmentList.sort(Comparator.comparingInt(a -> NeedsAssessment.priorityList.indexOf(a.getObjectType())));
+        List<NeedsAssessment> withoutDuplicate = new ArrayList<>();
         needsAssessmentList.forEach(needsAssessment -> {
             if (withoutDuplicate.stream().noneMatch(wd -> wd.getSkill().equals(needsAssessment.getSkill())))
                 withoutDuplicate.add(needsAssessment);

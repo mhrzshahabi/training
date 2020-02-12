@@ -80,4 +80,11 @@
     <changeSet author="poursalehi_mos (generated)" id="1580539582304-231">
         <addUniqueConstraint columnNames="c_question" constraintName="UC_TBL_EVALUATION_QUESTIONC_QUESTION_COL" tableName="tbl_evaluation_question"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581488308022-241">
+        <addUniqueConstraint columnNames="f_course_id, pre_course_test_question" constraintName="UKiigkrrkj67bd3g60i4wgw0mi2" tableName="tbl_class_pre_course_test_question"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581507288272-244">
+        <addUniqueConstraint columnNames="f_course_id, c_pre_course_test_question" constraintName="UKfer3kvekdfc4gq4yne9qxq6ui" tableName="tbl_class_pre_course_test_question"/>
+    </changeSet>
+
 </databaseChangeLog>

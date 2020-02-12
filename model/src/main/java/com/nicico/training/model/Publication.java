@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -26,8 +25,8 @@ public class Publication extends Auditable {
     @Column(name = "c_subject_title", nullable = false)
     private String subjectTitle;
 
-    @Column(name = "d_publication_date")
-    private Date publicationDate;
+    @Column(name = "c_publication_date")
+    private String publicationDate;
 
     @Column(name = "c_publication_location")
     private String publicationLocation;

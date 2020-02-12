@@ -108,4 +108,9 @@ public class ClassFormController {
     public String scoresTab() {
         return "classTabs/scores";
     }
+
+    @RequestMapping("/pre-course-test-questions-tab")
+    public String preCourseQuestionsTab() {
+        return "classTabs/preCourseTestQuestions";
+    }
 }

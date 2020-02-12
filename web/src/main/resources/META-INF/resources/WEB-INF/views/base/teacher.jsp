@@ -4,7 +4,6 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 
 // <script>
-
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
@@ -746,7 +745,6 @@
     function ListGrid_teacher_refresh() {
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
-        ListGrid_Teacher_JspBlackList.invalidateCache();
     }
 
     function Teacher_Save_Button_Click_JspTeacher() {
@@ -793,7 +791,6 @@
         isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
             "callback: teacher_saveClose_result(rpcResponse)"));
 
-        Window_Teacher_JspTeacher.close();
     }
 
     function ListGrid_teacher_edit() {
@@ -976,8 +973,8 @@
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code='global.warning'/>");
+            var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
             Dialog_Delete.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
@@ -1036,13 +1033,13 @@
     function teacher_delete_result(resp) {
         teacherWait.close();
         if (resp.httpResponseCode === 200) {
-            ListGrid_teacher_refresh();
             var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
             // refreshSelectedTab_teacher(null);
+            ListGrid_teacher_refresh();
         } else if (resp.data === false) {
             createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
         } else {
@@ -1059,7 +1056,6 @@
                 // gridState = "[{id:" + responseID + "}]";
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
-                ListGrid_teacher_refresh();
                 // setTimeout(function () {
                 //     OK.close();
                 //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
@@ -1072,6 +1068,8 @@
         } else if (resp.httpResponseText == "duplicateAndNotBlackList") {
             createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
         }
+        Window_Teacher_JspTeacher.close();
+        ListGrid_teacher_refresh();
     }
 
     function teacher_save_add_result(resp) {

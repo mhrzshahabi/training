@@ -74,8 +74,9 @@ public class NeedsAssessmentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Update")
-    public static class Update extends Create {
-        private Integer version;
+    public static class Update {
+        private Long needsAssessmentPriorityId;
+//        private Integer version;
     }
 
     @Getter

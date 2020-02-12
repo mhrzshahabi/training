@@ -32,7 +32,7 @@ public class WorkGroup extends Auditable {
     private Set<Permission> permissions;
 
     @ElementCollection
-    @JoinTable(name = "tbl_work_group_user_ids",
-            joinColumns = {@JoinColumn(name = "f_work_group", referencedColumnName = "id")})
+    @CollectionTable(name = "tbl_work_group_user_ids", joinColumns = @JoinColumn(name = "f_work_group"))
+    @Column(name = "user_ids")
     private Set<Long> userIds;
 }

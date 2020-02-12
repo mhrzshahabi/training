@@ -12,8 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -39,24 +38,36 @@ public class ClassStudentReportService {
 //    @Override
     public Set<Long> getPassedCourseAndEQSIdsByNationalCode(String nationalCode) {
         List<Course> passedCourses = searchCoursesOfStudentByNationalCode(nationalCode).stream().map(classStudent -> classStudent.getTclass().getCourse()).collect(Collectors.toList());
-        Set<Long> courseIds = passedCourses.stream().map(Course::getId).collect(Collectors.toSet());
+        Set<Long> equalCourseIds = new HashSet<>();
         for (Course course : passedCourses) {
-            for (EqualCourse equalCourse : course.getEqualCourses()) {
-                courseIds.addAll(equalCourse.getEqualAndList());
-            }
+            getEqualCourseIds(course, equalCourseIds);
         }
-        return courseIds;
+        return equalCourseIds;
     }
+
+    private void getEqualCourseIds(Course course, Set<Long> equalCourseIds) {
+        if (equalCourseIds.contains(course.getId()))
+            return;
+        equalCourseIds.add(course.getId());
+        for (EqualCourse equalCourses : course.getEqualCourses()) {
+            for (Long courseId : equalCourses.getEqualAndList())
+                getEqualCourseIds(courseDAO.getOne(courseId), equalCourseIds);
+        }
+
+    }
+
 
     @Transactional(readOnly = true)
 //    @Override
-    public Boolean isPassedCoursesOfStudentByNationalCode(Course isPassed, Set<Long> passedCourseIds) {
-
-        if (passedCourseIds.contains(isPassed.getId()))
-            return true;
-
-        return isPassed.getEqualCourses().stream().anyMatch
+    public Boolean isPassedCoursesOfStudentByNationalCode(Course course, Map<Long, Boolean> isPassed) {
+        if (isPassed.containsKey(course.getId()))
+            return isPassed.get(course.getId());
+        isPassed.put(course.getId(), false);
+        Boolean result = course.getEqualCourses().stream().anyMatch
                 (eq -> eq.getEqualAndList().stream().allMatch
-                        (aId -> isPassedCoursesOfStudentByNationalCode(courseDAO.getOne(aId), passedCourseIds)));
+                        (aId -> isPassedCoursesOfStudentByNationalCode(courseDAO.getOne(aId), isPassed)));
+        if (result)
+            isPassed.replace(course.getId(), true);
+        return result;
     }
 }

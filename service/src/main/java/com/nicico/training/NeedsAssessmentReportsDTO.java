@@ -20,7 +20,7 @@ public class NeedsAssessmentReportsDTO implements Serializable {
         private String code;
         private String titleFa;
         private Float theoryDuration;
-        private Integer eneedAssessmentPriorityId;
+        private Long needsAssessmentPriorityId;
         private String status;
     }
 }

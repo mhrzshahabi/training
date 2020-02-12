@@ -10,16 +10,13 @@
 // <script>
 
     var postCode = null;
-    var totalDuration = [0, 0, 0, 0];
-    var passedDuration = [0, 0, 0, 0];
-    var percentDuration = [0, 0, 0, 0];
+    var totalDuration = [0, 0, 0];
+    var passedDuration = [0, 0, 0];
     var passedStatusId = "216";
-    var groupedRecords = [];
-
-    var temp;
+    var priorities;
 
     //--------------------------------------------------------------------------------------------------------------------//
-    //*personel form*/
+    //*personnel form*/
     //--------------------------------------------------------------------------------------------------------------------//
 
     PersonnelDS_NABOP = isc.TrDS.create({
@@ -125,26 +122,30 @@
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
-        title: "انتخاب",
+        title: "<spring:message code="select"/>",
         click: function () {
             if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
+            for (let i = 0; i < 3; i++) {
+                totalDuration[i] = 0;
+                passedDuration[i] = 0;
+            }
             if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
                 postCode = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
                 CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode;
-                // CourseDS_NABOP.fetchData(null, setSummaries, null);
-                // CoursesLG_NABOP.invalidateCache();
                 refreshLG(CoursesLG_NABOP);
             } else {
                 postCode = null;
                 CourseDS_NABOP.fetchDataURL = null;
                 CoursesLG_NABOP.setData([]);
                 createDialog("info", "<spring:message code="personnel.without.postCode"/>");
-                return;
             }
-            groupedRecords = [];
+            DynamicForm_Title_NABOP.getItem("Title_NASB").title =
+                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().firstName, 2, "red", "b") + " " +
+                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().lastName, 2, "red", "b");
+            DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
             Window_Personnel_NABOP.close();
         }
     });
@@ -197,9 +198,11 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "titleFa", title: "<spring:message code="title"/>"}
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
             ],
-        fetchDataURL: enumUrl + "eNeedAssessmentPriority/spec-list"
+        cacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
     });
 
     StatusDS_NABOP = isc.TrDS.create({
@@ -233,7 +236,7 @@
                 autoFitWidth: true
             },
             {
-                name: "eneedAssessmentPriorityId",
+                name: "needsAssessmentPriorityId",
                 title: "<spring:message code='priority'/>",
                 filterOperator: "equals",
                 autoFitWidth: true
@@ -246,7 +249,7 @@
             }
 
         ],
-        // fetchDataURL: needsAssessmentReportsUrl + "/courses-for-post/84031244.5",
+        cacheAllData: true,
     });
 
     Menu_Courses_NABOP = isc.Menu.create({
@@ -279,13 +282,12 @@
     CoursesLG_NABOP = isc.TrLG.create({
         dataSource: CourseDS_NABOP,
         contextMenu: Menu_Courses_NABOP,
-        // autoFetchData: true,
         selectionType: "single",
         filterLocally: true,
 
         alternateRecordStyles: true,
         showAllRecords: true,
-        groupByField: "eneedAssessmentPriorityId",
+        groupByField: "needsAssessmentPriorityId",
         groupStartOpen: "all",
         showGroupSummary: true,
 
@@ -300,40 +302,40 @@
                 summaryFunction: [
                     function (records) {
                         let total = 0;
-                        for (var i = 0; i < records.length; i++) {
-                            var record = records[i];
-                            total += record.theoryDuration;
+                        for (let i = 0; i < records.length; i++) {
+                            total += records[i].theoryDuration;
                         }
-                        totalDuration[record.eneedAssessmentPriorityId] = total;
+                        if (total !== 0)
+                            totalDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = total;
                         return "<spring:message code="duration.hour.sum"/>" + total;
                     },
                     function (records) {
                         let passed = 0;
-                        for (var i = 0; i < records.length; i++) {
-                            var record = records[i];
-                            if (record.status === passedStatusId)
-                                passed += record.theoryDuration;
+                        for (let i = 0; i < records.length; i++) {
+                            if (records[i].status === passedStatusId)
+                                passed += records[i].theoryDuration;
                         }
-                        passedDuration[record.eneedAssessmentPriorityId] = passed;
+                        if (passed !== 0)
+                            passedDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = passed;
                         return "<spring:message code="duration.hour.sum.passed"/>" + passed;
                     },
                     function (records) {
-                        if (totalDuration[records[0].eneedAssessmentPriorityId] === 0)
-                            percentDuration[records[0].eneedAssessmentPriorityId] = 0;
-                        else
-                            percentDuration[records[0].eneedAssessmentPriorityId] = Math.round(passedDuration[records[0].eneedAssessmentPriorityId] / totalDuration[records[0].eneedAssessmentPriorityId] * 100);
-                        groupedRecords.addList(records);
-                        return "<spring:message code="duration.percent.passed"/>" + percentDuration[records[0].eneedAssessmentPriorityId];
+                        if (!records.isEmpty() && totalDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] !== 0) {
+                            return "<spring:message code="duration.percent.passed"/>" +
+                                Math.round(passedDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] /
+                                    totalDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] * 100);
+                        }
+                        return "<spring:message code="duration.percent.passed"/>" + 0;
                     }
                 ]
             },
             {
-                name: "eneedAssessmentPriorityId",
+                name: "needsAssessmentPriorityId",
                 hidden: true,
                 type: "IntegerItem",
                 filterOnKeypress: true,
                 editorType: "SelectItem",
-                displayField: "titleFa",
+                displayField: "title",
                 valueField: "id",
                 optionDataSource: PriorityDS_NABOP,
                 addUnknownValues: false,
@@ -341,7 +343,7 @@
                     showFilterEditor: false
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%"}
+                    {name: "title", width: "30%"}
                 ],
             },
             {
@@ -362,6 +364,22 @@
             },
 
         ],
+        dataArrived: function () {
+            priorities = PriorityDS_NABOP.getCacheData();
+        }
+    });
+
+    DynamicForm_Title_NABOP = isc.DynamicForm.create({
+        numCols: 1,
+        fields: [
+            {
+                name: "Title_NASB",
+                type: "staticText",
+                title: "",
+                titleAlign: "center",
+                wrapTitle: false
+            }
+        ]
     });
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
@@ -405,7 +423,7 @@
 
     Main_VLayout_NABOP = isc.TrVLayout.create({
         border: "2px solid blue",
-        members: [ToolStrip_Actions_NABOP, CoursesLG_NABOP]
+        members: [ToolStrip_Actions_NABOP, DynamicForm_Title_NABOP, CoursesLG_NABOP]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -418,19 +436,16 @@
             createDialog("info", "<spring:message code="personnel.not.selected"/>");
             return;
         }
-        let records = [];
-        records [0] = [];
-        records [1] = [];
-        records [2] = [];
-        records [3] = [];
-        for (let i = 0; i < groupedRecords.length; i++) {
-            records[groupedRecords[i].eneedAssessmentPriorityId].add({
-                "id": groupedRecords[i].id,
-                "code": groupedRecords[i].code,
-                "titleFa": groupedRecords[i].titleFa,
-                "theoryDuration": groupedRecords[i].theoryDuration,
-                "eneedAssessmentPriorityId": groupedRecords[i].eneedAssessmentPriorityId,
-                "status": groupedRecords[i].status
+        let records = CourseDS_NABOP.getCacheData();
+        let groupedRecords = [[], [], []];
+        for (let i = 0; i < records.length; i++) {
+            groupedRecords[getIndexById_NABOP(records[i].needsAssessmentPriorityId)].add({
+                "id": records[i].id,
+                "code": records[i].code,
+                "titleFa": records[i].titleFa,
+                "theoryDuration": records[i].theoryDuration,
+                "needsAssessmentPriorityId": records[i].needsAssessmentPriorityId,
+                "status": records[i].status
             });
         }
         let personnel = {
@@ -442,8 +457,7 @@
             "personnelNo": selectedPerson.personnelNo,
             "personnelNo2": selectedPerson.personnelNo2,
         };
-        temp = records;
-        var criteriaForm_course = isc.DynamicForm.create({
+        let criteriaForm_course = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="web/personnel-needs-assessment-report-print/"/>" + type,
             target: "_Blank",
@@ -453,36 +467,43 @@
                     {name: "essentialRecords", type: "hidden"},
                     {name: "improvingRecords", type: "hidden"},
                     {name: "developmentalRecords", type: "hidden"},
-                    {name: "totalHours", type: "hidden"},
-                    {name: "passedHours", type: "hidden"},
-                    {name: "passedPercent", type: "hidden"},
+                    {name: "totalEssentialHours", type: "hidden"},
+                    {name: "passedEssentialHours", type: "hidden"},
+                    {name: "totalImprovingHours", type: "hidden"},
+                    {name: "passedImprovingHours", type: "hidden"},
+                    {name: "totalDevelopmentalHours", type: "hidden"},
+                    {name: "passedDevelopmentalHours", type: "hidden"},
                     {name: "personnel", type: "hidden"},
                     {name: "myToken", type: "hidden"}
                 ]
         });
-        criteriaForm_course.setValue("essentialRecords", JSON.stringify(records[1]));
-        criteriaForm_course.setValue("improvingRecords", JSON.stringify(records[2]));
-        criteriaForm_course.setValue("developmentalRecords", JSON.stringify(records[3]));
-        criteriaForm_course.setValue("totalHours", JSON.stringify(totalDuration));
-        criteriaForm_course.setValue("passedHours", JSON.stringify(passedDuration));
-        criteriaForm_course.setValue("passedPercent", JSON.stringify(percentDuration));
+        criteriaForm_course.setValue("essentialRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("improvingRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AB")]));
+        criteriaForm_course.setValue("developmentalRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AT")]));
+        criteriaForm_course.setValue("totalEssentialHours", JSON.stringify(totalDuration[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("passedEssentialHours", JSON.stringify(passedDuration[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("totalImprovingHours", JSON.stringify(totalDuration[getIndexByCode_NABOP("AB")]));
+        criteriaForm_course.setValue("passedImprovingHours", JSON.stringify(passedDuration[getIndexByCode_NABOP("AB")]));
+        criteriaForm_course.setValue("totalDevelopmentalHours", JSON.stringify(totalDuration[getIndexByCode_NABOP("AT")]));
+        criteriaForm_course.setValue("passedDevelopmentalHours", JSON.stringify(passedDuration[getIndexByCode_NABOP("AT")]));
         criteriaForm_course.setValue("personnel", JSON.stringify(personnel));
         criteriaForm_course.setValue("myToken", "<%=accessToken%>");
         criteriaForm_course.show();
         criteriaForm_course.submitForm();
     }
 
-    // function setSummaries(resp) {
-    //     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-    //
-    //     } else {
-    //         let errors = JSON.parse(resp.httpResponseText).errors;
-    //         let message = "";
-    //         for (let i = 0; i < errors.length; i++) {
-    //             message += errors[i].message + "<br/>";
-    //         }
-    //         createDialog("info", message);
-    //     }
-    // }
+    function getIndexById_NABOP(needsAssessmentPriorityId) {
+        for (let i = 0; i < priorities.length; i++) {
+            if (priorities[i].id === needsAssessmentPriorityId)
+                return i;
+        }
+    }
+
+    function getIndexByCode_NABOP(code) {
+        for (let i = 0; i < priorities.length; i++) {
+            if (priorities[i].code === code)
+                return i;
+        }
+    }
 
     //</script>

@@ -1202,7 +1202,7 @@
     //     },
     // });
 
-    function trPrintWithCriteria(url, advancedCriteria) {
+    function trPrintWithCriteria(url, advancedCriteria, dataParam) {
         trCriteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: url,
@@ -1211,10 +1211,13 @@
             fields:
                 [
                     {name: "CriteriaStr", type: "hidden"},
-                    {name: "token", type: "hidden"}
+                    {name: "token", type: "hidden"},
+                    {name: "data", type:"hidden"}
                 ]
         });
         trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        if(dataParam != undefined || dataParam != null)
+            trCriteriaForm.setValue("data",dataParam);
         trCriteriaForm.setValue("token", "<%=accessToken%>");
         trCriteriaForm.show();
         trCriteriaForm.submitForm();

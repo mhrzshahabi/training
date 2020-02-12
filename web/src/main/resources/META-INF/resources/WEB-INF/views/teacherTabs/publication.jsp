@@ -24,7 +24,7 @@
             {name: "subCategories"},
             {name: "categoriesIds", filterOperator: "inSet"},
             {name: "subCategoriesIds", filterOperator: "inSet"},
-            {name: "persianPublicationDate"},
+            {name: "publicationDate"},
             {name: "publicationLocation"},
             {name: "publisher"}
         ]
@@ -173,11 +173,12 @@
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
-                name: "persianPublicationDate",
+                name: "publicationDate",
                 ID: "publication_publicationDate_JspPublication",
                 title: "<spring:message code='publication.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
+                length: 10,
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
@@ -313,7 +314,7 @@
                 title: "<spring:message code='publisher'/>"
             },
             {
-                name: "persianPublicationDate",
+                name: "publicationDate",
                 title: "<spring:message code='publication.date'/>",
                 canSort: false
             }
