@@ -442,12 +442,12 @@
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(record.percenetOfFilledReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfExportedReactionEvaluationForms").setValue(record.numberOfExportedReactionEvaluationForms);
 
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.FERGrade);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.FETGrade);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRGrade").setValue(record.FECRGrade);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERPass").setValue(record.FERPass);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETPass").setValue(record.FETPass);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRPass").setValue(record.FECRPass);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.fergrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.fetgrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRGrade").setValue(record.fecrgrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERPass").setValue(record.ferpass);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETPass").setValue(record.fetpass);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRPass").setValue(record.fecrpass);
 
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("minScore_ER").setValue(record.minScore_ER);
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("minScore_ET").setValue(record.minScore_ET);

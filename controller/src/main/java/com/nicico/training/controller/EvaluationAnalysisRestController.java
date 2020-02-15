@@ -85,7 +85,7 @@ public class EvaluationAnalysisRestController {
         params.put("differFET", differFET);
 
 
-        ArrayList<Double> list = new ArrayList();
+        ArrayList<String> list = new ArrayList();
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/ReactionEvaluationResult.jasper", params, jsonDataSource, response);

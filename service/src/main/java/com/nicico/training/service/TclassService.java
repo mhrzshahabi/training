@@ -348,6 +348,13 @@ public class TclassService implements ITclassService {
 //        evaluationResult.setFECRGrade(getFECRGrade(evaluationResult.getFERGrade()));
 //        evaluationResult.setFECRPass(FECRPass);
 
+        evaluationResult.setFERGrade(50.0);
+        evaluationResult.setFERPass(true);
+        evaluationResult.setFETGrade(50.0);
+        evaluationResult.setFETPass(true);
+        evaluationResult.setFECRGrade(50.0);
+        evaluationResult.setFECRPass(true);
+
         evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms());
         evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms());
         evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms());
