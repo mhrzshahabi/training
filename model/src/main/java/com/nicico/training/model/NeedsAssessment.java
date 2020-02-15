@@ -49,6 +49,12 @@ public class NeedsAssessment<E> extends Auditable {
     @Column(name = "c_object_type")
     private String objectType;
 
+    @Column(name = "c_object_name")
+    private String objectName;
+
+    @Column(name = "c_object_code")
+    private String objectCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_competence", nullable = false, insertable = false, updatable = false)
     private Competence competence;

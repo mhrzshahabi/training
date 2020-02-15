@@ -6,7 +6,6 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -23,11 +22,7 @@
             {name: "course.evaluation"},
             {name: "evaluationStatus"},
             {name: "course.id"},
-            {name: "instituteId"},
-            {name: "numberOfFilledReactionEvaluationForms"},
-            {name: "numberOfInCompletedReactionEvaluationForms"},
-            {name: "numberOfEmptyReactionEvaluationForms"},
-            {name: "percenetOfFilledReactionEvaluationForms"}
+            {name: "instituteId"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
     });
@@ -36,7 +31,6 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_evaluationAnalysis_class,
-        // contextMenu: Menu_ListGrid_evaluationAnalysis_class,
         canAddFormulaFields: false,
         autoFetchData: true,
         showFilterEditor: true,
@@ -129,76 +123,127 @@
                     "4": "نتایج"
                 }
             },
-            {name: "evaluationStatus", hidden: true},
-            {name: "numberOfFilledReactionEvaluationForms", hidden: true},
-            {name: "numberOfInCompletedReactionEvaluationForms", hidden: true},
-            {name: "numberOfEmptyReactionEvaluationForms", hidden: true},
-            {name: "percenetOfFilledReactionEvaluationForms", hidden: true}
+            {name: "evaluationStatus", hidden: true}
         ],
         selectionUpdated: function () {
+            DynamicForm_Reaction_EvaluationAnalysis_Header.show();
+            DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
+            IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
             fill_evaluation_result();
         }
     });
 
+    var vm_reaction_evaluation = isc.ValuesManager.create({});
+
     DynamicForm_Reaction_EvaluationAnalysis_Header = isc.DynamicForm.create({
-        width: "100%",
         height: "100%",
         align: "right",
-        titleWidth: 0,
+        canSubmit: true,
+        titleWidth: 120,
+        valuesManager: vm_reaction_evaluation,
+        titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
-        valuesManager: "vm",
+        styleName: "teacher-form",
+        numCols: 10,
+        margin: 10,
+        newPadding: 5,
+        canTabToIcons: false,
         fields: [
             {
                 name: "studentCount",
-                title: "<spring:message code='student.count'/>"
+                title: "<spring:message code='student.count'/>",
+                baseStyle: "teacher-code",
+                canEdit: false
             },
             {
                 name: "numberOfFilledReactionEvaluationForms",
-                title: "تعداد فرم های ثبت شده"
+                title: "تعداد فرم های ثبت شده",
+                baseStyle: "teacher-code",
+                canEdit: false
             },
             {
                 name: "numberOfInCompletedReactionEvaluationForms",
-                title: "تعداد فرم های ناقص"
+                title: "تعداد فرم های ناقص",
+                baseStyle: "teacher-code",
+                canEdit: false
             },
             {
                 name: "numberOfEmptyReactionEvaluationForms",
-                title: "تعداد فرم های ثبت نشده"
+                title: "تعداد فرم های ثبت نشده",
+                baseStyle: "teacher-code",
+                canEdit: false
             },
             {
                 name: "percenetOfFilledReactionEvaluationForms",
-                title: "درصد فرم های ثبت شده"
+                title: "درصد فرم های ثبت شده",
+                baseStyle: "teacher-code",
+                canEdit: false
             }
         ]
     });
 
     DynamicForm_Reaction_EvaluationAnalysis_Footer = isc.DynamicForm.create({
-        width: "100%",
         height: "100%",
         align: "right",
-        titleWidth: 0,
+        canSubmit: true,
+        titleWidth: 120,
+        titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
-        valuesManager: "vm",
+        valuesManager: vm_reaction_evaluation,
+        styleName: "teacher-form",
+        numCols: 8,
+        margin: 10,
+        newPadding: 5,
+        canTabToIcons: false,
         fields: [
             {
-                name: "s",
-                title: "نمره ارزیابی واکنشی کلاس"
+                name: "FERGrade",
+                title: "نمره ارزیابی واکنشی کلاس",
+                baseStyle: "teacher-code",
+                canEdit: false
             },
             {
-                name: "n",
-                title: "نمره ارزیابی استاد بعد از تدریس دوره"
+                name: "FETGrade",
+                title: "نمره ارزیابی استاد بعد از تدریس دوره",
+                baseStyle: "teacher-code",
+                canEdit: false
             },
             {
-                name: "n",
-                title: "نمره اثربخشی"
+                name: "FECRGrade",
+                title: "نمره اثربخشی",
+                baseStyle: "teacher-code",
+                canEdit: false
             },
             {
-                name: "t",
-                title: "تائید/عدم تائید"
+                name: "FECRPass",
+                title: "تائید/عدم تائید",
+                baseStyle: "teacher-code",
+                canEdit: false
             }
         ]
     });
+
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').titleStyle = 'teacher-code-title';
+
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').setCellStyle('teacher-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').titleStyle = 'teacher-code-title';
 
     // var scrollChart = isc.FacetChart.create({
     //     facets: [{
@@ -217,13 +262,41 @@
 
     <%--<SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>--%>
 
+    var IButton_Print_ReactionEvaluation_Evaluation_Analysis = isc.IButton.create({
+        top: 260,
+        width: "300",
+        height: "25",
+        title: "چاپ خلاصه نتیجه ارزیابی واکنشی",
+        click: function () {
+            var obj1 = vm_reaction_evaluation.getValues();
+            var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+            delete obj1['studentCount'];
+            var obj1_str = JSON.stringify(obj1);
+            var obj2_str = JSON.stringify(obj2);
+            obj1_str = obj1_str.substr(0,obj1_str.length-1);
+            obj1_str = obj1_str + ",";
+            obj2_str = obj2_str.substr(1,obj2_str.length);
+            var object = obj1_str + obj2_str;
+            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluation"/>",null,object);
+        }
+    });
+
+    var Hlayout_Tab_Evaluation_Analysis_Print = isc.HLayout.create({
+        width: "100%",
+        height: "49%",
+        align: "center",
+        members: [
+            IButton_Print_ReactionEvaluation_Evaluation_Analysis
+        ]
+    });
+
     var VLayout_Body_evaluation_analysis_reaction = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [DynamicForm_Reaction_EvaluationAnalysis_Header,
-            DynamicForm_Reaction_EvaluationAnalysis_Footer]
+            DynamicForm_Reaction_EvaluationAnalysis_Footer,
+            Hlayout_Tab_Evaluation_Analysis_Print]
     });
-
 
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
         ID: "tabSetEvaluationAnalysis",
@@ -276,7 +349,6 @@
                     ToolStripButton_Refresh
                 ]
             })
-
         ]
     });
 
@@ -294,7 +366,7 @@
         members: [ListGrid_evaluationAnalysis_class]
     });
 
-    var Hlayout_Tab_Evaluation = isc.HLayout.create({
+    var Hlayout_Tab_Evaluation_Analysis = isc.HLayout.create({
         width: "100%",
         height: "49%",
         members: [
@@ -305,7 +377,8 @@
     var VLayout_Body_operational = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_Actions_operational, Hlayout_Grid_operational, Hlayout_Tab_Evaluation]
+        members: [HLayout_Actions_operational, Hlayout_Grid_operational,
+                  Hlayout_Tab_Evaluation_Analysis]
     });
 
     function set_evaluation_analysis_tabset_status() {
@@ -344,6 +417,11 @@
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(record.numberOfEmptyReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(record.percenetOfFilledReactionEvaluationForms);
+
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.FERGrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.FETGrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRGrade").setValue(record.FECRGrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRPass").setValue(record.FECRPass);
     }
 
     function fill_evaluation_result() {
@@ -352,8 +430,11 @@
     }
 
     function fill_evaluation_result_resp(resp){
-        load_evluation_analysis_data(JSON.parse(rpcResponse.data));
+        load_evluation_analysis_data(JSON.parse(resp.data));
         set_evaluation_analysis_tabset_status();
         Detail_Tab_Evaluation_Analysis.selectTab(0);
     }
 
+    DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
+    IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();

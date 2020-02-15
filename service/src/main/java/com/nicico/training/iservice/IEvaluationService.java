@@ -22,5 +22,7 @@ public interface IEvaluationService {
 
     SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request);
 
-    Evaluation getStudentEvaluationForTeacher(Long classId,Long teacherId,Long studentId);
+    Evaluation getStudentEvaluationForClass(Long classId,Long studentId);
+
+    Evaluation getTeacherEvaluationForClass(Long teacherId,Long classId);
 }

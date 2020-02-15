@@ -148,4 +148,44 @@ public class MainFormController {
         return "security/workGroup";
     }
 
+    @PostMapping("/personnel-needs-assessment-report-print/{type}")
+    public ResponseEntity<?> perintPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
+        String token = request.getParameter("myToken");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("essentialRecords", request.getParameter("essentialRecords"));
+        map.add("improvingRecords", request.getParameter("improvingRecords"));
+        map.add("developmentalRecords", request.getParameter("developmentalRecords"));
+        map.add("totalEssentialHours", request.getParameter("totalEssentialHours"));
+        map.add("passedEssentialHours", request.getParameter("passedEssentialHours"));
+        map.add("totalImprovingHours", request.getParameter("totalImprovingHours"));
+        map.add("passedImprovingHours", request.getParameter("passedImprovingHours"));
+        map.add("totalDevelopmentalHours", request.getParameter("totalDevelopmentalHours"));
+        map.add("passedDevelopmentalHours", request.getParameter("passedDevelopmentalHours"));
+        map.add("personnel", request.getParameter("personnel"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        switch (type) {
+            case "pdf":
+                return restTemplate.exchange(restApiUrl + "/api/needsAssessment-reports/print-course-list-for-a-personnel/PDF", HttpMethod.POST, entity, byte[].class);
+            case "excel":
+                return restTemplate.exchange(restApiUrl + "/api/needsAssessment-reports/print-course-list-for-a-personnel/EXCEL", HttpMethod.POST, entity, byte[].class);
+            case "html":
+                return restTemplate.exchange(restApiUrl + "/api/needsAssessment-reports/print-course-list-for-a-personnel/HTML", HttpMethod.POST, entity, byte[].class);
+            default:
+                return null;
+        }
+    }
+
 }

@@ -8,10 +8,11 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.util.CriteriaUtil;
-import com.nicico.training.dto.NeedAssessmentSkillBasedDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.service.NeedsAssessmentReportsService;
 import com.nicico.training.service.NeedsAssessmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,9 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class NeedsAssessmentRestController {
 
     private final NeedsAssessmentService needsAssessmentService;
     private final ModelMapper modelMapper;
+    private final NeedsAssessmentReportsService needsAssessmentReportsService;
 
     @Loggable
     @GetMapping("/list")
@@ -43,6 +46,15 @@ public class NeedsAssessmentRestController {
     public ResponseEntity<TotalResponse<NeedsAssessmentDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(needsAssessmentService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @Loggable
+//    @Transactional(readOnly = true)
+    @GetMapping("/editList/{objectType}/{objectId}")
+    public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String objectType, @PathVariable Long objectId) {
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
+        needsAssessmentReportsService.addCriteria(criteriaRq, objectType, objectId);
+        return new ResponseEntity<>(needsAssessmentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq)), HttpStatus.OK);
     }
 
     @Loggable

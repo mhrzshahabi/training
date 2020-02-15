@@ -172,11 +172,11 @@ public class TclassRestController {
     @GetMapping(value = "/spec-list-evaluated")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<TclassDTO.TclassEvaluatedSpecRs> evaluatedList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+                                                                         @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -308,7 +308,24 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/evaluationResult/{classId}")
     public ResponseEntity<TclassDTO.ReactionEvaluationResult> getEvaluationResult(@PathVariable Long classId) {
-        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getEvaluationResult(classId), HttpStatus.OK);
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/preCourse-test-questions/{classId}")
+    public ResponseEntity<List<String>> getPreCourseTestQuestions(@PathVariable Long classId) {
+        return new ResponseEntity<>(tclassService.getPreCourseTestQuestions(classId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/preCourse-test-questions/{classId}")
+    public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
+        try {
+            tclassService.updatePreCourseTestQuestions(classId, request);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
 }

@@ -1737,6 +1737,11 @@
                 ID: "classAlarmsTab",
                 title: "<spring:message code="alarms"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
+            },
+            {
+                ID: "classPreCourseTestQuestionsTab",
+                title: "سوالات پیش آزمون",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -2068,6 +2073,11 @@
                 case "classAlarmsTab": {
                     if (typeof loadPage_alarm !== "undefined")
                         loadPage_alarm();
+                    break;
+                }
+                case "classPreCourseTestQuestionsTab": {
+                    if (typeof loadPage_preCourseTestQuestions !== "undefined")
+                        loadPage_preCourseTestQuestions(ListGrid_Class_JspClass.getSelectedRecord().id);
                     break;
                 }
             }

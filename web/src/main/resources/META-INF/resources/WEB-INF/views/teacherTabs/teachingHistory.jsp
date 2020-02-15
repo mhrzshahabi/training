@@ -4,11 +4,14 @@
 
 // <script>
 
-    let methodTeachingHistory = "GET";
-    let saveActionUrlTeachingHistory;
-    let waitTeachingHistory;
-    let teacherIdTeachingHistory = null;
-    let isCategoriesChanged = false;
+    var methodTeachingHistory = "GET";
+    var saveActionUrlTeachingHistory;
+    var waitTeachingHistory;
+    var teacherIdTeachingHistory = null;
+    var isCategoriesChanged = false;
+    var startDateCheck_JSPTeachHistory= true;
+    var endDateCheck_JSPTeachHistory= true;
+    var dateCheck_Order_JSPTeachHistory= true;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -24,8 +27,8 @@
             {name: "subCategories"},
             {name: "categoriesIds", filterOperator: "inSet"},
             {name: "subCategoriesIds", filterOperator: "inSet"},
-            {name: "persianStartDate"},
-            {name: "persianEndDate"},
+            {name: "startDate"},
+            {name: "endDate"},
             {name: "companyName", filterOperator: "iContains"}
         ]
     });
@@ -111,7 +114,7 @@
                 },
                 changed: function () {
                     isCategoriesChanged = true;
-                    let subCategoryField = DynamicForm_JspTeachingHistory.getField("subCategories");
+                    var subCategoryField = DynamicForm_JspTeachingHistory.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -120,10 +123,10 @@
                     subCategoryField.enable();
                     if (subCategoryField.getValue() === undefined)
                         return;
-                    let subCategories = subCategoryField.getSelectedRecords();
-                    let categoryIds = this.getValue();
-                    let SubCats = [];
-                    for (let i = 0; i < subCategories.length; i++) {
+                    var subCategories = subCategoryField.getSelectedRecords();
+                    var categoryIds = this.getValue();
+                    var SubCats = [];
+                    for (var i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
@@ -152,7 +155,7 @@
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
-                        let ids = DynamicForm_JspTeachingHistory.getField("categories").getValue();
+                        var ids = DynamicForm_JspTeachingHistory.getField("categories").getValue();
                         if (ids === []) {
                             RestDataSource_SubCategory_JspTeachingHistory.implicitCriteria = null;
                         } else {
@@ -176,11 +179,12 @@
                 length: 5
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 ID: "teachingHistories_startDate_JspTeachingHistory",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
+                length: 10,
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
@@ -189,45 +193,74 @@
                         displayDatePicker('teachingHistories_startDate_JspTeachingHistory', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspTeachingHistory.getValue("persianEndDate") === undefined;
-                        return checkBirthDate(value);
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    var endDate = form.getValue("endDate");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        startDateCheck_JSPTeachHistory = false;
+                        dateCheck_Order_JSPTeachHistory = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        dateCheck_Order_JSPTeachHistory = false;
+                        startDateCheck_JSPTeachHistory = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        startDateCheck_JSPTeachHistory = true;
+                        dateCheck_Order_JSPTeachHistory = true;
+                        form.clearFieldErrors("startDate", true);
                     }
-                }]
+                }
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 ID: "teachingHistories_endDate_JspTeachingHistory",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('teachingHistories_endDate_JspTeachingHistory', this, 'ymd', '/');
+                    click: function (form) {
+                        if (!(form.getValue("startDate"))) {
+                            dialogTeacher = isc.MyOkDialog.create({
+                                message: "ابتدا تاریخ شروع را انتخاب کنید",
+                            });
+                            dialogTeacher.addProperties({
+                                buttonClick: function () {
+                                    this.close();
+                                    form.getItem("startDate").selectValue();
+                                }
+                            });
+                        } else {
+                            closeCalendarWindow();
+                            displayDatePicker('teachingHistories_endDate_JspTeachingHistory', this, 'ymd', '/');
+                        }
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspTeachingHistory.getValue("persianStartDate") === undefined;
-                        if (!checkDate(value))
-                            return false;
-                        if (DynamicForm_JspTeachingHistory.hasFieldErrors("persianStartDate"))
-                            return true;
-                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianStartDate"));
-                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("startDate");
+                    if (dateCheck === false) {
+                        endDateCheck_JSPTeachHistory = false;
+                        dateCheck_Order_JSPTeachHistory = true;
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (value < startDate) {
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDateCheck_JSPTeachHistory = true;
+                        dateCheck_Order_JSPTeachHistory = false;
+                    } else {
+                        form.clearFieldErrors("endDate", true);
+                        endDateCheck_JSPTeachHistory = true;
+                        dateCheck_Order_JSPTeachHistory = true;
                     }
-                }]
+                }
             }
         ]
     });
@@ -236,8 +269,41 @@
         top: 260,
         click: function () {
             DynamicForm_JspTeachingHistory.validate();
-            if (!DynamicForm_JspTeachingHistory.valuesHaveChanged() || !DynamicForm_JspTeachingHistory.validate())
+            if (!DynamicForm_JspTeachingHistory.valuesHaveChanged() ||
+                !DynamicForm_JspTeachingHistory.validate() ||
+                dateCheck_Order_JSPTeachHistory == false ||
+                dateCheck_Order_JSPTeachHistory == false ||
+                endDateCheck_JSPTeachHistory == false ||
+                startDateCheck_JSPTeachHistory == false) {
+
+                if (dateCheck_Order_JSPTeachHistory == false){
+                    DynamicForm_JspTeachingHistory.clearFieldErrors("endDate", true);
+                    DynamicForm_JspTeachingHistory.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (dateCheck_Order_JSPTeachHistory == false){
+                    DynamicForm_JspTeachingHistory.clearFieldErrors("startDate", true);
+                    DynamicForm_JspTeachingHistory.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDateCheck_JSPTeachHistory == false){
+                    DynamicForm_JspTeachingHistory.clearFieldErrors("endDate", true);
+                    DynamicForm_JspTeachingHistory.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+                if (startDateCheck_JSPTeachHistory == false){
+                    DynamicForm_JspTeachingHistory.clearFieldErrors("startDate", true);
+                    DynamicForm_JspTeachingHistory.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+                if (DynamicForm_JspTeachingHistory.getValue("startDate") != undefined && DynamicForm_JspTeachingHistory.getValue("endDate") == undefined){
+                    DynamicForm_JspTeachingHistory.clearFieldErrors("endDate", true);
+                    DynamicForm_JspTeachingHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
+                }
                 return;
+            }
+
+            if (DynamicForm_JspTeachingHistory.getValue("startDate") != undefined && DynamicForm_JspTeachingHistory.getValue("endDate") == undefined) {
+                DynamicForm_JspTeachingHistory.clearFieldErrors("endDate", true);
+                DynamicForm_JspTeachingHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
+                return;
+            }
             waitTeachingHistory = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeachingHistory,
                 methodTeachingHistory,
@@ -345,12 +411,12 @@
                 filterOperator: "equals"
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 canSort: false
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 title: "<spring:message code='end.date'/>",
                 canSort: false
             }
@@ -359,7 +425,7 @@
             ListGrid_TeachingHistory_Edit();
         },
         filterEditorSubmit: function () {
-            ListGrid_JspEmploymentHistory.invalidateCache();
+            ListGrid_JspTeachingHistory.invalidateCache();
         },
         align: "center",
         filterOperator: "iContains",
@@ -440,7 +506,7 @@
     }
 
     function ListGrid_TeachingHistory_Edit() {
-        let record = ListGrid_JspTeachingHistory.getSelectedRecord();
+        var record = ListGrid_JspTeachingHistory.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -448,22 +514,22 @@
             saveActionUrlTeachingHistory = teachingHistoryUrl + "/" + record.id;
             DynamicForm_JspTeachingHistory.clearValues();
             DynamicForm_JspTeachingHistory.editRecord(record);
-            let categoryIds = DynamicForm_JspTeachingHistory.getField("categories").getValue();
-            let subCategoryIds = DynamicForm_JspTeachingHistory.getField("subCategories").getValue();
+            var categoryIds = DynamicForm_JspTeachingHistory.getField("categories").getValue();
+            var subCategoryIds = DynamicForm_JspTeachingHistory.getField("subCategories").getValue();
             if (categoryIds == null || categoryIds.length === 0)
                 DynamicForm_JspTeachingHistory.getField("subCategories").disable();
             else {
                 DynamicForm_JspTeachingHistory.getField("subCategories").enable();
-                let catIds = [];
-                for (let i = 0; i < categoryIds.length; i++)
+                var catIds = [];
+                for (var i = 0; i < categoryIds.length; i++)
                     catIds.add(categoryIds[i].id);
                 DynamicForm_JspTeachingHistory.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspTeachingHistory.getField("subCategories").focus(null, null);
             }
             if (subCategoryIds != null && subCategoryIds.length > 0) {
-                let subCatIds = [];
-                for (let i = 0; i < subCategoryIds.length; i++)
+                var subCatIds = [];
+                for (var i = 0; i < subCategoryIds.length; i++)
                     subCatIds.add(subCategoryIds[i].id);
                 DynamicForm_JspTeachingHistory.getField("subCategories").setValue(subCatIds);
             }
@@ -472,11 +538,11 @@
     }
 
     function ListGrid_TeachingHistory_Remove() {
-        let record = ListGrid_JspTeachingHistory.getSelectedRecord();
+        var record = ListGrid_JspTeachingHistory.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='verify.delete'/>");
             Dialog_Delete.addProperties({
                 buttonClick: function (button, index) {
@@ -500,7 +566,7 @@
     function TeachingHistory_save_result(resp) {
         waitTeachingHistory.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             ListGrid_TeachingHistory_refresh();
             Window_JspTeachingHistory.close();
@@ -522,13 +588,13 @@
         waitTeachingHistory.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_TeachingHistory_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            let respText = resp.httpResponseText;
+            var respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {
