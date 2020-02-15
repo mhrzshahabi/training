@@ -347,7 +347,7 @@
             selectWorkflowRecord();
         },
         getExpansionComponent : function (record) {
-             ListGrid_Class_JspClass.selectSingleRecord (record)
+             ListGrid_Class_JspClass.selectSingleRecord (record);
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
             var layout = isc.VLayout.create({
                 styleName: "expand-layout",

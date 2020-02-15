@@ -169,6 +169,48 @@ public class TclassRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/tuple-list")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TclassDTO.TclassSpecRs> tupleList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                            @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                            @RequestParam(value = "_constructor", required = false) String constructor,
+                                                            @RequestParam(value = "operator", required = false) String operator,
+                                                            @RequestParam(value = "criteria", required = false) String criteria,
+                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow).setCount(endRow - startRow);
+        request.setDistinct(true);
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/spec-list-evaluated")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<TclassDTO.TclassEvaluatedSpecRs> evaluatedList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
