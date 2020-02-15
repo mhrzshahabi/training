@@ -250,6 +250,7 @@ public class TclassDTO {
         private Long instituteId;
         private String classStatus;
         private String evaluationStatus;
+        private String titleClass;
 
         public String getTeacher() {
             if (teacher != null)
@@ -311,7 +312,10 @@ public class TclassDTO {
         Integer numberOfFilledReactionEvaluationForms;
         Integer numberOfInCompletedReactionEvaluationForms;
         Integer numberOfEmptyReactionEvaluationForms;
+        Integer numberOfExportedReactionEvaluationForms;
         double percenetOfFilledReactionEvaluationForms;
+        double minScore_ER;
+        double minScore_ET;
     }
 
     @Getter
