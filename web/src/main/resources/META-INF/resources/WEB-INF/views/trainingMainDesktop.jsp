@@ -706,6 +706,12 @@
                         createTab(this.title, "<spring:url value="web/needsAssessment-by-one-person"/>");
                     }
                 },
+                 {
+                    title: "انواع گزارشات",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/report/show-form"/>");
+                    }
+                },
             ]
         }),
     });
