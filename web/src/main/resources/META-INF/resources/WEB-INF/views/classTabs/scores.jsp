@@ -172,7 +172,7 @@
                     if (value === "مردود") {
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[6].masterIndex)
                     } else if (value === "قبول با نمره") {
-                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[8].masterIndex)
+                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[7].masterIndex)
                     } else if (value === "قبول بدون نمره") {
                         ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value)
                         this.grid.endEditing();
@@ -202,17 +202,14 @@
                     }
                     else if(classRecord.scoringMethod == "1")
                         {
-
-                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[7].masterIndex)
-
+                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[6].masterIndex)
                         }
                      else {
                         failureReason_value = value
-                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[8].masterIndex)
+                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[7].masterIndex)
                     }
                     valence_value_failureReason = value
                 },
-
             },
             {
                 name: "valence",
