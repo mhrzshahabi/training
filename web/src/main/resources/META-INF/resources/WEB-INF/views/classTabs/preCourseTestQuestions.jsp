@@ -8,9 +8,140 @@
     let saveActionUrl_PCTQ;
     let wait_PCTQ;
     let classId_PCTQ = null;
+    let questions_PCTQ = [];
+    let oldQuestionsNum_PCTQ = 0;
 
     //--------------------------------------------------------------------------------------------------------------------//
-    /*RestDataSource*/
+    /*Class Window*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    Menu_Class_PCTQ = isc.Menu.create({
+        data: [{
+            title: "<spring:message code="refresh"/>", click: function () {
+                refreshLG(ClassLG_PCTQ);
+            }
+        }]
+    });
+
+    ClassDS_PCTQ = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "course.titleFa"},
+            {name: "teacher"},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "group"}
+        ],
+        fetchDataURL: classUrl + "tuple-list"
+    });
+
+    ClassLG_PCTQ = isc.TrLG.create({
+        dataSource: ClassDS_PCTQ,
+        contextMenu: Menu_Class_PCTQ,
+        selectionType: "single",
+        fields: [
+            {
+                name: "code",
+                title: "<spring:message code='class.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "course.titleFa",
+                title: "<spring:message code='course.title'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
+            },
+            {
+                name: "teacher",
+                title: "<spring:message code='teacher'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "startDate",
+                title: "<spring:message code='start.date'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "endDate",
+                title: "<spring:message code='end.date'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "group",
+                title: "<spring:message code='group'/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true
+            },
+        ],
+    });
+
+    IButton_Class_Ok_PCTQ = isc.IButtonSave.create({
+        title: "<spring:message code="select"/>",
+        click: function () {
+            if (ClassLG_PCTQ.getSelectedRecord() == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            addQuestions_preCourseTestQuestions(ClassLG_PCTQ.getSelectedRecord().id);
+            Window_Class_PCTQ.close();
+        }
+    });
+
+    HLayout_Class_Ok_PCTQ = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        members: [IButton_Class_Ok_PCTQ]
+    });
+
+    ToolStripButton_Class_Refresh_PCTQ = isc.ToolStripButtonRefresh.create({
+        click: function () {
+            refreshLG(ClassLG_PCTQ);
+        }
+    });
+
+    ToolStrip_Class_Actions_PCTQ = isc.ToolStrip.create({
+        width: "100%",
+        align: "left",
+        border: '0px',
+        members: [
+            ToolStripButton_Class_Refresh_PCTQ
+        ]
+    });
+
+    Window_Class_PCTQ = isc.Window.create({
+        placement: "fillScreen",
+        minWidth: 1024,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        title: "<spring:message code='class'/>",
+        items: [isc.TrVLayout.create({
+            members: [
+                ToolStrip_Class_Actions_PCTQ,
+                ClassLG_PCTQ,
+                HLayout_Class_Ok_PCTQ
+            ]
+        })]
+    });
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*Questions Grid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
     questionsDS_PCTQ = isc.TrDS.create({
@@ -19,41 +150,26 @@
         ]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*window*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
-    questionsDF_PCTQ = isc.DynamicForm.create({
-        width: "100%",
-        height: "100%",
-        titleAlign: "left",
-        fields: [
-            {
-                name: "preCourseTestQuestions",
-                title: "<spring:message code='question'/>",
-                required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
-            }
-        ]
-    });
-
-    IButton_Save_PCTQ = isc.TrSaveBtn.create({
-        top: 260,
+    IButton_Save_PCTQ = isc.IButtonSave.create({
         click: function () {
-            if (!questionsDF_PCTQ.valuesHaveChanged())
+            if (questionsLG_PCTQ.hasErrors() || classId_PCTQ == null)
                 return;
             wait_PCTQ = createDialog("wait");
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrl_PCTQ,
-                method_PCTQ,
-                JSON.stringify(questionsDF_PCTQ.getValues()),
-                questionsLG_Save_Result_PCTQ));
+            for (let i = 1; i < questionsLG_PCTQ.data.length; i++) {
+                for (let j = 0; j < i; j++) {
+                    if (questionsLG_PCTQ.data[i].question === questionsLG_PCTQ.data[j].question) {
+                        questionsLG_PCTQ.data.removeAt(i--);
+                        break;
+                    }
+                }
+            }
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "preCourse-test-questions/" + classId_PCTQ, "PUT", JSON.stringify(questionsLG_PCTQ.data.map(r => r.question)), questionsLG_Save_Result_PCTQ));
         }
     });
 
-    IButton_Cancel_PCTQ = isc.TrCancelBtn.create({
+    IButton_Cancel_PCTQ = isc.IButtonCancel.create({
         click: function () {
-            questionsDF_PCTQ.clearValues();
-            Window_PCTQ.close();
+            loadPage_preCourseTestQuestions(classId_PCTQ);
         }
     });
 
@@ -65,28 +181,14 @@
         members: [IButton_Save_PCTQ, IButton_Cancel_PCTQ]
     });
 
-    Window_PCTQ = isc.Window.create({
-        width: "500",
-        align: "center",
-        border: "1px solid gray",
-        title: "<spring:message code='question'/>",
-        items: [isc.TrVLayout.create({
-            members: [questionsDF_PCTQ, HLayout_SaveOrExit_PCTQ]
-        })]
-    });
-
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Grid*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
     Menu_PCTQ = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
-                refreshLG(questionsLG_PCTQ);
+                loadPage_preCourseTestQuestions(classId_PCTQ);
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
-                questionsLG_Add_PCTQ();
+                questionsLG_PCTQ.startEditingNew();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
@@ -96,29 +198,56 @@
             title: "<spring:message code='remove'/>", click: function () {
                 questionsLG_Remove_PCTQ();
             }
+        }, {
+            title: "<spring:message code='copy.of.class'/>", click: function () {
+                Show_Class_List_PCTQ();
+            }
         }
         ]
     });
 
     questionsLG_PCTQ = isc.TrLG.create({
-        dataSource: questionsDS_PCTQ,
         contextMenu: Menu_PCTQ,
         align: "center",
-        sortField: 1,
+        canReorderRecords: true,
+        autoFitMaxRecords: 4,
+        autoFitData: "vertical",
+        canEdit: true,
+        modalEditing: true,
+        canRemoveRecords: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        validateOnChange: true,
+        validateByCell: true,
+        canSort: false,
+        sortField: 0,
         fields: [
             {
-                name: "preCourseTestQuestions",
+                name: "order",
+                hidden: true,
+            },
+            {
+                name: "question",
                 title: "<spring:message code='question'/>",
+                type: "TextAreaItem",
+                validators: [
+                    {
+                        type: "lengthRange",
+                        max: 1000,
+                        errorMessage: "<spring:message code="class.preCourseTestQuestion.length.limit"/>"
+                    },
+                    {type: "required", errorMessage: "<spring:message code="msg.field.is.required"/>"}
+                ]
             }
         ],
         rowDoubleClick: function () {
             questionsLG_Edit_PCTQ();
-        }
+        },
     });
 
     ToolStripButton_Refresh_PCTQ = isc.ToolStripButtonRefresh.create({
         click: function () {
-            refreshLG(questionsLG_PCTQ);
+            loadPage_preCourseTestQuestions(classId_PCTQ);
         }
     });
 
@@ -129,12 +258,18 @@
     });
     ToolStripButton_Add_PCTQ = isc.ToolStripButtonCreate.create({
         click: function () {
-            questionsLG_Add_PCTQ();
+            questionsLG_PCTQ.startEditingNew();
         }
     });
     ToolStripButton_Remove_PCTQ = isc.ToolStripButtonRemove.create({
         click: function () {
             questionsLG_Remove_PCTQ();
+        }
+    });
+    ToolStripButton_ShowClass_PCTQ = isc.ToolStripButton.create({
+        title: "<spring:message code="copy.of.class"/>",
+        click: function () {
+            Show_Class_List_PCTQ();
         }
     });
 
@@ -146,6 +281,7 @@
                 ToolStripButton_Add_PCTQ,
                 ToolStripButton_Edit_PCTQ,
                 ToolStripButton_Remove_PCTQ,
+                ToolStripButton_ShowClass_PCTQ,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -158,104 +294,92 @@
     });
 
     VLayout_Body_PCTQ = isc.TrVLayout.create({
-        members: [
-            ToolStrip_Actions_PCTQ,
-            questionsLG_PCTQ
-        ]
+        members: [ToolStrip_Actions_PCTQ, questionsLG_PCTQ, HLayout_SaveOrExit_PCTQ]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    function questionsLG_Add_PCTQ() {
-        method_PCTQ = "POST";
-        saveActionUrl_PCTQ = classUrl + "/" + classId_PCTQ;
-        questionsDF_PCTQ.clearValues();
-        Window_PCTQ.show();
+    function Show_Class_List_PCTQ() {
+        let selectedClass = ListGrid_Class_JspClass.getSelectedRecord();
+        let criteria = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "course.code", operator: "equals", value: selectedClass.course.code},
+                {fieldName: "preCourseTestQuestions", operator: "notNull"}
+            ]
+        };
+        ClassLG_PCTQ.implicitCriteria = criteria;
+        ClassLG_PCTQ.fetchData(criteria);
+        Window_Class_PCTQ.show();
     }
 
     function questionsLG_Edit_PCTQ() {
-        <%--let record = questionsLG_PCTQ.getSelectedRecord();--%>
-        <%--if (record == null || record.id == null) {--%>
-        <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-        <%--} else {--%>
-        <%--    method_PCTQ = "PUT";--%>
-        <%--    saveActionUrl_PCTQ = employmentHistoryUrl + "/" + record.id;--%>
-        <%--    questionsDF_PCTQ.clearValues();--%>
-        <%--    questionsDF_PCTQ.editRecord(record);--%>
-        <%--    Window_PCTQ.show();--%>
-        <%--}--%>
+        let record = questionsLG_PCTQ.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return;
+        }
+        questionsLG_PCTQ.startEditing(questionsLG_PCTQ.getRowNum(record));
     }
 
     function questionsLG_Remove_PCTQ() {
-        <%--let record = questionsLG_PCTQ.getSelectedRecord();--%>
-        <%--if (record == null) {--%>
-        <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-        <%--} else {--%>
-        <%--    let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>");--%>
-        <%--    Dialog_Delete.addProperties({--%>
-        <%--        buttonClick: function (button, index) {--%>
-        <%--            this.close();--%>
-        <%--            if (index === 0) {--%>
-        <%--                wait_PCTQ = createDialog("wait");--%>
-        <%--                isc.RPCManager.sendRequest(TrDSRequest(employmentHistoryUrl +--%>
-        <%--                    "/" +--%>
-        <%--                    classId_PCTQ +--%>
-        <%--                    "," +--%>
-        <%--                    questionsLG_PCTQ.getSelectedRecord().id,--%>
-        <%--                    "DELETE",--%>
-        <%--                    null,--%>
-        <%--                    questionsLG_Remove_Result_PCTQ));--%>
-        <%--            }--%>
-        <%--        }--%>
-        <%--    });--%>
-        <%--}--%>
+        let records = questionsLG_PCTQ.getSelectedRecords();
+        if (records.isEmpty()) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return;
+        }
+        questionsLG_PCTQ.data.removeAll(records);
     }
 
     function questionsLG_Save_Result_PCTQ(resp) {
         wait_PCTQ.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            refreshLG(questionsLG_PCTQ);
-            Window_PCTQ.close();
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
-            } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>");
-            }
+            loadPage_preCourseTestQuestions(classId_PCTQ);
+            createDialog("info", "<spring:message code="msg.operation.error"/>");
         }
     }
 
-    function questionsLG_Remove_Result_PCTQ(resp) {
-        wait_PCTQ.close();
+    function setQuestionsLGData_PCTQ(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            refreshLG(questionsLG_PCTQ);
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        } else {
-            let respText = resp.httpResponseText;
-            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
-                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
-            } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            let questions = (JSON.parse(resp.data));
+            if (oldQuestionsNum_PCTQ === 0)
+                questions_PCTQ = [];
+            for (let i = 0; i < questions.length; i++) {
+                questions_PCTQ.add({
+                    "order": i + oldQuestionsNum_PCTQ,
+                    "question": questions[i]
+                })
             }
+            questionsLG_PCTQ.setData(questions_PCTQ);
+        } else {
+
         }
     }
 
     function loadPage_preCourseTestQuestions(id) {
-        if (classId_PCTQ !== id) {
+        if (id != null) {
             classId_PCTQ = id;
-            questionsDS_PCTQ.fetchDataURL = classUrl + "/iscList/" + classId_PCTQ;
-            // questionsLG_PCTQ.fetchData();
-            // refreshLG(questionsLG_PCTQ);
+            oldQuestionsNum_PCTQ = 0;
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "preCourse-test-questions/" + classId_PCTQ, "GET", null, setQuestionsLGData_PCTQ));
+        } else {
+            classId_PCTQ = null;
+            questionsLG_PCTQ.setData([]);
         }
+    }
+
+    function addQuestions_preCourseTestQuestions(id) {
+        if (id == null)
+            return;
+        oldQuestionsNum_PCTQ = questions_PCTQ.isEmpty() ? 0 : questions_PCTQ.length;
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "preCourse-test-questions/" + classId_PCTQ, "GET", null, setQuestionsLGData_PCTQ));
     }
 
     function clear_preCourseTestQuestions() {

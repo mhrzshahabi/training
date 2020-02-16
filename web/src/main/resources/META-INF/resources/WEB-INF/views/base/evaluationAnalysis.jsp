@@ -6,7 +6,6 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -23,7 +22,8 @@
             {name: "course.evaluation"},
             {name: "evaluationStatus"},
             {name: "course.id"},
-            {name: "instituteId"}
+            {name: "instituteId"},
+            {name: "titleClass"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
     });
@@ -124,7 +124,8 @@
                     "4": "نتایج"
                 }
             },
-            {name: "evaluationStatus", hidden: true}
+            {name: "evaluationStatus", hidden: true},
+            {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function () {
             DynamicForm_Reaction_EvaluationAnalysis_Header.show();
@@ -134,11 +135,14 @@
         }
     });
 
+    var vm_reaction_evaluation = isc.ValuesManager.create({});
+
     DynamicForm_Reaction_EvaluationAnalysis_Header = isc.DynamicForm.create({
         height: "100%",
         align: "right",
         canSubmit: true,
         titleWidth: 120,
+        valuesManager: vm_reaction_evaluation,
         titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
@@ -177,6 +181,11 @@
                 title: "درصد فرم های ثبت شده",
                 baseStyle: "teacher-code",
                 canEdit: false
+            },
+            {
+                name: "numberOfExportedReactionEvaluationForms",
+                title: "تعداد فرم های ارسالی",
+                hidden: true
             }
         ]
     });
@@ -189,6 +198,7 @@
         titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
+        valuesManager: vm_reaction_evaluation,
         styleName: "teacher-form",
         numCols: 8,
         margin: 10,
@@ -218,6 +228,22 @@
                 title: "تائید/عدم تائید",
                 baseStyle: "teacher-code",
                 canEdit: false
+            },
+            {
+                name: "FERPass",
+                hidden: true
+            },
+            {
+                name: "FETPass",
+                hidden: true
+            },
+            {
+                name: "minScore_ER",
+                hidden: true
+            },
+            {
+                name: "minScore_ET",
+                hidden: true
             }
         ]
     });
@@ -265,6 +291,16 @@
         height: "25",
         title: "چاپ خلاصه نتیجه ارزیابی واکنشی",
         click: function () {
+            var obj1 = vm_reaction_evaluation.getValues();
+            var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+            delete obj1['studentCount'];
+            var obj1_str = JSON.stringify(obj1);
+            var obj2_str = JSON.stringify(obj2);
+            obj1_str = obj1_str.substr(0,obj1_str.length-1);
+            obj1_str = obj1_str + ",";
+            obj2_str = obj2_str.substr(1,obj2_str.length);
+            var object = obj1_str + obj2_str;
+            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluation"/>",null,object);
         }
     });
 
@@ -404,11 +440,17 @@
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(record.numberOfEmptyReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(record.percenetOfFilledReactionEvaluationForms);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfExportedReactionEvaluationForms").setValue(record.numberOfExportedReactionEvaluationForms);
 
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.FERGrade);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.FETGrade);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRGrade").setValue(record.FECRGrade);
-        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRPass").setValue(record.FECRPass);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.fergrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.fetgrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRGrade").setValue(record.fecrgrade);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERPass").setValue(record.ferpass);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETPass").setValue(record.fetpass);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FECRPass").setValue(record.fecrpass);
+
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("minScore_ER").setValue(record.minScore_ER);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("minScore_ET").setValue(record.minScore_ET);
     }
 
     function fill_evaluation_result() {

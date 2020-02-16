@@ -88,10 +88,14 @@ abaspour 9803
             createTab(targetTitleFa, "${addDocumentUrl}");
             // taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
             // taskConfirmationWindow.maximize();
-            taskConfirmationWindow.top= "0";
+            taskConfirmationWindow.top = "0";
             taskConfirmationWindow.minimize();
 
-            workflowParameters = {"taskId": "${id}", "usr": "${username}", "workflowdata" : taskStartConfirmForm.getValues()};
+            workflowParameters = {
+                "taskId": "${id}",
+                "usr": "${username}",
+                "workflowdata": taskStartConfirmForm.getValues()
+            };
         }
     });
     </c:if>
@@ -294,7 +298,6 @@ abaspour 9803
                     isc.IButtonCancel.create({title: "<spring:message code="global.no"/>"})
                 ],
                 buttonClick: function (button, index) {
-                    console.log(index);
                     if (index == 0 && v == true) {
                         taskStartConfirmForm.setValue("REJECT", "N");
                         taskStartConfirmForm.setValue("REJECTVAL", " ");
@@ -320,7 +323,6 @@ abaspour 9803
                             params: {"taskId": "${id}", "usr": "${username}"},
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
-                                console.log(RpcResponse_o);
                                 if (RpcResponse_o.data == 'success') {
 
                                     // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
@@ -329,6 +331,10 @@ abaspour 9803
                                     ListGrid_UserTaskList.invalidateCache();
                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");--%>
                                     <%--<c:set var="cartableCount" value="${cartableCount -1}"/>--%>
+
+                                     activeDocumentDS.fetchDataURL = "";
+                                    ListGrid_DocumentActivity.setData([]);
+
                                 } else {
                                     <%--isc.say(RpcResponse_o.data);--%>
                                 }
@@ -336,6 +342,7 @@ abaspour 9803
                         });
 
                     }
+
                     this.hide();
                 }
             });
@@ -437,10 +444,13 @@ abaspour 9803
                                             serverOutputAsString: false,
                                             callback: function (RpcResponse_o) {
                                                 if (RpcResponse_o.data == 'success') {
-                                                    isc.say( targetTitleFa + " عودت داده شد.");
+                                                    isc.say(targetTitleFa + " عودت داده شد.");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
                                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");--%>
+
+                                                    activeDocumentDS.fetchDataURL = "";
+                                                    ListGrid_DocumentActivity.setData([]);
                                                 }
                                             }
                                         });
@@ -501,7 +511,6 @@ abaspour 9803
                             params: {"taskId": "${id}", "usr": "${username}"},
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
-                                console.log(RpcResponse_o);
                                 if (RpcResponse_o.data == 'success') {
 
                                     isc.say("گردش کار حذف شد.");

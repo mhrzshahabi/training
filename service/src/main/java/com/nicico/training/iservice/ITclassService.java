@@ -17,6 +17,10 @@ public interface ITclassService {
 
     Tclass getTClass(Long id);
 
+    List<String> getPreCourseTestQuestions(Long tclassId);
+
+    void updatePreCourseTestQuestions(Long classId, List<String> preCourseTestQuestions);
+
     @Transactional(readOnly = true)
     Tclass getEntity(Long id);
 

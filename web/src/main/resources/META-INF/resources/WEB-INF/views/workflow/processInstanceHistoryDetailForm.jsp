@@ -19,13 +19,20 @@
     var activitiRefreshButton = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
-            ListGrid_DocumentActivity.invalidateCache();
-            ListGrid_DocumentActivity.fetchData();
+            if (ListGrid_UserTaskList.getSelectedRecord() !== null) {
+                ListGrid_DocumentActivity.invalidateCache();
+                ListGrid_DocumentActivity.fetchData();
+            }
+            else
+            {
+                ListGrid_DocumentActivity.setData([]);
+            }
         }
     });
     var activitiGridControls = isc.ToolStrip.create({
 
         width: "100%", height: 20,
+        align: "left",
         members: [
             activitiRefreshButton
         ]
@@ -37,7 +44,7 @@
         gridComponents: [activitiGridControls, "filterEditor", "header", "body"],
         showRowNumbers: true,
         showFilterEditor: true,
-        autoFetchData: true,
+        autoFetchData: false,
         canMultiSort: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -76,8 +83,9 @@
                 <%--"Access-Control-Allow-Origin": "${restApiUrl}"--%>
             };
             return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: workflowUrl + "/userTaskHistory/list/${pId}"
+        }
+        <%--,--%>
+        <%--fetchDataURL: workflowUrl + "/userTaskHistory/list/${pId}"--%>
 
 
     });

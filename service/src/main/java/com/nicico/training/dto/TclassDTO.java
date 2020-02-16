@@ -14,10 +14,7 @@ import com.nicico.training.service.EvaluationService;
 import com.nicico.training.service.ParameterService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +72,7 @@ public class TclassDTO {
     private String scoringMethod;
     private String acceptancelimit;
     private Integer startEvaluation;
+    private Boolean preCourseTest;
 
 
     @Getter
@@ -253,6 +251,7 @@ public class TclassDTO {
         private Long instituteId;
         private String classStatus;
         private String evaluationStatus;
+        private String titleClass;
 
         public String getTeacher() {
             if (teacher != null)
@@ -314,7 +313,10 @@ public class TclassDTO {
         Integer numberOfFilledReactionEvaluationForms;
         Integer numberOfInCompletedReactionEvaluationForms;
         Integer numberOfEmptyReactionEvaluationForms;
+        Integer numberOfExportedReactionEvaluationForms;
         double percenetOfFilledReactionEvaluationForms;
+        double minScore_ER;
+        double minScore_ET;
     }
 
     @Getter
