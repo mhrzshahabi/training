@@ -153,7 +153,7 @@ public class Tclass extends Auditable {
     private Set<ClassSession> classSessions;
 
     @ElementCollection
-    @CollectionTable(name = "tbl_class_pre_course_test_question", joinColumns = @JoinColumn(name = "f_course_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"f_course_id", "c_pre_course_test_question"})})
+    @CollectionTable(name = "tbl_class_pre_course_test_question", joinColumns = @JoinColumn(name = "f_class_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"f_class_id", "c_pre_course_test_question"})})
     @OrderColumn(name = "n_order", nullable = false)
     @Column(name = "c_pre_course_test_question", nullable = false, length = 1000)
     private List<String> preCourseTestQuestions;
