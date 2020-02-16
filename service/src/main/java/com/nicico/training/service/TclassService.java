@@ -51,7 +51,8 @@ public class TclassService implements ITclassService {
     double studentsGradeToTeacher = 0.0;
     double studentsGradeToGoals = 0.0;
     double studentsGradeToFacility = 0.0;
-
+    double minScore_ER = 0.0;
+    double minScore_ET = 0.0;
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
 
     @Transactional(readOnly = true)
@@ -347,10 +348,20 @@ public class TclassService implements ITclassService {
 //        evaluationResult.setFECRGrade(getFECRGrade(evaluationResult.getFERGrade()));
 //        evaluationResult.setFECRPass(FECRPass);
 
+        evaluationResult.setFERGrade(50.0);
+        evaluationResult.setFERPass(true);
+        evaluationResult.setFETGrade(50.0);
+        evaluationResult.setFETPass(true);
+        evaluationResult.setFECRGrade(50.0);
+        evaluationResult.setFECRPass(true);
+
         evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms());
         evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms());
         evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms());
         evaluationResult.setPercenetOfFilledReactionEvaluationForms(getPercenetOfFilledReactionEvaluationForms());
+        evaluationResult.setNumberOfExportedReactionEvaluationForms(getNumberOfExportedEvaluationForms());
+        evaluationResult.setMinScore_ER(minScore_ER);
+        evaluationResult.setMinScore_ET(minScore_ET);
 
         return evaluationResult;
     }
@@ -436,7 +447,7 @@ public class TclassService implements ITclassService {
         double z5 = 0.0;
         double z6 = 0.0;
         double minQus_ER = 0.0;
-        double minScore_ER = 0.0;
+        minScore_ER = 0.0;
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
             if (parameterValue.getCode().equalsIgnoreCase("z3"))
                 z3 = Double.parseDouble(parameterValue.getValue());
@@ -465,7 +476,7 @@ public class TclassService implements ITclassService {
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
         double z1 = 0.0;
         double z2 = 0.0;
-        double minScore_ET = 0.0;
+        minScore_ET = 0.0;
         double minQus_ET = 0.0;
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
             if (parameterValue.getCode().equalsIgnoreCase("z1"))
@@ -556,6 +567,16 @@ public class TclassService implements ITclassService {
         for (ClassStudent classStudent : classStudents) {
             if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 ||
                     Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 0)
+                result++;
+        }
+        return result;
+    }
+
+
+    public Integer getNumberOfExportedEvaluationForms() {
+        int result = 0;
+        for (ClassStudent classStudent : classStudents) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1)
                 result++;
         }
         return result;
