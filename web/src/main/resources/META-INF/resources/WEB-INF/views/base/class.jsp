@@ -43,11 +43,11 @@
 // {name: "lastModifiedDate",hidden:true},
 // {name: "createdBy",hidden:true},
 // {name: "createdDate",hidden:true,type:d},
-            {name:"titleClass"},
+            {name: "titleClass"},
             {name: "startDate"},
             {name: "endDate"},
             {name: "code"},
-            {name:"term.titleFa"},
+            {name: "term.titleFa"},
 // {name: "teacher.personality.lastNameFa"},
 // {name: "course.code"},
             {name: "course.titleFa"},
@@ -59,8 +59,9 @@
             {name: "topology"},
             {name: "trainingPlaceIds"},
             {name: "instituteId"},
-            {name:"workflowEndingStatusCode"},
-            {name:"workflowEndingStatus"}
+            {name: "workflowEndingStatusCode"},
+            {name: "workflowEndingStatus"},
+            {name: "preCourseTest", type: "boolean"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -68,12 +69,17 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name:"scoringMethod"},
-            {name:"acceptancelimit"},
-            {name:"startEvaluation"},
-            {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "scoringMethod"},
+            {name: "acceptancelimit"},
+            {name: "startEvaluation"},
+            {
+                name: "code",
+                title: "<spring:message code="course.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
-            {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
             {name: "theoryDuration"},
         ],
         fetchDataURL: courseUrl + "spec-list"
@@ -211,7 +217,7 @@
         <%--groupByText: "<spring:message code='groupByText'/>",--%>
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         styleName: 'expandList-tapBar',
-        cellHeight:43,
+        cellHeight: 43,
         autoFetchData: true,
         alternateRecordStyles: true,
         canExpandRecords: true,
@@ -220,7 +226,7 @@
         showRollOver: false,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-        expansionMode:"related",
+        expansionMode: "related",
         autoFitExpandField: true,
         virtualScrolling: true,
         loadOnExpand: true,
@@ -317,37 +323,37 @@
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
             {
-                name:"workflowEndingStatusCode",
-                title:"workflowCode",
+                name: "workflowEndingStatusCode",
+                title: "workflowCode",
                 align: "center",
                 filterOperator: "iContains",
                 hidden: true
             },
             {
-                name:"workflowEndingStatus",
-                title:"<spring:message code="ending.class.status"/>",
+                name: "workflowEndingStatus",
+                title: "<spring:message code="ending.class.status"/>",
                 align: "center",
                 filterOperator: "iContains"
             },
-            {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
+            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
 
         ],
 
-        getCellCSSText:function (record, rowNum, colNum) {
-            if (this.isSelected(record)){
+        getCellCSSText: function (record, rowNum, colNum) {
+            if (this.isSelected(record)) {
                 return "background-color: #fe9d2a;";
-            }else{
+            } else {
                 if (record.classStatus === "1")
                     return "background-color: #a5a5a5;";
                 else if (record.classStatus === "3")
-                   return "background-color: #C7E1FF;";
+                    return "background-color: #C7E1FF;";
             }
         },
-        dataArrived:function () {
+        dataArrived: function () {
             selectWorkflowRecord();
         },
-        getExpansionComponent : function (record) {
-             ListGrid_Class_JspClass.selectSingleRecord (record)
+        getExpansionComponent: function (record) {
+            ListGrid_Class_JspClass.selectSingleRecord(record);
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
             var layout = isc.VLayout.create({
                 styleName: "expand-layout",
@@ -376,9 +382,9 @@
         groupTitle: "اطلاعات پایه کلاس",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
-        titleAlign:"left",
+        titleAlign: "left",
         numCols: 10,
-        itemHoverWidth:"20%",
+        itemHoverWidth: "20%",
         colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%", "7%", "12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
@@ -399,34 +405,33 @@
                     {name: "createdBy"}
                 ],
                 changed: function (form, item, value) {
-                    form.getItem("startEvaluation").setDisabled(false)
+                    form.getItem("startEvaluation").setDisabled(false);
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
-                    form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod);
-                    if(item.getSelectedRecord().startEvaluation != null)
-                    {
-                     form.setValue("startEvaluation",item.getSelectedRecord().startEvaluation)
-                    }
-                    else{
-                    form.getItem("startEvaluation").setDisabled(true)
-                      form.getItem("startEvaluation").setValue()
+                    form.setValue("scoringMethod", item.getSelectedRecord().scoringMethod);
+                    if (item.getSelectedRecord().startEvaluation != null) {
+                        form.setValue("startEvaluation", item.getSelectedRecord().startEvaluation)
+                    } else {
+                        form.getItem("startEvaluation").setDisabled(true);
+                        form.getItem("startEvaluation").setValue()
                     }
                     //==============
                     DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
-                   if(item.getSelectedRecord().scoringMethod == "1")
-                   {
-                     form.setValue("acceptancelimit_a",item.getSelectedRecord().acceptancelimit);
-                   }
-                   else
-                   {
-                    form.setValue("acceptancelimit",item.getSelectedRecord().acceptancelimit);
-                   }
+                    if (item.getSelectedRecord().scoringMethod == "1") {
+                        form.setValue("acceptancelimit_a", item.getSelectedRecord().acceptancelimit);
+                    } else {
+                        form.setValue("acceptancelimit", item.getSelectedRecord().acceptancelimit);
+                    }
                     //==================
                     form.clearValue("teacherId");
                     evalGroup();
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
                     form.getItem("teacherId").fetchData();
-                    form.setValue("hduration", item.getSelectedRecord().theoryDuration)
-
+                    form.setValue("hduration", item.getSelectedRecord().theoryDuration);
+                    if (item.getSelectedRecord().evaluation === "1") {
+                        form.setValue("preCourseTest", false);
+                        form.getItem("preCourseTest").hide();
+                    } else
+                        form.getItem("preCourseTest").show();
                 }
             },
             {
@@ -437,13 +442,13 @@
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
                 <%--validators:[{--%>
-                    <%--type: "custom",--%>
-                    <%--errorMessage: "<spring:message code='msg.min.capacity'/>",--%>
-                    <%--condition: function (item, validator, value) {--%>
-                        <%--if (value == null || this.form.getValue("maxCapacity") == null)--%>
-                            <%--return true;--%>
-                        <%--return value <= this.form.getValue("maxCapacity");--%>
-                    <%--}--%>
+                <%--type: "custom",--%>
+                <%--errorMessage: "<spring:message code='msg.min.capacity'/>",--%>
+                <%--condition: function (item, validator, value) {--%>
+                <%--if (value == null || this.form.getValue("maxCapacity") == null)--%>
+                <%--return true;--%>
+                <%--return value <= this.form.getValue("maxCapacity");--%>
+                <%--}--%>
                 <%--}]--%>
             },
             {
@@ -460,14 +465,14 @@
                 title: "<spring:message code='class.code'/>:",
                 colSpan: 3,
                 // textAlign: "center",
-                readOnlyHover :"به منظور تولید اتوماتیک کد کلاس، باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
-                canEdit:false,
+                readOnlyHover: "به منظور تولید اتوماتیک کد کلاس، باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
+                canEdit: false,
                 // type: "staticText", textBoxStyle: "textItemLite"
             },
             {
                 name: "titleClass",
                 textAlign: "center",
-                required:true,
+                required: true,
                 title: "<spring:message code='class.title'/>:",
                 wrapTitle: true
             },
@@ -510,7 +515,7 @@
             {
                 name: "hduration",
                 colSpan: 2,
-                formatOnBlur:true,
+                formatOnBlur: true,
                 title: "<spring:message code='duration'/>:",
                 hint: "<spring:message code='hour'/>",
                 textAlign: "center",
@@ -527,7 +532,7 @@
             {
                 name: "dDuration",
                 showTitle: false,
-                canEdit:false,
+                canEdit: false,
                 hint: "روز",
                 textAlign: "center",
                 showHintInField: true,
@@ -559,7 +564,12 @@
                 useClientFiltering: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 pickListFields: [
-                    {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", titleAlign: "center", filterOperator: "iContains"},
+                    {
+                        name: "personality.lastNameFa",
+                        title: "<spring:message code='lastName'/>",
+                        titleAlign: "center",
+                        filterOperator: "iContains"
+                    },
                     {
                         name: "personality.firstNameFa",
                         title: "<spring:message code='firstName'/>",
@@ -658,7 +668,7 @@
                 }
             },
             {
-                ID :"classTypeStatus",
+                ID: "classTypeStatus",
                 name: "classStatus",
                 colSpan: 1,
                 rowSpan: 1,
@@ -679,7 +689,7 @@
 
                     if (classMethod.localeCompare("PUT") === 0 && value === "3")
                         checkEndingClass(oldValue);
-                     else if (classMethod.localeCompare("POST") === 0 && value === "3")
+                    else if (classMethod.localeCompare("POST") === 0 && value === "3")
                         return false;
 
                 }
@@ -690,8 +700,8 @@
                 title: "<spring:message code="group"/>:",
                 // required: true,
                 colSpan: 1,
-                readOnlyHover :"به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
-                canEdit:false,
+                readOnlyHover: "به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
+                canEdit: false,
                 // textAlign: "center",
                 // type: "staticText",
                 // textBoxStyle: "textItemLite"
@@ -761,66 +771,61 @@
 // return {category:category};
                 }
             },
-              {
-            name:"scoringMethod",
-            colSpan: 1,
-            required:true,
-            title:"روش نمره دهی",
-            textAlign: "center",
-            valueMap: {
+            {
+                name: "scoringMethod",
+                colSpan: 1,
+                required: true,
+                title: "روش نمره دهی",
+                textAlign: "center",
+                valueMap: {
                     "1": "ارزشی",
                     "2": "نمره از صد",
                     "3": "نمره از بیست",
                     "4": "بدون نمره",
                 },
 
-                  changed:function()
-                  {
+                changed: function () {
                     let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/"+ record.id,"GET", null, "callback:GetScoreState(rpcResponse,'"+record.id+"' )"));
-                  },
-                   change: function (form, item, value) {
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+                },
+                change: function (form, item, value) {
                     if (value == "1") {
-                      form.getItem("acceptancelimit").validators = [{}];
+                        form.getItem("acceptancelimit").validators = [{}];
                         form.getItem("acceptancelimit").hide();
-                         form.getItem("acceptancelimit").setValue();
+                        form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit_a").show();
                         form.getItem("acceptancelimit_a").enable();
                         form.getItem("acceptancelimit_a").setRequired(true);
                         form.getItem("acceptancelimit_a").setDisabled(false);
-                    }
-                    else if(value =="2")
-                    {
-                         form.getItem("acceptancelimit").validators=[{
+                    } else if (value == "2") {
+                        form.getItem("acceptancelimit").validators = [{
                             type: "integerRange", min: 0, max: 100,
                             errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
-                          },{type : "required", errorMessage:"نمره را وارد کنید",
-                          }]
+                        }, {
+                            type: "required", errorMessage: "نمره را وارد کنید",
+                        }]
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").enable();
                         form.getItem("acceptancelimit").setRequired(true);
                         form.getItem("acceptancelimit_a").hide();
                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
-                     form.getItem("acceptancelimit").setDisabled(false);
-                    }
-                    else if(value == "3")
-                    {
-                           form.getItem("acceptancelimit").validators = [{
-                                type: "regexp",
-                                errorMessage: "<spring:message code="msg.validate.score"/>",
-                                expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
-                            },{type : "required"}];
-                     form.getItem("acceptancelimit").show();
-                     form.getItem("acceptancelimit").enable();
-                     form.getItem("acceptancelimit").setRequired(true);
-                     form.getItem("acceptancelimit_a").hide();
-                     form.getItem("acceptancelimit_a").setValue();
-                     form.getItem("acceptancelimit_a").setRequired(false);
-                     form.getItem("acceptancelimit").setDisabled(false);
+                        form.getItem("acceptancelimit").setDisabled(false);
+                    } else if (value == "3") {
+                        form.getItem("acceptancelimit").validators = [{
+                            type: "regexp",
+                            errorMessage: "<spring:message code="msg.validate.score"/>",
+                            expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
+                        }, {type: "required"}];
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").enable();
+                        form.getItem("acceptancelimit").setRequired(true);
+                        form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setValue();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                        form.getItem("acceptancelimit").setDisabled(false);
 
-                    }
-                    else if(value =="4") {
+                    } else if (value == "4") {
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit").setRequired(false);
@@ -831,16 +836,16 @@
                     }
                 },
             },
-          {
+            {
                 name: "acceptancelimit",
                 title: "حد نمره قبولی",
-              required:true,
-          },
+                required: true,
+            },
 
             {
                 name: "acceptancelimit_a",
                 colSpan: 2,
-              required:true,
+                required: true,
                 hidden: true,
                 textAlign: "center",
                 title: "حد نمره قبولی",
@@ -851,15 +856,32 @@
                     "1004": "خيلي خوب",
                 }
             },
-             {
-            name:"startEvaluation",
-            title:"<spring:message code="start.evaluation"/>",
-            textAlign: "center",
-             hint: "&nbsp;ماه",
-             valueMap: {
-                    "1": "1","2": "2","3": "3","4": "4","5": "5","6": "6","7": "7","8": "8","9": "9","10": "10","11": "11","12": "12"
-                    }
+            {
+                name: "startEvaluation",
+                title: "<spring:message code="start.evaluation"/>",
+                textAlign: "center",
+                hint: "&nbsp;ماه",
+                valueMap: {
+                    "1": "1",
+                    "2": "2",
+                    "3": "3",
+                    "4": "4",
+                    "5": "5",
+                    "6": "6",
+                    "7": "7",
+                    "8": "8",
+                    "9": "9",
+                    "10": "10",
+                    "11": "11",
+                    "12": "12"
+                }
             },
+            {
+                name: "preCourseTest",
+                type: "boolean",
+                title: "پیش آزمون",
+                hidden: true,
+            }
         ],
     });
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
@@ -868,7 +890,7 @@
         height: "100%",
 // validateOnExit:true,
         isGroup: true,
-        titleAlign:"left",
+        titleAlign: "left",
         wrapItemTitles: true,
         groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
@@ -1231,9 +1253,9 @@
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: function () {
-           if(!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate,DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate,DynamicForm1_Class_JspClass.getValue("startDate"),DynamicForm1_Class_JspClass.getValue("endDate"))){
-               return;
-           }
+            if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
+                return;
+            }
 // if (startDateCheck === false || endDateCheck === false)
 // return;
             autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
@@ -1262,10 +1284,10 @@
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
-              if (data.scoringMethod == "1") {
+            if (data.scoringMethod == "1") {
 
-                  data.acceptancelimit = data.acceptancelimit_a
-              }
+                data.acceptancelimit = data.acceptancelimit_a
+            }
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
@@ -1284,8 +1306,7 @@
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
 
-                        if(classMethod.localeCompare("PUT") === 0)
-                        {
+                        if (classMethod.localeCompare("PUT") === 0) {
                             sendEndingClassToWorkflow();
                             sendToWorkflowAfterUpdate(JSON.parse(resp.data));
                         }
@@ -1346,7 +1367,7 @@
         // autoSize: false,
         // height: "87%",
         keepInParentRect: true,
-        placement:"fillPanel",
+        placement: "fillPanel",
         // align: "center",
         // border: "1px solid gray",
 // show: function () {
@@ -1743,12 +1764,19 @@
                 title: "سوالات پیش آزمون",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
             }
+
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
                 refreshSelectedTab_class(tab);
         }
     });
+
+    // var preCourseTestQuestionsTab = {
+    //     ID: "classPreCourseTestQuestionsTab",
+    //     title: "سوالات پیش آزمون",
+    //     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
+    // };
 
     var HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
@@ -1760,7 +1788,7 @@
         members: [
             HLayout_Actions_Class_JspClass,
             HLayout_Grid_Class_JspClass,
-           // HLayout_Tab_Class
+            // HLayout_Tab_Class
         ]
     });
 
@@ -1788,37 +1816,38 @@
     }
 
     function ListGrid_class_edit(a = 0) {
-        record = classListGrid.getSelectedRecord();
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
-            VM_JspClass.clearErrors();
+            VM_JspClass.clearErrors(true);
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
-            if(a===0) {
+            if (a === 0) {
                 saveButtonStatus();
                 classMethod = "PUT";
                 url = classUrl + record.id;
                 Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
-                 //=========================
-                 DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"),DynamicForm_Class_JspClass.getValue("scoringMethod"));
-                 if(ListGrid_Class_JspClass.getSelectedRecord().scoringMethod == "1")
-                   {
+                //=========================
+                DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
 
-                     DynamicForm_Class_JspClass.setValue("acceptancelimit_a",ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
-                   }
-                   else
-                   {
-                    DynamicForm_Class_JspClass.setValue("acceptancelimit",ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
-                   }
-                   //================
+                    DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                } else {
+                    DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                }
+                //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
                 getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
-            }
-            else{
+                if (record.course.evaluation === "1") {
+                    DynamicForm_Class_JspClass.setValue("preCourseTest", false);
+                    DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+                } else
+                    DynamicForm_Class_JspClass.getItem("preCourseTest").show();
+            } else {
                 classMethod = "POST";
                 url = classUrl;
                 Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
@@ -1850,6 +1879,7 @@
         VM_JspClass.clearValues();
         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
         Window_Class_JspClass.show();
+        DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
     }
 
     function ListGrid_class_print(type) {
@@ -1957,9 +1987,9 @@
                 OK.close();
             }, 3000);
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
-        } else if(resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {
+        } else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {
             createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");
-        } else{
+        } else {
             createDialog("info", "<spring:message code='error'/>");
         }
     }
@@ -1990,18 +2020,18 @@
             isc.say("<spring:message code='error'/>");
         }
     }
-    var abc;
-    function GetScoreState(resp,a) {
-         abc=new Array()
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-         }
-         else  if (resp.httpResponseCode === 406)
-         {
 
-          //alert(JSON.pars(resp.httpResponseText))
-          var Dialog_Remove_scoreState = createDialog("ask", + "کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده آیا می خواهید با تغییر روش نمره دهی نمرات ثبت شده برای فراگیران این کلاس حذف شوند؟",
+    var abc;
+
+    function GetScoreState(resp, a) {
+        abc = new Array()
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        } else if (resp.httpResponseCode === 406) {
+
+            //alert(JSON.pars(resp.httpResponseText))
+            var Dialog_Remove_scoreState = createDialog("ask", +"کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده آیا می خواهید با تغییر روش نمره دهی نمرات ثبت شده برای فراگیران این کلاس حذف شوند؟",
                 "<spring:message code="verify.delete"/>");
-              Dialog_Remove_scoreState.addProperties({
+            Dialog_Remove_scoreState.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
@@ -2035,8 +2065,8 @@
     }
 
     function refreshSelectedTab_class(tab) {
-        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-         tabSet_class_status();
+        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        tabSet_class_status(classRecord);
         if (!(classRecord == undefined || classRecord == null)) {
             switch (tab.ID) {
                 case "classStudentsTab": {
@@ -2057,7 +2087,12 @@
                 case "classAttachmentsTab": {
                     let readOnly = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب", 4: "نامه غیبت موجه"}, readOnly);
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>", {
+                            1: "جزوه",
+                            2: "لیست نمرات",
+                            3: "لیست حضور و غیاب",
+                            4: "نامه غیبت موجه"
+                        }, readOnly);
                     break;
                 }
                 case "classScoresTab": {
@@ -2087,22 +2122,23 @@
     function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
             if (!checkDate(classStart)) {
-                createDialog("info","فرمت تاریخ شروع صحیح نیست.","<spring:message code='message'/>");
+                createDialog("info", "فرمت تاریخ شروع صحیح نیست.", "<spring:message code='message'/>");
                 return false;
             }
             if (!checkDate(classEnd)) {
-                createDialog("info","فرمت تاریخ پایان صحیح نیست.","<spring:message code='message'/>");
-                return false;            }
+                createDialog("info", "فرمت تاریخ پایان صحیح نیست.", "<spring:message code='message'/>");
+                return false;
+            }
             if (classEnd < classStart) {
-                createDialog("info","تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.","<spring:message code='message'/>");
+                createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
             if (termStart > classStart) {
-                createDialog("info","تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.","<spring:message code='message'/>");
+                createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
             if (termEnd < classStart) {
-                createDialog("info","تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.","<spring:message code='message'/>");
+                createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
             return true;
@@ -2128,11 +2164,16 @@
         });
     }
 
-    function tabSet_class_status() {
-        if(ListGrid_Class_JspClass.getSelectedRecord() !== null)
-            TabSet_Class.enable();
-        else
+    function tabSet_class_status(classRecord) {
+        if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
             TabSet_Class.disable();
+            return;
+        }
+        TabSet_Class.enable();
+        if (classRecord.preCourseTest)
+            TabSet_Class.enableTab("classPreCourseTestQuestionsTab");
+        else
+            TabSet_Class.disableTab("classPreCourseTestQuestionsTab");
     }
 
     //*****check class is ready to end or no*****
@@ -2161,7 +2202,6 @@
     }
 
 
-
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendEndingClassToWorkflow() {
 
@@ -2170,28 +2210,27 @@
 
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
 
-          let  workflowStatusCode =  resp.data;
+            let workflowStatusCode = resp.data;
 
-            if(classMethod.localeCompare("PUT") === 0 && sRecord.classStatus === "3" && (workflowStatusCode === "" || workflowStatusCode === "-3"))
-            {
-                    let varParams = [{
-                        "processKey": "endingClassWorkflow",
-                        "cId": parseInt(sRecord.id),
-                        "classCode": sRecord.code,
-                        "titleClass": sRecord.titleClass,
-                        "teacher": sRecord.teacher,
-                        "term": sRecord.term.titleFa,
-                        "classCreatorId": "${username}",
-                        "classCreator" :userFullName,
-                        "REJECTVAL": "",
-                        "REJECT": "",
-                        "target": "/tclass/show-form",
-                        "targetTitleFa": "کلاس",
-                        "workflowStatus": "درخواست پایان کلاس",
-                        "workflowStatusCode": "0"
-                    }];
+            if (classMethod.localeCompare("PUT") === 0 && sRecord.classStatus === "3" && (workflowStatusCode === "" || workflowStatusCode === "-3")) {
+                let varParams = [{
+                    "processKey": "endingClassWorkflow",
+                    "cId": parseInt(sRecord.id),
+                    "classCode": sRecord.code,
+                    "titleClass": sRecord.titleClass,
+                    "teacher": sRecord.teacher,
+                    "term": sRecord.term.titleFa,
+                    "classCreatorId": "${username}",
+                    "classCreator": userFullName,
+                    "REJECTVAL": "",
+                    "REJECT": "",
+                    "target": "/tclass/show-form",
+                    "targetTitleFa": "کلاس",
+                    "workflowStatus": "درخواست پایان کلاس",
+                    "workflowStatusCode": "0"
+                }];
 
-                    isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
             }
 
         }));
@@ -2295,7 +2334,7 @@
     //*****set save button status*****
     function saveButtonStatus() {
 
-        if("${username}" === "ahmadi_z") {
+        if ("${username}" === "ahmadi_z") {
 
             IButton_Class_Save_JspClass.enable();
             IButton_Class_Save_JspClass.setOpacity(100);
