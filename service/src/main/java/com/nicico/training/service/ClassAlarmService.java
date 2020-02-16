@@ -280,6 +280,40 @@ public class ClassAlarmService implements IClassAlarm {
                     " WHERE " +
                     "    tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null AND :todaydat = :todaydat ");
 
+            //*****evaluation behaviour for student*****
+            alarmScripts.add(" SELECT " +
+                    "    'has alarm' AS hasalarm  " +
+                    "FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_class.id, " +
+                    "            'برای ' " +
+                    "            || COUNT(tbl_class.id) " +
+                    "            || ' فراگیر این کلاس ارزیابی رفتاری صادر نشده است' AS alarm " +
+                    "        FROM " +
+                    "            tbl_class " +
+                    "            INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id " +
+                    "            INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id " +
+                    "        WHERE " +
+                    "            tbl_class.id = :class_id " +
+                    "            AND tbl_course.c_evaluation = 3 " +
+                    "            AND tbl_class.c_status = 3 " +
+                    "            AND ( tbl_class_student.evaluation_status_behavior IS NULL " +
+                    "                  OR tbl_class_student.evaluation_status_behavior = 0 ) " +
+                    "            AND trunc(add_months(tbl_class.c_status_date,( " +
+                    "                CASE " +
+                    "                    WHEN tbl_class.start_evaluation IS NULL THEN " +
+                    "                        0 " +
+                    "                    ELSE " +
+                    "                        tbl_class.start_evaluation " +
+                    "                END " +
+                    "            ))) - trunc(sysdate) <= 14 " +
+                    "        GROUP BY " +
+                    "            tbl_class.id " +
+                    "        HAVING " +
+                    "            COUNT(tbl_class.id) > 0 AND :todaydat = :todaydat " +
+                    "    ) ");
+
 
             for (String script : alarmScripts) {
                 AlarmList = (List<String>) entityManager.createNativeQuery(script)
@@ -802,7 +836,36 @@ public class ClassAlarmService implements IClassAlarm {
                     "    tbl_class  " +
                     "    LEFT JOIN tbl_class_pre_course_test_question ON tbl_class_pre_course_test_question.f_class_id = tbl_class.id " +
                     " WHERE " +
-                    "    tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null " +
+                    "    tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null ");
+
+            alarmScript.append(" UNION ALL ");
+
+            //*****evaluation behaviour for student*****
+            alarmScript.append(" SELECT  " +
+                    " id AS targetRecordId, " +
+                    " 'tabName' AS tabName, " +
+                    " '/tclass/show-form' AS pageAddress, " +
+                    " 'عدم صدور ارزیابی رفتاری' AS alarmType, " +
+                    " alarm, " +
+                    "   1 AS detailRecordId, " +
+                    "   'عدم صدور ارزیابی رفتاری' AS sortField " +
+                    " FROM " +
+                    " (SELECT " +
+                    " tbl_class.id,  'برای ' || COUNT( tbl_class.id) || ' فراگیر این کلاس ارزیابی رفتاری صادر نشده است'  as alarm " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id " +
+                    "    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id " +
+                    " WHERE " +
+                    " tbl_class.id = :class_id AND " +
+                    "    tbl_course.c_evaluation = 3 AND " +
+                    "    tbl_class.c_status = 3 " +
+                    "    AND ( tbl_class_student.evaluation_status_behavior IS NULL " +
+                    "          OR tbl_class_student.evaluation_status_behavior = 0 ) " +
+                    " AND      " +
+                    "    trunc(ADD_MONTHS(tbl_class.c_status_date, (CASE WHEN tbl_class.start_evaluation IS NULL THEN 0 ELSE tbl_class.start_evaluation END))) - trunc(sysdate) <= 14  " +
+                    " GROUP BY tbl_class.id     " +
+                    " HAVING COUNT( tbl_class.id) > 0) " +
                     " ORDER BY sortField ");
 
             //***order by must be in the last script***
