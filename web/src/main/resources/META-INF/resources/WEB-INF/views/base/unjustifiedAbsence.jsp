@@ -114,7 +114,10 @@
                  title: "کلیک",
                  height:"30",
                  startRow: false,
-                 width:"*"
+                 width:"*",
+                click:function () {
+                trPrintWithCriteria("<spring:url value="/unjustified/unjustifiedabsence"/>",null)
+                }
             }
         ]
     })
