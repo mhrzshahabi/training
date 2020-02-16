@@ -72,6 +72,7 @@ public class TclassDTO {
     private String scoringMethod;
     private String acceptancelimit;
     private Integer startEvaluation;
+    private Boolean preCourseTest;
 
 
     @Getter
