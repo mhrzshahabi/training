@@ -2144,7 +2144,16 @@
 
                 if (resp.data !== "") {
                     TabSet_Class.selectTab("classAlarmsTab");
-                    isc.say(resp.data);
+                    isc.Dialog.create({
+                        message: resp.data,
+                        icon: "[SKIN]ask.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+
                     classTypeStatus.setValue(oldValue);
                 }
 
