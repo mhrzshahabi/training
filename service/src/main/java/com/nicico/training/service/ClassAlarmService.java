@@ -271,6 +271,16 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) AND rownum = 1 ");
 
 
+            //*****pre course test question*****
+            alarmScripts.add(" SELECT " +
+                    "    'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    LEFT JOIN tbl_class_pre_course_test_question ON tbl_class_pre_course_test_question.f_class_id = tbl_class.id " +
+                    " WHERE " +
+                    "    tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null AND :todaydat = :todaydat ");
+
+
             for (String script : alarmScripts) {
                 AlarmList = (List<String>) entityManager.createNativeQuery(script)
                         .setParameter("class_id", class_id)
@@ -775,9 +785,25 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) tbfreeplaces ON tbfreeplaces.c_session_date = tbalarm.c_session_date " +
                     "                      AND tbfreeplaces.c_session_start_hour = tbalarm.c_session_start_hour " +
                     "                      AND tbfreeplaces.c_session_end_hour = tbalarm.c_session_end_hour " +
-                    "                      AND tbfreeplaces.f_institute_id = tbalarm.f_institute_id                     " +
-                    " ORDER BY sortField                       " +
-                    "                      ");
+                    "                      AND tbfreeplaces.f_institute_id = tbalarm.f_institute_id ");
+
+            alarmScript.append(" UNION ALL ");
+
+            //*****pre course test question*****
+            alarmScript.append(" SELECT " +
+                    "    tbl_class.id AS targetRecordId, " +
+                    "    'classPreCourseTestQuestionsTab' AS tabName, " +
+                    "    '/tclass/show-form' AS pageAddress, " +
+                    "    'سوالات پیش آزمون' AS alarmType, " +
+                    "    'سوالات آزمون پیش از برگزاری کلاس ثبت نشده است.'  AS alarm, " +
+                    "    1 AS detailRecordId, " +
+                    "    'سوالات پیش آزمون' AS sortField " +
+                    " FROM " +
+                    "    tbl_class  " +
+                    "    LEFT JOIN tbl_class_pre_course_test_question ON tbl_class_pre_course_test_question.f_class_id = tbl_class.id " +
+                    " WHERE " +
+                    "    tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null " +
+                    " ORDER BY sortField ");
 
             //***order by must be in the last script***
 

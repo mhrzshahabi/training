@@ -566,6 +566,30 @@
     <changeSet author="poursalehi_mos (generated)" id="1581507288272-308">
         <dropColumn columnName="PRE_COURSE_TEST_QUESTION" tableName="TBL_CLASS_PRE_COURSE_TEST_QUESTION"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581845941048-240">
+        <addColumn tableName="tbl_class_pre_course_test_question">
+            <column name="f_class_id" type="number(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581845941048-214">
+        <dropPrimaryKey tableName="tbl_class_pre_course_test_question"/>
+        <createIndex indexName="IX_null" tableName="tbl_class_pre_course_test_question" unique="true">
+            <column name="f_class_id"/>
+            <column name="n_order"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_class_id, n_order" forIndexName="IX_null" tableName="tbl_class_pre_course_test_question"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581845941048-260">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_PRE_COURSE_TEST_QUESTION" constraintName="FKS5NECIAHGFDVU25U5TR3OCPX2"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581845941048-265">
+        <dropUniqueConstraint constraintName="UKFER3KVEKDFC4GQ4YNE9QXQ6UI" tableName="TBL_CLASS_PRE_COURSE_TEST_QUESTION"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581845941048-310">
+        <dropColumn columnName="F_COURSE_ID" tableName="tbl_class_pre_course_test_question"/>
+    </changeSet>
 
     <changeSet author="rastegari_h (generated)" id="1581849315001-240">
         <addColumn tableName="tbl_class">
