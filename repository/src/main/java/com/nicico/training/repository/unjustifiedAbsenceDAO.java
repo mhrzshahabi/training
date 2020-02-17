@@ -28,7 +28,7 @@ public interface unjustifiedAbsenceDAO extends JpaRepository<Attendance, Long>, 
             "WHERE\n" +
             "    tbl_attendance.c_state = '3'\n" +
             "    AND   tbl_class.c_start_date >='1398/10/03'\n" +
-            "    AND   tbl_class.c_end_date <='1398/10/05'", nativeQuery = true)
+            "    AND   tbl_class.c_end_date <='1398/10/05' \n" +"order by  tbl_class.c_title_class\n ", nativeQuery = true)
     List<Object> unjustified();
 //    List<Object> findConflict(@Param("sData") String sData, @Param("eData") String eData);
 
