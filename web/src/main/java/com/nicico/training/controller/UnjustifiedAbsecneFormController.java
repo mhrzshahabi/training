@@ -25,25 +25,17 @@ public class UnjustifiedAbsecneFormController {
     }
 
     @PostMapping("/unjustifiedabsence")
-
-    public ResponseEntity<?> printEvaluation(final HttpServletRequest request){
-        String token = request.getParameter("token");
-
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request) {
+        String token = (String) request.getParameter("token");
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
         final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
-
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        return restTemplate.exchange(restApiUrl + "/api/unjustifiedAbsence/unjustifiedabsence", HttpMethod.POST, entity, byte[].class);
+        return restTemplate.exchange(restApiUrl + "/api/unjustifiedAbsence/print", HttpMethod.POST, entity, byte[].class);
 
     }
-
 }

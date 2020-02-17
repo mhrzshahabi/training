@@ -3,6 +3,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 // <script>
 
     var DynamicForm_Report = isc.DynamicForm.create({
@@ -116,7 +119,7 @@
                  startRow: false,
                  width:"*",
                 click:function () {
-                trPrintWithCriteria("<spring:url value="/unjustified/unjustifiedabsence"/>",null)
+                    Print()
                 }
             }
         ]
@@ -129,3 +132,19 @@
     var Vlayout_Report_body = isc.VLayout.create({
         members: [Hlayout_Reaport_body]
     })
+
+    function Print() {
+            var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/unjustified/unjustifiedabsence"/>",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                       {name: "token", type: "hidden"}
+                    ]
+            })
+            criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.show();
+        criteriaForm.submitForm();
+        }

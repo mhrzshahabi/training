@@ -1,31 +1,21 @@
 package com.nicico.training.controller;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.repository.unjustifiedAbsenceDAO;
 import com.nicico.training.service.UnjustifiedAbsenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.nicico.copper.common.util.date.DateUtil;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -36,8 +26,8 @@ public class unjustifiedAbsenceRestController {
     private final ReportUtil reportUtil;
     private final UnjustifiedAbsenceService unjustifiedAbsenceService;
     @Loggable
-    @PostMapping(value = {"/unjustifiedabsence"})
-    public void print(HttpServletResponse response,@PathVariable String type)  throws Exception{
+    @PostMapping(value = {"/print"})
+    public void print(HttpServletResponse response)  throws Exception{
         Object object=unjustifiedAbsenceService.unjustified();
         String data = null;
         data = "{" + "\"unjustifiedAbsence\": " + objectMapper.writeValueAsString(object) + "}";
