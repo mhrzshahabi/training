@@ -244,7 +244,12 @@
             {
                 name: "minScore_ET",
                 hidden: true
-            }
+            },
+            {name: "teacherGradeToClass", hidden: true},
+            {name: "studentsGradeToTeacher", hidden: true},
+            {name: "studentsGradeToFacility" , hidden: true},
+            {name: "studentsGradeToGoals", hidden: true},
+            {name: "trainingGradeToTeacher", hidden: true}
         ]
     });
 
@@ -317,6 +322,7 @@
         width: "100%",
         height: "100%",
         members: [DynamicForm_Reaction_EvaluationAnalysis_Header,
+            // scrollChart,
             DynamicForm_Reaction_EvaluationAnalysis_Footer,
             Hlayout_Tab_Evaluation_Analysis_Print]
     });
@@ -451,6 +457,12 @@
 
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("minScore_ER").setValue(record.minScore_ER);
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("minScore_ET").setValue(record.minScore_ET);
+
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("teacherGradeToClass").setValue(record.teacherGradeToClass);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("studentsGradeToTeacher").setValue(record.studentsGradeToTeacher);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("studentsGradeToFacility").setValue(record.studentsGradeToFacility);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("studentsGradeToGoals").setValue(record.studentsGradeToGoals);
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("trainingGradeToTeacher").setValue(record.trainingGradeToTeacher);
     }
 
     function fill_evaluation_result() {
