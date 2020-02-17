@@ -1761,7 +1761,7 @@
             },
             {
                 ID: "classPreCourseTestQuestionsTab",
-                title: "سوالات پیش آزمون",
+                title: "<spring:message code='class.preCourseTestQuestion'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
             }
 
@@ -1771,12 +1771,6 @@
                 refreshSelectedTab_class(tab);
         }
     });
-
-    // var preCourseTestQuestionsTab = {
-    //     ID: "classPreCourseTestQuestionsTab",
-    //     title: "سوالات پیش آزمون",
-    //     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
-    // };
 
     var HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",

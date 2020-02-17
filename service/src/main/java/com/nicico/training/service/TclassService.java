@@ -349,13 +349,6 @@ public class TclassService implements ITclassService {
 //        evaluationResult.setFECRGrade(getFECRGrade(evaluationResult.getFERGrade()));
 //        evaluationResult.setFECRPass(FECRPass);
 
-        evaluationResult.setFERGrade(50.0);
-        evaluationResult.setFERPass(true);
-        evaluationResult.setFETGrade(50.0);
-        evaluationResult.setFETPass(true);
-        evaluationResult.setFECRGrade(50.0);
-        evaluationResult.setFECRPass(true);
-
         evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms());
         evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms());
         evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms());
@@ -364,6 +357,25 @@ public class TclassService implements ITclassService {
         evaluationResult.setMinScore_ER(minScore_ER);
         evaluationResult.setMinScore_ET(minScore_ET);
 
+//        evaluationResult.setStudentsGradeToFacility(studentsGradeToFacility);
+//        evaluationResult.setStudentsGradeToGoals(studentsGradeToGoals);
+//        evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
+//        evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher());
+//        evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
+
+
+        evaluationResult.setFERGrade(50.0);
+        evaluationResult.setFERPass(true);
+        evaluationResult.setFETGrade(50.0);
+        evaluationResult.setFETPass(true);
+        evaluationResult.setFECRGrade(50.0);
+        evaluationResult.setFECRPass(true);
+
+        evaluationResult.setStudentsGradeToFacility(20);
+        evaluationResult.setStudentsGradeToGoals(5);
+        evaluationResult.setStudentsGradeToTeacher(10);
+        evaluationResult.setTrainingGradeToTeacher(4);
+        evaluationResult.setTeacherGradeToClass(7);
         return evaluationResult;
     }
 
