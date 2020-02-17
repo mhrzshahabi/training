@@ -313,7 +313,8 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     @Override
     public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode) {
-        return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
+        Date today = new Date();
+        return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode, today);
     }
 
     @Override
