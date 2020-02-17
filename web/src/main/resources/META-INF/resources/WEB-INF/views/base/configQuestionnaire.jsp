@@ -38,7 +38,11 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
-            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", filterOperator: "iContains"}
+            {
+                name: "evalStatus",
+                title: "<spring:message code="evaluation.index.evalStatus"/>",
+                filterOperator: "iContains"
+            }
         ],
         fetchDataURL: evaluationIndexUrl + "/iscList"
     });
@@ -245,12 +249,14 @@
             ListGrid_ConfigQuestionnaire_Edit();
         },
         getCellCSSText: function (record) {
-            if (record.domain.code === "PRF")
+            if (record.domain.code === "SAT")
                 return "color:red;font-size: 12px;";
             if (record.domain.code === "EQP")
                 return "color:blue;font-size: 12px;";
             if (record.domain.code === "CLASS")
                 return "color:black;font-size: 12px;";
+            if (record.domain.code === "Content")
+                return "color:green;font-size: 12px;";
         },
         filterEditorSubmit: function () {
             ListGrid_JspConfigQuestionnaire.invalidateCache();
