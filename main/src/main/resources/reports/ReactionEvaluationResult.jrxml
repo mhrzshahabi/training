@@ -474,7 +474,9 @@
 			</pieChart>
 			<textField isBlankWhenNull="true">
 				<reportElement x="300" y="600" width="249" height="20" uuid="a19be3ea-0c5e-4a67-a4a5-a2d1bcd7f57f"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
 				<textFieldExpression><![CDATA["عاملی که موجب افت در نمره ی ارزیابی واکنشی شده است"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -507,7 +509,9 @@
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="7" y="600" width="249" height="20" uuid="169cd821-53bf-42b1-a6f6-11d069048091"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
 				<textFieldExpression><![CDATA["عاملی که موجب افت در نمره ی ارزیابی استاد شده است"]]></textFieldExpression>
 			</textField>
 		</band>

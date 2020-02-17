@@ -105,7 +105,7 @@ public class EvaluationAnalysisRestController {
         doubleArrayList = new HashMap<>();
         doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به استاد");
         doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"نمره فراگیران به امکانات");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"نمره فراگیران به اهداف");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"نمره فراگیران به محتوای دوره");
         doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"نمره استاد به کلاس");
         params.put("reactionEvaluationAnalysis", getMin(doubleArrayList));
 
@@ -117,7 +117,7 @@ public class EvaluationAnalysisRestController {
 
     private String getMin(HashMap<Double, String> list){
         String result = "";
-        Double min = 0.0;
+        Double min = 1000.0;
         for (Map.Entry<Double, String> doubleStringEntry : list.entrySet()) {
             if(doubleStringEntry.getKey() < min) {
                 min = doubleStringEntry.getKey();
