@@ -110,7 +110,7 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
             },
             {
                 name: "titleEn",
@@ -137,7 +137,7 @@
                 }
             }
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                 "<spring:message code='education.orientation'/>",
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
@@ -153,7 +153,7 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
-                readonly: true,
+                validateOnChange: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -167,6 +167,7 @@
                 editorType: "TrComboAutoRefresh",
                 addUnknownValues: false,
                 required: true,
+                validateOnChange: true,
                 optionDataSource: RestDataSourceEducationLevel,
                 displayField: "titleFa",
                 valueField: "id",
@@ -180,6 +181,7 @@
                 editorType: "TrComboAutoRefresh",
                 addUnknownValues: false,
                 required: true,
+                validateOnChange: true,
                 optionDataSource: RestDataSourceEducationMajor,
                 displayField: "titleFa",
                 valueField: "id",
@@ -245,7 +247,7 @@
     var IButton_EducationOrientation_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (DynamicForm_EducationOrientation.hasErrors()) {
+            if (!DynamicForm_EducationOrientation.validate()) {
                 return;
             }
             var data = DynamicForm_EducationOrientation.getValues();
@@ -372,7 +374,7 @@
                 filterOperator: "iContains"
             }
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                 "<spring:message code='education.major'/>",
                 DynamicForm_EducationMajor, Window_EducationMajor);
@@ -388,8 +390,8 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
+                validateOnChange: true,
                 length: "100",
-                readonly: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -457,8 +459,7 @@
     var IButton_EducationMajor_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationMajor.validate();
-            if (DynamicForm_EducationMajor.hasErrors()) {
+            if (!DynamicForm_EducationMajor.validate()) {
                 return;
             }
             var data = DynamicForm_EducationMajor.getValues();
@@ -575,17 +576,20 @@
             {
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
-                align: "center",
                 filterOperator: "iContains"
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
-                align: "center",
                 filterOperator: "iContains"
-            }
+            },
+            {
+                name: "code",
+                title: "<spring:message code='code'/>",
+                filterOperator: "equals"
+            },
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                 "<spring:message code='education.level'/>",
                 DynamicForm_EducationLevel, Window_EducationLevel);
@@ -601,9 +605,9 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
+                validateOnChange: true,
                 type: 'text',
                 length: "100",
-                readonly: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -617,6 +621,7 @@
                 name: "code",
                 title: "<spring:message code='code'/>",
                 required: true,
+                validateOnChange: true,
                 length: "5",
                 keyPressFilter: "[0-9]"
             },
@@ -679,7 +684,7 @@
     var IButton_EducationLevel_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (DynamicForm_EducationLevel.hasErrors()) {
+            if (!DynamicForm_EducationLevel.validate()) {
                 return;
             }
             var data = DynamicForm_EducationLevel.getValues();

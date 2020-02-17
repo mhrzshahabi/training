@@ -13,10 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UnjustifiedAbsenceService  {
     private final  unjustifiedAbsenceDAO unjustifiedAbsenceDAO;
-    public List<unjustifiedAbsenceDTO> unjustified()
+    public List<unjustifiedAbsenceDTO> unjustified(String startDate,String endDate)
     {
         List<Object> list = new ArrayList<>();
-        list.addAll(unjustifiedAbsenceDAO.unjustified());
+        list.addAll(unjustifiedAbsenceDAO.unjustified(startDate,endDate));
         List<unjustifiedAbsenceDTO> unjustifiedAbsenceDTOList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Object[] arr = (Object[]) list.get(i);

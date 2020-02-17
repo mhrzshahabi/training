@@ -36,7 +36,7 @@
                 }],
 
                 changed: function (form, item, value) {
-                    var startdate = DynamicForm_Term.getItem("startDate").getValue();
+                    var startdate = DynamicForm_Report.getItem("startDate").getValue();
                     if (startdate != null) {
                         if (term_method == "POST")
                             getTermCodeRequest(startdate.substr(0, 4));
@@ -46,19 +46,19 @@
                 },
                 blur: function () {
                     var dateCheck = false;
-                    dateCheck = checkDate(DynamicForm_Term.getValue("startDate"));
+                    dateCheck = checkDate(DynamicForm_Report.getValue("startDate"));
                     startDateCheckTerm = dateCheck;
                     if (dateCheck == false)
-                        DynamicForm_Term.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     if (dateCheck == true)
-                        DynamicForm_Term.clearFieldErrors("startDate", true);
+                        DynamicForm_Report.clearFieldErrors("startDate", true);
 
-                    var endDate = DynamicForm_Term.getValue("endDate");
-                    var startDate = DynamicForm_Term.getValue("startDate");
+                    var endDate = DynamicForm_Report.getValue("endDate");
+                    var startDate = DynamicForm_Report.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
-// DynamicForm_Term.clearFieldErrors("endDate", true);
-                        DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                        DynamicForm_Term.getItem("endDate").setValue();
+// DynamicForm_Report.clearFieldErrors("endDate", true);
+                        DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                        DynamicForm_Report.getItem("endDate").setValue();
                         endDateCheckTerm = false;
                     }
                 }
@@ -88,24 +88,24 @@
                 }],
                 blur: function () {
                     var dateCheck = false;
-                    dateCheck = checkDate(DynamicForm_Term.getValue("endDate"));
-                    var endDate = DynamicForm_Term.getValue("endDate");
-                    var startDate = DynamicForm_Term.getValue("startDate");
+                    dateCheck = checkDate(DynamicForm_Report.getValue("endDate"));
+                    var endDate = DynamicForm_Report.getValue("endDate");
+                    var startDate = DynamicForm_Report.getValue("startDate");
                     if (dateCheck == false) {
-                        DynamicForm_Term.clearFieldErrors("endDate", true);
-                        DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                        DynamicForm_Report.clearFieldErrors("endDate", true);
+                        DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheckTerm = false;
                     }
                     if (dateCheck == true) {
                         if (startDate == undefined)
-                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            DynamicForm_Report.clearFieldErrors("endDate", true);
                         if (startDate != undefined && startDate > endDate) {
-                            DynamicForm_Term.clearFieldErrors("endDate", true);
-                            DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                            DynamicForm_Report.clearFieldErrors("endDate", true);
+                            DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                             endDateCheckTerm = false;
                         }
                         if (startDate != undefined && startDate < endDate) {
-                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            DynamicForm_Report.clearFieldErrors("endDate", true);
                             endDateCheckTerm = true;
                         }
                     }
@@ -119,7 +119,9 @@
                  startRow: false,
                  width:"*",
                 click:function () {
-                    Print()
+                    var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
+                    var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
+                   Print(strSData,strEData)
                 }
             }
         ]
@@ -133,10 +135,10 @@
         members: [Hlayout_Reaport_body]
     })
 
-    function Print() {
+    function Print(startDate,endDate) {
             var criteriaForm = isc.DynamicForm.create({
                 method: "POST",
-                action: "<spring:url value="/unjustified/unjustifiedabsence"/>",
+                action: "<spring:url value="/unjustified/unjustifiedabsence"/>" +"/"+startDate + "/" + endDate,
                 target: "_Blank",
                 canSubmit: true,
                 fields:
