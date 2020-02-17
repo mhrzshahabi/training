@@ -43,7 +43,6 @@ public class EvaluationAnalysisFormController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-
         MultiValueMap<String, String> params = new LinkedMultiValueMap();
         params.add("code",object.get("code").toString());
         params.add("titleClass",object.get("titleClass").toString());
