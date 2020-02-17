@@ -86,6 +86,7 @@
     const evaluationUrl = rootUrl + "/evaluation";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
 
+
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
@@ -708,9 +709,9 @@
                     }
                 },
                  {
-                    title: "انواع گزارشات",
+                    title: "گزارش غیبت موجه",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/report/show-form"/>");
+                        createTab(this.title, "<spring:url value="/unjustified/show-form"/>");
                     }
                 },
             ]
@@ -1109,6 +1110,7 @@
     const instituteUrl = rootUrl + "/institute/";
     const educationUrl = rootUrl + "/education/";
     const termUrl = rootUrl + "/term/";
+    const unjustifiedAbsenceReportURL=rootUrl + "/unjustifiedAbsence/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
     const personalInfoUrl = rootUrl + "/personalInfo/";
