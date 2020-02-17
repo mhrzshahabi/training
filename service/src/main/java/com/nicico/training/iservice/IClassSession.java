@@ -32,7 +32,7 @@ public interface IClassSession {
     @Transactional
     List<ClassSessionDTO.ClassSessionsDateForOneClass> getDateForOneClass(Long classId);
 
-    void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement);
+    void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement, HttpServletResponse response);
 
     List<ClassSessionDTO.Info> loadSessions(Long classId);
 
