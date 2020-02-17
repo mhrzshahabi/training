@@ -53,6 +53,7 @@ public class TclassService implements ITclassService {
     double studentsGradeToFacility = 0.0;
     double minScore_ER = 0.0;
     double minScore_ET = 0.0;
+    double minScoreFECR = 0.0;
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
 
     @Transactional(readOnly = true)
@@ -357,13 +358,13 @@ public class TclassService implements ITclassService {
         evaluationResult.setNumberOfExportedReactionEvaluationForms(getNumberOfExportedEvaluationForms());
         evaluationResult.setMinScore_ER(minScore_ER);
         evaluationResult.setMinScore_ET(minScore_ET);
+        evaluationResult.setMinScoreFECR(minScoreFECR);
 
 //        evaluationResult.setStudentsGradeToFacility(studentsGradeToFacility);
 //        evaluationResult.setStudentsGradeToGoals(studentsGradeToGoals);
 //        evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
 //        evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher());
 //        evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
-
 
         evaluationResult.setFERGrade(50.0);
         evaluationResult.setFERPass(true);
@@ -517,14 +518,12 @@ public class TclassService implements ITclassService {
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
             if (parameterValue.getCode().equalsIgnoreCase("FECRZ"))
                 FECRZ = Double.parseDouble(parameterValue.getValue());
-//            else if (parameterValue.getCode().equalsIgnoreCase("minScore_ET "))
-//                minScore_ET  = Double.parseDouble(parameterValue.getValue());
-//            else if (parameterValue.getCode().equalsIgnoreCase("minQus_ET"))
-//                minQus_ET = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
+                minScoreFECR  = Double.parseDouble(parameterValue.getValue());
         }
         result = ferGrade * FECRZ;
-//        if (result>=minScore_ET && getPercenetOfFilledReactionEvaluationForms()>=minQus_ET)
-//            FECRPass = true;
+        if (result>=minScoreFECR)
+            FECRPass = true;
         return result;
     }
 
