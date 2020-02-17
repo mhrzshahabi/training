@@ -1,6 +1,7 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.Attendance;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -27,9 +28,9 @@ public interface unjustifiedAbsenceDAO extends JpaRepository<Attendance, Long>, 
             "    INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id\n" +
             "WHERE\n" +
             "    tbl_attendance.c_state = '3'\n" +
-            "    AND   tbl_class.c_start_date >='1398/10/03'\n" +
-            "    AND   tbl_class.c_end_date <='1398/10/05' \n" +"order by  tbl_class.c_title_class\n ", nativeQuery = true)
-    List<Object> unjustified();
-//    List<Object> findConflict(@Param("sData") String sData, @Param("eData") String eData);
+            "    AND   tbl_class.c_start_date >= :startDate \n" +
+            "    AND   tbl_class.c_end_date <= :endDate \n" +"order by  tbl_class.c_title_class, tbl_student.last_name, tbl_student.first_name \n ", nativeQuery = true)
+       List<Object> unjustified(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
 
 }

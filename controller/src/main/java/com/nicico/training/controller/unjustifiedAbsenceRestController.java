@@ -7,8 +7,10 @@ import com.nicico.training.service.UnjustifiedAbsenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.nicico.copper.common.util.date.DateUtil;
 import javax.servlet.http.HttpServletResponse;
@@ -27,8 +29,12 @@ public class unjustifiedAbsenceRestController {
     private final UnjustifiedAbsenceService unjustifiedAbsenceService;
     @Loggable
     @PostMapping(value = {"/print"})
-    public void print(HttpServletResponse response)  throws Exception{
-        Object object=unjustifiedAbsenceService.unjustified();
+    public void print(HttpServletResponse response, @RequestParam(value = "startDate") String startDate, @RequestParam(value = "endDate") String endDate)  throws Exception{
+
+        startDate = startDate.substring(0, 4) + "/" + startDate.substring(4, 6) + "/" + startDate.substring(6, 8);
+        endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
+
+        Object object=unjustifiedAbsenceService.unjustified(startDate,endDate);
         String data = null;
         data = "{" + "\"unjustifiedAbsence\": " + objectMapper.writeValueAsString(object) + "}";
         final Map<String, Object> params = new HashMap<>();
