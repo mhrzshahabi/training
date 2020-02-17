@@ -293,6 +293,7 @@
                 name: "title",
                 title: "<spring:message code="title"/>",
                 required: true,
+                validateOnChange: true,
                 length: 255
             },
             {
@@ -342,10 +343,12 @@
     IButton_Save_JspWorkGroup = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspWorkGroup.valuesHaveChanged())
-                Window_JspWorkGroup.close();
             if (!DynamicForm_JspWorkGroup.validate())
                 return;
+            if (!DynamicForm_JspWorkGroup.valuesHaveChanged()) {
+                Window_JspWorkGroup.close();
+                return;
+            }
             wait_Permission = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlWorkGroup,
                 methodWorkGroup,
@@ -578,8 +581,7 @@
     function WorkGroup_save_result(resp) {
         wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             refreshLG(ListGrid_JspWorkGroup);
             Window_JspWorkGroup.close();
             setTimeout(function () {
@@ -587,11 +589,9 @@
             }, 3000);
         } else {
             if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
     }
@@ -622,8 +622,7 @@
         wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             refreshLG(ListGrid_JspWorkGroup);
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -769,14 +768,12 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             refreshLG(ListGrid_JspWorkGroup);
             Windows_Permissions_Permission.close();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 2000);
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
+            createDialog("info", "<spring:message code="msg.operation.error"/>");
         }
     }
 

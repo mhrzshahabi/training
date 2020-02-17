@@ -189,4 +189,16 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - EvaluationInfo")
+    public static class EvaluationInfo{
+        private Long id;
+        private Integer evaluationStatusReaction;
+        private Integer evaluationStatusLearning;
+        private Integer evaluationStatusBehavior;
+        private Integer evaluationStatusResults;
+    }
+
 }
