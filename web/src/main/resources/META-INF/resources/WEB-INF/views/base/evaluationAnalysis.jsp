@@ -234,7 +234,11 @@
                 name: "FECRPass",
                 title: "تائید/عدم تائید",
                 baseStyle: "teacher-code",
-                canEdit: false
+                canEdit: false,
+                valueMap: {
+                    "true": "تائید",
+                    "false": "عدم تائید"
+                }
             },
             {
                 name: "FERPass",
