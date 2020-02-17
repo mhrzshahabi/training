@@ -65,13 +65,6 @@
                 ID: "totalsLabel_scores"
             }),
             isc.IButton.create({
-// visibleWhen: {
-// _constructor: "AdvancedCriteria",
-// operator: "and",
-// criteria: [
-// {fieldName: ListGrid_Class_Student1.tclass.scoringMethod, operator: "greaterOrEqualField", value:"4"}
-// ]
-// },
                 name: "Button",
                 ID: "Button1",
                 disabled: true,
@@ -97,8 +90,10 @@
                     }
                     else
                     {
-                    ListGrid_Remove_All_Cell(record)
-                    ListGrid_Class_Student.invalidateCache()
+                        setTimeout(function () {
+                        ListGrid_Remove_All_Cell(record)
+                        }, 500);
+
                     }
                 }
 
@@ -170,9 +165,9 @@
 
                     scoresState_value = value
                     if (value === "مردود") {
-                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[6].masterIndex)
+                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[5].masterIndex)
                     } else if (value === "قبول با نمره") {
-                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[8].masterIndex)
+                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[7].masterIndex)
                     } else if (value === "قبول بدون نمره") {
                         ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value)
                         this.grid.endEditing();
@@ -202,17 +197,14 @@
                     }
                     else if(classRecord.scoringMethod == "1")
                         {
-
-                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[7].masterIndex)
-
+                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[6].masterIndex)
                         }
                      else {
                         failureReason_value = value
-                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[8].masterIndex)
+                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[7].masterIndex)
                     }
                     valence_value_failureReason = value
                 },
-
             },
             {
                 name: "valence",
@@ -468,12 +460,12 @@
         record.scoresState = null
         record.failureReason = null
         record.score = null
-        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback:Remove_All_Cell(rpcResponse)"));
-        ListGrid_Class_Student.refreshFields();
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback:Remove_All_Cell_Action(rpcResponse)"));
+
     }
 
-    function Remove_All_Cell(rpcResponse) {
-
+    function Remove_All_Cell_Action(rpcResponse) {
+    ListGrid_Class_Student.invalidateCache()
     }
 
     function Edit_Cell_scoresState_Update(resp) {
