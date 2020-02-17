@@ -99,15 +99,15 @@ public class EvaluationAnalysisRestController {
         params.put("trainingGradeToTeacher", Double.parseDouble(trainingGradeToTeacher));
 
         HashMap<Double,String> doubleArrayList = new HashMap<>();
-        doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"trainingGradeToTeacher");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"studentsGradeToTeacher");
-        params.put("teacherEvaluationAnalysis", getMinTeacherEvaluation(doubleArrayList));
+        doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"نمره مسئول آموزش به استاد");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به استاد");
+        params.put("teacherEvaluationAnalysis", getMin(doubleArrayList));
         doubleArrayList = new HashMap<>();
-        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"studentsGradeToTeacher");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"studentsGradeToFacility");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"studentsGradeToGoals");
-        doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"teacherGradeToClass");
-        params.put("reactionEvaluationAnalysis", getMinReactionEvaluation(doubleArrayList));
+        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به استاد");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"نمره فراگیران به امکانات");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"نمره فراگیران به اهداف");
+        doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"نمره استاد به کلاس");
+        params.put("reactionEvaluationAnalysis", getMin(doubleArrayList));
 
         ArrayList<String> list = new ArrayList();
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
@@ -115,16 +115,17 @@ public class EvaluationAnalysisRestController {
         reportUtil.export("/reports/ReactionEvaluationResult.jasper", params, jsonDataSource, response);
     }
 
-    private String getMinTeacherEvaluation(HashMap<Double, String> list){
+    private String getMin(HashMap<Double, String> list){
         String result = "";
+        Double min = 0.0;
         for (Map.Entry<Double, String> doubleStringEntry : list.entrySet()) {
+            if(doubleStringEntry.getKey() < min) {
+                min = doubleStringEntry.getKey();
+                result = doubleStringEntry.getValue();
+            }
         }
         return result;
     }
 
-    private String getMinReactionEvaluation(HashMap<Double, String> list){
-        String result = "";
-        return result;
-    }
 
 }
