@@ -1761,7 +1761,7 @@
             },
             {
                 ID: "classPreCourseTestQuestionsTab",
-                title: "سوالات پیش آزمون",
+                title: "<spring:message code='class.preCourseTestQuestion'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
             }
 
@@ -1771,12 +1771,6 @@
                 refreshSelectedTab_class(tab);
         }
     });
-
-    // var preCourseTestQuestionsTab = {
-    //     ID: "classPreCourseTestQuestionsTab",
-    //     title: "سوالات پیش آزمون",
-    //     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
-    // };
 
     var HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
@@ -2185,7 +2179,16 @@
 
                 if (resp.data !== "") {
                     TabSet_Class.selectTab("classAlarmsTab");
-                    isc.say(resp.data);
+                    isc.Dialog.create({
+                        message: resp.data,
+                        icon: "[SKIN]ask.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+
                     classTypeStatus.setValue(oldValue);
                 }
 

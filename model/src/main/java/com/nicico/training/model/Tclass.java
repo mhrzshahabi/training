@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -68,6 +69,9 @@ public class Tclass extends Auditable {
 
     @Column(name = "c_status")
     private String classStatus;
+
+    @Column(name = "c_status_date")
+    private Date classStatusDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_institute", insertable = false, updatable = false)
@@ -153,7 +157,7 @@ public class Tclass extends Auditable {
     private Set<ClassSession> classSessions;
 
     @ElementCollection
-    @CollectionTable(name = "tbl_class_pre_course_test_question", joinColumns = @JoinColumn(name = "f_course_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"f_course_id", "c_pre_course_test_question"})})
+    @CollectionTable(name = "tbl_class_pre_course_test_question", joinColumns = @JoinColumn(name = "f_class_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"f_class_id", "c_pre_course_test_question"})})
     @OrderColumn(name = "n_order", nullable = false)
     @Column(name = "c_pre_course_test_question", nullable = false, length = 1000)
     private List<String> preCourseTestQuestions;

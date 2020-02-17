@@ -62,7 +62,7 @@
             {name: "minTeacherDegree"},
             {name: "minTeacherExpYears"},
             {name: "minTeacherEvalScore"},
-            // {name: "knowledge"},
+            // {name: "know   ledge"},
             // {name: "skill"},
             // {name: "attitude"},
             {name: "needText"},

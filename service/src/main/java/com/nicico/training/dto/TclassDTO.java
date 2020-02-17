@@ -44,6 +44,7 @@ public class TclassDTO {
     private Long supervisor;
     private String reason;
     private String classStatus;
+    private Date classStatusDate;
     @ApiModelProperty(required = true)
     private Long group;
     @ApiModelProperty(required = true)

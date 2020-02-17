@@ -127,5 +127,4 @@ public class EvaluationAnalysisRestController {
         return result;
     }
 
-
 }
