@@ -53,7 +53,10 @@ public class EvaluationAnalysisRestController {
                                 @RequestParam(value = "FECRGrade") String FECRGrade, @RequestParam(value = "FERPass") String FERPass,
                                 @RequestParam(value = "FETPass") String FETPass, @RequestParam(value = "FECRPass") String FECRPass,
                                 @RequestParam(value = "minScore_ER") String minScore_ER, @RequestParam(value = "minScore_ET") String minScore_ET,
-                                @RequestParam(value = "differFER") String differFER, @RequestParam(value = "differFET") String differFET) throws Exception {
+                                @RequestParam(value = "differFER") String differFER, @RequestParam(value = "differFET") String differFET,
+                                @RequestParam(value = "teacherGradeToClass") String teacherGradeToClass, @RequestParam(value = "studentsGradeToTeacher") String studentsGradeToTeacher,
+                                @RequestParam(value = "studentsGradeToFacility") String studentsGradeToFacility, @RequestParam(value = "studentsGradeToGoals") String studentsGradeToGoals,
+                                @RequestParam(value = "trainingGradeToTeacher") String trainingGradeToTeacher) throws Exception {
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
@@ -62,7 +65,12 @@ public class EvaluationAnalysisRestController {
         params.put("titleClass",titleClass);
         params.put("term",term);
         params.put("studentCount", studentCount);
-        params.put("classStatus", classStatus);
+        if(classStatus.equalsIgnoreCase("1"))
+            params.put("classStatus", "برنامه ریزی");
+        else if(classStatus.equalsIgnoreCase("2"))
+            params.put("classStatus", "در حال اجرا");
+        else if(classStatus.equalsIgnoreCase("3"))
+            params.put("classStatus", "پایان یافته");
         params.put("teacher", teacher);
 
         params.put("numberOfExportedReactionEvaluationForms", numberOfExportedReactionEvaluationForms);
@@ -74,9 +82,9 @@ public class EvaluationAnalysisRestController {
         params.put("FETGrade", FETGrade);
         params.put("FECRGrade", FECRGrade);
 
-        params.put("FERPass", FERPass);
-        params.put("FETPass", FETPass);
-        params.put("FECRPass", FECRPass);
+        params.put("FERPass", Boolean.parseBoolean(FERPass));
+        params.put("FETPass", Boolean.parseBoolean(FETPass));
+        params.put("FECRPass", Boolean.parseBoolean(FECRPass));
 
         params.put("minScore_ER", minScore_ER);
         params.put("minScore_ET", minScore_ET);
@@ -84,11 +92,39 @@ public class EvaluationAnalysisRestController {
         params.put("differFER", differFER);
         params.put("differFET", differFET);
 
+        params.put("teacherGradeToClass", Double.parseDouble(teacherGradeToClass));
+        params.put("studentsGradeToTeacher", Double.parseDouble(studentsGradeToTeacher));
+        params.put("studentsGradeToFacility", Double.parseDouble(studentsGradeToFacility));
+        params.put("studentsGradeToGoals", Double.parseDouble(studentsGradeToGoals));
+        params.put("trainingGradeToTeacher", Double.parseDouble(trainingGradeToTeacher));
+
+        HashMap<Double,String> doubleArrayList = new HashMap<>();
+        doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"trainingGradeToTeacher");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"studentsGradeToTeacher");
+        params.put("teacherEvaluationAnalysis", getMinTeacherEvaluation(doubleArrayList));
+        doubleArrayList = new HashMap<>();
+        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"studentsGradeToTeacher");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"studentsGradeToFacility");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"studentsGradeToGoals");
+        doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"teacherGradeToClass");
+        params.put("reactionEvaluationAnalysis", getMinReactionEvaluation(doubleArrayList));
 
         ArrayList<String> list = new ArrayList();
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/ReactionEvaluationResult.jasper", params, jsonDataSource, response);
+    }
+
+    private String getMinTeacherEvaluation(HashMap<Double, String> list){
+        String result = "";
+        for (Map.Entry<Double, String> doubleStringEntry : list.entrySet()) {
+        }
+        return result;
+    }
+
+    private String getMinReactionEvaluation(HashMap<Double, String> list){
+        String result = "";
+        return result;
     }
 
 }

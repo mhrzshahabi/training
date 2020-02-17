@@ -316,6 +316,11 @@ public class TclassDTO {
         double percenetOfFilledReactionEvaluationForms;
         double minScore_ER;
         double minScore_ET;
+        double teacherGradeToClass;
+        double studentsGradeToTeacher;
+        double studentsGradeToFacility;
+        double studentsGradeToGoals;
+        double trainingGradeToTeacher;
     }
 
     @Getter
