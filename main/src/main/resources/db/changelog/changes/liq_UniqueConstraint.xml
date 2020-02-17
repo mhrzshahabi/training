@@ -89,5 +89,8 @@
     <changeSet author="poursalehi_mos (generated)" id="1581845941048-243">
         <addUniqueConstraint columnNames="f_class_id, c_pre_course_test_question" constraintName="UK7mf3mgageprfcgkano94po25p" tableName="tbl_class_pre_course_test_question"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1581940066556-243">
+        <addUniqueConstraint columnNames="c_question, f_domain_id" constraintName="UK4tfveby2u5krs1362x51p7dk2" tableName="tbl_evaluation_question"/>
+    </changeSet>
 
 </databaseChangeLog>

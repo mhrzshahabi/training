@@ -101,13 +101,13 @@ public class EvaluationAnalysisRestController {
         HashMap<Double,String> doubleArrayList = new HashMap<>();
         doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"نمره مسئول آموزش به استاد");
         doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به استاد");
-        params.put("teacherEvaluationAnalysis", getMin(doubleArrayList));
+        params.put("teacherEvaluationAnalysis", getMinFactor(doubleArrayList));
         doubleArrayList = new HashMap<>();
         doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به استاد");
         doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"نمره فراگیران به امکانات");
         doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"نمره فراگیران به محتوای دوره");
         doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"نمره استاد به کلاس");
-        params.put("reactionEvaluationAnalysis", getMin(doubleArrayList));
+        params.put("reactionEvaluationAnalysis", getMinFactor(doubleArrayList));
 
         ArrayList<String> list = new ArrayList();
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
@@ -115,7 +115,7 @@ public class EvaluationAnalysisRestController {
         reportUtil.export("/reports/ReactionEvaluationResult.jasper", params, jsonDataSource, response);
     }
 
-    private String getMin(HashMap<Double, String> list){
+    private String getMinFactor(HashMap<Double, String> list){
         String result = "";
         Double min = 1000.0;
         for (Map.Entry<Double, String> doubleStringEntry : list.entrySet()) {

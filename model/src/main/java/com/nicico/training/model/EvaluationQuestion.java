@@ -13,7 +13,8 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_evaluation_question")
+@Table(name = "tbl_evaluation_question",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_question", "f_domain_id"})})
 public class EvaluationQuestion extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evaluation_question_seq")
