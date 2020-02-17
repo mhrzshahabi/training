@@ -250,7 +250,7 @@ public class TclassDTO {
         private Long termId;
         private TeacherDTO.TeacherFullNameTuple teacher;
         private Long teacherId;
-        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+        private Set<ClassStudentDTO.EvaluationInfo> classStudents;
         private InstituteDTO.InstituteInfoTuple institute;
         private Long instituteId;
         private String classStatus;
@@ -273,7 +273,7 @@ public class TclassDTO {
 
         public Integer getNumberOfStudentCompletedEvaluation() {
             int studentEvaluations = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+            for (ClassStudentDTO.EvaluationInfo classStudent : classStudents) {
                 if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
                         Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) == 2 ||
                         Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) == 2 ||
@@ -321,6 +321,7 @@ public class TclassDTO {
         double percenetOfFilledReactionEvaluationForms;
         double minScore_ER;
         double minScore_ET;
+        double minScoreFECR;
         double teacherGradeToClass;
         double studentsGradeToTeacher;
         double studentsGradeToFacility;
