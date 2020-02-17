@@ -170,6 +170,7 @@ public class TclassService implements ITclassService {
                 unAcceptedClasses.add(tClass);
                 searchRs.setTotalCount(searchRs.getTotalCount() - 1);
             }
+            tClass.setEvaluationStatus("3");
         }
 
         for (TclassDTO.EvaluatedInfoGrid unAcceptedClass : unAcceptedClasses) {

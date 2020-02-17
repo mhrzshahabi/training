@@ -112,6 +112,14 @@
                 },
             },
             {
+                name: "evaluationStatus", title: "<spring:message code='evaluation.status'/>", align: "center",
+                valueMap: {
+                    "1": "ارزیابی نشده",
+                    "2": "در حال ارزیابی",
+                    "3": "ارزیابی شده",
+                },
+            },
+            {
                 name: "course.evaluation",
                 title: "<spring:message code='evaluation.type'/>",
                 align: "center",
@@ -124,7 +132,6 @@
                     "4": "نتایج"
                 }
             },
-            {name: "evaluationStatus", hidden: true},
             {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function () {
