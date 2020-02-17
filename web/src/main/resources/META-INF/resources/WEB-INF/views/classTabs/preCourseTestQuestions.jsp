@@ -229,6 +229,7 @@
             {
                 name: "question",
                 title: "<spring:message code='question'/>",
+                type: "TextAreaItem",
                 validators: [
                     {
                         type: "lengthRange",
