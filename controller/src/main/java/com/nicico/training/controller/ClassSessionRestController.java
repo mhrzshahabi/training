@@ -47,8 +47,8 @@ public class ClassSessionRestController {
 
     @Loggable
     @PostMapping(value = "/generateSessions/{classId}")
-    public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement) {
-        classSessionService.generateSessions(classId, autoSessionsRequirement);
+    public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement, HttpServletResponse response) {
+        classSessionService.generateSessions(classId, autoSessionsRequirement, response);
     }
 
     //*********************************

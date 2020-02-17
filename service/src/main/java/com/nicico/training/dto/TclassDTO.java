@@ -130,17 +130,20 @@ public class TclassDTO {
 
         public String getNumberOfStudentEvaluation() {
 
-            int studentEvaluations = 0;
-            for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) != 0 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) != 0 ||
-                Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) != 0 ||
-                Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) != 0) {
-                    studentEvaluations++;
+            if (classStudents != null) {
+                int studentEvaluations = 0;
+                for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
+                    if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) != 0 ||
+                            Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) != 0 ||
+                            Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) != 0 ||
+                            Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) != 0) {
+                        studentEvaluations++;
+                    }
                 }
-            }
 
-            return studentEvaluations + "/" + classStudents.size();
+                return studentEvaluations + "/" + classStudents.size();
+            } else
+                return "0";
         }
 
         public Integer getStudentCount() {
@@ -237,7 +240,7 @@ public class TclassDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("TclassEvaluatedInfoGrid")
-    public static class EvaluatedInfoGrid{
+    public static class EvaluatedInfoGrid {
         private Long id;
         private String code;
         private CourseDTO.CourseInfoTuple course;
@@ -303,7 +306,7 @@ public class TclassDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ReactionEvaluationResult")
-    public static class ReactionEvaluationResult{
+    public static class ReactionEvaluationResult {
         boolean FERPass;
         boolean FETPass;
         boolean FECRPass;

@@ -325,122 +325,132 @@ public class ClassSessionService implements IClassSession {
 
     @Transactional
     @Override
-    public void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement) {
+    public void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement, HttpServletResponse response) {
 
-        //********sending data from t_class*********
-        //-----make days code list-----
-        List<String> daysCode = new ArrayList<String>();
-        if (autoSessionsRequirement.getSaturday() != null && autoSessionsRequirement.getSaturday())
-            daysCode.add("Sat");
-        if (autoSessionsRequirement.getSunday() != null && autoSessionsRequirement.getSunday())
-            daysCode.add("Sun");
-        if (autoSessionsRequirement.getMonday() != null && autoSessionsRequirement.getMonday())
-            daysCode.add("Mon");
-        if (autoSessionsRequirement.getTuesday() != null && autoSessionsRequirement.getTuesday())
-            daysCode.add("Tue");
-        if (autoSessionsRequirement.getWednesday() != null && autoSessionsRequirement.getWednesday())
-            daysCode.add("Wed");
-        if (autoSessionsRequirement.getThursday() != null && autoSessionsRequirement.getThursday())
-            daysCode.add("Thu");
-        if (autoSessionsRequirement.getFriday() != null && autoSessionsRequirement.getFriday())
-            daysCode.add("Fri");
-        //-----make class hours range list-----
-        List<Integer> classHoursRange = new ArrayList<Integer>();
-        if (autoSessionsRequirement.getFirst() != null && autoSessionsRequirement.getFirst())
-            classHoursRange.add(1);
-        if (autoSessionsRequirement.getSecond() != null && autoSessionsRequirement.getSecond())
-            classHoursRange.add(2);
-        if (autoSessionsRequirement.getThird() != null && autoSessionsRequirement.getThird())
-            classHoursRange.add(3);
+        try {
+            //********sending data from t_class*********
+            //-----make days code list-----
+            List<String> daysCode = new ArrayList<String>();
+            if (autoSessionsRequirement.getSaturday() != null && autoSessionsRequirement.getSaturday())
+                daysCode.add("Sat");
+            if (autoSessionsRequirement.getSunday() != null && autoSessionsRequirement.getSunday())
+                daysCode.add("Sun");
+            if (autoSessionsRequirement.getMonday() != null && autoSessionsRequirement.getMonday())
+                daysCode.add("Mon");
+            if (autoSessionsRequirement.getTuesday() != null && autoSessionsRequirement.getTuesday())
+                daysCode.add("Tue");
+            if (autoSessionsRequirement.getWednesday() != null && autoSessionsRequirement.getWednesday())
+                daysCode.add("Wed");
+            if (autoSessionsRequirement.getThursday() != null && autoSessionsRequirement.getThursday())
+                daysCode.add("Thu");
+            if (autoSessionsRequirement.getFriday() != null && autoSessionsRequirement.getFriday())
+                daysCode.add("Fri");
+            //-----make class hours range list-----
+            List<Integer> classHoursRange = new ArrayList<Integer>();
+            if (autoSessionsRequirement.getFirst() != null && autoSessionsRequirement.getFirst())
+                classHoursRange.add(1);
+            if (autoSessionsRequirement.getSecond() != null && autoSessionsRequirement.getSecond())
+                classHoursRange.add(2);
+            if (autoSessionsRequirement.getThird() != null && autoSessionsRequirement.getThird())
+                classHoursRange.add(3);
 
-        Integer sessionTypeId = 1;
-        Integer sessionState = 1;
-        String classStartDate = autoSessionsRequirement.getStartDate();
-        String classEndDate = autoSessionsRequirement.getEndDate();
+            Integer sessionTypeId = 1;
+            Integer sessionState = 1;
+            String classStartDate = autoSessionsRequirement.getStartDate();
+            String classEndDate = autoSessionsRequirement.getEndDate();
 
-        //********date utils*********
-        Calendar calendar = Calendar.getInstance();
+            //********date utils*********
+            Calendar calendar = Calendar.getInstance();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date gregorianStartDate = ConvertToGregorianDate(classStartDate);
-        Date gregorianEndDate = ConvertToGregorianDate(classEndDate);
-
-
-        //********validate sending data from t_class*********
-        if (gregorianStartDate != null && gregorianEndDate != null && gregorianStartDate.compareTo(gregorianEndDate) > 0) {
-            //start-date bigger than end-date
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
-
-        } else if (daysCode.size() == 0) {
-            //days code is null
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
-
-        } else if (MainHoursRange().size() == 0) {
-            //hours rage is null
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
-
-        } else if (classId == null ||
-                sessionTypeId == null ||
-                autoSessionsRequirement.getInstituteId() == null ||
-                autoSessionsRequirement.getTrainingPlaceIds() == null ||
-                autoSessionsRequirement.getTeacherId() == null ||
-                sessionState == null) {
-
-            //require data is null
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
-        }
-
-        //********generated sessions list*********
-        List<ClassSessionDTO.GeneratedSessions> sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
-
-        //********fetch holidays*********
-        List<String> holidays = holidayDAO.Holidays(classStartDate, classEndDate);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date gregorianStartDate = ConvertToGregorianDate(classStartDate);
+            Date gregorianEndDate = ConvertToGregorianDate(classEndDate);
 
 
-        //*********************************
-        //*********************************
-        //*********************************
+            //********validate sending data from t_class*********
+            if (gregorianStartDate != null && gregorianEndDate != null && gregorianStartDate.compareTo(gregorianEndDate) > 0) {
+                //start-date bigger than end-date
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
 
-        //********generating sessions*********
-        while (gregorianStartDate.compareTo(gregorianEndDate) <= 0) {
+            } else if (daysCode.size() == 0) {
+                //days code is null
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
 
-            calendar.setTime(gregorianStartDate);
-            if (daysCode.contains(daysName()[calendar.get(Calendar.DAY_OF_WEEK)])) {
+            } else if (MainHoursRange().size() == 0) {
+                //hours rage is null
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
 
-                if (!holidays.contains(DateUtil.convertMiToKh(formatter.format(gregorianStartDate)))) {
+            } else if (classId == null ||
+                    sessionTypeId == null ||
+                    autoSessionsRequirement.getInstituteId() == null ||
+                    autoSessionsRequirement.getTrainingPlaceIds() == null ||
+                    autoSessionsRequirement.getTeacherId() == null ||
+                    sessionState == null) {
 
-                    for (Integer range : classHoursRange) {
-
-                        sessions.add(new ClassSessionDTO.GeneratedSessions(
-                                classId,
-                                daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
-                                getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
-                                DateUtil.convertMiToKh(formatter.format(gregorianStartDate)),
-                                MainHoursRange().get(range).get(0),
-                                MainHoursRange().get(range).get(1),
-                                sessionTypeId,
-                                "آموزش",
-                                autoSessionsRequirement.getInstituteId().intValue(),
-                                autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
-                                autoSessionsRequirement.getTeacherId(),
-                                sessionState,
-                                "شروع نشده",
-                                null
-                        ));
-
-                    }
-                }
+                //require data is null
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
 
-            gregorianStartDate = DateUtils.addDays(gregorianStartDate, 1);
-        }
+            //********generated sessions list*********
+            List<ClassSessionDTO.GeneratedSessions> sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
 
-        //********save generated sessions*********
-        if (sessions.size() > 0) {
-            classSessionDAO.saveAll(modelMapper.map(sessions, new TypeToken<List<ClassSession>>() {
-            }.getType()));
+            //********fetch holidays*********
+            List<String> holidays = holidayDAO.Holidays(classStartDate, classEndDate);
+
+
+            //*********************************
+            //*********************************
+            //*********************************
+
+            //********generating sessions*********
+            while (gregorianStartDate.compareTo(gregorianEndDate) <= 0) {
+
+                calendar.setTime(gregorianStartDate);
+                if (daysCode.contains(daysName()[calendar.get(Calendar.DAY_OF_WEEK)])) {
+
+                    if (!holidays.contains(DateUtil.convertMiToKh(formatter.format(gregorianStartDate)))) {
+
+                        for (Integer range : classHoursRange) {
+
+                            sessions.add(new ClassSessionDTO.GeneratedSessions(
+                                    classId,
+                                    daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
+                                    getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
+                                    DateUtil.convertMiToKh(formatter.format(gregorianStartDate)),
+                                    MainHoursRange().get(range).get(0),
+                                    MainHoursRange().get(range).get(1),
+                                    sessionTypeId,
+                                    "آموزش",
+                                    autoSessionsRequirement.getInstituteId().intValue(),
+                                    autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
+                                    autoSessionsRequirement.getTeacherId(),
+                                    sessionState,
+                                    "شروع نشده",
+                                    null
+                            ));
+
+                        }
+                    }
+                }
+
+                gregorianStartDate = DateUtils.addDays(gregorianStartDate, 1);
+            }
+
+            //********save generated sessions*********
+            if (sessions.size() > 0) {
+                classSessionDAO.saveAll(modelMapper.map(sessions, new TypeToken<List<ClassSession>>() {
+                }.getType()));
+            } else {
+                response.sendError(304, "براي کلاس ثبت شده هيچ جلسه اي ايجاد نگرديد");
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
+
+    //test
 
 
     //*********************************
