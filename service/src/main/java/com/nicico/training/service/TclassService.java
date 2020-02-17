@@ -333,6 +333,7 @@ public class TclassService implements ITclassService {
         return criteriaRq;
     }
 
+    //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     @Override
     @Transactional
     public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId) {
@@ -381,7 +382,6 @@ public class TclassService implements ITclassService {
         return evaluationResult;
     }
 
-    //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     public void calculateStudentsReactionEvaluationResult() {
         studentsGradeToTeacher = 0;
         studentsGradeToFacility = 0;
