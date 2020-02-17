@@ -71,6 +71,12 @@ public class EvaluationAnalysisFormController {
         params.add("differFER", "" + (Double.parseDouble(object.get("minScore_ER").toString())-Double.parseDouble(object.get("FERGrade").toString())) + "");
         params.add("differFET", "" + (Double.parseDouble(object.get("minScore_ET").toString())-Double.parseDouble(object.get("FETGrade").toString())) + "");
 
+        params.add("teacherGradeToClass", object.get("teacherGradeToClass").toString());
+        params.add("studentsGradeToTeacher", object.get("studentsGradeToTeacher").toString());
+        params.add("studentsGradeToFacility", object.get("studentsGradeToFacility").toString());
+        params.add("studentsGradeToGoals", object.get("studentsGradeToGoals").toString());
+        params.add("trainingGradeToTeacher", object.get("trainingGradeToTeacher").toString());
+
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");

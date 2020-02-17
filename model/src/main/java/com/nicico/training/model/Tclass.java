@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -68,6 +69,9 @@ public class Tclass extends Auditable {
 
     @Column(name = "c_status")
     private String classStatus;
+
+    @Column(name = "c_status_date")
+    private Date classStatusDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_institute", insertable = false, updatable = false)

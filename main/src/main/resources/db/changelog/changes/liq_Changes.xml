@@ -591,4 +591,10 @@
         <dropColumn columnName="F_COURSE_ID" tableName="tbl_class_pre_course_test_question"/>
     </changeSet>
 
+    <changeSet author="rastegari_h (generated)" id="1581849315001-240">
+        <addColumn tableName="tbl_class">
+            <column name="c_status_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
