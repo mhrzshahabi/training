@@ -1200,8 +1200,11 @@
         defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
-        },
+            if (JSON.parse(response.httpResponseText).message !== "No message available")
+                createDialog("info", JSON.parse(response.httpResponseText).message);
+            else
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
+        }
     });
 
     // isc.ViewLoader.addClassProperties({

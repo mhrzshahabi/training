@@ -235,7 +235,7 @@
 
 
 
-    var Detail_Tab_Committee = isc.TabSet.create({
+    var Detail_Tab_RegisterScorePreTest = isc.TabSet.create({
         tabBarPosition: "top",
         width: "100%",
         height: "100%",
@@ -252,7 +252,7 @@
     var HLayout_Grid_ClassStudent_registerScorePreTest=isc.HLayout.create({
         width: "100%",
         height: "100%",
-        members: [Detail_Tab_Committee]
+        members: [Detail_Tab_RegisterScorePreTest]
     })
 
     var VLayout_Body_Group = isc.VLayout.create({
