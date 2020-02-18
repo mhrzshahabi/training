@@ -102,7 +102,13 @@
     // isc.FileLoader.cacheLocale("fa");
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({
-        height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false, pickListProperties: {
+        height: 27,
+        width: "*",
+        addUnknownValues: false,
+        wrapHintText: false,
+        canSelectText: true,
+        cachePickListResults: false,
+        pickListProperties: {
             showFilterEditor: true,
             alternateRecordStyles: true,
             autoFitWidthApproach: "both",
@@ -118,24 +124,43 @@
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleAlign: "right", titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
-        readOnlyDisplay: "static", padding: 10, canTabToIcons: false,
+        width: "100%",
+        errorOrientation: "right",
+        showErrorStyle: false,
+        wrapItemTitles: false,
+        titleAlign: "right",
+        titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>",
+        requiredTitleSuffix: "",
+        readOnlyDisplay: "static",
+        padding: 10,
+        canTabToIcons: false,
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
-    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
+    isc.ComboBoxItem.addProperties({
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        useClientFiltering: false,
+        changeOnKeypress: false,
+    });
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"}, contentType: "application/json; charset=utf-8",
-            useSimpleHttp: true, showPrompt: false, willHandleError: true, actionURL: actionURLParam, httpMethod: httpMethodParam,
-            data: dataParam, callback: callbackParam,
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            contentType: "application/json; charset=utf-8",
+            useSimpleHttp: true,
+            showPrompt: false,
+            willHandleError: true,
+            actionURL: actionURLParam,
+            httpMethod: httpMethodParam,
+            data: dataParam,
+            callback: callbackParam,
         }
     };
     isc.defineClass("TrDS", RestDataSource);
@@ -282,7 +307,11 @@
     isc.TrHLayoutButtons.addProperties({align: "center", height: 40, defaultLayoutAlign: "center", membersMargin: 10,});
 
     isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
-    isc.TrComboAutoRefresh.addProperties({click: function (form, item) { item.fetchData(); }});
+    isc.TrComboAutoRefresh.addProperties({
+        click: function (form, item) {
+            item.fetchData();
+        }
+    });
 
     isc.ToolStripButtonRefresh.addProperties({title: "<spring:message code="refresh"/>",});
     isc.ToolStripButtonCreate.addProperties({title: "<spring:message code="create"/>",});
@@ -302,10 +331,10 @@
     });
 
     <%--var headerFlow = isc.HTMLFlow.create({--%>
-        <%--width: "10%",--%>
-        <%--height: "100%",--%>
-        <%--styleName: "mainHeaderStyleOnline header-logo-title",--%>
-        <%--contents: "<span><spring:message code="training.system.version"/></span>"--%>
+    <%--width: "10%",--%>
+    <%--height: "100%",--%>
+    <%--styleName: "mainHeaderStyleOnline header-logo-title",--%>
+    <%--contents: "<span><spring:message code="training.system.version"/></span>"--%>
     <%--});--%>
 
     var label_Username = isc.Label.create({
@@ -385,9 +414,8 @@
         width: "5%",
         align: "center",
         defaultLayoutAlign: "left",
-        members: [toggleSwitch,languageVLayout]
+        members: [toggleSwitch, languageVLayout]
     });
-
 
 
     logoutButton = isc.IButton.create({
@@ -640,12 +668,12 @@
                         createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");
                     }
                 },
-                 {
+                {
                     title: "<spring:message code="evaluation.Coefficient"/>",
                     click: function () {
-                        createTab(this.title,"<spring:url value="/evaluationCoefficient/show-form"/>");
+                        createTab(this.title, "<spring:url value="/evaluationCoefficient/show-form"/>");
                     }
-                  }
+                }
             ]
         }),
     });
@@ -708,7 +736,7 @@
                         createTab(this.title, "<spring:url value="web/needsAssessment-by-one-person"/>");
                     }
                 },
-                 {
+                {
                     title: "گزارش غیبت موجه",
                     click: function () {
                         createTab(this.title, "<spring:url value="/unjustified/show-form"/>");
@@ -845,7 +873,7 @@
         height: 50,
         styleName: "header-top",
         members: [headerLogo,
-           // headerFlow,
+            // headerFlow,
             headerExitHLayout],
     });
 
@@ -863,7 +891,7 @@
     isc.TrVLayout.create({
         autoDraw: true,
         //styleName: "relativePosition",
-       // overflow: "auto",
+        // overflow: "auto",
         width: "100%",
         height: "100%",
         members: [
@@ -875,10 +903,10 @@
 
 
     var checked = null;
-    function onToggleClick (e){
+
+    function onToggleClick(e) {
         checked = e.target.checked;
-        if(checked)
-        {
+        if (checked) {
 
             headerLayout.setStyleName('header-top toggle-hide')
             MainDesktopMenuH.setStyleName('main-menu toggle-hide')
@@ -886,7 +914,7 @@
             MainDesktopMenuH.setVisibility(false);
 
 
-        }else {
+        } else {
             headerLayout.setStyleName('header-top toggle-show')
             MainDesktopMenuH.setStyleName('main-menu toggle-show')
             headerLayout.setVisibility(true);
@@ -895,22 +923,21 @@
         // console.log(checked)
     }
 
-    document.addEventListener("mousemove", function(event){
+    document.addEventListener("mousemove", function (event) {
         // console.log(event.clientY)
-        if(event.clientY <= 2)
-        {
+        if (event.clientY <= 2) {
             headerLayout.setStyleName('header-top toggle-show')
             MainDesktopMenuH.setStyleName('main-menu toggle-show')
             headerLayout.setVisibility(true);
             MainDesktopMenuH.setVisibility(true);
 
-        }else  if(event.clientY > 100){
-            if(checked){
+        } else if (event.clientY > 100) {
+            if (checked) {
                 headerLayout.setStyleName('header-top toggle-hide')
                 MainDesktopMenuH.setStyleName('main-menu toggle-hide')
                 headerLayout.setVisibility(false);
                 MainDesktopMenuH.setVisibility(false);
-            }else{
+            } else {
                 headerLayout.setStyleName('header-top toggle-show')
                 MainDesktopMenuH.setStyleName('main-menu toggle-show')
                 headerLayout.setVisibility(true);
@@ -919,7 +946,6 @@
 
         }
     });
-
 
 
     // -------------------------------------------  Functions  -----------------------------------------------
@@ -1110,7 +1136,7 @@
     const instituteUrl = rootUrl + "/institute/";
     const educationUrl = rootUrl + "/education/";
     const termUrl = rootUrl + "/term/";
-    const unjustifiedAbsenceReportURL=rootUrl + "/unjustifiedAbsence/";
+    const unjustifiedAbsenceReportURL = rootUrl + "/unjustifiedAbsence/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
     const personalInfoUrl = rootUrl + "/personalInfo/";
@@ -1194,8 +1220,11 @@
         defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
-        },
+            if (JSON.parse(response.httpResponseText).message === "No message available")
+                createDialog("info", JSON.parse(response.httpResponseText).message);
+            else
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
+        }
     });
 
     // isc.ViewLoader.addClassProperties({
@@ -1221,12 +1250,12 @@
                 [
                     {name: "CriteriaStr", type: "hidden"},
                     {name: "token", type: "hidden"},
-                    {name: "data", type:"hidden"}
+                    {name: "data", type: "hidden"}
                 ]
         });
         trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        if(dataParam != undefined || dataParam != null)
-            trCriteriaForm.setValue("data",dataParam);
+        if (dataParam != undefined || dataParam != null)
+            trCriteriaForm.setValue("data", dataParam);
         trCriteriaForm.setValue("token", "<%=accessToken%>");
         trCriteriaForm.show();
         trCriteriaForm.submitForm();

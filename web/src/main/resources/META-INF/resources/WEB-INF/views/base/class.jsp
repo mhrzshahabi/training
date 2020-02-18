@@ -1320,22 +1320,12 @@
                             ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
                         }, 3000);
                         Window_Class_JspClass.close();
-
                         //**********generate class sessions**********
                         if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
                             if (autoValid) {
                                 ClassID = JSON.parse(resp.data).id;
-                                isc.RPCManager.sendRequest({
-                                    actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
-                                    httpMethod: "POST",
-                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                    useSimpleHttp: true,
-                                    contentType: "application/json; charset=utf-8",
-                                    showPrompt: false,
-                                    data: JSON.stringify(data),
-                                    serverOutputAsString: false,
-                                    callback: "GenerateClassSessionsCallback()"
-                                });
+                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), "callback: class_get_sessions_result(rpcResponse)"));
+
                             }
                         }
                         //**********generate class sessions**********
@@ -1346,10 +1336,35 @@
 
                 }
             });
-
-// isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
         }
     });
+
+    //*****generate sessions callback*****
+    function class_get_sessions_result(resp) {
+        refreshSelectedTab_class(tabSetClass.getSelectedTab());
+
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
+            classCode();
+        }
+        else if(resp.httpResponseCode === 407)
+        {
+            let respText = JSON.parse(resp.httpResponseText);
+            MyOkDialog_classSession = isc.MyOkDialog.create({
+                title: "<spring:message code='message'/>",
+                message: respText.message
+            });
+
+            close_MyOkDialog_classSession();
+        }
+    }
+
+    //*****close dialog*****
+    function close_MyOkDialog_classSession() {
+        setTimeout(function () {
+            MyOkDialog_classSession.close();
+        }, 3000);
+    }
 
     var HLayOut_ClassSaveOrExit_JspClass = isc.TrHLayoutButtons.create({
         members: [IButton_Class_Save_JspClass, IButton_Class_Exit_JspClass]
@@ -2052,10 +2067,6 @@
             ListGrid_Current_Students_JspClass.fetchData({"classID": record.id});
             Window_AddStudents_JspClass.show();
         }
-    }
-
-    function GenerateClassSessionsCallback() {
-        refreshSelectedTab_class(tabSetClass.getSelectedTab());
     }
 
     function refreshSelectedTab_class(tab) {
