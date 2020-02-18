@@ -187,6 +187,9 @@
         {
             var classRecord = ListGrid_RegisterScorePreTtest.getSelectedRecord();
             RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
+            ListGrid_Class_Student_RegisterScorePreTest.invalidateCache()
+            ListGrid_Class_Student_RegisterScorePreTest.fetchData()
+
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
@@ -200,6 +203,7 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_RegisterScorePreTtest.invalidateCache();
+            ListGrid_Class_Student_RegisterScorePreTest.setData([])
         }
     });
 
@@ -218,8 +222,6 @@
         ]
     });
     //***********************************************************************************
-    //HLayout
-    //***********************************************************************************
     var HLayout_Actions_Group = isc.HLayout.create({
         width: "100%",
         members: [ToolStrip_Actions]
@@ -231,18 +233,33 @@
         members: [ListGrid_RegisterScorePreTtest]
     });
 
+
+
+    var Detail_Tab_Committee = isc.TabSet.create({
+        tabBarPosition: "top",
+        width: "100%",
+        height: "100%",
+        tabs: [
+            {
+                id: "TabPane_Committee_Member",
+                title: "لیست فراگیران",
+                pane: ListGrid_Class_Student_RegisterScorePreTest
+            }
+        ]
+    });
+
+
     var HLayout_Grid_ClassStudent_registerScorePreTest=isc.HLayout.create({
         width: "100%",
         height: "100%",
-        members: [ListGrid_Class_Student_RegisterScorePreTest]
+        members: [Detail_Tab_Committee]
     })
 
     var VLayout_Body_Group = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
-            HLayout_Actions_Group
-            , HLayout_Grid_RegisterScorePreTtest,HLayout_Grid_ClassStudent_registerScorePreTest
+              HLayout_Actions_Group,HLayout_Grid_RegisterScorePreTtest,HLayout_Grid_ClassStudent_registerScorePreTest
         ]
     });
 
