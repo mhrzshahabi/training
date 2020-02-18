@@ -31,7 +31,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/education/major")
+@RequestMapping(value = "/api/educationMajor")
 public class EducationMajorRestController {
     private final IEducationMajorService educationMajorService;
     private final ObjectMapper objectMapper;
@@ -62,7 +62,7 @@ public class EducationMajorRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/create")
+    @PostMapping
 //    @PreAuthorize("hasAuthority('c_educationMajor')")
     public ResponseEntity create(@Validated @RequestBody EducationMajorDTO.Create request) {
 //        EducationMajorDTO.Info educationMajorInfo = educationMajorService.create(request);

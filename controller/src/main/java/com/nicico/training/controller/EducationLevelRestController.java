@@ -63,9 +63,8 @@ public class EducationLevelRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-
     @Loggable
-    @PostMapping(value = "/create")
+    @PostMapping
 //    @PreAuthorize("hasAuthority('c_educationLevel')")
     public ResponseEntity create(@Validated @RequestBody EducationLevelDTO.Create request) {
         try {

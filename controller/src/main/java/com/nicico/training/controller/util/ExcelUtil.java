@@ -69,7 +69,9 @@ public class ExcelUtil {
 
                 Class<?> clazz = Class.forName(baseDTOPath + "." + className + "$" + "Create");
                 Constructor<?> constructor = clazz.getConstructor();
-                uri = new URI(baseUrl + sheet.getSheetName().toLowerCase());
+                char[] chArr = sheet.getSheetName().toCharArray();
+                chArr[0] = Character.toLowerCase(chArr[0]);
+                uri = new URI(baseUrl + new String(chArr));
 
                 Iterator<Row> rowIterator = sheet.iterator();
                 Row row;
@@ -110,7 +112,7 @@ public class ExcelUtil {
                             } else {
                                 value = cell.toString();
                             }
-                            jsonObject.addProperty(fields.get(c), value);
+                            jsonObject.addProperty(fields.get(c), value.trim());
                         }
                     }
                     Object object = new Gson().fromJson(jsonObject, clazz);

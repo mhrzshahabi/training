@@ -5,12 +5,9 @@
 // <script>
     var methodEducation = "GET";
     var saveActionUrlEducation;
-    var educationLevelUrl = educationUrl + "level/";
-    var educationMajorUrl = educationUrl + "major/";
     var educationOrientationUrl = educationUrl + "orientation/";
     var listGridEducation;
     var waitEducation;
-
 
     //////////////////////////////////////////////////////////
     ///////////////////////DataSource/////////////////////////
@@ -803,7 +800,7 @@
 
     function ListGrid_Education_Add(Url, title, EducationDynamicForm, EducationWindows) {
         methodEducation = "POST";
-        saveActionUrlEducation = Url + "create/";
+        saveActionUrlEducation = Url;
         EducationDynamicForm.clearValues();
         EducationWindows.setTitle(title);
         EducationWindows.show();
