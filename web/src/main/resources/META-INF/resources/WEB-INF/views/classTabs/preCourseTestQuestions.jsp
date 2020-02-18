@@ -246,6 +246,17 @@
         rowDoubleClick: function () {
             questionsLG_Edit_PCTQ();
         },
+        removeRecordClick: function (rowNum) {
+            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code='verify.delete'/>");
+            Dialog_Delete.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0)
+                        questionsLG_PCTQ.data.removeAt(rowNum);
+                }
+            });
+        },
     });
 
     ToolStripButton_Refresh_PCTQ = isc.ToolStripButtonRefresh.create({
@@ -335,7 +346,16 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-        questionsLG_PCTQ.data.removeAll(records);
+        let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            "<spring:message code='verify.delete'/>");
+        Dialog_Delete.addProperties({
+            buttonClick: function (button, index) {
+                this.close();
+                if (index === 0) {
+                    questionsLG_PCTQ.data.removeAll(records);
+                }
+            }
+        });
     }
 
     function questionsLG_Save_Result_PCTQ(resp) {
