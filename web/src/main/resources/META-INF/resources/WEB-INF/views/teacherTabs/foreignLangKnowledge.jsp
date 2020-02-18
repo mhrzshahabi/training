@@ -111,7 +111,7 @@
                 editorExit: function (form, item, value) {
                     var dateCheck;
                     var endDate = form.getValue("endDate");
-                    dateCheck = checkDate(value);
+                    dateCheck = checkBirthDate(value);
                     if (dateCheck === false) {
                         startDateCheck_JSPLang = false;
                         dateCheck_Order_JSPLang = true;

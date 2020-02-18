@@ -118,7 +118,6 @@
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
-        selectionAppearance: "checkbox",
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
@@ -258,6 +257,12 @@
                 if (postCode == null)
                     return;
                 refreshLG(CoursesLG_NABOP);
+            }
+        }, {
+            title: "<spring:message code="personnel.choose"/>",
+            click: function () {
+                PersonnelsLG_NABOP.fetchData();
+                Window_Personnel_NABOP.show();
             }
         }, {
             isSeparator: true
