@@ -96,10 +96,10 @@ public class ExcelUtil {
                 httpPost.setEntity(new StringEntity(jsonObject.toString(), "UTF-8"));
                 HttpResponse response = client.execute(httpPost);
                 int responseCode = response.getStatusLine().getStatusCode();
-                if (!((responseCode == 200) || (responseCode == 201))) {
-                    Cell c = row.createCell(colsNum + 1, Cell.CELL_TYPE_STRING);
-                    c.setCellValue(responseCode);
-                }
+//                if (!((responseCode == 200) || (responseCode == 201))) {
+//                    Cell c = row.createCell(colsNum + 1, Cell.CELL_TYPE_STRING);
+//                    c.setCellValue(responseCode);
+//                }
             }
 //            try (FileOutputStream outputStream = new FileOutputStream(datafilePathResult)) {
 //                workbook.write(outputStream);
