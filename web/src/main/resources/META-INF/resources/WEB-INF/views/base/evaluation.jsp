@@ -447,7 +447,13 @@
                                     serverOutputAsString: false,
                                     data: JSON.stringify(data),
                                     callback: function (resp) {
-                                        alert(resp.httpResponseCode)
+                                        if(resp.httpResponseCode == 201 || resp.httpResponseCode == 201){
+                                            Window_Questions_JspEvaluation.close();
+                                            createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                        }
+                                        else{
+                                            createDialog("info", "<spring:message code="msg.operation.error"/>");
+                                        }
                                     }
                                 });
 
