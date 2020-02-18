@@ -1320,6 +1320,7 @@
                             ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
                         }, 3000);
                         Window_Class_JspClass.close();
+
                         //**********generate class sessions**********
                         if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
                             if (autoValid) {

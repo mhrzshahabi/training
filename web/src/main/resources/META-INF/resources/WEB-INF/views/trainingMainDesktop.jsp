@@ -1220,7 +1220,7 @@
         defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            if (JSON.parse(response.httpResponseText).message === "No message available")
+            if (JSON.parse(response.httpResponseText).message !== "No message available")
                 createDialog("info", JSON.parse(response.httpResponseText).message);
             else
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
