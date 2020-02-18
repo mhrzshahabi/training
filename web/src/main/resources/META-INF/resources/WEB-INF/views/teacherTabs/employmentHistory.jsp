@@ -153,7 +153,7 @@
                 editorExit: function (form, item, value) {
                     var dateCheck;
                     var endDate = form.getValue("endDate");
-                    dateCheck = checkDate(value);
+                    dateCheck = checkBirthDate(value);
                     if (dateCheck === false) {
                         startDateCheck_JSPEmpHistory = false;
                         dateCheck_Order_JSPEmpHistory = true;
@@ -448,6 +448,8 @@
         methodEmploymentHistory = "POST";
         saveActionUrlEmploymentHistory = employmentHistoryUrl + "/" + teacherIdEmploymentHistory;
         DynamicForm_JspEmploymentHistory.clearValues();
+        RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = null;
+        DynamicForm_JspEmploymentHistory.getField("subCategories").disable();
         Window_JspEmploymentHistory.show();
     }
 
