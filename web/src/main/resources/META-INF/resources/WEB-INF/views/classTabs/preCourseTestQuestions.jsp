@@ -144,12 +144,6 @@
     /*Questions Grid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    questionsDS_PCTQ = isc.TrDS.create({
-        fields: [
-            {name: "preCourseTestQuestions", filterOperator: "iContains"}
-        ]
-    });
-
     IButton_Save_PCTQ = isc.IButtonSave.create({
         click: function () {
             if (questionsLG_PCTQ.hasErrors() || classId_PCTQ == null)
@@ -220,6 +214,7 @@
         validateOnChange: true,
         validateByCell: true,
         canSort: false,
+        showFilterEditor: false,
         sortField: 0,
         fields: [
             {
@@ -308,7 +303,8 @@
             operator: "and",
             criteria: [
                 {fieldName: "course.code", operator: "equals", value: selectedClass.course.code},
-                {fieldName: "preCourseTestQuestions", operator: "notNull"}
+                {fieldName: "preCourseTestQuestions", operator: "notNull"},
+                {fieldName: "id", operator: "notEqual", value: selectedClass.id}
             ]
         };
         ClassLG_PCTQ.implicitCriteria = criteria;
