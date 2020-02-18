@@ -880,7 +880,7 @@
             {
                 name: "preCourseTest",
                 type: "boolean",
-                title: "پیش آزمون",
+                title: "<spring:message code='class.preCourseTest'/>",
                 hidden: true,
             }
         ],
@@ -2166,7 +2166,7 @@
         }
         isReadOnlyClass = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
         TabSet_Class.enable();
-        if (classRecord.preCourseTest)
+        if (classRecord.preCourseTest && classRecord.course.evaluation !== "1")
             TabSet_Class.enableTab("classPreCourseTestQuestionsTab");
         else
             TabSet_Class.disableTab("classPreCourseTestQuestionsTab");
