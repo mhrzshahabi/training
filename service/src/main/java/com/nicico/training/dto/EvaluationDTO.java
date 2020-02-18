@@ -20,9 +20,11 @@ import java.util.List;
 @Accessors(chain = true)
 public class EvaluationDTO implements Serializable {
 
-
     @ApiModelProperty(required = true)
     private Long classId;
+
+    @ApiModelProperty(required = true)
+    private Long questionnaireTypeId;
 
     @ApiModelProperty(required = true)
     private Long evaluatorId;

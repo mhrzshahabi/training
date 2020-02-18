@@ -24,6 +24,13 @@ public class Evaluation extends Auditable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_questionnaire_type_id", insertable = false, updatable = false)
+    private ParameterValue questionnaireType;
+
+    @Column(name = "f_questionnaire_type_id")
+    private Long questionnaireTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_class_id", insertable = false, updatable = false)
     private Tclass tclass;
 

@@ -164,41 +164,41 @@ public class EvaluationRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<EvaluationDTO.Info> create(@RequestBody Object req) {
-        ////EvaluationDTO.Create create = (new ModelMapper()).map(req, EvaluationDTO.Create.class);
-        ////return new ResponseEntity<>(evaluationService.create(create), HttpStatus.CREATED);
+        EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
+        return new ResponseEntity<>(evaluationService.create(create), HttpStatus.CREATED);
 
-        EvaluationDTO.Create create1 = new EvaluationDTO.Create();
-        create1.setClassId(21L);
-        create1.setEvaluatorId(113L);
-        create1.setEvaluatorTypeId(187L);
-        create1.setEvaluatedId(114L);
-        create1.setEvaluatedTypeId(188L);
-        create1.setEvaluationLevelId(156L);
-        create1.setDescription("desc");
+//        EvaluationDTO.Create create1 = new EvaluationDTO.Create();
+//        create1.setClassId(21L);
+//        create1.setEvaluatorId(113L);
+//        create1.setEvaluatorTypeId(187L);
+//        create1.setEvaluatedId(114L);
+//        create1.setEvaluatedTypeId(188L);
+//        create1.setEvaluationLevelId(156L);
+//        create1.setDescription("desc");
+//
+//        ////////////////////////////////////////////////////////
+//
+//        List<EvaluationAnswerDTO.Create> evaluationAnswers = new ArrayList<>();
+//
+//        EvaluationAnswerDTO.Create evaluationAnswer = new EvaluationAnswerDTO.Create();
+//        evaluationAnswer.setEvaluationId(null);
+//        evaluationAnswer.setEvaluationQuestionId(10L);
+//        evaluationAnswer.setQuestionSourceId(199L);
+//        evaluationAnswer.setAnswerId(205L);
+//
+//        evaluationAnswers.add(evaluationAnswer);
+//        create1.setEvaluationAnswerList(evaluationAnswers);
+//
+//        EvaluationAnswerDTO.Create evaluationAnswer1 = new EvaluationAnswerDTO.Create();
+//        evaluationAnswer1.setEvaluationId(null);
+//        evaluationAnswer1.setEvaluationQuestionId(11L);
+//        evaluationAnswer1.setQuestionSourceId(200L);
+//        evaluationAnswer1.setAnswerId(206L);
+//
+//        evaluationAnswers.add(evaluationAnswer1);
+//        create1.setEvaluationAnswerList(evaluationAnswers);
 
-        ////////////////////////////////////////////////////////
-
-        List<EvaluationAnswerDTO.Create> evaluationAnswers = new ArrayList<>();
-
-        EvaluationAnswerDTO.Create evaluationAnswer = new EvaluationAnswerDTO.Create();
-        evaluationAnswer.setEvaluationId(null);
-        evaluationAnswer.setEvaluationQuestionId(10L);
-        evaluationAnswer.setQuestionSourceId(199L);
-        evaluationAnswer.setAnswerId(205L);
-
-        evaluationAnswers.add(evaluationAnswer);
-        create1.setEvaluationAnswerList(evaluationAnswers);
-
-        EvaluationAnswerDTO.Create evaluationAnswer1 = new EvaluationAnswerDTO.Create();
-        evaluationAnswer1.setEvaluationId(null);
-        evaluationAnswer1.setEvaluationQuestionId(11L);
-        evaluationAnswer1.setQuestionSourceId(200L);
-        evaluationAnswer1.setAnswerId(206L);
-
-        evaluationAnswers.add(evaluationAnswer1);
-        create1.setEvaluationAnswerList(evaluationAnswers);
-
-        return new ResponseEntity<>(evaluationService.create(create1), HttpStatus.CREATED);
+//        return new ResponseEntity<>(evaluationService.create(create1), HttpStatus.CREATED);
 
         ///////        return new ResponseEntity<>(evaluationService.create(req), HttpStatus.OK.CREATED);
     }

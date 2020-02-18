@@ -602,4 +602,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="rastegari_h (generated)" id="1582026986470-241">
+        <addColumn tableName="tbl_evaluation">
+            <column name="f_questionnaire_type_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
