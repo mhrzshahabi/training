@@ -596,5 +596,10 @@
             <column name="c_status_date" type="timestamp"/>
         </addColumn>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1582028461582-242">
+        <addColumn tableName="tbl_class_student">
+            <column name="pre_test_score" type="float"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
