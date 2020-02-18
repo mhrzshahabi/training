@@ -25,6 +25,107 @@
            ],
         fetchDataURL: classUrl + "spec-list"
     });
+
+    RestDataSource_ClassStudent_registerScorePreTest = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden: true},
+            {name: "tclass.scoringMethod"},
+            {
+                name: "student.firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+
+            },
+            {
+                name: "student.lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+
+            },
+            {
+                name: "student.nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+
+            },
+
+            {
+                name: "student.personnelNo",
+                title: "<spring:message code="personnel.no"/>",
+                filterOperator: "iContains",
+
+            },
+
+            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
+        ],
+    });
+    //**************************************************************************
+    var ListGrid_Class_Student_RegisterScorePreTest = isc.TrLG.create({
+        selectionType: "single",
+        editOnFocus: true,
+        showRowNumbers: false,
+//------------
+        editByCell: true,
+        editEvent: "click",
+        modalEditing: true,
+        autoSaveEdits: false,
+
+//------
+        canSelectCells: true,
+// sortField: 0,
+        dataSource: RestDataSource_ClassStudent_registerScorePreTest,
+        fields: [
+
+            {
+                name: "student.firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+
+            },
+            {
+                name: "student.lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+
+            },
+            {
+                name: "student.nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+
+            },
+
+            {
+                name: "student.personnelNo",
+                title: "<spring:message code="personnel.no"/>",
+                filterOperator: "iContains",
+
+            },
+
+                {
+                name: "score",
+                ID: "score_id",
+                title: "<spring:message code="score"/>",
+                filterOperator: "iContains",
+                canEdit: true,
+                validateOnChange: false,
+                editEvent: "click",
+
+            },
+
+        ],
+
+    });
+    //**************************************************************************
+
+    var criteria_RegisterScorePreTest = {
+        _constructor: "AdvancedCriteria",
+        operator: "and",
+        criteria: [
+            {fieldName: "preCourseTest", operator: "equals", value: true}
+        ]
+    };
+
     var ListGrid_RegisterScorePreTtest = isc.TrLG.create({
      dataSource: RestDataSource_registerScorePreTest,
         canAddFormulaFields: true,
@@ -80,11 +181,12 @@
             },
 
             {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
+           ],
 
-        ],
-        recordDoubleClick: function () {
-          //  DynamicForm_Term.clearValues();
-           // show_TermEditForm();
+        selectionUpdated: function ()
+        {
+            var classRecord = ListGrid_RegisterScorePreTtest.getSelectedRecord();
+            RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
@@ -116,15 +218,6 @@
         ]
     });
     //***********************************************************************************
-    var criteria_RegisterScorePreTest = {
-        _constructor: "AdvancedCriteria",
-        operator: "and",
-        criteria: [
-
-            {fieldName: "preCourseTest", operator: "equals", value: true}
-        ]
-    };
-    //***********************************************************************************
     //HLayout
     //***********************************************************************************
     var HLayout_Actions_Group = isc.HLayout.create({
@@ -138,12 +231,18 @@
         members: [ListGrid_RegisterScorePreTtest]
     });
 
+    var HLayout_Grid_ClassStudent_registerScorePreTest=isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [ListGrid_Class_Student_RegisterScorePreTest]
+    })
+
     var VLayout_Body_Group = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
             HLayout_Actions_Group
-            , HLayout_Grid_RegisterScorePreTtest
+            , HLayout_Grid_RegisterScorePreTtest,HLayout_Grid_ClassStudent_registerScorePreTest
         ]
     });
 
