@@ -21,7 +21,8 @@
             {name: "endDate"},
             {name: "teacher"},
             {name: "group"},
-            {name: "preCourseTest", type: "boolean"}
+            {name: "preCourseTest", type: "boolean"},
+
            ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -55,8 +56,7 @@
                 filterOperator: "iContains",
 
             },
-
-            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
+            {name:"preTestScore", title: "<spring:message code="score"/>", filterOperator: "iContains"},
         ],
     });
     //**************************************************************************
@@ -101,16 +101,13 @@
                 filterOperator: "iContains",
 
             },
-
                 {
-                name: "score",
-                ID: "score_id",
-                title: "<spring:message code="score"/>",
+                name: "preTestScore",
+                title: "نمره پيش تست",
                 filterOperator: "iContains",
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
-
             },
 
         ],
@@ -186,7 +183,7 @@
         selectionUpdated: function ()
         {
             var classRecord = ListGrid_RegisterScorePreTtest.getSelectedRecord();
-            RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
+            RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id
             ListGrid_Class_Student_RegisterScorePreTest.invalidateCache()
             ListGrid_Class_Student_RegisterScorePreTest.fetchData()
 
