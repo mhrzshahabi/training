@@ -1,12 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <changeSet author="ghazanfari_f (generated)" id="1582034257950-1">
-        <createSequence sequenceName="evaluation_answer_seq_id"/>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582034257950-2">
-        <createSequence sequenceName="evaluation_seq_id"/>
-    </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-3">
         <createSequence sequenceName="seq_Check_List_Item_id"/>
     </changeSet>
@@ -205,4 +199,11 @@
     <changeSet author="ghazanfari_f (generated)" id="1582041569459-241">
         <createSequence sequenceName="seq_Term_id"/>
     </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1582042958782-240">
+        <createSequence sequenceName="seq_evaluation_answer_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1582042958782-241">
+        <createSequence sequenceName="seq_evaluation_id"/>
+    </changeSet>
+
 </databaseChangeLog>

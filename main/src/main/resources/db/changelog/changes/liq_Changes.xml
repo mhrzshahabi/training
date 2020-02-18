@@ -6,4 +6,10 @@
             <column name="pre_test_score" type="float"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="rastegari_h (generated)" id="1582037610493-240">
+        <addColumn tableName="tbl_evaluation">
+            <column name="f_questionnaire_type_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
