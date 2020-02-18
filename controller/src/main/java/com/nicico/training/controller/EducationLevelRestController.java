@@ -33,7 +33,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/education/level")
+@RequestMapping(value = "/api/educationLevel")
 public class EducationLevelRestController {
     private final IEducationLevelService educationLevelService;
     private final ObjectMapper objectMapper;

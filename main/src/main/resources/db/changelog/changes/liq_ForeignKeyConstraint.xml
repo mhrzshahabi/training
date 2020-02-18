@@ -573,5 +573,8 @@
         <addForeignKeyConstraint baseColumnNames="dep_parent_id" baseTableName="tbl_department" constraintName="fk_department2Department" deferrable="false" initiallyDeferred="false"
                                  referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582038737696-242">
+        <addForeignKeyConstraint baseColumnNames="f_questionnaire_type_id" baseTableName="tbl_evaluation" constraintName="FKh9bo4pfbgyaao0tn11r99g80u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

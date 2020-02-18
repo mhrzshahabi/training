@@ -22,14 +22,8 @@
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-7">
         <createSequence sequenceName="seq_Course_id"/>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582034257950-8">
-        <createSequence sequenceName="seq_Equipment_id"/>
-    </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-9">
         <createSequence sequenceName="seq_Task_id"/>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582034257950-10">
-        <createSequence sequenceName="seq_Term_id"/>
     </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-11">
         <createSequence sequenceName="seq_User_id"/>
@@ -51,9 +45,6 @@
     </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-17">
         <createSequence sequenceName="seq_bank_id"/>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582034257950-18">
-        <createSequence sequenceName="seq_category_id"/>
     </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-19">
         <createSequence sequenceName="seq_city_id"/>
@@ -201,5 +192,17 @@
     </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-67">
         <createSequence sequenceName="seq_work_group_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582038737696-238">
+        <createSequence sequenceName="seq_Equipment_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582038737696-239">
+        <createSequence sequenceName="seq_category_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582038737696-240">
+        <createSequence sequenceName="seq_subcategory_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582041569459-241">
+        <createSequence sequenceName="seq_Term_id"/>
     </changeSet>
 </databaseChangeLog>

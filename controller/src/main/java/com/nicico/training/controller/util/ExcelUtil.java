@@ -24,7 +24,6 @@ public class ExcelUtil {
     static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
     static String excelFilePath = "E:\\System\\Training\\Data\\forConvert(n1)Import.xlsx";
-    static String resultExcelFilePath = "E:\\System\\Training\\Data\\forConvert(n1)ImportResult.xlsx";
 
     static OAuth2RestTemplate restTemplate;
     static URI uri;
@@ -94,10 +93,20 @@ public class ExcelUtil {
                     for (int c = 0; c <= colsNum; c++) {
                         Cell cell = row.getCell(c);
                         if (!(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK)) {
-                            String value;
+                            String value = null;
                             if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                                 Double doubleValue = cell.getNumericCellValue();
                                 value = doubleValue.toString().replaceAll("\\.?0*$", "");
+                            } else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+                                switch (cell.getCachedFormulaResultType()) {
+                                    case Cell.CELL_TYPE_NUMERIC:
+                                        Double doubleValue = cell.getNumericCellValue();
+                                        value = doubleValue.toString().replaceAll("\\.?0*$", "");
+                                        break;
+                                    case Cell.CELL_TYPE_STRING:
+                                        value = cell.getRichStringCellValue().toString();
+                                        break;
+                                }
                             } else {
                                 value = cell.toString();
                             }
@@ -111,7 +120,6 @@ public class ExcelUtil {
                     } catch (Exception ex) {
                         System.out.println(result);
                     }
-
                 }
             }
         } catch (Exception ex) {

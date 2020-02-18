@@ -439,7 +439,7 @@
                 {
                     title: "<spring:message code="education.degree"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/education/level/show-form"/>");
+                        createTab(this.title, "<spring:url value="/educationLevel/show-form"/>");
                     }
                 },
                 {isSeparator: true},
