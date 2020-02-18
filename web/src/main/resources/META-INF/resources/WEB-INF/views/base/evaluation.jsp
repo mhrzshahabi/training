@@ -18,7 +18,6 @@
 
     // <<-------------------------------------- Create - Window ------------------------------------
     {
-
         EvaluationDS_PersonList = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
@@ -697,7 +696,6 @@
             allowFilterExpressions: true,
             filterOnKeypress: true,
             sortField: 0,
-
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -810,9 +808,7 @@
 
             ],
             selectionUpdated: function () {
-
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
-
                 set_Evaluation_Tabset_status();
             }
         });
