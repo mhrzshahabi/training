@@ -37,6 +37,7 @@ public class EvaluationService implements IEvaluationService {
     private final EvaluationAnswerDAO evaluationAnswerDAO;
     private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter = new EnumsConverter.EDomainTypeConverter();
     private final ParameterService parameterService;
+
     @Transactional(readOnly = true)
     @Override
     public EvaluationDTO.Info get(Long id) {
@@ -118,28 +119,33 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public Evaluation getStudentEvaluationForClass(Long classId,Long studentId){
+    public Evaluation getStudentEvaluationForClass(Long classId, Long studentId) {
         Long evaluatorTypeId = null;
-        TotalResponse<ParameterValueDTO.Info> parameters =  parameterService.getByCode("EvaluatorType");
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("EvaluatorType");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if(parameterValue.getCode().equalsIgnoreCase("3"))
+            if (parameterValue.getCode().equalsIgnoreCase("3"))
                 evaluatorTypeId = parameterValue.getId();
         }
         return evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(
-                classId,studentId,evaluatorTypeId).get(0);
+                classId, studentId, evaluatorTypeId).get(0);
     }
 
     @Override
-    public Evaluation getTeacherEvaluationForClass(Long teacherId,Long classId){
+    public Evaluation getTeacherEvaluationForClass(Long teacherId, Long classId) {
         Long evaluatorTypeId = null;
-        TotalResponse<ParameterValueDTO.Info> parameters =  parameterService.getByCode("EvaluatorType");
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("EvaluatorType");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if(parameterValue.getCode().equalsIgnoreCase("1"))
+            if (parameterValue.getCode().equalsIgnoreCase("1"))
                 evaluatorTypeId = parameterValue.getId();
         }
         return evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(
-                classId,teacherId,evaluatorTypeId).get(0);
+                classId, teacherId, evaluatorTypeId).get(0);
+    }
+
+    //    @Override
+    public Evaluation getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId) {
+        return evaluationDAO.findFirstByQuestionnaireTypeIdAndClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelId(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId);
     }
 }
