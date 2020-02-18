@@ -1326,7 +1326,6 @@
                             if (autoValid) {
                                 ClassID = JSON.parse(resp.data).id;
                                 isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), "callback: class_get_sessions_result(rpcResponse)"));
-
                             }
                         }
                         //**********generate class sessions**********
