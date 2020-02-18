@@ -18,7 +18,6 @@
 
     // <<-------------------------------------- Create - Window ------------------------------------
     {
-
         EvaluationDS_PersonList = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
@@ -447,7 +446,13 @@
                                     serverOutputAsString: false,
                                     data: JSON.stringify(data),
                                     callback: function (resp) {
-                                        alert(resp.httpResponseCode)
+                                        if(resp.httpResponseCode == 201 || resp.httpResponseCode == 201){
+                                            Window_Questions_JspEvaluation.close();
+                                            createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                        }
+                                        else{
+                                            createDialog("info", "<spring:message code="msg.operation.error"/>");
+                                        }
                                     }
                                 });
 
@@ -691,7 +696,6 @@
             allowFilterExpressions: true,
             filterOnKeypress: true,
             sortField: 0,
-
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -804,9 +808,7 @@
 
             ],
             selectionUpdated: function () {
-
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
-
                 set_Evaluation_Tabset_status();
             }
         });
