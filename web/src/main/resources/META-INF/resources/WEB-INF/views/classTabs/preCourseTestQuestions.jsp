@@ -144,12 +144,6 @@
     /*Questions Grid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    questionsDS_PCTQ = isc.TrDS.create({
-        fields: [
-            {name: "preCourseTestQuestions", filterOperator: "iContains"}
-        ]
-    });
-
     IButton_Save_PCTQ = isc.IButtonSave.create({
         click: function () {
             if (questionsLG_PCTQ.hasErrors() || classId_PCTQ == null)
@@ -181,6 +175,15 @@
         members: [IButton_Save_PCTQ, IButton_Cancel_PCTQ]
     });
 
+    Menu_ReadOnly_PCTQ = isc.Menu.create({
+        data: [{
+            title: "<spring:message code='refresh'/>", click: function () {
+                loadPage_preCourseTestQuestions(classId_PCTQ);
+            }
+        }]
+    });
+
+
     Menu_PCTQ = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
@@ -207,7 +210,6 @@
     });
 
     questionsLG_PCTQ = isc.TrLG.create({
-        contextMenu: Menu_PCTQ,
         align: "center",
         canReorderRecords: true,
         autoFitMaxRecords: 4,
@@ -220,6 +222,7 @@
         validateOnChange: true,
         validateByCell: true,
         canSort: false,
+        showFilterEditor: false,
         sortField: 0,
         fields: [
             {
@@ -242,6 +245,17 @@
         ],
         rowDoubleClick: function () {
             questionsLG_Edit_PCTQ();
+        },
+        removeRecordClick: function (rowNum) {
+            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code='verify.delete'/>");
+            Dialog_Delete.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0)
+                        questionsLG_PCTQ.data.removeAt(rowNum);
+                }
+            });
         },
     });
 
@@ -308,7 +322,8 @@
             operator: "and",
             criteria: [
                 {fieldName: "course.code", operator: "equals", value: selectedClass.course.code},
-                {fieldName: "preCourseTestQuestions", operator: "notNull"}
+                {fieldName: "preCourseTestQuestions", operator: "notNull"},
+                {fieldName: "id", operator: "notEqual", value: selectedClass.id}
             ]
         };
         ClassLG_PCTQ.implicitCriteria = criteria;
@@ -331,7 +346,16 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-        questionsLG_PCTQ.data.removeAll(records);
+        let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            "<spring:message code='verify.delete'/>");
+        Dialog_Delete.addProperties({
+            buttonClick: function (button, index) {
+                this.close();
+                if (index === 0) {
+                    questionsLG_PCTQ.data.removeAll(records);
+                }
+            }
+        });
     }
 
     function questionsLG_Save_Result_PCTQ(resp) {
@@ -364,7 +388,20 @@
         }
     }
 
-    function loadPage_preCourseTestQuestions(id) {
+    function loadPage_preCourseTestQuestions(id, readOnly) {
+        if (readOnly) {
+            ToolStripButton_Edit_PCTQ.hide();
+            ToolStripButton_Add_PCTQ.hide();
+            ToolStripButton_Remove_PCTQ.hide();
+            ToolStripButton_ShowClass_PCTQ.hide();
+            questionsLG_PCTQ.contextMenu = Menu_ReadOnly_PCTQ;
+        } else {
+            ToolStripButton_Edit_PCTQ.show();
+            ToolStripButton_Add_PCTQ.show();
+            ToolStripButton_Remove_PCTQ.show();
+            ToolStripButton_ShowClass_PCTQ.show();
+            questionsLG_PCTQ.contextMenu = Menu_PCTQ;
+        }
         if (id != null) {
             classId_PCTQ = id;
             oldQuestionsNum_PCTQ = 0;

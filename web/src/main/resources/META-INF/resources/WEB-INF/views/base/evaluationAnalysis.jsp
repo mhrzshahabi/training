@@ -6,6 +6,9 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
+
+    //----------------------------------------------------Rest Data Sources---------------------------------------------
+
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -27,6 +30,8 @@
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
     });
+
+    //----------------------------------------------------List Grid-----------------------------------------------------
 
     var ListGrid_evaluationAnalysis_class = isc.TrLG.create({
         width: "100%",
@@ -108,7 +113,7 @@
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
-                    "3": "پایان یافته",
+                    "3": "پایان یافته"
                 },
             },
             {
@@ -116,7 +121,7 @@
                 valueMap: {
                     "1": "ارزیابی نشده",
                     "2": "در حال ارزیابی",
-                    "3": "ارزیابی شده",
+                    "3": "ارزیابی شده"
                 },
             },
             {
@@ -135,6 +140,7 @@
             {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function () {
+            scrollChart.show();
             DynamicForm_Reaction_EvaluationAnalysis_Header.show();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
@@ -142,19 +148,21 @@
         }
     });
 
+    //----------------------------------------------------Reaction Evaluation-------------------------------------------
+
     var vm_reaction_evaluation = isc.ValuesManager.create({});
 
     DynamicForm_Reaction_EvaluationAnalysis_Header = isc.DynamicForm.create({
-        height: "100%",
         align: "right",
         canSubmit: true,
         titleWidth: 120,
+        width: "45%",
         valuesManager: vm_reaction_evaluation,
         titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
         styleName: "teacher-form",
-        numCols: 10,
+        numCols: 6,
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
@@ -167,74 +175,78 @@
             },
             {
                 name: "numberOfFilledReactionEvaluationForms",
-                title: "تعداد فرم های ثبت شده",
+                title: "<spring:message code='numberOfFilledReactionEvaluationForms'/>",
                 baseStyle: "teacher-code",
                 canEdit: false
             },
             {
                 name: "numberOfInCompletedReactionEvaluationForms",
-                title: "تعداد فرم های ناقص",
+                title: "<spring:message code='numberOfInCompletedReactionEvaluationForms'/>",
                 baseStyle: "teacher-code",
                 canEdit: false
             },
             {
                 name: "numberOfEmptyReactionEvaluationForms",
-                title: "تعداد فرم های ثبت نشده",
+                title:"<spring:message code='numberOfEmptyReactionEvaluationForms'/>",
                 baseStyle: "teacher-code",
                 canEdit: false
             },
             {
                 name: "percenetOfFilledReactionEvaluationForms",
-                title: "درصد فرم های ثبت شده",
+                title: "<spring:message code='percenetOfFilledReactionEvaluationForms'/>",
                 baseStyle: "teacher-code",
                 canEdit: false
             },
             {
                 name: "numberOfExportedReactionEvaluationForms",
-                title: "تعداد فرم های ارسالی",
+                title: "<spring:message code='numberOfExportedReactionEvaluationForms'/>",
                 hidden: true
             }
         ]
     });
 
     DynamicForm_Reaction_EvaluationAnalysis_Footer = isc.DynamicForm.create({
-        height: "100%",
+        width: "30%",
         align: "right",
         canSubmit: true,
-        titleWidth: 120,
         titleAlign: "left",
+        titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: vm_reaction_evaluation,
         styleName: "teacher-form",
-        numCols: 8,
+        numCols: 4,
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
         fields: [
             {
                 name: "FERGrade",
-                title: "نمره ارزیابی واکنشی کلاس",
+                title: "<spring:message code='FERGrade'/>",
                 baseStyle: "teacher-code",
                 canEdit: false
             },
             {
                 name: "FETGrade",
-                title: "نمره ارزیابی استاد بعد از تدریس دوره",
+                title:"<spring:message code='FETGrade'/>",
                 baseStyle: "teacher-code",
                 canEdit: false
             },
             {
                 name: "FECRGrade",
-                title: "نمره اثربخشی",
+                title: "<spring:message code='FECRGrade'/>",
                 baseStyle: "teacher-code",
                 canEdit: false
             },
             {
                 name: "FECRPass",
-                title: "تائید/عدم تائید",
+                title: "<spring:message code='status'/>",
                 baseStyle: "teacher-code",
-                canEdit: false
+                canEdit: false,
+                valueMap: {
+                    "true": "تائید",
+                    "false": "عدم تائید"
+                }
             },
             {
                 name: "FERPass",
@@ -280,20 +292,20 @@
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').setCellStyle('teacher-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').titleStyle = 'teacher-code-title';
 
-    // var scrollChart = isc.FacetChart.create({
-    //     facets: [{
-    //         id: "season",    // the key used for this facet in the data above
-    //         title: "Season"  // the user-visible title you want in the chart
-    //     }],
-    //     valueProperty: "temp", // the property in our data that is the numerical value to chart
-    //     data: [
-    //         {season: "Spring", temp: 79},
-    //         {season: "Summer", temp: 102},
-    //         {season: "Autumn", temp: 81},
-    //         {season: "Winter", temp: 59}
-    //     ],
-    //     title: "Average temperature in Las Vegas"
-    // });
+    var scrollChart = isc.FacetChart.create({
+        facets: [{
+            id: "season",    // the key used for this facet in the data above
+            title: "Season"  // the user-visible title you want in the chart
+        }],
+        valueProperty: "temp", // the property in our data that is the numerical value to chart
+        data: [
+            {season: "Spring", temp: 79},
+            {season: "Summer", temp: 102},
+            {season: "Autumn", temp: 81},
+            {season: "Winter", temp: 59}
+        ],
+        title: "Average temperature in Las Vegas"
+    });
 
     <%--<SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>--%>
 
@@ -316,7 +328,7 @@
         }
     });
 
-    var Hlayout_Tab_Evaluation_Analysis_Print = isc.HLayout.create({
+    var Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print = isc.HLayout.create({
         width: "100%",
         height: "49%",
         align: "center",
@@ -329,9 +341,9 @@
         width: "100%",
         height: "100%",
         members: [DynamicForm_Reaction_EvaluationAnalysis_Header,
-            // scrollChart,
+            scrollChart,
             DynamicForm_Reaction_EvaluationAnalysis_Footer,
-            Hlayout_Tab_Evaluation_Analysis_Print]
+            Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print]
     });
 
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
@@ -340,23 +352,23 @@
         enabled: false,
         tabs: [
             {
-                id: "TabPane_Reaction",
+                id: "TabPane_Reaction_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.reaction"/>",
                 pane: VLayout_Body_evaluation_analysis_reaction
             }
             ,
             {
-                id: "TabPane_Learning",
+                id: "TabPane_Learning_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.learning"/>"
                 // pane: VLayout_Body_evaluation
             },
             {
-                id: "TabPane_Behavior",
+                id: "TabPane_Behavior_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.behavioral"/>"
                 // pane: VLayout_Body_evaluation
             },
             {
-                id: "TabPane_Results",
+                id: "TabPane_Results_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.results"/>"
                 // pane: VLayout_Body_evaluation
             }
@@ -366,14 +378,16 @@
 
     });
 
-    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+    //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
+
+    var ToolStripButton_Refresh_Evaluation_Analysis = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_evaluationAnalysis_class.invalidateCache();
         }
     });
 
-    var ToolStrip_operational = isc.ToolStrip.create({
+    var ToolStrip_Evaluation_Analysis = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
@@ -382,20 +396,20 @@
                 align: "left",
                 border: '0px',
                 members: [
-                    ToolStripButton_Refresh
+                    ToolStripButton_Refresh_Evaluation_Analysis
                 ]
             })
         ]
     });
 
-    var HLayout_Actions_operational = isc.HLayout.create({
+    var HLayout_Actions_Evaluation_Analysis= isc.HLayout.create({
         width: "100%",
         height: "1%",
-        members: [ToolStrip_operational]
+        members: [ToolStrip_Evaluation_Analysis]
     });
 
 
-    var Hlayout_Grid_operational = isc.HLayout.create({
+    var Hlayout_Grid_Evaluation_Analysis = isc.HLayout.create({
         width: "100%",
         height: "50%",
         showResizeBar: true,
@@ -410,12 +424,14 @@
         ]
     });
 
-    var VLayout_Body_operational = isc.VLayout.create({
+    var VLayout_Body_Evaluation_Analysis = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_Actions_operational, Hlayout_Grid_operational,
+        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis,
                   Hlayout_Tab_Evaluation_Analysis]
     });
+
+    //----------------------------------------------------Functions-----------------------------------------------------
 
     function set_evaluation_analysis_tabset_status() {
 
@@ -483,6 +499,9 @@
         Detail_Tab_Evaluation_Analysis.selectTab(0);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
     DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
+    scrollChart.hide();
     IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();

@@ -424,7 +424,7 @@
 				<textFieldExpression><![CDATA[$P{FETPass}==true? "تائید":"عدم تائید"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Opaque" x="320" y="270" width="152" height="18" backcolor="#F2E9D5" uuid="51fed624-c3c2-4379-ba0b-57c40736658a"/>
+				<reportElement mode="Opaque" x="350" y="270" width="122" height="18" backcolor="#F2E9D5" uuid="51fed624-c3c2-4379-ba0b-57c40736658a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>

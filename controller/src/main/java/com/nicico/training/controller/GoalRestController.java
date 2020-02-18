@@ -191,7 +191,7 @@ public class GoalRestController {
     public void printOneCourse(HttpServletResponse response,
                                @PathVariable Long courseId,
                                @PathVariable String type) throws Exception {
-        List<GoalDTO.Info> getGoal = courseService.getgoal(courseId);
+        List<GoalDTO.Info> getGoal = courseService.getGoal(courseId);
         CourseDTO.Info info = courseService.get(courseId);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

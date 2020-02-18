@@ -196,7 +196,7 @@
                 editorExit: function (form, item, value) {
                     var dateCheck;
                     var endDate = form.getValue("endDate");
-                    dateCheck = checkDate(value);
+                    dateCheck = checkBirthDate(value);
                     if (dateCheck === false) {
                         startDateCheck_JSPTeachHistory = false;
                         dateCheck_Order_JSPTeachHistory = true;
@@ -502,6 +502,8 @@
         methodTeachingHistory = "POST";
         saveActionUrlTeachingHistory = teachingHistoryUrl + "/" + teacherIdTeachingHistory;
         DynamicForm_JspTeachingHistory.clearValues();
+        RestDataSource_SubCategory_JspTeachingHistory.implicitCriteria = null;
+        DynamicForm_JspTeachingHistory.getField("subCategories").disable();
         Window_JspTeachingHistory.show();
     }
 

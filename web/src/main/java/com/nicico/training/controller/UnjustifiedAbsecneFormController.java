@@ -24,8 +24,8 @@ public class UnjustifiedAbsecneFormController {
         return "base/unjustifiedAbsence";
     }
 
-    @PostMapping("/unjustifiedabsence")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request) {
+    @PostMapping("/unjustifiedabsence/{startDate}/{endDate}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String startDate,@PathVariable String endDate) {
         String token = (String) request.getParameter("token");
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -33,6 +33,8 @@ public class UnjustifiedAbsecneFormController {
         headers.add("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("startDate",startDate);
+        map.add("endDate",endDate);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         return restTemplate.exchange(restApiUrl + "/api/unjustifiedAbsence/print", HttpMethod.POST, entity, byte[].class);

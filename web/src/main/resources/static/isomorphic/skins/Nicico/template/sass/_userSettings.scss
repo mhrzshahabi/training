@@ -3,8 +3,11 @@ $standard_header_bgColor: #fe9d2a;
 $button_normal_bgColor: #fe9d2a;
 $general_button_focused_border_color: #fe9d2a;
 $standard_button_border_radius: 3px;
-$active_over_bgColor: #ffd7a7;
+$active_over_bgColor:  #ffd7a7;
 $tabButton_border_color: #ffd7a7;
+
+
+
 
 
 $tabButton_bgColor: #ffd7a7;
@@ -19,13 +22,16 @@ $tabButton_disabled_border_color: #dadada;
 $window_header_bgColor: $standard_header_bgColor;
 
 
+
+
+
 // ==== Buttons - Variables for Button styles
 // General
 $button_primary_hue: 214;
 $button_border_color: #fe9d2a;
 $button_border_radius: $standard_button_border_radius;
 $button_normal_color: white;
-$button_normal_bgColor: #fe9d2a;
+$button_normal_bgColor:  #fe9d2a;
 $button_normal_border_color: $button_normal_bgColor;
 $button_normal_border: 2px solid $button_normal_border_color;
 $button_disabled_color: #ababab;
@@ -34,10 +40,17 @@ $button_disabled_border: 2px solid #dadada;
 $button_focused_border_color: $general_button_focused_border_color;
 $button_focused_border: 2px solid $button_focused_border_color;
 $button_over_border: $button_normal_border;
-$button_over_shadow: 0 0 0.2em 0.1em #fe9d2a;
+$button_over_shadow: 0 0 0.2em 0.1em  #fe9d2a;
 $button_over_bgColor: $button_normal_bgColor;
 $button_down_bgColor: $button_normal_bgColor;
 $button_deselected_disabled_color: hsl(0, 0%, 66%);
+
+
+
+
+
+
+
 
 
 //>theme_header
@@ -134,8 +147,7 @@ $button_deselected_disabled_color: hsl(0, 0%, 66%);
 
   /* see comment on @font-face above */
   src: url("fonts/RobotoLight.otf");
-  src: url("fonts/RobotoLight.eot")\9
-;
+  src: url("fonts/RobotoLight.eot")\9 ;
   src: local("☺"), url("fonts/RobotoLight.woff2") format("woff2"),
   url("fonts/RobotoLight.woff") format("woff"),
   url("fonts/RobotoLight.otf") format("opentype"),
@@ -184,10 +196,8 @@ $primary_orange_dark: #ff8e08;
 $primary_grey: #8d959e;
 $primary_grey_dark: #929292;
 $primary_grey_dark1: #d9d9d9;
-$primary_grey_dark2: #4c4c4c;
-;
-$primary_grey_dark3: #464646;
-;
+$primary_grey_dark2: #4c4c4c;;
+$primary_grey_dark3: #464646;;
 $primary_grey_light: #f0f0f0;
 $primary_grey_light2: #dadada;
 $primary_blue_dark: #153560;
@@ -202,8 +212,7 @@ $standard_white: #ffffff;
 $standard_black: #000000;
 $standard_gray: #808080;
 $standard_blue: #0000FF;
-$standard_orange: #fe9d2a;
-;
+$standard_orange: #fe9d2a;;
 $standard_color: $standard_black;
 $standard_bgColor: #fafafa;
 $standard_border_color: #d0d0d0;
@@ -330,8 +339,9 @@ $tabButton_disabled_border_color: #dadada;
 $tabButton_over_shadow: 0 0 0.2em 0.1em $primary_orange;
 $tabButton_selected_bgColor: $standard_white;
 $tabButton_selected_border_color: $standard_white;
-$tabButton_selected_over_border_color: $standard_white;
+$tabButton_selected_over_border_color:$standard_white;
 $tabButton_selected_color: $standard_black;
+
 
 
 // ==== SectionStacks - Variables for SectionStack styles
@@ -688,8 +698,7 @@ $dateChooser_cell_border_radius: 3px;
 $dateChooser_cell_over_color: $standard_white;
 $dateChooser_cell_over_bgColor: $primary_orange_light;
 $dateChooser_cell_disabled_color: $default_border_dark_color;
-$dateChooser_cell_selected_bgColor: $primary_orange;
-;
+$dateChooser_cell_selected_bgColor: $primary_orange;;
 $dateChooser_cell_selected_color: $standard_white;
 // Button
 $dateChooser_bottom_button_font: $secondary_font;

@@ -127,7 +127,7 @@ public class CourseRestController {
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
         if (check) {
-            List<GoalDTO.Info> goals = courseService.getgoal(id);
+            List<GoalDTO.Info> goals = courseService.getGoal(id);
             goals.forEach(g -> goalService.delete(g.getId()));
             courseService.deletGoal(id);
             courseService.delete(id);
@@ -208,7 +208,7 @@ public class CourseRestController {
 
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<GoalDTO.Info> goal = courseService.getgoal(courseId);
+        List<GoalDTO.Info> goal = courseService.getGoal(courseId);
 
         final GoalDTO.SpecRs specResponse = new GoalDTO.SpecRs();
         specResponse.setData(goal)
@@ -232,6 +232,29 @@ public class CourseRestController {
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/goal-mainObjective/{courseId}")
+    public ResponseEntity<List<Map<String, String>>> getGoalsAndMainObjectives(@PathVariable Long courseId) {
+        List<GoalDTO.Info> goals = courseService.getGoal(courseId);
+        List<SkillDTO.Info> mainObjectives = courseService.getMainObjective(courseId);
+        List<Map<String, String>> list = new ArrayList<>();
+        for (GoalDTO.Info goal : goals) {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", goal.getId().toString());
+            map.put("type", "goal");
+            map.put("title", goal.getTitleFa());
+            list.add(map);
+        }
+        for (SkillDTO.Info mainObjective : mainObjectives) {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", mainObjective.getId().toString());
+            map.put("type", "skill");
+            map.put("title", mainObjective.getTitleFa());
+            list.add(map);
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Loggable

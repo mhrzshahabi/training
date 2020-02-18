@@ -251,7 +251,7 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public List<GoalDTO.Info> getgoal(Long courseId) {
+    public List<GoalDTO.Info> getGoal(Long courseId) {
         final Optional<Course> ssById = courseDAO.findById(courseId);
         final Course course = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         List<GoalDTO.Info> goalInfo = new ArrayList<>();
@@ -310,6 +310,20 @@ public class CourseService implements ICourseService {
     public List<SkillDTO.Info> getSkill(Long courseId) {
         Course one = courseDAO.getOne(courseId);
         Set<Skill> skillSet = one.getSkillSet();
+        List<SkillDTO.Info> skillInfo = new ArrayList<>();
+        Optional.ofNullable(skillSet)
+                .ifPresent(skills ->
+                        skills.forEach(skill ->
+                                skillInfo.add(modelMapper.map(skill, SkillDTO.Info.class))
+                        ));
+        return skillInfo;
+    }
+
+    @Transactional
+    @Override
+    public List<SkillDTO.Info> getMainObjective(Long courseId) {
+        Course one = courseDAO.getOne(courseId);
+        Set<Skill> skillSet = one.getSkillMainObjectiveSet();
         List<SkillDTO.Info> skillInfo = new ArrayList<>();
         Optional.ofNullable(skillSet)
                 .ifPresent(skills ->

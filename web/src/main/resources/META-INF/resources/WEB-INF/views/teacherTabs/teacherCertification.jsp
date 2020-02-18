@@ -169,7 +169,7 @@
                 editorExit: function (form, item, value) {
                     var dateCheck;
                     var endDate = form.getValue("endDate");
-                    dateCheck = checkDate(value);
+                    dateCheck = checkBirthDate(value);
                     if (dateCheck === false) {
                         startDateCheck_JSPTeachCertificate = false;
                         dateCheck_Order_JSPTeachCertificate = true;
@@ -472,6 +472,8 @@
         methodTeacherCertification = "POST";
         saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + teacherIdTeacherCertification;
         DynamicForm_JspTeacherCertification.clearValues();
+        RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = null;
+        DynamicForm_JspTeacherCertification.getField("subCategories").disable();
         Window_JspTeacherCertification.show();
     }
 
