@@ -36,7 +36,7 @@ public interface ICourseService {
     //-------jafari--------
     SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request);
 
-    List<GoalDTO.Info> getgoal(Long courseId);
+    List<GoalDTO.Info> getGoal(Long courseId);
 
     List<GoalDTO.Info> getGoalWithOut(Long courseId);
 
@@ -48,6 +48,9 @@ public interface ICourseService {
     List<CompetenceDTOOld.Info> getCompetence(Long courseId);
 
     List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
+
+    @Transactional
+    List<SkillDTO.Info> getMainObjective(Long courseId);
 
     List<JobDTO.Info> getJob(Long courseId);
 
