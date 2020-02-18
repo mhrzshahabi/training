@@ -20,7 +20,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Forms.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
-    <%--<SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>--%>
+    <SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
@@ -34,7 +34,6 @@
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
-    <script src="<spring:url value='/js/changeSkin.js'/>"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 

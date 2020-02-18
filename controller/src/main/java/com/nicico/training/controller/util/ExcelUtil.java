@@ -1,15 +1,9 @@
-/*
-ghazanfari_f,
-2/5/2020,
-8:52 AM
-*/
 package com.nicico.training.controller.util;
 
 import com.nicico.training.dto.CategoryDTO;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;

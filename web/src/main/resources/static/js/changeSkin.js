@@ -58,7 +58,7 @@ function change_fontFace(){
 
     var newStyle = document.createElement('style');
     if(Object.keys(getSearchParameters()).length == 0 || getSearchParameters().lang == 'fa'){
-        console.log(getSearchParameters())
+        // console.log(getSearchParameters())
         newStyle.appendChild(document.createTextNode("\
 @font-face {\
     font-family: BYekan ;\
