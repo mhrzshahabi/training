@@ -8,6 +8,7 @@
 %>
 // <script>
 
+    var endDateCheckReport = true;
     var DynamicForm_Report = isc.DynamicForm.create({
         colWidths: ["50", "210", "50", "230", "150"],
         numCols: 5,
@@ -17,7 +18,7 @@
                 name: "startDate",
                 height: 35,
                 title: "از تاریخ",
-                ID: "startDate_jspTerm",
+                ID: "startDate_jspReport",
                 type: 'text',
                 width: 200,
                 required: true,
@@ -25,41 +26,32 @@
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 focus: function () {
-                    displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
+                    displayDatePicker('startDate_jspReport', this, 'ymd', '/');
                 },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
+                        displayDatePicker('startDate_jspReport', this, 'ymd', '/');
                     }
                 }],
 
-                changed: function (form, item, value) {
-                    var startdate = DynamicForm_Report.getItem("startDate").getValue();
-                    if (startdate != null) {
-                        if (term_method == "POST")
-                            getTermCodeRequest(startdate.substr(0, 4));
-                    } else
 
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.start.date.not.entered"/>", 3000, "say");
-                },
                 blur: function () {
-                    var dateCheck = false;
+                    var dateCheck;
                     dateCheck = checkDate(DynamicForm_Report.getValue("startDate"));
-                    startDateCheckTerm = dateCheck;
                     if (dateCheck == false)
                         DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDateCheckReport = false;
                     if (dateCheck == true)
                         DynamicForm_Report.clearFieldErrors("startDate", true);
-
+                        endDateCheckReport = true;
                     var endDate = DynamicForm_Report.getValue("endDate");
                     var startDate = DynamicForm_Report.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
-// DynamicForm_Report.clearFieldErrors("endDate", true);
                         DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                        DynamicForm_Report.getItem("endDate").setValue();
-                        endDateCheckTerm = false;
+                        DynamicForm_Report.getItem("endDate").setValue("");
+                        endDateCheckReport = false;
                     }
                 }
             },
@@ -67,7 +59,7 @@
                 name: "endDate",
                 height: 35,
                 title: "تا تاریخ",
-                ID: "endDate_jspTerm",
+                ID: "endDate_jspReport",
                 width: 200,
                 type: 'text',
                 enabled: false,
@@ -76,37 +68,41 @@
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 focus: function () {
-                    displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
+                    displayDatePicker('endDate_jspReport', this, 'ymd', '/');
                 },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
+                        displayDatePicker('endDate_jspReport', this, 'ymd', '/');
 
                     }
                 }],
                 blur: function () {
-                    var dateCheck = false;
+
+                    var dateCheck;
                     dateCheck = checkDate(DynamicForm_Report.getValue("endDate"));
                     var endDate = DynamicForm_Report.getValue("endDate");
                     var startDate = DynamicForm_Report.getValue("startDate");
                     if (dateCheck == false) {
                         DynamicForm_Report.clearFieldErrors("endDate", true);
                         DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckTerm = false;
+                        endDateCheckReport = false;
                     }
                     if (dateCheck == true) {
                         if (startDate == undefined)
                             DynamicForm_Report.clearFieldErrors("endDate", true);
+                            DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                           endDateCheckReport = false;
                         if (startDate != undefined && startDate > endDate) {
                             DynamicForm_Report.clearFieldErrors("endDate", true);
                             DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                            endDateCheckTerm = false;
+                            endDateCheckReport = false;
                         }
                         if (startDate != undefined && startDate < endDate) {
                             DynamicForm_Report.clearFieldErrors("endDate", true);
-                            endDateCheckTerm = true;
+                            DynamicForm_Report.clearFieldErrors("startDate", true);
+                            endDateCheckReport = true;
                         }
                     }
                 }
@@ -119,6 +115,13 @@
                  startRow: false,
                  width:"*",
                 click:function () {
+                    if (endDateCheckReport == false)
+                        return;
+
+                    if (!DynamicForm_Report.validate()) {
+                        return;
+                    }
+
                     var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
                    Print(strSData,strEData)

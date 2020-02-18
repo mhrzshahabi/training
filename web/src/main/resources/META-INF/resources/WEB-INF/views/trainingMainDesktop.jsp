@@ -644,7 +644,14 @@
                     click: function () {
                         createTab(this.title,"<spring:url value="/evaluationCoefficient/show-form"/>");
                     }
-                  }
+                 },
+                {
+                    title: "ثبت نمرات پیش آزمون",
+                    click: function () {
+                        createTab(this.title,"<spring:url value="/registerScorePreTest/show-form"/>");
+                    }
+                },
+
             ]
         }),
     });
@@ -708,7 +715,7 @@
                     }
                 },
                  {
-                    title: "گزارش غیبت موجه",
+                    title: "گزارش غیبت ناموجه",
                     click: function () {
                         createTab(this.title, "<spring:url value="/unjustified/show-form"/>");
                     }
