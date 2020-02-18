@@ -3,16 +3,12 @@ isc.loadSkin = function (theWindow) {
         theWindow = window
     }
     with (theWindow) {
-        const actions_btn = {
+        const actions_btn ={
             add: 'افزودن',
             remove: 'حذف',
             edit: 'ویرایش',
-            refresh: 'بازیابی اطلاعات',
-            excel: 'ارسال به Excel',
-            print: 'چاپ',
-            closeAll: 'بستن همه',
-            cancel: 'لغو',
-            save: 'ذخیره'
+            refresh: 'بازخوانی اطلاعات',
+            excel: 'ارسال به Excel'
         }
         isc.Page.setSkinDir("[ISOMORPHIC]/skins/Nicico/");
         var cssLoaded = isc.Page.loadStyleSheet("[SKIN]/skin_styles.css", theWindow, "isc.FontLoader.loadCustomFonts()");
@@ -123,38 +119,21 @@ isc.loadSkin = function (theWindow) {
         });
         isc.ClassFactory.defineClass("IButtonSave", "Button").addProperties({
             baseStyle: "buttonSave",
-            title: actions_btn.save,
             showFocusedAsOver: false,
             showFocusOutline: false
         });
         isc.ClassFactory.defineClass("IButtonCancel", "Button").addProperties({
             baseStyle: "buttonCancel",
-            title: actions_btn.cancel,
             showFocusedAsOver: false,
             showFocusOutline: false
         });
         isc.ClassFactory.defineClass("IButtonClose", "Button").addProperties({
             baseStyle: "buttonClose",
-            title: actions_btn.closeAll,
             showFocusedAsOver: false,
-            icon: "[SKIN]/actions/nicico_closeAllTabs.png",
+            icon: "icon/nicico_closeAllTabs.png",
             showFocusOutline: false
         });
-        isc.ClassFactory.defineClass("ToolStripButtonPrint", "Button").addProperties({
-            baseStyle: "toolStripButtonPrint",
-            icon: "[SKIN]/actions/print.png",
-            title: actions_btn.print,
-            autoFit: true,
-            iconSize: 15,
-            height: 17,
-            labelVPad: 0,
-            showTitle: false,
-            showRollOver: true,
-            showDown: true,
-            showDownIcon: true,
-            showSelectedIcon: true,
-        });
-        isc.ClassFactory.defineClass("ToolStripButtonAdd", "Button").addProperties({
+        isc.ClassFactory.defineClass("ToolStripButtonCreate", "Button").addProperties({
             baseStyle: "toolStripButtonAdd",
             icon: "[SKIN]/actions/add.png",
             title: actions_btn.add,
@@ -168,7 +147,21 @@ isc.loadSkin = function (theWindow) {
             showDownIcon: true,
             showSelectedIcon: true,
         });
-        isc.ClassFactory.defineClass("ToolStripButtonCreate", "Button").addProperties({
+        isc.ClassFactory.defineClass("ToolStripButtonPrint", "Button").addProperties({
+            baseStyle: "toolStripButtonAdd",
+            icon: "[SKIN]/actions/print.png",
+            title: actions_btn.add,
+            autoFit: true,
+            iconSize: 15,
+            height: 17,
+            labelVPad: 0,
+            showTitle: false,
+            showRollOver: true,
+            showDown: true,
+            showDownIcon: true,
+            showSelectedIcon: true,
+        });
+        isc.ClassFactory.defineClass("ToolStripButtonAdd", "Button").addProperties({
             baseStyle: "toolStripButtonAdd",
             icon: "[SKIN]/actions/add.png",
             title: actions_btn.add,

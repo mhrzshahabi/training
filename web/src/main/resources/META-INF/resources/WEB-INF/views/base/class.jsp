@@ -13,6 +13,7 @@
     var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
+    var isReadOnlyClass = true;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -879,7 +880,7 @@
             {
                 name: "preCourseTest",
                 type: "boolean",
-                title: "پیش آزمون",
+                title: "<spring:message code='class.preCourseTest'/>",
                 hidden: true,
             }
         ],
@@ -2079,14 +2080,13 @@
                     break;
                 }
                 case "classAttachmentsTab": {
-                    let readOnly = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
                     if (typeof loadPage_attachment !== "undefined")
                         loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>", {
                             1: "جزوه",
                             2: "لیست نمرات",
                             3: "لیست حضور و غیاب",
                             4: "نامه غیبت موجه"
-                        }, readOnly);
+                        }, isReadOnlyClass);
                     break;
                 }
                 case "classScoresTab": {
@@ -2106,7 +2106,7 @@
                 }
                 case "classPreCourseTestQuestionsTab": {
                     if (typeof loadPage_preCourseTestQuestions !== "undefined")
-                        loadPage_preCourseTestQuestions(ListGrid_Class_JspClass.getSelectedRecord().id);
+                        loadPage_preCourseTestQuestions(ListGrid_Class_JspClass.getSelectedRecord().id, isReadOnlyClass);
                     break;
                 }
             }
@@ -2161,10 +2161,12 @@
     function tabSet_class_status(classRecord) {
         if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
             TabSet_Class.disable();
+            isReadOnlyClass = true;
             return;
         }
+        isReadOnlyClass = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
         TabSet_Class.enable();
-        if (classRecord.preCourseTest)
+        if (classRecord.preCourseTest && classRecord.course.evaluation !== "1")
             TabSet_Class.enableTab("classPreCourseTestQuestionsTab");
         else
             TabSet_Class.disableTab("classPreCourseTestQuestionsTab");

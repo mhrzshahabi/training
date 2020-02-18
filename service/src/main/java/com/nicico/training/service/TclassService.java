@@ -82,6 +82,8 @@ public class TclassService implements ITclassService {
     @Override
     public void updatePreCourseTestQuestions(Long classId, List<String> preCourseTestQuestions) {
         Tclass tclass = getTClass(classId);
+        if (tclass.getWorkflowEndingStatusCode() == 2)
+            throw new TrainingException(TrainingException.ErrorType.NotEditable);
         tclass.setPreCourseTestQuestions(preCourseTestQuestions);
     }
 
@@ -519,10 +521,10 @@ public class TclassService implements ITclassService {
             if (parameterValue.getCode().equalsIgnoreCase("FECRZ"))
                 FECRZ = Double.parseDouble(parameterValue.getValue());
             else if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
-                minScoreFECR  = Double.parseDouble(parameterValue.getValue());
+                minScoreFECR = Double.parseDouble(parameterValue.getValue());
         }
         result = ferGrade * FECRZ;
-        if (result>=minScoreFECR)
+        if (result >= minScoreFECR)
             FECRPass = true;
         return result;
     }
