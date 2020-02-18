@@ -175,6 +175,15 @@
         members: [IButton_Save_PCTQ, IButton_Cancel_PCTQ]
     });
 
+    Menu_ReadOnly_PCTQ = isc.Menu.create({
+        data: [{
+            title: "<spring:message code='refresh'/>", click: function () {
+                loadPage_preCourseTestQuestions(classId_PCTQ);
+            }
+        }]
+    });
+
+
     Menu_PCTQ = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
@@ -201,7 +210,6 @@
     });
 
     questionsLG_PCTQ = isc.TrLG.create({
-        contextMenu: Menu_PCTQ,
         align: "center",
         canReorderRecords: true,
         autoFitMaxRecords: 4,
@@ -360,7 +368,20 @@
         }
     }
 
-    function loadPage_preCourseTestQuestions(id) {
+    function loadPage_preCourseTestQuestions(id, readOnly) {
+        if (readOnly) {
+            ToolStripButton_Edit_PCTQ.hide();
+            ToolStripButton_Add_PCTQ.hide();
+            ToolStripButton_Remove_PCTQ.hide();
+            ToolStripButton_ShowClass_PCTQ.hide();
+            questionsLG_PCTQ.contextMenu = Menu_ReadOnly_PCTQ;
+        } else {
+            ToolStripButton_Edit_PCTQ.show();
+            ToolStripButton_Add_PCTQ.show();
+            ToolStripButton_Remove_PCTQ.show();
+            ToolStripButton_ShowClass_PCTQ.show();
+            questionsLG_PCTQ.contextMenu = Menu_PCTQ;
+        }
         if (id != null) {
             classId_PCTQ = id;
             oldQuestionsNum_PCTQ = 0;
