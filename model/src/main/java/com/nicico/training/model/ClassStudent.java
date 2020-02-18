@@ -69,4 +69,7 @@ public class ClassStudent extends Auditable {
 
     @Column(name ="evaluation_status_results")
     private Integer evaluationStatusResults;
+
+    @Column(name = "pre_test_score")
+    private Float preTestScore;
 }

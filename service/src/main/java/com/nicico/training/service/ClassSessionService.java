@@ -15,6 +15,7 @@ import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTimeComparator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
@@ -402,8 +403,9 @@ public class ClassSessionService implements IClassSession {
             //*********************************
             //*********************************
 
+
             //********generating sessions*********
-            while (gregorianStartDate.compareTo(gregorianEndDate) <= 0) {
+            while (DateTimeComparator.getDateOnlyInstance().compare(gregorianStartDate, gregorianEndDate) <= 0) {
 
                 calendar.setTime(gregorianStartDate);
                 if (daysCode.contains(daysName()[calendar.get(Calendar.DAY_OF_WEEK)])) {
@@ -441,16 +443,13 @@ public class ClassSessionService implements IClassSession {
                 classSessionDAO.saveAll(modelMapper.map(sessions, new TypeToken<List<ClassSession>>() {
                 }.getType()));
             } else {
-                response.sendError(304, "براي کلاس ثبت شده هيچ جلسه اي ايجاد نگرديد");
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(407, messageSource.getMessage("no.sessions.was.scheduled.for.class", null, locale));
             }
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
-    //test
 
 
     //*********************************
