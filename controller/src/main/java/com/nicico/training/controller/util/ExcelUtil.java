@@ -1,6 +1,5 @@
 package com.nicico.training.controller.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.poi.ss.usermodel.Cell;
@@ -8,23 +7,31 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Constructor;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class ExcelUtil {
 
-    final String baseUrl = "http://localhost:8080/training/api/";
+    static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
     static String excelFilePath = "E:\\System\\Training\\Data\\forConvert(n1)Import.xlsx";
     static String resultExcelFilePath = "E:\\System\\Training\\Data\\forConvert(n1)ImportResult.xlsx";
+
+    static OAuth2RestTemplate restTemplate;
+    static URI uri;
+
+    static {
+        configRestTemplate();
+    }
 
     public static void main(String[] args) {
         try {
@@ -34,11 +41,8 @@ public class ExcelUtil {
         }
     }
 
-    public static OAuth2RestTemplate getRestTemplate() {
-
-        OAuth2RestTemplate restTemplate = null;
+    public static void configRestTemplate() {
         try {
-
             ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
             resourceDetails.setGrantType("password");
             resourceDetails.setClientId("Training");
@@ -50,7 +54,6 @@ public class ExcelUtil {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return restTemplate;
     }
 
     public static void parseWorkbook() {
@@ -67,6 +70,7 @@ public class ExcelUtil {
 
                 Class<?> clazz = Class.forName(baseDTOPath + "." + className + "$" + "Create");
                 Constructor<?> constructor = clazz.getConstructor();
+                uri = new URI(baseUrl + sheet.getSheetName().toLowerCase());
 
                 Iterator<Row> rowIterator = sheet.iterator();
                 Row row;
@@ -90,13 +94,26 @@ public class ExcelUtil {
                     for (int c = 0; c <= colsNum; c++) {
                         Cell cell = row.getCell(c);
                         if (!(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK)) {
-                            jsonObject.addProperty(fields.get(c), cell.toString());
+                            String value;
+                            if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                                Double doubleValue = cell.getNumericCellValue();
+                                value = doubleValue.toString().replaceAll("\\.?0*$", "");
+                            } else {
+                                value = cell.toString();
+                            }
+                            jsonObject.addProperty(fields.get(c), value);
                         }
                     }
                     Object object = new Gson().fromJson(jsonObject, clazz);
+                    ResponseEntity<String> result = null;
+                    try {
+                        result = restTemplate.postForEntity(uri, object, String.class);
+                    } catch (Exception ex) {
+                        System.out.println(result);
+                    }
+
                 }
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -108,60 +125,3 @@ public class ExcelUtil {
         }
     }
 }
-
-
-///
-//        public static void assignCategory (Row row,int colNums){
-//            CategoryDTO.Create category = new CategoryDTO.Create();
-//            try {
-//                for (int i = 1; i <= colNums; i++) {
-//                    Cell cell = row.getCell(i);
-//                    if (!(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK)) {
-//                        switch (i) {
-//                            case 1:
-//                                category.setTitleFa(row.getCell(i).toString().trim());
-//                                break;
-//                            case 2:
-//                                category.setCode(row.getCell(i).toString().trim());
-//                                break;
-//                            case 3:
-//                                category.setTitleEn(row.getCell(i).toString().trim());
-//                                break;
-//                            case 4:
-//                                category.setDescription(row.getCell(i).toString().trim());
-//                                break;
-//                            default:
-//                        }
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        public static void importCategoryData (XSSFSheet sheet){
-//
-//            try {
-////                HttpClient client = HttpClientBuilder.create().build();
-////                HttpPost httpPost = new HttpPost("http://localhost:8080/training/api/category");
-////                httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
-////                httpPost.addHeader("Authorization", "Bearer d8548df7-6c3f-407f-99be-0122efa722fe");
-////                JSONObject jsonObject = new JSONObject(category);
-////                httpPost.setEntity(new StringEntity(jsonObject.toString(), "UTF-8"));
-////                HttpResponse response = client.execute(httpPost);
-////                int responseCode = response.getStatusLine().getStatusCode();
-////                if (!((responseCode == 200) || (responseCode == 201))) {
-////                    Cell c = row.createCell(colsNum + 1, Cell.CELL_TYPE_STRING);
-////                    c.setCellValue(responseCode);
-////                }
-//                }
-////            try (FileOutputStream outputStream = new FileOutputStream(datafilePathResult)) {
-////                workbook.write(outputStream);
-////            }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//
-//            }
-//        }
-//    }
-

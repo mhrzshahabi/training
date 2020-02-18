@@ -1108,7 +1108,7 @@
     const syllabusUrl = rootUrl + "/syllabus/";
     const courseUrl = rootUrl + "/course/";
     const categoryUrl = rootUrl + "/category/";
-    const subCategoryUrl = rootUrl + "/sub-category/";
+    const subCategoryUrl = rootUrl + "/subcategory/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";

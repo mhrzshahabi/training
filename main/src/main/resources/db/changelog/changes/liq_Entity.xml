@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-56">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-68">
         <createTable tableName="tbl_Class_Check_List">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_Class_Check_ListPK"/>
@@ -25,7 +25,61 @@
             <column name="f_tclass_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-58">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-69">
+        <createTable tableName="tbl_ac_data_source">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_ac_data_sourcePK"/>
+            </column>
+            <column name="c_ds_display_field" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_fetch_data_url" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_name" type="VARCHAR2(200 CHAR)"/>
+            <column name="c_ds_pick_list_fields" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_pick_list_width" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_primary_key" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_value_field" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-70">
+        <createTable tableName="tbl_academic_bk">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_academic_bkPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_academic_grade" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_collage_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_duration" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_education_level" type="NUMBER(19, 0)"/>
+            <column name="f_education_major" type="NUMBER(19, 0)"/>
+            <column name="f_education_orienation" type="NUMBER(19, 0)"/>
+            <column name="f_teacher" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-71">
         <createTable tableName="tbl_account_info">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_account_infoPK"/>
@@ -51,7 +105,7 @@
             <column name="c_shaba_number" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-59">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-72">
         <createTable tableName="tbl_address">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_addressPK"/>
@@ -79,7 +133,7 @@
             <column name="c_website" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-60">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-73">
         <createTable tableName="tbl_attachment">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_attachmentPK"/>
@@ -101,7 +155,7 @@
             <column name="c_file_name" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
-            <column name="f_file_type_id" type="NUMBER(19, 0)">
+            <column name="f_file_type_id" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
             <column name="c_object_type" type="VARCHAR2(30 CHAR)">
@@ -112,7 +166,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-61">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-74">
         <createTable tableName="tbl_attendance">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_attendancePK"/>
@@ -140,7 +194,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-62">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-75">
         <createTable tableName="tbl_bank">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_bankPK"/>
@@ -165,7 +219,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-63">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-76">
         <createTable tableName="tbl_bank_branch">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_bank_branchPK"/>
@@ -194,7 +248,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-64">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-77">
         <createTable tableName="tbl_category">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_categoryPK"/>
@@ -222,7 +276,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-65">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-78">
         <createTable tableName="tbl_check_list">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_check_listPK"/>
@@ -243,7 +297,7 @@
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-66">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-79">
         <createTable tableName="tbl_check_list_item">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_check_list_itemPK"/>
@@ -267,7 +321,7 @@
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-67">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-80">
         <createTable tableName="tbl_city">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_cityPK"/>
@@ -291,7 +345,7 @@
             <column name="f_state" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-68">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-81">
         <createTable tableName="tbl_class">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_classPK"/>
@@ -309,7 +363,9 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_acceptance_limit" type="VARCHAR2(255 CHAR)"/>
             <column name="c_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_status_date" type="TIMESTAMP"/>
             <column name="c_code" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
@@ -331,12 +387,15 @@
             <column name="n_min_capacity" type="NUMBER(19, 0)"/>
             <column name="b_monday" type="NUMBER(1, 0)"/>
             <column name="f_institute_organizer" type="NUMBER(19, 0)"/>
+            <column name="pre_course_test" type="NUMBER(1, 0)"/>
             <column name="c_reason" type="VARCHAR2(255 CHAR)"/>
             <column name="b_saturday" type="NUMBER(1, 0)"/>
+            <column name="c_scoring_method" type="VARCHAR2(255 CHAR)"/>
             <column name="b_second" type="NUMBER(1, 0)"/>
             <column name="c_start_date" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
+            <column name="start_evaluation" type="NUMBER(10, 0)"/>
             <column name="b_sunday" type="NUMBER(1, 0)"/>
             <column name="f_supervisor" type="NUMBER(19, 0)"/>
             <column name="f_teacher" type="NUMBER(19, 0)"/>
@@ -349,22 +408,27 @@
             <column name="c_topology" type="VARCHAR2(255 CHAR)"/>
             <column name="b_tuesday" type="NUMBER(1, 0)"/>
             <column name="b_wednesday" type="NUMBER(1, 0)"/>
+            <column name="c_workflow_ending_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_workflow_ending_status_code" type="NUMBER(10, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-69">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-82">
+        <createTable tableName="tbl_class_pre_course_test_question">
+            <column name="f_class_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="c_pre_course_test_question" type="VARCHAR2(1000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_order" type="NUMBER(10, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-83">
         <createTable tableName="tbl_class_student">
-            <column name="f_class" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_student" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-70">
-        <createTable tableName="tbl_class_student_final">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_class_student_finalPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_class_studentPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -379,14 +443,23 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
+            <column name="applicant_company_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="evaluation_status_behavior" type="NUMBER(10, 0)"/>
+            <column name="evaluation_status_learning" type="NUMBER(10, 0)"/>
+            <column name="evaluation_status_reaction" type="NUMBER(10, 0)"/>
+            <column name="evaluation_status_results" type="NUMBER(10, 0)"/>
             <column name="failure_reason" type="VARCHAR2(255 CHAR)"/>
+            <column name="presence_type_id" type="NUMBER(19, 0)"/>
             <column name="score" type="FLOAT"/>
             <column name="scores_state" type="VARCHAR2(255 CHAR)"/>
-            <column name="f_student_id" type="NUMBER(19, 0)"/>
-            <column name="f_tclass_id" type="NUMBER(19, 0)"/>
+            <column name="student_id" type="NUMBER(19, 0)"/>
+            <column name="class_id" type="NUMBER(19, 0)"/>
+            <column name="c_valence" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-71">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-84">
         <createTable tableName="tbl_class_training_place">
             <column name="f_class_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -396,7 +469,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-72">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-85">
         <createTable tableName="tbl_committee">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_committeePK"/>
@@ -422,7 +495,7 @@
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-73">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-86">
         <createTable tableName="tbl_committee_personal_info">
             <column name="f_committee_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -432,7 +505,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-74">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-87">
         <createTable tableName="tbl_company">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_companyPK"/>
@@ -450,15 +523,53 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="f_account_info_id" type="NUMBER(19, 0)"/>
-            <column name="f_address_id" type="NUMBER(19, 0)"/>
+            <column name="f_account_info_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_address_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_company_id" type="VARCHAR2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_economical_id" type="VARCHAR2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
             <column name="c_email" type="VARCHAR2(255 CHAR)"/>
-            <column name="f_personal_info_id" type="NUMBER(19, 0)"/>
+            <column name="f_personal_info_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_register_id" type="VARCHAR2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
             <column name="c_work_domain" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-75">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-88">
+        <createTable tableName="tbl_competence">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_competencePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_parameter_value" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-89">
         <createTable tableName="tbl_competence_new">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_competence_newPK"/>
@@ -486,7 +597,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-76">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-90">
         <createTable tableName="tbl_competence_skill_group">
             <column name="f_skill_group_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -496,7 +607,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-77">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-91">
         <createTable tableName="tbl_contact_info">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_contact_infoPK"/>
@@ -521,7 +632,7 @@
             <column name="f_work_address" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-78">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-92">
         <createTable tableName="tbl_country">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_countryPK"/>
@@ -546,7 +657,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-79">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-93">
         <createTable tableName="tbl_course">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_coursePK"/>
@@ -564,6 +675,8 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_acceptance_limit" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_behavioral_level" type="VARCHAR2(255 CHAR)"/>
             <column name="category_id" type="NUMBER(19, 0)"/>
             <column name="c_code" type="VARCHAR2(255 CHAR)"/>
             <column name="c_description" type="VARCHAR2(255 CHAR)"/>
@@ -572,12 +685,14 @@
             <column name="e_technical_type" type="NUMBER(10, 0)"/>
             <column name="e_theo_type" type="NUMBER(10, 0)"/>
             <column name="c_equal_course" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_main_objective" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_evaluation" type="VARCHAR2(255 CHAR)"/>
             <column name="n_min_teacher_degree" type="VARCHAR2(255 CHAR)"/>
             <column name="n_min_teacher_eval_score" type="VARCHAR2(255 CHAR)"/>
             <column name="n_min_teacher_exp_years" type="VARCHAR2(255 CHAR)"/>
             <column name="c_need_text" type="VARCHAR2(255 CHAR)"/>
             <column name="c_pre_course" type="VARCHAR2(255 CHAR)"/>
+            <column name="scoring_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="start_evaluation" type="NUMBER(10, 0)"/>
             <column name="subcategory_id" type="NUMBER(19, 0)"/>
             <column name="n_theory_duration" type="FLOAT"/>
             <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
@@ -586,7 +701,7 @@
             <column name="c_workflow_status_code" type="NUMBER(10, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-80">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-94">
         <createTable tableName="tbl_course_goal">
             <column name="f_course_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -596,7 +711,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-81">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-95">
         <createTable tableName="tbl_department">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_departmentPK"/>
@@ -612,7 +727,7 @@
             <column name="n_version" type="NUMBER(10, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-82">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-96">
         <createTable tableName="tbl_education_level">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_education_levelPK"/>
@@ -637,7 +752,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-83">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-97">
         <createTable tableName="tbl_education_major">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_education_majorPK"/>
@@ -661,7 +776,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-84">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-98">
         <createTable tableName="tbl_education_orientation">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_education_orientationPK"/>
@@ -687,7 +802,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-85">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-99">
         <createTable tableName="tbl_employment_history">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_employment_historyPK"/>
@@ -706,13 +821,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="c_company_name" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_end_date" type="TIMESTAMP"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
             <column name="c_job_title" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_start_date" type="TIMESTAMP"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
             <column name="f_teacher_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-86">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-100">
         <createTable tableName="tbl_employment_history_category">
             <column name="f_employment_history" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -722,7 +837,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-87">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-101">
         <createTable tableName="tbl_employment_history_subcategory">
             <column name="f_employment_history" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -732,7 +847,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-88">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-102">
         <createTable tableName="tbl_equal_and_course">
             <column name="f_equal_course_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -740,7 +855,7 @@
             <column name="list_equal_and_course" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-89">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-103">
         <createTable tableName="tbl_equal_course">
             <column name="equal_course_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_equal_coursePK"/>
@@ -758,10 +873,12 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="f_course" type="NUMBER(19, 0)"/>
+            <column name="f_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-90">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-104">
         <createTable tableName="tbl_equipment">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_equipmentPK"/>
@@ -787,7 +904,148 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-91">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-105">
+        <createTable tableName="tbl_evaluation">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluationPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_class_id" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_evaluated_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluated_type_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluation_level_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluator_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluator_type_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-106">
+        <createTable tableName="tbl_evaluation_answer">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_answerPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_answer_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluation_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluation_question_id" type="NUMBER(19, 0)"/>
+            <column name="f_question_source_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-107">
+        <createTable tableName="tbl_evaluation_index">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_indexPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-108">
+        <createTable tableName="tbl_evaluation_question">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_questionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_domain_id" type="NUMBER(19, 0)"/>
+            <column name="c_question" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-109">
+        <createTable tableName="tbl_evaluation_question_evaluation_index">
+            <column name="f_evaluation_question" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_evaluation_index" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-110">
+        <createTable tableName="tbl_foreign_lang_knowledge">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_foreign_lang_knowledgePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_duration" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_institute_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_level" type="NUMBER(10, 0)"/>
+            <column name="c_lang_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-111">
         <createTable tableName="tbl_goal">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_goalPK"/>
@@ -811,7 +1069,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-92">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-112">
         <createTable tableName="tbl_holiday">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_holidayPK"/>
@@ -832,7 +1090,7 @@
             <column name="c_holiday" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-93">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-113">
         <createTable tableName="tbl_institute">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_institutePK"/>
@@ -879,7 +1137,7 @@
             <column name="c_website" type="VARCHAR2(50 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-94">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-114">
         <createTable tableName="tbl_institute_account">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_institute_accountPK"/>
@@ -908,7 +1166,7 @@
             <column name="c_shaba_number" type="VARCHAR2(100 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-95">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-115">
         <createTable tableName="tbl_institute_equipment">
             <column name="f_institute" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -918,7 +1176,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-96">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-116">
         <createTable tableName="tbl_institute_teacher">
             <column name="f_institute" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -928,7 +1186,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-97">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-117">
         <createTable tableName="tbl_job">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_jobPK"/>
@@ -954,7 +1212,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-98">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-118">
         <createTable tableName="tbl_job_group">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_job_groupPK"/>
@@ -979,7 +1237,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-99">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-119">
         <createTable tableName="tbl_job_jobgroup">
             <column name="f_jobgroup_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -989,7 +1247,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-100">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-120">
         <createTable tableName="tbl_need_assessment">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_need_assessmentPK"/>
@@ -1016,7 +1274,7 @@
             <column name="f_skill_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-101">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-121">
         <createTable tableName="tbl_need_assessment_skill_based">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_skill_basedPK"/>
@@ -1048,7 +1306,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-102">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-122">
         <createTable tableName="tbl_need_assessment_skill_post">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_skill_postPK"/>
@@ -1077,7 +1335,39 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-103">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-123">
+        <createTable tableName="tbl_needs_assessment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_needs_assessmentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_competence" type="NUMBER(19, 0)"/>
+            <column name="f_parameter_value_needs_assessment_domain" type="NUMBER(19, 0)"/>
+            <column name="f_parameter_value_needs_assessment_priority" type="NUMBER(19, 0)"/>
+            <column name="c_object_type" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_object" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_object_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_object_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_skill" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-124">
         <createTable tableName="tbl_operational_unit">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_operational_unitPK"/>
@@ -1099,7 +1389,7 @@
             <column name="c_unitcode" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-104">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-125">
         <createTable tableName="tbl_parameter">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_parameterPK"/>
@@ -1117,13 +1407,15 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
             <column name="c_description" type="VARCHAR2(255 CHAR)"/>
             <column name="c_title" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_type" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-105">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-126">
         <createTable tableName="tbl_parameter_value">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_parameter_valuePK"/>
@@ -1147,9 +1439,47 @@
             <column name="c_title" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_value" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-106">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-127">
+        <createTable tableName="tbl_permission">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_permissionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_attribute_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_attribute_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_entity_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_work_group" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-128">
+        <createTable tableName="tbl_permission_attribute_values">
+            <column name="f_permission" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_values" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-129">
         <createTable tableName="tbl_personal_info">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_personal_infoPK"/>
@@ -1199,7 +1529,7 @@
             <column name="c_religion" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-107">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-130">
         <createTable tableName="tbl_personnel">
             <column name="personnel_no" type="VARCHAR2(255 CHAR)">
                 <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
@@ -1255,7 +1585,7 @@
             <column name="work_years" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-108">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-131">
         <createTable tableName="tbl_personnel_registered">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_personnel_registeredPK"/>
@@ -1332,7 +1662,7 @@
             <column name="work_years" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-109">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-132">
         <createTable tableName="tbl_post">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_postPK"/>
@@ -1350,12 +1680,19 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assistance" type="VARCHAR2(255 CHAR)"/>
             <column name="c_code" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_cost_center_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_cost_center_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_section" type="VARCHAR2(255 CHAR)"/>
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_unit" type="VARCHAR2(255 CHAR)"/>
             <column name="f_job_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
@@ -1364,7 +1701,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-110">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-133">
         <createTable tableName="tbl_post_grade">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_post_gradePK"/>
@@ -1390,7 +1727,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-111">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-134">
         <createTable tableName="tbl_post_grade_group">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_post_grade_groupPK"/>
@@ -1415,7 +1752,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-112">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-135">
         <createTable tableName="tbl_post_grade_post_grade_group">
             <column name="f_post_grade_group_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -1425,7 +1762,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-113">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-136">
         <createTable tableName="tbl_post_group">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_post_groupPK"/>
@@ -1450,7 +1787,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-114">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-137">
         <createTable tableName="tbl_post_postgroup">
             <column name="f_postgroup_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -1460,7 +1797,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-115">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-138">
         <createTable tableName="tbl_pre_course">
             <column name="f_pre_course_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -1470,7 +1807,108 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-116">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-139">
+        <createTable tableName="tbl_publication">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_publicationPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_publication_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_publication_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_subject_type" type="NUMBER(10, 0)"/>
+            <column name="c_publisher" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_subject_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-140">
+        <createTable tableName="tbl_publication_category">
+            <column name="f_publication" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-141">
+        <createTable tableName="tbl_publication_subcategory">
+            <column name="f_publication" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-142">
+        <createTable tableName="tbl_questionnaire">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_questionnairePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_parameter_value" type="NUMBER(19, 0)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-143">
+        <createTable tableName="tbl_questionnaire_question">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_questionnaire_questionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_evaluation_question" type="NUMBER(19, 0)"/>
+            <column name="n_order" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_questionnaire" type="NUMBER(19, 0)"/>
+            <column name="f_weight" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-144">
         <createTable tableName="tbl_session">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_sessionPK"/>
@@ -1504,7 +1942,7 @@
             <column name="f_training_place_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-117">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-145">
         <createTable tableName="tbl_skill">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_skillPK"/>
@@ -1526,6 +1964,8 @@
             <column name="c_code" type="VARCHAR2(10 CHAR)">
                 <constraints nullable="false"/>
             </column>
+            <column name="f_course" type="NUMBER(19, 0)"/>
+            <column name="f_main_objective_course" type="NUMBER(19, 0)"/>
             <column name="c_description" type="VARCHAR2(500 CHAR)"/>
             <column name="f_skill_level" type="NUMBER(19, 0)"/>
             <column name="f_sub_category" type="NUMBER(19, 0)"/>
@@ -1535,17 +1975,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-118">
-        <createTable tableName="tbl_skill_course">
-            <column name="f_skill_id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="f_course_id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-119">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-146">
         <createTable tableName="tbl_skill_group">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_skill_groupPK"/>
@@ -1570,7 +2000,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-120">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-147">
         <createTable tableName="tbl_skill_level">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_skill_levelPK"/>
@@ -1594,7 +2024,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-121">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-148">
         <createTable tableName="tbl_skill_skillgroup">
             <column name="f_skillgroup_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -1604,7 +2034,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-122">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-149">
         <createTable tableName="tbl_skill_type">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_skill_typePK"/>
@@ -1629,7 +2059,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-123">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-150">
         <createTable tableName="tbl_state">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_statePK"/>
@@ -1650,7 +2080,7 @@
             <column name="c_name" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-124">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-151">
         <createTable tableName="tbl_student">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_studentPK"/>
@@ -1719,7 +2149,7 @@
             <column name="work_years" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-125">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-152">
         <createTable tableName="tbl_sub_category">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_sub_categoryPK"/>
@@ -1747,7 +2177,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-126">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-153">
         <createTable tableName="tbl_syllabus">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_syllabusPK"/>
@@ -1779,7 +2209,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-127">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-154">
         <createTable tableName="tbl_task">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_taskPK"/>
@@ -1803,7 +2233,7 @@
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-128">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-155">
         <createTable tableName="tbl_teacher">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_teacherPK"/>
@@ -1824,23 +2254,29 @@
             <column name="c_economical_code" type="VARCHAR2(255 CHAR)"/>
             <column name="c_economical_record_number" type="VARCHAR2(255 CHAR)"/>
             <column name="b_enabled" type="NUMBER(1, 0)"/>
-            <column name="f_personality" type="NUMBER(19, 0)"/>
+            <column name="b_in_black_list" type="NUMBER(1, 0)"/>
+            <column name="c_other_activities" type="VARCHAR2(500 CHAR)"/>
+            <column name="f_personality" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_personnel_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_personnel" type="NUMBER(1, 0)"/>
             <column name="c_teacher_code" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-129">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-156">
         <createTable tableName="tbl_teacher_category">
             <column name="f_teacher" type="NUMBER(19, 0)">
-                <constraints primaryKey="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="f_category" type="NUMBER(19, 0)">
-                <constraints primaryKey="true"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-130">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-157">
         <createTable tableName="tbl_teacher_certification">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_teacher_certificationPK"/>
@@ -1862,12 +2298,12 @@
             <column name="c_company_name" type="VARCHAR2(255 CHAR)"/>
             <column name="c_course_title" type="VARCHAR2(255 CHAR)"/>
             <column name="n_duration" type="NUMBER(10, 0)"/>
-            <column name="d_end_date" type="TIMESTAMP"/>
-            <column name="d_start_date" type="TIMESTAMP"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
             <column name="f_teacher_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-131">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-158">
         <createTable tableName="tbl_teacher_certification_category">
             <column name="f_teacher_certification" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -1877,7 +2313,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-132">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-159">
         <createTable tableName="tbl_teacher_certification_subcategory">
             <column name="f_teacher_certification" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -1887,7 +2323,17 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-133">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-160">
+        <createTable tableName="tbl_teacher_subcategory">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-161">
         <createTable tableName="tbl_teaching_history">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_teaching_historyPK"/>
@@ -1909,12 +2355,12 @@
             <column name="c_course_title" type="VARCHAR2(255 CHAR)"/>
             <column name="n_duration" type="NUMBER(10, 0)"/>
             <column name="f_education_level_id" type="NUMBER(19, 0)"/>
-            <column name="d_end_date" type="TIMESTAMP"/>
-            <column name="d_start_date" type="TIMESTAMP"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
             <column name="f_teacher_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-134">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-162">
         <createTable tableName="tbl_teaching_history_category">
             <column name="f_teaching_history" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -1924,7 +2370,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-135">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-163">
         <createTable tableName="tbl_teaching_history_subcategory">
             <column name="f_teaching_history" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -1934,7 +2380,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-136">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-164">
         <createTable tableName="tbl_term">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_termPK"/>
@@ -1959,7 +2405,7 @@
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-137">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-165">
         <createTable tableName="tbl_training_place">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_training_placePK"/>
@@ -1988,7 +2434,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-138">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-166">
         <createTable tableName="tbl_training_place_equipment">
             <column name="f_training_place_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true"/>
@@ -1998,7 +2444,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-139">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-167">
         <createTable tableName="tbl_user">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_userPK"/>
@@ -2007,148 +2453,10 @@
             <column name="c_name" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1577600948782-192">
-        <createTable tableName="tbl_foreign_lang_knowledge">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-168">
+        <createTable tableName="tbl_work_group">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_foreign_lang_knowledgePK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
-            <column name="e_reading" type="NUMBER(10, 0)"/>
-            <column name="e_speaking" type="NUMBER(10, 0)"/>
-            <column name="e_translation" type="NUMBER(10, 0)"/>
-            <column name="e_writing" type="NUMBER(10, 0)"/>
-            <column name="c_lang_name" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1577785543004-196">
-        <createTable tableName="tbl_teacher_sub_category">
-            <column name="f_teacher" type="NUMBER(19, 0)">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="f_sub_category" type="NUMBER(19, 0)">
-                <constraints primaryKey="true"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1577792079376-196">
-        <createTable tableName="tbl_teacher_subcategory">
-            <column name="f_teacher" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_subcategory" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet author="lotfi (generated)" id="1577788934275-197">
-        <createTable tableName="tbl_evaluation_index">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_indexPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_status" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_name_en" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1577795609482-199">
-        <createTable tableName="tbl_evaluation_question">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_questionPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_domain_id" type="NUMBER(19, 0)"/>
-            <column name="c_question" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1577795609482-200">
-        <createTable tableName="tbl_evaluation_question_evaluation_index">
-            <column name="f_evaluation_question" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_evaluation_index" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1578204110518-204">
-        <createTable tableName="tbl_academic_bk">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_academic_bkPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="c_academic_grade" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_collage_name" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_date" type="TIMESTAMP"/>
-            <column name="c_duration" type="VARCHAR2(255 CHAR)"/>
-            <column name="f_education_level" type="NUMBER(19, 0)"/>
-            <column name="f_education_major" type="NUMBER(19, 0)"/>
-            <column name="f_education_orienation" type="NUMBER(19, 0)"/>
-            <column name="f_teacher" type="NUMBER(19, 0)"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1578736120553-211">
-        <createTable tableName="tbl_questionnaire">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_questionnairePK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_work_groupPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -2169,131 +2477,12 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1578736120553-212">
-        <createTable tableName="tbl_questionnaire_question">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_questionnaire_questionPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+    <changeSet author="ghazanfari_f (generated)" id="1582034257950-169">
+        <createTable tableName="tbl_work_group_user_ids">
+            <column name="f_work_group" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_evaluation_question" type="NUMBER(19, 0)"/>
-            <column name="n_order" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_questionnaire" type="NUMBER(19, 0)"/>
-            <column name="f_weight" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="user_ids" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1578999572650-208">
-        <createTable tableName="tbl_competence">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_competencePK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_parameter_value" type="NUMBER(19, 0)"/>
-            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1579090320851-211">
-        <createTable tableName="tbl_needs_assessment">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_needs_assessmentPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_competence" type="NUMBER(19, 0)"/>
-            <column name="f_parameter_value_needs_assessment_domain" type="NUMBER(19, 0)"/>
-            <column name="f_parameter_value_needs_assessment_priority" type="NUMBER(19, 0)"/>
-            <column name="f_object" type="NUMBER(19, 0)"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet author="rastegari_h (generated)" id="1580556360989-231">
-        <createTable tableName="tbl_evaluation">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_evaluationPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_class_id" type="NUMBER(19, 0)"/>
-            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
-            <column name="f_evaluated_id" type="NUMBER(19, 0)"/>
-            <column name="f_evaluated_type_id" type="NUMBER(19, 0)"/>
-            <column name="f_evaluation_level_id" type="NUMBER(19, 0)"/>
-            <column name="f_evaluator_id" type="NUMBER(19, 0)"/>
-            <column name="f_evaluator_type_id" type="NUMBER(19, 0)"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="rastegari_h (generated)" id="1580556360989-232">
-        <createTable tableName="tbl_evaluation_answer">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_answerPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_answer_id" type="NUMBER(19, 0)"/>
-            <column name="f_evaluation_id" type="NUMBER(19, 0)"/>
-            <column name="f_questionnaire_question_id" type="NUMBER(19, 0)"/>
-        </createTable>
-    </changeSet>
-
 </databaseChangeLog>
