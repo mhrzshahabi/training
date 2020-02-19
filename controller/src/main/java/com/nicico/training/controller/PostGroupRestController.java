@@ -127,7 +127,7 @@ public class PostGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<PostGroupDTO.Info> response = postGroupService.search(request);
+        SearchDTO.SearchRs<PostGroupDTO.Info> response = postGroupService.searchWithoutPermission(request);
 
         final PostGroupDTO.SpecRs specResponse = new PostGroupDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -147,7 +147,7 @@ public class PostGroupRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_post_group')")
     public ResponseEntity<SearchDTO.SearchRs<PostGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(postGroupService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(postGroupService.searchWithoutPermission(request), HttpStatus.OK);
     }
 
     // ------------------------------

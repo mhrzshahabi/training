@@ -43,7 +43,7 @@ public class PostGradeGroupRestController {
     public ResponseEntity<ISC<PostGradeGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = postGradeGroupService.search(searchRq);
+        SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = postGradeGroupService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -115,7 +115,7 @@ public class PostGradeGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.search(request);
+        SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.searchWithoutPermission(request);
 
         final PostGradeGroupDTO.SpecRs specResponse = new PostGradeGroupDTO.SpecRs();
         specResponse.setData(response.getList())
