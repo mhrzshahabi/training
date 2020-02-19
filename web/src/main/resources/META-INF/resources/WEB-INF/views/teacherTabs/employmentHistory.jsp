@@ -251,17 +251,18 @@
                     DynamicForm_JspEmploymentHistory.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                 }
 
-                if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined){
-                    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
-                    DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
-                }
+                <%--if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined){--%>
+                <%--    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);--%>
+                <%--    DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);--%>
+                <%--}--%>
                 return;
             }
 
             if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
                 DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
-                DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
-                return;
+                DynamicForm_JspEmploymentHistory.getField("endDate").setValue(todayDate);
+                <%--DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);--%>
+                // return;
             }
 
             waitEmploymentHistory = createDialog("wait");

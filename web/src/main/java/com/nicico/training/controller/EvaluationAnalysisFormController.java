@@ -27,7 +27,8 @@ public class EvaluationAnalysisFormController {
 
     @RequestMapping("/show-form")
     public String showForm() {
-        return "base/evaluationAnalysis";
+//        return "base/evaluationAnalysis";
+        return "base/chart_test";
     }
 
     @PostMapping("/printReactionEvaluation")
