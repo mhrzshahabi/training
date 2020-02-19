@@ -1518,12 +1518,10 @@
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                 },
-
             },
             {
                 name: "etechnicalType.id",
                 colSpan: 1,
-
                 title: "<spring:message code="course_etechnicalType"/>",
                 // editorType: "ComboBoxItem",
                 textAlign: "center",
@@ -1588,98 +1586,67 @@
             }
 //------------------------------------
             if (course_method == "POST") {
-                // var y = (DynamicForm_course_GroupTab.getItem('subCategory.id').getSelectedRecord().code);
                 x = courseCode();
-                isc.RPCManager.sendRequest({
-                    actionURL: courseUrl + "getmaxcourse/" + x,
-                    httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        var newCourseCounter = courseCounterCode(resp.data);
-                        x = x + newCourseCounter;
-                        DynamicForm_course_MainTab.setValue('code', x);
-                        var data2 = vm_JspCourse.getValues();
-                        ChangeEtechnicalType = false;
-                        preCourseIdList = [];
-                        equalCourseIdList = [];
-                        for (let i = 0; i < testData.length; i++) {
-                            preCourseIdList.add(testData[i].id);
-                        }
-                        for (let j = 0; j < equalCourse.length; j++) {
-                            equalCourseIdList.add(equalCourse[j].idEC);
-                        }
-                        let mainObjectiveIdList = [];
-                        for (let k = 0; k < ListGrid_AllSkill_mainObjective_JspCourse.data.localData.length; k++) {
-                            mainObjectiveIdList.add(ListGrid_AllSkill_mainObjective_JspCourse.data.localData[k].id);
-                        }
-                        data2.mainObjectiveIds = mainObjectiveIdList;
-                        data2.equalCourseListId = equalCourseIdList;
-                        data2.preCourseListId = preCourseIdList;
-
-                        if (data2.scoringMethod == "1") {
-
-                            data2.acceptancelimit = data2.acceptancelimit_a
-                        }
-
-
-                        data2["workflowStatus"] = "ثبت اولیه";
-                        data2["workflowStatusCode"] = "0";
-
-                        isc.RPCManager.sendRequest({
-                            actionURL: course_url,
-                            willHandleError: true,
-                            httpMethod: course_method,
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            showPrompt: false,
-                            data: JSON.stringify(data2),
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                                    TabSet_Goal_JspCourse.enable();
-                                    // ToolStrip_Actions_Goal.enable();
-                                    // ToolStrip_Actions_Syllabus.enable();
-                                    ListGrid_Course_refresh();
-                                    var responseID = JSON.parse(resp.data).id;
-                                    var gridState = "[{id:" + responseID + "}]";
-                                    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
-                                    // Window_course.close();
-
-                                    setTimeout(function () {
-                                        ListGrid_Course.setSelectedState(gridState);
-                                        ListGrid_Course_Edit();
-
-                                    }, 3000);
-
-                                } else if (resp.httpResponseCode === 406) {
-                                    var myDialog = createDialog("info", "قبلاً دوره\u200cای با این نام ذخیره شده است.",
-                                        "<spring:message code="message"/>");
-                                    myDialog.addProperties({
-                                        buttonClick: function () {
-                                            this.close();
-                                            DynamicForm_course_MainTab.getItem("titleFa").selectValue();
-                                        }
-                                    });
-                                } else {
-                                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-
-                                }
-
-                            }
-                        });
+                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
+                    var newCourseCounter = courseCounterCode(resp.data);
+                    x = x + newCourseCounter;
+                    DynamicForm_course_MainTab.setValue('code', x);
+                    var data2 = vm_JspCourse.getValues();
+                    ChangeEtechnicalType = false;
+                    preCourseIdList = [];
+                    equalCourseIdList = [];
+                    for (let i = 0; i < testData.length; i++) {
+                        preCourseIdList.add(testData[i].id);
                     }
-                });
-            }//end if
+                    for (let j = 0; j < equalCourse.length; j++) {
+                        equalCourseIdList.add(equalCourse[j].idEC);
+                    }
+                    let mainObjectiveIdList = [];
+                    for (let k = 0; k < ListGrid_AllSkill_mainObjective_JspCourse.data.localData.length; k++) {
+                        mainObjectiveIdList.add(ListGrid_AllSkill_mainObjective_JspCourse.data.localData[k].id);
+                    }
+                    data2.mainObjectiveIds = mainObjectiveIdList;
+                    data2.equalCourseListId = equalCourseIdList;
+                    data2.preCourseListId = preCourseIdList;
+
+                    if (data2.scoringMethod == "1") {
+                        data2.acceptancelimit = data2.acceptancelimit_a
+                    }
+
+                    data2["workflowStatus"] = "ثبت اولیه";
+                    data2["workflowStatusCode"] = "0";
+
+                    isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
+                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            TabSet_Goal_JspCourse.enable();
+                            ListGrid_Course_refresh();
+                            var responseID = JSON.parse(resp.data).id;
+                            var gridState = "[{id:" + responseID + "}]";
+                            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                            setTimeout(function () {
+                                ListGrid_Course.setSelectedState(gridState);
+                                ListGrid_Course_Edit();
+                            }, 3000);
+
+                        } else if (resp.httpResponseCode === 406) {
+                            var myDialog = createDialog("info", "قبلاً دوره\u200cای با این نام ذخیره شده است.",
+                                "<spring:message code="message"/>");
+                            myDialog.addProperties({
+                                buttonClick: function () {
+                                    this.close();
+                                    DynamicForm_course_MainTab.getItem("titleFa").selectValue();
+                                }
+                            });
+                        } else {
+                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+
+                        }
+                    }))
+                }));
+            }
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
                 var data1 = vm_JspCourse.getValues();
-                // console.log(data1)
                 if (data1.scoringMethod == "1") {
                     data1.acceptancelimit = data1.acceptancelimit_a
                 }
@@ -1699,33 +1666,22 @@
                 data1.mainObjectiveIds = mainObjectiveIdList;
                 data1.equalCourseListId = equalCourseIdList;
                 data1.preCourseListId = preCourseIdList;
-                isc.RPCManager.sendRequest({
-                    actionURL: course_url,
-                    httpMethod: course_method,
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    data: JSON.stringify(data1),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
-                            ListGrid_Course_refresh();
-                            courseRecord = JSON.parse(resp.data);
-                            var gridState = "[{id:" + courseRecord.id + "}]";
-                            simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                            ToolStripButton_addSkill.click();
-                            // Window_course.close();
-                            setTimeout(function () {
-                                ListGrid_Course.setSelectedState(gridState);
-                            }, 3000);
-                        } else {
-                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
 
-                        }
+                isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        sendToWorkflowAfterUpdate(JSON.parse(resp.data));
+                        ListGrid_Course_refresh();
+                        courseRecord = JSON.parse(resp.data);
+                        var gridState = "[{id:" + courseRecord.id + "}]";
+                        simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                        ToolStripButton_addSkill.click();
+                        setTimeout(function () {
+                            ListGrid_Course.setSelectedState(gridState);
+                        }, 3000);
+                    } else {
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                     }
-                });
+                }))
             } else {
                 simpleDialog("<spring:message code="edit"/>", "<spring:message code="course_noEdit"/>", 3000, "say");
                 // Window_course.close();
