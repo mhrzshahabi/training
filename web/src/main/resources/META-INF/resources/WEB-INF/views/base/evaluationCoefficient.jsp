@@ -83,8 +83,9 @@
                 hint: "%",
                 mask: "###",
                 name: "minQusET",
-                title: "حد نصاب پرسشنامه ها",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده",
                 change: function (item, value) {
+
                     if (value > 100) {
                         item.setValue()
                     }
@@ -94,7 +95,7 @@
             {type: "RowSpacerItem"},
             {
                 type: "BlurbItem",
-                value: "2- فرمول ارزیابی واکنش کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط استاد)*Z3 +(نمره ارزیابی فراگیران به استاد)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1"
+                value: "2- فرمول ارزیابی واکنشی کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط استاد)*Z3 +(نمره ارزیابی فراگیران به استاد)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1"
             },
             {
                 width: "200",
@@ -150,7 +151,7 @@
                 hint: "%",
                 mask: "###",
                 name: "minScoreER",
-                title: "حد نصاب قابل قبول برای واکنش",
+                title: "حد قبولی نمره واکنشی",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -162,7 +163,7 @@
                 hint: "%",
                 mask: "###",
                 name: "minQusER",
-                title: "حد نصاب پرسشنامه ها",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -178,7 +179,7 @@
                 width: "200",
                 mask: "###",
                 name: "minPreTestEL",
-                title: "حد نصاب پیش آزمون",
+                title: "حد قبولی نمره پیش آزمون",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -190,7 +191,7 @@
                 hint: "%",
                 width: "200",
                 name: "minPasTestEL",
-                title: "حد نصاب پس آزمون",
+                title: "حد قبولی نمره پس آزمون",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -203,7 +204,7 @@
                 hint: "%",
                 mask: "###",
                 name: "minQusEL",
-                title: "حد نصاب پرسشنامه ها",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -213,7 +214,7 @@
             },
 //====================================================================================
             {type: "RowSpacerItem"},
-            {type: "BlurbItem", value: "4- فرمول ارزیابی تغییر رفتار"},
+            {type: "BlurbItem", value: "4- فرمول ارزیابی تغییر رفتار= (ضریب نمره ارزیابی فراگیران)*Z2 + (ضریب نمره ارزیابی بالا دست)*Z1"},
             {
                 width: "200",
                 hint: "%",
@@ -272,7 +273,7 @@
                 hint: "%",
                 mask: "###",
                 name: "minQusEB",
-                title: "حد نصاب پرسشنامه ها",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -282,13 +283,13 @@
             },
 //==================================================================================================
             {type: "RowSpacerItem"},
-            {type: "BlurbItem", value: "5- فرمول اثربخشی کلاس _ واکنش"},
+            {type: "BlurbItem", value: "5- فرمول اثربخشی کلاس _ واکنشی=(ضریب نمره ارزیابی واکنشی کلاس)*Z1"},
                 {
                 width: "200",
                 hint: "%",
                 mask: "###",
                 name: "FECRZ",
-                title: "ضریب نمره ارزیابی واکنشی کلاس",
+                title: "ضریب نمره ارزیابی واکنشی کلاس(Z1)",
                  change: function (form, item, value) {
                       if (value > 100) {
                   item.setValue()
@@ -300,7 +301,7 @@
                 hint: "%",
                 mask: "###",
                 name: "minScoreFECR",
-                title: "حد نمره اثر بخشی",
+                title: "حد قبولی نمره اثر بخشی",
                 change: function (form, item, value) {
                 if (value > 100) {
                 item.setValue()
@@ -310,13 +311,13 @@
                 },
 //=======================================================================================
             {type: "RowSpacerItem"},
-            {type: "BlurbItem", value: "6- فرمول اثربخشی کلاس _ یادگیری"},
+            {type: "BlurbItem", value: "6- فرمول اثربخشی کلاس _ یادگیری=(ضریب نمره ارزیابی یادگیری)*Z2 +(ضریب نمره ارزیابی واکنشی دوره)*Z1 "},
             {
                 width: "200",
                 hint: "%",
                 mask: "###",
                 name: "FECLZ1",
-                title: "ضریب ارزیابی واکنش دوره",
+                title: "ضریب نمره ارزیابی واکنشی دوره(Z1)",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -328,7 +329,7 @@
                 hint: "%",
                 mask: "###",
                 name: "FECLZ2",
-                title: "ضریب نمره ارزیابی یادگیری",
+                title: "ضریب نمره ارزیابی یادگیری(Z2)",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -338,14 +339,13 @@
             },
 //================================================================================
             {type: "RowSpacerItem"},
-            {type: "BlurbItem", value: "7- فرمول اثربخشی کلاس _ رفتاری"},
+            {type: "BlurbItem", value: "7- فرمول اثربخشی کلاس _ رفتاری= (ضریب نمره رفتار)*Z3 + (ضریب نمره ارزیابی یادگیری)*Z2 + (ضریب نمره ارزیابی واکنشی دوره)*Z1"},
             {
                 width: "200",
                 hint: "%",
                 mask: "###",
                 name: "FECBZ1",
-                title: "ضریب نمره ارزیابی واکنش دوره",
-
+                title: "ضریب نمره ارزیابی واکنشی دوره(Z1)",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -357,7 +357,7 @@
                 hint: "%",
                 mask: "###",
                 name: "FECBZ2",
-                title: "ضریب نمره ارزیابی یادگیری",
+                title: "ضریب نمره ارزیابی یادگیری(Z2)",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -370,7 +370,7 @@
                 hint: "%",
                 mask: "###",
                 name: "FECBZ3",
-                title: "ضریب نمره رفتار",
+                title: "ضریب نمره رفتار(Z3)",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -432,8 +432,9 @@
                         createDialog("info", "جمع ضرایب فرمول هفت باید 100 شود", "<spring:message code="message"/>")
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusET").getValue() == null) {
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("minQusET").focusInItem()
+                       var str= DynamicForm_Evaluation_Coefficient.getItem("minQusET").title
+                        createDialog("info","فیلد "+str+" خالی می باشد" , "<spring:message code="message"/>")
+                        DynamicForm_Evaluation_Coefficient.getItem("minQusET").focusInItem();
                         return;
                     }else if (DynamicForm_Evaluation_Coefficient.getItem("FECRZ").getValue() == null) {
                             createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
