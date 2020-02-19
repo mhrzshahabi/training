@@ -1584,37 +1584,48 @@
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
                 return;
             }
+            console.log(course_method)
 //------------------------------------
             if (course_method == "POST") {
                 x = courseCode();
+                console.log(x)
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
                     var newCourseCounter = courseCounterCode(resp.data);
+                    console.log(newCourseCounter)
                     x = x + newCourseCounter;
+                    console.log(x)
                     DynamicForm_course_MainTab.setValue('code', x);
                     var data2 = vm_JspCourse.getValues();
+                    console.log(data2)
                     ChangeEtechnicalType = false;
-                    preCourseIdList = [];
-                    equalCourseIdList = [];
-                    for (let i = 0; i < testData.length; i++) {
-                        preCourseIdList.add(testData[i].id);
-                    }
-                    for (let j = 0; j < equalCourse.length; j++) {
-                        equalCourseIdList.add(equalCourse[j].idEC);
-                    }
+                    // preCourseIdList = [];
+                    // equalCourseIdList = [];
+                    // for (let i = 0; i < testData.length; i++) {
+                    //     preCourseIdList.add(testData[i].id);
+                    // }
+                    // for (let j = 0; j < equalCourse.length; j++) {
+                    //     equalCourseIdList.add(equalCourse[j].idEC);
+                    // }
                     let mainObjectiveIdList = [];
-                    for (let k = 0; k < ListGrid_AllSkill_mainObjective_JspCourse.data.localData.length; k++) {
-                        mainObjectiveIdList.add(ListGrid_AllSkill_mainObjective_JspCourse.data.localData[k].id);
+                    if(ListGrid_AllSkill_mainObjective_JspCourse.data.localData != undefined) {
+                        for (let k = 0; k < ListGrid_AllSkill_mainObjective_JspCourse.data.localData.length; k++) {
+                            mainObjectiveIdList.add(ListGrid_AllSkill_mainObjective_JspCourse.data.localData[k].id);
+                        }
+                        data2.mainObjectiveIds = mainObjectiveIdList;
                     }
-                    data2.mainObjectiveIds = mainObjectiveIdList;
-                    data2.equalCourseListId = equalCourseIdList;
-                    data2.preCourseListId = preCourseIdList;
+                    // data2.equalCourseListId = equalCourseIdList;
+                    // data2.preCourseListId = preCourseIdList;
+                    console.log("scoringMethod= " + data2.scoringMethod)
 
                     if (data2.scoringMethod == "1") {
                         data2.acceptancelimit = data2.acceptancelimit_a
                     }
-
-                    data2["workflowStatus"] = "ثبت اولیه";
-                    data2["workflowStatusCode"] = "0";
+                    console.log("data2= " + data2)
+                    // data2["workflowStatus"] = "ثبت اولیه";
+                    data2.workflowStatus = "ثبت اولیه";
+                    data2.workflowStatusCode = "0";
+                    // data2["workflowStatusCode"] = "0";
+                    console.log("data2= " + data2)
 
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
