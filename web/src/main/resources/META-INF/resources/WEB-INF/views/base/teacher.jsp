@@ -53,12 +53,12 @@
 
     var RestDataSource_Education_Level_JspTeacher = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
-        fetchDataURL: educationUrl + "level/iscList"
+        fetchDataURL: educationLevelUrl + "iscList"
     });
 
     var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
-        fetchDataURL: educationUrl + "major/spec-list"
+        fetchDataURL: educationMajorUrl + "spec-list"
     });
 
     var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
@@ -832,13 +832,13 @@
         var eduLevelValue = selected_record.personality.educationLevelId;
 
         if (eduMajorValue != undefined && eduLevelValue != undefined) {
-            RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl +
-                "orientation/spec-list-by-levelId-and-majorId/" + eduLevelValue + ":" + eduMajorValue;
+            RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationOrientationUrl +
+                "spec-list-by-levelId-and-majorId/" + eduLevelValue + ":" + eduMajorValue;
             DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource = RestDataSource_Education_Orientation_JspTeacher;
             DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
         } else if (eduMajorValue !== undefined && eduLevelValue == undefined) {
-            RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl +
-                "major/spec-list-by-majorId/" + eduMajorValue;
+            RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationMajorUrlUrl +
+                "spec-list-by-majorId/" + eduMajorValue;
             DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource = RestDataSource_Education_Orientation_JspTeacher;
             DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
         }

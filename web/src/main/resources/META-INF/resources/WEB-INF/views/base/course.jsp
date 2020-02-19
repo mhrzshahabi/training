@@ -157,7 +157,7 @@
             {name: "titleFa", type: "text"}
         ],
 
-        fetchDataURL: educationUrl + "level/" + "spec-list",
+        fetchDataURL: educationLevelUrl + "spec-list",
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,

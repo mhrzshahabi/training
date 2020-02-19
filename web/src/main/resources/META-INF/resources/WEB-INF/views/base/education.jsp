@@ -711,6 +711,11 @@
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
+        keyPress: function () {
+            if (isc.EventHandler.getKey() == "Enter") {
+                IButton_EducationLevel_Save.click();
+            }
+        },
         items: [isc.TrVLayout.create({
             members: [DynamicForm_EducationLevel, HLayout_EducationLevel_SaveOrExit]
         })]
@@ -810,11 +815,11 @@
             var responseID = JSON.parse(resp.data).id;
             var gridState = "[{id:" + responseID + "}]";
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            if (resp.context.actionURL.contains("major")) {
+            if (resp.context.actionURL.contains("Major")) {
                 edu_after_save(ListGrid_EducationMajor, Window_EducationMajor, gridState);
-            } else if ((resp.context.actionURL).contains("level")) {
+            } else if ((resp.context.actionURL).contains("Level")) {
                 edu_after_save(ListGrid_EducationLevel, Window_EducationLevel, gridState);
-            } else if (resp.context.actionURL.contains("orientation")) {
+            } else if (resp.context.actionURL.contains("Orientation")) {
                 edu_after_save(ListGrid_EducationOrientation, Window_EducationOrientation, gridState);
             }
             setTimeout(function () {
