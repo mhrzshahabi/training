@@ -6,7 +6,8 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+//
+<script>
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
@@ -23,7 +24,7 @@
             {name: "group"},
             {name: "preCourseTest", type: "boolean"},
 
-           ],
+        ],
         fetchDataURL: classUrl + "spec-list"
     });
 
@@ -56,7 +57,7 @@
                 filterOperator: "iContains",
 
             },
-            {name:"preTestScore", title: "<spring:message code="score"/>", filterOperator: "iContains"},
+            {name: "preTestScore", title: "<spring:message code="score"/>", filterOperator: "iContains"},
         ],
     });
     //**************************************************************************
@@ -101,29 +102,25 @@
                 filterOperator: "iContains",
 
             },
-                {
+            {
                 name: "preTestScore",
                 title: "نمره پيش تست",
                 filterOperator: "iContains",
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
-                  editorExit:function(editCompletionEvent, record, newValue)
-                  {
+                editorExit: function (editCompletionEvent, record, newValue) {
 
-                  //  if (newValue != null) {
+                    if (newValue != null) {
                         if (validators_ScorePreTest(newValue)) {
                             ListGrid_Cell_ScorePreTest_Update(record, newValue);
                         } else {
                             createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>")
-
                         }
-                 //   }
-                    // else {
-                    //     ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
-                    //     ListGrid_Class_Student_RegisterScorePreTest.refreshFields();
-                    // }
-                  }
+                    } else {
+                        return true
+                    }
+                }
 
             },
 
@@ -142,10 +139,10 @@
 
 
     var ListGrid_RegisterScorePreTtest = isc.TrLG.create({
-     dataSource: RestDataSource_registerScorePreTest,
+        dataSource: RestDataSource_registerScorePreTest,
         canAddFormulaFields: true,
         autoFetchData: true,
-        implicitCriteria : criteria_RegisterScorePreTest,
+        implicitCriteria: criteria_RegisterScorePreTest,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -196,10 +193,9 @@
             },
 
             {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
-           ],
+        ],
 
-        selectionUpdated: function ()
-        {
+        selectionUpdated: function () {
             var classRecord = ListGrid_RegisterScorePreTtest.getSelectedRecord();
             RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id
             ListGrid_Class_Student_RegisterScorePreTest.invalidateCache()
@@ -214,20 +210,19 @@
     });
 
 
-    function ListGrid_Cell_ScorePreTest_Update(record,newValue)
-    {
-        record.preTestScore=newValue
-        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/score-pre-test"+"/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
+    function ListGrid_Cell_ScorePreTest_Update(record, newValue) {
+        record.preTestScore = newValue
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/score-pre-test" + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
         ListGrid_RegisterScorePreTtest.refreshFields();
     }
 
     function validators_ScorePreTest(value) {
 
-            if (value.match(/^(100|[1-9]?\d)$/)) {
-                return true
-            } else {
-                   return false
-            }
+        if (value.match(/^(100|[1-9]?\d)$/)) {
+            return true
+        } else {
+            return false
+        }
     }
 
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
@@ -266,7 +261,6 @@
     });
 
 
-
     var Detail_Tab_RegisterScorePreTest = isc.TabSet.create({
         tabBarPosition: "top",
         width: "100%",
@@ -281,7 +275,7 @@
     });
 
 
-    var HLayout_Grid_ClassStudent_registerScorePreTest=isc.HLayout.create({
+    var HLayout_Grid_ClassStudent_registerScorePreTest = isc.HLayout.create({
         width: "100%",
         height: "100%",
         members: [Detail_Tab_RegisterScorePreTest]
@@ -291,7 +285,7 @@
         width: "100%",
         height: "100%",
         members: [
-              HLayout_Actions_Group,HLayout_Grid_RegisterScorePreTtest,HLayout_Grid_ClassStudent_registerScorePreTest
+            HLayout_Actions_Group, HLayout_Grid_RegisterScorePreTtest, HLayout_Grid_ClassStudent_registerScorePreTest
         ]
     });
 
