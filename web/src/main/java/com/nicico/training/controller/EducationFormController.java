@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/education")
 public class EducationFormController {
 
-    @RequestMapping(value = "/level/show-form")
+    @RequestMapping(value = "/show-form")
     public String showForm() {
         return "base/education";
     }

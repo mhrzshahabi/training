@@ -18,8 +18,8 @@ import java.util.List;
 public class Evaluation extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evaluation_seq")
-    @SequenceGenerator(name = "evaluation_seq", sequenceName = "evaluation_seq_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_evaluation_id")
+    @SequenceGenerator(name = "seq_evaluation_id", sequenceName = "seq_evaluation_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 

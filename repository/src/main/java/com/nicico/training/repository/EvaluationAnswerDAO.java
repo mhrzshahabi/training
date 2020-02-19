@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EvaluationAnswerDAO extends JpaRepository<EvaluationAnswer, Long>, JpaSpecificationExecutor<EvaluationAnswer> {
+
+
 }

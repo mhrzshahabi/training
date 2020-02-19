@@ -5,12 +5,9 @@
 // <script>
     var methodEducation = "GET";
     var saveActionUrlEducation;
-    var educationLevelUrl = educationUrl + "level/";
-    var educationMajorUrl = educationUrl + "major/";
     var educationOrientationUrl = educationUrl + "orientation/";
     var listGridEducation;
     var waitEducation;
-
 
     //////////////////////////////////////////////////////////
     ///////////////////////DataSource/////////////////////////
@@ -544,21 +541,21 @@
                 title: "<spring:message code='global.form.print.pdf'/>",
                 icon: "<spring:url value="pdf.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
+                    trPrintWithCriteria("<spring:url value="educationLevel/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationLevel.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.excel'/>",
                 icon: "<spring:url value="excel.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "excel",
+                    trPrintWithCriteria("<spring:url value="educationLevel/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationLevel.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.html'/>",
                 icon: "<spring:url value="html.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "html",
+                    trPrintWithCriteria("<spring:url value="educationLevel/printWithCriteria/"/>" + "html",
                         ListGrid_EducationLevel.getCriteria());
                 }
             }]
@@ -656,7 +653,7 @@
     });
     var ToolStripButton_Print_EducationLevel = isc.ToolStripButtonPrint.create({
         click: function () {
-            trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
+            trPrintWithCriteria("<spring:url value="educationLevel/printWithCriteria/"/>" + "pdf",
                 ListGrid_EducationLevel.getCriteria());
         }
     });
@@ -803,7 +800,7 @@
 
     function ListGrid_Education_Add(Url, title, EducationDynamicForm, EducationWindows) {
         methodEducation = "POST";
-        saveActionUrlEducation = Url + "create/";
+        saveActionUrlEducation = Url;
         EducationDynamicForm.clearValues();
         EducationWindows.setTitle(title);
         EducationWindows.show();

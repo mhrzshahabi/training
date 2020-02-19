@@ -17,8 +17,8 @@ import javax.validation.constraints.NotNull;
 public class EvaluationAnswer extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evaluation_answer_seq")
-    @SequenceGenerator(name = "evaluation_answer_seq", sequenceName = "evaluation_answer_seq_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_evaluation_answer_id")
+    @SequenceGenerator(name = "seq_evaluation_answer_id", sequenceName = "seq_evaluation_answer_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 

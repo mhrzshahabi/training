@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/sub-category")
+@RequestMapping(value = "/api/subcategory")
 public class SubCategoryRestController {
 
     private final ISubCategoryService subCategoryService;

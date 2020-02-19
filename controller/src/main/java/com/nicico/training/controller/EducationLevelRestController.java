@@ -33,7 +33,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/education/level")
+@RequestMapping(value = "/api/educationLevel")
 public class EducationLevelRestController {
     private final IEducationLevelService educationLevelService;
     private final ObjectMapper objectMapper;
@@ -63,9 +63,8 @@ public class EducationLevelRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-
     @Loggable
-    @PostMapping(value = "/create")
+    @PostMapping
 //    @PreAuthorize("hasAuthority('c_educationLevel')")
     public ResponseEntity create(@Validated @RequestBody EducationLevelDTO.Create request) {
         try {

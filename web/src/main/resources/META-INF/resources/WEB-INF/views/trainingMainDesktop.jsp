@@ -85,7 +85,6 @@
     const evaluationUrl = rootUrl + "/evaluation";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
 
-
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
@@ -439,7 +438,7 @@
                 {
                     title: "<spring:message code="education.degree"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/education/level/show-form"/>");
+                        createTab(this.title, "<spring:url value="/education/show-form"/>");
                     }
                 },
                 {isSeparator: true},
@@ -1108,13 +1107,15 @@
     const syllabusUrl = rootUrl + "/syllabus/";
     const courseUrl = rootUrl + "/course/";
     const categoryUrl = rootUrl + "/category/";
-    const subCategoryUrl = rootUrl + "/sub-category/";
+    const subCategoryUrl = rootUrl + "/subcategory/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
     const classReportUrl = rootUrl + "/classReport/";
     const instituteUrl = rootUrl + "/institute/";
     const educationUrl = rootUrl + "/education/";
+    const educationLevelUrl = rootUrl + "/educationLevel/";
+    const educationMajorUrl = rootUrl + "/educationMajor/";
     const termUrl = rootUrl + "/term/";
     const unjustifiedAbsenceReportURL=rootUrl + "/unjustifiedAbsence/";
     const cityUrl = rootUrl + "/city/";

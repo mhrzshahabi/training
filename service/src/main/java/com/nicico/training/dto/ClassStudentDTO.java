@@ -208,7 +208,7 @@ public class ClassStudentDTO implements Serializable {
     public static class PreTestScoreInfo{
         private Long id;
         private Float preTestScore;
-        private TclassDTO.ScoreInfo tclass;
+        private StudentDTO.ScoresInfo student;
     }
 
     @Getter

@@ -78,6 +78,21 @@ public class ClassStudentRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/pre-test-score-iscList/{classId}")
+    public ResponseEntity<ISC<ClassStudentDTO.PreTestScoreInfo>> pre_test_scoreList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassStudentDTO.PreTestScoreInfo> searchRs =
+                classStudentService.searchClassStudents(searchRq, classId, ClassStudentDTO.PreTestScoreInfo.class);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+
+
+
+    @Loggable
     @PostMapping(value = "/register-students/{classId}")
     public ResponseEntity registerStudents(@RequestBody List<ClassStudentDTO.Create> request, @PathVariable Long classId) {
         try {
