@@ -1579,6 +1579,10 @@
         title: "<spring:message code="save"/>",
         //icon: "[SKIN]/actions/save.png",
         click: function () {
+            if(mainObjectiveGrid.data.isEmpty()) {
+                createDialog("info", "دوره، بدون هدف اصلي نمي توان ايجاد کرد.");
+                return;
+            }
             vm_JspCourse.validate();
             if (vm_JspCourse.hasErrors()) {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
@@ -1602,11 +1606,15 @@
                     //     equalCourseIdList.add(equalCourse[j].idEC);
                     // }
                     let mainObjectiveIdList = [];
-                    if(ListGrid_AllSkill_mainObjective_JspCourse.data.localData != undefined) {
-                        for (let k = 0; k < ListGrid_AllSkill_mainObjective_JspCourse.data.localData.length; k++) {
-                            mainObjectiveIdList.add(ListGrid_AllSkill_mainObjective_JspCourse.data.localData[k].id);
+                    if(mainObjectiveGrid.data.localData != undefined) {
+                        for (let k = 0; k < mainObjectiveGrid.data.localData.length; k++) {
+                            mainObjectiveIdList.add(mainObjectiveGrid.data.localData[k].id);
                         }
                         data2.mainObjectiveIds = mainObjectiveIdList;
+                    }
+                    else{
+                        createDialog("info", "دوره، بدون هدف اصلي نمي توان ايجاد کرد.");
+                        return;
                     }
                     // data2.equalCourseListId = equalCourseIdList;
                     // data2.preCourseListId = preCourseIdList;
