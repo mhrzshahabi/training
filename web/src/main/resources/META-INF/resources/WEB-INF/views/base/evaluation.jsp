@@ -1015,23 +1015,6 @@
             }
         });
 
-        var ToolStripButton_Committee = isc.ToolStripButton.create({
-            title: "send to committee",
-            click: function () {
-                sendNeedAssessment_CommitteeToWorkflow();
-            },
-            visibility: "hidden"
-
-        });
-
-        var ToolStripButton_Confirm = isc.ToolStripButton.create({
-            title: "send to main confirm",
-            click: function () {
-                sendNeedAssessment_MainWorkflow();
-            },
-            visibility: "hidden"
-        });
-
         var ToolStripButton_RefreshIssuance = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
             click: function () {
@@ -1046,8 +1029,6 @@
             members: [
                 ToolStripButton_FormIssuance,
                 ToolStripButton_FormIssuanceForAll,
-                ToolStripButton_Committee,
-                ToolStripButton_Confirm,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -1603,98 +1584,4 @@
         }
 
     }
-
-
-    // <<---------------------------------------- Send To Workflow ----------------------------------------
-    function sendNeedAssessment_CommitteeToWorkflow() {
-        <%--var sRecord = ListGrid_Course.getSelectedRecord();--%>
-
-        <%--if (sRecord === null || sRecord.id === null) {--%>
-        <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-        <%--} else if (sRecord.workflowStatusCode === "2") {--%>
-        <%--    createDialog("info", "<spring:message code='course.workflow.confirm'/>");--%>
-        <%--} else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {--%>
-        <%--    createDialog("info", "<spring:message code='course.sent.to.workflow'/>");--%>
-        <%--} else {--%>
-
-        isc.MyYesNoDialog.create({
-            message: "<spring:message code="record.sent.to.workflow.ask"/>",
-            title: "<spring:message code="message"/>",
-            buttonClick: function (button, index) {
-                this.close();
-                if (index === 0) {
-                    var varParams = [{
-                        "processKey": "needAssessment_CommitteeWorkflow",
-                        "cId": 1,
-                        "needAssessment": "نیازسنجی شغل برنامه نویسی انجام شد",
-                        "needAssessmentCreatorId": "${username}",
-                        "needAssessmentCreator": userFullName,
-                        "REJECTVAL": "",
-                        "REJECT": "",
-                        "target": "/course/show-form",
-                        "targetTitleFa": "نیازسنجی",
-                        "workflowStatus": "ثبت اولیه",
-                        "workflowStatusCode": "0"
-                    }];
-
-                    isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
-                }
-            }
-        });
-        // }
-
-    }
-
-    function sendNeedAssessment_MainWorkflow() {
-        <%--var sRecord = ListGrid_Course.getSelectedRecord();--%>
-
-        <%--if (sRecord === null || sRecord.id === null) {--%>
-        <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-        <%--} else if (sRecord.workflowStatusCode === "2") {--%>
-        <%--    createDialog("info", "<spring:message code='course.workflow.confirm'/>");--%>
-        <%--} else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {--%>
-        <%--    createDialog("info", "<spring:message code='course.sent.to.workflow'/>");--%>
-        <%--} else {--%>
-
-        isc.MyYesNoDialog.create({
-            message: "<spring:message code="record.sent.to.workflow.ask"/>",
-            title: "<spring:message code="message"/>",
-            buttonClick: function (button, index) {
-                this.close();
-                if (index === 0) {
-                    var varParams = [{
-                        "processKey": "needAssessment_MainWorkflow",
-                        "cId": 1,
-                        "needAssessment": "نیازسنجی پست معاونت انجام شد",
-                        "needAssessmentCreatorId": "${username}",
-                        "needAssessmentCreator": userFullName,
-                        "REJECTVAL": "",
-                        "REJECT": "",
-                        "target": "/course/show-form",
-                        "targetTitleFa": "نیازسنجی",
-                        "workflowStatus": "ثبت اولیه",
-                        "workflowStatusCode": "50"
-                    }];
-
-                    isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
-                }
-            }
-        });
-        // }
-
-    }
-
-    function startProcess_callback(resp) {
-
-        if (resp.httpResponseCode == 200) {
-            isc.say("<spring:message code='course.set.on.workflow.engine'/>");
-            ListGrid_Course_refresh()
-        } else {
-            isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
-        }
-    }
-
-
-    // ---------------------------------------- Send To Workflow ---------------------------------------->>
-
     // ------------------------------------------------- Functions ------------------------------------------>>
