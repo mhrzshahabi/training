@@ -649,9 +649,9 @@
                                     serverOutputAsString: false,
                                     callback: function (resp) {
                                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                            mainObjectiveGrid_Refresh();
                                             <%--createDialog("info", "<spring:message code='msg.operation.successful'/>", "<spring:message code="msg.command.done"/>");--%>
                                             skillsListBtnListGridCourse.click();
-                                            mainObjectiveGrid_Refresh();
                                         }
                                     }
                                 })
@@ -687,7 +687,6 @@
                                 prompt: "حذف",
                                 click: function () {
                                     ListGrid_AllSkill_JspCourse.recordDrop();
-                                    mainObjectiveGrid_Refresh();
                                 }
                             })
                         ]
