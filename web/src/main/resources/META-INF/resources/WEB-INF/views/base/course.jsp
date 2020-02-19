@@ -1584,19 +1584,14 @@
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
                 return;
             }
-            console.log(course_method)
 //------------------------------------
             if (course_method == "POST") {
                 x = courseCode();
-                console.log(x)
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
                     var newCourseCounter = courseCounterCode(resp.data);
-                    console.log(newCourseCounter)
                     x = x + newCourseCounter;
-                    console.log(x)
-                    DynamicForm_course_MainTab.setValue('code', x);
+                    DynamicForm_course_GroupTab.setValue('code', x);
                     var data2 = vm_JspCourse.getValues();
-                    console.log(data2)
                     ChangeEtechnicalType = false;
                     // preCourseIdList = [];
                     // equalCourseIdList = [];
@@ -1615,17 +1610,14 @@
                     }
                     // data2.equalCourseListId = equalCourseIdList;
                     // data2.preCourseListId = preCourseIdList;
-                    console.log("scoringMethod= " + data2.scoringMethod)
 
                     if (data2.scoringMethod == "1") {
                         data2.acceptancelimit = data2.acceptancelimit_a
                     }
-                    console.log("data2= " + data2)
                     // data2["workflowStatus"] = "ثبت اولیه";
                     data2.workflowStatus = "ثبت اولیه";
                     data2.workflowStatusCode = "0";
                     // data2["workflowStatusCode"] = "0";
-                    console.log("data2= " + data2)
 
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
