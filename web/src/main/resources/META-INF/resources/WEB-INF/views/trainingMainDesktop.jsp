@@ -992,12 +992,15 @@
     }
 
     function refreshLG(listGridID, nextFunction) {
-        if (listGridID.getFilterEditorCriteria() !== null) {
+        // if (listGridID.getFilterEditorCriteria() !== null) {
+        //     listGridID.filterByEditor();
+        // } else {
+        //     listGridID.clearCriteria();
+        //     listGridID.invalidateCache();
+        // }
+        listGridID.invalidateCache();
+        if (listGridID.getCriteria != null)
             listGridID.filterByEditor();
-        } else {
-            listGridID.clearCriteria();
-            listGridID.invalidateCache();
-        }
         if (!nextFunction === undefined) {
             nextFunction();
         }

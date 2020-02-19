@@ -9,16 +9,6 @@
 
     var z1z2Data = [];
 
-    <%--var RestDataSource_Coefficient_JspConfigQuestionnaire = isc.TrDS.create({--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true, hidden: true},--%>
-    <%--        {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},--%>
-    <%--        {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"},--%>
-    <%--        {name: "value", title: "<spring:message code="value"/>", filterOperator: "iContains"}--%>
-    <%--    ],--%>
-    <%--    // fetchDataURL: parameterUrl + "/iscList/z1z2"--%>
-    <%--});--%>
-
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FET", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FER", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEB", "GET", null, setZ1Z2Data));
@@ -26,7 +16,6 @@
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEC_R", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEC_L", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEC_B", "GET", null, setZ1Z2Data));
-
 
     function setZ1Z2Data(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -83,7 +72,6 @@
                 mask: "###",
                 name: "minScoreET",
                 title: "حد قبولی نمره ارزیابی استاد",
-                required: true,
                 change: function (item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -295,19 +283,31 @@
 //==================================================================================================
             {type: "RowSpacerItem"},
             {type: "BlurbItem", value: "5- فرمول اثربخشی کلاس _ واکنش"},
-            {
+                {
                 width: "200",
                 hint: "%",
                 mask: "###",
                 name: "FECRZ",
                 title: "ضریب نمره ارزیابی واکنشی کلاس",
+                 change: function (form, item, value) {
+                      if (value > 100) {
+                  item.setValue()
 
-                change: function (form, item, value) {
-                    if (value > 100) {
-                        item.setValue()
                     }
                 }
-            },
+           },  {
+                width: "200",
+                hint: "%",
+                mask: "###",
+                name: "minScoreFECR",
+                title: "حد نمره اثر بخشی",
+                change: function (form, item, value) {
+                if (value > 100) {
+                item.setValue()
+
+                }
+                }
+                },
 //=======================================================================================
             {type: "RowSpacerItem"},
             {type: "BlurbItem", value: "6- فرمول اثربخشی کلاس _ یادگیری"},
@@ -317,7 +317,6 @@
                 mask: "###",
                 name: "FECLZ1",
                 title: "ضریب ارزیابی واکنش دوره",
-
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -414,9 +413,9 @@
                             continue;
                         toUpdate.add({
                             "id": ((fields[i].getID()).split('_'))[0],
-                            "value": fields[i].getValue()
-                        });
-                    }
+                            "value": fields[i].getValue(),
+                             });
+                     }
                     if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) != 100) {
                         createDialog("info", "جمع ضرایب فرمول یک باید 100 شود", "<spring:message code="message"/>")
                         return;
@@ -436,7 +435,12 @@
                         createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minQusET").focusInItem()
                         return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreET").getValue() == null) {
+                    }else if (DynamicForm_Evaluation_Coefficient.getItem("FECRZ").getValue() == null) {
+                            createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("FECRZ").focusInItem()
+                            return;
+                            }
+                    else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreET").getValue() == null) {
                         createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreET").focusInItem()
                         return;

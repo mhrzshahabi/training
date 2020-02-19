@@ -123,6 +123,7 @@
         ]
     };
 
+
     var ListGrid_RegisterScorePreTtest = isc.TrLG.create({
      dataSource: RestDataSource_registerScorePreTest,
         canAddFormulaFields: true,
@@ -194,6 +195,16 @@
         filterOnKeypress: true,
         sortField: 0,
     });
+
+
+    function validators_ScorePreTest(value) {
+
+            if (value.match(/^(100|[1-9]?\d)$/)) {
+                return true
+            } else {
+                return false
+            }
+    }
 
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
 // icon: "<spring:url value="refresh.png"/>",
