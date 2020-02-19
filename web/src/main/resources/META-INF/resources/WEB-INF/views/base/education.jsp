@@ -5,7 +5,6 @@
 // <script>
     var methodEducation = "GET";
     var saveActionUrlEducation;
-    var educationOrientationUrl = educationUrl + "orientation/";
     var listGridEducation;
     var waitEducation;
 
@@ -74,21 +73,21 @@
                 title: "<spring:message code='global.form.print.pdf'/>",
                 icon: "<spring:url value="pdf.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
+                    trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationOrientation.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.excel'/>",
                 icon: "<spring:url value="excel.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "excel",
+                    trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationOrientation.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.html'/>",
                 icon: "<spring:url value="html.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "html",
+                    trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "html",
                         ListGrid_EducationOrientation.getCriteria());
                 }
             }]
@@ -217,7 +216,7 @@
     });
     var ToolStripButton_Print_EducationOrientation = isc.ToolStripButtonPrint.create({
         click: function () {
-            trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
+            trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf",
                 ListGrid_EducationOrientation.getCriteria());
         }
     });
@@ -329,21 +328,21 @@
                 title: "<spring:message code='global.form.print.pdf'/>",
                 icon: "<spring:url value="pdf.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
+                    trPrintWithCriteria("<spring:url value="educationMajor/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationMajor.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.excel'/>",
                 icon: "<spring:url value="excel.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "excel",
+                    trPrintWithCriteria("<spring:url value="educationMajor/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationMajor.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.html'/>",
                 icon: "<spring:url value="html.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "html",
+                    trPrintWithCriteria("<spring:url value="educationMajor/printWithCriteria/"/>" + "html",
                         ListGrid_EducationMajor.getCriteria());
                 }
             }]
@@ -428,7 +427,7 @@
     });
     var ToolStripButton_Print_EducationMajor = isc.ToolStripButtonPrint.create({
         click: function () {
-            trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
+            trPrintWithCriteria("<spring:url value="educationMajor/printWithCriteria/"/>" + "pdf",
                 ListGrid_EducationMajor.getCriteria());
         }
     });
