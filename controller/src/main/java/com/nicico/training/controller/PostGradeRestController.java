@@ -35,7 +35,7 @@ public class PostGradeRestController {
     public ResponseEntity<ISC<PostGradeDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = postGradeService.search(searchRq);
+        SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = postGradeService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 }

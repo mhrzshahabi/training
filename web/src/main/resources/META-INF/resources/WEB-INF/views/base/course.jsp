@@ -157,7 +157,7 @@
             {name: "titleFa", type: "text"}
         ],
 
-        fetchDataURL: educationUrl + "level/" + "spec-list",
+        fetchDataURL: educationLevelUrl + "spec-list",
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
@@ -1601,7 +1601,7 @@
                     callback: function (resp) {
                         var newCourseCounter = courseCounterCode(resp.data);
                         x = x + newCourseCounter;
-                        DynamicForm_course_MainTab.getItem('code').setValue(x);
+                        DynamicForm_course_MainTab.setValue('code', x);
                         var data2 = vm_JspCourse.getValues();
                         ChangeEtechnicalType = false;
                         preCourseIdList = [];
