@@ -562,8 +562,8 @@
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
                 } else if (levelId !== undefined && majorId !== undefined) {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
-                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl +
-                        "orientation/spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
+                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationOrientationUrl +
+                        "spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource =
                         RestDataSource_Education_Orientation_JspTeacher;
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();

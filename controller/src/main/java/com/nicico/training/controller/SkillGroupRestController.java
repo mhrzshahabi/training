@@ -124,7 +124,7 @@ public class SkillGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<SkillGroupDTO.Info> response = skillGroupService.search(request);
+        SearchDTO.SearchRs<SkillGroupDTO.Info> response = skillGroupService.searchWithoutPermission(request);
 
         final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -144,7 +144,7 @@ public class SkillGroupRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SearchDTO.SearchRs<SkillGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(skillGroupService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(skillGroupService.searchWithoutPermission(request), HttpStatus.OK);
     }
 
     // ------------------------------

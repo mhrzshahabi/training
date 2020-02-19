@@ -138,11 +138,13 @@ public class CourseService implements ICourseService {
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
             course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
             Course course1 = courseDAO.save(course);
-            Set<Skill> setSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
-            for (Skill skill : setSkill) {
-                skill.setCourseId(course1.getId());
-                skill.setCourseMainObjectiveId(course1.getId());
-                skillDAO.saveAndFlush(skill);
+            if(request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty()) {
+                Set<Skill> setSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
+                for (Skill skill : setSkill) {
+                    skill.setCourseId(course1.getId());
+                    skill.setCourseMainObjectiveId(course1.getId());
+                    skillDAO.saveAndFlush(skill);
+                }
             }
             return modelMapper.map(course1, CourseDTO.Info.class);
         } else

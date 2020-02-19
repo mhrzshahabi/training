@@ -17,7 +17,10 @@ public enum ERunType {
     DispatchSeminar(4, "سمينار اعزام", "H"),
     WhileWorking(5, "حين كار", "J"),
     External(6, "خارجی", "F"),
-    ExternalSeminar(7, "سمینار خارجی", "O");
+    ExternalSeminar(7, "سمینار خارجی", "O"),
+    Virtual(8, "مجازي", "E"),
+    ReView(9, "بازآموزي", "B"),
+    ToolBox(10, "جعبه ابزار", "X");
 
     private final Integer id;
     private final String titleFa;

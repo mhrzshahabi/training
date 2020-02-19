@@ -414,14 +414,14 @@
     function printJobLG_job(type) {
         isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/pdf", "POST", null, "callback:test(rpcResponse)"));
 
-// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
+// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
 
 
 // isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));
 
-// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));
+// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));
 
-// trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());
+// trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());
 // trPrintWithCriteria(,
 // JobLG_job.getCriteria());
 // isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));

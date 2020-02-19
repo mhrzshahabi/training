@@ -101,6 +101,7 @@
     QuestionnaireQuestionLG_questionnaire = isc.TrLG.create({
         ID: "QuestionnaireQuestionLG_questionnaire",
         dataSource: QuestionnaireQuestionDS_questionnaire,
+        dataFetchMode: "local",
         fields: [{name: "evaluationQuestion.question"}, {name: "weight"}, {name: "order"}],
         gridComponents: [
             isc.LgLabel.create({
@@ -268,9 +269,15 @@
         if (!QuestionnaireQuestionDF_questionnaire.validate()) {
             return;
         }
+        for (let i = 0; i < QuestionnaireQuestionLG_questionnaire.data.allRows.length; i++) {
+            if (QuestionnaireQuestionLG_questionnaire.data.allRows[i].evaluationQuestionId === QuestionnaireQuestionDF_questionnaire.getValue("evaluationQuestionId")){
+                createDialog("info", "<spring:message code='msg.record.duplicate'/>");
+                return;
+            }
+        }
         let questionnaireQuestionSaveUrl = questionnaireQuestionUrl;
         let action = '<spring:message code="create"/>';
-        if (questionnaireQuestionMethod_questionnaire.localeCompare("PUT") == 0) {
+        if (questionnaireQuestionMethod_questionnaire.localeCompare("PUT") === 0) {
             let record = QuestionnaireQuestionLG_questionnaire.getSelectedRecord();
             questionnaireQuestionSaveUrl += "/" + record.id;
             action = '<spring:message code="edit"/>';

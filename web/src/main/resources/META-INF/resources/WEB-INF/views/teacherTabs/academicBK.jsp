@@ -28,17 +28,17 @@
 
     RestDataSource_EducationLevel_JspAcademicBK = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationUrl + "level/iscList"
+        fetchDataURL: educationLevelUrl + "iscList"
     });
 
     RestDataSource_EducationMajor_JspAcademicBK = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationUrl + "major/iscList"
+        fetchDataURL: educationMajorUrl + "iscList"
     });
 
     RestDataSource_EducationOrientation_JspAcademicBK = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationUrl + "orientation/iscList"
+        fetchDataURL: educationOrientationUrl + "iscList"
     });
     //--------------------------------------------------------------------------------------------------------------------//
     /*window*/
@@ -191,8 +191,8 @@
                     DynamicForm_JspAcademicBK.clearValue("educationOrientationId");
                 } else if (levelId !== undefined && majorId !== undefined) {
                     DynamicForm_JspAcademicBK.clearValue("educationOrientationId");
-                    RestDataSource_EducationOrientation_JspAcademicBK.fetchDataURL = educationUrl +
-                        "orientation/spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
+                    RestDataSource_EducationOrientation_JspAcademicBK.fetchDataURL = educationOrientationUrl +
+                        "spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
                     DynamicForm_JspAcademicBK.getField("educationOrientationId").optionDataSource =
                         RestDataSource_EducationOrientation_JspAcademicBK;
                     DynamicForm_JspAcademicBK.getField("educationOrientationId").fetchData();
@@ -405,8 +405,8 @@
                 DynamicForm_JspAcademicBK.clearValue("educationOrientationId");
             }
             if (eduMajorValue != undefined && eduLevelValue != undefined) {
-                RestDataSource_EducationOrientation_JspAcademicBK.fetchDataURL = educationUrl +
-                    "orientation/spec-list-by-levelId-and-majorId/" + eduLevelValue + ":" + eduMajorValue;
+                RestDataSource_EducationOrientation_JspAcademicBK.fetchDataURL = educationOrientationUrl +
+                    "spec-list-by-levelId-and-majorId/" + eduLevelValue + ":" + eduMajorValue;
                 DynamicForm_JspAcademicBK.getField("educationOrientationId").optionDataSource = RestDataSource_EducationOrientation_JspAcademicBK;
                 DynamicForm_JspAcademicBK.getField("educationOrientationId").fetchData();
             }
