@@ -108,6 +108,23 @@
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
+                  editorExit:function(editCompletionEvent, record, newValue)
+                  {
+
+                  //  if (newValue != null) {
+                        if (validators_ScorePreTest(newValue)) {
+                            ListGrid_Cell_ScorePreTest_Update(record, newValue);
+                        } else {
+                            createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>")
+
+                        }
+                 //   }
+                    // else {
+                    //     ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
+                    //     ListGrid_Class_Student_RegisterScorePreTest.refreshFields();
+                    // }
+                  }
+
             },
 
         ],
@@ -197,12 +214,19 @@
     });
 
 
+    function ListGrid_Cell_ScorePreTest_Update(record,newValue)
+    {
+        record.preTestScore=newValue
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/score-pre-test"+"/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
+        ListGrid_RegisterScorePreTtest.refreshFields();
+    }
+
     function validators_ScorePreTest(value) {
 
             if (value.match(/^(100|[1-9]?\d)$/)) {
                 return true
             } else {
-                return false
+                   return false
             }
     }
 

@@ -113,6 +113,19 @@ public class ClassStudentRestController {
         }
     }
 
+
+    @Loggable
+    @PutMapping(value = "/score-pre-test/{id}")
+    public ResponseEntity updateScorePreTest(@PathVariable Long id, @RequestBody Object request) {
+        try {
+            return new ResponseEntity<>(classStudentService.update(id, request, ClassStudentDTO.PreTestScoreInfo.class), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+
+
     @Loggable
     @DeleteMapping
     //    @PreAuthorize("hasAuthority('c_tclass')")
