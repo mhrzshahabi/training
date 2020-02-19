@@ -17,7 +17,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "tbl_questionnaire_question")
+@Table(name = "tbl_questionnaire_question",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"f_evaluation_question", "f_questionnaire"})})
 public class QuestionnaireQuestion extends Auditable {
 
     @Id
