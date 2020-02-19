@@ -162,25 +162,33 @@
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
         data: [{
-            title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+            title: "<spring:message code="refresh"/>",
+            <%--icon: "<spring:url value="refresh.png"/>", --%>
+            click: function () {
                 ListGrid_Course_refresh();
-                ListGrid_CourseJob.setData([]);
-                ListGrid_CourseSkill.setData([]);
-                ListGrid_CourseSyllabus.setData([]);
+                // ListGrid_CourseJob.setData([]);
+                // ListGrid_CourseSkill.setData([]);
+                // ListGrid_CourseSyllabus.setData([]);
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
                 // ListGrid_CourseGoal.setData([]);
                 // ListGrid_CourseCompetence.setData([]);
             }
         }, {
-            title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
+            title: "<spring:message code="create"/>",
+            <%--icon: "<spring:url value="create.png"/>", --%>
+            click: function () {
                 ListGrid_Course_add();
             }
         }, {
-            title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
+            title: "<spring:message code="edit"/>",
+            <%--icon: "<spring:url value="edit.png"/>", --%>
+            click: function () {
                 ListGrid_Course_Edit();
             }
         }, {
-            title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
+            title: "<spring:message code="remove"/>",
+            <%--icon: "<spring:url value="remove.png"/>", --%>
+            click: function () {
                 ListGrid_Course_remove()
             }
         },
@@ -190,7 +198,8 @@
             <%--}--%>
             <%--}--%>
             {
-                title: "<spring:message code='send.to.workflow'/>", click: function () {
+                title: "<spring:message code='send.to.workflow'/>",
+                click: function () {
                     getCourseMainObjective_RunWorkflow();
                 }
             },
@@ -198,25 +207,27 @@
                 isSeparator: true
             }, {
                 title: "<spring:message code="format.pdf"/>",
-                icon: "<spring:url value="pdf.png"/>",
+                <%--icon: "<spring:url value="pdf.png"/>",--%>
                 click: function () {
                     print_CourseListGrid("pdf");
                 }
             }, {
                 title: "<spring:message code="format.excel"/>",
-                icon: "<spring:url value="excel.png"/>",
+                <%--icon: "<spring:url value="excel.png"/>",--%>
                 click: function () {
                     print_CourseListGrid("excel");
                 }
             }, {
                 title: "<spring:message code="format.html"/>",
-                icon: "<spring:url value="html.png"/>",
+                <%--icon: "<spring:url value="html.png"/>",--%>
                 click: function () {
                     print_CourseListGrid("html");
                 }
             },
             {
-                title: "چاپ با جزییات", icon: "<spring:url value="print.png"/>", click: function () {
+                title: "<spring:message code="print.with.details"/>",
+                <%--icon: "<spring:url value="print.png"/>", --%>
+                click: function () {
                     window.open("course/testCourse/" + ListGrid_Course.getSelectedRecord().id + "/pdf/<%=accessToken%>");
                 }
             }
@@ -639,22 +650,24 @@
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
-                                isc.RPCManager.sendRequest({
-                                    actionURL: skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id,
-                                    httpMethod: "DELETE",
-                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                    useSimpleHttp: true,
-                                    contentType: "application/json; charset=utf-8",
-                                    showPrompt: false,
-                                    serverOutputAsString: false,
-                                    callback: function (resp) {
-                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                            mainObjectiveGrid_Refresh();
-                                            <%--createDialog("info", "<spring:message code='msg.operation.successful'/>", "<spring:message code="msg.command.done"/>");--%>
-                                            skillsListBtnListGridCourse.click();
+                                if(!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
+                                    isc.RPCManager.sendRequest({
+                                        actionURL: skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id,
+                                        httpMethod: "DELETE",
+                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                        useSimpleHttp: true,
+                                        contentType: "application/json; charset=utf-8",
+                                        showPrompt: false,
+                                        serverOutputAsString: false,
+                                        callback: function (resp) {
+                                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                mainObjectiveGrid_Refresh();
+                                                <%--createDialog("info", "<spring:message code='msg.operation.successful'/>", "<spring:message code="msg.command.done"/>");--%>
+                                                skillsListBtnListGridCourse.click();
+                                            }
                                         }
-                                    }
-                                })
+                                    })
+                                }
                             }
                         },
                         gridComponents: [isc.Label.create({
@@ -674,7 +687,8 @@
                         membersMargin: 5,
                         members: [
                             isc.IconButton.create({
-                                icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+                                // icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+                                icon: "<spring:url value="double-arrow-left.png"/>",
                                 showButtonTitle: false,
                                 prompt: "افزودن",
                                 click: function () {
@@ -682,7 +696,8 @@
                                 }
                             }),
                             isc.IconButton.create({
-                                icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+                                // icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+                                icon: "<spring:url value="double-arrow-right.png"/>",
                                 showButtonTitle: false,
                                 prompt: "حذف",
                                 click: function () {
@@ -1172,7 +1187,7 @@
             {
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
-                required: true,
+                required: false,
                 textAlign: "center",
                 hint: "&nbsp;ماه",
                 valueMap: {
@@ -1584,7 +1599,7 @@
             }
             vm_JspCourse.validate();
             if (vm_JspCourse.hasErrors()) {
-                createDialog("info", "<spring:message code="msg.operation.error"/>");
+                createDialog("info", "<spring:message code="msg.validate.values.form"/>");
                 return;
             }
 //------------------------------------

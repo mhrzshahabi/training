@@ -370,33 +370,45 @@
     var Menu_ListGrid_Syllabus_Goal = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+            title: "بازخوانی اطلاعات",
+            <%--icon: "<spring:url value="refresh.png"/>", --%>
+            click: function () {
                 ListGrid_Syllabus_Goal_refresh();
             }
         }, {
-            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+            title: "ایجاد",
+            <%--icon: "<spring:url value="create.png"/>",--%>
+            click: function () {
                 ListGrid_Syllabus_Goal_Add()
             }
         }, {
-            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
-
+            title: "ویرایش",
+            <%--icon: "<spring:url value="edit.png"/>", --%>
+            click: function () {
                 ListGrid_Syllabus_Goal_Edit();
-
             }
         }, {
-            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+            title: "حذف",
+            <%--icon: "<spring:url value="remove.png"/>", --%>
+            click: function () {
                 ListGrid_Syllabus_Goal_Remove();
             }
         }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+            title: "ارسال به Pdf",
+            <%--icon: "<spring:url value="pdf.png"/>", --%>
+            click: function () {
                 window.open("/syllabus/print-one-course/" + courseRecord.id + "/pdf");
             }
         }, {
-            title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+            title: "ارسال به Excel",
+            <%--icon: "<spring:url value="excel.png"/>",--%>
+            click: function () {
                 window.open("/syllabus/print-one-course/" + courseRecord.id + "/excel")
             }
         }, {
-            title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+            title: "ارسال به Html",
+            <%--icon: "<spring:url value="html.png"/>",--%>
+            click: function () {
                 window.open("/syllabus/print-one-course/" + courseRecord.id + "/html")
             }
         }]
@@ -404,11 +416,15 @@
     var Menu_ListGrid_Goal = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+            title: "بازخوانی اطلاعات",
+            <%--icon: "<spring:url value="refresh.png"/>", --%>
+            click: function () {
                 ListGrid_Goal_refresh();
             }
         }, {
-            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+            title: "ایجاد",
+            <%--icon: "<spring:url value="create.png"/>", --%>
+            click: function () {
                 ListGrid_Goal_Add();
             }
         },
@@ -423,25 +439,35 @@
             <%--}--%>
             <%--}, --%>
             {
-                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "ویرایش",
+                <%--icon: "<spring:url value="edit.png"/>", --%>
+                click: function () {
 
                     ListGrid_Goal_Edit();
 
                 }
             }, {
-                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: "حذف",
+                <%--icon: "<spring:url value="remove.png"/>", --%>
+                click: function () {
                     ListGrid_Goal_Remove();
                 }
             }, {isSeparator: true}, {
-                title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+                title: "ارسال به Pdf",
+                <%--icon: "<spring:url value="pdf.png"/>", --%>
+                click: function () {
                     window.open("/training/goal/print-one-course/" + courseRecord.id + "/pdf")
                 }
             }, {
-                title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+                title: "ارسال به Excel",
+                <%--icon: "<spring:url value="excel.png"/>", --%>
+                click: function () {
                     window.open("/goal/print-one-course/" + courseRecord.id + "/excel")
                 }
             }, {
-                title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+                title: "ارسال به Html",
+                <%--icon: "<spring:url value="html.png"/>", --%>
+                click: function () {
                     window.open("/goal/print-one-course/" + courseRecord.id + "/html")
                 }
             }]
