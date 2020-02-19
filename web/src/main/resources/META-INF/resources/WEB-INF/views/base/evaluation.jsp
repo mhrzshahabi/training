@@ -183,7 +183,7 @@
             data: [
                 {
                     title: "<spring:message code="evaluation.teacher.supervisor"/>",
-                    icon: "<spring:url value="refresh.png"/>",
+                    <%--icon: "<spring:url value="refresh.png"/>",--%>
                     click: function () {
                         var studentIdJspEvaluation;
                         var evaluationLevelId;
@@ -368,7 +368,7 @@
                             validateOnExit: true,
                             // height: "*",
                             valuesManager: vm_JspEvaluation,
-                            colWidths: ["29%", "68%"],
+                            colWidths: ["45%", "50%"],
                             cellBorder:1,
                             width: "100%",
                             // borderRadius: "10px 0px",
@@ -601,28 +601,28 @@
                 },
                 {
                     title: "<spring:message code="refresh"/>",
-                    icon: "<spring:url value="refresh.png"/>",
+                    <%--icon: "<spring:url value="refresh.png"/>",--%>
                     click: function () {
                         ListGrid_evaluation_class.invalidateCache();
                     }
                 },
                 {
                     title: "<spring:message code="create"/>",
-                    icon: "<spring:url value="create.png"/>",
+                    <%--icon: "<spring:url value="create.png"/>",--%>
                     click: function () {
                         create_OperationalUnit();
                     }
                 },
                 {
                     title: "<spring:message code="edit"/>",
-                    icon: "<spring:url value="edit.png"/>",
+                    <%--icon: "<spring:url value="edit.png"/>",--%>
                     click: function () {
                         show_OperationalUnitEditForm();
                     }
                 },
                 {
                     title: "<spring:message code="remove"/>",
-                    icon: "<spring:url value="remove.png"/>",
+                    <%--icon: "<spring:url value="remove.png"/>",--%>
                     click: function () {
                         remove_OperationalUnit();
                     }
@@ -632,21 +632,21 @@
                 },
                 {
                     title: "<spring:message code="print.pdf"/>",
-                    icon: "<spring:url value="pdf.png"/>",
+                    <%--icon: "<spring:url value="pdf.png"/>",--%>
                     click: function () {
                         print_Student_FormIssuance("pdf");
                     }
                 },
                 {
                     title: "<spring:message code="print.excel"/>",
-                    icon: "<spring:url value="excel.png"/>",
+                    <%--icon: "<spring:url value="excel.png"/>",--%>
                     click: function () {
                         print_Student_FormIssuance("excel");
                     }
                 },
                 {
                     title: "<spring:message code="print.html"/>",
-                    icon: "<spring:url value="html.png"/>",
+                    <%--icon: "<spring:url value="html.png"/>",--%>
                     click: function () {
                         print_Student_FormIssuance("html");
                     }
