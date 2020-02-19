@@ -7,6 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
+    var change_value
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
@@ -108,6 +109,9 @@
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
+                    change:function(){
+                        change_value=true
+                    },
                     editorExit:function(editCompletionEvent, record, newValue)
                     {
 
@@ -119,9 +123,11 @@
 
                         }
                           }
-                        else {
-                           return true
+                        else if(change_value) {
+                            ListGrid_Cell_ScorePreTest_Update(record, newValue);
+                            change_value=false
                         }
+                        else {return true}
                     }
 
              },
