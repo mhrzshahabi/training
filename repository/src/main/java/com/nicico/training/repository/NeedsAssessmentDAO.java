@@ -6,6 +6,12 @@ ghazanfari_f,
 package com.nicico.training.repository;
 
 import com.nicico.training.model.NeedsAssessment;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
+
+    @Modifying
+    @Query(value = "update TBL_NEEDS_ASSESSMENT SET N_WORKFLOW_STATUS_CODE = :workflowStatusCode , C_WORKFLOW_STATUS = :workflowStatus WHERE ID = :needsAssessmentId", nativeQuery = true)
+    public Integer updateNeedsAssessmentWorkflowStatus(Long needsAssessmentId, Integer workflowStatusCode, String workflowStatus);
 }

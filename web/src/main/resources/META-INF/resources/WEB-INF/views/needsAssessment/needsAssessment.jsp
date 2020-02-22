@@ -30,7 +30,7 @@
     });
     var ToolStrip_NeedsAssessment_JspNeedAssessment = isc.ToolStrip.create({
         members: [
-            isc.ToolStripButtonAdd.create({
+            isc.ToolStripButtonCreate.create({
                 click: function () {
                     NeedsAssessmentTargetDF_needsAssessment.clearValues();
                     updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, "Job");
@@ -66,18 +66,31 @@
                 click: function () {
                     sendNeedAssessment_MainWorkflow();
                 }
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                            ListGrid_NeedsAssessment_JspNeedAssessment.invalidateCache();
+                            ListGrid_NeedsAssessment_JspNeedAssessment.fetchData();
+                        }
+                    })
+                ]
             })
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
-        groupByField:["objectType", "objectName", "competence.title"],
+        groupByField:["objectType", "objectName"],
         groupStartOpen: "none",
         autoFetchData: true,
         fields:[
             {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true, valueMap: priorityList},
             {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true},
             {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", hidden: true},
+            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains"},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
@@ -88,7 +101,7 @@
         recordDoubleClick: function () {
             editButtonJspNeedsAsessment.click()
         },
-        groupStartOpen: "all",
+        // groupStartOpen: "all",
         dataArrived: function () {
             // alert("here")
             // groupStartOpen: "all"
@@ -226,7 +239,7 @@
             {name: "skillId", primaryKey: true, filterOperator: "iContains", hidden:true},
             {name: "competenceId", filterOperator: "iContains", hidden:true},
             {name: "objectId", filterOperator: "iContains", hidden:true},
-            {name: "objectType", primaryKey: true, filterOperator: "iContains", valueMap: priorityList},
+            {name: "objectType", title: "<spring:message code="type"/>", primaryKey: true, filterOperator: "iContains", valueMap: priorityList},
         ],
         testData: skillData,
         clientOnly: true,
@@ -235,9 +248,9 @@
     CompetenceTS_needsAssessment = isc.ToolStrip.create({
         ID: "CompetenceTS_needsAssessment",
         members: [
-            isc.ToolStripButtonRefresh.create({
-                click: function () { refreshLG(ListGrid_Competence_JspNeedsAssessment); }
-            }),
+            // isc.ToolStripButtonRefresh.create({
+            //     click: function () { refreshLG(ListGrid_Competence_JspNeedsAssessment); }
+            // }),
             isc.ToolStripButtonAdd.create({
                 title:"افزودن",
                 click: function () {
@@ -930,59 +943,59 @@
     }
 
 
-    function sendToWorkflowAfterUpdate_needsAssessment_committee(selectedRecord) {
+    <%--function sendToWorkflowAfterUpdate_needsAssessment_committee(selectedRecord) {--%>
 
-        var sRecord = selectedRecord;
+        <%--var sRecord = selectedRecord;--%>
 
-        if (sRecord !== null && sRecord.id !== null && needs_workflowParameters !== null) {
+        <%--if (sRecord !== null && sRecord.id !== null && needs_workflowParameters !== null) {--%>
 
-            if (sRecord.workflowStatusCode === "-1" || sRecord.workflowStatusCode === "-2") {
+            <%--if (sRecord.workflowStatusCode === "-1" || sRecord.workflowStatusCode === "-2") {--%>
 
-                needs_workflowParameters.workflowdata["REJECT"] = "N";
-                needs_workflowParameters.workflowdata["REJECTVAL"] = " ";
-                needs_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;
-                needs_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;
-                needs_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();
-                needs_workflowParameters.workflowdata["courseCreatorId"] = "${username}";
-                needs_workflowParameters.workflowdata["courseCreator"] = userFullName;
-                needs_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";
-                needs_workflowParameters.workflowdata["workflowStatusCode"] = "20";
-                var ndat = needs_workflowParameters.workflowdata;
-                isc.RPCManager.sendRequest({
-                    actionURL: workflowUrl + "/doUserTask",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    httpMethod: "POST",
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    data: JSON.stringify(ndat),
-                    params: {"taskId": needs_workflowParameters.taskId, "usr": needs_workflowParameters.usr},
-                    serverOutputAsString: false,
-                    callback: function (RpcResponse_o) {
-                        if (RpcResponse_o.data === 'success') {
+                <%--needs_workflowParameters.workflowdata["REJECT"] = "N";--%>
+                <%--needs_workflowParameters.workflowdata["REJECTVAL"] = " ";--%>
+                <%--needs_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;--%>
+                <%--needs_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;--%>
+                <%--needs_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();--%>
+                <%--needs_workflowParameters.workflowdata["courseCreatorId"] = "${username}";--%>
+                <%--needs_workflowParameters.workflowdata["courseCreator"] = userFullName;--%>
+                <%--needs_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";--%>
+                <%--needs_workflowParameters.workflowdata["workflowStatusCode"] = "20";--%>
+                <%--var ndat = needs_workflowParameters.workflowdata;--%>
+                <%--isc.RPCManager.sendRequest({--%>
+                    <%--actionURL: workflowUrl + "/doUserTask",--%>
+                    <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                    <%--httpMethod: "POST",--%>
+                    <%--useSimpleHttp: true,--%>
+                    <%--contentType: "application/json; charset=utf-8",--%>
+                    <%--showPrompt: false,--%>
+                    <%--data: JSON.stringify(ndat),--%>
+                    <%--params: {"taskId": needs_workflowParameters.taskId, "usr": needs_workflowParameters.usr},--%>
+                    <%--serverOutputAsString: false,--%>
+                    <%--callback: function (RpcResponse_o) {--%>
+                        <%--if (RpcResponse_o.data === 'success') {--%>
 
-                            ListGrid_Course_refresh();
+                            <%--ListGrid_Course_refresh();--%>
 
-                            let responseID = sRecord.id;
+                            <%--let responseID = sRecord.id;--%>
 
-                            let gridState = "[{id:" + responseID + "}]";
+                            <%--let gridState = "[{id:" + responseID + "}]";--%>
 
-                            ListGrid_Course.setSelectedState(gridState);
+                            <%--ListGrid_Course.setSelectedState(gridState);--%>
 
-                            ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
+                            <%--ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);--%>
 
-                            isc.say("دوره ویرایش و به گردش کار ارسال شد");
-                            taskConfirmationWindow.hide();
-                            taskConfirmationWindow.maximize();
-                            ListGrid_UserTaskList.invalidateCache();
-                        }
-                    }
-                });
-            }
-        }
+                            <%--isc.say("دوره ویرایش و به گردش کار ارسال شد");--%>
+                            <%--taskConfirmationWindow.hide();--%>
+                            <%--taskConfirmationWindow.maximize();--%>
+                            <%--ListGrid_UserTaskList.invalidateCache();--%>
+                        <%--}--%>
+                    <%--}--%>
+                <%--});--%>
+            <%--}--%>
+        <%--}--%>
 
 
-    }
+    <%--}--%>
 
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
