@@ -1,5 +1,6 @@
 package com.nicico.training.service.workflow;
 
+import com.nicico.training.service.NeedsAssessmentService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,15 +19,15 @@ public class ServiceTaskNeedAssessmentCommittee implements JavaDelegate {
     public void execute(DelegateExecution exe) {
 
         String taskName = exe.getCurrentActivityId();
+        NeedsAssessmentService needsAssessmentService;
 
         //**********service task detect committee boss**********
         if (taskName.equalsIgnoreCase("servicetaskAssignCommitteeBoss")) {
             exe.setVariable("needAssessmentCommitteeBoss", "saeidi_a");
 
-
             if (exe.getVariable("REJECT").toString().equals("") && exe.getVariable("workflowStatusCode").toString().equals("0")) {
 
-//                tclassService.updateClassState(Long.parseLong(exe.getVariable("cId").toString()), "ارسال به گردش کار کمیته", 0);
+//                needsAssessmentService.updateNeedsAssessmentWorkflow(Long.parseLong(exe.getVariable("cId").toString()), "ارسال به گردش کار کمیته", 0);
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS", "ارسال به گردش کار کمیته");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "0");
 

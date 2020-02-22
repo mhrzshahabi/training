@@ -88,7 +88,7 @@
         recordDoubleClick: function () {
             editButtonJspNeedsAsessment.click()
         },
-        groupStartOpen: "all",
+        // groupStartOpen: "all",
         dataArrived: function () {
             // alert("here")
             // groupStartOpen: "all"
@@ -930,59 +930,59 @@
     }
 
 
-    function sendToWorkflowAfterUpdate_needsAssessment_committee(selectedRecord) {
+    <%--function sendToWorkflowAfterUpdate_needsAssessment_committee(selectedRecord) {--%>
 
-        var sRecord = selectedRecord;
+        <%--var sRecord = selectedRecord;--%>
 
-        if (sRecord !== null && sRecord.id !== null && needs_workflowParameters !== null) {
+        <%--if (sRecord !== null && sRecord.id !== null && needs_workflowParameters !== null) {--%>
 
-            if (sRecord.workflowStatusCode === "-1" || sRecord.workflowStatusCode === "-2") {
+            <%--if (sRecord.workflowStatusCode === "-1" || sRecord.workflowStatusCode === "-2") {--%>
 
-                needs_workflowParameters.workflowdata["REJECT"] = "N";
-                needs_workflowParameters.workflowdata["REJECTVAL"] = " ";
-                needs_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;
-                needs_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;
-                needs_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();
-                needs_workflowParameters.workflowdata["courseCreatorId"] = "${username}";
-                needs_workflowParameters.workflowdata["courseCreator"] = userFullName;
-                needs_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";
-                needs_workflowParameters.workflowdata["workflowStatusCode"] = "20";
-                var ndat = needs_workflowParameters.workflowdata;
-                isc.RPCManager.sendRequest({
-                    actionURL: workflowUrl + "/doUserTask",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    httpMethod: "POST",
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    data: JSON.stringify(ndat),
-                    params: {"taskId": needs_workflowParameters.taskId, "usr": needs_workflowParameters.usr},
-                    serverOutputAsString: false,
-                    callback: function (RpcResponse_o) {
-                        if (RpcResponse_o.data === 'success') {
+                <%--needs_workflowParameters.workflowdata["REJECT"] = "N";--%>
+                <%--needs_workflowParameters.workflowdata["REJECTVAL"] = " ";--%>
+                <%--needs_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;--%>
+                <%--needs_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;--%>
+                <%--needs_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();--%>
+                <%--needs_workflowParameters.workflowdata["courseCreatorId"] = "${username}";--%>
+                <%--needs_workflowParameters.workflowdata["courseCreator"] = userFullName;--%>
+                <%--needs_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";--%>
+                <%--needs_workflowParameters.workflowdata["workflowStatusCode"] = "20";--%>
+                <%--var ndat = needs_workflowParameters.workflowdata;--%>
+                <%--isc.RPCManager.sendRequest({--%>
+                    <%--actionURL: workflowUrl + "/doUserTask",--%>
+                    <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                    <%--httpMethod: "POST",--%>
+                    <%--useSimpleHttp: true,--%>
+                    <%--contentType: "application/json; charset=utf-8",--%>
+                    <%--showPrompt: false,--%>
+                    <%--data: JSON.stringify(ndat),--%>
+                    <%--params: {"taskId": needs_workflowParameters.taskId, "usr": needs_workflowParameters.usr},--%>
+                    <%--serverOutputAsString: false,--%>
+                    <%--callback: function (RpcResponse_o) {--%>
+                        <%--if (RpcResponse_o.data === 'success') {--%>
 
-                            ListGrid_Course_refresh();
+                            <%--ListGrid_Course_refresh();--%>
 
-                            let responseID = sRecord.id;
+                            <%--let responseID = sRecord.id;--%>
 
-                            let gridState = "[{id:" + responseID + "}]";
+                            <%--let gridState = "[{id:" + responseID + "}]";--%>
 
-                            ListGrid_Course.setSelectedState(gridState);
+                            <%--ListGrid_Course.setSelectedState(gridState);--%>
 
-                            ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
+                            <%--ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);--%>
 
-                            isc.say("دوره ویرایش و به گردش کار ارسال شد");
-                            taskConfirmationWindow.hide();
-                            taskConfirmationWindow.maximize();
-                            ListGrid_UserTaskList.invalidateCache();
-                        }
-                    }
-                });
-            }
-        }
+                            <%--isc.say("دوره ویرایش و به گردش کار ارسال شد");--%>
+                            <%--taskConfirmationWindow.hide();--%>
+                            <%--taskConfirmationWindow.maximize();--%>
+                            <%--ListGrid_UserTaskList.invalidateCache();--%>
+                        <%--}--%>
+                    <%--}--%>
+                <%--});--%>
+            <%--}--%>
+        <%--}--%>
 
 
-    }
+    <%--}--%>
 
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

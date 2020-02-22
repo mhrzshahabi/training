@@ -27,6 +27,9 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     private ParameterValueService parameterValueService;
 
     @Autowired
+    private NeedsAssessmentDAO needsAssessmentDAO;
+
+    @Autowired
     NeedsAssessmentService(NeedsAssessmentDAO competenceDAO) {
         super(new NeedsAssessment(), competenceDAO);
     }
@@ -49,5 +52,10 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
             throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentPriorityNotFound);
         }
         return create(rq);
+    }
+
+    @Transactional
+    public Integer updateNeedsAssessmentWorkflow(Long needsAssessmentId, Integer workflowStatusCode, String workflowStatus) {
+        return needsAssessmentDAO.updateNeedsAssessmentWorkflowStatus(needsAssessmentId, workflowStatusCode, workflowStatus);
     }
 }
