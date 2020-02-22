@@ -67,9 +67,6 @@
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-27">
         <createSequence sequenceName="seq_department_id"/>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582034257950-29">
-        <createSequence sequenceName="seq_education_major_id"/>
-    </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582034257950-30">
         <createSequence sequenceName="seq_education_orientation_id"/>
     </changeSet>
@@ -204,5 +201,8 @@
     </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582048342756-241">
         <createSequence sequenceName="seq_education_level_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582090203176-241">
+        <createSequence sequenceName="seq_education_major_id"/>
     </changeSet>
 </databaseChangeLog>

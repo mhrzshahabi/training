@@ -158,37 +158,53 @@
     var Menu_ListGrid_Class_JspClass = isc.Menu.create({
 // width: 150,
         data: [{
-            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+            title: "<spring:message code='refresh'/>",
+            <%--icon: "<spring:url value="refresh.png"/>", --%>
+            click: function () {
                 ListGrid_Class_refresh();
             }
         }, {
-            title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
+            title: "<spring:message code='create'/>",
+            <%--icon: "<spring:url value="create.png"/>", --%>
+            click: function () {
                 ListGrid_Class_add();
             }
         }, {
-            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
+            title: "<spring:message code='edit'/>",
+            <%--icon: "<spring:url value="edit.png"/>", --%>
+            click: function () {
                 ListGrid_class_edit();
             }
         }, {
-            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>",
+            title: "<spring:message code='remove'/>",
+            <%--icon: "<spring:url value="remove.png"/>",--%>
             click: function () {
                 ListGrid_class_remove();
             }
         }, {isSeparator: true}, {
-            title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
+            title: "<spring:message code='print.pdf'/>",
+            <%--icon: "<spring:url value="pdf.png"/>", --%>
+            click: function () {
                 ListGrid_class_print("pdf");
             }
         }, {
-            title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
+            title: "<spring:message code='print.excel'/>",
+            <%--icon: "<spring:url value="excel.png"/>", --%>
+            click: function () {
                 ListGrid_class_print("excel");
             }
         }, {
-            title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
+            title: "<spring:message code='print.html'/>",
+            <%--icon: "<spring:url value="html.png"/>",--%>
+            click: function () {
                 ListGrid_class_print("html");
             }
         },
-            {isSeparator: true}, {
-                title: "<spring:message code='students.list'/>", icon: "icon/classroom.png", click: function () {
+            {isSeparator: true},
+            {
+                title: "<spring:message code='students.list'/>",
+                // icon: "icon/classroom.png",
+                click: function () {
                     Add_Student();
                 }
             }

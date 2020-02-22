@@ -6,8 +6,8 @@
 
     var personnelRegMethod = "POST";
     var personnelRegWait;
-    var educationLevelUrlPerReg = educationUrl + "level/";
-    var educationMajorUrlPerReg = educationUrl + "major/";
+    var educationLevelUrlPerReg = educationLevelUrl;
+    var educationMajorUrlPerReg = educationMajorUrl;
     var codeMeliCheckPerReg = true;
     var persianRegDateCheck = true;
     var persianRegEmpDateCheck = true;

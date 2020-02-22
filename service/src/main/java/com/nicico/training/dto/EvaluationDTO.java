@@ -48,6 +48,7 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Info")
     public static class Info extends EvaluationDTO {
+        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
         private Long id;
     }
 

@@ -753,7 +753,7 @@
             if (eduOrientationValue == undefined && eduMajorValue == undefined) {
                 DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
             } else if (eduMajorValue != undefined) {
-                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl + "major/spec-list-by-majorId/" + eduMajorValue;
+                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationMajorUrl + "spec-list-by-majorId/" + eduMajorValue;
                 DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource = RestDataSource_Education_Orientation_JspTeacher;
                 DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
             }

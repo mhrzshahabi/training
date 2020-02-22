@@ -48,30 +48,24 @@ function yesNoDialog(title, message, timeout, dialogType, retIndex) {
             ynd.close();
         }, timeout);
     }
-    ;
 }
 
 function courseCounterCode(n) {
 
-
     var m = parseInt(n) + 1;
     if (m < 10 && m > 0) {
-        return "000" + m;
-    }
-
-    if (m < 100) {
         return "00" + m;
     }
 
-    if (m < 1000) {
+    if (m < 100) {
         return "0" + m;
     }
 
-    if (m < 10000) {
+    if (m < 1000) {
         return m;
     }
-    return "error";
 
+    return "error";
 
 }
 

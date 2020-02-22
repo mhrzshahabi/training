@@ -45,7 +45,7 @@
 
     RestDataSource_EducationLevel_JspTeachingHistory = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationUrl + "level/iscList"
+        fetchDataURL: educationLevelUrl + "iscList"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//

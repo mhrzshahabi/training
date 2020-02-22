@@ -183,7 +183,7 @@
             data: [
                 {
                     title: "<spring:message code="evaluation.teacher.supervisor"/>",
-                    icon: "<spring:url value="refresh.png"/>",
+                    <%--icon: "<spring:url value="refresh.png"/>",--%>
                     click: function () {
                         var studentIdJspEvaluation;
                         var evaluationLevelId;
@@ -324,23 +324,39 @@
                                     changed(form, item, value){
                                         DynamicForm_Questions_Body_JspEvaluation.clearValues();
                                         var criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                        var criteriaEdit=
+                                            '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},' +
+                                            '{"fieldName":"questionnaireTypeId","operator":"equals","value":139},' +
+                                            '{"fieldName":"evaluatorId","operator":"equals","value":'+studentIdJspEvaluation+'},' +
+                                            '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
                                         DynamicForm_Questions_Body_JspEvaluation.setFields([]);
                                         // requestEvaluationQuestions(criteria, 1);
                                         switch (value) {
                                             case "Behavioral":
+                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":156}';
+                                                requestEvaluationQuestionsEdit(criteriaEdit);
                                                 requestEvaluationQuestions(criteria, 1);
                                                 evaluationLevelId = 156;
                                                 break;
                                             case "Results":
+                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":157}';
+                                                requestEvaluationQuestionsEdit(criteriaEdit);
                                                 evaluationLevelId = 157;
                                                 requestEvaluationQuestions(criteria, 1);
                                                 break;
                                             case "Reactive":
+
                                                 evaluationLevelId = 154;
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"}';
-                                                requestEvaluationQuestions(criteria, 1);
+                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"},{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
+                                                if(requestEvaluationQuestions(criteria, 1)) {
+                                                    alert(1)
+                                                    criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154}';
+                                                    DynamicForm_Questions_Body_JspEvaluation.editRecord(requestEvaluationQuestionsEdit(criteriaEdit));
+                                                }
                                                 break;
                                             case "Learning":
+                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
+                                                requestEvaluationQuestionsEdit(criteriaEdit);
                                                 evaluationLevelId = 155;
                                                 requestEvaluationQuestions(criteria, 1);
                                                 break;
@@ -368,7 +384,7 @@
                             validateOnExit: true,
                             // height: "*",
                             valuesManager: vm_JspEvaluation,
-                            colWidths: ["29%", "68%"],
+                            colWidths: ["45%", "50%"],
                             cellBorder:1,
                             width: "100%",
                             // borderRadius: "10px 0px",
@@ -403,12 +419,14 @@
                                         data.evaluatedId = ListGrid_evaluation_class.getSelectedRecord().teacherId;
                                         data.evaluatorTypeId = 189;
                                         data.evaluatedTypeId = 187;
+                                        data.questionnaireTypeId = 141;
                                         break;
                                     case "TEFC":
                                         data.evaluatorId = ListGrid_evaluation_class.getSelectedRecord().teacherId;
                                         data.evaluatedId = null;
                                         data.evaluatorTypeId = 187;
                                         data.evaluatedTypeId = null;
+                                        data.questionnaireTypeId = 140;
                                         break;
                                     case "SEFC":
                                         data.evaluatorId = studentIdJspEvaluation;
@@ -416,8 +434,10 @@
                                         data.evaluatorTypeId = 188;
                                         data.evaluatedTypeId = null;
                                         data.evaluationLevelId = evaluationLevelId;
+                                        data.questionnaireTypeId = 139;
                                         break;
                                     case "OEFS":
+                                        data.questionnaireTypeId = 230;
                                         break;
                                 }
                                 data.classId = ListGrid_evaluation_class.getSelectedRecord().id;
@@ -525,7 +545,7 @@
                         let itemList = [];
                         Window_Questions_JspEvaluation.show();
                         function requestEvaluationQuestions(criteria, type=0){
-                            isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
+                            isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
                             localQuestions = JSON.parse(resp.data).response.data;
                             for (let i = 0; i < localQuestions.length; i++) {
                                 let item = {};
@@ -587,6 +607,33 @@
                             }
                         }));
                         }
+                        function requestEvaluationQuestionsEdit(criteria){
+                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/spec-list?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
+                                if(resp.httpResponseCode == 201 || resp.httpResponseCode == 200){
+                                    let data = JSON.parse(resp.data).response.data;
+                                    let record = {};
+                                    if(!data.isEmpty()) {
+                                        let answer = data[0].evaluationAnswerList;
+                                        for (let i = 0; i < answer.length; i++) {
+                                            switch (answer[i].questionSourceId) {
+                                                case 199:
+                                                    record["Q" + answer[i].id] = answer[i].answerId
+                                                    break;
+                                                case 200:
+                                                    record["G" + answer[i].id] = answer[i].answerId
+                                                    break;
+                                                case 201:
+                                                    record["M" + answer[i].id] = answer[i].answerId
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    return record;
+
+                                    console.log(data)
+                                }
+                            }))
+                        }
                         function qustionSourceConvert(s) {
                             switch(s.charAt(0)){
                                 case "G":
@@ -601,28 +648,28 @@
                 },
                 {
                     title: "<spring:message code="refresh"/>",
-                    icon: "<spring:url value="refresh.png"/>",
+                    <%--icon: "<spring:url value="refresh.png"/>",--%>
                     click: function () {
                         ListGrid_evaluation_class.invalidateCache();
                     }
                 },
                 {
                     title: "<spring:message code="create"/>",
-                    icon: "<spring:url value="create.png"/>",
+                    <%--icon: "<spring:url value="create.png"/>",--%>
                     click: function () {
                         create_OperationalUnit();
                     }
                 },
                 {
                     title: "<spring:message code="edit"/>",
-                    icon: "<spring:url value="edit.png"/>",
+                    <%--icon: "<spring:url value="edit.png"/>",--%>
                     click: function () {
                         show_OperationalUnitEditForm();
                     }
                 },
                 {
                     title: "<spring:message code="remove"/>",
-                    icon: "<spring:url value="remove.png"/>",
+                    <%--icon: "<spring:url value="remove.png"/>",--%>
                     click: function () {
                         remove_OperationalUnit();
                     }
@@ -632,21 +679,21 @@
                 },
                 {
                     title: "<spring:message code="print.pdf"/>",
-                    icon: "<spring:url value="pdf.png"/>",
+                    <%--icon: "<spring:url value="pdf.png"/>",--%>
                     click: function () {
                         print_Student_FormIssuance("pdf");
                     }
                 },
                 {
                     title: "<spring:message code="print.excel"/>",
-                    icon: "<spring:url value="excel.png"/>",
+                    <%--icon: "<spring:url value="excel.png"/>",--%>
                     click: function () {
                         print_Student_FormIssuance("excel");
                     }
                 },
                 {
                     title: "<spring:message code="print.html"/>",
-                    icon: "<spring:url value="html.png"/>",
+                    <%--icon: "<spring:url value="html.png"/>",--%>
                     click: function () {
                         print_Student_FormIssuance("html");
                     }

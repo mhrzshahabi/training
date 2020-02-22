@@ -292,22 +292,6 @@
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').setCellStyle('teacher-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').titleStyle = 'teacher-code-title';
 
-    var scrollChart = isc.FacetChart.create({
-        facets: [{
-            id: "season",    // the key used for this facet in the data above
-            title: "Season"  // the user-visible title you want in the chart
-        }],
-        valueProperty: "temp", // the property in our data that is the numerical value to chart
-        data: [
-            {season: "Spring", temp: 79},
-            {season: "Summer", temp: 102},
-            {season: "Autumn", temp: 81},
-            {season: "Winter", temp: 59}
-        ],
-        title: "Average temperature in Las Vegas"
-    });
-
-    <%--<SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>--%>
 
     var IButton_Print_ReactionEvaluation_Evaluation_Analysis = isc.IButton.create({
         top: 260,
@@ -341,7 +325,6 @@
         width: "100%",
         height: "100%",
         members: [DynamicForm_Reaction_EvaluationAnalysis_Header,
-            scrollChart,
             DynamicForm_Reaction_EvaluationAnalysis_Footer,
             Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print]
     });
@@ -503,5 +486,4 @@
 
     DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
     DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
-    scrollChart.hide();
     IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();
