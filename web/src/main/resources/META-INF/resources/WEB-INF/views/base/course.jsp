@@ -2876,7 +2876,6 @@
             ListGrid_Course_Edit();
             taskConfirmationWindow.maximize();
         }
-
     }
 
     function sendToWorkflowAfterUpdate(selectedRecord) {
