@@ -21,4 +21,14 @@
             <column name="n_workflow_status_code" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1582379872426-243">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="c_main_workflow_status" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1582379872426-244">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="n_main_workflow_status_code" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

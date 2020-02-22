@@ -57,6 +57,8 @@ public class NeedsAssessmentDTO implements Serializable {
         private SkillDTO.Info skill;
         private ParameterValueDTO.MinInfo needsAssessmentDomain;
         private ParameterValueDTO.MinInfo needsAssessmentPriority;
+        private String workflowStatus;
+        private Integer workflowStatusCode;
 //        private E object;
     }
 

@@ -98,4 +98,9 @@ public class NeedsAssessment<E> extends Auditable {
     private String workflowStatus;
     @Column(name = "n_workflow_status_code")
     private Integer workflowStatusCode;
+
+    @Column(name = "c_main_workflow_status")
+    private String mainWorkflowStatus;
+    @Column(name = "n_main_workflow_status_code")
+    private Integer mainWorkflowStatusCode;
 }

@@ -82,6 +82,8 @@
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
             {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "workflowStatusCode", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "workflowStatus", title: "<spring:message code="priority"/>", filterOperator: "iContains"}
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
@@ -400,7 +402,7 @@
                 }
             }
             return false;
-        },
+        }
     });
     var ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_Ability_JspNeedsAssessment",
