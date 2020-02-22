@@ -297,7 +297,7 @@
                                             // '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
                                         switch(value){
                                             case "SEFT":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"TRAINING"}';
                                                 criteriaEdit +=
                                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":141},' +
                                                     '{"fieldName":"evaluatorId","operator":"equals","value":<%= SecurityUtil.getUserId()%>},' +
@@ -315,7 +315,7 @@
                                                 Window_AddStudent_JspEvaluation.show();
                                                 return;
                                             case "TEFC":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"}';
+                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"CLASS"}';
                                                 criteriaEdit +=
                                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":140},' +
                                                     '{"fieldName":"evaluatorId","operator":"equals","value":'+teacherIdJspEvaluation+'},' +
