@@ -225,13 +225,14 @@
             }
 
         ],
-        cacheAllData: true
     });
 
     Menu_Courses_NABOP = isc.Menu.create({
         data: [{
             title: "<spring:message code="refresh"/>", click: function () {
-                refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
+                if (postCode == null)
+                    return;
+                refreshLG(CoursesLG_NABOP);
             }
         }, {
             title: "<spring:message code="personnel.choose"/>",
@@ -340,9 +341,6 @@
                 ],
             },
         ],
-        dataArrived: function () {
-            priorities = PriorityDS_NABOP.getCacheData();
-        },
     });
 
     DynamicForm_Title_NABOP = isc.DynamicForm.create({
@@ -360,7 +358,9 @@
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
         click: function () {
-            refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
+            if (postCode == null)
+                return;
+            refreshLG(CoursesLG_NABOP);
         }
     });
     ToolStripButton_ShowPersonnel_NABOP = isc.ToolStripButton.create({
@@ -406,15 +406,15 @@
 
     function PostCodeSearch_result_NABOP(resp) {
         wait_NABOP.close();
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200){
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
             CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode;
-            refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
+            refreshLG(CoursesLG_NABOP);
             DynamicForm_Title_NABOP.getItem("Title_NASB").title =
                 getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().firstName, 2, "red", "b") + " " +
                 getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().lastName, 2, "red", "b");
             DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
             Window_Personnel_NABOP.close();
-        } else if(resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound"){
+        } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
             createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
         } else {
             createDialog("info", "<spring:message code="msg.operation.error"/>");
@@ -422,22 +422,23 @@
     }
 
     function Select_Person_NABOP() {
-            if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
-                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                return;
-            }
-            for (let i = 0; i < 3; i++) {
-                totalDuration[i] = 0;
-                passedDuration[i] = 0;
-            }
-            if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
-                postCode = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
-                wait_NABOP = createDialog("wait");
-                isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" +  postCode, "GET", null, PostCodeSearch_result_NABOP));
-            } else {
-                postCode = null;
-                createDialog("info", "<spring:message code="personnel.without.postCode"/>");
-            }
+        priorities = PriorityDS_NABOP.getCacheData();
+        if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return;
+        }
+        for (let i = 0; i < 3; i++) {
+            totalDuration[i] = 0;
+            passedDuration[i] = 0;
+        }
+        if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
+            postCode = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
+            wait_NABOP = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + postCode, "GET", null, PostCodeSearch_result_NABOP));
+        } else {
+            postCode = null;
+            createDialog("info", "<spring:message code="personnel.without.postCode"/>");
+        }
     }
 
     function print_NABOP(type) {

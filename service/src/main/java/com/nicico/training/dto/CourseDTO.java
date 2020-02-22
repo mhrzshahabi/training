@@ -52,10 +52,9 @@ public class CourseDTO implements Serializable {
     @ApiModelProperty(required = true)
     private String minTeacherDegree;
 
-    @ApiModelProperty(required = true)
     private String description;
 
-    @ApiModelProperty(required = true)
+    @ApiModelProperty
     private String needText;
 
     @ApiModelProperty(required = true)
