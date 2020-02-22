@@ -7,10 +7,13 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.NeedsAssessmentReportsDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.service.NeedsAssessmentReportsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -31,19 +35,26 @@ import java.util.Map;
 public class NeedsAssessmentReportsRestController {
 
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
-    private final ObjectMapper objectMapper;
     private final ReportUtil reportUtil;
+    private final MessageSource messageSource;
 
     @GetMapping(value = "/courses-for-post/{postCode}")
-    public ResponseEntity<ISC<NeedsAssessmentReportsDTO.NeedsCourses>> fullList(HttpServletRequest iscRq,
-                                                                                @PathVariable String postCode) throws IOException {
+    public ResponseEntity fullList(HttpServletRequest iscRq,
+                                   @PathVariable String postCode,
+                                   HttpServletResponse response) throws IOException {
         postCode = postCode.replace('.', '/');
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> searchRs = needsAssessmentReportsService.search(searchRq, postCode);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        try {
+            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> searchRs = needsAssessmentReportsService.search(searchRq, postCode);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        } catch (TrainingException e) {
+            Locale locale = LocaleContextHolder.getLocale();
+            String message = e.getMessage().equals("PostNotFound") ? messageSource.getMessage("needsAssessmentReport.postCode.not.Found",null, locale) : e.getMessage();
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
     }
 
     @Loggable

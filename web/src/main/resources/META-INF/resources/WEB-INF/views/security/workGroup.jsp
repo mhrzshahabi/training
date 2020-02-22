@@ -293,7 +293,7 @@
                 name: "title",
                 title: "<spring:message code="title"/>",
                 required: true,
-                validateOnChange: true,
+                validateOnExit: true,
                 length: 255
             },
             {

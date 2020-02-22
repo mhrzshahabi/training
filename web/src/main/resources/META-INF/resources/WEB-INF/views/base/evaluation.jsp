@@ -182,11 +182,14 @@
         var Menu_ListGrid_evaluation_class = isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="evaluation.teacher.supervisor"/>",
+                    title: "<spring:message code="record.evaluation.results"/>",
                     <%--icon: "<spring:url value="refresh.png"/>",--%>
                     click: function () {
                         var studentIdJspEvaluation;
+                        var teacherIdJspEvaluation = ListGrid_evaluation_class.getSelectedRecord().teacherId;
                         var evaluationLevelId;
+                        var saveMethod;
+                        var saveUrl = evaluationUrl;
                         var valueMapAnswer = {209: "خیلی ضعیف", 208: "ضعیف", 207: "متوسط", 206: "خوب", 205: "عالی"};
                         var RestData_EvaluationType_JspEvaluation = isc.TrDS.create({
                             fields: [
@@ -287,9 +290,20 @@
                                         var criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
                                         DynamicForm_Questions_Body_JspEvaluation.setFields([]);
                                         form.getItem("evaluationLevel").disable();
+                                        var criteriaEdit=
+                                            '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},';
+                                            // '{"fieldName":"questionnaireTypeId","operator":"equals","value":139},' +
+                                            // '{"fieldName":"evaluatorId","operator":"equals","value":'+studentIdJspEvaluation+'},' +
+                                            // '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
                                         switch(value){
                                             case "SEFT":
                                                 criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                                criteriaEdit +=
+                                                    '{"fieldName":"questionnaireTypeId","operator":"equals","value":141},' +
+                                                    '{"fieldName":"evaluatorId","operator":"equals","value":<%= SecurityUtil.getUserId()%>},' +
+                                                    '{"fieldName":"evaluatorTypeId","operator":"equals","value":189},' +
+                                                    '{"fieldName":"evaluatedId","operator":"equals","value":'+teacherIdJspEvaluation+'},' +
+                                                    '{"fieldName":"evaluatedTypeId","operator":"equals","value":187}';
                                                 form.setValue("evaluator", form.getValue("user"));
                                                 form.setValue("evaluated", form.getValue("teacher"));
                                                 break;
@@ -299,17 +313,25 @@
                                                 form.setValue("evaluated", form.getValue("titleClass"));
                                                 RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + ListGrid_evaluation_class.getSelectedRecord().id;
                                                 Window_AddStudent_JspEvaluation.show();
-                                                break;
+                                                return;
                                             case "TEFC":
                                                 criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"}';
+                                                criteriaEdit +=
+                                                    '{"fieldName":"questionnaireTypeId","operator":"equals","value":140},' +
+                                                    '{"fieldName":"evaluatorId","operator":"equals","value":'+teacherIdJspEvaluation+'},' +
+                                                    '{"fieldName":"evaluatorTypeId","operator":"equals","value":187}';
                                                 form.setValue("evaluator", form.getValue("teacher"));
                                                 form.setValue("evaluated", form.getValue("titleClass"));
                                                 break;
                                             case "OEFS":
                                                 criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                                criteriaEdit +=
+                                                    '{"fieldName":"questionnaireTypeId","operator":"equals","value":230},' +
+                                                    '{"fieldName":"evaluatorId","operator":"equals","value":'+studentIdJspEvaluation+'},' +
+                                                    '{"fieldName":"evaluatorTypeId","operator":"equals","value":188}';
                                                 break;
                                         }
-                                        requestEvaluationQuestions(criteria)
+                                        requestEvaluationQuestions(criteria, criteriaEdit)
                                     }
                                 },
                                 {
@@ -334,31 +356,24 @@
                                         switch (value) {
                                             case "Behavioral":
                                                 criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":156}';
-                                                requestEvaluationQuestionsEdit(criteriaEdit);
-                                                requestEvaluationQuestions(criteria, 1);
                                                 evaluationLevelId = 156;
+                                                requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                                 break;
                                             case "Results":
                                                 criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":157}';
-                                                requestEvaluationQuestionsEdit(criteriaEdit);
                                                 evaluationLevelId = 157;
-                                                requestEvaluationQuestions(criteria, 1);
+                                                requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                                 break;
                                             case "Reactive":
-
                                                 evaluationLevelId = 154;
                                                 criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"},{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
-                                                if(requestEvaluationQuestions(criteria, 1)) {
-                                                    alert(1)
-                                                    criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154}';
-                                                    DynamicForm_Questions_Body_JspEvaluation.editRecord(requestEvaluationQuestionsEdit(criteriaEdit));
-                                                }
+                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154}';
+                                                requestEvaluationQuestions(criteria, criteriaEdit,  1);
                                                 break;
                                             case "Learning":
-                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
-                                                requestEvaluationQuestionsEdit(criteriaEdit);
                                                 evaluationLevelId = 155;
-                                                requestEvaluationQuestions(criteria, 1);
+                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
+                                                requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                                 break;
                                             default:
                                                 break;
@@ -399,7 +414,6 @@
                                 let evaluationAnswerList = [];
                                 let data = {}
                                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
-                                console.log(questions)
                                 for (let i = 0; i < questions.length; i++) {
                                     console.log(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name))
                                     if(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined){
@@ -441,8 +455,10 @@
                                         break;
                                 }
                                 data.classId = ListGrid_evaluation_class.getSelectedRecord().id;
-                                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
-                                    alert(resp.httpResponseCode)
+                                isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
+                                    if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
+                                        Window_Questions_JspEvaluation.close();
+                                    }
                                 }))
                             }
                         });
@@ -544,7 +560,7 @@
                         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
                         let itemList = [];
                         Window_Questions_JspEvaluation.show();
-                        function requestEvaluationQuestions(criteria, type=0){
+                        function requestEvaluationQuestions(criteria, criteriaEdit, type=0){
                             isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
                             localQuestions = JSON.parse(resp.data).response.data;
                             for (let i = 0; i < localQuestions.length; i++) {
@@ -600,10 +616,12 @@
                                         itemList.add(item);
                                     }
                                     DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                                    requestEvaluationQuestionsEdit(criteriaEdit);
                                 }));
                             }
                             else {
                                 DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                                requestEvaluationQuestionsEdit(criteriaEdit);
                             }
                         }));
                         }
@@ -617,20 +635,23 @@
                                         for (let i = 0; i < answer.length; i++) {
                                             switch (answer[i].questionSourceId) {
                                                 case 199:
-                                                    record["Q" + answer[i].id] = answer[i].answerId
+                                                    record["Q" + answer[i].evaluationQuestionId] = answer[i].answerId
                                                     break;
                                                 case 200:
-                                                    record["G" + answer[i].id] = answer[i].answerId
+                                                    record["M" + answer[i].evaluationQuestionId] = answer[i].answerId
                                                     break;
                                                 case 201:
-                                                    record["M" + answer[i].id] = answer[i].answerId
+                                                    record["G" + answer[i].evaluationQuestionId] = answer[i].answerId
                                                     break;
                                             }
                                         }
+                                        DynamicForm_Questions_Body_JspEvaluation.setValues(record)
+                                        saveMethod = "PUT";
+                                        saveUrl = evaluationUrl + "/" + data[0].id;
+                                        return;
                                     }
-                                    return record;
-
-                                    console.log(data)
+                                    saveMethod = "POST";
+                                    saveUrl = evaluationUrl;
                                 }
                             }))
                         }
