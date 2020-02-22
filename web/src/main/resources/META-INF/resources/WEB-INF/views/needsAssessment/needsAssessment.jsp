@@ -76,19 +76,22 @@
                         })
                     }
                 }
-            }),
-            isc.ToolStripButton.create({
-                title: "<spring:message code="send.to.committee.workflow"/>",
-                click: function () {
-                    sendNeedAssessment_CommitteeToWorkflow();
-                }
-            }),
-            isc.ToolStripButton.create({
-                title: "<spring:message code="send.to.main.workflow"/>",
-                click: function () {
-                    sendNeedAssessment_MainWorkflow();
-                }
             })
+            <%--,--%>
+            <%--isc.ToolStripButton.create({--%>
+                <%--title: "<spring:message code="send.to.committee.workflow"/>",--%>
+                <%--click: function () {--%>
+                    <%--alert("s")--%>
+                    <%--sendNeedAssessment_CommitteeToWorkflow();--%>
+                <%--}--%>
+            <%--}),--%>
+            <%--isc.ToolStripButton.create({--%>
+                <%--title: "<spring:message code="send.to.main.workflow"/>",--%>
+                <%--click: function () {--%>
+                    <%--alert("f")--%>
+                    <%--sendNeedAssessment_MainWorkflow();--%>
+                <%--}--%>
+            <%--})--%>
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
@@ -142,8 +145,27 @@
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
-        recordDoubleClick() {
+        recordDoubleClick: function () {
             editButtonJspNeedsAsessment.click()
+        },
+        dataArrived: function () {
+            // alert("here")
+            // groupStartOpen: "all"
+
+            // console.log(ListGrid_NeedsAssessment_JspNeedAssessment.getRecord(0));
+            // ListGrid_NeedsAssessment_JspNeedAssessment.expandRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getRecord(0));
+
+            // let gridState = "[{id:" + 5 + "}]";
+            //
+            // ListGrid_NeedsAssessment_JspNeedAssessment.setSelectedState(gridState);
+            //
+            // ListGrid_NeedsAssessment_JspNeedAssessment.scrollToRow(ListGrid_NeedsAssessment_JspNeedAssessment.getRecordIndex(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()), 0);
+            //
+            // ListGrid_NeedsAssessment_JspNeedAssessment.expandRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord());
+
+            console.log(ListGrid_NeedsAssessment_JspNeedAssessment.getGroupTreeSelection());
+
+            // selectWorkflowRecord();
         }
     });
 
@@ -1026,6 +1048,31 @@
         } else {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
         }
+    }
+
+    var needs_workflowParameters = null;
+
+    function selectWorkflowRecord() {
+
+        if (workflowRecordId !== null) {
+
+            needs_workflowParameters = workflowParameters;
+
+            let gridState = "[{id:" + workflowRecordId + "}]";
+
+            ListGrid_NeedsAssessment_JspNeedAssessment.setSelectedState(gridState);
+
+            ListGrid_NeedsAssessment_JspNeedAssessment.scrollToRow(ListGrid_NeedsAssessment_JspNeedAssessment.getRecordIndex(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()), 0);
+
+            ListGrid_NeedsAssessment_JspNeedAssessment.expandRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord());
+
+            workflowRecordId = null;
+            workflowParameters = null;
+
+            // ListGrid_Course_Edit();
+            taskConfirmationWindow.maximize();
+        }
+
     }
 
 
