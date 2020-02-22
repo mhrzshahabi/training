@@ -6,10 +6,19 @@
             <column name="pre_test_score" type="float"/>
         </addColumn>
     </changeSet>
-
     <changeSet author="rastegari_h (generated)" id="1582037610493-240">
         <addColumn tableName="tbl_evaluation">
             <column name="f_questionnaire_type_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1582358673106-243">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="c_workflow_status" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1582358673106-244">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="n_workflow_status_code" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
