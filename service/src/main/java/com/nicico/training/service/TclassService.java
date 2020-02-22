@@ -413,7 +413,7 @@ public class TclassService implements ITclassService {
                             weight = questionnaireQuestion.getWeight();
                         }
                         grade = Double.parseDouble(answer.getAnswer().getValue());
-                        if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("PRF")) { // teacher
+                        if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
                             teacherTotalGrade += grade * weight;
                             teacherTotalWeight += weight;
                         } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
