@@ -66,6 +66,19 @@
                 click: function () {
                     sendNeedAssessment_MainWorkflow();
                 }
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                            ListGrid_NeedsAssessment_JspNeedAssessment.invalidateCache();
+                            ListGrid_NeedsAssessment_JspNeedAssessment.fetchData();
+                        }
+                    })
+                ]
             })
         ]
     });
@@ -235,9 +248,9 @@
     CompetenceTS_needsAssessment = isc.ToolStrip.create({
         ID: "CompetenceTS_needsAssessment",
         members: [
-            isc.ToolStripButtonRefresh.create({
-                click: function () { refreshLG(ListGrid_Competence_JspNeedsAssessment); }
-            }),
+            // isc.ToolStripButtonRefresh.create({
+            //     click: function () { refreshLG(ListGrid_Competence_JspNeedsAssessment); }
+            // }),
             isc.ToolStripButtonAdd.create({
                 title:"افزودن",
                 click: function () {
