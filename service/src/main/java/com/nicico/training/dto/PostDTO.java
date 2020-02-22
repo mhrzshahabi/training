@@ -35,4 +35,14 @@ public class PostDTO implements Serializable {
 
 //        private DepartmentDTO.Info department;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Post - TupleInfo")
+    public static class TupleInfo {
+        private Long id;
+        private String code;
+        private String titleFa;
+    }
 }

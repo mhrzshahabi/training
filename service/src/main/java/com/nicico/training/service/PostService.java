@@ -59,7 +59,7 @@ public class PostService implements IPostService {
     @Override
     public Post getByPostCode(String postCode) {
         Optional<Post> optionalPost = postDAO.findByCode(postCode);
-        return optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound));
     }
 
     @Transactional(readOnly = true)
