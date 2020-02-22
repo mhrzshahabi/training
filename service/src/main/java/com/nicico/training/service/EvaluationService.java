@@ -124,11 +124,15 @@ public class EvaluationService implements IEvaluationService {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("EvaluatorType");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if (parameterValue.getCode().equalsIgnoreCase("3"))
+            if (parameterValue.getCode().equalsIgnoreCase("32"))
                 evaluatorTypeId = parameterValue.getId();
         }
-        return evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(
-                classId, studentId, evaluatorTypeId).get(0);
+        List<Evaluation> evaluations = evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(
+                classId, studentId, evaluatorTypeId);
+        if(evaluations.size() != 0)
+            return evaluations.get(0);
+        else
+            return null;
     }
 
     @Override
@@ -137,11 +141,35 @@ public class EvaluationService implements IEvaluationService {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("EvaluatorType");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if (parameterValue.getCode().equalsIgnoreCase("1"))
+            if (parameterValue.getCode().equalsIgnoreCase("11"))
                 evaluatorTypeId = parameterValue.getId();
         }
-        return evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(
-                classId, teacherId, evaluatorTypeId).get(0);
+        List<Evaluation> evaluations = evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(
+                classId, teacherId, evaluatorTypeId);
+        if(evaluations.size() != 0)
+            return evaluations.get(0);
+        else
+            return null;
+    }
+
+    @Override
+    public Evaluation getTrainingEvaluationForTeacher(Long teacherId, Long classId, Long trainingId) {
+        Long evaluatorTypeId = null;
+        Long evaluatedTypeId = null;
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("EvaluatorType");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("4"))
+                evaluatorTypeId = parameterValue.getId();
+            if (parameterValue.getCode().equalsIgnoreCase("11"))
+                evaluatedTypeId = parameterValue.getId();
+        }
+        List<Evaluation> evaluations = evaluationDAO.findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(
+                classId,trainingId,evaluatorTypeId,teacherId,evaluatedTypeId);
+        if(evaluations.size() != 0)
+                return evaluations.get(0);
+        else
+            return null;
     }
 
     //    @Override
