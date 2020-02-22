@@ -499,7 +499,7 @@
                             width:1024,
                             height:768,
                             keepInParentRect: true,
-                            title: "<spring:message code="evaluation.teacher.supervisor"/>",
+                            title: "<spring:message code="record.evaluation.results"/>",
                             items: [
                                 DynamicForm_Questions_Title_JspEvaluation,
                                 DynamicForm_Questions_Body_JspEvaluation,
