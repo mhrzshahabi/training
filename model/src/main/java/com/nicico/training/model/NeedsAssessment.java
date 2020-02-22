@@ -93,4 +93,9 @@ public class NeedsAssessment<E> extends Auditable {
             add("PostGradeGroup");
         }
     };
+
+    @Column(name = "c_workflow_status")
+    private String workflowStatus;
+    @Column(name = "n_workflow_status_code")
+    private Integer workflowStatusCode;
 }
