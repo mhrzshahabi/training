@@ -30,7 +30,7 @@
     });
     var ToolStrip_NeedsAssessment_JspNeedAssessment = isc.ToolStrip.create({
         members: [
-            isc.ToolStripButtonAdd.create({
+            isc.ToolStripButtonCreate.create({
                 click: function () {
                     NeedsAssessmentTargetDF_needsAssessment.clearValues();
                     updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, "Job");
@@ -70,14 +70,14 @@
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
-        groupByField:["objectType", "objectName", "competence.title"],
+        groupByField:["objectType", "objectName"],
         groupStartOpen: "none",
         autoFetchData: true,
         fields:[
             {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true, valueMap: priorityList},
             {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true},
             {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", hidden: true},
+            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains"},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
@@ -226,7 +226,7 @@
             {name: "skillId", primaryKey: true, filterOperator: "iContains", hidden:true},
             {name: "competenceId", filterOperator: "iContains", hidden:true},
             {name: "objectId", filterOperator: "iContains", hidden:true},
-            {name: "objectType", primaryKey: true, filterOperator: "iContains", valueMap: priorityList},
+            {name: "objectType", title: "<spring:message code="type"/>", primaryKey: true, filterOperator: "iContains", valueMap: priorityList},
         ],
         testData: skillData,
         clientOnly: true,

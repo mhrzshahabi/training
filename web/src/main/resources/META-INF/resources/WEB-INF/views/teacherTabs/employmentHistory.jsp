@@ -160,11 +160,17 @@
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
+                        if (DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
+                            DynamicForm_JspEmploymentHistory.getField("endDate").setValue(todayDate);
+                        }
                         dateCheck_Order_JSPEmpHistory = false;
                         startDateCheck_JSPEmpHistory = true;
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     } else {
+                        if (DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
+                            DynamicForm_JspEmploymentHistory.getField("endDate").setValue(todayDate);
+                        }
                         startDateCheck_JSPEmpHistory = true;
                         dateCheck_Order_JSPEmpHistory = true;
                         form.clearFieldErrors("startDate", true);
@@ -251,18 +257,12 @@
                     DynamicForm_JspEmploymentHistory.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                 }
 
-                <%--if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined){--%>
-                <%--    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);--%>
-                <%--    DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);--%>
-                <%--}--%>
                 return;
             }
 
             if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
                 DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
                 DynamicForm_JspEmploymentHistory.getField("endDate").setValue(todayDate);
-                <%--DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);--%>
-                // return;
             }
 
             waitEmploymentHistory = createDialog("wait");

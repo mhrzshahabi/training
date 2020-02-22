@@ -203,11 +203,17 @@
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
+                        if (DynamicForm_JspTeachingHistory.getValue("endDate") == undefined) {
+                            DynamicForm_JspTeachingHistory.getField("endDate").setValue(todayDate);
+                        }
                         dateCheck_Order_JSPTeachHistory = false;
                         startDateCheck_JSPTeachHistory = true;
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     } else {
+                        if (DynamicForm_JspTeachingHistory.getValue("endDate") == undefined) {
+                            DynamicForm_JspTeachingHistory.getField("endDate").setValue(todayDate);
+                        }
                         startDateCheck_JSPTeachHistory = true;
                         dateCheck_Order_JSPTeachHistory = true;
                         form.clearFieldErrors("startDate", true);
@@ -292,18 +298,14 @@
                     DynamicForm_JspTeachingHistory.clearFieldErrors("startDate", true);
                     DynamicForm_JspTeachingHistory.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                 }
-                if (DynamicForm_JspTeachingHistory.getValue("startDate") != undefined && DynamicForm_JspTeachingHistory.getValue("endDate") == undefined){
-                    DynamicForm_JspTeachingHistory.clearFieldErrors("endDate", true);
-                    DynamicForm_JspTeachingHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
-                }
                 return;
             }
 
             if (DynamicForm_JspTeachingHistory.getValue("startDate") != undefined && DynamicForm_JspTeachingHistory.getValue("endDate") == undefined) {
                 DynamicForm_JspTeachingHistory.clearFieldErrors("endDate", true);
-                DynamicForm_JspTeachingHistory.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
-                return;
+                DynamicForm_JspTeachingHistory.getField("endDate").setValue(todayDate);
             }
+
             waitTeachingHistory = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeachingHistory,
                 methodTeachingHistory,
