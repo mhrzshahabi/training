@@ -1159,6 +1159,7 @@
                 name: "evaluation",
                 title: "<spring:message code="evaluation.level"/>",
                 colSpan: 1,
+                editorType: "ComboBoxItem",
                 textAlign: "center",
                 type: "select",
                 endRow: false,
