@@ -1,16 +1,12 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.EvaluationAnswer;
-import com.nicico.training.model.ParameterValue;
-import com.nicico.training.model.Tclass;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -48,6 +44,7 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Info")
     public static class Info extends EvaluationDTO {
+        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
         private Long id;
     }
 
@@ -63,9 +60,11 @@ public class EvaluationDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Evaluation - Update")
-    public static class Update extends Create {
-        private Long id;
-        private Integer version;
+    public static class Update {
+        //        private Long id;
+//        private Integer version;
+        private String description;
+        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
     }
 
     @Getter

@@ -14,6 +14,7 @@
     var passedDuration = [0, 0, 0];
     var passedStatusId = "216";
     var priorities;
+    var wait_NABOP;
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*personnel form*/
@@ -87,7 +88,7 @@
             },
             {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
+        fetchDataURL: personnelUrl + "/iscList"
     });
 
     Menu_Personnel_NABOP = isc.Menu.create({
@@ -103,7 +104,6 @@
         contextMenu: Menu_Personnel_NABOP,
         selectionType: "single",
         fields: [
-            {name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
@@ -118,35 +118,12 @@
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
+        rowDoubleClick: Select_Person_NABOP
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: function () {
-            if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
-                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                return;
-            }
-            for (let i = 0; i < 3; i++) {
-                totalDuration[i] = 0;
-                passedDuration[i] = 0;
-            }
-            if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
-                postCode = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
-                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode;
-                refreshLG(CoursesLG_NABOP);
-            } else {
-                postCode = null;
-                CourseDS_NABOP.fetchDataURL = null;
-                CoursesLG_NABOP.setData([]);
-                createDialog("info", "<spring:message code="personnel.without.postCode"/>");
-            }
-            DynamicForm_Title_NABOP.getItem("Title_NASB").title =
-                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().firstName, 2, "red", "b") + " " +
-                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().lastName, 2, "red", "b");
-            DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
-            Window_Personnel_NABOP.close();
-        }
+        click: Select_Person_NABOP
     });
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -248,15 +225,13 @@
             }
 
         ],
-        cacheAllData: true,
+        cacheAllData: true
     });
 
     Menu_Courses_NABOP = isc.Menu.create({
         data: [{
             title: "<spring:message code="refresh"/>", click: function () {
-                if (postCode == null)
-                    return;
-                refreshLG(CoursesLG_NABOP);
+                refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
             }
         }, {
             title: "<spring:message code="personnel.choose"/>",
@@ -289,16 +264,13 @@
         contextMenu: Menu_Courses_NABOP,
         selectionType: "single",
         filterLocally: true,
-
+        autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
         groupByField: "needsAssessmentPriorityId",
         groupStartOpen: "all",
         showGroupSummary: true,
-
-
         fields: [
-            {name: "id", hidden: true},
             {name: "code"},
             {name: "titleFa"},
             {
@@ -367,11 +339,10 @@
                     {name: "title", width: "30%"}
                 ],
             },
-
         ],
         dataArrived: function () {
             priorities = PriorityDS_NABOP.getCacheData();
-        }
+        },
     });
 
     DynamicForm_Title_NABOP = isc.DynamicForm.create({
@@ -389,9 +360,7 @@
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
         click: function () {
-            if (postCode == null)
-                return;
-            refreshLG(CoursesLG_NABOP);
+            refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
         }
     });
     ToolStripButton_ShowPersonnel_NABOP = isc.ToolStripButton.create({
@@ -434,6 +403,42 @@
     //--------------------------------------------------------------------------------------------------------------------//
     //*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
+
+    function PostCodeSearch_result_NABOP(resp) {
+        wait_NABOP.close();
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200){
+            CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode;
+            refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
+            DynamicForm_Title_NABOP.getItem("Title_NASB").title =
+                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().firstName, 2, "red", "b") + " " +
+                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().lastName, 2, "red", "b");
+            DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
+            Window_Personnel_NABOP.close();
+        } else if(resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound"){
+            createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
+        } else {
+            createDialog("info", "<spring:message code="msg.operation.error"/>");
+        }
+    }
+
+    function Select_Person_NABOP() {
+            if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            for (let i = 0; i < 3; i++) {
+                totalDuration[i] = 0;
+                passedDuration[i] = 0;
+            }
+            if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
+                postCode = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
+                wait_NABOP = createDialog("wait");
+                isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" +  postCode, "GET", null, PostCodeSearch_result_NABOP));
+            } else {
+                postCode = null;
+                createDialog("info", "<spring:message code="personnel.without.postCode"/>");
+            }
+    }
 
     function print_NABOP(type) {
         let selectedPerson = PersonnelsLG_NABOP.getSelectedRecord();

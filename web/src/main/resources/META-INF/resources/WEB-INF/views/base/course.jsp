@@ -2909,7 +2909,6 @@
                     params: {"taskId": course_workflowParameters.taskId, "usr": course_workflowParameters.usr},
                     serverOutputAsString: false,
                     callback: function (RpcResponse_o) {
-                        console.log(RpcResponse_o);
                         if (RpcResponse_o.data === 'success') {
 
                             ListGrid_Course_refresh();
