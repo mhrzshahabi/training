@@ -685,6 +685,10 @@
     font-size: 12px !important;
 }
 
+.evaluation-form .labelAnchorOverRTL {
+    font-size: 12px !important;
+}
+
 .uploadButton{
     text-align: center;
 }
@@ -724,6 +728,37 @@
    font-size: 13px;
 }
 
+.evaluation-code-pass-labelRTL{
+    background-color:  #f3f3f3;
+    color: #05a74a;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.evaluation-code-fail-labelRTL{
+    background-color: #f3f3f3;
+    color: #FF0000;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.evaluation-code-labelRTL{
+    background-color: #f3f3f3;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.evaluation-code-titleRTL{
+    font-weight: bold;
+    font-size: 12px;
+    color: #374b71;
+}
 
 /************************ switch Button **************************/
 .switch-btn {
