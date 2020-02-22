@@ -219,7 +219,7 @@
         canRemoveRecords: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-        validateOnChange: true,
+        validateOnExit: true,
         validateByCell: true,
         canSort: false,
         showFilterEditor: false,

@@ -9,11 +9,11 @@
 
 // <script>
 
-    var postCode = null;
-    var totalDuration = [0, 0, 0];
-    var passedDuration = [0, 0, 0];
-    var passedStatusId = "216";
-    var priorities;
+    var postCode_NABOP = null;
+    var totalDuration_NABOP = [0, 0, 0];
+    var passedDuration_NABOP = [0, 0, 0];
+    var passedStatusId_NABOP = "216";
+    var priorities_NABOP;
     var wait_NABOP;
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -225,13 +225,14 @@
             }
 
         ],
-        cacheAllData: true
     });
 
     Menu_Courses_NABOP = isc.Menu.create({
         data: [{
             title: "<spring:message code="refresh"/>", click: function () {
-                refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
+                if (postCode_NABOP == null)
+                    return;
+                refreshLG(CoursesLG_NABOP);
             }
         }, {
             title: "<spring:message code="personnel.choose"/>",
@@ -283,24 +284,24 @@
                             total += records[i].theoryDuration;
                         }
                         if (total !== 0)
-                            totalDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = total;
+                            totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = total;
                         return "<spring:message code="duration.hour.sum"/>" + total;
                     },
                     function (records) {
                         let passed = 0;
                         for (let i = 0; i < records.length; i++) {
-                            if (records[i].status === passedStatusId)
+                            if (records[i].status === passedStatusId_NABOP)
                                 passed += records[i].theoryDuration;
                         }
                         if (passed !== 0)
-                            passedDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = passed;
+                            passedDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = passed;
                         return "<spring:message code="duration.hour.sum.passed"/>" + passed;
                     },
                     function (records) {
-                        if (!records.isEmpty() && totalDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] !== 0) {
+                        if (!records.isEmpty() && totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] !== 0) {
                             return "<spring:message code="duration.percent.passed"/>" +
-                                Math.round(passedDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] /
-                                    totalDuration[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] * 100);
+                                Math.round(passedDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] /
+                                    totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] * 100);
                         }
                         return "<spring:message code="duration.percent.passed"/>" + 0;
                     }
@@ -340,9 +341,6 @@
                 ],
             },
         ],
-        dataArrived: function () {
-            priorities = PriorityDS_NABOP.getCacheData();
-        },
     });
 
     DynamicForm_Title_NABOP = isc.DynamicForm.create({
@@ -360,7 +358,9 @@
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
         click: function () {
-            refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
+            if (postCode_NABOP == null)
+                return;
+            refreshLG(CoursesLG_NABOP);
         }
     });
     ToolStripButton_ShowPersonnel_NABOP = isc.ToolStripButton.create({
@@ -406,15 +406,15 @@
 
     function PostCodeSearch_result_NABOP(resp) {
         wait_NABOP.close();
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200){
-            CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode;
-            refreshLG(CoursesLG_NABOP, CoursesLG_NABOP.fetchData);
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
+            CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode_NABOP;
+            refreshLG(CoursesLG_NABOP);
             DynamicForm_Title_NABOP.getItem("Title_NASB").title =
                 getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().firstName, 2, "red", "b") + " " +
                 getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().lastName, 2, "red", "b");
             DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
             Window_Personnel_NABOP.close();
-        } else if(resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound"){
+        } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
             createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
         } else {
             createDialog("info", "<spring:message code="msg.operation.error"/>");
@@ -422,22 +422,23 @@
     }
 
     function Select_Person_NABOP() {
-            if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
-                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                return;
-            }
-            for (let i = 0; i < 3; i++) {
-                totalDuration[i] = 0;
-                passedDuration[i] = 0;
-            }
-            if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
-                postCode = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
-                wait_NABOP = createDialog("wait");
-                isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" +  postCode, "GET", null, PostCodeSearch_result_NABOP));
-            } else {
-                postCode = null;
-                createDialog("info", "<spring:message code="personnel.without.postCode"/>");
-            }
+        priorities_NABOP = PriorityDS_NABOP.getCacheData();
+        if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return;
+        }
+        for (let i = 0; i < 3; i++) {
+            totalDuration_NABOP[i] = 0;
+            passedDuration_NABOP[i] = 0;
+        }
+        if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined) {
+            postCode_NABOP = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
+            wait_NABOP = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + postCode_NABOP, "GET", null, PostCodeSearch_result_NABOP));
+        } else {
+            postCode_NABOP = null;
+            createDialog("info", "<spring:message code="personnel.without.postCode"/>");
+        }
     }
 
     function print_NABOP(type) {
@@ -490,12 +491,12 @@
         criteriaForm_course.setValue("essentialRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AZ")]));
         criteriaForm_course.setValue("improvingRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AB")]));
         criteriaForm_course.setValue("developmentalRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AT")]));
-        criteriaForm_course.setValue("totalEssentialHours", JSON.stringify(totalDuration[getIndexByCode_NABOP("AZ")]));
-        criteriaForm_course.setValue("passedEssentialHours", JSON.stringify(passedDuration[getIndexByCode_NABOP("AZ")]));
-        criteriaForm_course.setValue("totalImprovingHours", JSON.stringify(totalDuration[getIndexByCode_NABOP("AB")]));
-        criteriaForm_course.setValue("passedImprovingHours", JSON.stringify(passedDuration[getIndexByCode_NABOP("AB")]));
-        criteriaForm_course.setValue("totalDevelopmentalHours", JSON.stringify(totalDuration[getIndexByCode_NABOP("AT")]));
-        criteriaForm_course.setValue("passedDevelopmentalHours", JSON.stringify(passedDuration[getIndexByCode_NABOP("AT")]));
+        criteriaForm_course.setValue("totalEssentialHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("passedEssentialHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("totalImprovingHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AB")]));
+        criteriaForm_course.setValue("passedImprovingHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AB")]));
+        criteriaForm_course.setValue("totalDevelopmentalHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AT")]));
+        criteriaForm_course.setValue("passedDevelopmentalHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AT")]));
         criteriaForm_course.setValue("personnel", JSON.stringify(personnel));
         criteriaForm_course.setValue("myToken", "<%=accessToken%>");
         criteriaForm_course.show();
@@ -503,15 +504,15 @@
     }
 
     function getIndexById_NABOP(needsAssessmentPriorityId) {
-        for (let i = 0; i < priorities.length; i++) {
-            if (priorities[i].id === needsAssessmentPriorityId)
+        for (let i = 0; i < priorities_NABOP.length; i++) {
+            if (priorities_NABOP[i].id === needsAssessmentPriorityId)
                 return i;
         }
     }
 
     function getIndexByCode_NABOP(code) {
-        for (let i = 0; i < priorities.length; i++) {
-            if (priorities[i].code === code)
+        for (let i = 0; i < priorities_NABOP.length; i++) {
+            if (priorities_NABOP[i].code === code)
                 return i;
         }
     }
