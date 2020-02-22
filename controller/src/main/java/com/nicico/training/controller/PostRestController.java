@@ -9,11 +9,13 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -37,6 +40,7 @@ public class PostRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
+    private final ModelMapper modelMapper;
 
 
     @GetMapping("/list")
@@ -52,6 +56,16 @@ public class PostRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @GetMapping("/{postCode}")
+    public ResponseEntity get(@PathVariable String postCode) {
+        postCode = postCode.replace('.', '/');
+        try {
+            return new ResponseEntity<>(modelMapper.map(postService.getByPostCode(postCode), PostDTO.TupleInfo.class), HttpStatus.OK);
+        } catch (TrainingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(value = "/unassigned-iscList")
