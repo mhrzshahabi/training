@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
@@ -43,5 +44,27 @@ public class unjustifiedAbsenceRestController {
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         reportUtil.export("/reports/unjustified_absence.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @PostMapping(value = {"/printPreTestScore"})
+    public void prin(HttpServletResponse response, @RequestParam(value = "startDate") String startDate, @RequestParam(value = "endDate") String endDate)  throws Exception{
+
+        startDate = startDate.substring(0, 4) + "/" + startDate.substring(4, 6) + "/" + startDate.substring(6, 8);
+        endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
+
+        Object object=unjustifiedAbsenceService.PreTestScore(startDate,endDate);
+       String str=((List) object).toArray()[0].toString();
+
+        String data = null;
+        data = "{" + "\"PreTestScore\": " + objectMapper.writeValueAsString(object) + "}";
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+       // params.put("preTestScore",.);
+
+        JsonDataSource jsonDataSource = null;
+        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
+        reportUtil.export("/reports/printPreTestScore.jasper", params, jsonDataSource, response);
     }
 }

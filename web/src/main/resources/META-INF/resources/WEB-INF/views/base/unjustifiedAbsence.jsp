@@ -10,17 +10,17 @@
 
     var endDateCheckReport = true;
     var DynamicForm_Report = isc.DynamicForm.create({
-        colWidths: ["50", "210", "50", "230", "150"],
-        numCols: 5,
+       numCols: 9,
+        colWidths: ["5%","10%","5%","10%","10%","20%"],
         fields: [
             {
 
                 name: "startDate",
                 height: 35,
+                titleAlign:"left",
                 title: "از تاریخ",
                 ID: "startDate_jspReport",
                 type: 'text',
-                width: 200,
                 required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
@@ -55,12 +55,13 @@
                     }
                 }
             },
+
             {
                 name: "endDate",
                 height: 35,
+                titleAlign:"left",
                 title: "تا تاریخ",
                 ID: "endDate_jspReport",
-                width: 200,
                 type: 'text',
                 enabled: false,
                 required: true,
@@ -110,10 +111,12 @@
             },
             {
                  type: "button",
-                 title: "کلیک",
+                 title: "گزارش غيبت ناموجه",
                  height:"30",
+                 align:"left",
+                 endRow:false,
                  startRow: false,
-                 width:"*",
+
                 click:function () {
                     if (endDateCheckReport == false)
                         return;
@@ -126,7 +129,26 @@
                     var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
                    Print(strSData,strEData)
                 }
+            },
+            {
+                type: "button",
+                startRow:false,
+                align:"left",
+                title: "ليست افراد با نمره پيش تست بيشتر از حد مجاز",
+                height:"30",
+               click:function () {
+                    if (endDateCheckReport == false)
+                        return;
+                    if (!DynamicForm_Report.validate()) {
+                        return;
+                    }
+                    var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
+                    var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
+                    PrintPreTest(strSData,strEData)
+                }
+
             }
+
         ]
     })
 
@@ -152,4 +174,21 @@
             criteriaForm.setValue("token", "<%= accessToken %>")
         criteriaForm.show();
         criteriaForm.submitForm();
+        }
+
+        function  PrintPreTest(startDate,endDate)
+        {
+            var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/unjustified/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "token", type: "hidden"}
+                    ]
+            })
+            criteriaForm.setValue("token", "<%= accessToken %>")
+            criteriaForm.show();
+            criteriaForm.submitForm();
         }

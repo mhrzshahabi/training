@@ -24,4 +24,17 @@ public class UnjustifiedAbsenceService  {
         }
         return (unjustifiedAbsenceDTOList);
     }
+
+    public List<unjustifiedAbsenceDTO.printScoreInfo> PreTestScore(String startDate, String endDate)
+    {
+        List<Object> list = new ArrayList<>();
+        list.addAll(unjustifiedAbsenceDAO.printPreScore(startDate,endDate));
+        List<unjustifiedAbsenceDTO.printScoreInfo> unjustifiedAbsenceDTOList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            Object[] arr = (Object[]) list.get(i);
+            unjustifiedAbsenceDTO.printScoreInfo ff =new unjustifiedAbsenceDTO.printScoreInfo(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[5].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString());
+            unjustifiedAbsenceDTOList.add(ff);
+        }
+        return (unjustifiedAbsenceDTOList);
+    }
 }

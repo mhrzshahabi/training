@@ -14,6 +14,7 @@ public interface unjustifiedAbsenceDAO extends JpaRepository<Attendance, Long>, 
             "    tbl_student.last_name,\n" +
             "    tbl_student.first_name,\n" +
             "    tbl_class.c_title_class,\n" +
+            "tbl_class_student.pre_test_score,\n"+
             "    tbl_class.c_start_date ,\n" +
             "    tbl_class_student.class_id,\n" +
             "    tbl_class.c_end_date,\n" +
@@ -32,5 +33,38 @@ public interface unjustifiedAbsenceDAO extends JpaRepository<Attendance, Long>, 
             "    AND   tbl_class.c_end_date <= :endDate \n" +"order by  tbl_class.c_title_class, tbl_student.last_name, tbl_student.first_name \n ", nativeQuery = true)
        List<Object> unjustified(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
+
+    @Query(value = "SELECT\n" +
+            "    tbl_class.c_code,\n" +
+            "    tbl_class.c_title_class,\n" +
+            "    tbl_class_student.pre_test_score,\n" +
+            "    tbl_student.first_name,\n" +
+            "    tbl_student.last_name,\n" +
+            "    tbl_class.c_start_date,\n" +
+            "    tbl_class.c_end_date,\n" +
+            "     (\n" +
+            "    CASE\n" +
+            "    WHEN  tbl_student.emp_no IS NULL\n" +
+            "    THEN 'ندارد'\n" +
+            "    END) as emp_no,\n" +
+            "    tbl_student.personnel_no ,\n" +
+            "    tbl_student.national_code\n" +
+            "  \n" +
+            "FROM\n" +
+            "    tbl_class\n" +
+            "    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id\n" +
+            "    INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id\n" +
+            "WHERE\n" +
+            "    tbl_class_student.pre_test_score >= (\n" +
+            "        SELECT\n" +
+            "            tbl_parameter_value.c_value\n" +
+            "        FROM\n" +
+            "            tbl_parameter_value\n" +
+            "        WHERE\n" +
+            "            tbl_parameter_value.c_code = 'minScorePreTestEB'\n" +
+            "    )\n" +
+            "    AND   tbl_class.pre_course_test = 1  AND   tbl_class.c_start_date >= :startDate   AND   tbl_class.c_end_date <=  :endDate order by  tbl_class.c_title_class, tbl_student.last_name, tbl_student.first_name \n" +
+            " ", nativeQuery = true)
+    List<Object> printPreScore(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
 }
