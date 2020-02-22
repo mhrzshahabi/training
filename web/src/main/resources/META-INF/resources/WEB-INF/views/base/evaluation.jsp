@@ -309,7 +309,6 @@
                                                 break;
                                             case "SEFC":
                                                 // criteria= '{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
-                                                form.getItem("evaluationLevel").enable();
                                                 form.setValue("evaluated", form.getValue("titleClass"));
                                                 RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + ListGrid_evaluation_class.getSelectedRecord().id;
                                                 Window_AddStudent_JspEvaluation.show();
@@ -551,6 +550,7 @@
                                                 DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", record.student.firstName + " " + record.student.lastName);
                                                 studentIdJspEvaluation = record.id;
                                                 Window_AddStudent_JspEvaluation.close();
+                                                DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").enable();
                                             }
                                         }),
                                     ]
