@@ -31,7 +31,7 @@
     var ToolStrip_NeedsAssessment_JspNeedAssessment = isc.ToolStrip.create({
         members: [
             isc.ToolStripButtonAdd.create({
-                click(){
+                click: function () {
                     NeedsAssessmentTargetDF_needsAssessment.clearValues();
                     updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, "Job");
                     Window_NeedsAssessment_JspNeedsAssessment.show();
@@ -39,12 +39,14 @@
             }),
             isc.ToolStripButtonEdit.create({
                 ID: "editButtonJspNeedsAsessment",
-                click() {
+                click: function () {
                     one(two);
+
                     function one(callBack) {
                         editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                         callBack();
                     }
+
                     function two() {
                         NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function() {
                             Window_NeedsAssessment_JspNeedsAssessment.show();
@@ -52,6 +54,21 @@
                     }
                 }
             })
+            <%--,--%>
+            <%--isc.ToolStripButton.create({--%>
+                <%--title: "<spring:message code="send.to.committee.workflow"/>",--%>
+                <%--click: function () {--%>
+                    <%--alert("s")--%>
+                    <%--sendNeedAssessment_CommitteeToWorkflow();--%>
+                <%--}--%>
+            <%--}),--%>
+            <%--isc.ToolStripButton.create({--%>
+                <%--title: "<spring:message code="send.to.main.workflow"/>",--%>
+                <%--click: function () {--%>
+                    <%--alert("f")--%>
+                    <%--sendNeedAssessment_MainWorkflow();--%>
+                <%--}--%>
+            <%--})--%>
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
@@ -70,8 +87,27 @@
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
-        recordDoubleClick(){
+        recordDoubleClick: function () {
             editButtonJspNeedsAsessment.click()
+        },
+        dataArrived: function () {
+            // alert("here")
+            // groupStartOpen: "all"
+
+            // console.log(ListGrid_NeedsAssessment_JspNeedAssessment.getRecord(0));
+            // ListGrid_NeedsAssessment_JspNeedAssessment.expandRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getRecord(0));
+
+            // let gridState = "[{id:" + 5 + "}]";
+            //
+            // ListGrid_NeedsAssessment_JspNeedAssessment.setSelectedState(gridState);
+            //
+            // ListGrid_NeedsAssessment_JspNeedAssessment.scrollToRow(ListGrid_NeedsAssessment_JspNeedAssessment.getRecordIndex(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()), 0);
+            //
+            // ListGrid_NeedsAssessment_JspNeedAssessment.expandRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord());
+
+            //console.log(ListGrid_NeedsAssessment_JspNeedAssessment.getGroupTreeSelection());
+
+            // selectWorkflowRecord();
         }
     });
 
@@ -775,3 +811,125 @@
             item.grid.endEditing();
         }));
     }
+
+
+    // <<---------------------------------------- Send To Workflow ----------------------------------------
+    function sendNeedAssessment_CommitteeToWorkflow() {
+        var sRecord = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord();
+
+        if (sRecord === null || sRecord.id === null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        }
+            <%--else if (sRecord.workflowStatusCode === "2") {--%>
+            <%--createDialog("info", "<spring:message code='course.workflow.confirm'/>");--%>
+            <%--} else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {--%>
+            <%--createDialog("info", "<spring:message code='course.sent.to.workflow'/>");--%>
+            <%--}--%>
+
+        else {
+            let needAssessmentTitle = "نیازسنجی " + priorityList[sRecord.objectType] + " " + sRecord.objectName + " انجام شد";
+
+            isc.MyYesNoDialog.create({
+                message: "<spring:message code="needs.assessment.sent.to.committee.workflow.ask"/>",
+                title: "<spring:message code="message"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        var varParams = [{
+                            "processKey": "needAssessment_CommitteeWorkflow",
+                            "cId": sRecord.id,
+                            "needAssessment": needAssessmentTitle,
+                            "needAssessmentCreatorId": "${username}",
+                            "needAssessmentCreator": userFullName,
+                            "REJECTVAL": "",
+                            "REJECT": "",
+                            "target": "/web/needsAssessment",
+                            "targetTitleFa": "نیازسنجی",
+                            "workflowStatus": "ثبت اولیه",
+                            "workflowStatusCode": "0"
+                        }];
+
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                    }
+                }
+            });
+        }
+    }
+
+    function sendNeedAssessment_MainWorkflow() {
+        alert(1)
+        <%--var sRecord = ListGrid_Course.getSelectedRecord();--%>
+
+        <%--if (sRecord === null || sRecord.id === null) {--%>
+        <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
+        <%--} else if (sRecord.workflowStatusCode === "2") {--%>
+        <%--    createDialog("info", "<spring:message code='course.workflow.confirm'/>");--%>
+        <%--} else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {--%>
+        <%--    createDialog("info", "<spring:message code='course.sent.to.workflow'/>");--%>
+        <%--} else {--%>
+
+        <%--isc.MyYesNoDialog.create({--%>
+        <%--message: "<spring:message code="needs.assessment.sent.to.main.workflow.ask"/>",--%>
+        <%--title: "<spring:message code="message"/>",--%>
+        <%--buttonClick: function (button, index) {--%>
+        <%--this.close();--%>
+        <%--if (index === 0) {--%>
+        <%--var varParams = [{--%>
+        <%--"processKey": "needAssessment_MainWorkflow",--%>
+        <%--"cId": 1,--%>
+        <%--"needAssessment": "نیازسنجی پست معاونت انجام شد",--%>
+        <%--"needAssessmentCreatorId": "${username}",--%>
+        <%--"needAssessmentCreator": userFullName,--%>
+        <%--"REJECTVAL": "",--%>
+        <%--"REJECT": "",--%>
+        <%--"target": "/course/show-form",--%>
+        <%--"targetTitleFa": "نیازسنجی",--%>
+        <%--"workflowStatus": "ثبت اولیه",--%>
+        <%--"workflowStatusCode": "50"--%>
+        <%--}];--%>
+
+        <%--isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));--%>
+        <%--}--%>
+        <%--}--%>
+        <%--});--%>
+        // }
+
+    }
+
+    function startProcess_callback(resp) {
+
+        if (resp.httpResponseCode == 200) {
+            isc.say("<spring:message code='course.set.on.workflow.engine'/>");
+            ListGrid_Course_refresh()
+        } else {
+            isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
+        }
+    }
+
+    var needs_workflowParameters = null;
+
+    function selectWorkflowRecord() {
+
+        if (workflowRecordId !== null) {
+
+            needs_workflowParameters = workflowParameters;
+
+            let gridState = "[{id:" + workflowRecordId + "}]";
+
+            ListGrid_NeedsAssessment_JspNeedAssessment.setSelectedState(gridState);
+
+            ListGrid_NeedsAssessment_JspNeedAssessment.scrollToRow(ListGrid_NeedsAssessment_JspNeedAssessment.getRecordIndex(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()), 0);
+
+            ListGrid_NeedsAssessment_JspNeedAssessment.expandRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord());
+
+            workflowRecordId = null;
+            workflowParameters = null;
+
+            // ListGrid_Course_Edit();
+            taskConfirmationWindow.maximize();
+        }
+
+    }
+
+
+    // ---------------------------------------- Send To Workflow ---------------------------------------->>

@@ -1020,7 +1020,7 @@
         if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null)
             ListGrid_Job_Group_Jobs.setData([]);
         else
-            ListGrid_Job_Group_Jobs.invalidateCache();
+            refreshLG(ListGrid_Job_Group_Jobs);
     }
 
     function ListGrid_Job_Group_Competence_refresh() {
@@ -1028,7 +1028,7 @@
         if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null)
             ListGrid_Job_Group_Competence.setData([]);
         else
-            ListGrid_Job_Group_Competence.invalidateCache();
+            refreshLG(ListGrid_Job_Group_Competence);
     }
 
     function deleteJobFromJobGroup(jobId, jobGroupId) {
@@ -1155,7 +1155,7 @@
     };
 
     function ListGrid_Job_Group_refresh() {
-        ListGrid_Job_Group_Jsp.invalidateCache();
+        refreshLG(ListGrid_Job_Group_Jsp);
         ListGrid_Job_Group_Jobs_refresh();
         ListGrid_Job_Group_Competence_refresh();
 
