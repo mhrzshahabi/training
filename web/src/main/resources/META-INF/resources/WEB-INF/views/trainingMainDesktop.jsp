@@ -5,6 +5,7 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
 <html>
@@ -803,7 +804,9 @@
         shadowColor: "#153560",
         members: [
             basicInfoTSMB,
-            needsAssessmentTSMB,
+<%--            <sec:authorize access="hasAuthority('NeedsAssessment_Menu')">--%>
+                needsAssessmentTSMB,
+<%--            </sec:authorize>--%>
             designingTSMB,
             runTSMB,
             evaluationTSMB,

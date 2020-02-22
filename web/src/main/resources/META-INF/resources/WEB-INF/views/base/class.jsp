@@ -1270,8 +1270,10 @@
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: function () {
-            if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
-                return;
+            if(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord() != undefined) {
+                if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
+                    return;
+                }
             }
 // if (startDateCheck === false || endDateCheck === false)
 // return;

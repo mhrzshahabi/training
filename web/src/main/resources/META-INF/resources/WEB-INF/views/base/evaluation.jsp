@@ -297,7 +297,7 @@
                                             // '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
                                         switch(value){
                                             case "SEFT":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"TRAINING"}';
                                                 criteriaEdit +=
                                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":141},' +
                                                     '{"fieldName":"evaluatorId","operator":"equals","value":<%= SecurityUtil.getUserId()%>},' +
@@ -309,13 +309,12 @@
                                                 break;
                                             case "SEFC":
                                                 // criteria= '{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
-                                                form.getItem("evaluationLevel").enable();
                                                 form.setValue("evaluated", form.getValue("titleClass"));
                                                 RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + ListGrid_evaluation_class.getSelectedRecord().id;
                                                 Window_AddStudent_JspEvaluation.show();
                                                 return;
                                             case "TEFC":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"}';
+                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"CLASS"}';
                                                 criteriaEdit +=
                                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":140},' +
                                                     '{"fieldName":"evaluatorId","operator":"equals","value":'+teacherIdJspEvaluation+'},' +
@@ -499,7 +498,7 @@
                             width:1024,
                             height:768,
                             keepInParentRect: true,
-                            title: "<spring:message code="evaluation.teacher.supervisor"/>",
+                            title: "<spring:message code="record.evaluation.results"/>",
                             items: [
                                 DynamicForm_Questions_Title_JspEvaluation,
                                 DynamicForm_Questions_Body_JspEvaluation,
@@ -551,6 +550,7 @@
                                                 DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", record.student.firstName + " " + record.student.lastName);
                                                 studentIdJspEvaluation = record.id;
                                                 Window_AddStudent_JspEvaluation.close();
+                                                DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").enable();
                                             }
                                         }),
                                     ]

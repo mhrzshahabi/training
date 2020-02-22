@@ -54,6 +54,7 @@ public class TclassService implements ITclassService {
     double minScore_ER = 0.0;
     double minScore_ET = 0.0;
     double minScoreFECR = 0.0;
+    double trainingGradeToTeacher = 0.0;
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
 
     @Transactional(readOnly = true)
@@ -338,7 +339,7 @@ public class TclassService implements ITclassService {
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     @Override
     @Transactional
-    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId) {
+    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId, Long trainingId) {
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
         teacherId = tclass.getTeacherId();
@@ -346,13 +347,15 @@ public class TclassService implements ITclassService {
 
         evaluationResult.setStudentCount(getStudentCount());
 
-//        calculateStudentsReactionEvaluationResult();
-//        evaluationResult.setFERGrade(getFERGrade(classId));
-//        evaluationResult.setFERPass(FERPass);
-//        evaluationResult.setFETGrade(getFETGrade());
-//        evaluationResult.setFETPass(FETPass);
-//        evaluationResult.setFECRGrade(getFECRGrade(evaluationResult.getFERGrade()));
-//        evaluationResult.setFECRPass(FECRPass);
+        trainingGradeToTeacher = getTrainingGradeToTeacher(classId,trainingId);
+
+        calculateStudentsReactionEvaluationResult();
+        evaluationResult.setFERGrade(getFERGrade(classId));
+        evaluationResult.setFERPass(FERPass);
+        evaluationResult.setFETGrade(getFETGrade());
+        evaluationResult.setFETPass(FETPass);
+        evaluationResult.setFECRGrade(getFECRGrade(evaluationResult.getFERGrade()));
+        evaluationResult.setFECRPass(FECRPass);
 
         evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms());
         evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms());
@@ -363,24 +366,26 @@ public class TclassService implements ITclassService {
         evaluationResult.setMinScore_ET(minScore_ET);
         evaluationResult.setMinScoreFECR(minScoreFECR);
 
-//        evaluationResult.setStudentsGradeToFacility(studentsGradeToFacility);
-//        evaluationResult.setStudentsGradeToGoals(studentsGradeToGoals);
-//        evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
-//        evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher());
-//        evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
+        evaluationResult.setStudentsGradeToFacility(studentsGradeToFacility);
+        evaluationResult.setStudentsGradeToGoals(studentsGradeToGoals);
+        evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
+        evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher(classId,trainingId));
+        evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
 
-        evaluationResult.setFERGrade(50.0);
-        evaluationResult.setFERPass(true);
-        evaluationResult.setFETGrade(50.0);
-        evaluationResult.setFETPass(true);
-        evaluationResult.setFECRGrade(50.0);
-        evaluationResult.setFECRPass(true);
 
-        evaluationResult.setStudentsGradeToFacility(20);
-        evaluationResult.setStudentsGradeToGoals(5);
-        evaluationResult.setStudentsGradeToTeacher(10);
-        evaluationResult.setTrainingGradeToTeacher(4);
-        evaluationResult.setTeacherGradeToClass(7);
+//        evaluationResult.setFERGrade(50.0);
+//        evaluationResult.setFERPass(true);
+//        evaluationResult.setFETGrade(50.0);
+//        evaluationResult.setFETPass(true);
+//        evaluationResult.setFECRGrade(50.0);
+//        evaluationResult.setFECRPass(true);
+//        evaluationResult.setStudentsGradeToFacility(20);
+//        evaluationResult.setStudentsGradeToGoals(5);
+//        evaluationResult.setStudentsGradeToTeacher(10);
+//        evaluationResult.setTrainingGradeToTeacher(4);
+//        evaluationResult.setTeacherGradeToClass(7);
+
+
         return evaluationResult;
     }
 
@@ -389,16 +394,62 @@ public class TclassService implements ITclassService {
         studentsGradeToFacility = 0;
         studentsGradeToGoals = 0;
         for (ClassStudent classStudent : classStudents) {
-            if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
                 Evaluation evaluation = evaluationService.getStudentEvaluationForClass(classStudent.getTclassId(), classStudent.getStudentId());
-                List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
-                double teacherTotalGrade = 0.0;
-                double facilityTotalGrade = 0.0;
-                double goalsTotalGrade = 0.0;
-                double teacherTotalWeight = 0.0;
-                double facilityTotalWeight = 0.0;
-                double goalsTotalWeight = 0.0;
-                for (EvaluationAnswer answer : answers) {
+                if (evaluation != null) {
+                    List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
+                    double teacherTotalGrade = 0.0;
+                    double facilityTotalGrade = 0.0;
+                    double goalsTotalGrade = 0.0;
+                    double teacherTotalWeight = 0.0;
+                    double facilityTotalWeight = 0.0;
+                    double goalsTotalWeight = 0.0;
+                    for (EvaluationAnswer answer : answers) {
+                        double weight = 1.0;
+                        double grade = 1.0;
+                        Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
+                        QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                        if (answer.getQuestionSource().getCode().equals("3")) {
+                            weight = questionnaireQuestion.getWeight();
+                        }
+                        grade = Double.parseDouble(answer.getAnswer().getValue());
+                        if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
+                            teacherTotalGrade += grade * weight;
+                            teacherTotalWeight += weight;
+                        } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
+                            facilityTotalGrade += grade * weight;
+                            facilityTotalWeight += weight;
+                        } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("Content")) {//Goals
+                            goalsTotalGrade += grade * weight;
+                            goalsTotalWeight += weight;
+                        }
+                    }
+                    if (teacherTotalWeight != 0)
+                        studentsGradeToTeacher += (teacherTotalGrade / teacherTotalWeight);
+                    if (facilityTotalWeight != 0)
+                        studentsGradeToFacility += (facilityTotalGrade / facilityTotalWeight);
+                    if (goalsTotalWeight != 0)
+                        studentsGradeToGoals += (goalsTotalGrade / goalsTotalWeight);
+                }
+            }
+        }
+        if(getNumberOfFilledReactionEvaluationForms() != 0)
+            studentsGradeToTeacher /= getNumberOfFilledReactionEvaluationForms();
+        if(getNumberOfFilledReactionEvaluationForms() != 0)
+            studentsGradeToFacility /= getNumberOfFilledReactionEvaluationForms();
+        if(getNumberOfFilledReactionEvaluationForms() != 0)
+            studentsGradeToGoals /= getNumberOfFilledReactionEvaluationForms();
+    }
+
+    public Double getTeacherGradeToClass(Long classId) {
+        double result = 0.0;
+        Evaluation evaluation = evaluationService.getTeacherEvaluationForClass(teacherId, classId);
+        if(evaluation != null) {
+            List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
+            double totalGrade = 0.0;
+            double totalWeight = 0.0;
+            for (EvaluationAnswer answer : answers) {
+                if(answer!=null) {
                     double weight = 1.0;
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
@@ -407,51 +458,40 @@ public class TclassService implements ITclassService {
                         weight = questionnaireQuestion.getWeight();
                     }
                     grade = Double.parseDouble(answer.getAnswer().getValue());
-                    if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("PRF")) { // teacher
-                        teacherTotalGrade += grade * weight;
-                        teacherTotalWeight += weight;
-                    } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
-                        facilityTotalGrade += grade * weight;
-                        facilityTotalWeight += weight;
-                    } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("Content")) {//Goals
-                        goalsTotalGrade += grade * weight;
-                        goalsTotalWeight += weight;
-                    }
+                    totalGrade += grade * weight;
+                    totalWeight += weight;
                 }
-                studentsGradeToTeacher += (teacherTotalGrade / teacherTotalWeight);
-                studentsGradeToFacility += (facilityTotalGrade / facilityTotalWeight);
-                studentsGradeToGoals += (goalsTotalGrade / goalsTotalWeight);
             }
+            if(totalWeight != 0)
+                result = totalGrade / totalWeight;
         }
-        studentsGradeToTeacher /= getNumberOfCompletedReactionEvaluationForms();
-        studentsGradeToFacility /= getNumberOfCompletedReactionEvaluationForms();
-        studentsGradeToGoals /= getNumberOfCompletedReactionEvaluationForms();
-    }
-
-    public Double getTeacherGradeToClass(Long classId) {
-        double result = 0.0;
-        Evaluation evaluation = evaluationService.getTeacherEvaluationForClass(teacherId, classId);
-        List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
-        double totalGrade = 0.0;
-        double totalWeight = 0.0;
-        for (EvaluationAnswer answer : answers) {
-            double weight = 1.0;
-            double grade = 1.0;
-            Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-            QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            if (answer.getQuestionSource().getCode().equals("3")) {
-                weight = questionnaireQuestion.getWeight();
-            }
-            grade = Double.parseDouble(answer.getAnswer().getValue());
-            totalGrade += grade * weight;
-            totalWeight += weight;
-        }
-        result = totalGrade / totalWeight;
         return result;
     }
 
-    public Double getTrainingGradeToTeacher() {
+    public Double getTrainingGradeToTeacher(Long classId, Long trainingId) {
         double result = 0.0;
+        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacher(teacherId,classId,trainingId);
+        if(evaluation != null) {
+            List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
+            double totalGrade = 0.0;
+            double totalWeight = 0.0;
+            for (EvaluationAnswer answer : answers) {
+                if(answer!=null) {
+                    double weight = 1.0;
+                    double grade = 1.0;
+                    Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
+                    QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                    if (answer.getQuestionSource().getCode().equals("3")) {
+                        weight = questionnaireQuestion.getWeight();
+                    }
+                    grade = Double.parseDouble(answer.getAnswer().getValue());
+                    totalGrade += grade * weight;
+                    totalWeight += weight;
+                }
+            }
+            if(totalWeight != 0)
+                result = totalGrade / totalWeight;
+        }
         return result;
     }
 
@@ -474,9 +514,9 @@ public class TclassService implements ITclassService {
                 z5 = Double.parseDouble(parameterValue.getValue());
             else if (parameterValue.getCode().equalsIgnoreCase("z6"))
                 z6 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minQus_ER"))
+            else if (parameterValue.getCode().equalsIgnoreCase("minQusER"))
                 minQus_ER = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minScore_ER"))
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreER"))
                 minScore_ER = Double.parseDouble(parameterValue.getValue());
         }
         result = z4 * studentsGradeToTeacher + z3 * studentsGradeToGoals +
@@ -500,12 +540,12 @@ public class TclassService implements ITclassService {
                 z1 = Double.parseDouble(parameterValue.getValue());
             else if (parameterValue.getCode().equalsIgnoreCase("z2"))
                 z2 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minScore_ET "))
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreET "))
                 minScore_ET = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minQus_ET"))
+            else if (parameterValue.getCode().equalsIgnoreCase("minQusET"))
                 minQus_ET = Double.parseDouble(parameterValue.getValue());
         }
-        result = z2 * studentsGradeToTeacher + z1 * getTrainingGradeToTeacher();
+        result = z2 * studentsGradeToTeacher + z1 * trainingGradeToTeacher;
         result /= 100;
         if (result >= minScore_ET && getPercenetOfFilledReactionEvaluationForms() >= minQus_ET)
             FETPass = true;

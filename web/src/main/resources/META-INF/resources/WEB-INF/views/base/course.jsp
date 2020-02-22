@@ -339,21 +339,32 @@
                 hidden: true
             },
             {
-                name: "category.titleFa", title: "<spring:message
-        code="course_category"/>", align: "center", filterOperator: "iContains"
+                name: "category.titleFa",
+                title: "<spring:message code="course_category"/>",
+                align: "center",
+                filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.category.titleFa;
+                }
             },
             {
                 name: "subCategory.titleFa", title: "<spring:message
-        code="course_subcategory"/>", align: "center", filterOperator: "iContains"
+        code="course_subcategory"/>", align: "center", filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.subCategory.titleFa;
+                }
             },
             {
                 name: "erunType.titleFa",
                 title: "<spring:message code="course_eruntype"/>",
                 align: "center",
                 filterOperator: "iContains",
-                allowFilterOperators: false,
-                canFilter: false
-
+                // allowFilterOperators: false,
+                // canFilter: false,
+                sortNormalizer: function (record) {
+                    console.log(record)
+                    return record.erunType.titleFa;
+                }
             },
             {
                 name: "elevelType.titleFa", title: "<spring:message
@@ -650,7 +661,7 @@
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
-                                if(!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
+                                if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
                                     isc.RPCManager.sendRequest({
                                         actionURL: skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id,
                                         httpMethod: "DELETE",
@@ -1594,7 +1605,7 @@
         title: "<spring:message code="save"/>",
         //icon: "[SKIN]/actions/save.png",
         click: function () {
-            if(mainObjectiveGrid.data.isEmpty()) {
+            if (mainObjectiveGrid.data.isEmpty()) {
                 createDialog("info", "دوره، بدون هدف اصلي نمي توان ايجاد کرد.");
                 return;
             }
@@ -1621,13 +1632,12 @@
                     //     equalCourseIdList.add(equalCourse[j].idEC);
                     // }
                     let mainObjectiveIdList = [];
-                    if(mainObjectiveGrid.data.localData != undefined) {
+                    if (mainObjectiveGrid.data.localData != undefined) {
                         for (let k = 0; k < mainObjectiveGrid.data.localData.length; k++) {
                             mainObjectiveIdList.add(mainObjectiveGrid.data.localData[k].id);
                         }
                         data2.mainObjectiveIds = mainObjectiveIdList;
-                    }
-                    else{
+                    } else {
                         createDialog("info", "دوره، بدون هدف اصلي نمي توان ايجاد کرد.");
                         return;
                     }
