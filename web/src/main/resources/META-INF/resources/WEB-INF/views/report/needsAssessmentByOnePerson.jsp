@@ -448,6 +448,10 @@
             return;
         }
         let records = CourseDS_NABOP.getCacheData();
+        if (records === undefined){
+            createDialog("info", "<spring:message code='print.no.data.to.print'/>");
+            return;
+        }
         let groupedRecords = [[], [], []];
         for (let i = 0; i < records.length; i++) {
             groupedRecords[getIndexById_NABOP(records[i].needsAssessmentPriorityId)].add({
