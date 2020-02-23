@@ -1209,16 +1209,28 @@
         defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {
-                let userErrorMessage = "<spring:message code="exception.un-managed"/>";
-                    if(JSON.parse(response.httpResponseText).message.length > 0)
-                        userErrorMessage = JSON.parse(response.httpResponseText).message;
-                        else if(JSON.parse(response.httpResponseText).errors[0].message.length > 0 && response.httpResponseCode === 403)
-                        userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
+            let userErrorMessage = "<spring:message code="msg.error.connecting.to.server"/>";
+            if(JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0)
+            {
+               userErrorMessage = JSON.parse(response.httpResponseText).message;
+            }
+            else if(JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0)
+            {
+                userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
+            }
 
-                createDialog("info", userErrorMessage);
-            } else
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
+            createDialog("info", userErrorMessage);
+
+            <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>
+                <%--let userErrorMessage = "<spring:message code="exception.un-managed"/>";--%>
+                    <%--if(JSON.parse(response.httpResponseText).message.length > 0)--%>
+                        <%--userErrorMessage = JSON.parse(response.httpResponseText).message;--%>
+                        <%--else if(JSON.parse(response.httpResponseText).errors[0].message.length > 0 && response.httpResponseCode === 403)--%>
+                        <%--userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;--%>
+
+                <%--createDialog("info", userErrorMessage);--%>
+            <%--} else--%>
+                <%--createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");--%>
         }
     });
 
