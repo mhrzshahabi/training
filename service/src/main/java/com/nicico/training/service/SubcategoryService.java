@@ -15,6 +15,7 @@ import com.nicico.training.model.Category;
 import com.nicico.training.model.Subcategory;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.SubcategoryDAO;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -88,6 +89,7 @@ public class SubcategoryService implements ISubcategoryService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<SubcategoryDTO.Info> search(SearchDTO.SearchRq request) {
+        request.setCount(115);
         return SearchUtil.search(subCategoryDAO, request, subCategory -> modelMapper.map(subCategory, SubcategoryDTO.Info.class));
     }
 
