@@ -219,7 +219,7 @@
                 displayField: "titleFa",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
+                filterLocally: false,
             },
             {
                 name: "personality.educationLevel.titleFa",
@@ -975,11 +975,12 @@
         } else {
             var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code="verify.delete"/>");
-            Dialog_Delete.addProperties({
+            Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
                         teacherWait = createDialog("wait");
+                        alert('hi');
                         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + record.id, "DELETE", null,
                             "callback: teacher_delete_result(rpcResponse)"));
                     }

@@ -21,7 +21,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 
-public class SubCategoryDTO {
+public class SubcategoryDTO {
 
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -43,7 +43,7 @@ public class SubCategoryDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SubCategoryInfo")
-    public static class Info extends SubCategoryDTO {
+    public static class Info extends SubcategoryDTO {
         private Long id;
         private CategoryDTO.CategoryInfoTuple category;
         private Date createdDate;
@@ -70,7 +70,7 @@ public class SubCategoryDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SubCategoryCreateRq")
-    public static class Create extends SubCategoryDTO {
+    public static class Create extends SubcategoryDTO {
 
     }
 
@@ -80,7 +80,7 @@ public class SubCategoryDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SubCategoryUpdateRq")
-    public static class Update extends SubCategoryDTO {
+    public static class Update extends SubcategoryDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private Integer version;
@@ -104,7 +104,7 @@ public class SubCategoryDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("SubCategorySpecRs")
     public static class SubCategorySpecRs {
-        private SubCategoryDTO.SpecRs response;
+        private SubcategoryDTO.SpecRs response;
     }
 
     // ---------------
@@ -114,7 +114,7 @@ public class SubCategoryDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<SubCategoryDTO.Info> data;
+        private List<SubcategoryDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

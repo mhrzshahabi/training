@@ -8,7 +8,7 @@ com.nicico.training.controller
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -154,7 +154,7 @@ public class CategoryRestController {
     @Loggable
     @GetMapping(value = "{categoryId}/sub-categories")
 //    @PreAuthorize("hasAnyAuthority('r_sub_Category')")
-    public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> getSubCategories(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+    public ResponseEntity<SubcategoryDTO.SubCategorySpecRs> getSubCategories(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
                                                                              @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
                                                                              @RequestParam(value = "operator", required = false) String operator,
@@ -164,15 +164,15 @@ public class CategoryRestController {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<SubCategoryDTO.Info> subCategories = categoryService.getSubCategories(categoryId);
+        List<SubcategoryDTO.Info> subCategories = categoryService.getSubCategories(categoryId);
 
-        final SubCategoryDTO.SpecRs specResponse = new SubCategoryDTO.SpecRs();
+        final SubcategoryDTO.SpecRs specResponse = new SubcategoryDTO.SpecRs();
         specResponse.setData(subCategories)
                 .setStartRow(0)
                 .setEndRow(subCategories.size())
                 .setTotalRows(subCategories.size());
 
-        final SubCategoryDTO.SubCategorySpecRs specRs = new SubCategoryDTO.SubCategorySpecRs();
+        final SubcategoryDTO.SubCategorySpecRs specRs = new SubcategoryDTO.SubCategorySpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -181,8 +181,8 @@ public class CategoryRestController {
     @Loggable
     @GetMapping(value = "sub-categories/dummy")
 //    @PreAuthorize("hasAuthority('r_category')")
-    public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> dummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-        return new ResponseEntity<SubCategoryDTO.SubCategorySpecRs>(new SubCategoryDTO.SubCategorySpecRs(), HttpStatus.OK);
+    public ResponseEntity<SubcategoryDTO.SubCategorySpecRs> dummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+        return new ResponseEntity<SubcategoryDTO.SubCategorySpecRs>(new SubcategoryDTO.SubCategorySpecRs(), HttpStatus.OK);
     }
 
 }

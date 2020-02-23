@@ -2,4 +2,17 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
+    <changeSet author="jafari-h (generated)" id="1582448397375-243">
+        <addColumn tableName="tbl_evaluation">
+            <column name="b_evaluation-full" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="jafari-h (generated)" id="1582449152181-243">
+        <addColumn tableName="tbl_course">
+            <column name="b_has_goal" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>

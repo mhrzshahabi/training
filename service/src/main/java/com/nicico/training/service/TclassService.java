@@ -407,19 +407,28 @@ public class TclassService implements ITclassService {
                     for (EvaluationAnswer answer : answers) {
                         double weight = 1.0;
                         double grade = 1.0;
+                        QuestionnaireQuestion questionnaireQuestion = null;
                         Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                        QuestionnaireQuestion questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                        if(question.isPresent())
+                            questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                         if (answer.getQuestionSource().getCode().equals("3")) {
                             weight = questionnaireQuestion.getWeight();
                         }
                         grade = Double.parseDouble(answer.getAnswer().getValue());
-                        if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
-                            teacherTotalGrade += grade * weight;
-                            teacherTotalWeight += weight;
-                        } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
-                            facilityTotalGrade += grade * weight;
-                            facilityTotalWeight += weight;
-                        } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("Content")) {//Goals
+                        if(questionnaireQuestion != null) {
+                            if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
+                                teacherTotalGrade += grade * weight;
+                                teacherTotalWeight += weight;
+                            } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
+                                facilityTotalGrade += grade * weight;
+                                facilityTotalWeight += weight;
+                            }
+                        }
+//                        else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("Content")) {//Goals
+//                            goalsTotalGrade += grade * weight;
+//                            goalsTotalWeight += weight;
+//                        }
+                        else{//Goals
                             goalsTotalGrade += grade * weight;
                             goalsTotalWeight += weight;
                         }

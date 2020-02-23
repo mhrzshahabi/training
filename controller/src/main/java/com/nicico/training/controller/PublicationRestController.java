@@ -6,10 +6,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.PublicationDTO;
-import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IPublicationService;
-import com.nicico.training.iservice.ISubCategoryService;
+import com.nicico.training.iservice.ISubcategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -32,7 +32,7 @@ import java.util.List;
 public class PublicationRestController {
 
     private final IPublicationService publicationService;
-    private final ISubCategoryService subCategoryService;
+    private final ISubcategoryService subCategoryService;
     private final ICategoryService categoryService;
     private final ModelMapper modelMapper;
 
@@ -49,7 +49,7 @@ public class PublicationRestController {
 //    @PreAuthorize("hasAuthority('u_educationLevel')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
         List<CategoryDTO.Info> categories = null;
-        List<SubCategoryDTO.Info> subCategories = null;
+        List<SubcategoryDTO.Info> subCategories = null;
 
         if (request.get("categories") != null)
             categories = setCats(request);
@@ -74,7 +74,7 @@ public class PublicationRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity addPublication(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
         List<CategoryDTO.Info> categories = null;
-        List<SubCategoryDTO.Info> subCategories = null;
+        List<SubcategoryDTO.Info> subCategories = null;
 
         if (request.get("categories") != null)
             categories = setCats(request);
@@ -121,14 +121,14 @@ public class PublicationRestController {
 
     }
 
-    private List<SubCategoryDTO.Info> setSubCats(LinkedHashMap request) {
+    private List<SubcategoryDTO.Info> setSubCats(LinkedHashMap request) {
         SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         criteriaRq.setOperator(EOperator.inSet);
         criteriaRq.setFieldName("id");
         criteriaRq.setValue(request.get("subCategories"));
         subCategoriesRequest.setCriteria(criteriaRq);
-        List<SubCategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
+        List<SubcategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
         request.remove("subCategories");
         return subCategories;
     }

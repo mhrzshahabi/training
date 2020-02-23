@@ -132,13 +132,14 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+//        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+        if (true) {
             course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
             course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
             Course course1 = courseDAO.save(course);
-            if(request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty()) {
+            if (request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty()) {
                 Set<Skill> setSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
                 for (Skill skill : setSkill) {
                     skill.setCourseId(course1.getId());
@@ -184,7 +185,11 @@ public class CourseService implements ICourseService {
         course.setEqualCourses(equalCourses);
         ////////////////////////////////////////////////////////////////////////
 
-
+        if (course.getGoalSet().isEmpty()) {
+            course.setHasGoal(true);
+        } else {
+            course.setHasGoal(false);
+        }
         Course save = courseDAO.save(course);
         Set<Skill> savedSkills = save.getSkillMainObjectiveSet();
         Set<Skill> savingSkill = new HashSet<>(skillService.getAllByIds(request.getMainObjectiveIds()));
