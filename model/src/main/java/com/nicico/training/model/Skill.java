@@ -40,7 +40,7 @@ public class Skill extends Auditable {
     private String description;
 
     //معرفی سطح مهارت(آشنایی، توانایی و تسلط)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "f_skill_level", nullable = false, insertable = false, updatable = false)
     private SkillLevel skillLevel;
 
@@ -48,7 +48,7 @@ public class Skill extends Auditable {
     private Long skillLevelId;
 
     //  گروه بندی مهارت(کامپیوتر/برق/...)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "f_category", nullable = false, insertable = false, updatable = false)
     private Category category;
 
@@ -60,7 +60,7 @@ public class Skill extends Auditable {
     private Set<NeedAssessment> needAssessments;
 
     //زیر گروه مثلا برای گروه کامپیوتر (شبکه، سخت افزار و ...)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "f_sub_category", nullable = false, insertable = false, updatable = false)
     private Subcategory subCategory;
 

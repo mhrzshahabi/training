@@ -58,6 +58,7 @@ public class GoalService implements IGoalService {
         final Optional<Course> one = courseDAO.findById(courseId);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         final Goal saved = goalDAO.saveAndFlush(goal);
+        course.setHasGoal(true);
         course.getGoalSet().add(saved);
         return modelMapper.map(saved, GoalDTO.Info.class);
     }
@@ -84,6 +85,8 @@ public class GoalService implements IGoalService {
         }
         for (Course course : courses) {
             course.getGoalSet().remove(goal);
+            if(course.getGoalSet().isEmpty())
+                course.setHasGoal(false);
         }
 //        Set<Syllabus> syllabusSet = goal.getSyllabusSet();
 //        for (Syllabus syllabus : syllabusSet) {
