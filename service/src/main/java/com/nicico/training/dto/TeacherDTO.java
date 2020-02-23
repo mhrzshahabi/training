@@ -30,6 +30,8 @@ public class TeacherDTO {
     private String economicalRecordNumber;
     private String otherActivities;
     private Long personalityId;
+    private Long majorCategoryId;
+    private Long majorSubCategoryId;
 
     @Getter
     @Setter
@@ -40,6 +42,8 @@ public class TeacherDTO {
         private Set<CategoryDTO.CategoryInfoTuple> categories;
         private Set<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
         private PersonalInfoDTO.Info personality;
+        private CategoryDTO.CategoryInfoTuple majorCategory;
+        private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
 //        private Set<EmploymentHistoryDTO.Info> employmentHistories;
 //        private Set<AcademicBKDTO.Info> academicBKs;
 //        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;

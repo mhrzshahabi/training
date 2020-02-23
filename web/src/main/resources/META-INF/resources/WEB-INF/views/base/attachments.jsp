@@ -66,7 +66,7 @@
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 filterOperator: "iContains",
                 pickListFields: [

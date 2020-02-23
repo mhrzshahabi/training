@@ -744,31 +744,54 @@ public class TeacherRestController {
                         table_1_work;
 
         // table 2
+//        int table_2_relation = 0;
+//        String teacherMajor = "";
+//        if(teacher.getPersonality().getEducationMajor()!= null)
+//            teacherMajor = teacher.getPersonality().getEducationMajor().getTitleFa();
+//        String teacherOrientation = "";
+//        if(teacher.getPersonality().getEducationOrientation() != null)
+//            teacherOrientation = teacher.getPersonality().getEducationOrientation().getTitleFa();
+//        if(category_selected.getTitleFa().equalsIgnoreCase(teacherMajor)) {
+//            table_2_relation += 1;
+//            if (subCategory_selected != null)
+//                if (subCategory_selected.getTitleFa().equalsIgnoreCase(teacherOrientation))
+//                    table_2_relation += 1;
+//        }
+//            if(teacher_educationLevel == 1)
+//                table_2_grade = (float) 2.5;
+//            else if(teacher_educationLevel == 2)
+//                table_2_grade = 6;
+//            else if(teacher_educationLevel == 3)
+//                table_2_grade = 8;
+//            else if(teacher_educationLevel == 4)
+//                table_2_grade = 9;
+//            else if(teacher_educationLevel == 5)
+//                table_2_grade = 10;
+//
+//            table_2_grade *= table_2_relation;
+
+        //table 2
         int table_2_relation = 0;
-        String teacherMajor = "";
-        if(teacher.getPersonality().getEducationMajor()!= null)
-            teacherMajor = teacher.getPersonality().getEducationMajor().getTitleFa();
-        String teacherOrientation = "";
-        if(teacher.getPersonality().getEducationOrientation() != null)
-            teacherOrientation = teacher.getPersonality().getEducationOrientation().getTitleFa();
-        if(category_selected.getTitleFa().equalsIgnoreCase(teacherMajor)) {
+        Category teacherMajorCategory = teacher.getMajorCategory();
+        Subcategory teacherMajorSubCategory = teacher.getMajorSubCategory();
+        if(category_selected == teacherMajorCategory) {
             table_2_relation += 1;
             if (subCategory_selected != null)
-                if (subCategory_selected.getTitleFa().equalsIgnoreCase(teacherOrientation))
+                if (subCategory_selected == teacherMajorSubCategory)
                     table_2_relation += 1;
         }
-            if(teacher_educationLevel == 1)
-                table_2_grade = (float) 2.5;
-            else if(teacher_educationLevel == 2)
-                table_2_grade = 6;
-            else if(teacher_educationLevel == 3)
-                table_2_grade = 8;
-            else if(teacher_educationLevel == 4)
-                table_2_grade = 9;
-            else if(teacher_educationLevel == 5)
-                table_2_grade = 10;
+        if(teacher_educationLevel == 1)
+            table_2_grade = (float) 2.5;
+        else if(teacher_educationLevel == 2)
+            table_2_grade = 6;
+        else if(teacher_educationLevel == 3)
+            table_2_grade = 8;
+        else if(teacher_educationLevel == 4)
+            table_2_grade = 9;
+        else if(teacher_educationLevel == 5)
+            table_2_grade = 10;
 
-            table_2_grade *= table_2_relation;
+        table_2_grade *= table_2_relation;
 
          //table 3
         SearchDTO.SearchRq searchRq_publications = new SearchDTO.SearchRq();
