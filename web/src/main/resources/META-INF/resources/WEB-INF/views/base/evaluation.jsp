@@ -412,12 +412,14 @@
                                 // let data = vm_JspEvaluation.getValues();
                                 let evaluationAnswerList = [];
                                 let data = {}
+                                let evaluationFull = true;
                                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                                 for (let i = 0; i < questions.length; i++) {
-                                    console.log(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name))
+                                    // console.log(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name))
                                     if(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined){
+                                        evaluationFull = false;
                                         createDialog("info","به همه سوالات پاسخ داده نشده است!!");
-                                        return;
+                                        // return;
                                     }
                                     let evaluationAnswer = {};
                                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -426,6 +428,7 @@
                                     evaluationAnswerList.push(evaluationAnswer);
                                 }
                                 data.evaluationAnswerList = evaluationAnswerList;
+                                data.evaluationFull = evaluationFull;
                                 switch (DynamicForm_Questions_Title_JspEvaluation.getValue("evaluationType")) {
                                     case "SEFT":
                                         data.evaluatorId = "<%= SecurityUtil.getUserId()%>";
