@@ -468,15 +468,15 @@
         filterOnKeypress: true,
         getCellCSSText: function (record, rowNum, colNum) {
             // if (record.attitude==0 && record.knowledge==0 && record.skill==0) {
-            if (record.hasGoal && record.hasSkill) {
-                return "color:red;font-size: 12px;";
+            // if (!record.hasGoal && !record.hasSkill) {
+            //     return "color:red;font-size: 12px;";
+            // }
+            if (!record.hasGoal) {
+                return "color:crimson; font-size: 12px;";
             }
-            if (record.hasGoal) {
-                return "color:tan; font-size: 12px;";
-            }
-            if (record.hasSkill) {
-                return "color:orange;font-size: 12px;";
-            }
+            // if (!record.hasSkill) {
+            //     return "color:orange;font-size: 12px;";
+            // }
         }
     });
     var ListGrid_CourseSkill = isc.TrLG.create({
