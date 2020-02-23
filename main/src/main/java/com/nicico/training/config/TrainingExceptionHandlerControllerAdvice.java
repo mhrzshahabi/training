@@ -65,7 +65,7 @@ public class TrainingExceptionHandlerControllerAdvice extends AbstractExceptionH
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleException(Exception exception) {
 
-        log.error("Error is from : TrainingExceptionHandlerController", exception);
+        log.error("Error is from : TrainingExceptionHandlerController class, handleException", exception);
         final Locale locale = LocaleContextHolder.getLocale();
         OracleDatabaseException oracleDatabaseException = getOracleException(exception);
         if (oracleDatabaseException != null) {

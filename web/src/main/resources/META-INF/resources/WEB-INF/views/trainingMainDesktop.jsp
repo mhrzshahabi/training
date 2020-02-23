@@ -1221,6 +1221,7 @@
 
             createDialog("info", userErrorMessage);
 
+
             <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>
                 <%--let userErrorMessage = "<spring:message code="exception.un-managed"/>";--%>
                     <%--if(JSON.parse(response.httpResponseText).message.length > 0)--%>
