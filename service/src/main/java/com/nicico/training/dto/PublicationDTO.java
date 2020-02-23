@@ -34,7 +34,7 @@ public class PublicationDTO {
         private Long id;
         private Integer version;
         private List<CategoryDTO.CategoryInfoTuple> categories;
-        private List<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private List<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
         private EPublicationSubjectTypeDTO.EPublicationSubjectTypeInfoTuple publicationSubjectType;
         public List<Long> getCategoriesIds() {
             if (categories == null)
@@ -45,7 +45,7 @@ public class PublicationDTO {
         public List<Long> getSubCategoriesIds() {
             if (subCategories == null)
                 return null;
-            return subCategories.stream().map(SubCategoryDTO.SubCategoryInfoTuple::getId).collect(Collectors.toList());
+            return subCategories.stream().map(SubcategoryDTO.SubCategoryInfoTuple::getId).collect(Collectors.toList());
         }
     }
 
@@ -56,7 +56,7 @@ public class PublicationDTO {
     public static class Create extends PublicationDTO {
         private Long id;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -66,7 +66,7 @@ public class PublicationDTO {
     public static class Update extends PublicationDTO {
         private Long id;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter

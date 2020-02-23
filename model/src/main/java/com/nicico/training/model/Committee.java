@@ -30,7 +30,7 @@ public class Committee extends Auditable {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false, insertable = false, updatable = false)
-    private SubCategory subCategory;
+    private Subcategory subCategory;
 
     @Column(name = "subcategory_id")
     private Long subCategoryId;

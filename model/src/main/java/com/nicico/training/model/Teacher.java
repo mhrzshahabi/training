@@ -55,7 +55,7 @@ public class Teacher extends Auditable {
     @JoinTable(name = "tbl_teacher_subcategory",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
-    private List<SubCategory> subCategories;
+    private List<Subcategory> subCategories;
 
     @Column(name = "c_economical_code")
     private String economicalCode;

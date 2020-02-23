@@ -23,7 +23,7 @@ public class ExcelUtil {
 
     static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
-    static String excelFilePath = "E:\\System\\Training\\Data\\forConvert(n1)Import.xlsx";
+    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n1) - Imported.xlsx";
 
     static OAuth2RestTemplate restTemplate;
     static URI uri;
@@ -119,7 +119,9 @@ public class ExcelUtil {
                     ResponseEntity<String> result = null;
                     try {
                         result = restTemplate.postForEntity(uri, object, String.class);
+                        System.out.println(result.getStatusCode());
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                         System.out.println(result);
                     }
                 }

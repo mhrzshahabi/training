@@ -41,7 +41,7 @@ public class Category extends Auditable {
     private String description;
 
     @OneToMany(mappedBy = "category")
-    private Set<SubCategory> subCategorySet;
+    private Set<Subcategory> subCategorySet;
 
 
 }
