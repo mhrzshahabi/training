@@ -9,12 +9,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
-import com.nicico.training.iservice.ISubCategoryService;
+import com.nicico.training.dto.SubcategoryDTO;
+import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.model.Category;
-import com.nicico.training.model.SubCategory;
+import com.nicico.training.model.Subcategory;
 import com.nicico.training.repository.CategoryDAO;
-import com.nicico.training.repository.SubCategoryDAO;
+import com.nicico.training.repository.SubcategoryDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -26,45 +26,45 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SubCategoryService implements ISubCategoryService {
+public class SubCategoryService implements ISubcategoryService {
 
     private final ModelMapper modelMapper;
-    private final SubCategoryDAO subCategoryDAO;
+    private final SubcategoryDAO subCategoryDAO;
     private final CategoryDAO categoryDAO;
 
     @Transactional(readOnly = true)
     @Override
-    public SubCategoryDTO.Info get(Long id) {
-        final Optional<SubCategory> cById = subCategoryDAO.findById(id);
-        final SubCategory subCategory = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EquipmentNotFound));
+    public SubcategoryDTO.Info get(Long id) {
+        final Optional<Subcategory> cById = subCategoryDAO.findById(id);
+        final Subcategory subCategory = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EquipmentNotFound));
 
-        return modelMapper.map(subCategory, SubCategoryDTO.Info.class);
+        return modelMapper.map(subCategory, SubcategoryDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<SubCategoryDTO.Info> list() {
-        final List<SubCategory> cAll = subCategoryDAO.findAll();
+    public List<SubcategoryDTO.Info> list() {
+        final List<Subcategory> cAll = subCategoryDAO.findAll();
 
-        return modelMapper.map(cAll, new TypeToken<List<SubCategoryDTO.Info>>() {
+        return modelMapper.map(cAll, new TypeToken<List<SubcategoryDTO.Info>>() {
         }.getType());
     }
 
     @Transactional
     @Override
-    public SubCategoryDTO.Info create(Object request) {
-        final SubCategory subCategory = modelMapper.map(request, SubCategory.class);
+    public SubcategoryDTO.Info create(Object request) {
+        final Subcategory subCategory = modelMapper.map(request, Subcategory.class);
 
         return save(subCategory, subCategory.getCategoryId());
     }
 
     @Transactional
     @Override
-    public SubCategoryDTO.Info update(Long id, Object request) {
-        final Optional<SubCategory> cById = subCategoryDAO.findById(id);
-        final SubCategory subCategory = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
-        SubCategoryDTO.Update update = modelMapper.map(request, SubCategoryDTO.Update.class);
-        SubCategory updating = new SubCategory();
+    public SubcategoryDTO.Info update(Long id, Object request) {
+        final Optional<Subcategory> cById = subCategoryDAO.findById(id);
+        final Subcategory subCategory = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
+        SubcategoryDTO.Update update = modelMapper.map(request, SubcategoryDTO.Update.class);
+        Subcategory updating = new Subcategory();
         modelMapper.map(subCategory, updating);
         modelMapper.map(update, updating);
 
@@ -79,37 +79,37 @@ public class SubCategoryService implements ISubCategoryService {
 
     @Transactional
     @Override
-    public void delete(SubCategoryDTO.Delete request) {
-        final List<SubCategory> cAllById = subCategoryDAO.findAllById(request.getIds());
+    public void delete(SubcategoryDTO.Delete request) {
+        final List<Subcategory> cAllById = subCategoryDAO.findAllById(request.getIds());
 
         subCategoryDAO.deleteAll(cAllById);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<SubCategoryDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(subCategoryDAO, request, subCategory -> modelMapper.map(subCategory, SubCategoryDTO.Info.class));
+    public SearchDTO.SearchRs<SubcategoryDTO.Info> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(subCategoryDAO, request, subCategory -> modelMapper.map(subCategory, SubcategoryDTO.Info.class));
     }
 
     // ------------------------------
 
-    private SubCategoryDTO.Info save(SubCategory subCategory, Long categoryId) {
+    private SubcategoryDTO.Info save(Subcategory subCategory, Long categoryId) {
 
         Optional<Category> optionalCategory = categoryDAO.findById(categoryId);
         Category category = optionalCategory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CategoryNotFound));
 
 
         subCategory.setCategory(category);
-        final SubCategory saved = subCategoryDAO.saveAndFlush(subCategory);
-        return modelMapper.map(saved, SubCategoryDTO.Info.class);
+        final Subcategory saved = subCategoryDAO.saveAndFlush(subCategory);
+        return modelMapper.map(saved, SubcategoryDTO.Info.class);
     }
 
 
     @Transactional(readOnly = true)
     @Override
     public CategoryDTO.Info getCategory(Long subCategoryId) {
-        final Optional<SubCategory> ssById = subCategoryDAO.findById(subCategoryId);
-        final SubCategory subCategory = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
+        final Optional<Subcategory> ssById = subCategoryDAO.findById(subCategoryId);
+        final Subcategory subCategory = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
         return modelMapper.map(subCategory.getCategory(), CategoryDTO.Info.class);
     }

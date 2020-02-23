@@ -10,12 +10,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.model.Category;
-import com.nicico.training.model.SubCategory;
+import com.nicico.training.model.Subcategory;
 import com.nicico.training.repository.CategoryDAO;
-import com.nicico.training.repository.SubCategoryDAO;
+import com.nicico.training.repository.SubcategoryDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -30,7 +30,7 @@ public class CategoryService implements ICategoryService {
 
     private final ModelMapper modelMapper;
     private final CategoryDAO categoryDAO;
-    private final SubCategoryDAO subCategoryDAO;
+    private final SubcategoryDAO subCategoryDAO;
 
 
     @Transactional(readOnly = true)
@@ -95,7 +95,7 @@ public class CategoryService implements ICategoryService {
     // ------------------------------
 
     private CategoryDTO.Info save(Category category, Set<Long> subCategoryIds) {
-        final Set<SubCategory> subCategorySet = new HashSet<>();
+        final Set<Subcategory> subCategorySet = new HashSet<>();
         Optional.ofNullable(subCategoryIds)
                 .ifPresent(subCategoryIdSet -> subCategoryIdSet
                         .forEach(subCategoryIdss ->
@@ -111,15 +111,15 @@ public class CategoryService implements ICategoryService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<SubCategoryDTO.Info> getSubCategories(Long categoryId) {
+    public List<SubcategoryDTO.Info> getSubCategories(Long categoryId) {
         final Optional<Category> ssById = categoryDAO.findById(categoryId);
         final Category category = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CategoryNotFound));
 
-        List<SubCategoryDTO.Info> subCategoryInfoSet = new ArrayList<>();
+        List<SubcategoryDTO.Info> subCategoryInfoSet = new ArrayList<>();
         Optional.ofNullable(category.getSubCategorySet())
                 .ifPresent(subCategories ->
                         subCategories.forEach(subCategory ->
-                                subCategoryInfoSet.add(modelMapper.map(subCategory, SubCategoryDTO.Info.class))
+                                subCategoryInfoSet.add(modelMapper.map(subCategory, SubcategoryDTO.Info.class))
                         ));
 
         return subCategoryInfoSet;
