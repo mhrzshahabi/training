@@ -83,4 +83,18 @@ public class Teacher extends Auditable {
 
     @Column(name = "c_other_activities", length = 500)
     private String otherActivities;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_major_category", insertable = false, updatable = false)
+    private Category majorCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_major_sub_category", insertable = false, updatable = false)
+    private Subcategory majorSubCategory;
+
+    @Column(name = "f_edu_major")
+    private Long majorCategoryId;
+
+    @Column(name = "f_edu_major")
+    private Long majorSubCategoryId;
 }
