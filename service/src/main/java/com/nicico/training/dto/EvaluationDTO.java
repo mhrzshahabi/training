@@ -38,6 +38,7 @@ public class EvaluationDTO implements Serializable {
     private Long evaluationLevelId;
 
     private String description;
+    private Boolean evaluationFull;
 
     @Getter
     @Setter
@@ -63,6 +64,7 @@ public class EvaluationDTO implements Serializable {
     public static class Update {
         //        private Long id;
 //        private Integer version;
+        private Boolean evaluationFull;
         private String description;
         private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
     }

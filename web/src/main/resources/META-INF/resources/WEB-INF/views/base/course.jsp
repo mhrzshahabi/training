@@ -26,14 +26,10 @@
     var course_url = courseUrl;
     var RestDataSource_category = isc.TrDS.create({
         ID: "categoryDS",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer <%= accessToken %>"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa", type: "text"}
-        ], dataFormat: "json",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
         fetchDataURL: categoryUrl + "spec-list",
     });
     var RestDataSource_Skill_JspCourse = isc.TrDS.create({
@@ -52,7 +48,7 @@
             {name: "code"},
             {name: "titleFa"},
             {name: "titleEn"},
-            {name: "category.titleFa"},
+            {name: "categoryId"},
             {name: "subCategory.titleFa"},
             {name: "erunType.titleFa"},
             {name: "elevelType.titleFa"},
@@ -339,17 +335,23 @@
                 hidden: true
             },
             {
-                name: "category.titleFa",
+                name: "categoryId",
                 title: "<spring:message code="course_category"/>",
                 align: "center",
-                filterOperator: "iContains",
-                sortNormalizer: function (record) {
-                    return record.category.titleFa;
-                }
+                filterOperator: "equals",
+                optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id"
+                // sortNormalizer: function (record) {
+                //     return record.category.titleFa;
+                // }
             },
             {
-                name: "subCategory.titleFa", title: "<spring:message
-        code="course_subcategory"/>", align: "center", filterOperator: "iContains",
+                name: "subCategory.titleFa",
+                title: "<spring:message
+        code="course_subcategory"/>",
+                align: "center",
+                filterOperator: "iContains",
                 sortNormalizer: function (record) {
                     return record.subCategory.titleFa;
                 }
@@ -360,21 +362,20 @@
                 align: "center",
                 filterOperator: "iContains",
                 // allowFilterOperators: false,
-                // canFilter: false,
-                sortNormalizer: function (record) {
-                    console.log(record)
-                    return record.erunType.titleFa;
-                }
+                canFilter: false,
+                canSort: false,
             },
             {
                 name: "elevelType.titleFa", title: "<spring:message
         code="cousre_elevelType"/>", align: "center", filterOperator: "iContains",
-                canFilter: false
+                canFilter: false,
+                canSort: false
             },
             {
                 name: "etheoType.titleFa", title: "<spring:message
         code="course_etheoType"/>", align: "center", filterOperator: "iContains",
-                canFilter: false
+                canFilter: false,
+                canSort: false
             },
             {
                 name: "theoryDuration", title: "<spring:message
@@ -384,6 +385,7 @@
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
                  code="course_etechnicalType"/>", align: "center", filterOperator: "iContains",
+                canSort: false,
                 canFilter: false
             },
             {
@@ -1407,7 +1409,7 @@
                 }
             },
             {
-                name: "category.id",
+                name: "categoryId",
                 colSpan: 1,
                 title: "<spring:message code="course_category"/>",
                 textAlign: "center",
@@ -2475,7 +2477,7 @@
 
     function ListGrid_Course_add() {
         // IButton_course_Save.disable();
-        DynamicForm_course_GroupTab.getItem("category.id").enable();
+        DynamicForm_course_GroupTab.getItem("categoryId").enable();
         DynamicForm_course_GroupTab.getItem("erunType.id").enable();
         DynamicForm_course_GroupTab.getItem("elevelType.id").enable();
         DynamicForm_course_GroupTab.getItem("etheoType.id").enable();
@@ -2619,8 +2621,8 @@
             });
             mainObjectiveGrid_Refresh();
             // RestDataSource_category.fetchDataURL = categoryUrl + "spec-list";
-            DynamicForm_course_GroupTab.getItem("category.id").fetchData();
-            DynamicForm_course_GroupTab.getItem("category.id").disable();
+            // DynamicForm_course_GroupTab.getItem("categoryId").fetchData();
+            DynamicForm_course_GroupTab.getItem("categoryId").disable();
             DynamicForm_course_GroupTab.getItem("subCategory.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("erunType.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("elevelType.id").setDisabled(true);
@@ -2629,7 +2631,7 @@
             course_method = "PUT";
             course_url = courseUrl + sRecord.id;
             // DynamicForm_course.getItem("epSection").enable();
-            RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories";
+            RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.categoryId + "/sub-categories";
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(sRecord);
@@ -2739,7 +2741,7 @@
 
     function courseCode() {
         var subCatDis = DynamicForm_course_GroupTab.getField("subCategory.id").isDisabled();
-        var cat = DynamicForm_course_GroupTab.getField("category.id").getSelectedRecord();
+        var cat = DynamicForm_course_GroupTab.getField("categoryId").getSelectedRecord();
         var subCat = DynamicForm_course_GroupTab.getField("subCategory.id");
         var eRun = DynamicForm_course_GroupTab.getField("erunType.id").getSelectedRecord();
         var eLevel = DynamicForm_course_GroupTab.getField("elevelType.id").getSelectedRecord();

@@ -88,7 +88,7 @@ public class TrainingExceptionHandlerControllerAdvice extends AbstractExceptionH
                 return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.unknown.constraint", null, locale), transactionRollbackException.getMessage());
         }
 
-        return error(null, null, messageSource.getMessage("exception.un-managed", null, locale), exception.getMessage());
+        return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.un-managed", null, locale), exception.getMessage());
     }
 
     private OracleDatabaseException getOracleException(Throwable exception) {

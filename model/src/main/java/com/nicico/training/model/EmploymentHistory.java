@@ -37,7 +37,7 @@ public class EmploymentHistory extends Auditable {
     @JoinTable(name = "tbl_employment_history_subcategory",
             joinColumns = {@JoinColumn(name = "f_employment_history", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
-    private List<SubCategory> subCategories;
+    private List<Subcategory> subCategories;
 
     @Column(name = "c_start_date")
     private String startDate;

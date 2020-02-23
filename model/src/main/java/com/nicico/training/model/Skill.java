@@ -62,7 +62,7 @@ public class Skill extends Auditable {
     //زیر گروه مثلا برای گروه کامپیوتر (شبکه، سخت افزار و ...)
     @ManyToOne
     @JoinColumn(name = "f_sub_category", nullable = false, insertable = false, updatable = false)
-    private SubCategory subCategory;
+    private Subcategory subCategory;
 
     @Column(name = "f_sub_category")
     private Long subCategoryId;

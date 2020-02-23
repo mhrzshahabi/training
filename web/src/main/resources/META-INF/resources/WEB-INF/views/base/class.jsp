@@ -408,17 +408,17 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "course.id", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
+                name: "course.id", editorType: "ComboBoxItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
-                pickListWidth: 500,
+                pickListWidth: "600",
                 optionDataSource: RestDataSource_Course_JspClass,
                 // autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
                 filterFields: ["titleFa", "code", "createdBy"],
                 required: true,
                 pickListFields: [
-                    {name: "code"},
-                    {name: "titleFa"},
+                    {name: "code", autoFitWidth: true},
+                    {name: "titleFa", autoFitWidth: true},
                     {name: "createdBy"}
                 ],
                 changed: function (form, item, value) {
@@ -711,7 +711,6 @@
 
                 }
             },
-
             {
                 name: "group",
                 title: "<spring:message code="group"/>:",
@@ -858,7 +857,6 @@
                 title: "حد نمره قبولی",
                 required: true,
             },
-
             {
                 name: "acceptancelimit_a",
                 colSpan: 2,

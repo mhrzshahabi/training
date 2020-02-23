@@ -39,7 +39,7 @@ public class SkillService implements ISkillService {
     private final SkillGroupDAO skillGroupDAO;
     private final SkillLevelDAO skillLevelDAO;
     private final CategoryDAO categoryDAO;
-    private final SubCategoryDAO subCategoryDAO;
+    private final SubcategoryDAO subCategoryDAO;
     private final IWorkGroupService workGroupService;
     private final ISkillGroupService skillGroupService;
     private String saveType = "";
@@ -163,8 +163,8 @@ public class SkillService implements ISkillService {
         final Optional<Category> categoryById = categoryDAO.findById(skill.getCategoryId());
         final Category category = categoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CategoryNotFound));
 
-        final Optional<SubCategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
-        final SubCategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
+        final Optional<Subcategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
+        final Subcategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
         final Skill saved = skillDAO.saveAndFlush(skill);
 
@@ -264,10 +264,10 @@ public class SkillService implements ISkillService {
 
     @Transactional(readOnly = true)
     @Override
-    public SubCategoryDTO.Info getSubCategory(Long skillID) {
+    public SubcategoryDTO.Info getSubCategory(Long skillID) {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillID);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        return modelMapper.map(skill.getSubCategory(), SubCategoryDTO.Info.class);
+        return modelMapper.map(skill.getSubCategory(), SubcategoryDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
