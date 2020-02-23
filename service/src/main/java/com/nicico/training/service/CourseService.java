@@ -297,6 +297,9 @@ public class CourseService implements ICourseService {
             goalSet.add(goal);
         }
         one.setGoalSet(goalSet);
+        if(!one.getGoalSet().isEmpty()){
+            one.setHasGoal(true);
+        }
     }
 
     @Transactional
@@ -310,6 +313,8 @@ public class CourseService implements ICourseService {
             goalSet.remove(goal);
         }
         one.setGoalSet(goalSet);
+        if(one.getGoalSet().isEmpty())
+            one.setHasGoal(false);
     }
 
     @Transactional

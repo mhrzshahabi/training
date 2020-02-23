@@ -419,6 +419,7 @@
                                     if(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined){
                                         evaluationFull = false;
                                         createDialog("info","به همه سوالات پاسخ داده نشده است!!");
+                                        break;
                                         // return;
                                     }
                                     let evaluationAnswer = {};
