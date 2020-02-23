@@ -401,7 +401,7 @@
     });
 
     var ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="post.png"/>",
+        <%--icon: "<spring:url value="post.png"/>",--%>
         title: "<spring:message code="post.grade.list"/>",
         click: function () {
             Add_Post_Grade_Group_AddPostGrade_Jsp();
