@@ -132,7 +132,8 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+//        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+        if (true) {
             course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));

@@ -419,7 +419,12 @@ public class TclassService implements ITclassService {
                         } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
                             facilityTotalGrade += grade * weight;
                             facilityTotalWeight += weight;
-                        } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("Content")) {//Goals
+                        }
+//                        else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("Content")) {//Goals
+//                            goalsTotalGrade += grade * weight;
+//                            goalsTotalWeight += weight;
+//                        }
+                        else{//Goals
                             goalsTotalGrade += grade * weight;
                             goalsTotalWeight += weight;
                         }
