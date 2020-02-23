@@ -34,7 +34,7 @@ public class TeachingHistory extends Auditable {
     @JoinTable(name = "tbl_teaching_history_subcategory",
             joinColumns = {@JoinColumn(name = "f_teaching_history", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
-    private List<SubCategory> subCategories;
+    private List<Subcategory> subCategories;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_education_level_id", insertable = false, updatable = false)
