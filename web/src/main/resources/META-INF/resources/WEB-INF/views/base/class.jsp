@@ -441,8 +441,10 @@
                     //==================
                     form.clearValue("teacherId");
                     evalGroup();
-                    RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
-                    form.getItem("teacherId").fetchData();
+                    if(VM_JspClass.getField("course.id").getSelectedRecord().category != undefined) {
+                        RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                        form.getItem("teacherId").fetchData();
+                    }
                     form.setValue("hduration", item.getSelectedRecord().theoryDuration);
                     if (item.getSelectedRecord().evaluation === "1") {
                         form.setValue("preCourseTest", false);
@@ -903,7 +905,7 @@
 // width: "700",
 // validateOnChange:true,
         height: "100%",
-// validateOnExit:true,
+        validateOnExit: true,
         isGroup: true,
         titleAlign: "left",
         wrapItemTitles: true,
@@ -932,12 +934,13 @@
                 valueField: "id",
                 optionDataSource: RestDataSource_Term_JspClass,
 // autoFetchData: true,
-                cachePickListResults: true,
-                useClientFiltering: true,
+//                 cachePickListResults: true,
+//                 useClientFiltering: true,
                 filterFields: ["code"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                sortField: ["code"],
+                sortDirection: "descending",
+                // textMatchStyle: "startsWith",
+                // generateExactMatchCriteria: true,
                 colSpan: 2,
 // endRow:true,
                 pickListFields: [
