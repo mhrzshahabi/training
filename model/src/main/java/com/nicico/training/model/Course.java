@@ -127,7 +127,7 @@ public class Course extends Auditable {
     @Column(name = "c_acceptance_limit")
     private String acceptancelimit;
 
-    @Column(name="start_evaluation")
+    @Column(name = "start_evaluation")
     private Integer startEvaluation;
 
     //    @Transient
@@ -147,9 +147,10 @@ public class Course extends Auditable {
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EqualCourse> equalCourses;
 
-    @Transient
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
+    //    @Transient
+//    @Getter(AccessLevel.NONE)
+//    @Setter(AccessLevel.NONE)
+    @Column(name = "b_has_goal")
     private Boolean hasGoal;
 
     @Transient
