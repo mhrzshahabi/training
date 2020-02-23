@@ -2050,25 +2050,15 @@
         }
     }
 
-    var abc;
 
-    function GetScoreState(resp, a) {
-        abc = new Array()
+
+    function GetScoreState(resp) {
+
+        console.log(resp.httpResponseCode)
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
         } else if (resp.httpResponseCode === 406) {
-
-            //alert(JSON.pars(resp.httpResponseText))
-            var Dialog_Remove_scoreState = createDialog("ask", +"کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده آیا می خواهید با تغییر روش نمره دهی نمرات ثبت شده برای فراگیران این کلاس حذف شوند؟",
-                "<spring:message code="verify.delete"/>");
-            Dialog_Remove_scoreState.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-
-                    }
-                }
-            });
-        }
+                createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
+           }
 
     }
 
