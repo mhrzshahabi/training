@@ -12,7 +12,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ public class TeacherRestController {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final ICategoryService categoryService;
-    private final ISubCategoryService subCategoryService;
+    private final ISubcategoryService subCategoryService;
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
     private final TeacherDAO teacherDAO;
@@ -108,7 +107,7 @@ public class TeacherRestController {
         }
         else {
             List<CategoryDTO.Info> categories = null;
-            List<SubCategoryDTO.Info> subCategories = null;
+            List<SubcategoryDTO.Info> subCategories = null;
 
             if (request.get("categories") != null)
                 categories = setCats(request);
@@ -135,7 +134,7 @@ public class TeacherRestController {
         ((LinkedHashMap) request).remove("attachPic");
 
         List<CategoryDTO.Info> categories = null;
-        List<SubCategoryDTO.Info> subCategories = null;
+        List<SubcategoryDTO.Info> subCategories = null;
 
         if (request.get("categories") != null)
             categories = setCats(request);
@@ -435,10 +434,10 @@ public class TeacherRestController {
         params.put("connectionInfo", connection);
         String categories = null;
         List<Category> categoryList = teacher.getCategories();
-        List<SubCategory> subCategoryList = teacher.getSubCategories();
+        List<Subcategory> subCategoryList = teacher.getSubCategories();
         for (Category category : categoryList) {
             categories += category.getTitleFa() + " ";
-            for (SubCategory subCategory : subCategoryList) {
+            for (Subcategory subCategory : subCategoryList) {
                 CategoryDTO.Info categoryDTO = subCategoryService.getCategory(subCategory.getId());
                 if(categoryDTO.getId() == category.getId()) {
                     categories += subCategory.getTitleFa() + " ";
@@ -453,15 +452,15 @@ public class TeacherRestController {
             boolean category_related = false;
             boolean subCategory_related = false;
             List<CategoryDTO.CategoryInfoTuple> certificationCategories = info.getCategories();
-            List<SubCategoryDTO.SubCategoryInfoTuple> certificationSubCategories = info.getSubCategories();
+            List<SubcategoryDTO.SubCategoryInfoTuple> certificationSubCategories = info.getSubCategories();
             for (Category teacher_category : categoryList) {
                 for(CategoryDTO.CategoryInfoTuple certificate_category : certificationCategories){
                     if(teacher_category.getId() == certificate_category.getId())
                         category_related = true;
                 }
             }
-            for (SubCategory teacher_sub_category : subCategoryList) {
-                for(SubCategoryDTO.SubCategoryInfoTuple certificate_sub_category : certificationSubCategories){
+            for (Subcategory teacher_sub_category : subCategoryList) {
+                for(SubcategoryDTO.SubCategoryInfoTuple certificate_sub_category : certificationSubCategories){
                     if(teacher_sub_category.getId() == certificate_sub_category.getId())
                         subCategory_related = true;
                 }
@@ -510,7 +509,7 @@ public class TeacherRestController {
             categoryName = category.getTitleFa();
         }
         if(!subCatId.equalsIgnoreCase("undefined")) {
-            SubCategoryDTO.Info subCategory = subCategoryService.get(Long.valueOf(subCatId));
+            SubcategoryDTO.Info subCategory = subCategoryService.get(Long.valueOf(subCatId));
             subCategoryName = subCategory.getTitleFa();
         }
         categories = categoryName + " " + subCategoryName;
@@ -595,14 +594,14 @@ public class TeacherRestController {
         Long CatId = null;
         Long SubCatId = null;
         Category category_selected = null;
-        SubCategory subCategory_selected = null;
+        Subcategory subCategory_selected = null;
         if(!catId.equalsIgnoreCase("undefined")) {
             CatId = Long.parseLong(catId);
             category_selected = modelMapper.map(categoryService.get(CatId),Category.class);
         }
         if(!subCatId.equalsIgnoreCase("undefined")) {
             SubCatId = Long.parseLong(subCatId);
-            subCategory_selected = modelMapper.map(subCategoryService.get(SubCatId),SubCategory.class);
+            subCategory_selected = modelMapper.map(subCategoryService.get(SubCatId), Subcategory.class);
         }
         TeacherDTO.Info teacherDTO = teacherService.get(id);
         Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
@@ -636,8 +635,8 @@ public class TeacherRestController {
                     cat_related = true;
             }
             if(cat_related == true) {
-                List<SubCategoryDTO.SubCategoryInfoTuple> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
-                for (SubCategoryDTO.SubCategoryInfoTuple employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
+                List<SubcategoryDTO.SubCategoryInfoTuple> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
+                for (SubcategoryDTO.SubCategoryInfoTuple employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
                     if(employmentHistory_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -673,8 +672,8 @@ public class TeacherRestController {
                     cat_related = true;
             }
             if(cat_related == true) {
-                List<SubCategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
-                for (SubCategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
+                List<SubcategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
+                for (SubcategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
                     if(teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -718,8 +717,8 @@ public class TeacherRestController {
                     cat_related = true;
             }
             if(cat_related == true) {
-                List<SubCategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
-                for (SubCategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
+                List<SubcategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
+                for (SubcategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
                     if(teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -785,8 +784,8 @@ public class TeacherRestController {
                         cat_related = true;
             }
             if(cat_related == true) {
-                List<SubCategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
-                for (SubCategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
+                List<SubcategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
+                for (SubcategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
                     if(publication_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -920,14 +919,14 @@ public class TeacherRestController {
 
     }
 
-    private List<SubCategoryDTO.Info> setSubCats(LinkedHashMap request) {
+    private List<SubcategoryDTO.Info> setSubCats(LinkedHashMap request) {
         SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         criteriaRq.setOperator(EOperator.inSet);
         criteriaRq.setFieldName("id");
         criteriaRq.setValue(request.get("subCategories"));
         subCategoriesRequest.setCriteria(criteriaRq);
-        List<SubCategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
+        List<SubcategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
         request.remove("subCategories");
         return subCategories;
     }

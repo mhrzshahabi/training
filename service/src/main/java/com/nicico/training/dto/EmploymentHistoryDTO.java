@@ -31,7 +31,7 @@ public class EmploymentHistoryDTO {
         private Long id;
         private Integer version;
         private List<CategoryDTO.CategoryInfoTuple> categories;
-        private List<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private List<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
 
         public List<Long> getCategoriesIds() {
             if (categories == null)
@@ -42,7 +42,7 @@ public class EmploymentHistoryDTO {
         public List<Long> getSubCategoriesIds() {
             if (subCategories == null)
                 return null;
-            return subCategories.stream().map(SubCategoryDTO.SubCategoryInfoTuple::getId).collect(Collectors.toList());
+            return subCategories.stream().map(SubcategoryDTO.SubCategoryInfoTuple::getId).collect(Collectors.toList());
         }
     }
 
@@ -53,7 +53,7 @@ public class EmploymentHistoryDTO {
     public static class Create extends EmploymentHistoryDTO {
         private Long id;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -63,7 +63,7 @@ public class EmploymentHistoryDTO {
     public static class Update extends EmploymentHistoryDTO {
         private Long id;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter

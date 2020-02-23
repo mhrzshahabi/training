@@ -9,7 +9,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -68,7 +67,7 @@ public class Course extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
-    private SubCategory subCategory;
+    private Subcategory subCategory;
 
     @Column(name = "subcategory_id")
     private Long subCategoryId;

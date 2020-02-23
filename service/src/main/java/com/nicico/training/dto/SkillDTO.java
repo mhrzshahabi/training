@@ -69,7 +69,7 @@ public class SkillDTO {
         private Long id;
         private SkillLevelDTO.SkillLevelInfoTuple skillLevel;
         private CategoryDTO.CategoryInfoTuple category;
-        private SubCategoryDTO.SubCategoryInfoTuple subCategory;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
