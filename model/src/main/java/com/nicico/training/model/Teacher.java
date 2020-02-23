@@ -92,9 +92,9 @@ public class Teacher extends Auditable {
     @JoinColumn(name = "f_major_sub_category", insertable = false, updatable = false)
     private Subcategory majorSubCategory;
 
-    @Column(name = "f_edu_major")
+    @Column(name = "f_major_category")
     private Long majorCategoryId;
 
-    @Column(name = "f_edu_major")
+    @Column(name = "f_major_sub_category")
     private Long majorSubCategoryId;
 }
