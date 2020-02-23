@@ -468,15 +468,15 @@
         filterOnKeypress: true,
         getCellCSSText: function (record, rowNum, colNum) {
             // if (record.attitude==0 && record.knowledge==0 && record.skill==0) {
-            if (record.hasGoal && record.hasSkill) {
-                return "color:red;font-size: 12px;";
+            // if (!record.hasGoal && !record.hasSkill) {
+            //     return "color:red;font-size: 12px;";
+            // }
+            if (!record.hasGoal) {
+                return "color:crimson; font-size: 12px;";
             }
-            if (record.hasGoal) {
-                return "color:tan; font-size: 12px;";
-            }
-            if (record.hasSkill) {
-                return "color:orange;font-size: 12px;";
-            }
+            // if (!record.hasSkill) {
+            //     return "color:orange;font-size: 12px;";
+            // }
         }
     });
     var ListGrid_CourseSkill = isc.TrLG.create({
@@ -1263,9 +1263,11 @@
 
                     } else if (value == "3") {
                         form.getItem("acceptancelimit").validators = [{
-                            type: "regexp",
-                            errorMessage: "<spring:message code="msg.validate.score"/>",
-                            expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
+                            type: "integerRange", min: 0, max: 20,
+                            errorMessage: "لطفا یک عدد بین 0 تا 20 وارد کنید",
+                            <%--type: "regexp",--%>
+                            <%--errorMessage: "<spring:message code="msg.validate.score"/>",--%>
+                            <%--expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,--%>
                         }, {type: "required"}];
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").setRequired(true);

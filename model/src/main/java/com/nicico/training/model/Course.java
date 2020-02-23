@@ -174,11 +174,11 @@ public class Course extends Auditable {
         tclassSet.forEach(c -> c.setCourse(null));
     }
 
-    @Transient
-    public Boolean getHasGoal() {
-        if (goalSet == null) return true;
-        else return goalSet.isEmpty();
-    }
+//    @Transient
+//    public Boolean getHasGoal() {
+//        if (goalSet == null) return true;
+//        else return goalSet.isEmpty();
+//    }
 
     @Transient
     public Boolean getHasSkill() {
