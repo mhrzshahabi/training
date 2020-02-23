@@ -61,15 +61,9 @@ public class EducationOrientationRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/create")
+    @PostMapping
 //    @PreAuthorize("hasAuthority('c_educationOrientation')")
     public ResponseEntity create(@Validated @RequestBody EducationOrientationDTO.Create request) {
-//        EducationOrientationDTO.Info educationOrientationInfo = educationOrientationService.create(request);
-//        if (educationOrientationInfo != null)
-//            return new ResponseEntity<>(educationOrientationInfo, HttpStatus.CREATED);
-//        else
-//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-
         try {
             return new ResponseEntity<>(educationOrientationService.create(request), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -92,11 +86,6 @@ public class EducationOrientationRestController {
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationOrientation')")
     public ResponseEntity delete(@PathVariable Long id) {
-//        if (educationOrientationService.delete(id))
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        else {
-//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-//        }
         try {
             educationOrientationService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);

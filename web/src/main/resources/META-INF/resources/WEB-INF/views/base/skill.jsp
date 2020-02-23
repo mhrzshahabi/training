@@ -363,7 +363,6 @@
                 return;
             }
             var data = DynamicForm_Skill_Skill.getValues();
-//console.log(JSON.stringify(data));
 
             isc.RPCManager.sendRequest({
                 actionURL: skill_ActionUrl,
