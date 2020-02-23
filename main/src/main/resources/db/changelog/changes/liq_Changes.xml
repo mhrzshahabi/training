@@ -14,10 +14,20 @@
         </addColumn>
     </changeSet>
 
-
     <changeSet author="poursalehi_mos (generated)" id="1582460108764-243">
         <addColumn tableName="tbl_course">
             <column name="n_has_skill" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1582461399706-243">
+        <addColumn tableName="tbl_teacher">
+            <column name="f_major_category" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1582461399706-244">
+        <addColumn tableName="tbl_teacher">
+            <column name="f_major_sub_category" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
 
