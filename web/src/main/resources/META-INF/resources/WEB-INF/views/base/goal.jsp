@@ -777,7 +777,8 @@
         }
     });
     var ToolStripButton_Add_Vertical = isc.IconButton.create({
-        icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+        // icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+        icon: "<spring:url value="double-arrow-left.png"/>",
         showButtonTitle:false,
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
         click: function () {
@@ -785,7 +786,8 @@
         }
     });
     var ToolStripButton_Remove_Vertical = isc.IconButton.create({
-        icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+        // icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+        icon: "<spring:url value="double-arrow-right.png"/>",
         showButtonTitle:false,
         prompt: "حذف اهداف انتخاب شده از دوره مذکور",
         click: function () {
