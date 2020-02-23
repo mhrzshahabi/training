@@ -95,8 +95,10 @@
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
             {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "workflowStatusCode", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "workflowStatus", title: "<spring:message code="priority"/>", filterOperator: "iContains"}
+            {name: "workflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains"},
+            {name: "workflowStatus", title: "<spring:message code="committee.workflow.status"/>", filterOperator: "iContains"},
+            {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains"},
+            {name: "mainWorkflowStatus", title: "<spring:message code="main.workflow.status"/>", filterOperator: "iContains"}
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
@@ -910,7 +912,7 @@
     }
 
     function startProcess_callback(resp) {
-
+            console.log(resp.httpResponseCode);
         if (resp.httpResponseCode == 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
             ListGrid_Course_refresh()

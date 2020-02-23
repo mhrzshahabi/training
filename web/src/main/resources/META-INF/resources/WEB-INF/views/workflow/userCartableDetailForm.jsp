@@ -324,7 +324,7 @@ abaspour 9803
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
                                 if (RpcResponse_o.data == 'success') {
-
+                                    console.log(rejectDocumentLabel);
                                     // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
                                     isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
                                     taskConfirmationWindow.hide();
