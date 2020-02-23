@@ -28,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/subcategory")
-public class SubCategoryRestController {
+public class SubcategoryRestController {
 
     private final ISubcategoryService subCategoryService;
     private final ObjectMapper objectMapper;
@@ -54,7 +54,7 @@ public class SubCategoryRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_sub_Category')")
     public ResponseEntity<SubcategoryDTO.Info> create(@RequestBody Object request) {
-        //SubCategoryDTO.Create create=(new ModelMapper()).map(request,SubCategoryDTO.Create.class);
+        //SubcategoryDTO.Create create=(new ModelMapper()).map(request,SubcategoryDTO.Create.class);
         HttpStatus httpStatus = HttpStatus.CREATED;
         SubcategoryDTO.Info subCategoryInfo = null;
         try {
@@ -71,7 +71,7 @@ public class SubCategoryRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_sub_Category')")
     public ResponseEntity<SubcategoryDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-//        SubCategoryDTO.Update update=(new ModelMapper()).map(request,SubCategoryDTO.Update.class);
+//        SubcategoryDTO.Update update=(new ModelMapper()).map(request,SubcategoryDTO.Update.class);
         HttpStatus httpStatus = HttpStatus.OK;
         SubcategoryDTO.Info subCategoryInfo = null;
         try {
