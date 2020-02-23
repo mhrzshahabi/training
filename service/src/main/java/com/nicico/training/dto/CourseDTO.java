@@ -101,7 +101,7 @@ public class CourseDTO implements Serializable {
         private Long categoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
-//        private Boolean hasSkill;
+        private Boolean hasSkill;
 //        private Long knowledge;
 //        private Long skill;
 //        private Long attitude;

@@ -15,4 +15,10 @@
     </changeSet>
 
 
+    <changeSet author="poursalehi_mos (generated)" id="1582460108764-243">
+        <addColumn tableName="tbl_course">
+            <column name="n_has_skill" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
