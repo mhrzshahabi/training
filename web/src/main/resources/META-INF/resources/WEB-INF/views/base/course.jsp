@@ -1261,9 +1261,11 @@
 
                     } else if (value == "3") {
                         form.getItem("acceptancelimit").validators = [{
-                            type: "regexp",
-                            errorMessage: "<spring:message code="msg.validate.score"/>",
-                            expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
+                            type: "integerRange", min: 0, max: 20,
+                            errorMessage: "لطفا یک عدد بین 0 تا 20 وارد کنید",
+                            <%--type: "regexp",--%>
+                            <%--errorMessage: "<spring:message code="msg.validate.score"/>",--%>
+                            <%--expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,--%>
                         }, {type: "required"}];
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").setRequired(true);
