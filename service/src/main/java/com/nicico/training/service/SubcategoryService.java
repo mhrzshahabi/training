@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SubCategoryService implements ISubcategoryService {
+public class SubcategoryService implements ISubcategoryService {
 
     private final ModelMapper modelMapper;
     private final SubcategoryDAO subCategoryDAO;
