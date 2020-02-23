@@ -65,19 +65,19 @@ public class TrainingExceptionHandlerControllerAdvice extends AbstractExceptionH
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleException(Exception exception) {
 
-        log.error("Exception", exception);
+        log.error("Error is from : TrainingExceptionHandlerController class, handleException", exception);
         final Locale locale = LocaleContextHolder.getLocale();
         OracleDatabaseException oracleDatabaseException = getOracleException(exception);
         if (oracleDatabaseException != null) {
 
+            String consoleMessage = oracleDatabaseException.getSql() + System.getProperty("line.separator") + oracleDatabaseException.getMessage();
+
             if (oracleDatabaseException.getOracleErrorNumber() == 4063) {
 
-                String consoleMessage = oracleDatabaseException.getSql() + System.getProperty("line.separator") + oracleDatabaseException.getMessage();
                 return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.entity.not-found", null, locale), consoleMessage);
             }
-            if (oracleDatabaseException.getOracleErrorNumber() == 6575) {
+           else if (oracleDatabaseException.getOracleErrorNumber() == 6575) {
 
-                String consoleMessage = oracleDatabaseException.getSql() + System.getProperty("line.separator") + oracleDatabaseException.getMessage();
                 return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.function.not-found", null, locale), consoleMessage);
             }
         }

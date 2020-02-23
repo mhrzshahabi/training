@@ -1682,7 +1682,7 @@
         }
     });
 
-    var ToolStripButton_Add_JspClass = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_JspClass = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Class_add();
         }
