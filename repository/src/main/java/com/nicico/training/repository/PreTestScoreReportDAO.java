@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
-public interface unjustifiedAbsenceDAO extends JpaRepository<Attendance, Long>, JpaSpecificationExecutor<Attendance> {
+public interface PreTestScoreReportDAO extends JpaRepository<Attendance, Long>, JpaSpecificationExecutor<Attendance> {
     @Query(value = "SELECT DISTINCT\n" +
             "    tbl_session.c_session_date,\n" +
             "    tbl_student.last_name,\n" +
