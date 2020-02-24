@@ -9,7 +9,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -68,7 +67,7 @@ public class Course extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
-    private SubCategory subCategory;
+    private Subcategory subCategory;
 
     @Column(name = "subcategory_id")
     private Long subCategoryId;
@@ -128,7 +127,7 @@ public class Course extends Auditable {
     @Column(name = "c_acceptance_limit")
     private String acceptancelimit;
 
-    @Column(name="start_evaluation")
+    @Column(name = "start_evaluation")
     private Integer startEvaluation;
 
     //    @Transient
@@ -148,15 +147,9 @@ public class Course extends Auditable {
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EqualCourse> equalCourses;
 
-    @Transient
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
+    @Column(name = "b_has_goal")
     private Boolean hasGoal;
 
-    @Transient
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private Boolean hasSkill;
 
     //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
@@ -174,15 +167,7 @@ public class Course extends Auditable {
         tclassSet.forEach(c -> c.setCourse(null));
     }
 
-    @Transient
-    public Boolean getHasGoal() {
-        if (goalSet == null) return true;
-        else return goalSet.isEmpty();
-    }
+    @Column(name = "n_has_skill")
+    private Boolean hasSkill;
 
-    @Transient
-    public Boolean getHasSkill() {
-        if (skillSet == null) return true;
-        else return skillSet.isEmpty();
-    }
 }

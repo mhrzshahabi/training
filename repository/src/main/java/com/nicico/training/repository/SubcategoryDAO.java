@@ -5,11 +5,11 @@ com.nicico.training.repository
 @Time :11:44 AM
     */
 
-import com.nicico.training.model.SubCategory;
+import com.nicico.training.model.Subcategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SubCategoryDAO extends JpaRepository<SubCategory, Long>, JpaSpecificationExecutor<SubCategory> {
+public interface SubcategoryDAO extends JpaRepository<Subcategory, Long>, JpaSpecificationExecutor<Subcategory> {
 }

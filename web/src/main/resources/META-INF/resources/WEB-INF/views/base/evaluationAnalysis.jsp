@@ -6,7 +6,13 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-
+    //----------------------------------------------------Variables-----------------------------------------------------
+    var teacherGradeToClass = 0;
+    var studentsGradeToTeacher = 0;
+    var studentsGradeToFacility = 0;
+    var studentsGradeToGoals = 0;
+    var chartData = null;
+    var userId = "<%= SecurityUtil.getUserId()%>";
     //----------------------------------------------------Rest Data Sources---------------------------------------------
 
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
@@ -140,10 +146,12 @@
             {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function () {
-            scrollChart.show();
             DynamicForm_Reaction_EvaluationAnalysis_Header.show();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
+            chartSelector.show();
+            ReactionEvaluationChart.show();
+            ReactionEvaluationChart.setChartType("Column");
             fill_evaluation_result();
         }
     });
@@ -153,16 +161,16 @@
     var vm_reaction_evaluation = isc.ValuesManager.create({});
 
     DynamicForm_Reaction_EvaluationAnalysis_Header = isc.DynamicForm.create({
-        align: "right",
+        width: "60%",
         canSubmit: true,
+        border: "3px solid orange",
         titleWidth: 120,
-        width: "45%",
         valuesManager: vm_reaction_evaluation,
-        titleAlign: "left",
+        titleAlign: "right",
         showInlineErrors: true,
         showErrorText: false,
-        styleName: "teacher-form",
-        numCols: 6,
+        styleName: "evaluation-form",
+        numCols: 2,
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
@@ -170,31 +178,32 @@
             {
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
-                baseStyle: "teacher-code",
+                // baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "numberOfFilledReactionEvaluationForms",
                 title: "<spring:message code='numberOfFilledReactionEvaluationForms'/>",
-                baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "numberOfInCompletedReactionEvaluationForms",
                 title: "<spring:message code='numberOfInCompletedReactionEvaluationForms'/>",
-                baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "numberOfEmptyReactionEvaluationForms",
                 title:"<spring:message code='numberOfEmptyReactionEvaluationForms'/>",
-                baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "percenetOfFilledReactionEvaluationForms",
                 title: "<spring:message code='percenetOfFilledReactionEvaluationForms'/>",
-                baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
@@ -206,16 +215,16 @@
     });
 
     DynamicForm_Reaction_EvaluationAnalysis_Footer = isc.DynamicForm.create({
-        width: "30%",
-        align: "right",
         canSubmit: true,
-        titleAlign: "left",
+        titleAlign: "right",
         titleWidth: 120,
+        width: "54%",
+        border: "3px solid orange",
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: vm_reaction_evaluation,
         styleName: "teacher-form",
-        numCols: 4,
+        numCols: 2,
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
@@ -223,25 +232,26 @@
             {
                 name: "FERGrade",
                 title: "<spring:message code='FERGrade'/>",
-                baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
+                fillHorizontalSpace: true,
                 canEdit: false
             },
             {
                 name: "FETGrade",
                 title:"<spring:message code='FETGrade'/>",
-                baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "FECRGrade",
                 title: "<spring:message code='FECRGrade'/>",
-                baseStyle: "teacher-code",
+                baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "FECRPass",
-                title: "<spring:message code='status'/>",
-                baseStyle: "teacher-code",
+                title: "<spring:message code='evaluation.status'/>",
+                baseStyle: "evaluation-code",
                 canEdit: false,
                 valueMap: {
                     "true": "تائید",
@@ -272,26 +282,25 @@
         ]
     });
 
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').titleStyle = 'teacher-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').titleStyle = 'teacher-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').titleStyle = 'teacher-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').titleStyle = 'teacher-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').titleStyle = 'teacher-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').titleStyle = 'evaluation-code-title';
 
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').titleStyle = 'teacher-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').titleStyle = 'teacher-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').titleStyle = 'teacher-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').setCellStyle('teacher-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').titleStyle = 'teacher-code-title';
-
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').titleStyle = 'evaluation-code-title';
 
     var IButton_Print_ReactionEvaluation_Evaluation_Analysis = isc.IButton.create({
         top: 260,
@@ -321,13 +330,88 @@
         ]
     });
 
+    var Vlayout_DynamicForms_ReactionEvaluation = isc.VLayout.create({
+        defaultLayoutAlign: "center",
+        members: [
+            isc.LayoutSpacer.create({
+                height: 20,
+                width: "*",
+            }),
+            DynamicForm_Reaction_EvaluationAnalysis_Header,
+            isc.LayoutSpacer.create({
+                height: 40,
+                width: "*",
+            }),
+            DynamicForm_Reaction_EvaluationAnalysis_Footer
+        ]
+    });
+
     var VLayout_Body_evaluation_analysis_reaction = isc.VLayout.create({
-        width: "100%",
+        width: "50%",
         height: "100%",
-        members: [DynamicForm_Reaction_EvaluationAnalysis_Header,
-            DynamicForm_Reaction_EvaluationAnalysis_Footer,
+        members: [Vlayout_DynamicForms_ReactionEvaluation ,
+            isc.LayoutSpacer.create({
+                height: 20,
+                width: "*",
+            }),
             Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print]
     });
+
+    var ReactionEvaluationChart = isc.FacetChart.create({
+        titleAlign: "center",
+        minLabelGap: 5,
+        width: "80%",
+        height: "90%",
+        barMargin: "100",
+        allowedChartTypes: [],
+        facets: [
+            {id: "region", title: "حیطه"}],
+        data: chartData,
+        valueProperty: "grade",
+        valueTitle: "نمره ارزیابی از صد",
+        title: "تحلیل ارزیابی واکنشی کلاس",
+    });
+
+
+    var chartSelector  = isc.DynamicForm.create({
+        canSubmit: true,
+        titleAlign: "right",
+        titleWidth: 120,
+        width: "200",
+        fields: [{
+            name: "chartType",
+            title: "انتخاب نوع نمودار",
+            type: "select",
+            width: "200",
+            valueMap: ["ستونی", "راداری"],
+            defaultValue: "ستونی",
+            changed : function (form, item, value) {
+                if(value == "ستونی"){
+                    ReactionEvaluationChart.setChartType("Column");
+                }
+                if(value == "راداری"){
+                    ReactionEvaluationChart.setChartType("Radar");
+                }
+            }
+        }]
+    });
+
+    var ReactionEvaluationChartLayout =  isc.VLayout.create({
+        defaultLayoutAlign: "center",
+        width: "50%",
+        height: "100%",
+        members: [chartSelector, ReactionEvaluationChart]
+    });
+
+    var Hlayout_ReactionEvaluationResult = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [
+            VLayout_Body_evaluation_analysis_reaction,
+            ReactionEvaluationChartLayout
+        ]
+    });
+
 
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
         ID: "tabSetEvaluationAnalysis",
@@ -337,7 +421,7 @@
             {
                 id: "TabPane_Reaction_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.reaction"/>",
-                pane: VLayout_Body_evaluation_analysis_reaction
+                pane: Hlayout_ReactionEvaluationResult
             }
             ,
             {
@@ -367,6 +451,16 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_evaluationAnalysis_class.invalidateCache();
+            DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
+            DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
+            IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();
+            chartSelector.hide();
+            ReactionEvaluationChart.hide();
+            ReactionEvaluationChart.setChartType("Column");
+            Detail_Tab_Evaluation_Analysis.disableTab(0);
+            Detail_Tab_Evaluation_Analysis.disableTab(1);
+            Detail_Tab_Evaluation_Analysis.disableTab(2);
+            Detail_Tab_Evaluation_Analysis.disableTab(3);
         }
     });
 
@@ -385,7 +479,7 @@
         ]
     });
 
-    var HLayout_Actions_Evaluation_Analysis= isc.HLayout.create({
+    var HLayout_Actions_Evaluation_Analysis = isc.HLayout.create({
         width: "100%",
         height: "1%",
         members: [ToolStrip_Evaluation_Analysis]
@@ -411,7 +505,7 @@
         width: "100%",
         height: "100%",
         members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis,
-                  Hlayout_Tab_Evaluation_Analysis]
+            Hlayout_Tab_Evaluation_Analysis]
     });
 
     //----------------------------------------------------Functions-----------------------------------------------------
@@ -469,14 +563,44 @@
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("studentsGradeToFacility").setValue(record.studentsGradeToFacility);
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("studentsGradeToGoals").setValue(record.studentsGradeToGoals);
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("trainingGradeToTeacher").setValue(record.trainingGradeToTeacher);
+
+        teacherGradeToClass = record.teacherGradeToClass;
+        studentsGradeToTeacher = record.studentsGradeToTeacher;
+        studentsGradeToFacility = record.studentsGradeToFacility;
+        studentsGradeToGoals = record.studentsGradeToGoals;
+
+        if (DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERPass").getValue() == true) {
+            DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('evaluation-code-pass-label');
+        }
+
+        else if (DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERPass").getValue() == false) {
+            DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('evaluation-code-fail-label');
+        }
+
+        if (DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETPass").getValue() == true) {
+            DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('evaluation-code-pass-label');
+        }
+
+        else if (DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETPass").getValue() == false) {
+            DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('evaluation-code-fail-label');
+        }
+
+        chartData  = [
+            {region: "محتوی", grade: studentsGradeToGoals},
+            {region: "مدرس", grade: studentsGradeToTeacher},
+            {region: "امکانات", grade: studentsGradeToFacility},
+            {region: "نظر استاد", grade: teacherGradeToClass}
+        ];
+
+        ReactionEvaluationChart.setData(chartData);
     }
 
     function fill_evaluation_result() {
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "evaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "evaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + userId, "GET", null,
             "callback: fill_evaluation_result_resp(rpcResponse)"));
     }
 
-    function fill_evaluation_result_resp(resp){
+    function fill_evaluation_result_resp(resp) {
         load_evluation_analysis_data(JSON.parse(resp.data));
         set_evaluation_analysis_tabset_status();
         Detail_Tab_Evaluation_Analysis.selectTab(0);
@@ -487,3 +611,6 @@
     DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
     DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
     IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();
+    chartSelector.hide();
+    ReactionEvaluationChart.hide();
+    ReactionEvaluationChart.setChartType("Column");

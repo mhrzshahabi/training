@@ -148,7 +148,7 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
-                validateOnChange: true,
+                validateOnExit: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -162,7 +162,7 @@
                 editorType: "TrComboAutoRefresh",
                 addUnknownValues: false,
                 required: true,
-                validateOnChange: true,
+                validateOnExit: true,
                 optionDataSource: RestDataSourceEducationLevel,
                 displayField: "titleFa",
                 valueField: "id",
@@ -176,7 +176,7 @@
                 editorType: "TrComboAutoRefresh",
                 addUnknownValues: false,
                 required: true,
-                validateOnChange: true,
+                validateOnExit: true,
                 optionDataSource: RestDataSourceEducationMajor,
                 displayField: "titleFa",
                 valueField: "id",
@@ -389,7 +389,7 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
-                validateOnChange: true,
+                validateOnExit: true,
                 length: "100",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
@@ -608,7 +608,7 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
-                validateOnChange: true,
+                validateOnExit: true,
                 type: 'text',
                 length: "100",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
@@ -624,7 +624,7 @@
                 name: "code",
                 title: "<spring:message code='code'/>",
                 required: true,
-                validateOnChange: true,
+                validateOnExit: true,
                 length: "5",
                 keyPressFilter: "[0-9]"
             },

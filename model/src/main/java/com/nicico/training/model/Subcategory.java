@@ -18,7 +18,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_sub_category")
-public class SubCategory extends Auditable {
+public class Subcategory extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_subcategory_id")
     @SequenceGenerator(name = "seq_subcategory_id", sequenceName = "seq_subcategory_id", allocationSize = 1)

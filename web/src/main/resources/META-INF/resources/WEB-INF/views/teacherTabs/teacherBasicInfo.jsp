@@ -520,6 +520,66 @@
                 }
             },
             {
+                name: "majorCategoryId",
+                title: "<spring:message code='related.category.to.major.for.evaluation'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                required: true,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Category_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "majorSubCategoryId",
+                title: "<spring:message code='related.sub.category.to.major.for.evaluation'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                required: true,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
                 keyPressFilter: "[0-9]",

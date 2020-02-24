@@ -408,17 +408,17 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "course.id", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
+                name: "course.id", editorType: "ComboBoxItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
-                pickListWidth: 500,
+                pickListWidth: "600",
                 optionDataSource: RestDataSource_Course_JspClass,
                 // autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
                 filterFields: ["titleFa", "code", "createdBy"],
                 required: true,
                 pickListFields: [
-                    {name: "code"},
-                    {name: "titleFa"},
+                    {name: "code", autoFitWidth: true},
+                    {name: "titleFa", autoFitWidth: true},
                     {name: "createdBy"}
                 ],
                 changed: function (form, item, value) {
@@ -441,8 +441,10 @@
                     //==================
                     form.clearValue("teacherId");
                     evalGroup();
-                    RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
-                    form.getItem("teacherId").fetchData();
+                    if(VM_JspClass.getField("course.id").getSelectedRecord().category != undefined) {
+                        RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                        form.getItem("teacherId").fetchData();
+                    }
                     form.setValue("hduration", item.getSelectedRecord().theoryDuration);
                     if (item.getSelectedRecord().evaluation === "1") {
                         form.setValue("preCourseTest", false);
@@ -711,7 +713,6 @@
 
                 }
             },
-
             {
                 name: "group",
                 title: "<spring:message code="group"/>:",
@@ -858,7 +859,6 @@
                 title: "حد نمره قبولی",
                 required: true,
             },
-
             {
                 name: "acceptancelimit_a",
                 colSpan: 2,
@@ -905,7 +905,7 @@
 // width: "700",
 // validateOnChange:true,
         height: "100%",
-// validateOnExit:true,
+        validateOnExit: true,
         isGroup: true,
         titleAlign: "left",
         wrapItemTitles: true,
@@ -934,12 +934,13 @@
                 valueField: "id",
                 optionDataSource: RestDataSource_Term_JspClass,
 // autoFetchData: true,
-                cachePickListResults: true,
-                useClientFiltering: true,
+//                 cachePickListResults: true,
+//                 useClientFiltering: true,
                 filterFields: ["code"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                sortField: ["code"],
+                sortDirection: "descending",
+                // textMatchStyle: "startsWith",
+                // generateExactMatchCriteria: true,
                 colSpan: 2,
 // endRow:true,
                 pickListFields: [
@@ -1270,8 +1271,10 @@
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: function () {
-            if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
-                return;
+            if(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord() != undefined) {
+                if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
+                    return;
+                }
             }
 // if (startDateCheck === false || endDateCheck === false)
 // return;
@@ -1682,7 +1685,7 @@
         }
     });
 
-    var ToolStripButton_Add_JspClass = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_JspClass = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Class_add();
         }
@@ -2047,25 +2050,15 @@
         }
     }
 
-    var abc;
 
-    function GetScoreState(resp, a) {
-        abc = new Array()
+
+    function GetScoreState(resp) {
+
+        console.log(resp.httpResponseCode)
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
         } else if (resp.httpResponseCode === 406) {
-
-            //alert(JSON.pars(resp.httpResponseText))
-            var Dialog_Remove_scoreState = createDialog("ask", +"کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده آیا می خواهید با تغییر روش نمره دهی نمرات ثبت شده برای فراگیران این کلاس حذف شوند؟",
-                "<spring:message code="verify.delete"/>");
-            Dialog_Remove_scoreState.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-
-                    }
-                }
-            });
-        }
+                createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
+           }
 
     }
 

@@ -5,6 +5,7 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
 <html>
@@ -717,7 +718,7 @@
                     }
                 },
                 {
-                    title: "گزارش غیبت ناموجه",
+                    title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/unjustified/show-form"/>");
                     }
@@ -803,7 +804,9 @@
         shadowColor: "#153560",
         members: [
             basicInfoTSMB,
-            needsAssessmentTSMB,
+<%--            <sec:authorize access="hasAuthority('NeedsAssessment_Menu')">--%>
+                needsAssessmentTSMB,
+<%--            </sec:authorize>--%>
             designingTSMB,
             runTSMB,
             evaluationTSMB,
@@ -1122,6 +1125,7 @@
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
     const termUrl = rootUrl + "/term/";
+    const unjustifiedAbsence =rootUrl +"/unjustifiedAbsence/";
     const unjustifiedAbsenceReportURL = rootUrl + "/unjustifiedAbsence/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
@@ -1206,10 +1210,29 @@
         defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            if (JSON.parse(response.httpResponseText).message !== "No message available")
-                createDialog("info", JSON.parse(response.httpResponseText).message);
-            else
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
+            let userErrorMessage = "<spring:message code="msg.error.connecting.to.server"/>";
+            if(JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0)
+            {
+               userErrorMessage = JSON.parse(response.httpResponseText).message;
+            }
+            else if(JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0)
+            {
+                userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
+            }
+
+            createDialog("info", userErrorMessage);
+
+
+            <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>
+                <%--let userErrorMessage = "<spring:message code="exception.un-managed"/>";--%>
+                    <%--if(JSON.parse(response.httpResponseText).message.length > 0)--%>
+                        <%--userErrorMessage = JSON.parse(response.httpResponseText).message;--%>
+                        <%--else if(JSON.parse(response.httpResponseText).errors[0].message.length > 0 && response.httpResponseCode === 403)--%>
+                        <%--userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;--%>
+
+                <%--createDialog("info", userErrorMessage);--%>
+            <%--} else--%>
+                <%--createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");--%>
         }
     });
 

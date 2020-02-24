@@ -176,11 +176,17 @@
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
+                        if (DynamicForm_JspTeacherCertification.getValue("endDate") == undefined) {
+                            DynamicForm_JspTeacherCertification.getField("endDate").setValue(todayDate);
+                        }
                         dateCheck_Order_JSPTeachCertificate = false;
                         startDateCheck_JSPTeachCertificate = true;
                         form.clearFieldErrors("startDate", true);
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     } else {
+                        if (DynamicForm_JspTeacherCertification.getValue("endDate") == undefined) {
+                            DynamicForm_JspTeacherCertification.getField("endDate").setValue(todayDate);
+                        }
                         startDateCheck_JSPTeachCertificate = true;
                         dateCheck_Order_JSPTeachCertificate = true;
                         form.clearFieldErrors("startDate", true);
@@ -267,18 +273,14 @@
                     DynamicForm_JspTeacherCertification.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                 }
 
-                if (DynamicForm_JspTeacherCertification.getValue("startDate") != undefined && DynamicForm_JspTeacherCertification.getValue("endDate") == undefined){
-                    DynamicForm_JspTeacherCertification.clearFieldErrors("endDate", true);
-                    DynamicForm_JspTeacherCertification.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
-                }
                 return;
             }
 
             if (DynamicForm_JspTeacherCertification.getValue("startDate") != undefined && DynamicForm_JspTeacherCertification.getValue("endDate") == undefined) {
                 DynamicForm_JspTeacherCertification.clearFieldErrors("endDate", true);
-                DynamicForm_JspTeacherCertification.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
-                return;
+                DynamicForm_JspTeacherCertification.getField("endDate").setValue(todayDate);
             }
+
             waitTeacherCertification = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeacherCertification,
                 methodTeacherCertification,

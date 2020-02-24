@@ -1,9 +1,6 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.SubCategory;
-import com.nicico.training.model.TeacherCertification;
-import com.nicico.training.model.TeachingHistory;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -33,6 +30,8 @@ public class TeacherDTO {
     private String economicalRecordNumber;
     private String otherActivities;
     private Long personalityId;
+    private Long majorCategoryId;
+    private Long majorSubCategoryId;
 
     @Getter
     @Setter
@@ -41,8 +40,10 @@ public class TeacherDTO {
     public static class Info extends TeacherDTO {
         private Long id;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
-        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private Set<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
         private PersonalInfoDTO.Info personality;
+        private CategoryDTO.CategoryInfoTuple majorCategory;
+        private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
 //        private Set<EmploymentHistoryDTO.Info> employmentHistories;
 //        private Set<AcademicBKDTO.Info> academicBKs;
 //        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
@@ -64,7 +65,7 @@ public class TeacherDTO {
         private PersonalInfoDTO.Grid personality;
         private Boolean enableStatus;
         private Set<CategoryDTO.Info> categories;
-        private Set<SubCategoryDTO.Info> subCategories;
+        private Set<SubcategoryDTO.Info> subCategories;
         private Integer version;
 
         public List<Long> getCategories() {
@@ -76,7 +77,7 @@ public class TeacherDTO {
         public List<Long> getSubCategories() {
             if (subCategories == null)
                 return null;
-            return subCategories.stream().map(SubCategoryDTO.Info::getId).collect(Collectors.toList());
+            return subCategories.stream().map(SubcategoryDTO.Info::getId).collect(Collectors.toList());
         }
 
     }
@@ -110,7 +111,7 @@ public class TeacherDTO {
     public static class Create extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -120,7 +121,7 @@ public class TeacherDTO {
     public static class Update extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter

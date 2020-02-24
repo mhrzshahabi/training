@@ -58,7 +58,7 @@ public interface ISkillService {
 
     CategoryDTO.Info getCategory(Long skillID);
 
-    SubCategoryDTO.Info getSubCategory(Long skillID);
+    SubcategoryDTO.Info getSubCategory(Long skillID);
 
     SkillLevelDTO.Info getSkillLevel(Long skillID);
 

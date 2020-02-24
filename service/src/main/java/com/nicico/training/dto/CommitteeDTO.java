@@ -50,7 +50,7 @@ public class CommitteeDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private SubCategoryDTO.SubCategoryInfoTuple subCategory;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private CategoryDTO.CategoryInfoTuple category;
     }
 

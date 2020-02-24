@@ -11,6 +11,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.ISkillGroupService;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.iservice.IWorkGroupService;
@@ -39,9 +40,10 @@ public class SkillService implements ISkillService {
     private final SkillGroupDAO skillGroupDAO;
     private final SkillLevelDAO skillLevelDAO;
     private final CategoryDAO categoryDAO;
-    private final SubCategoryDAO subCategoryDAO;
+    private final SubcategoryDAO subCategoryDAO;
     private final IWorkGroupService workGroupService;
     private final ISkillGroupService skillGroupService;
+    private final ICourseService courseService;
     private String saveType = "";
 
     @Transactional(readOnly = true)
@@ -93,10 +95,14 @@ public class SkillService implements ISkillService {
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
-        if(!requestSkill.getCourseId().equals(currentSkill.getCourseId())){
+        if (!requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
             updating.setCourseMainObjectiveId(null);
         }
         Skill skill = skillDAO.save(updating);
+        if (skill.getCourseId() != null)
+            courseService.updateHasSkill(skill.getCourseId(), true);
+//        else
+//            courseService.updateHasSkill(skill.getCourseId(), null);
         return modelMapper.map(skill, SkillDTO.Info.class);
     }
 
@@ -163,10 +169,15 @@ public class SkillService implements ISkillService {
         final Optional<Category> categoryById = categoryDAO.findById(skill.getCategoryId());
         final Category category = categoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CategoryNotFound));
 
-        final Optional<SubCategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
-        final SubCategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
+        final Optional<Subcategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
+        final Subcategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
         final Skill saved = skillDAO.saveAndFlush(skill);
+
+//        if (saved.getCourseId() != null)
+//            courseService.updateHasSkill(saved.getCourseId(), true);
+//        else
+//            courseService.updateHasSkill(saved.getCourseId(), null);
 
         saveType = "";
         return modelMapper.map(saved, SkillDTO.Info.class);
@@ -264,10 +275,10 @@ public class SkillService implements ISkillService {
 
     @Transactional(readOnly = true)
     @Override
-    public SubCategoryDTO.Info getSubCategory(Long skillID) {
+    public SubcategoryDTO.Info getSubCategory(Long skillID) {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillID);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        return modelMapper.map(skill.getSubCategory(), SubCategoryDTO.Info.class);
+        return modelMapper.map(skill.getSubCategory(), SubcategoryDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
@@ -383,6 +394,7 @@ public class SkillService implements ISkillService {
         if (Objects.equals(skill.getCourseMainObjectiveId(), courseId))
             skill.setCourseMainObjectiveId(null);
         skillDAO.save(skill);
+        courseService.updateHasSkill(courseId, null);
     }
 
     @Transactional
@@ -394,6 +406,7 @@ public class SkillService implements ISkillService {
         List<Course> courses = courseDAO.findAllById(courseIds);
         for (Course course : courses) {
             skill.setCourse(null);
+            courseService.updateHasSkill(course.getId(), null);
             //courses.add(course);
         }
 
@@ -408,6 +421,7 @@ public class SkillService implements ISkillService {
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
         skill.setCourseId(courseId);
         skillDAO.save(skill);
+        courseService.updateHasSkill(courseId, true);
     }
 
 
@@ -419,6 +433,7 @@ public class SkillService implements ISkillService {
         List<Course> gAllById = courseDAO.findAllById(ids);
         for (Course course : gAllById) {
             skill.setCourse(course);
+            courseService.updateHasSkill(course.getId(), true);
         }
     }
 

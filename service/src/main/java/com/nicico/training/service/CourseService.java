@@ -30,7 +30,6 @@ public class CourseService implements ICourseService {
     private final EducationLevelDAO educationLevelDAO;
     private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
-    private final SkillService skillService;
     private final CourseDAO courseDAO;
     private final CompetenceDAOOld competenceDAO;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
@@ -88,6 +87,18 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
+    public void updateHasSkill(Long id, Boolean hasSkill) {
+        final Optional<Course> cById = courseDAO.findById(id);
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        if (hasSkill != null)
+            course.setHasSkill(hasSkill);
+        else
+            course.setHasSkill(!course.getSkillSet().isEmpty());
+        courseDAO.saveAndFlush(course);
+    }
+
+    @Transactional
+    @Override
     public void setEqualCourse(Long id, List<String> equalCourseList) {
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
@@ -132,13 +143,18 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+//        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+        if (true) {
             course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
             course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
+            if (request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty())
+                course.setHasSkill(true);
+            else
+                course.setHasSkill(false);
             Course course1 = courseDAO.save(course);
-            if(request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty()) {
+            if (request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty()) {
                 Set<Skill> setSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
                 for (Skill skill : setSkill) {
                     skill.setCourseId(course1.getId());
@@ -184,10 +200,15 @@ public class CourseService implements ICourseService {
         course.setEqualCourses(equalCourses);
         ////////////////////////////////////////////////////////////////////////
 
-
+        if (course.getGoalSet().isEmpty()) {
+            course.setHasGoal(true);
+        } else {
+            course.setHasGoal(false);
+        }
+        course.setHasSkill(!course.getSkillSet().isEmpty());
         Course save = courseDAO.save(course);
         Set<Skill> savedSkills = save.getSkillMainObjectiveSet();
-        Set<Skill> savingSkill = new HashSet<>(skillService.getAllByIds(request.getMainObjectiveIds()));
+        Set<Skill> savingSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
         if (!savedSkills.equals(savingSkill)) {
             if (savingSkill.containsAll(savedSkills)) {
                 for (Skill skill : savingSkill) {
@@ -292,6 +313,9 @@ public class CourseService implements ICourseService {
             goalSet.add(goal);
         }
         one.setGoalSet(goalSet);
+        if(!one.getGoalSet().isEmpty()){
+            one.setHasGoal(true);
+        }
     }
 
     @Transactional
@@ -305,6 +329,8 @@ public class CourseService implements ICourseService {
             goalSet.remove(goal);
         }
         one.setGoalSet(goalSet);
+        if(one.getGoalSet().isEmpty())
+            one.setHasGoal(false);
     }
 
     @Transactional

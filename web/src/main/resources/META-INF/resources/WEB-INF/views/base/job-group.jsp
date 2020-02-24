@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// script
+// <script>
     var method = "POST";
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -890,7 +890,7 @@
         })
     });
     var ToolStripButton_Add_Job_Group_AddJob_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="job.png"/>",
+        <%--icon: "<spring:url value="job.png"/>",--%>
         title: "لیست شغل ها",
         click: function () {
             var record = ListGrid_Job_Group_Jsp.getSelectedRecord();

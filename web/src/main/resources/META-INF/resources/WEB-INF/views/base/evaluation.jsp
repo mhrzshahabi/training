@@ -186,6 +186,7 @@
                     <%--icon: "<spring:url value="refresh.png"/>",--%>
                     click: function () {
                         var studentIdJspEvaluation;
+                        var teacherIdJspEvaluation = ListGrid_evaluation_class.getSelectedRecord().teacherId;
                         var evaluationLevelId;
                         var saveMethod;
                         var saveUrl = evaluationUrl;
@@ -289,29 +290,47 @@
                                         var criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
                                         DynamicForm_Questions_Body_JspEvaluation.setFields([]);
                                         form.getItem("evaluationLevel").disable();
+                                        var criteriaEdit=
+                                            '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},';
+                                            // '{"fieldName":"questionnaireTypeId","operator":"equals","value":139},' +
+                                            // '{"fieldName":"evaluatorId","operator":"equals","value":'+studentIdJspEvaluation+'},' +
+                                            // '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
                                         switch(value){
                                             case "SEFT":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"TRAINING"}';
+                                                criteriaEdit +=
+                                                    '{"fieldName":"questionnaireTypeId","operator":"equals","value":141},' +
+                                                    '{"fieldName":"evaluatorId","operator":"equals","value":<%= SecurityUtil.getUserId()%>},' +
+                                                    '{"fieldName":"evaluatorTypeId","operator":"equals","value":189},' +
+                                                    '{"fieldName":"evaluatedId","operator":"equals","value":'+teacherIdJspEvaluation+'},' +
+                                                    '{"fieldName":"evaluatedTypeId","operator":"equals","value":187}';
                                                 form.setValue("evaluator", form.getValue("user"));
                                                 form.setValue("evaluated", form.getValue("teacher"));
                                                 break;
                                             case "SEFC":
                                                 // criteria= '{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
-                                                form.getItem("evaluationLevel").enable();
                                                 form.setValue("evaluated", form.getValue("titleClass"));
                                                 RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + ListGrid_evaluation_class.getSelectedRecord().id;
                                                 Window_AddStudent_JspEvaluation.show();
-                                                break;
+                                                return;
                                             case "TEFC":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"}';
+                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"CLASS"}';
+                                                criteriaEdit +=
+                                                    '{"fieldName":"questionnaireTypeId","operator":"equals","value":140},' +
+                                                    '{"fieldName":"evaluatorId","operator":"equals","value":'+teacherIdJspEvaluation+'},' +
+                                                    '{"fieldName":"evaluatorTypeId","operator":"equals","value":187}';
                                                 form.setValue("evaluator", form.getValue("teacher"));
                                                 form.setValue("evaluated", form.getValue("titleClass"));
                                                 break;
                                             case "OEFS":
                                                 criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                                criteriaEdit +=
+                                                    '{"fieldName":"questionnaireTypeId","operator":"equals","value":230},' +
+                                                    '{"fieldName":"evaluatorId","operator":"equals","value":'+studentIdJspEvaluation+'},' +
+                                                    '{"fieldName":"evaluatorTypeId","operator":"equals","value":188}';
                                                 break;
                                         }
-                                        requestEvaluationQuestions(criteria)
+                                        requestEvaluationQuestions(criteria, criteriaEdit)
                                     }
                                 },
                                 {
@@ -336,13 +355,11 @@
                                         switch (value) {
                                             case "Behavioral":
                                                 criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":156}';
-                                                requestEvaluationQuestionsEdit(criteriaEdit);
-                                                requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                                 evaluationLevelId = 156;
+                                                requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                                 break;
                                             case "Results":
                                                 criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":157}';
-                                                requestEvaluationQuestionsEdit(criteriaEdit);
                                                 evaluationLevelId = 157;
                                                 requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                                 break;
@@ -353,9 +370,8 @@
                                                 requestEvaluationQuestions(criteria, criteriaEdit,  1);
                                                 break;
                                             case "Learning":
-                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
-                                                requestEvaluationQuestionsEdit(criteriaEdit);
                                                 evaluationLevelId = 155;
+                                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
                                                 requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                                 break;
                                             default:
@@ -396,12 +412,15 @@
                                 // let data = vm_JspEvaluation.getValues();
                                 let evaluationAnswerList = [];
                                 let data = {}
+                                let evaluationFull = true;
                                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                                 for (let i = 0; i < questions.length; i++) {
-                                    console.log(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name))
+                                    // console.log(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name))
                                     if(DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined){
+                                        evaluationFull = false;
                                         createDialog("info","به همه سوالات پاسخ داده نشده است!!");
-                                        return;
+                                        break;
+                                        // return;
                                     }
                                     let evaluationAnswer = {};
                                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -410,6 +429,7 @@
                                     evaluationAnswerList.push(evaluationAnswer);
                                 }
                                 data.evaluationAnswerList = evaluationAnswerList;
+                                data.evaluationFull = evaluationFull;
                                 switch (DynamicForm_Questions_Title_JspEvaluation.getValue("evaluationType")) {
                                     case "SEFT":
                                         data.evaluatorId = "<%= SecurityUtil.getUserId()%>";
@@ -482,7 +502,7 @@
                             width:1024,
                             height:768,
                             keepInParentRect: true,
-                            title: "<spring:message code="evaluation.teacher.supervisor"/>",
+                            title: "<spring:message code="record.evaluation.results"/>",
                             items: [
                                 DynamicForm_Questions_Title_JspEvaluation,
                                 DynamicForm_Questions_Body_JspEvaluation,
@@ -534,6 +554,7 @@
                                                 DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", record.student.firstName + " " + record.student.lastName);
                                                 studentIdJspEvaluation = record.id;
                                                 Window_AddStudent_JspEvaluation.close();
+                                                DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").enable();
                                             }
                                         }),
                                     ]
