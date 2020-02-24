@@ -69,7 +69,7 @@
         gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
         dataArrived: function ()
         {
-            totalsLabel_scores.setContents("حد نمره پيش تست" + ":&nbsp;<b>" + List_Grid_Reaport.getRecord(1).preTestScoreParameterValue + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;")
+            totalsLabel_scores.setContents("حد نمره پيش تست" + ":&nbsp;<b>" + List_Grid_Reaport.getRecord(0).preTestScoreParameterValue + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;")
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
