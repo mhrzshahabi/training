@@ -400,42 +400,6 @@
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
-                    <%--gridComponents: [--%>
-                    <%--    isc.ToolStrip.create({--%>
-                    <%--        height: 30,--%>
-                    <%--        width: "100%",--%>
-                    <%--        members: [--%>
-                    <%--            isc.ToolStripButton.create({--%>
-                    <%--                width: "50%",--%>
-                    <%--                icon: "[SKIN]/actions/approve.png",--%>
-                    <%--                title: "<spring:message code='select.all'/>",--%>
-                    <%--                click: function () {--%>
-                    <%--                    var item = DynamicForm_BasicInfo_JspTeacher.getField("categories"),--%>
-                    <%--                        fullData = item.pickList.data,--%>
-                    <%--                        cache = fullData.localData,--%>
-                    <%--                        values = [];--%>
-
-                    <%--                    for (var i = 0; i < cache.length; i++) {--%>
-                    <%--                        values[i] = cache[i]["id"];--%>
-                    <%--                    }--%>
-                    <%--                    item.setValue(values);--%>
-                    <%--                    item.pickList.hide();--%>
-                    <%--                }--%>
-                    <%--            }),--%>
-                    <%--            isc.ToolStripButton.create({--%>
-                    <%--                width: "50%",--%>
-                    <%--                icon: "[SKIN]/actions/close.png",--%>
-                    <%--                title: "<spring:message code='deselect.all'/>",--%>
-                    <%--                click: function () {--%>
-                    <%--                    var item = DynamicForm_BasicInfo_JspTeacher.getField("categories");--%>
-                    <%--                    item.setValue([]);--%>
-                    <%--                    item.pickList.hide();--%>
-                    <%--                }--%>
-                    <%--            })--%>
-                    <%--        ]--%>
-                    <%--    }),--%>
-                    <%--    "header", "body"--%>
-                    <%--]--%>
                 },
                 changed: function () {
                     isTeacherCategoriesChanged = true;
@@ -475,42 +439,6 @@
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
-                    <%--gridComponents: [--%>
-                    <%--    isc.ToolStrip.create({--%>
-                    <%--        height: 30,--%>
-                    <%--        width: "100%",--%>
-                    <%--        members: [--%>
-                    <%--            isc.ToolStripButton.create({--%>
-                    <%--                width: "50%",--%>
-                    <%--                icon: "[SKIN]/actions/approve.png",--%>
-                    <%--                title: "<spring:message code='select.all'/>",--%>
-                    <%--                click: function () {--%>
-                    <%--                    var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories"),--%>
-                    <%--                        fullData = item.pickList.data,--%>
-                    <%--                        cache = fullData.localData,--%>
-                    <%--                        values = [];--%>
-
-                    <%--                    for (var i = 0; i < cache.length; i++) {--%>
-                    <%--                        values[i] = cache[i]["id"];--%>
-                    <%--                    }--%>
-                    <%--                    item.setValue(values);--%>
-                    <%--                    item.pickList.hide();--%>
-                    <%--                }--%>
-                    <%--            }),--%>
-                    <%--            isc.ToolStripButton.create({--%>
-                    <%--                width: "50%",--%>
-                    <%--                icon: "[SKIN]/actions/close.png",--%>
-                    <%--                title: "<spring:message code='deselect.all'/>",--%>
-                    <%--                click: function () {--%>
-                    <%--                    var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");--%>
-                    <%--                    item.setValue([]);--%>
-                    <%--                    item.pickList.hide();--%>
-                    <%--                }--%>
-                    <%--            })--%>
-                    <%--        ]--%>
-                    <%--    }),--%>
-                    <%--    "header", "body"--%>
-                    <%--]--%>
                 },
                 focus: function () {
                     if (isTeacherCategoriesChanged) {
