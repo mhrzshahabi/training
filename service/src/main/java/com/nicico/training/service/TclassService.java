@@ -349,7 +349,7 @@ public class TclassService implements ITclassService {
 
         trainingGradeToTeacher = getTrainingGradeToTeacher(classId, trainingId);
 
-//        calculateStudentsReactionEvaluationResult();
+        calculateStudentsReactionEvaluationResult();
         evaluationResult.setFERGrade(getFERGrade(classId));
         evaluationResult.setFERPass(FERPass);
         evaluationResult.setFETGrade(getFETGrade());
