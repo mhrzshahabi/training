@@ -54,23 +54,7 @@ public class PreTestScoreReportRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @Loggable
-    @PostMapping(value = {"/print"})
-    public void print(HttpServletResponse response, @RequestParam(value = "startDate") String startDate, @RequestParam(value = "endDate") String endDate)  throws Exception{
 
-        startDate = startDate.substring(0, 4) + "/" + startDate.substring(4, 6) + "/" + startDate.substring(6, 8);
-        endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
-
-        Object object= preTestScoreReportService.unjustified(startDate,endDate);
-        String data = null;
-        data = "{" + "\"unjustifiedAbsence\": " + objectMapper.writeValueAsString(object) + "}";
-        final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
-        JsonDataSource jsonDataSource = null;
-        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-        params.put(ConstantVARs.REPORT_TYPE, "PDF");
-        reportUtil.export("/reports/unjustified_absence.jasper", params, jsonDataSource, response);
-    }
 
     @Loggable
     @PostMapping(value = {"/printPreTestScore"})
@@ -79,7 +63,7 @@ public class PreTestScoreReportRestController {
         startDate = startDate.substring(0, 4) + "/" + startDate.substring(4, 6) + "/" + startDate.substring(6, 8);
         endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
 
-        Object object= preTestScoreReportService.PreTestScore(startDate,endDate);
+        Object object= preTestScoreReportService.print(startDate,endDate);
        String str=((List) object).toArray()[0].toString();
 
         String data = null;

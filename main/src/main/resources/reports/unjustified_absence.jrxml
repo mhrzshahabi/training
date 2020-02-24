@@ -98,16 +98,16 @@
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
-		<field name="session_date" class="java.lang.String"/>
-		<field name="lname" class="java.lang.String"/>
-		<field name="first_name" class="java.lang.String"/>
-		<field name="title_class" class="java.lang.String"/>
-		<field name="start_date" class="java.lang.String"/>
-		<field name="end_date" class="java.lang.String"/>
-		<field name="end_hour" class="java.lang.String"/>
-		<field name="start_hour" class="java.lang.String"/>
+		<field name="sessionDate" class="java.lang.String"/>
+		<field name="lastName" class="java.lang.String"/>
+		<field name="firstName" class="java.lang.String"/>
+		<field name="titleClass" class="java.lang.String"/>
+		<field name="startDate" class="java.lang.String"/>
+		<field name="endDate" class="java.lang.String"/>
+		<field name="endHour" class="java.lang.String"/>
+		<field name="startHour" class="java.lang.String"/>
 		<group name="Group1">
-			<groupExpression><![CDATA[$F{title_class}]]></groupExpression>
+			<groupExpression><![CDATA[$F{titleClass}]]></groupExpression>
 		</group>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
@@ -161,11 +161,11 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="100" height="30" uuid="a5a6c992-ea34-4264-8993-2bd77757c0a7"/>
+								<reportElement x="0" y="0" width="100" height="30" uuid="1a7466f3-cc2f-4ebb-9620-2ae4156ccb72"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
+									<font fontName="Shabnam-FD" size="13"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{session_date}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{sessionDate}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -173,28 +173,7 @@
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table 2_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="100" height="30" uuid="5e6fb2e3-d955-4a25-9e45-44aef8ba2217"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-FD" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[تاريخ شروع]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 2_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="100" height="30" uuid="cbe128d0-e28d-45f5-bede-51a8b5f61b9f"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{start_date}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="80" uuid="41d26039-843a-4e96-8657-9f39810ac52f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-						<jr:columnHeader style="Table 2_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="80" height="30" uuid="134a6754-6651-46bf-9204-f0bf92a1d3bc"/>
+								<reportElement x="0" y="0" width="100" height="30" uuid="134a6754-6651-46bf-9204-f0bf92a1d3bc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12" isBold="true"/>
 								</textElement>
@@ -203,11 +182,32 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="80" height="30" uuid="d00cd789-0aaf-4b57-9d6a-83f3143c81ab"/>
+								<reportElement x="0" y="0" width="100" height="30" uuid="6ce11a0d-6651-466a-94aa-11b19b98c86b"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
+									<font fontName="Shabnam-FD" size="13"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{end_date}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{endDate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="80" uuid="41d26039-843a-4e96-8657-9f39810ac52f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table 2_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="80" height="30" uuid="5e6fb2e3-d955-4a25-9e45-44aef8ba2217"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[تاريخ شروع]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 2_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="80" height="30" uuid="2769c90c-5a20-4af8-9977-9f789bf159a3"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="13"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -224,11 +224,11 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="30" uuid="a5cc560a-822d-4305-a3c0-0017ed082948"/>
+								<reportElement x="0" y="0" width="70" height="30" uuid="875ce59b-4814-434c-8e5e-1f5656e0ddd1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
+									<font fontName="Shabnam-FD" size="13"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{end_hour}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{endHour}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -245,11 +245,11 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="30" uuid="ceaca54d-a624-4549-8fb7-2c5d048d2377"/>
+								<reportElement x="0" y="0" width="70" height="30" uuid="e2f90b3b-1c40-4cf3-94d7-3494ee28974a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
+									<font fontName="Shabnam-FD" size="13"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{start_hour}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{startHour}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -266,11 +266,11 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="160" height="30" uuid="7dd4474f-e416-488c-bad0-a11bb15c60d0"/>
+								<reportElement x="0" y="0" width="160" height="30" uuid="b546f15e-f62b-4b5c-a4ad-fe3ddc8b4dc8"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
+									<font fontName="Shabnam-FD" size="13"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{lname}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lastName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -287,11 +287,11 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="120" height="30" uuid="93ca0f40-57a7-4c72-88e9-4a760e748300"/>
+								<reportElement x="0" y="0" width="120" height="30" uuid="d817f146-0766-4ad3-bc06-7017a99e017b"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
+									<font fontName="Shabnam-FD" size="13"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{first_name}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{firstName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -308,11 +308,11 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="120" height="30" uuid="7caa119e-a71f-43d9-995a-1c84d5c03fef"/>
+								<reportElement x="0" y="0" width="120" height="30" uuid="5cc91ef8-7662-4ff6-b382-077e2040e6f1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam-ED" size="12"/>
+									<font fontName="Shabnam-FD" size="13"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{title_class}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{titleClass}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

@@ -723,6 +723,12 @@
                         createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                     }
                 },
+                {
+                    title: "غيبت ناموجه",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
+                    }
+                },
             ]
         }),
     });
