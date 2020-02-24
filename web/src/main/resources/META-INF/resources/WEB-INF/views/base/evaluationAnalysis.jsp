@@ -178,7 +178,6 @@
             {
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
-                // baseStyle: "teacher-code",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -427,17 +426,14 @@
             {
                 id: "TabPane_Learning_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.learning"/>"
-                // pane: VLayout_Body_evaluation
             },
             {
                 id: "TabPane_Behavior_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.behavioral"/>"
-                // pane: VLayout_Body_evaluation
             },
             {
                 id: "TabPane_Results_Evaluation_Analysis",
                 title: "<spring:message code="evaluation.results"/>"
-                // pane: VLayout_Body_evaluation
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {

@@ -424,8 +424,6 @@
                     loadPage_Publication(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'employmentHistory')
                     loadPage_EmploymentHistory(teacherId);
-                // if (isc.Page.isLoaded())
-                //     refreshSelectedTab_teacher(null);
             }
         }
     });
@@ -1353,7 +1351,6 @@
         ListGrid_JspPublication.clearFilterValues();
         ListGrid_JspForeignLangKnowledge.clearFilterValues();
         ListGrid_JspAttachment.clearFilterValues();
-
         ListGrid_JspAcademicBK.filterByEditor();
         ListGrid_JspEmploymentHistory.filterByEditor();
         ListGrid_JspTeachingHistory.filterByEditor();
