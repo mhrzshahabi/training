@@ -169,7 +169,7 @@
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: postUrl + "/wpIscList"
     });
     PostGroupDs_needsAssessment = isc.TrDS.create({
         fields: [

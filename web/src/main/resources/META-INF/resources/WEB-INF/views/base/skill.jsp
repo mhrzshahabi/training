@@ -687,7 +687,7 @@
         fields: [
 // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
-            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains", autoFitWidth:true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", align: "center", filterOperator: "iContains"},
             {
                 name: "course.code",

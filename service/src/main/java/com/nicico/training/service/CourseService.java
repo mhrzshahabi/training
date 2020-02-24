@@ -262,6 +262,24 @@ public class CourseService implements ICourseService {
         return exitList;
     }
 
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<CourseDTO.InfoPrint> searchPrint(SearchDTO.SearchRq request) {
+        SearchDTO.SearchRs<Course> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, Course.class));
+        SearchDTO.SearchRs<CourseDTO.InfoPrint> exitList = new SearchDTO.SearchRs<CourseDTO.InfoPrint>();
+        exitList.setTotalCount(search.getTotalCount());
+        List<CourseDTO.InfoPrint> infoList = new ArrayList<CourseDTO.InfoPrint>();
+//        List<Course> list = search.getList();
+        List<CourseDTO.InfoPrint> infoPrints = modelMapper.map(search.getList(), new TypeToken<List<CourseDTO.InfoPrint>>() {
+        }.getType());
+//        for (Course course : list) {
+//            CourseDTO.InfoPrint map = modelMapper.map(course, CourseDTO.InfoPrint.class);
+//            infoList.add(map);
+//        }
+        exitList.setList(infoPrints);
+        return exitList;
+    }
+
     //-------jafari--------
     @Transactional(readOnly = true)
     @Override

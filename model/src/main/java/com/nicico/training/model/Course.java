@@ -169,5 +169,4 @@ public class Course extends Auditable {
 
     @Column(name = "n_has_skill")
     private Boolean hasSkill;
-
 }
