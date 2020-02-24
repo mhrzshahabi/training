@@ -41,12 +41,10 @@
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
                     one(two);
-
                     function one(callBack) {
                         editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                         callBack();
                     }
-
                     function two() {
                         NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function() {
                             Window_NeedsAssessment_JspNeedsAssessment.show();
@@ -54,18 +52,6 @@
                     }
                 }
             }),
-            <%--isc.ToolStripButton.create({--%>
-                <%--title: "<spring:message code="send.to.committee.workflow"/>",--%>
-                <%--click: function () {--%>
-                    <%--sendNeedAssessment_CommitteeToWorkflow();--%>
-                <%--}--%>
-            <%--}),--%>
-            <%--isc.ToolStripButton.create({--%>
-                <%--title: "<spring:message code="send.to.main.workflow"/>",--%>
-                <%--click: function () {--%>
-                    <%--sendNeedAssessment_MainWorkflow();--%>
-                <%--}--%>
-            <%--}),--%>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -144,7 +130,6 @@
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        cacheAllData:true,
         fetchDataURL: jobUrl + "/iscList"
     });
     JobGroupDs_needsAssessment = isc.TrDS.create({
@@ -577,6 +562,7 @@
             isc.DynamicForm.create({
                 ID: "NeedsAssessmentTargetDF_needsAssessment",
                 numCols: 2,
+                readOnlyDisplay: "readOnly",
                 fields: [
                     {
                         name: "objectType",
@@ -602,12 +588,13 @@
                         type: "SelectItem",
                         valueField: "id",
                         displayField: "titleFa",
-                        filterLocally: true,
-                        // useClientFiltering: true,
                         autoFetchData: false,
                         pickListFields: [{name: "code"}, {name: "titleFa"}],
                         click: function(form){
                             // updateObjectIdLG(form, form.getValue("objectType"));
+                            if(form.getValue("objectType")=="Post"){
+                                Window_AddPost_JspNeedsAssessment.show();
+                            }
                         },
                         changed: function (form, item, value, oldValue) {
                             if(value != oldValue){
@@ -691,6 +678,7 @@
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
+                                editNeedsAssessmentRecord(record.id, "Post");
                             })
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
 
@@ -706,7 +694,7 @@
     });
 
     function updateObjectIdLG(form, value) {
-        form.getItem("objectId").enable();
+        form.getItem("objectId").canEdit = true;
         switch (value) {
             case 'Job':
                 form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
@@ -714,28 +702,23 @@
                     {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false }
                     ];
-                // form.getItem("objectId").canEdit = true;
                 break;
             case 'JobGroup':
                 form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
-                form.getItem("objectId").canEdit = true;
                 break;
             case 'Post':
-                Window_AddPost_JspNeedsAssessment.show();
                 form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
-                form.getItem("objectId").disable();
+                form.getItem("objectId").canEdit = false;
                 PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
-                // form.getItem("objectId").fetchData();
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
-                // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGrade':
                 form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
@@ -743,17 +726,14 @@
                     {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
                     ];
-                // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGradeGroup':
                 form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
                     ];
-                // form.getItem("objectId").canEdit = true;
                 break;
         }
-        // form.getItem("objectId").fetchData(x);
     }
 
     function createNeedsAssessmentRecords(data) {
