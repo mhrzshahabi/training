@@ -34,4 +34,5 @@
         <createSequence sequenceName="seq_skill_id"/>
     </changeSet>
 
+
 </databaseChangeLog>

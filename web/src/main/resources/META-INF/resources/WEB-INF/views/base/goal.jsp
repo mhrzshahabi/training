@@ -770,7 +770,7 @@
             Window_AddGoal.show();
             ListGrid_CourseGoal_Goal.invalidateCache();
             ListGrid_CourseGoal_Goal.fetchData();
-            RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseRecord.id;
+            RestDataSource_GoalAll.fetchDataURL = goalUrl + "spec-list";
             ListGrid_GoalAll.invalidateCache();
             ListGrid_GoalAll.fetchData();
             <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>

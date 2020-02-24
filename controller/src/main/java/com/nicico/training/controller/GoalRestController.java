@@ -102,11 +102,12 @@ public class GoalRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_goal')")
-    public ResponseEntity<GoalDTO.GoalSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+    public ResponseEntity<GoalDTO.GoalSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                   @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                    @RequestParam(value = "_constructor", required = false) String constructor,
                                                    @RequestParam(value = "operator", required = false) String operator,
                                                    @RequestParam(value = "criteria", required = false) String criteria,
+                                                   @RequestParam(value = "id", required = false) Long id,
                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
@@ -120,6 +121,15 @@ public class GoalRestController {
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
