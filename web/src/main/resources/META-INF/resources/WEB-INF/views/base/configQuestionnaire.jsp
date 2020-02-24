@@ -186,7 +186,7 @@
     Menu_JspConfigQuestionnaire = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
-                ListGrid_ConfigQuestionnaire_refresh();
+                refreshLG(ListGrid_JspConfigQuestionnaire);
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
@@ -207,17 +207,8 @@
     ListGrid_JspConfigQuestionnaire = isc.TrLG.create({
         dataSource: RestDataSource_JspConfigQuestionnaire,
         contextMenu: Menu_JspConfigQuestionnaire,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
+        sortField: 1,
         fields: [
             {
                 name: "question",
@@ -257,6 +248,8 @@
                 return "color:black;font-size: 12px;";
             if (record.domain.code === "Content")
                 return "color:green;font-size: 12px;";
+            if (record.domain.code === "TRAINING")
+                return "color:gray;font-size: 12px;";
         },
         filterEditorSubmit: function () {
             ListGrid_JspConfigQuestionnaire.invalidateCache();
@@ -265,7 +258,7 @@
 
     ToolStripButton_Refresh_JspConfigQuestionnaire = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_ConfigQuestionnaire_refresh();
+            refreshLG(ListGrid_JspConfigQuestionnaire);
         }
     });
 
@@ -327,13 +320,6 @@
     /*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    function ListGrid_ConfigQuestionnaire_refresh() {
-        ListGrid_JspConfigQuestionnaire.invalidateCache();
-        ListGrid_JspConfigQuestionnaire.filterByEditor();
-        RestDataSource_QuestionDomain_JspConfigQuestionnaire.fetchData();
-        RestDataSource_QuestionIndicator_JspConfigQuestionnaire.fetchData();
-    }
-
     function ListGrid_ConfigQuestionnaire_Add() {
         methodConfigQuestionnaire = "POST";
         saveActionUrlConfigQuestionnaire = configQuestionnaireUrl;
@@ -382,7 +368,7 @@
         waitConfigQuestionnaire.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            ListGrid_ConfigQuestionnaire_refresh();
+            refreshLG(ListGrid_JspConfigQuestionnaire);
             Window_JspConfigQuestionnaire.close();
             setTimeout(function () {
                 OK.close();
@@ -400,7 +386,7 @@
     function ConfigQuestionnaire_remove_result(resp) {
         waitConfigQuestionnaire.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_ConfigQuestionnaire_refresh();
+            refreshLG(ListGrid_JspConfigQuestionnaire);
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();

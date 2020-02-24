@@ -79,13 +79,15 @@
 
     var DynamicForm_Report = isc.DynamicForm.create({
        numCols: 9,
-        colWidths: ["5%","10%","5%","10%","10%","10%"],
+        colWidths: ["5%","15%","5%","15%","10%","10%"],
         fields: [
             {
 
                 name: "startDate",
-                height: 35,
-                titleAlign:"left",
+               // height: 35,
+             //   titleColSpan: 1,
+             //   colSpan: 2,
+                titleAlign:"center",
                 title: "از تاریخ",
                 ID: "startDate_jspReport",
                 type: 'text',
@@ -93,9 +95,9 @@
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
-                focus: function () {
-                    displayDatePicker('startDate_jspReport', this, 'ymd', '/');
-                },
+                // focus: function () {
+                //     displayDatePicker('startDate_jspReport', this, 'ymd', '/');
+                // },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
@@ -124,21 +126,22 @@
                 }
             },
 
-            {
+                {
                 name: "endDate",
-                height: 35,
-                titleAlign:"left",
+               // height: 35,
+               // titleColSpan: 1,
                 title: "تا تاریخ",
+               titleAlign:"center",
                 ID: "endDate_jspReport",
-                type: 'text',
-                enabled: false,
                 required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
-                focus: function () {
-                    displayDatePicker('endDate_jspReport', this, 'ymd', '/');
-                },
+                textAlign: "center",
+               // colSpan: 2,
+                // focus: function () {
+                //     displayDatePicker('endDate_jspReport', this, 'ymd', '/');
+                // },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
