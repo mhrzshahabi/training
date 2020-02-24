@@ -298,7 +298,8 @@
 
                                     createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
                                     ListGrid_Cell_score_Update(record, null, 2);
-                                    ListGrid_Class_Student.refreshFields();
+                                    ListGrid_Class_Student.invalidateCache();
+
                                 }
 
                             } else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue !== null || newValue != null) && (editCompletionEvent == "enter" || editCompletionEvent == "click_outside")) {
@@ -317,8 +318,7 @@
 
 
                     } else {
-                        ListGrid_Class_Student.invalidateCache();
-                        ListGrid_Class_Student.refreshFields();
+                       return true
                     }
                 },// end editor Exit
 
@@ -525,6 +525,9 @@
     }
 
     function loadPage_Scores() {
+           isc.MyOkDialog.create({
+            message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
+            });
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
         if (!(classRecord == undefined || classRecord == null)) {

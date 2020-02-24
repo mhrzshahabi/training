@@ -32,21 +32,21 @@
             {name: "preTestScoreParameterValue"}
         ], dataFormat: "json",
 
-       // autoFetchData: true,
+        // autoFetchData: true,
     });
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         ID: "ToolStrip_Actions1",
-       // width: "100%",
+        // width: "100%",
         members: [
             isc.Label.create({
                 ID: "totalsLabel_scores"
             })]
     })
     var List_Grid_Reaport = isc.TrLG.create({
-      dataSource: RestDataSource_PreTestScore,
+        dataSource: RestDataSource_PreTestScore,
         showRowNumbers: false,
-       //autoFetchData: true,
+        //autoFetchData: true,
 
         fields: [
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -78,15 +78,15 @@
         sortField: 0,    });
 
     var DynamicForm_Report = isc.DynamicForm.create({
-       numCols: 9,
+        numCols: 9,
         colWidths: ["5%","15%","5%","15%","10%","10%"],
         fields: [
             {
 
                 name: "startDate",
-               // height: 35,
-             //   titleColSpan: 1,
-             //   colSpan: 2,
+                // height: 35,
+                //   titleColSpan: 1,
+                //   colSpan: 2,
                 titleAlign:"center",
                 title: "از تاریخ",
                 ID: "startDate_jspReport",
@@ -112,10 +112,10 @@
                     dateCheck = checkDate(DynamicForm_Report.getValue("startDate"));
                     if (dateCheck == false)
                         DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReport = false;
+                    endDateCheckReport = false;
                     if (dateCheck == true)
                         DynamicForm_Report.clearFieldErrors("startDate", true);
-                        endDateCheckReport = true;
+                    endDateCheckReport = true;
                     var endDate = DynamicForm_Report.getValue("endDate");
                     var startDate = DynamicForm_Report.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
@@ -126,19 +126,19 @@
                 }
             },
 
-                {
+            {
                 name: "endDate",
-               // height: 35,
-               // titleColSpan: 1,
+                // height: 35,
+                // titleColSpan: 1,
                 title: "تا تاریخ",
-               titleAlign:"center",
+                titleAlign:"center",
                 ID: "endDate_jspReport",
                 required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 textAlign: "center",
-               // colSpan: 2,
+                // colSpan: 2,
                 // focus: function () {
                 //     displayDatePicker('endDate_jspReport', this, 'ymd', '/');
                 // },
@@ -164,8 +164,8 @@
                     if (dateCheck == true) {
                         if (startDate == undefined)
                             DynamicForm_Report.clearFieldErrors("endDate", true);
-                            DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                           endDateCheckReport = false;
+                        DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDateCheckReport = false;
                         if (startDate != undefined && startDate > endDate) {
                             DynamicForm_Report.clearFieldErrors("endDate", true);
                             DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
@@ -180,67 +180,48 @@
                 }
 
             },
-            {
-                 type: "button",
-                 title: "تهیه گزارش",
-                 height:"25",
-                 align:"center",
-                 endRow:false,
-                 startRow: false,
-
-                click:function () {
-                    if (endDateCheckReport == false)
-                        return;
-
-                    if (!DynamicForm_Report.validate()) {
-                        return;
-                    }
-
-                    var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
-                    var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-                    RestDataSource_PreTestScore.fetchDataURL=preTestScoreReportURL + "spec-list"+"/"+strSData + "/" + strEData;
-                    List_Grid_Reaport.invalidateCache();
-                    List_Grid_Reaport.fetchData();
-                }
-            },
-            {
-                type: "button",
-                    startRow:false,
-                    align:"center",
-                    title: "چاپ گزارش",
-                    height:"25",
-                   click:function () {
-                        if (endDateCheckReport == false)
-                            return;
-                        if (!DynamicForm_Report.validate()) {
-                            return;
-                        }
-                       var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
-                       var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-                       PrintPreTest(strSData,strEData)
-                    }
-
-
-            }
             // {
             //     type: "button",
-            //     startRow:false,
-            //     align:"left",
-            //     title: "گزارش غیبت ناموجه",
-            //     height:"30",
-            //    click:function () {
+            //     title: "تهیه گزارش",
+            //     height:"25",
+            //     align:"center",
+            //     endRow:false,
+            //     startRow: false,
+            //
+            //     click:function () {
             //         if (endDateCheckReport == false)
             //             return;
+            //
             //         if (!DynamicForm_Report.validate()) {
             //             return;
             //         }
+            //
             //         var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
             //         var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-            //            Print(strSData,strEData);
+            //         RestDataSource_PreTestScore.fetchDataURL=preTestScoreReportURL + "spec-list"+"/"+strSData + "/" + strEData;
+            //         List_Grid_Reaport.invalidateCache();
+            //         List_Grid_Reaport.fetchData();
             //     }
-            //
-            // }
+            // },
+            {
+                type: "button",
+                startRow:false,
+                align:"center",
+                title: "چاپ گزارش",
+                height:"25",
+                click:function () {
+                    if (endDateCheckReport == false)
+                        return;
+                    if (!DynamicForm_Report.validate()) {
+                        return;
+                    }
+                    var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
+                    var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
+                    Print(strSData,strEData);
+                }
 
+
+            },
         ]
     })
 
@@ -258,34 +239,18 @@
     })
 
     function Print(startDate,endDate) {
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/unjustified/unjustifiedabsence"/>" +"/"+startDate + "/" + endDate,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                       {name: "token", type: "hidden"}
-                    ]
-            })
-            criteriaForm.setValue("token", "<%= accessToken %>")
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/unjustifiedAbsenceReport/unjustifiedAbsence"/>" +"/"+startDate + "/" + endDate,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("token", "<%= accessToken %>")
         criteriaForm.show();
         criteriaForm.submitForm();
-        }
+    }
 
-        function  PrintPreTest(startDate,endDate)
-        {
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/preTestScoreReport/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "token", type: "hidden"}
-                    ]
-            })
-            criteriaForm.setValue("token", "<%= accessToken %>")
-            criteriaForm.show();
-            criteriaForm.submitForm();
-        }

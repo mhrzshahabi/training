@@ -260,7 +260,7 @@
         Trimmer: {
             type: "custom",
             condition: function (item, validator, value) {
-                if (value !== undefined) {
+                if (value != null) {
                     trimmed = trTrim(value);
                     validator.resultingValue = trimmed;
                 }
@@ -723,6 +723,12 @@
                         createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                     }
                 },
+                <%--{--%>
+                    <%--title: "غيبت ناموجه",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
             ]
         }),
     });
@@ -1001,9 +1007,12 @@
         //     listGridID.clearCriteria();
         //     listGridID.invalidateCache();
         // }
+        listGridID.filterByEditor();
         listGridID.invalidateCache();
-        if (listGridID.getCriteria != null)
-            listGridID.filterByEditor();
+        // if (listGridID.getCriteria() != null && listGridID.getCriteria().operator !== undefined)
+        //     listGridID.filterByEditor();
+        // else
+        //     listGridID.invalidateCache();
         if (!nextFunction === undefined) {
             nextFunction();
         }

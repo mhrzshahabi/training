@@ -15,6 +15,7 @@
     var passedStatusId_NABOP = "216";
     var priorities_NABOP;
     var wait_NABOP;
+    var selectedPerson_NABOP = null;
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*personnel form*/
@@ -177,7 +178,7 @@
                 {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
             ],
-        cacheAllData: true,
+        autoCacheAllData: true,
         fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
     });
 
@@ -187,6 +188,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
+        autoCacheAllData: true,
         fetchDataURL: parameterUrl + "/iscList/PassedStatus"
     });
 
@@ -225,6 +227,7 @@
             }
 
         ],
+        cacheAllData: true,
     });
 
     Menu_Courses_NABOP = isc.Menu.create({
@@ -232,7 +235,7 @@
             title: "<spring:message code="refresh"/>", click: function () {
                 if (postCode_NABOP == null)
                     return;
-                refreshLG(CoursesLG_NABOP);
+                refreshLG_NABOP(CourseDS_NABOP);
             }
         }, {
             title: "<spring:message code="personnel.choose"/>",
@@ -360,7 +363,7 @@
         click: function () {
             if (postCode_NABOP == null)
                 return;
-            refreshLG(CoursesLG_NABOP);
+            refreshLG_NABOP(CourseDS_NABOP);
         }
     });
     ToolStripButton_ShowPersonnel_NABOP = isc.ToolStripButton.create({
@@ -404,14 +407,22 @@
     //*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
 
+    function refreshLG_NABOP(listGrid) {
+        listGrid.invalidateCache();
+        listGrid.fetchData();
+        CoursesLG_NABOP.invalidateCache();
+        CoursesLG_NABOP.fetchData();
+    }
+
     function PostCodeSearch_result_NABOP(resp) {
         wait_NABOP.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
+            selectedPerson_NABOP = PersonnelsLG_NABOP.getSelectedRecord();
             CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "/courses-for-post/" + postCode_NABOP;
-            refreshLG(CoursesLG_NABOP);
+            refreshLG_NABOP(CourseDS_NABOP);
             DynamicForm_Title_NABOP.getItem("Title_NASB").title =
-                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().firstName, 2, "red", "b") + " " +
-                getFormulaMessage(PersonnelsLG_NABOP.getSelectedRecord().lastName, 2, "red", "b");
+                getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " +
+                getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b");
             DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
             Window_Personnel_NABOP.close();
         } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
@@ -442,8 +453,7 @@
     }
 
     function print_NABOP(type) {
-        let selectedPerson = PersonnelsLG_NABOP.getSelectedRecord();
-        if (selectedPerson == null) {
+        if (selectedPerson_NABOP == null) {
             createDialog("info", "<spring:message code="personnel.not.selected"/>");
             return;
         }
@@ -464,13 +474,13 @@
             });
         }
         let personnel = {
-            "id": selectedPerson.id,
-            "firstName": selectedPerson.firstName,
-            "lastName": selectedPerson.lastName,
-            "nationalCode": selectedPerson.nationalCode,
-            "companyName": selectedPerson.companyName,
-            "personnelNo": selectedPerson.personnelNo,
-            "personnelNo2": selectedPerson.personnelNo2,
+            "id": selectedPerson_NABOP.id,
+            "firstName": selectedPerson_NABOP.firstName,
+            "lastName": selectedPerson_NABOP.lastName,
+            "nationalCode": selectedPerson_NABOP.nationalCode,
+            "companyName": selectedPerson_NABOP.companyName,
+            "personnelNo": selectedPerson_NABOP.personnelNo,
+            "personnelNo2": selectedPerson_NABOP.personnelNo2,
         };
         let criteriaForm_course = isc.DynamicForm.create({
             method: "POST",

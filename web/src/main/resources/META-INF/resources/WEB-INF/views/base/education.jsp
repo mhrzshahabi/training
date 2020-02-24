@@ -159,7 +159,7 @@
             {
                 name: "educationLevelId",
                 title: "<spring:message code="education.level"/>",
-                editorType: "TrComboAutoRefresh",
+                type: "SelectItem",
                 addUnknownValues: false,
                 required: true,
                 validateOnExit: true,
@@ -173,7 +173,7 @@
             {
                 name: "educationMajorId",
                 title: "<spring:message code="education.major"/>",
-                editorType: "TrComboAutoRefresh",
+                type: "SelectItem",
                 addUnknownValues: false,
                 required: true,
                 validateOnExit: true,
@@ -182,7 +182,7 @@
                 valueField: "id",
                 filterFields: ["titleFa"],
                 filterOperator: "iContains",
-                pickListFields: [{name: "titleFa"}]
+                pickListFields: [{name: "titleFa"}],
             }
         ]
     });

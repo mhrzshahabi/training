@@ -239,7 +239,7 @@
                         max: 1000,
                         errorMessage: "<spring:message code="class.preCourseTestQuestion.length.limit"/>"
                     },
-                    {type: "required", errorMessage: "<spring:message code="msg.field.is.required"/>"}
+                    <%--{type: "required", errorMessage: "<spring:message code="msg.field.is.required"/>"}--%>
                 ]
             }
         ],
@@ -257,6 +257,20 @@
                 }
             });
         },
+        editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum) {
+            if (record == null) {
+                setTimeout(function () {
+                    for (let i = questionsLG_PCTQ.data.length - 1; i > -1; i--) {
+                        if (questionsLG_PCTQ.data[i].question == null)
+                            questionsLG_PCTQ.data.removeAt(i);
+                    }
+                }, 1);
+                return;
+            }
+            if (newValue == null) {
+                questionsLG_PCTQ.data.removeAt(rowNum);
+            }
+        }
     });
 
     ToolStripButton_Refresh_PCTQ = isc.ToolStripButtonRefresh.create({
