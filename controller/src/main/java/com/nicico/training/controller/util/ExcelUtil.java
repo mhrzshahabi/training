@@ -117,7 +117,6 @@ public class ExcelUtil {
                             }
                         }
                     }
-
                     Object object = new Gson().fromJson(jsonObject, clazz);
                     ResponseEntity<String> result = null;
                     try {

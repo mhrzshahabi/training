@@ -199,10 +199,4 @@
     <changeSet author="ghazanfari_f (generated)" id="1582451296181-242">
         <createSequence sequenceName="seq_Course_id"/>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582481144657-242">
-        <createSequence sequenceName="seq_skill_id"/>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582530619289-242">
-        <createSequence sequenceName="seq_goal_id"/>
-    </changeSet>
 </databaseChangeLog>

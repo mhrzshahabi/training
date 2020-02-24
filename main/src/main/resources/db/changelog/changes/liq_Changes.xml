@@ -30,5 +30,4 @@
             <column name="f_major_sub_category" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
-
 </databaseChangeLog>
