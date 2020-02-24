@@ -86,22 +86,23 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
-        groupByField:["objectType", "objectName"],
-        groupStartOpen: "none",
+        // groupByField:["objectType", "objectName"],
+        // groupStartOpen: "none",
         autoFetchData: true,
         fields:[
-            {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true, valueMap: priorityList},
-            {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, hidden:true},
+            {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true,  valueMap: priorityList},
+            {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, },
             {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains"},
-            {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
-            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "workflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", hidden:true},
-            {name: "workflowStatus", title: "<spring:message code="committee.workflow.status"/>", filterOperator: "iContains"},
-            {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", hidden:true},
+            {name: "workflowStatus", title: "<spring:message code="committee.workflow.status"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "mainWorkflowStatus", title: "<spring:message code="main.workflow.status"/>", filterOperator: "iContains"}
+
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
