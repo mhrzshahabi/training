@@ -349,7 +349,7 @@ public class TclassService implements ITclassService {
 
         trainingGradeToTeacher = getTrainingGradeToTeacher(classId, trainingId);
 
-        calculateStudentsReactionEvaluationResult();
+//        calculateStudentsReactionEvaluationResult();
         evaluationResult.setFERGrade(getFERGrade(classId));
         evaluationResult.setFERPass(FERPass);
         evaluationResult.setFETGrade(getFETGrade());
@@ -373,19 +373,6 @@ public class TclassService implements ITclassService {
         evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
 
 
-//        evaluationResult.setFERGrade(50.0);
-//        evaluationResult.setFERPass(true);
-//        evaluationResult.setFETGrade(50.0);
-//        evaluationResult.setFETPass(true);
-//        evaluationResult.setFECRGrade(50.0);
-//        evaluationResult.setFECRPass(true);
-//        evaluationResult.setStudentsGradeToFacility(20);
-//        evaluationResult.setStudentsGradeToGoals(5);
-//        evaluationResult.setStudentsGradeToTeacher(10);
-//        evaluationResult.setTrainingGradeToTeacher(4);
-//        evaluationResult.setTeacherGradeToClass(7);
-
-
         return evaluationResult;
     }
 
@@ -395,7 +382,7 @@ public class TclassService implements ITclassService {
         studentsGradeToGoals = 0;
         for (ClassStudent classStudent : classStudents) {
             if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
-                Evaluation evaluation = evaluationService.getStudentEvaluationForClass(classStudent.getTclassId(), classStudent.getStudentId());
+                Evaluation evaluation = evaluationService.getStudentEvaluationForClass(classStudent.getTclassId(), classStudent.getId());
                 if (evaluation != null) {
                     List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
                     double teacherTotalGrade = 0.0;
