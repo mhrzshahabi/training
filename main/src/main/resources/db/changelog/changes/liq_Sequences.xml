@@ -199,9 +199,6 @@
     <changeSet author="ghazanfari_f (generated)" id="1582387312194-242">
         <createSequence sequenceName="seq_education_level_id"/>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582387816944-242">
-        <createSequence sequenceName="seq_education_major_id"/>
-    </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1582451296181-242">
         <createSequence sequenceName="seq_Course_id"/>
     </changeSet>

@@ -30,8 +30,5 @@
             <column name="f_major_sub_category" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582463100132-242">
-        <createSequence sequenceName="seq_skill_id"/>
-    </changeSet>
 
 </databaseChangeLog>
