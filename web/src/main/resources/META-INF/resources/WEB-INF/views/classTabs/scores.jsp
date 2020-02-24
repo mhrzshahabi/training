@@ -298,7 +298,7 @@
 
                                     createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
                                     ListGrid_Cell_score_Update(record, null, 2);
-                                    ListGrid_Class_Student.refreshFields();
+                                    ListGrid_Class_Student.invalidateCache();
                                 }
 
                             } else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue !== null || newValue != null) && (editCompletionEvent == "enter" || editCompletionEvent == "click_outside")) {
