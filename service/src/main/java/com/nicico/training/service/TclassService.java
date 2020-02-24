@@ -83,7 +83,7 @@ public class TclassService implements ITclassService {
     @Override
     public void updatePreCourseTestQuestions(Long classId, List<String> preCourseTestQuestions) {
         Tclass tclass = getTClass(classId);
-        if (tclass.getWorkflowEndingStatusCode() == 2)
+        if (tclass.getWorkflowEndingStatusCode() != null && tclass.getWorkflowEndingStatusCode() == 2)
             throw new TrainingException(TrainingException.ErrorType.NotEditable);
         tclass.setPreCourseTestQuestions(preCourseTestQuestions);
     }
@@ -347,7 +347,7 @@ public class TclassService implements ITclassService {
 
         evaluationResult.setStudentCount(getStudentCount());
 
-        trainingGradeToTeacher = getTrainingGradeToTeacher(classId,trainingId);
+        trainingGradeToTeacher = getTrainingGradeToTeacher(classId, trainingId);
 
         calculateStudentsReactionEvaluationResult();
         evaluationResult.setFERGrade(getFERGrade(classId));
@@ -369,7 +369,7 @@ public class TclassService implements ITclassService {
         evaluationResult.setStudentsGradeToFacility(studentsGradeToFacility);
         evaluationResult.setStudentsGradeToGoals(studentsGradeToGoals);
         evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
-        evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher(classId,trainingId));
+        evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher(classId, trainingId));
         evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
 
 
@@ -409,13 +409,13 @@ public class TclassService implements ITclassService {
                         double grade = 1.0;
                         QuestionnaireQuestion questionnaireQuestion = null;
                         Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                        if(question.isPresent())
+                        if (question.isPresent())
                             questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                         if (answer.getQuestionSource().getCode().equals("3")) {
                             weight = questionnaireQuestion.getWeight();
                         }
                         grade = Double.parseDouble(answer.getAnswer().getValue());
-                        if(questionnaireQuestion != null) {
+                        if (questionnaireQuestion != null) {
                             if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
                                 teacherTotalGrade += grade * weight;
                                 teacherTotalWeight += weight;
@@ -428,7 +428,7 @@ public class TclassService implements ITclassService {
 //                            goalsTotalGrade += grade * weight;
 //                            goalsTotalWeight += weight;
 //                        }
-                        else{//Goals
+                        else {//Goals
                             goalsTotalGrade += grade * weight;
                             goalsTotalWeight += weight;
                         }
@@ -442,23 +442,23 @@ public class TclassService implements ITclassService {
                 }
             }
         }
-        if(getNumberOfFilledReactionEvaluationForms() != 0)
+        if (getNumberOfFilledReactionEvaluationForms() != 0)
             studentsGradeToTeacher /= getNumberOfFilledReactionEvaluationForms();
-        if(getNumberOfFilledReactionEvaluationForms() != 0)
+        if (getNumberOfFilledReactionEvaluationForms() != 0)
             studentsGradeToFacility /= getNumberOfFilledReactionEvaluationForms();
-        if(getNumberOfFilledReactionEvaluationForms() != 0)
+        if (getNumberOfFilledReactionEvaluationForms() != 0)
             studentsGradeToGoals /= getNumberOfFilledReactionEvaluationForms();
     }
 
     public Double getTeacherGradeToClass(Long classId) {
         double result = 0.0;
         Evaluation evaluation = evaluationService.getTeacherEvaluationForClass(teacherId, classId);
-        if(evaluation != null) {
+        if (evaluation != null) {
             List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
             double totalGrade = 0.0;
             double totalWeight = 0.0;
             for (EvaluationAnswer answer : answers) {
-                if(answer!=null) {
+                if (answer != null) {
                     double weight = 1.0;
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
@@ -471,7 +471,7 @@ public class TclassService implements ITclassService {
                     totalWeight += weight;
                 }
             }
-            if(totalWeight != 0)
+            if (totalWeight != 0)
                 result = totalGrade / totalWeight;
         }
         return result;
@@ -479,13 +479,13 @@ public class TclassService implements ITclassService {
 
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId) {
         double result = 0.0;
-        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacher(teacherId,classId,trainingId);
-        if(evaluation != null) {
+        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacher(teacherId, classId, trainingId);
+        if (evaluation != null) {
             List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
             double totalGrade = 0.0;
             double totalWeight = 0.0;
             for (EvaluationAnswer answer : answers) {
-                if(answer!=null) {
+                if (answer != null) {
                     double weight = 1.0;
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
@@ -498,7 +498,7 @@ public class TclassService implements ITclassService {
                     totalWeight += weight;
                 }
             }
-            if(totalWeight != 0)
+            if (totalWeight != 0)
                 result = totalGrade / totalWeight;
         }
         return result;

@@ -4,7 +4,7 @@
 
     <changeSet author="jafari-h (generated)" id="1582448397375-243">
         <addColumn tableName="tbl_evaluation">
-            <column name="b_evaluation-full" type="number(1, 0)"/>
+            <column name="b_evaluation_full" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
 

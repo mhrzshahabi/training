@@ -398,7 +398,8 @@ public class CourseRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = courseService.search(searchRq);
+//        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = courseService.search(searchRq);
+        final SearchDTO.SearchRs<CourseDTO.InfoPrint> searchRs = courseService.searchPrint(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

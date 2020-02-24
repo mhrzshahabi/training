@@ -1,12 +1,9 @@
 package com.nicico.training.service;
 
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.training.dto.unjustifiedAbsenceDTO;
-import com.nicico.training.iservice.IunjustifiedAbsenceService;
-import com.nicico.training.repository.unjustifiedAbsenceDAO;
+import com.nicico.training.dto.PreTestScoreReportDTO;
+import com.nicico.training.iservice.IPreTestScoreReportService;
+import com.nicico.training.repository.PreTestScoreReportDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -15,22 +12,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UnjustifiedAbsenceService implements IunjustifiedAbsenceService {
+public class PreTestScoreReportService implements IPreTestScoreReportService {
     @Autowired
     protected EntityManager entityManager;
-    private final  unjustifiedAbsenceDAO unjustifiedAbsenceDAO;
+    private final PreTestScoreReportDAO PreTestScoreReportDAO;
     private final ModelMapper mapper;
 
 
     @Transactional
     @Override
-    public List<unjustifiedAbsenceDTO.printScoreInfo> print(String startDate, String endDate) throws Exception{
+    public List<PreTestScoreReportDTO.printScoreInfo> print(String startDate, String endDate) throws Exception{
         StringBuilder stringBuilder=new StringBuilder().append("SELECT    tbl_class.c_code,\n" +
                 "                tbl_class.c_title_class,\n" +
                 "                tbl_class_student.pre_test_score,\n" +
@@ -49,7 +45,7 @@ public class UnjustifiedAbsenceService implements IunjustifiedAbsenceService {
                 "                    FROM\n" +
                 "                        tbl_parameter_value\n" +
                 "                    WHERE\n" +
-                "                        tbl_parameter_value.c_code = 'minScorePreTestEB') as ScorePreTest\n" +
+                "                        tbl_parameter_value.c_code = 'minScorePreTestEB') as preTestScoreParameterValue\n" +
                 "   \n" +
                 "            FROM\n" +
                 "                tbl_class\n" +
@@ -70,39 +66,39 @@ public class UnjustifiedAbsenceService implements IunjustifiedAbsenceService {
         list= (List<Object>) entityManager.createNativeQuery(stringBuilder.toString())
               .setParameter("startDate",startDate)
               .setParameter("endDate",endDate).getResultList();
-              List<unjustifiedAbsenceDTO.printScoreInfo> unjustifiedAbsenceDTO=new ArrayList<>();
+              List<PreTestScoreReportDTO.printScoreInfo> unjustifiedAbsenceDTO=new ArrayList<>();
              if(list != null)
              {  for(int i=0;i<list.size();i++)
              {
                  Object[] arr = (Object[]) list.get(i);
-                 unjustifiedAbsenceDTO.add(new unjustifiedAbsenceDTO.printScoreInfo(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[5].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString()));
+                 unjustifiedAbsenceDTO.add(new PreTestScoreReportDTO.printScoreInfo(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[5].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString(),arr[9].toString(),arr[10].toString()));
              }}
-        return (mapper.map(unjustifiedAbsenceDTO, new TypeToken<List<unjustifiedAbsenceDTO.printScoreInfo>>() {
+        return (mapper.map(unjustifiedAbsenceDTO, new TypeToken<List<PreTestScoreReportDTO.printScoreInfo>>() {
         }.getType()));
     }
 
 
 
-    public List<unjustifiedAbsenceDTO> unjustified(String startDate,String endDate)
+    public List<PreTestScoreReportDTO> unjustified(String startDate, String endDate)
     {
         List<Object> list = new ArrayList<>();
-        list.addAll(unjustifiedAbsenceDAO.unjustified(startDate,endDate));
-        List<unjustifiedAbsenceDTO> unjustifiedAbsenceDTOList = new ArrayList<>();
+        list.addAll(PreTestScoreReportDAO.unjustified(startDate,endDate));
+        List<PreTestScoreReportDTO> unjustifiedAbsenceDTOList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Object[] arr = (Object[]) list.get(i);
-              unjustifiedAbsenceDTOList.add(new unjustifiedAbsenceDTO(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString()));
+              unjustifiedAbsenceDTOList.add(new PreTestScoreReportDTO(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString()));
         }
         return (unjustifiedAbsenceDTOList);
     }
 
-    public List<unjustifiedAbsenceDTO.printScoreInfo> PreTestScore(String startDate, String endDate)
+    public List<PreTestScoreReportDTO.printScoreInfo> PreTestScore(String startDate, String endDate)
     {
         List<Object> list = new ArrayList<>();
-        list.addAll(unjustifiedAbsenceDAO.printPreScore(startDate,endDate));
-        List<unjustifiedAbsenceDTO.printScoreInfo> unjustifiedAbsenceDTOList = new ArrayList<>();
+        list.addAll(PreTestScoreReportDAO.printPreScore(startDate,endDate));
+        List<PreTestScoreReportDTO.printScoreInfo> unjustifiedAbsenceDTOList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Object[] arr = (Object[]) list.get(i);
-            unjustifiedAbsenceDTO.printScoreInfo ff =new unjustifiedAbsenceDTO.printScoreInfo(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[5].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString());
+            PreTestScoreReportDTO.printScoreInfo ff =new PreTestScoreReportDTO.printScoreInfo(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[5].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString(),arr[9].toString(),arr[10].toString());
             unjustifiedAbsenceDTOList.add(ff);
         }
         return (unjustifiedAbsenceDTOList);

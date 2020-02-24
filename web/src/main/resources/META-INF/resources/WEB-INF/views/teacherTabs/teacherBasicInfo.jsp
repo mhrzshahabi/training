@@ -3,6 +3,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 // <script>
 
+    //----------------------------------------------------Rest Data Source----------------------------------------------
+    var RestDataSource_Category_Evaluation_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategory_Evaluation_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
     //----------------------------------------------------Variables-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
         viewURL: "",
@@ -17,7 +28,7 @@
     var upload_btn = isc.HTMLFlow.create({
         align: "center",
         contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file-upload\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i>آپلود تصویر</label><input id=\"file-upload\" type=\"file\" name=\"file[]\" name=\"attachPic\" onchange=\"upload()\" accept=\".png,.gif,.jpg, .jpeg\"/></form>"
-    })
+    });
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -118,7 +129,6 @@
                 canEdit: false,
                 baseStyle: "teacher-code"
             },
-
             {
                 name: "enableStatus",
                 title: "<spring:message code='status'/>",
@@ -520,66 +530,6 @@
                 }
             },
             {
-                name: "majorCategoryId",
-                title: "<spring:message code='related.category.to.major.for.evaluation'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                width: "*",
-                required: true,
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Category_JspTeacher,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
-                    }
-                ]
-            },
-            {
-                name: "majorSubCategoryId",
-                title: "<spring:message code='related.sub.category.to.major.for.evaluation'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                width: "*",
-                required: true,
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_SubCategory_JspTeacher,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
-                    }
-                ]
-            },
-            {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
                 keyPressFilter: "[0-9]",
@@ -609,7 +559,71 @@
                 title: "<spring:message code='description'/>",
                 type: 'textArea',
                 colSpan: 3
-            }
+            },
+            {
+                name: "evaluation",
+                title: "",
+                canEdit: false,
+                baseStyle: "eval-code"
+            },
+            {
+                name: "majorCategoryId",
+                title: "<spring:message code='related.category'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Category_Evaluation_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "majorSubCategoryId",
+                title: "<spring:message code='related.sub.category'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_Evaluation_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
 
         ],
         itemChanged: function (item, newValue) {
@@ -648,6 +662,9 @@
 
     DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').setCellStyle('teacher-code-label');
     DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').titleStyle = 'teacher-code-title';
+
+    DynamicForm_BasicInfo_JspTeacher.getItem('evaluation').setCellStyle('eval-code-label');
+
 
     var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
         align: "center",

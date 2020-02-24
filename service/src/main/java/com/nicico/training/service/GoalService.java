@@ -65,6 +65,14 @@ public class GoalService implements IGoalService {
 
     @Transactional
     @Override
+    public GoalDTO.Info createWithoutCourse(GoalDTO.Create request) {
+        final Goal goal = modelMapper.map(request, Goal.class);
+        final Goal saved = goalDAO.saveAndFlush(goal);
+        return modelMapper.map(saved, GoalDTO.Info.class);
+    }
+
+    @Transactional
+    @Override
     public GoalDTO.Info update(Long id, GoalDTO.Update request) {
         final Optional<Goal> cById = goalDAO.findById(id);
         final Goal goal = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));

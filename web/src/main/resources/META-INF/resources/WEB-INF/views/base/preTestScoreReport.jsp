@@ -21,43 +21,61 @@
         fields: [{name: "id", primaryKey: true},
             {name: "code"},
             {name: "titleClass"},
-           {name: "preTestScore"},
-           {name: "firstName"},
-           {name: "lastName"},
-           {name: "startDate"},
-           {name: "endDate"},
-           {name: "personnelNo"},
-           {name: "nationalCode"}
+            {name: "preTestScore"},
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "employeNo"},
+            {name: "personnelNo"},
+            {name: "nationalCode"},
+            {name: "preTestScoreParameterValue"}
         ], dataFormat: "json",
 
        // autoFetchData: true,
     });
 
+    var ToolStrip_Actions = isc.ToolStrip.create({
+        ID: "ToolStrip_Actions1",
+       // width: "100%",
+        members: [
+            isc.Label.create({
+                ID: "totalsLabel_scores"
+            })]
+    })
     var List_Grid_Reaport = isc.TrLG.create({
       dataSource: RestDataSource_PreTestScore,
+        showRowNumbers: false,
        //autoFetchData: true,
 
         fields: [
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleClass", title: "عنوان کلاس", align: "center", filterOperator: "iContains"},
-            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
-            {name: "firstName", title: "نام", align: "center", filterOperator: "iContains"},
+            {name: "titleClass", title: "عنوان کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "firstName", title: "نام", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "lastName",title: "نام خانوادگی",align: "center",filterOperator: "iContains"},
             {name: "nationalCode",title: "کد ملی",align: "center",filterOperator: "iContains"},
             {name: "startDate",title: "تاریخ شروع",align: "center",filterOperator: "iContains"},
             {name: "endDate",title: "تاریخ پایان",align: "center",filterOperator: "iContains"},
+            {name: "employeNo",title: "شماره پرسنلی 6 رقمي",align: "center",filterOperator: "iContains"},
             {name: "personnelNo",title: "شماره پرسنلی",align: "center",filterOperator: "iContains"},
             {name: "preTestScore",title: "نمره پیش آزمون/تست",align: "center",filterOperator: "iContains"}
+
+
         ],
         recordDoubleClick: function () {
 
+        },
+        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
+        dataArrived: function ()
+        {
+            totalsLabel_scores.setContents("حد نمره پيش تست" + ":&nbsp;<b>" + List_Grid_Reaport.getRecord(1).preTestScoreParameterValue + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;")
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
-        sortField: 0,
-    });
+        sortField: 0,    });
 
     var DynamicForm_Report = isc.DynamicForm.create({
        numCols: 9,
@@ -177,7 +195,7 @@
 
                     var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-                    RestDataSource_PreTestScore.fetchDataURL=unjustifiedAbsence + "spec-list"+"/"+strSData + "/" + strEData;
+                    RestDataSource_PreTestScore.fetchDataURL=preTestScoreReportURL + "spec-list"+"/"+strSData + "/" + strEData;
                     List_Grid_Reaport.invalidateCache();
                     List_Grid_Reaport.fetchData();
                 }
@@ -256,7 +274,7 @@
         {
             var criteriaForm = isc.DynamicForm.create({
                 method: "POST",
-                action: "<spring:url value="/unjustified/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
+                action: "<spring:url value="/preTestScoreReport/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
                 target: "_Blank",
                 canSubmit: true,
                 fields:
