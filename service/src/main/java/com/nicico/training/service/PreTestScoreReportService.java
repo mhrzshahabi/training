@@ -79,17 +79,7 @@ public class PreTestScoreReportService implements IPreTestScoreReportService {
 
 
 
-    public List<PreTestScoreReportDTO> unjustified(String startDate, String endDate)
-    {
-        List<Object> list = new ArrayList<>();
-        list.addAll(PreTestScoreReportDAO.unjustified(startDate,endDate));
-        List<PreTestScoreReportDTO> unjustifiedAbsenceDTOList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            Object[] arr = (Object[]) list.get(i);
-              unjustifiedAbsenceDTOList.add(new PreTestScoreReportDTO(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[6].toString(),arr[7].toString(),arr[8].toString()));
-        }
-        return (unjustifiedAbsenceDTOList);
-    }
+
 
     public List<PreTestScoreReportDTO.printScoreInfo> PreTestScore(String startDate, String endDate)
     {
