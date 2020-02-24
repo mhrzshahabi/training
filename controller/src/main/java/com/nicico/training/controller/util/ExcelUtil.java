@@ -112,7 +112,9 @@ public class ExcelUtil {
                             } else {
                                 value = cell.toString();
                             }
-                            jsonObject.addProperty(fields.get(c), value.trim());
+                            if (value != null && !value.isEmpty()) {
+                                jsonObject.addProperty(fields.get(c), value.trim());
+                            }
                         }
                     }
                     Object object = new Gson().fromJson(jsonObject, clazz);
