@@ -130,7 +130,7 @@ isc.loadSkin = function (theWindow) {
         isc.ClassFactory.defineClass("IButtonClose", "Button").addProperties({
             baseStyle: "buttonClose",
             showFocusedAsOver: false,
-            icon: "icon/nicico_closeAllTabs.png",
+            // icon: "icon/nicico_closeAllTabs.png",
             showFocusOutline: false
         });
         isc.ClassFactory.defineClass("ToolStripButtonCreate", "Button").addProperties({
