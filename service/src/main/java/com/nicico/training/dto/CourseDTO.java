@@ -105,6 +105,31 @@ public class CourseDTO implements Serializable {
 //        private Long knowledge;
 //        private Long skill;
 //        private Long attitude;
+    }    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CourseInfoPrint")
+    public static class InfoPrint extends CourseDTO {
+        private Long id;
+        private Date createdDate;
+        private String createdBy;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
+        //        private Integer version;
+        private ERunType eRunType;
+        private ELevelType eLevelType;
+        private ETechnicalType eTechnicalType;
+        private ETheoType eTheoType;
+        private CategoryDTO.CategoryInfoTuple category;
+//        private Long categoryId;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
+        private Boolean hasGoal;
+        private Boolean hasSkill;
+//        private Long knowledge;
+//        private Long skill;
+//        private Long attitude;
     }
 
     //-------------------------------
