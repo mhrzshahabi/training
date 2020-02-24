@@ -11,7 +11,7 @@
         "JobGroup": "گروه شغلی",
         "PostGrade": "رده پستی",
         "PostGradeGroup": "گروه رده پستی",
-    }
+    };
     var skillData = [];
     var competenceData = [];
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
@@ -126,7 +126,6 @@
         }
     });
 
-
     //----------------------components of window--------------------------
 
     NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
@@ -145,6 +144,7 @@
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
+        cacheAllData:true,
         fetchDataURL: jobUrl + "/iscList"
     });
     JobGroupDs_needsAssessment = isc.TrDS.create({
@@ -199,9 +199,9 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
-            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
-            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains"},
+            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: skillUrl + "/spec-list"
     });
@@ -589,9 +589,9 @@
                         defaultToFirstOption: true,
                         changed: function (form, item, value, oldValue) {
                             if(value != oldValue) {
-                                clearAllGrid()
-                                form.getItem("objectId").clearValue();
                                 updateObjectIdLG(form, value);
+                                clearAllGrid();
+                                form.getItem("objectId").clearValue();
                             }
                         },
                     },
@@ -599,11 +599,15 @@
                         name: "objectId",
                         showTitle: false,
                         optionDataSource: JobDs_needsAssessment,
-                        valueField: "id", displayField: "titleFa",
+                        type: "SelectItem",
+                        valueField: "id",
+                        displayField: "titleFa",
+                        filterLocally: true,
+                        // useClientFiltering: true,
                         autoFetchData: false,
                         pickListFields: [{name: "code"}, {name: "titleFa"}],
                         click: function(form){
-                            // updateObjectIdLG(form, form.getValue("objectType"));
+                            updateObjectIdLG(form, form.getValue("objectType"));
                         },
                         changed: function (form, item, value, oldValue) {
                             if(value != oldValue){
@@ -650,39 +654,95 @@
             }),
         ]
     });
+    var Window_AddPost_JspNeedsAssessment = isc.Window.create({
+        title: "<spring:message code="students.list"/>",
+        width: "80%",
+        height: "50%",
+        keepInParentRect: true,
+        autoSize: false,
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    isc.TrLG.create({
+                        ID: "ListGrid_Post_JspNeedsAssessment",
+                        dataSource: PostDs_needsAssessment,
+                        selectionType: "single",
+                        filterOnKeypress: false,
+                        autoFetchData:true,
+                        fields: [
+                            {name: "id", primaryKey: true, hidden: true},
+                            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+                            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+                        ],
+                        gridComponents: ["filterEditor", "header", "body"],
+                        recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
+                            alert(record.id)
+                            var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
+
+                            PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+                            NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
+                                NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
+                            })
+                            // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
+
+                            Window_AddPost_JspNeedsAssessment.close();
+                        }
+                    }),
+                ]
+            })]
+    })
 
     isc.TrVLayout.create({
         members: [ListGrid_NeedsAssessment_JspNeedAssessment],
     });
 
     function updateObjectIdLG(form, value) {
+        form.getItem("objectId").enable();
         switch (value) {
             case 'Job':
                 form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
+                // form.getItem("objectId").canEdit = true;
                 break;
             case 'JobGroup':
                 form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                form.getItem("objectId").canEdit = true;
                 break;
             case 'Post':
+                Window_AddPost_JspNeedsAssessment.show();
                 form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [
-                    {name: "code"}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
+                    {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
+                form.getItem("objectId").disable();
+                PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
+                // form.getItem("objectId").fetchData();
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGrade':
                 form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
+                // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGradeGroup':
                 form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                // form.getItem("objectId").canEdit = true;
                 break;
         }
         // form.getItem("objectId").fetchData(x);

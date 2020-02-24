@@ -847,6 +847,7 @@
                 dragDataAction: this.dragDataAction,
                 selectionType: this.selectionType,
                 allowAdvancedCriteria: this.allowAdvancedCriteria,
+                allowFilterExpressions: true,
                 sortField: "1",
                 canRemoveRecords: this.canRemoveRecords,
                 filterOnKeypress: this.filterOnKeypress,
