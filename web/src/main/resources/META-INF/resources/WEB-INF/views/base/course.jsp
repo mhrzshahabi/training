@@ -1265,7 +1265,7 @@
                         form.getItem("acceptancelimit").validators = [{
                             type: "regexp",
                             errorMessage: "<spring:message code="msg.validate.score"/>",
-                            expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?^[30-40-50-60-70-80-90-100])$/,
+                            expression: /^((([0-9]|1[0-9]|20)([.][0-9][0-9]?)?)?)$/,
                         }, {type: "required"}];
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").setRequired(true);
