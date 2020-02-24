@@ -980,7 +980,6 @@
                     this.close();
                     if (index === 0) {
                         teacherWait = createDialog("wait");
-                        alert('hi');
                         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + record.id, "DELETE", null,
                             "callback: teacher_delete_result(rpcResponse)"));
                     }
