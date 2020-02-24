@@ -27,8 +27,8 @@ public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
 
             if (exe.getVariable("REJECT").toString().equals("") && exe.getVariable("workflowStatusCode").toString().equals("0")) {
 
-                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 0, "ارسال به گردش کار تاییدیه اصلی");
-                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "ارسال به گردش کار تاییدیه اصلی");
+                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 0, "ارسال به گردش کار اصلی");
+                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "ارسال به گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "0");
 
             }
@@ -57,14 +57,14 @@ public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
 
             if (exe.getVariable("REJECT").toString().equals("Y")) {
 
-                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), -3, "حذف گردش کار تاییدیه اصلی");
-                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "حذف گردش کار تاییدیه اصلی");
+                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), -3, "حذف گردش کار اصلی");
+                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "حذف گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "-3");
 
             } else if (exe.getVariable("REJECT").toString().equals("N")) {
 
-                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 10, "اصلاح نیازسنجی و ارسال به گردش کار تاییدیه اصلی");
-                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "اصلاح نیازسنجی و ارسال به گردش کار تاییدیه اصلی");
+                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 10, "اصلاح نیازسنجی و ارسال به گردش کار اصلی");
+                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "اصلاح نیازسنجی و ارسال به گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "10");
 
             }

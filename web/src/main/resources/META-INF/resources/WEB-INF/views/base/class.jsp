@@ -1998,11 +1998,14 @@
     }
 
     function startProcess(resp) {
-
-        if (resp.httpResponseCode === 200)
+        if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code="course.set.on.workflow.engine"/>");
-        else {
-            isc.say("کد خطا : " + resp.httpResponseCode);
+        } else  if (resp.httpResponseCode === 404) {
+            isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
+        }
+        else
+        {
+            isc.say("<spring:message code='msg.send.to.workflow.problem'/>");
         }
     }
 
@@ -2254,12 +2257,16 @@
     }
 
     function startProcess_callback(resp) {
-
-        if (resp.httpResponseCode == 200) {
+        if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
-            ListGrid_Class_refresh()
-        } else {
+            ListGrid_Class_refresh();
+
+        } else  if (resp.httpResponseCode === 404) {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
+        }
+        else
+        {
+            isc.say("<spring:message code='msg.send.to.workflow.problem'/>");
         }
     }
 

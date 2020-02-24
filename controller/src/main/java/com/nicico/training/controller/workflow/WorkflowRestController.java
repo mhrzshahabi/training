@@ -263,8 +263,12 @@ public class WorkflowRestController {
         for (Map<String, Object> param : params) {
 
             String processKey = String.valueOf(param.get("processKey"));
-            String processId = businessWorkflowEngine.getProcessLatestVersionList(processKey).get(0).getId();
-            businessWorkflowEngine.startProcessInstanceById(processId, param);
+            if (businessWorkflowEngine.getProcessLatestVersionList(processKey).size() > 0) {
+                String processId = businessWorkflowEngine.getProcessLatestVersionList(processKey).get(0).getId();
+                businessWorkflowEngine.startProcessInstanceById(processId, param);
+            }
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
