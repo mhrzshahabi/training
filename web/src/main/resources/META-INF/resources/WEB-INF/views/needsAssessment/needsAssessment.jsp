@@ -665,6 +665,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         minWidth: 1024,
         keepInParentRect: true,
         autoSize: false,
+        show(){
+            ListGrid_Post_JspNeedsAssessment.invalidateCache();
+            ListGrid_Post_JspNeedsAssessment.fetchData();
+            this.Super("show", arguments);
+        },
         items: [
             isc.TrHLayout.create({
                 members: [
@@ -673,7 +678,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         dataSource: PostDs_needsAssessment,
                         selectionType: "single",
                         filterOnKeypress: false,
-                        autoFetchData:true,
+                        // autoFetchData:true,
                         fields: [
                             {name: "id", primaryKey: true, hidden: true},
                             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
