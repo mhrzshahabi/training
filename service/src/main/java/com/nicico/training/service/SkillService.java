@@ -101,8 +101,8 @@ public class SkillService implements ISkillService {
         Skill skill = skillDAO.saveAndFlush(updating);
         if (skill.getCourseId() != null)
             courseService.updateHasSkill(skill.getCourseId(), true);
-        else
-            courseService.updateHasSkill(skill.getCourseId(), null);
+        else if (currentSkill.getCourseId() != null)
+            courseService.updateHasSkill(currentSkill.getCourseId(), null);
         return modelMapper.map(skill, SkillDTO.Info.class);
     }
 

@@ -720,7 +720,7 @@
                 {
                     title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/unjustified/show-form"/>");
+                        createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                     }
                 },
             ]
@@ -1125,8 +1125,7 @@
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
     const termUrl = rootUrl + "/term/";
-    const unjustifiedAbsence =rootUrl +"/unjustifiedAbsence/";
-    const unjustifiedAbsenceReportURL = rootUrl + "/unjustifiedAbsence/";
+    const preTestScoreReportURL =rootUrl +"/preTestScoreReport/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
     const personalInfoUrl = rootUrl + "/personalInfo/";

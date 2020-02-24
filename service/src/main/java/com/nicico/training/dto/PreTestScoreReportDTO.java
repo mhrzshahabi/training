@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @AllArgsConstructor
-public class unjustifiedAbsenceDTO {
+public class PreTestScoreReportDTO {
     private String sessionDate;
     private String lname;
     private String firstName;
@@ -35,16 +35,18 @@ public class unjustifiedAbsenceDTO {
         private String   lastName;
         private String   startDate;
         private String   endDate;
-       private String    personnelNo;
+        private String   personnelNo2;
+        private String   personnelNo;
         private String   nationalCode;
+        private String   preTestScoreParameterValue;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("unjustifiedAbsenceSpecRs")
-    public static class unjustifiedAbsenceSpecRs {
-        private unjustifiedAbsenceDTO.SpecRs response;
+    @ApiModel("preTestScoreReportSpecRs")
+    public static class preTestScoreReportSpecRs {
+        private PreTestScoreReportDTO.SpecRs response;
     }
 
     //*********************************
@@ -54,7 +56,7 @@ public class unjustifiedAbsenceDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<unjustifiedAbsenceDTO.printScoreInfo> data;
+        private List<PreTestScoreReportDTO.printScoreInfo> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

@@ -110,7 +110,9 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
-        sortField: 0,
+        sortField: 2,
+        sortDirection: "descending",
+
     });
     //*************************************************************************************
     //DynamicForm & Window
