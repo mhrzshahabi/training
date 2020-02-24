@@ -607,7 +607,7 @@
                         autoFetchData: false,
                         pickListFields: [{name: "code"}, {name: "titleFa"}],
                         click: function(form){
-                            updateObjectIdLG(form, form.getValue("objectType"));
+                            // updateObjectIdLG(form, form.getValue("objectType"));
                         },
                         changed: function (form, item, value, oldValue) {
                             if(value != oldValue){
@@ -655,9 +655,11 @@
         ]
     });
     var Window_AddPost_JspNeedsAssessment = isc.Window.create({
-        title: "<spring:message code="students.list"/>",
-        width: "80%",
-        height: "50%",
+        title: "<spring:message code="post.plural.list"/>",
+        placement: "fillScreen",
+        // width: "80%",
+        // height: "50%",
+        minWidth: 1024,
         keepInParentRect: true,
         autoSize: false,
         items: [
@@ -685,9 +687,7 @@
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
                         recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
-                            alert(record.id)
                             var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
-
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
@@ -710,12 +710,15 @@
         switch (value) {
             case 'Job':
                 form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
+                form.getItem("objectId").pickListFields = [
+                    {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
+                    {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false }
+                    ];
                 // form.getItem("objectId").canEdit = true;
                 break;
             case 'JobGroup':
                 form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
                 form.getItem("objectId").canEdit = true;
                 break;
             case 'Post':
@@ -731,17 +734,22 @@
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
                 // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGrade':
                 form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "code"}, {name: "titleFa"}];
+                form.getItem("objectId").pickListFields = [
+                    {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
+                    {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
+                    ];
                 // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGradeGroup':
                 form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa"}];
+                form.getItem("objectId").pickListFields = [
+                    {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
+                    ];
                 // form.getItem("objectId").canEdit = true;
                 break;
         }
