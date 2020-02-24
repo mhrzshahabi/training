@@ -1048,30 +1048,7 @@
             <column name="f_teacher_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582380811897-112">
-        <createTable tableName="tbl_goal">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_goalPK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="d_created_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
+
     <changeSet author="ghazanfari_f (generated)" id="1582380811897-113">
         <createTable tableName="tbl_holiday">
             <column name="id" type="NUMBER(19, 0)">
@@ -2490,6 +2467,30 @@
                 <constraints nullable="false"/>
             </column>
             <column name="user_ids" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1582536682159-241">
+        <createTable tableName="tbl_goal">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_goalPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
