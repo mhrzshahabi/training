@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +44,7 @@ public class GoalRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final ModelMapper modelMapper;
 
     // ------------------------------
 
@@ -65,6 +67,13 @@ public class GoalRestController {
 //    @PreAuthorize("hasAuthority('c_goal')")
     public ResponseEntity<GoalDTO.Info> create(@Validated @RequestBody GoalDTO.Create request, @PathVariable Long courseId) {
         return new ResponseEntity<>(goalService.create(request, courseId), HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @PostMapping
+    public ResponseEntity<GoalDTO.Info> createWithoutCourse(@RequestBody Object request) {
+        GoalDTO.Create create = modelMapper.map(request, GoalDTO.Create.class);
+        return new ResponseEntity<>(goalService.createWithoutCourse(create), HttpStatus.CREATED);
     }
 
     @Loggable

@@ -20,6 +20,9 @@ public interface IGoalService {
 
     GoalDTO.Info create(GoalDTO.Create request, Long courseId);
 
+    @Transactional
+    GoalDTO.Info createWithoutCourse(GoalDTO.Create request);
+
     GoalDTO.Info update(Long id, GoalDTO.Update request);
 
     void delete(Long id);

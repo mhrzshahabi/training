@@ -760,6 +760,13 @@
     color: #374b71;
 }
 
+.eval-code-labelRTL{
+    background-color: #f5deb1;
+    text-align: center;
+    font-size: 13px;
+}
+
+
 /************************ switch Button **************************/
 .switch-btn {
     position: relative;

@@ -15,6 +15,7 @@
     let methodAttachment = "GET";
     let saveActionUrlAttachment;
     let attachmentWait;
+    let isAttachedAttachment = false;
 
     var RestDataSource_Attachments_JspAttachments = isc.TrDS.create({
         fields: [
@@ -88,7 +89,7 @@
                 return;
             }
             if (methodAttachment === "POST") {
-                if (document.getElementById('file_JspAttachments').files.length === 0) {
+                if (!isAttachedAttachment || document.getElementById('file_JspAttachments').files.length === 0) {
                     createDialog("info", "<spring:message code='file.not.uploaded'/>");
                     return;
                 }
@@ -308,6 +309,7 @@
     }
 
     function ListGrid_Attachments_Add() {
+        isAttachedAttachment = false;
         methodAttachment = "POST";
         saveActionUrlAttachment = attachmentUrl + "/upload";
         DynamicForm_JspAttachments.clearValues();
@@ -398,11 +400,14 @@
     }
 
     function Upload_Changed_JspAttachments() {
+        if (document.getElementById('file_JspAttachments').files.length === 0)
+            return;
         if (document.getElementById('file_JspAttachments').files[0].size > maxFileSizeAttachment) {
             createDialog("info", "<spring:message code='file.size.hint'/>");
             DynamicForm_JspAttachments.getItem("fileName").setValue("");
             return;
         }
+        isAttachedAttachment = true;
         let fileName = document.getElementById('file_JspAttachments').files[0].name;
         if (DynamicForm_JspAttachments.getValue("fileName") === undefined) {
             DynamicForm_JspAttachments.getItem("fileName").setValue(fileName.split('.')[0]);
