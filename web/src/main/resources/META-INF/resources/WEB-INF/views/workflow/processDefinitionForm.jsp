@@ -59,11 +59,10 @@
     }
 
     function checkUploadResult(resp) {
-
         if (resp.status == 200)
             isc.say("<spring:message code="course.set.on.workflow.engine"/>" );
         else {
-            isc.say("کد خطا : " + resp.status);
+            isc.say("آپلود فایل با مشکل مواجه شده است.");
         }
 
 // if (resp.status == "error")

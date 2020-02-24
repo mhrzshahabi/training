@@ -98,15 +98,15 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
             {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "workflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains"},
+            {name: "workflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", hidden:true},
             {name: "workflowStatus", title: "<spring:message code="committee.workflow.status"/>", filterOperator: "iContains"},
-            {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains"},
+            {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", hidden:true},
             {name: "mainWorkflowStatus", title: "<spring:message code="main.workflow.status"/>", filterOperator: "iContains"}
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
         recordDoubleClick: function () {
-            editButtonJspNeedsAsessment.click()
+            editButtonJspNeedsAsessment.click();
         },
         // groupStartOpen: "all",
         dataArrived: function () {
@@ -834,17 +834,17 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedAssessment_CommitteeToWorkflow() {
-        var sRecord = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord();
+        let sRecord = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord();
 
         if (sRecord === null || sRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else if (sRecord.workflowStatusCode !== undefined && sRecord.workflowStatusCode === 0 && sRecord.workflowStatusCode !== -3) {
+        } else if ((sRecord.workflowStatusCode !== undefined && sRecord.workflowStatusCode === 0 && sRecord.workflowStatusCode !== -3) || sRecord.workflowStatusCode === 10) {
             createDialog("info", "<spring:message code='needs.assessment.sent.to.workflow'/>");
         } else if (sRecord.workflowStatusCode === 1) {
             createDialog("info", "<spring:message code='needs.assessment.workflow.confirm'/>");
         }
         else if(sRecord.workflowStatusCode === -1){
-            sendToWorkflowAfterUpdate_needsAssessment_committee(sRecord);
+            sendToWorkflowAfterUpdate_needsAssessment(sRecord, "Committee");
         }
         else {
             let needAssessmentTitle = "نیازسنجی " + priorityList[sRecord.objectType] + " " + sRecord.objectName + " انجام شد";
@@ -877,16 +877,18 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     }
 
     function sendNeedAssessment_MainWorkflow() {
-        var sRecord = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord();
+        let sRecord = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord();
+
 
         if (sRecord === null || sRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else if (sRecord.mainWorkflowStatusCode !== undefined && sRecord.mainWorkflowStatusCode === 0 && sRecord.mainWorkflowStatusCode !== -3) {
+        } else if ((sRecord.mainWorkflowStatusCode !== undefined && sRecord.mainWorkflowStatusCode === 0 && sRecord.mainWorkflowStatusCode !== -3) || sRecord.mainWorkflowStatusCode === 10) {
             createDialog("info", "<spring:message code='needs.assessment.sent.to.workflow'/>");
         } else if (sRecord.mainWorkflowStatusCode === 1) {
             createDialog("info", "<spring:message code='needs.assessment.workflow.confirm'/>");
-        }
-        else {
+        } else if(sRecord.mainWorkflowStatusCode === -1){
+            sendToWorkflowAfterUpdate_needsAssessment(sRecord, "Main");
+        } else {
             let needAssessmentTitle = "نیازسنجی " + priorityList[sRecord.objectType] + " " + sRecord.objectName + " انجام شد";
 
             isc.MyYesNoDialog.create({
@@ -917,15 +919,18 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     }
 
     function startProcess_callback(resp) {
-            console.log(resp.httpResponseCode);
-        if (resp.httpResponseCode == 200) {
+        if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
 
             ListGrid_NeedsAssessment_JspNeedAssessment.invalidateCache();
             ListGrid_NeedsAssessment_JspNeedAssessment.fetchData();
 
-        } else {
+        } else  if (resp.httpResponseCode === 404) {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
+        }
+        else
+        {
+            isc.say("<spring:message code='msg.send.to.workflow.problem'/>");
         }
     }
 
@@ -955,64 +960,71 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     }
 
 
-    function sendToWorkflowAfterUpdate_needsAssessment_committee(selectedRecord) {
+    function sendToWorkflowAfterUpdate_needsAssessment(selectedRecord, workflowType) {
 
         var sRecord = selectedRecord;
 
-        console.log(sRecord);
-
         if (needs_workflowParameters !== null) {
 
-            if (sRecord.workflowStatusCode === -1) {
+            if ((workflowType === "Committee" && sRecord.workflowStatusCode === -1) || (workflowType === "Main" && sRecord.mainWorkflowStatusCode === -1)) {
 
-                let needAssessmentTitle = "نیازسنجی " + priorityList[sRecord.objectType] + " " + sRecord.objectName + " اصلاح شد";
+                isc.MyYesNoDialog.create({
+                    message: workflowType === "Main" ? "<spring:message code="needs.assessment.sent.to.main.workflow.ask"/>" : "<spring:message code="needs.assessment.sent.to.committee.workflow.ask"/>",
+                    title: "<spring:message code="message"/>",
+                    buttonClick:function (button, index) {
+                        this.close();
+                        if(index === 0)
+                        {
+                            let needAssessmentTitle = "نیازسنجی " + priorityList[sRecord.objectType] + " " + sRecord.objectName + " اصلاح شد";
 
-                needs_workflowParameters.workflowdata["REJECT"] = "N";
-                needs_workflowParameters.workflowdata["REJECTVAL"] = " ";
-                needs_workflowParameters.workflowdata["needAssessment"] = needAssessmentTitle;
-                needs_workflowParameters.workflowdata["needAssessmentCreatorId"] = "${username}";
-                needs_workflowParameters.workflowdata["needAssessmentCreator"] = userFullName;
-                needs_workflowParameters.workflowdata["workflowStatus"] = "اصلاح نیازسنجی";
-                needs_workflowParameters.workflowdata["workflowStatusCode"] = "20";
+                            needs_workflowParameters.workflowdata["REJECT"] = "N";
+                            needs_workflowParameters.workflowdata["REJECTVAL"] = " ";
+                            needs_workflowParameters.workflowdata["needAssessment"] = needAssessmentTitle;
+                            needs_workflowParameters.workflowdata["needAssessmentCreatorId"] = "${username}";
+                            needs_workflowParameters.workflowdata["needAssessmentCreator"] = userFullName;
+                            needs_workflowParameters.workflowdata["workflowStatus"] = "اصلاح نیازسنجی";
+                            needs_workflowParameters.workflowdata["workflowStatusCode"] = "20";
 
-                var ndat = needs_workflowParameters.workflowdata;
-                isc.RPCManager.sendRequest({
-                    actionURL: workflowUrl + "/doUserTask",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    httpMethod: "POST",
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    data: JSON.stringify(ndat),
-                    params: {"taskId": needs_workflowParameters.taskId, "usr": needs_workflowParameters.usr},
-                    serverOutputAsString: false,
-                    callback: function (RpcResponse_o) {
+                            var ndat = needs_workflowParameters.workflowdata;
 
-                        if (RpcResponse_o.data === 'success') {
+                            isc.RPCManager.sendRequest({
+                                actionURL: workflowUrl + "/doUserTask",
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                httpMethod: "POST",
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                showPrompt: false,
+                                data: JSON.stringify(ndat),
+                                params: {"taskId": needs_workflowParameters.taskId, "usr": needs_workflowParameters.usr},
+                                serverOutputAsString: false,
+                                callback: function (RpcResponse_o) {
 
-                            ListGrid_NeedsAssessment_JspNeedAssessment.invalidateCache();
-                            ListGrid_NeedsAssessment_JspNeedAssessment.fetchData();
+                                    if (RpcResponse_o.data === 'success') {
 
-                            let responseID = sRecord.id;
+                                        ListGrid_NeedsAssessment_JspNeedAssessment.invalidateCache();
+                                        ListGrid_NeedsAssessment_JspNeedAssessment.fetchData();
 
-                            let gridState = "[{id:" + responseID + "}]";
+                                        setTimeout(function () {
+                                            let responseID = sRecord.id;
+                                            let gridState = "[{id:" + responseID + "}]";
+                                            ListGrid_NeedsAssessment_JspNeedAssessment.setSelectedState(gridState);
+                                            ListGrid_NeedsAssessment_JspNeedAssessment.scrollToRow(ListGrid_NeedsAssessment_JspNeedAssessment.getRecordIndex(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()), 0);
+                                        },1500);
 
-                            ListGrid_NeedsAssessment_JspNeedAssessment.setSelectedState(gridState);
+                                        createDialog("info", "<spring:message code="msg.needs.assessment.sent.to.workflow.after.correction"/>");
+                                        taskConfirmationWindow.hide();
+                                        taskConfirmationWindow.maximize();
+                                        ListGrid_UserTaskList.invalidateCache();
 
-                            ListGrid_NeedsAssessment_JspNeedAssessment.scrollToRow(ListGrid_NeedsAssessment_JspNeedAssessment.getRecordIndex(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()), 0);
-
-                            isc.say("نیاز سنجی ویرایش و به گردش کار ارسال شد");
-                            taskConfirmationWindow.hide();
-                            taskConfirmationWindow.maximize();
-                            ListGrid_UserTaskList.invalidateCache();
+                                    }
+                                }
+                            });
                         }
                     }
                 });
             }
         }
         else {
-            // alert("برای ارسال مجدد به گردش کار پس از اصلاح، باید از طریق کارپوشه اقدام نمایید");
-
             createDialog("info", "<spring:message code="msg.needs.assessment.resend.to.workflow.from.cartable"/>");
         }
 
