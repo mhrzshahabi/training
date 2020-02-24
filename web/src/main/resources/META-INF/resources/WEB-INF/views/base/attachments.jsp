@@ -51,11 +51,10 @@
             },
             {
                 name: "fileTypeId",
-                type: "IntegerItem",
                 title: "<spring:message code='attach.file.format'/>",
                 required: true,
                 filterOnKeypress: true,
-                editorType: "ComboBoxItem",
+                type: "ComboBoxItem",
                 defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -65,7 +64,7 @@
                 textAlign: "center",
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
+                textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false
                 },
