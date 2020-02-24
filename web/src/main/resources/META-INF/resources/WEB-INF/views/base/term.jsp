@@ -152,9 +152,9 @@
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
-                focus: function () {
-                    displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
-                },
+                // focus: function () {
+                //     displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
+                // },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
@@ -202,9 +202,9 @@
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
-                focus: function () {
-                    displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
-                },
+                // focus: function () {
+                //     displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
+                // },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
