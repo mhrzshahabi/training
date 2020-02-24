@@ -23,7 +23,7 @@ public class ExcelUtil {
 
     static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
-    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n1) - Imported.xlsx";
+    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n2) - Imported.xlsx";
 
     static OAuth2RestTemplate restTemplate;
     static URI uri;
@@ -112,7 +112,9 @@ public class ExcelUtil {
                             } else {
                                 value = cell.toString();
                             }
-                            jsonObject.addProperty(fields.get(c), value.trim());
+                            if (value != null && !value.isEmpty()) {
+                                jsonObject.addProperty(fields.get(c), value.trim());
+                            }
                         }
                     }
                     Object object = new Gson().fromJson(jsonObject, clazz);

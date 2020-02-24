@@ -98,11 +98,11 @@ public class SkillService implements ISkillService {
         if (!requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
             updating.setCourseMainObjectiveId(null);
         }
-        Skill skill = skillDAO.save(updating);
+        Skill skill = skillDAO.saveAndFlush(updating);
         if (skill.getCourseId() != null)
             courseService.updateHasSkill(skill.getCourseId(), true);
-        else
-            courseService.updateHasSkill(skill.getCourseId(), null);
+        else if (currentSkill.getCourseId() != null)
+            courseService.updateHasSkill(currentSkill.getCourseId(), null);
         return modelMapper.map(skill, SkillDTO.Info.class);
     }
 
@@ -176,8 +176,6 @@ public class SkillService implements ISkillService {
 
         if (saved.getCourseId() != null)
             courseService.updateHasSkill(saved.getCourseId(), true);
-        else
-            courseService.updateHasSkill(saved.getCourseId(), null);
 
         saveType = "";
         return modelMapper.map(saved, SkillDTO.Info.class);
@@ -393,7 +391,7 @@ public class SkillService implements ISkillService {
         skill.setCourseId(null);
         if (Objects.equals(skill.getCourseMainObjectiveId(), courseId))
             skill.setCourseMainObjectiveId(null);
-        skillDAO.save(skill);
+        skillDAO.saveAndFlush(skill);
         courseService.updateHasSkill(courseId, null);
     }
 

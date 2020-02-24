@@ -622,37 +622,51 @@
     var Menu_ListGrid_Skill_Skill = isc.Menu.create({
         width: 150,
         data: [{
-            title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+            title: "<spring:message code="refresh"/>",
+            <%--icon: "<spring:url value="refresh.png"/>",--%>
+            click: function () {
                 ListGrid_Skill_Skill_refresh();
             }
         }, {
-            title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
+            title: "<spring:message code="create"/>",
+            <%--icon: "<spring:url value="create.png"/>", --%>
+            click: function () {
                 ListGrid_Skill_Skill_Add();
             }
         }, {
 
-            title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
+            title: "<spring:message code="edit"/>",
+            <%--icon: "<spring:url value="edit.png"/>",--%>
+            click: function () {
 
                 ListGrid_Skill_Skill_Edit();
 
             }
         }, {
 
-            title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
+            title: "<spring:message code="remove"/>",
+            <%--icon: "<spring:url value="remove.png"/>", --%>
+            click: function () {
                 ListGrid_Skill_Skill_Remove();
             }
         }, {isSeparator: true}, {
-            title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
+            title: "<spring:message code='print.pdf'/>",
+            <%--icon: "<spring:url value="pdf.png"/>",--%>
+            click: function () {
                 "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
-            title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
+            title: "<spring:message code='print.excel'/>",
+            <%--icon: "<spring:url value="excel.png"/>", --%>
+            click: function () {
                 "<spring:url value="/skill/print-all/excel" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
-            title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
+            title: "<spring:message code='print.html'/>",
+            <%--icon: "<spring:url value="html.png"/>", --%>
+            click: function () {
                 "<spring:url value="/skill/print-all/html" var="printUrl"/>"
                 window.open('${printUrl}');
             }
@@ -673,7 +687,7 @@
         fields: [
 // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
-            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains", autoFitWidth:true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", align: "center", filterOperator: "iContains"},
             {
                 name: "course.code",

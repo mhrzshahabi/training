@@ -58,4 +58,9 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     public Integer updateNeedsAssessmentWorkflow(Long needsAssessmentId, Integer workflowStatusCode, String workflowStatus) {
         return needsAssessmentDAO.updateNeedsAssessmentWorkflowStatus(needsAssessmentId, workflowStatusCode, workflowStatus);
     }
+
+    @Transactional
+    public  Integer updateNeedsAssessmentMainWorkflow(Long needsAssessmentId, Integer workflowStatusCode, String workflowStatus){
+        return needsAssessmentDAO.updateNeedsAssessmentWorkflowMainStatus(needsAssessmentId, workflowStatusCode, workflowStatus);
+    }
 }
