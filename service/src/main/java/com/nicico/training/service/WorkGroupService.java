@@ -78,7 +78,7 @@ public class WorkGroupService implements IWorkGroupService {
                     createOrUpdate.getAttributeName(),
                     workGroupId
             );
-            if (optional.isPresent() && createOrUpdate.getAttributeValues() == null) {
+            if (optional.isPresent() && (createOrUpdate.getAttributeValues() == null || createOrUpdate.getAttributeValues().isEmpty())) {
                 permissionDAO.delete(optional.get());
                 continue;
             }
