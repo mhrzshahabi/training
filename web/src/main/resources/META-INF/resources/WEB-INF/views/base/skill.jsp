@@ -686,14 +686,15 @@
         },
         fields: [
 // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains", autoFitWidth:true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", align: "center", filterOperator: "iContains"},
             {
                 name: "course.code",
                 // editorType: "TrComboAutoRefresh",
-                title: "<spring:message code='course'/>:",
+                title: "<spring:message code='course'/>",
                 textAlign: "center",
+                autoFitWidth: true,
                 // pickListWidth: 500,
                 // optionDataSource: RestDataSource_Course_JspSkill,
                 // displayField: "code",

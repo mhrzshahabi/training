@@ -68,7 +68,7 @@ public class Evaluation extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @Column(name = "b_evaluation-full")
+    @Column(name = "b_evaluation_full")
     private Boolean evaluationFull;
 
     @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL)
