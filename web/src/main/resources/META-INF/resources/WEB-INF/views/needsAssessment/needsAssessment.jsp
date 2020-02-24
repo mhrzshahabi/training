@@ -53,20 +53,19 @@
                         })
                     }
                 }
-            })
-            ,
-            isc.ToolStripButton.create({
-                title: "<spring:message code="send.to.committee.workflow"/>",
-                click: function () {
-                    sendNeedAssessment_CommitteeToWorkflow();
-                }
             }),
-            isc.ToolStripButton.create({
-                title: "<spring:message code="send.to.main.workflow"/>",
-                click: function () {
-                    sendNeedAssessment_MainWorkflow();
-                }
-            }),
+            <%--isc.ToolStripButton.create({--%>
+                <%--title: "<spring:message code="send.to.committee.workflow"/>",--%>
+                <%--click: function () {--%>
+                    <%--sendNeedAssessment_CommitteeToWorkflow();--%>
+                <%--}--%>
+            <%--}),--%>
+            <%--isc.ToolStripButton.create({--%>
+                <%--title: "<spring:message code="send.to.main.workflow"/>",--%>
+                <%--click: function () {--%>
+                    <%--sendNeedAssessment_MainWorkflow();--%>
+                <%--}--%>
+            <%--}),--%>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -95,8 +94,10 @@
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains"},
             {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "workflowStatusCode", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
-            {name: "workflowStatus", title: "<spring:message code="priority"/>", filterOperator: "iContains"}
+            {name: "workflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains"},
+            {name: "workflowStatus", title: "<spring:message code="committee.workflow.status"/>", filterOperator: "iContains"},
+            {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains"},
+            {name: "mainWorkflowStatus", title: "<spring:message code="main.workflow.status"/>", filterOperator: "iContains"}
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
@@ -833,13 +834,11 @@
 
         if (sRecord === null || sRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else if (sRecord.workflowStatusCode !== undefined && sRecord.workflowStatusCode === 0 && sRecord.workflowStatusCode !== -3) {
+            createDialog("info", "<spring:message code='needs.assessment.sent.to.workflow'/>");
+        } else if (sRecord.workflowStatusCode === 1) {
+            createDialog("info", "<spring:message code='needs.assessment.workflow.confirm'/>");
         }
-            <%--else if (sRecord.workflowStatusCode === "2") {--%>
-            <%--createDialog("info", "<spring:message code='course.workflow.confirm'/>");--%>
-            <%--} else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {--%>
-            <%--createDialog("info", "<spring:message code='course.sent.to.workflow'/>");--%>
-            <%--}--%>
-
         else {
             let needAssessmentTitle = "نیازسنجی " + priorityList[sRecord.objectType] + " " + sRecord.objectName + " انجام شد";
 
@@ -871,49 +870,53 @@
     }
 
     function sendNeedAssessment_MainWorkflow() {
-        alert(1)
-        <%--var sRecord = ListGrid_Course.getSelectedRecord();--%>
+        var sRecord = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord();
 
-        <%--if (sRecord === null || sRecord.id === null) {--%>
-        <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-        <%--} else if (sRecord.workflowStatusCode === "2") {--%>
-        <%--    createDialog("info", "<spring:message code='course.workflow.confirm'/>");--%>
-        <%--} else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {--%>
-        <%--    createDialog("info", "<spring:message code='course.sent.to.workflow'/>");--%>
-        <%--} else {--%>
+        if (sRecord === null || sRecord.id === null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else if (sRecord.mainWorkflowStatusCode !== undefined && sRecord.mainWorkflowStatusCode === 0 && sRecord.mainWorkflowStatusCode !== -3) {
+            createDialog("info", "<spring:message code='needs.assessment.sent.to.workflow'/>");
+        } else if (sRecord.mainWorkflowStatusCode === 1) {
+            createDialog("info", "<spring:message code='needs.assessment.workflow.confirm'/>");
+        }
+        else {
+            let needAssessmentTitle = "نیازسنجی " + priorityList[sRecord.objectType] + " " + sRecord.objectName + " انجام شد";
 
-        <%--isc.MyYesNoDialog.create({--%>
-        <%--message: "<spring:message code="needs.assessment.sent.to.main.workflow.ask"/>",--%>
-        <%--title: "<spring:message code="message"/>",--%>
-        <%--buttonClick: function (button, index) {--%>
-        <%--this.close();--%>
-        <%--if (index === 0) {--%>
-        <%--var varParams = [{--%>
-        <%--"processKey": "needAssessment_MainWorkflow",--%>
-        <%--"cId": 1,--%>
-        <%--"needAssessment": "نیازسنجی پست معاونت انجام شد",--%>
-        <%--"needAssessmentCreatorId": "${username}",--%>
-        <%--"needAssessmentCreator": userFullName,--%>
-        <%--"REJECTVAL": "",--%>
-        <%--"REJECT": "",--%>
-        <%--"target": "/course/show-form",--%>
-        <%--"targetTitleFa": "نیازسنجی",--%>
-        <%--"workflowStatus": "ثبت اولیه",--%>
-        <%--"workflowStatusCode": "50"--%>
-        <%--}];--%>
+            isc.MyYesNoDialog.create({
+                message: "<spring:message code="needs.assessment.sent.to.main.workflow.ask"/>",
+                title: "<spring:message code="message"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        var varParams = [{
+                            "processKey": "needAssessment_MainWorkflow",
+                            "cId": sRecord.id,
+                            "needAssessment": needAssessmentTitle,
+                            "needAssessmentCreatorId": "${username}",
+                            "needAssessmentCreator": userFullName,
+                            "REJECTVAL": "",
+                            "REJECT": "",
+                            "target": "/web/needsAssessment",
+                            "targetTitleFa": "نیازسنجی",
+                            "workflowStatus": "ثبت اولیه",
+                            "workflowStatusCode": "0"
+                        }];
 
-        <%--isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));--%>
-        <%--}--%>
-        <%--}--%>
-        <%--});--%>
-        // }
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                    }
+                }
+            });
+        }
     }
 
     function startProcess_callback(resp) {
-
+            console.log(resp.httpResponseCode);
         if (resp.httpResponseCode == 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
-            ListGrid_Course_refresh()
+
+            ListGrid_NeedsAssessment_JspNeedAssessment.invalidateCache();
+            ListGrid_NeedsAssessment_JspNeedAssessment.fetchData();
+
         } else {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
         }

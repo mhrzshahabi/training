@@ -38,4 +38,12 @@ public class PostGradeRestController {
         SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = postGradeService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/wpIscList")
+    public ResponseEntity<ISC<PostGradeDTO.Info>> withPermissionList(HttpServletRequest iscRq) throws IOException {
+        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = postGradeService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 }
