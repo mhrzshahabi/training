@@ -1,38 +1,4 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-
-    <changeSet author="jafari-h (generated)" id="1582448397375-243">
-        <addColumn tableName="tbl_evaluation">
-            <column name="b_evaluation_full" type="number(1, 0)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="jafari-h (generated)" id="1582449152181-243">
-        <addColumn tableName="tbl_course">
-            <column name="b_has_goal" type="number(1, 0)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="poursalehi_mos (generated)" id="1582460108764-243">
-        <addColumn tableName="tbl_course">
-            <column name="n_has_skill" type="number(1, 0)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="ghazanfari_f (generated)" id="1582461399706-243">
-        <addColumn tableName="tbl_teacher">
-            <column name="f_major_category" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582461399706-244">
-        <addColumn tableName="tbl_teacher">
-            <column name="f_major_sub_category" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1582463100132-242">
-        <createSequence sequenceName="seq_skill_id"/>
-    </changeSet>
-
-
 </databaseChangeLog>

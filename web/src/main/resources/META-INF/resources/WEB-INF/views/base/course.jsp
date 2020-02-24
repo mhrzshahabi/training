@@ -2861,12 +2861,15 @@
     }
 
     function startProcess_callback(resp) {
-
         if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
             ListGrid_Course_refresh()
-        } else {
+
+        } else  if (resp.httpResponseCode === 404) {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
+        } else
+        {
+            isc.say("<spring:message code='msg.send.to.workflow.problem'/>");
         }
     }
 

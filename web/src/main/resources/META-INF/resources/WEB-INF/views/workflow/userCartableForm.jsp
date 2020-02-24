@@ -117,15 +117,15 @@
 
             userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
 
-            activeDocumentDS.fetchDataURL = workflowUrl + "/userTaskHistory/list/" + pId;
-            ListGrid_DocumentActivity.invalidateCache();
-            ListGrid_DocumentActivity.fetchData();
+            console.log(record);
+            console.log("${getUserTaskHistoryForm}");
 
+            activeDocumentDS.fetchDataURL = workflowUrl + "/userTaskHistory/list/" + pId;
 
             setTimeout(function () {
                 ListGrid_DocumentActivity.invalidateCache();
                 ListGrid_DocumentActivity.fetchData();
-            }, 100);
+            }, 500);
         }
     }
 
@@ -136,6 +136,7 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_UserTaskList.invalidateCache();
+            activitiRefreshButton.click();
         }
     });
 
