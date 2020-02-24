@@ -26,7 +26,7 @@ public class Goal extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @Column(name = "c_title_fa", nullable = false, length = 500)
     private String titleFa;
 
     @Column(name = "c_title_en")

@@ -2469,7 +2469,7 @@
             <column name="user_ids" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="jafari-h (generated)" id="1582536682159-241">
+    <changeSet author="jafari-h (generated)" id="1582537917035-241">
         <createTable tableName="tbl_goal">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_goalPK"/>
@@ -2488,9 +2488,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+            <column name="c_title_fa" type="VARCHAR2(500 CHAR)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
+
 </databaseChangeLog>
