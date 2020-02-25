@@ -677,52 +677,29 @@
                     click: function () {
                         ListGrid_evaluation_class.invalidateCache();
                     }
-                },
-                {
-                    title: "<spring:message code="create"/>",
-                    <%--icon: "<spring:url value="create.png"/>",--%>
-                    click: function () {
-                        create_OperationalUnit();
-                    }
-                },
-                {
-                    title: "<spring:message code="edit"/>",
-                    <%--icon: "<spring:url value="edit.png"/>",--%>
-                    click: function () {
-                        show_OperationalUnitEditForm();
-                    }
-                },
-                {
-                    title: "<spring:message code="remove"/>",
-                    <%--icon: "<spring:url value="remove.png"/>",--%>
-                    click: function () {
-                        remove_OperationalUnit();
-                    }
-                },
-                {
-                    isSeparator: true
-                },
-                {
-                    title: "<spring:message code="print.pdf"/>",
-                    <%--icon: "<spring:url value="pdf.png"/>",--%>
-                    click: function () {
-                        print_Student_FormIssuance("pdf");
-                    }
-                },
-                {
-                    title: "<spring:message code="print.excel"/>",
-                    <%--icon: "<spring:url value="excel.png"/>",--%>
-                    click: function () {
-                        print_Student_FormIssuance("excel");
-                    }
-                },
-                {
-                    title: "<spring:message code="print.html"/>",
-                    <%--icon: "<spring:url value="html.png"/>",--%>
-                    click: function () {
-                        print_Student_FormIssuance("html");
-                    }
                 }
+                <%--,--%>
+                <%--{--%>
+                    <%--title: "<spring:message code="print.pdf"/>",--%>
+                    <%--&lt;%&ndash;icon: "<spring:url value="pdf.png"/>",&ndash;%&gt;--%>
+                    <%--click: function () {--%>
+                        <%--print_Student_FormIssuance("pdf");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{--%>
+                    <%--title: "<spring:message code="print.excel"/>",--%>
+                    <%--&lt;%&ndash;icon: "<spring:url value="excel.png"/>",&ndash;%&gt;--%>
+                    <%--click: function () {--%>
+                        <%--print_Student_FormIssuance("excel");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{--%>
+                    <%--title: "<spring:message code="print.html"/>",--%>
+                    <%--&lt;%&ndash;icon: "<spring:url value="html.png"/>",&ndash;%&gt;--%>
+                    <%--click: function () {--%>
+                        <%--print_Student_FormIssuance("html");--%>
+                    <%--}--%>
+                <%--}--%>
             ]
         })
     }
