@@ -62,16 +62,11 @@ public class PreTestScoreReportRestController {
 
         startDate = startDate.substring(0, 4) + "/" + startDate.substring(4, 6) + "/" + startDate.substring(6, 8);
         endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
-
         Object object= preTestScoreReportService.print(startDate,endDate);
-       String str=((List) object).toArray()[0].toString();
-
         String data = null;
         data = "{" + "\"PreTestScore\": " + objectMapper.writeValueAsString(object) + "}";
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
-       // params.put("preTestScore",.);
-
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
