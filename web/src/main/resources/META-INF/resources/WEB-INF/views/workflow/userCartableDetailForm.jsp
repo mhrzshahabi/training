@@ -52,7 +52,7 @@ abaspour 9803
 
     </c:if>
     <c:if test="${taskFormVariable.id =='REJECTVAL' }">
-    <c:if test="${taskFormVariable.value !=' ' }">
+    <c:if test="${taskFormVariable.value !=' '}">
     rejectDocumentLabel = isc.HTMLFlow.create({
         ID: "rejectDocumentLabel",
         width: "100%", align: "center",
