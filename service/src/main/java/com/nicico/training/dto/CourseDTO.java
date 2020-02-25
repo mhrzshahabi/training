@@ -270,8 +270,8 @@ public class CourseDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<CourseDTO.Info> data;
+    public static class SpecRs<T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -308,4 +308,22 @@ public class CourseDTO implements Serializable {
     public static class CourseGoals{
         private List<Goal> goalSet;
     }
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @ApiModel("CourseInfoComboClass")
+    public static class CourseInfoComboClass {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private String createdBy;
+        private Float theoryDuration;
+        private Integer startEvaluation;
+        private String scoringMethod;
+        private String acceptancelimit;
+        private CategoryDTO.CategoryInfoTuple category;
+    }
+
+    // ------------------------------
 }

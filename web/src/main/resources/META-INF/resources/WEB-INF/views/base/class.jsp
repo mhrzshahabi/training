@@ -82,8 +82,9 @@
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
             {name: "theoryDuration"},
+            {name: "categoryId"},
         ],
-        fetchDataURL: courseUrl + "spec-list"
+        fetchDataURL: courseUrl + "spec-list?type=combo"
 
     });
 
@@ -441,8 +442,8 @@
                     //==================
                     form.clearValue("teacherId");
                     evalGroup();
-                    if(VM_JspClass.getField("course.id").getSelectedRecord().category != undefined) {
-                        RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                    if(VM_JspClass.getField("course.id").getSelectedRecord().categoryId != undefined) {
+                        RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().categoryId;
                         form.getItem("teacherId").fetchData();
                     }
                     form.setValue("hduration", item.getSelectedRecord().theoryDuration);
@@ -676,7 +677,7 @@
 // pickListWidth:300,
                 required: true,
                 pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "titleFa", filterOperator: "iContains", autoFitWidth:true},
                     {name: "manager.firstNameFa", filterOperator: "iContains"},
                     {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
