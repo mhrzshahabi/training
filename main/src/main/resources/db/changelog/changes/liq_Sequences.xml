@@ -2,17 +2,7 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="heydaripoor (generated)" id="1582582805258-242">
-        <createSequence sequenceName="seq_goal_id"/>
+    <changeSet author="ghazanfari_f (generated)" id="1582612800497-244">
+        <createSequence sequenceName="seq_training_place_id"/>
     </changeSet>
-
-    <changeSet author="ghazanfari_f (generated)" id="1582588670583-244">
-        <createSequence sequenceName="seq_syllabus_id"/>
-    </changeSet>
-
-    <changeSet author="ghazanfari_f (generated)" id="1582600827336-244">
-        <createSequence sequenceName="seq_state_id"/>
-    </changeSet>
-
-
 </databaseChangeLog>

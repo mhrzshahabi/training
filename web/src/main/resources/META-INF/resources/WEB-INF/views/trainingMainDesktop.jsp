@@ -64,7 +64,7 @@
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";
     const attachmentUrl = rootUrl + "/attachment";
-    const trainingPlaceUrl = rootUrl + "/training-place";
+    const trainingPlaceUrl = rootUrl + "/trainingPlace";
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
@@ -479,6 +479,7 @@
                         createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="job"/>",
                     click: function () {
@@ -810,9 +811,9 @@
         shadowColor: "#153560",
         members: [
             basicInfoTSMB,
-<%--            <sec:authorize access="hasAuthority('NeedsAssessment_Menu')">--%>
+            <sec:authorize access="hasAuthority('NeedsAssessment_Menu')">
                 needsAssessmentTSMB,
-<%--            </sec:authorize>--%>
+            </sec:authorize>
             designingTSMB,
             runTSMB,
             evaluationTSMB,
@@ -1436,7 +1437,7 @@
     <%--        needAssessmentUrl: rootUrl + "/needAssessment",--%>
     <%--        skillUrl: rootUrl + "/skill",--%>
     <%--        attachmentUrl: rootUrl + "/attachment",--%>
-    <%--        trainingPlaceUrl: rootUrl + "/training-place",--%>
+    <%--        trainingPlaceUrl: rootUrl + "/trainingPlace",--%>
     <%--        personnelUrl: rootUrl + "/personnel",--%>
     <%--        personnelRegUrl: rootUrl + "/personnelRegistered",--%>
     <%--        attendanceUrl: rootUrl + "/attendance",--%>

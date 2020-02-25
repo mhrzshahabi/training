@@ -1218,7 +1218,7 @@
                 vertical: false,
                 endRow: true,
                 fillHorizontalSpace: true,
-                //  defaultValue: "مشاهده",
+                  defaultValue: "1",
                 valueMap: {
                     "1": "مشاهده",
                     "2": "مصاحبه",

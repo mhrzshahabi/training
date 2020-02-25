@@ -13,7 +13,7 @@
     var reqMethod = "POST";
     var institute_Institute_Url = rootUrl + "/institute/";
     var institute_Institute_Account_Url = rootUrl + "/institute-account/";
-    var institute_Institute_TrainingPlace_Url = rootUrl + "/training-place/";
+    var institute_Institute_TrainingPlace_Url = rootUrl + "/trainingPlace/";
     var institute_Bank_Url = rootUrl + "/bank/";
     var equipmentDestUrl = "";
     var globalWait = undefined;
@@ -91,7 +91,7 @@
             {name: "earrangementType.titleFa"},
             {name: "description"}
         ],
-        fetchDataURL: institute_Institute_Url + "training-place/0"
+        fetchDataURL: institute_Institute_Url + "trainingPlace/0"
     });
     var RestDataSource_Institute_TrainingPlace_Equipment = isc.TrDS.create({
         fields: [
@@ -101,7 +101,7 @@
             {name: "titleEn"},
             {name: "description"}
         ],
-        fetchDataURL: institute_Institute_Url + "training-place-equipment/0"
+        fetchDataURL: institute_Institute_Url + "trainingPlace-equipment/0"
     });
 
     var RestDataSource_Institute_Institite_Equipment = isc.TrDS.create({
@@ -380,7 +380,7 @@
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
                 RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
                 RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
-                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/trainingPlaces";
                 ListGrid_Institute_Institute_Account.invalidateCache();
                 ListGrid_Institute_Institute_Account.fetchData();
                 ListGrid_Institute_TrainingPlace.invalidateCache();
@@ -406,7 +406,7 @@
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
                 RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
                 RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
-                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/trainingPlaces";
                 ListGrid_Institute_Institute_Account.invalidateCache();
                 ListGrid_Institute_Institute_Account.fetchData();
                 ListGrid_Institute_TrainingPlace.invalidateCache();
@@ -1612,7 +1612,7 @@
         var addEquipmentUrl = "";
         var masterRecord = undefined;
         var masterId = null;
-        if (dest == "training-place-equipment") {
+        if (dest == "trainingPlace-equipment") {
             addEquipmentUrl = institute_Institute_TrainingPlace_Url;
             masterRecord = ListGrid_Institute_TrainingPlace.getSelectedRecord();
             masterId = masterRecord.id;
@@ -1641,7 +1641,7 @@
 
     function Function_Institute_EquipmentList_Selected_CallBack(resp) {
         if (resp.data == "true") {
-            if (equipmentDestUrl == "training-place-equipment") {
+            if (equipmentDestUrl == "trainingPlace-equipment") {
 // RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
                 ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
                 ListGrid_Institute_TrainingPlece_Equipment.fetchData();
@@ -1683,7 +1683,7 @@
 
     function Function_Institute_Equipment_Remove_CallBack(resp) {
         if (resp.data == "true") {
-            if (equipmentDestUrl == "training-place-equipment") {
+            if (equipmentDestUrl == "trainingPlace-equipment") {
 // RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
                 ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
                 ListGrid_Institute_TrainingPlece_Equipment.fetchData();
@@ -2900,7 +2900,7 @@
                     }
                 });
             } else {
-                equipmentDestUrl = "training-place-equipment";
+                equipmentDestUrl = "trainingPlace-equipment";
                 Function_Institute_EquipmentList_Select(institute_Institute_TrainingPlace_Url, record.id, equipmentDestUrl);
             }
         }

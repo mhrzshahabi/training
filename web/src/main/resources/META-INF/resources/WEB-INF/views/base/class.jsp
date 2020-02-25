@@ -147,7 +147,7 @@
             {name: "titleFa", title: "نام مکان"},
             {name: "capacity", title: "ظرفیت"}
         ],
-// fetchDataURL: instituteUrl + "0/training-places"
+// fetchDataURL: instituteUrl + "0/trainingPlaces"
         fetchDataURL: trainingPlaceUrl + "/with-institute"
     });
 
@@ -777,10 +777,10 @@
                 ],
                 click: function (form, item) {
                     if (form.getValue("instituteId")) {
-                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/trainingPlaces";
                         item.fetchData();
                     } else {
-                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
+                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/trainingPlaces";
                         item.fetchData();
                         isc.MyOkDialog.create({
                             message: "ابتدا برگزار کننده را انتخاب کنید",
@@ -1851,7 +1851,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
-            RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
+            RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
             VM_JspClass.clearErrors(true);
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
