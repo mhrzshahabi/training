@@ -64,7 +64,7 @@
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";
     const attachmentUrl = rootUrl + "/attachment";
-    const trainingPlaceUrl = rootUrl + "/training-place";
+    const trainingPlaceUrl = rootUrl + "/trainingPlace";
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
@@ -1436,7 +1436,7 @@
     <%--        needAssessmentUrl: rootUrl + "/needAssessment",--%>
     <%--        skillUrl: rootUrl + "/skill",--%>
     <%--        attachmentUrl: rootUrl + "/attachment",--%>
-    <%--        trainingPlaceUrl: rootUrl + "/training-place",--%>
+    <%--        trainingPlaceUrl: rootUrl + "/trainingPlace",--%>
     <%--        personnelUrl: rootUrl + "/personnel",--%>
     <%--        personnelRegUrl: rootUrl + "/personnelRegistered",--%>
     <%--        attendanceUrl: rootUrl + "/attendance",--%>
