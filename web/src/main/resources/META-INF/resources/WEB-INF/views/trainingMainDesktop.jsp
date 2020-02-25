@@ -811,9 +811,9 @@
         shadowColor: "#153560",
         members: [
             basicInfoTSMB,
-<%--            <sec:authorize access="hasAuthority('NeedsAssessment_Menu')">--%>
+            <sec:authorize access="hasAuthority('NeedsAssessment_Menu')">
                 needsAssessmentTSMB,
-<%--            </sec:authorize>--%>
+            </sec:authorize>
             designingTSMB,
             runTSMB,
             evaluationTSMB,
