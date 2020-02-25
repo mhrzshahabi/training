@@ -1,0 +1,1463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TeacherEvaluation" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="55f1d531-a75f-4069-961c-f17addc75c41">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<subDataset name="content" uuid="73d2c171-9f13-4db2-8afd-84e2be7eb0dc">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<parameter name="name" class="java.lang.String"/>
+	<parameter name="personalNum" class="java.lang.String"/>
+	<parameter name="categories" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="phone" class="java.lang.String"/>
+	<parameter name="totalGrade" class="java.lang.Float"/>
+	<parameter name="status" class="java.lang.String"/>
+	<parameter name="logo_nicico" class="java.lang.Object"/>
+	<parameter name="table1Grade" class="java.lang.Float"/>
+	<parameter name="table2Grade" class="java.lang.Float"/>
+	<parameter name="table3Grade" class="java.lang.Float"/>
+	<parameter name="table4Grade" class="java.lang.Float"/>
+	<parameter name="table3Book" class="java.lang.Float"/>
+	<parameter name="table3Project" class="java.lang.Float"/>
+	<parameter name="table3Article" class="java.lang.Float"/>
+	<parameter name="table3Translation" class="java.lang.Float"/>
+	<parameter name="table3Note" class="java.lang.Float"/>
+	<parameter name="tbl1License" class="java.lang.Float"/>
+	<parameter name="tbl1Work" class="java.lang.Float"/>
+	<parameter name="tbl1ReTraining" class="java.lang.Float"/>
+	<parameter name="tbl1UnReTraining" class="java.lang.Float"/>
+	<parameter name="tbl1Courses" class="java.lang.Float"/>
+	<parameter name="tbl1Years" class="java.lang.Float"/>
+	<parameter name="tbl1ReTrH" class="java.lang.Float"/>
+	<parameter name="tbl1UReTrH" class="java.lang.Float"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="81" splitType="Stretch">
+			<staticText>
+				<reportElement x="123" y="15" width="342" height="20" uuid="14aeb0f8-41ef-4bef-a5ce-d121deea7fcf"/>
+				<box>
+					<pen lineWidth="0.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[شرکت ملی صنایع مس ایران- امور آموزش و تجهیز نیروی انسانی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="123" y="37" width="342" height="18" uuid="6de10c36-9b55-4a9c-926c-dcb6464f7cd6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[فرم ارزیابی اساتید و مربیان]]></text>
+			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="481" y="10" width="77" height="61" uuid="f2f525a2-27eb-4235-817b-b6ec57b08fb0"/>
+				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="51" width="62" height="30" uuid="ef11a2e5-0793-48fc-b2e8-f60e095838f0"/>
+				<textElement>
+					<font size="12" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[TRF039-01]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="62" y="51" width="43" height="30" uuid="c5966c77-005b-4840-97db-f2f83ca8b903"/>
+				<textElement>
+					<font fontName="B Nazanin" size="14" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[کد فرم:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="66" width="105" height="1" uuid="a3120ac4-476e-4c6e-8423-206a98609794"/>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="492" splitType="Stretch">
+			<staticText>
+				<reportElement x="487" y="38" width="66" height="14" uuid="b5e4a91d-ee52-4cbe-b994-97121390065c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[نام و نام خانوادگی: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="270" y="38" width="107" height="14" uuid="dff25d18-7839-4e71-a585-fc8d6adf4b88"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[شماره پرسنلی(اساتید داخلی):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="529" y="68" width="24" height="14" uuid="19123ee9-d252-438f-b263-2fa133c425c7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[آدرس:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="68" width="20" height="14" uuid="4e1f8d95-e053-4c45-bcfd-c1bdab9bea18"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[تلفن:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="124" y="38" width="56" height="14" uuid="84525d53-ca1e-45f7-b582-5f655f54be1b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[موضوع تدریس:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="380" y="38" width="104" height="14" uuid="1468595f-e94e-4422-847b-5278677d7c5f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="187" y="38" width="81" height="14" uuid="f7726584-fa57-4b59-b057-3a65aff7e930"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{personalNum}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="18" y="38" width="104" height="14" uuid="246f907e-7dc2-4d88-bc15-e7baf635a240"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{categories}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="197" y="68" width="330" height="14" uuid="52902691-fadb-45b3-96d7-ccc9cf3595da"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="19" y="68" width="139" height="14" uuid="353a2b09-7d73-43f0-9d87-7b5140e97481"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{phone}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="370" y="121" width="183" height="19" uuid="878888ad-58ad-4bd8-b057-8e612f6e665b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1) جدول مربوط به مدرک تحصیلی و سوابق کاری]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="384" y="150" width="153" height="50" uuid="9205b3cb-6271-4ab7-8021-f88cf304a0fc"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="384" y="200" width="153" height="50" uuid="9b02ab8c-ec5b-454f-ad48-44cff52ceac2"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="384" y="250" width="153" height="50" uuid="fa4ddce6-9b41-42f3-b065-74c1d4bca59d"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="384" y="350" width="153" height="50" uuid="78d43003-02d3-41d0-a4f9-19cef5195896"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="384" y="400" width="153" height="50" uuid="cd7761e1-6823-4873-985f-90ecb76f05e3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="384" y="300" width="153" height="50" uuid="a7967148-e8d8-4b5c-83ef-c5fcf13108d7"/>
+			</rectangle>
+			<line direction="BottomUp">
+				<reportElement x="384" y="149" width="153" height="50" uuid="1e635ff6-c6e7-40c3-a1ad-c87521b7b376"/>
+			</line>
+			<staticText>
+				<reportElement x="384" y="200" width="153" height="50" uuid="eb1bd4c4-5dfa-4ab9-bf14-c8fb1fb571d0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[مدرک تحصیلی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="384" y="250" width="153" height="50" uuid="3bac586f-7356-45c1-9406-01f50a4d1cfa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[سابقه كار اجرايي مرتبط با موضوع تدريس
+(به ازاء هر سال، ماكزيمم 10 سال)
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="384" y="300" width="153" height="50" uuid="a13dfcf1-3aea-40ad-818b-190709e45990"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[سابقه آموزشي نا مرتبط با موضوع تدريس
+(به ازاء هر 100 ساعت، ماكزيمم 1000 ساعت)
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="384" y="350" width="153" height="50" uuid="0492396c-e6b6-4ac4-9ab9-3e6b148d53a1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[سابقه آموزشي مرتبط با موضوع تدريس
+(به ازاء هر 100 ساعت، ماكزيمم 1000 ساعت)
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="384" y="400" width="153" height="50" uuid="c29a6970-204a-46c2-aec0-f3cab368fca8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[سابقه دوره هاي آموزشي گذارنده شده در ساير موسسات آموزشي مرتبط با موضوع تدريس
+(به ازاء هر 100 ساعت، ماكزيمم 1000 ساعت)
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="388" y="150" width="64" height="30" uuid="47b30109-295a-4d5a-95f0-bac02b56992a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[مقطع تحصیلی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="470" y="170" width="59" height="30" uuid="899b8891-1c3a-43a4-b69c-f1732fb30175"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[عامل ارزیابی]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="335" y="150" width="50" height="50" uuid="fba3f586-51ce-4ee8-a060-82c492209d79"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="235" y="150" width="50" height="50" uuid="e1d64e73-0b75-407e-9ed3-30d610fc5896"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="150" width="90" height="50" uuid="b2acacad-3343-4acf-b7b4-877cddd3647e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="135" y="150" width="50" height="50" uuid="edf792c7-e9f9-4ef5-879d-8c41107082e1"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="185" y="150" width="50" height="50" uuid="d4271af8-1246-4d7d-a62d-da553257da1a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="150" width="50" height="50" uuid="c67ba76e-3e79-4986-91c2-9f278dde9855"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="335" y="150" width="50" height="50" uuid="581a15db-8e06-4abc-92e5-038173704842"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[دیپلم و زیردیپلم]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="150" width="50" height="50" uuid="3f1854f7-756f-442c-aa2b-d5850738d5fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[فوق دیپلم]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="150" width="50" height="50" uuid="6067d32a-0463-42fb-ad71-26ab69a75ca7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[لیسانس]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="150" width="50" height="50" uuid="c6e93c61-33f4-434d-a9f6-2e0266153123"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[فوق لیسانس]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="150" width="50" height="50" uuid="5ef2fe5e-76c5-4672-82ac-1cb2e3085e35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[دکترا]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="150" width="90" height="50" uuid="9e0e93b8-d890-43ee-b63e-d4bf0bf16bd3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[امتیاز متعلقه]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="334" y="200" width="50" height="50" uuid="0c176867-a730-4a80-842c-3df701a243b5"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="200" width="50" height="50" uuid="1dc3ba64-6259-4dce-bb8d-9c84d171e5a7"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="235" y="200" width="50" height="50" uuid="626c4980-5595-4c93-8f7f-b1da9f1ba8df"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="185" y="200" width="50" height="50" uuid="adc5881b-b4c7-4862-b09e-f04ca56e492b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="135" y="200" width="50" height="50" uuid="319cd368-73c5-49e4-a2e4-e03a456d32fb"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="200" width="90" height="50" uuid="ecb81ade-c51a-4e84-80ff-50d3079d1a70"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="334" y="200" width="50" height="50" uuid="bb463bad-7358-4857-937a-57d2c0481d3b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="200" width="50" height="50" uuid="6047fae6-33ed-43b0-9098-7f82d7819e6b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[15]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="200" width="50" height="50" uuid="e5abbbac-ab9a-4c41-ae08-cd75e7ad2cfe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[20]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="200" width="50" height="50" uuid="1da1069f-62e7-423a-89a5-079d069adb44"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[25]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="200" width="50" height="50" uuid="97d1bb21-e9de-48f8-8a35-61d8bf1b946f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[30]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="200" width="90" height="50" uuid="f6af3e0f-e613-4792-9c19-ce0861895f12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1License}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="334" y="250" width="50" height="50" uuid="b5e9eb37-e0cc-40fb-b34e-09fd03759a92"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="250" width="50" height="50" uuid="93abc1ba-117e-4056-99b9-817d8a4ebf33"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="235" y="250" width="50" height="50" uuid="73c2c897-c5fb-4cb7-afd8-c1e77c04dd0b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="185" y="250" width="50" height="50" uuid="0d16c4e7-4dd2-40b3-af76-f31f2b7fa729"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="135" y="250" width="50" height="50" uuid="52ba6fe6-608c-434b-976e-e537c2e1e4ca"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="250" width="90" height="50" uuid="d9c82f1f-2265-420c-969c-29d51d4829e0"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="334" y="300" width="50" height="50" uuid="9256a34d-cadf-4a45-9ddd-a478b17a73e9"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="235" y="300" width="50" height="50" uuid="1f3d2da5-1355-49a9-ab26-f8050ab03138"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="300" width="50" height="50" uuid="f7e1e680-f733-4ab9-8c76-203bf6859d1a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="185" y="300" width="50" height="50" uuid="c34cfd20-fe4d-4200-8a26-1bc55d796e47"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="135" y="300" width="50" height="50" uuid="57b1c08e-23ee-4602-9812-4f0bd24e7ef3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="300" width="90" height="50" uuid="206f4388-b07d-423d-9eee-716c3950de6a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="334" y="350" width="50" height="50" uuid="e34e9270-da6a-447e-a45e-de4190a13bca"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="235" y="350" width="50" height="50" uuid="cd939896-7b4c-41f0-a668-7b0ca1906e8f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="350" width="50" height="50" uuid="aba66556-c34b-46c5-a94a-1ee258557cbb"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="185" y="350" width="50" height="50" uuid="9a2c613b-735d-45ed-8c39-b0115def404b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="135" y="350" width="50" height="50" uuid="6b89c8de-b652-4441-a825-37b235304f55"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="350" width="90" height="50" uuid="c7d19edc-5b90-4e92-9813-720769b9813f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="334" y="400" width="50" height="50" uuid="6f903aec-211f-4883-952a-fb1600c229c6"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="235" y="400" width="50" height="50" uuid="15a381bb-4722-4429-9a1e-75a0adf43a59"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="400" width="50" height="50" uuid="c7c4305a-a708-482b-8864-c149294fed4f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="185" y="400" width="50" height="50" uuid="1763eb50-c35f-4bb6-ae1f-3d0e9be66c44"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="135" y="400" width="50" height="50" uuid="86ade5b3-b3df-45fe-92c0-529dcb305938"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="400" width="90" height="50" uuid="c04353bf-4480-4ae1-a250-d0b317e9a3b9"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="334" y="250" width="50" height="50" uuid="90a314b4-9eab-45a9-a30a-f46aec5975e9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[0/6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="250" width="50" height="50" uuid="eabe0c89-9cd2-4c9f-84ea-fd92506d92c5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[0/8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="250" width="50" height="50" uuid="8eadfaf8-acbb-4a2c-81ff-7dfee928c8d4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="250" width="50" height="50" uuid="e9be50c8-71d1-4687-b546-e62ba36b5540"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1/2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="250" width="50" height="50" uuid="6b875e6e-9ceb-4683-af13-956f62c580b2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1/4]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="250" width="90" height="50" uuid="fa2ee2e4-3c19-400f-a009-0d68335b89fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1Work}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="334" y="300" width="50" height="50" uuid="f9642bdc-19cc-483e-80f3-b40ac9edda84"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[0/4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="300" width="50" height="50" uuid="c8ff67c4-61ac-4070-b466-90b9879d2d33"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[0/5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="300" width="50" height="50" uuid="672d5ecf-a222-4a38-b0ad-5c836f733b30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[0/6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="300" width="50" height="50" uuid="173b24bc-a004-4e6f-83b6-fe3035eb5f94"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[0/7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="300" width="50" height="50" uuid="b5c3c8df-d34d-4903-b56b-5043c0bc4036"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[0/8]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="300" width="90" height="50" uuid="07eac973-6994-4eb4-9330-1d436350da5d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1UnReTraining}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="334" y="350" width="50" height="50" uuid="7d4e65fb-4531-4c8a-89d9-ea8cc8a76fdc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="350" width="50" height="50" uuid="30a3d177-5a8a-43bc-b620-52bb25dec03e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[2/5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="350" width="50" height="50" uuid="956f7c9b-1ab3-4721-b4e7-ca0e02d1d8ef"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="350" width="50" height="50" uuid="1f05efcf-be01-47c9-9b71-4588128a886c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[3/5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="350" width="50" height="50" uuid="f64ef80d-c31c-4860-b114-dd51b3cd4930"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="350" width="90" height="50" uuid="69c4997f-28eb-4537-8ab0-29c40185e6c5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1ReTraining}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="334" y="400" width="50" height="50" uuid="85b3d3b9-6bef-45d6-8886-9624f35196a1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="400" width="50" height="50" uuid="9c2943e2-13e2-4c42-9930-0d612e5d2334"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1/2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="400" width="50" height="50" uuid="d4b54972-acc2-4abf-9d5c-9874b2ab89fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1/3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="400" width="50" height="50" uuid="e87d4ea5-4bca-4265-a007-69533bcad287"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1/4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="400" width="50" height="50" uuid="21bb97a6-a932-4a83-aa8e-3da0523c8f80"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1/5]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="400" width="90" height="50" uuid="310ed1f5-0621-4d28-b455-a0e155893352"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1Courses}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="383" y="450" width="69" height="21" uuid="9d6f8526-f80c-45a1-9d72-2151367082b7"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="450" width="90" height="21" uuid="cbf47ef7-db72-4e74-86ad-20ec137d4523"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="135" y="450" width="84" height="21" uuid="6591b482-1b50-4f40-94a8-7e73c437c35e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="219" y="450" width="40" height="21" uuid="1299adde-20fb-4726-b99c-9b86c56a61c1"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="259" y="450" width="90" height="21" uuid="d19cb323-7c7a-469d-95e5-dd74894056fb"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="349" y="450" width="34" height="21" uuid="ddb98839-bfde-40c5-96c7-a847c6044237"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="452" y="450" width="37" height="21" uuid="937a8ee7-ed00-4e04-be97-af1741b4d98d"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="489" y="450" width="48" height="21" uuid="de977508-b504-44df-9341-7329b1dc8ae1"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="489" y="450" width="48" height="21" uuid="02e31884-a7fa-418b-a913-620f5436b4c0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<text><![CDATA[سنوات کاری]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="383" y="450" width="69" height="21" uuid="da267ea9-9379-4317-8dff-31542921a07c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<text><![CDATA[ساعات تدریس غیرمرتبط]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="259" y="450" width="90" height="21" uuid="ca0be507-b3e6-4b02-91cb-00dc0ce85b58"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<text><![CDATA[ساعات تدریس مرتبط]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="450" width="84" height="21" uuid="85f3b483-1ac3-4d8f-be20-1bd7cddecd37"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<text><![CDATA[جمع امتیازات]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="452" y="450" width="37" height="21" uuid="74742eed-13be-442c-abaf-8e974234c362"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1Years}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="349" y="450" width="34" height="21" uuid="ca5d51eb-8264-42ef-9842-31afed4c0df8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1UReTrH}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="219" y="450" width="40" height="21" uuid="00a9946f-e1f5-43b4-be5c-cef5d07a5da1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tbl1ReTrH}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="450" width="90" height="21" uuid="d8a92f9c-dacd-4056-ab73-d7a747cdee42"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table1Grade}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="647">
+			<staticText>
+				<reportElement positionType="Float" x="140" y="221" width="415" height="19" uuid="37b2d78d-9b4d-4fc6-b201-4cd480bdc2de"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3) جدول مربوط به تالیفات و تحقیقات منتشر شده مرتبط با موضوع تدریس (به ازای هر مورد حداکثر 10 مورد)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="450" y="391" width="105" height="19" uuid="c8409729-f32c-485f-8e25-64dc2ee7f77e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4) آشنائی با زبان انگلیسی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="448" y="532" width="103" height="19" uuid="8bc4bd34-d43f-4f75-ab74-2fe02c0c151b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5) حداقل امتیاز قابل قبول]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="311" y="21" width="245" height="19" uuid="292e0006-dada-4083-810f-46bc5d008fd8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2) جدول مربوط به میزان ارتباط رشته تحصیلی و موضوع تدریس]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="385" y="50" width="153" height="50" uuid="fbf4d9fb-7fe5-445a-b8c2-1e97ef592fd2"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="385" y="100" width="153" height="30" uuid="5dee987a-52fe-4b5d-98a0-a43de1117dad"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="385" y="130" width="153" height="30" uuid="06d3b730-0fe0-4625-88a9-ae1a2c43df47"/>
+			</rectangle>
+			<line direction="BottomUp">
+				<reportElement x="385" y="50" width="153" height="50" uuid="2353ba78-4280-4aa3-a453-b5979ca8e9b7"/>
+			</line>
+			<staticText>
+				<reportElement x="389" y="55" width="53" height="30" uuid="78f3f813-52a5-4715-a15d-d2c4ce7328b7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[مقطع تحصیلی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="469" y="70" width="58" height="30" uuid="ed207461-52cb-4fdd-8f08-1a540a6eaf97"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[میزان ارتباط]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="100" width="153" height="30" uuid="d6360da0-d9ec-4e37-a6c4-e94026a29e18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[نسبتا مرتبط]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="130" width="153" height="30" uuid="5caee332-8636-4380-98c1-9284441c737d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[مرتبط]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="245" y="50" width="70" height="50" uuid="fb3f43d7-d92c-4b6e-91c6-ac47f5b90291"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="105" y="50" width="70" height="50" uuid="8ccb8da1-f3e1-4965-a7cf-ba519bb1e692"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="44" y="50" width="61" height="50" uuid="0a30c8e1-8296-4c4a-ab03-b37ed17d5d8a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="175" y="50" width="70" height="50" uuid="59e56050-d1f7-486c-a2dc-621e73056685"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="315" y="50" width="70" height="50" uuid="3f5af651-ef3b-4a36-bf98-892a514c3e42"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="315" y="50" width="70" height="50" uuid="51cb844d-62b7-4494-9e4b-317909ef7762"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[دیپلم و زیردیپلم]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="245" y="50" width="70" height="50" uuid="3165fda6-a1f1-46fe-af7a-c1168b8be5da"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[فوق دیپلم]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="175" y="50" width="70" height="50" uuid="209c5cc0-5282-41d7-acfb-d7fb4d132a66"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[لیسانس]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="105" y="50" width="70" height="50" uuid="f423ff39-dda2-4876-83a3-2153718dc160"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[فوق لیسانس]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="44" y="50" width="61" height="50" uuid="f47c7ad7-d219-4fa3-a55c-5530a8bd55f9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[دکترا]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="315" y="100" width="70" height="30" uuid="a6116d2c-a185-4f3e-bb91-ace645e42d9a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="315" y="130" width="70" height="30" uuid="c17e96d3-f73a-4613-a1b5-4b2ab0c71551"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="245" y="100" width="70" height="30" uuid="12f16eeb-571a-448a-bd3a-9fbcc46d62d3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="245" y="130" width="70" height="30" uuid="fe0ebaa5-1258-4b02-9fa9-51fb39c18bf0"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="175" y="100" width="70" height="30" uuid="f0f435c5-1a73-4bd7-85cf-406332d80bd4"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="175" y="130" width="70" height="30" uuid="8a01edf9-2a54-4323-94b4-6683382c8281"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="105" y="100" width="70" height="30" uuid="8edb0a56-3c86-4b23-a274-eb3c375b484c"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="105" y="130" width="70" height="30" uuid="cd6958ed-7b33-4b2e-a6b0-b3e23660221a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="44" y="100" width="61" height="30" uuid="5b1eb5fa-59f2-4bc9-ae62-26c2eb6df267"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="44" y="130" width="61" height="30" uuid="87b144df-2459-4d54-9354-cd537a2a63f9"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="315" y="100" width="70" height="30" uuid="190fe1c6-d385-4041-9e77-db15850538fe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[2/5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="315" y="130" width="70" height="30" uuid="a93c4184-5189-4b14-9b0e-c547522b9bc2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="245" y="100" width="70" height="30" uuid="ce6822a6-a4c2-4d41-9aab-6c86e26b933a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="245" y="130" width="70" height="30" uuid="04999584-2a43-40f8-8d2d-95d7661861e7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="175" y="100" width="70" height="30" uuid="1cd45aa6-1cd6-4d3b-84b2-54d7f4ea5021"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="175" y="130" width="70" height="30" uuid="cea0e561-f657-41fe-b8fb-2f8373fbb82d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[16]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="105" y="100" width="70" height="30" uuid="fe1cd1ae-6f34-4486-ba2e-5eb31b6bc1ab"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="105" y="130" width="70" height="30" uuid="7e90d781-1e02-4d48-b7c3-792abefb1715"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="44" y="100" width="61" height="30" uuid="b1929b0f-2f0f-4018-875a-2e427066a8e2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="44" y="130" width="61" height="30" uuid="f301580b-81cb-4562-8c47-36ffa6053c37"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[20]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="105" y="160" width="70" height="30" uuid="2f8b1cfb-b038-49a1-917d-cf615ef5f911"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="44" y="160" width="61" height="30" uuid="6920d988-47d9-44e3-b20d-64ff117bb8c6"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="105" y="160" width="70" height="30" uuid="a1286598-f475-4fca-830a-63ce7bc4b835"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<text><![CDATA[جمع امتیازات]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="44" y="160" width="61" height="30" uuid="5a53fd88-945e-40ef-9089-374e37da7ed3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table2Grade}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="455" y="250" width="85" height="30" uuid="b2a97bf4-711f-4090-8bb0-23890ad46f6a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="455" y="280" width="85" height="30" uuid="26d1cbe5-5a8c-428e-b607-49102791ef72"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="455" y="310" width="85" height="30" uuid="8c9fc84b-ef9e-491f-a31c-23a78b21577f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="250" width="70" height="30" uuid="ea355ddf-eaa0-44b8-bf2e-68a50fb2bd11"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="280" width="70" height="30" uuid="2bf16cf8-7360-46aa-b9a0-30ef5793dbfa"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="310" width="70" height="30" uuid="674972ca-12ae-4cbd-b568-32ff9ae823bc"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="250" width="85" height="30" uuid="749ad143-ebc8-4eb0-8042-285d9b91890b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="280" width="85" height="30" uuid="6f6c1855-e629-47d4-adea-ec3a287af67b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="310" width="85" height="30" uuid="c3591d83-5c8e-45ca-9585-94ae601edab3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="200" y="250" width="85" height="30" uuid="6c793326-302e-4fda-9420-ba88535e8a68"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="200" y="280" width="85" height="30" uuid="dcefe747-7f6d-4d42-ac5a-6bd936b293eb"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="200" y="310" width="85" height="30" uuid="6081b829-e58f-48f5-bbc5-007c44daad9f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="115" y="250" width="85" height="30" uuid="3d1f974b-b914-41d0-8321-7f18cd826f73"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="115" y="280" width="85" height="30" uuid="8ec82d26-25e8-45fe-8ed2-052d04755777"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="115" y="310" width="85" height="30" uuid="a5f625aa-fe5c-46e0-bb6b-303709438de3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="370" y="250" width="85" height="30" uuid="dbfc327a-639c-4ee5-9fc9-7a2f89dcb078"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="370" y="280" width="85" height="30" uuid="312372e4-b24c-4e9d-82d8-6c56247801aa"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="370" y="310" width="85" height="30" uuid="a255713c-bddf-4369-89a0-c84e76926ec0"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="455" y="250" width="85" height="30" uuid="93a1cf2e-5055-48fc-b426-8d66aff56bca"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[عنوان]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="280" width="85" height="30" uuid="05e835c9-275e-42f5-8be5-bafe940096fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[امتیاز]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="310" width="85" height="30" uuid="49ae81ac-a800-479e-aedf-dad4ce754606"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[تعداد موارد]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="250" width="85" height="30" uuid="a1837b34-ba4f-4e30-aea1-993f5630ac68"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[کتاب]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="280" width="85" height="30" uuid="aadca8ca-43d2-4d59-9af2-faac7547f48f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="280" width="85" height="30" uuid="ddcf4be7-9954-4675-a4f7-2b9507aa2dfd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="250" width="85" height="30" uuid="9ae41f06-b44b-4170-b223-ade074b5eecc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[پروژه تحقیقاتی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="280" width="85" height="30" uuid="6c520772-382e-45c5-92f7-98c97d0d7b6d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="250" width="85" height="30" uuid="693a4e60-b0b4-4e11-b837-a2251db5d56e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[مقاله معتبر]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="115" y="280" width="85" height="30" uuid="ca7ec71d-3571-4fdd-8fa6-6ed2318a60a2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="115" y="250" width="85" height="30" uuid="0211a0a8-3925-4c39-860f-3ed70cb15715"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[ترجمه کتاب]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="280" width="70" height="30" uuid="d60fa76f-1809-44c7-a6d6-87c380f93772"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="250" width="70" height="30" uuid="3388008a-7224-467b-ae08-c2be03bce1a2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[جزوه]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="115" y="340" width="85" height="30" uuid="4267759b-8421-4f47-ab17-0a5f2f8cb8ca"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="340" width="70" height="30" uuid="90de0aaf-5a42-4b14-9017-5400ce5dce54"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="115" y="340" width="85" height="30" uuid="8746da31-fbb0-471f-beb8-ce0cc6c8b6f3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<text><![CDATA[جمع امتیازات]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="310" width="70" height="30" uuid="0f7096fa-30ec-4e8d-892b-b7b07757ff46"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table3Note}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="340" width="70" height="30" uuid="ddf412af-589f-44ea-89e9-77250ee7268b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table3Grade}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="115" y="310" width="85" height="30" uuid="055e5302-ad45-4d3c-abc5-3fe53771f8c6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table3Translation}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="310" width="85" height="30" uuid="ee5c440c-f41d-444a-a095-4b6d07c62ccd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table3Article}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="285" y="310" width="85" height="30" uuid="f983eec8-473b-4826-97c8-ce2f7a4378f4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table3Project}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="370" y="310" width="85" height="30" uuid="68e92a7c-4953-4d97-bdde-6dd24546acd3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table3Book}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="405" y="420" width="135" height="30" uuid="8775f237-222d-4846-a4f8-b276bb974227"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="420" width="120" height="30" uuid="f8d490b9-3ad9-49cd-8485-d1365f8c734c"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="165" y="420" width="120" height="30" uuid="50df1650-5546-435b-8131-1c4cf51e3553"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="420" width="120" height="30" uuid="2876c4a9-e54b-463a-b58f-bd52c2677204"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="165" y="450" width="120" height="30" uuid="3c0694d6-59a4-43d3-8992-c65ddd6365c5"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="450" width="120" height="30" uuid="45e98e6b-4fe9-442d-be1f-61c35310b8dc"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="450" width="120" height="30" uuid="764be57d-6d92-47f8-ba8c-977204983201"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="405" y="450" width="135" height="30" uuid="0c85e181-08ce-407d-8fe1-12776c156173"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="165" y="480" width="120" height="30" uuid="ae88648c-a8b5-4a77-8f9b-8b0430c49b25"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="480" width="120" height="30" uuid="fbe3ec56-2c6e-4221-b850-87ebba56ebd9"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="405" y="420" width="135" height="30" uuid="3e66fca7-cea7-48de-87a6-4a834b7c4ad3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[میزان آشنائی با زبان]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="405" y="450" width="135" height="30" uuid="eaad472d-e2c6-4963-9f6d-acc855c4d693"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[زبان انگلیسی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="420" width="120" height="30" uuid="612a4184-4411-4e1a-8ddf-49158f770f95"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[تسلط کامل]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="450" width="120" height="30" uuid="eb3648c2-14d7-4216-80d2-416f1dbef0fb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="165" y="420" width="120" height="30" uuid="e34a7977-d68c-478a-8dad-d7cc4b85fc5a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[توان مکالمه، خواندن و نوشتن]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="165" y="450" width="120" height="30" uuid="5e7adebe-7a71-47a4-82e8-fdb5197caef3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="420" width="120" height="30" uuid="2cadaef3-6ea7-47fe-9194-dc1de8084db1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[آشنائی مختصر]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="450" width="120" height="30" uuid="cc100b10-f499-4886-8be3-6cc27877e7db"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="165" y="480" width="120" height="30" uuid="02e19eda-1550-4545-b726-87e6b23e0e1f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[امتیاز]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="480" width="120" height="30" uuid="e4e636ef-515e-43a2-967e-207f3df52d89"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{table4Grade}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="445" y="560" width="95" height="30" uuid="c918d291-b28c-4dec-94d2-d170f8a3b7aa"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="445" y="590" width="95" height="30" uuid="d0be94f9-10a9-4750-924b-fd640a798682"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="365" y="590" width="80" height="30" uuid="8f814d91-ca31-4e3e-8ae5-3548c460a290"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="365" y="560" width="80" height="30" uuid="8ecad47e-f445-41f3-8531-4488776e91f7"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="590" width="80" height="30" uuid="88ef08c1-9eba-4ac5-a082-1d2ae67a63ea"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="285" y="560" width="80" height="30" uuid="11da8f25-1f84-4766-a007-2778444d62ef"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="205" y="590" width="80" height="30" uuid="94ece83e-a0a8-4afe-b5fb-ab19770d6e1c"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="205" y="560" width="80" height="30" uuid="10972e51-8e31-4bea-bb14-9468c0938190"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="125" y="590" width="80" height="30" uuid="033fffec-abb1-42cc-870c-c2d0d34bc1f8"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="125" y="560" width="80" height="30" uuid="4bcf3cbd-1625-4335-9248-aeaa4c1076a8"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="590" width="80" height="30" uuid="c181cb5a-3a59-4503-bdd3-ec8fc5a5a7a0"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="45" y="560" width="80" height="30" uuid="b6875403-51d6-4073-ab12-6f6aeab25afc"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="445" y="560" width="95" height="30" uuid="baf43792-f273-4482-9b74-2d5eed026c49"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[مقطع تحصیلی]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="445" y="590" width="95" height="30" uuid="77f40b48-8a44-4f47-85e0-cd3bb43314b9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[حداقل امتیاز قابل قبول]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="365" y="560" width="80" height="30" uuid="6ac47067-434e-4991-8fc1-8d17d17c3c02"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[دیپلم و زیر دیپلم]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="365" y="590" width="80" height="30" uuid="e1ae6469-7da8-47b1-821f-23d5eb5b1700"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[25]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="560" width="80" height="30" uuid="3eed9bdf-f566-4c7b-810a-597df9a60b89"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[فوق دیپلم]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="590" width="80" height="30" uuid="36d2dd5d-dff7-44ec-9717-04f3481b6898"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[40]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="205" y="560" width="80" height="30" uuid="46c45734-1911-467a-a511-d6938f93f1f0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[لیسانس]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="205" y="590" width="80" height="30" uuid="8675c631-0676-4e4a-90cb-fb84329bd840"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[55]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="125" y="560" width="80" height="30" uuid="63fcc0c6-254f-44b8-995a-528546a2b3e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[فوق لیسانس]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="125" y="590" width="80" height="30" uuid="9328e46d-3f43-4191-b41b-899d98ae2927"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[60]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="560" width="80" height="30" uuid="015cb188-6b69-4e1c-b252-a9489807b102"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[دکترا]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="590" width="80" height="30" uuid="709734ff-0e76-4fac-a026-a67e05a09c8c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[75]]></text>
+			</staticText>
+		</band>
+		<band height="114">
+			<staticText>
+				<reportElement x="494" y="10" width="59" height="14" uuid="aade3741-0111-42f3-845c-73c92170798b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[جمع کل امتیاز:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="320" y="10" width="64" height="14" uuid="07d689a3-2daf-42bb-b4c6-16152107d9c3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[وضعیت تائید:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="400" y="6" width="81" height="22" uuid="f0b1e942-93a3-4327-a6a7-03c551ee7dd0"/>
+				<box>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totalGrade}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="255" y="9" width="60" height="14" uuid="e6542825-8d9b-4caf-b370-5fbf739a8514"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{status}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="460" y="50" width="93" height="19" uuid="86650af2-309b-48c6-8542-d63604827eb1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ارزیاب: نام و نام خانوادگی:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="441" y="80" width="112" height="19" uuid="76a0b204-e982-47ea-b929-5e87ae83daed"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[تائید کننده: نام و نام خانوادگی:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="317" y="50" width="56" height="19" uuid="a85796b8-daf8-4a71-afe2-12ac8dba52ee"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[سمت سازمانی:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="318" y="80" width="54" height="19" uuid="44e77630-d4bf-4116-bc7e-b4b6d7d7a7e3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[سمت سازمانی:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="50" width="48" height="19" uuid="1c0c1978-4e76-4457-b382-3f0efe7af3b8"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[تاریخ تکمیل:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="80" width="48" height="19" uuid="b626e240-078d-4f9c-8861-79fa8a5f98de"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[تاریخ تائید:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="50" width="30" height="19" uuid="16032845-33d9-4722-9d57-fbc853894d3a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[امضاء:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="80" width="29" height="19" uuid="032babdf-aba3-4ce5-8f2f-eccbd8c15680"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="B Nazanin" isBold="true"/>
+				</textElement>
+				<text><![CDATA[امضاء:]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="80" y="7" width="25" height="20" uuid="83c38d4b-0d86-449c-97b0-2d7d387d6c7e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[صفحه:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="7" width="10" height="20" uuid="d19f3441-ff75-43ae-b5d3-a0e7f480189b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="59" y="7" width="11" height="20" uuid="2ce1d36b-5619-4775-940d-3ce5c782c9de"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[از]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="49" y="7" width="10" height="20" uuid="fbf81759-83b5-41e6-9388-d6d96d811cd7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

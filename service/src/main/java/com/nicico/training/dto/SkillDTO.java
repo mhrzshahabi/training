@@ -49,6 +49,17 @@ public class SkillDTO {
     @ApiModelProperty()
     private String description;
     private Long courseId;
+    private Long courseMainObjectiveId;
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("SkillInfoTuple")
+    public static class InfoTuple {
+        private Long id;
+        private String titleFa;
+        private String code;
+    }
 
     @Getter
     @Setter
@@ -58,13 +69,13 @@ public class SkillDTO {
         private Long id;
         private SkillLevelDTO.SkillLevelInfoTuple skillLevel;
         private CategoryDTO.CategoryInfoTuple category;
-        private SubCategoryDTO.SubCategoryInfoTuple subCategory;
-
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private Integer version;
+        private CourseDTO.CourseInfoTupleLite course;
     }
 
     // ------------------------------
@@ -86,7 +97,6 @@ public class SkillDTO {
     @Accessors(chain = true)
     @ApiModel("SkillUpdateRq")
     public static class Update extends SkillDTO {
-
         Set<Long> courseIds;
         Set<Long> skillGroupIds;
 

@@ -39,7 +39,7 @@ public class ParameterValueRestController {
 
     @Loggable
     @GetMapping("/iscList/{parameterId}")
-    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable Long parameterId) {
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueListById(@RequestParam MultiValueMap<String, String> criteria, @PathVariable Long parameterId) {
         return iscList(CriteriaUtil.addCriteria(criteria, "parameterId", "equals", parameterId.toString()));
     }
 
@@ -69,5 +69,11 @@ public class ParameterValueRestController {
     @PutMapping(value = "/edit-config-list")
     public ResponseEntity<List<ParameterValueDTO.Info>> editConfigList(@Validated @RequestBody ParameterValueDTO.ConfigUpdate[] rq) {
         return new ResponseEntity<>(parameterValueService.editConfigList(rq), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/get-id")
+    public ResponseEntity<Long> getParametersValueList(@RequestParam String code) {
+        return new ResponseEntity<>(parameterValueService.getId(code), HttpStatus.OK);
     }
 }

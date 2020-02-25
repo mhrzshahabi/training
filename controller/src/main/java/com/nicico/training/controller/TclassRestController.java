@@ -9,10 +9,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +44,28 @@ public class TclassRestController {
     private final ObjectMapper objectMapper;
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
+
+
+//    @Loggable
+//    @GetMapping(value = "/student/{classId}")
+////    @PreAuthorize("hasAuthority('r_tclass')")
+//    public ResponseEntity<StudentDTO.StudentSpecRs> getStudentsByClassID(@PathVariable String classID) {
+//        Long classId = Long.parseLong(classID);
+//
+//        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
+//
+//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
+//        specResponse.setData(studentList)
+//                .setStartRow(0)
+//                .setEndRow(studentList.size())
+//                .setTotalRows(studentList.size());
+//
+//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
+
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -98,8 +120,8 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
@@ -136,6 +158,92 @@ public class TclassRestController {
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/tuple-list")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TclassDTO.TclassSpecRs> tupleList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                            @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                            @RequestParam(value = "_constructor", required = false) String constructor,
+                                                            @RequestParam(value = "operator", required = false) String operator,
+                                                            @RequestParam(value = "criteria", required = false) String criteria,
+                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow).setCount(endRow - startRow);
+        request.setDistinct(true);
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/spec-list-evaluated")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TclassDTO.TclassEvaluatedSpecRs> evaluatedList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                         @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> response = tclassService.evaluatedSearch(request);
+
+        final TclassDTO.EvaluatedSpecRs specResponse = new TclassDTO.EvaluatedSpecRs();
+        final TclassDTO.TclassEvaluatedSpecRs specRs = new TclassDTO.TclassEvaluatedSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
@@ -227,7 +335,7 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/checkEndingClass/{classId}")
-    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException{
+    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException {
 
         return classAlarmService.checkAlarmsForEndingClass(classId, response);
 
@@ -235,9 +343,31 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/getWorkflowEndingStatusCode/{classId}")
-    public Integer getWorkflowEndingStatusCode(@PathVariable Long classId){
+    public Integer getWorkflowEndingStatusCode(@PathVariable Long classId) {
         return tclassService.getWorkflowEndingStatusCode(classId);
     }
 
+    @Loggable
+    @GetMapping(value = "/evaluationResult/{classId}/{userId}")
+    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId,userId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/preCourse-test-questions/{classId}")
+    public ResponseEntity<List<String>> getPreCourseTestQuestions(@PathVariable Long classId) {
+        return new ResponseEntity<>(tclassService.getPreCourseTestQuestions(classId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/preCourse-test-questions/{classId}")
+    public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
+        try {
+            tclassService.updatePreCourseTestQuestions(classId, request);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
 
 }

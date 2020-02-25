@@ -9,6 +9,7 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -36,9 +38,9 @@ public class PostRestController {
 
     private final PostService postService;
     private final ReportUtil reportUtil;
-    private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
+    private final ModelMapper modelMapper;
 
 
     @GetMapping("/list")
@@ -48,9 +50,41 @@ public class PostRestController {
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<PostDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
-        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/wpIscList")
+    public ResponseEntity<ISC<PostDTO.Info>> withPermissionList(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @GetMapping("/{postCode}")
+    public ResponseEntity get(@PathVariable String postCode) {
+        postCode = postCode.replace('.', '/');
+        try {
+            return new ResponseEntity<>(modelMapper.map(postService.getByPostCode(postCode), PostDTO.TupleInfo.class), HttpStatus.OK);
+        } catch (TrainingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value = "/unassigned-iscList")
+    public ResponseEntity<ISC<PostDTO.Info>> unassignedList(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.unassignedSearch(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 

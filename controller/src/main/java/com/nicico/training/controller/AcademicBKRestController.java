@@ -1,33 +1,22 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.AcademicBKDTO;
-import com.nicico.training.dto.SubCategoryDTO;
-import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IAcademicBKService;
-import com.nicico.training.iservice.ISubCategoryService;
-import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.AcademicBK;
-import com.nicico.training.model.Teacher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,10 +36,14 @@ public class AcademicBKRestController {
 
     @GetMapping(value = "/iscList/{teacherId}")
     public ResponseEntity<ISC<AcademicBKDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
-        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs = academicBKService.search(searchRq, teacherId);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        if(teacherId != null) {
+            Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+            SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+            SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs = academicBKService.search(searchRq, teacherId);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
 

@@ -4,11 +4,14 @@
 
 // <script>
 
-    let methodEmploymentHistory = "GET";
-    let saveActionUrlEmploymentHistory;
-    let waitEmploymentHistory;
-    let teacherIdEmploymentHistory = null;
-    let isCategoriesChanged = false;
+    var methodEmploymentHistory = "GET";
+    var saveActionUrlEmploymentHistory;
+    var waitEmploymentHistory;
+    var teacherIdEmploymentHistory = null;
+    var isCategoriesChanged = false;
+    var startDateCheck_JSPEmpHistory = true;
+    var endDateCheck_JSPEmpHistory = true;
+    var dateCheck_Order_JSPEmpHistory = true;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -19,10 +22,12 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "companyName", filterOperator: "iContains"},
             {name: "jobTitle", filterOperator: "iContains"},
-            {name: "categories", filterOperator: "iContains"},
-            {name: "subCategories", filterOperator: "iContains"},
-            {name: "persianStartDate"},
-            {name: "persianEndDate"}
+            {name: "categoriesIds", filterOperator: "inSet"},
+            {name: "subCategoriesIds", filterOperator: "inSet"},
+            {name: "categories"},
+            {name: "subCategories"},
+            {name: "startDate"},
+            {name: "endDate"}
         ]
     });
 
@@ -47,12 +52,15 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
-            },
-            {
                 name: "jobTitle",
                 title: "<spring:message code='job.title'/>",
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+            },
+            {
+                name: "companyName",
+                title: "<spring:message code='company.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "categories",
@@ -64,6 +72,7 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
+                required: true,
                 filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
@@ -71,7 +80,7 @@
                 },
                 changed: function () {
                     isCategoriesChanged = true;
-                    let subCategoryField = DynamicForm_JspEmploymentHistory.getField("subCategories");
+                    var subCategoryField = DynamicForm_JspEmploymentHistory.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -80,10 +89,10 @@
                     subCategoryField.enable();
                     if (subCategoryField.getValue() === undefined)
                         return;
-                    let subCategories = subCategoryField.getSelectedRecords();
-                    let categoryIds = this.getValue();
-                    let SubCats = [];
-                    for (let i = 0; i < subCategories.length; i++) {
+                    var subCategories = subCategoryField.getSelectedRecords();
+                    var categoryIds = this.getValue();
+                    var SubCats = [];
+                    for (var i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
@@ -98,6 +107,7 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
@@ -111,7 +121,7 @@
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
-                        let ids = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
+                        var ids = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
                         if (ids === []) {
                             RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = null;
                         } else {
@@ -126,11 +136,12 @@
                 }
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 ID: "employmentHistories_startDate_JspEmploymentHistory",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
+                length: 10,
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
@@ -139,45 +150,80 @@
                         displayDatePicker('employmentHistories_startDate_JspEmploymentHistory', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspEmploymentHistory.getValue("persianEndDate") === undefined;
-                        return checkBirthDate(value);
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    var endDate = form.getValue("endDate");
+                    dateCheck = checkBirthDate(value);
+                    if (dateCheck === false) {
+                        startDateCheck_JSPEmpHistory = false;
+                        dateCheck_Order_JSPEmpHistory = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        if (DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
+                            DynamicForm_JspEmploymentHistory.getField("endDate").setValue(todayDate);
+                        }
+                        dateCheck_Order_JSPEmpHistory = false;
+                        startDateCheck_JSPEmpHistory = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        if (DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
+                            DynamicForm_JspEmploymentHistory.getField("endDate").setValue(todayDate);
+                        }
+                        startDateCheck_JSPEmpHistory = true;
+                        dateCheck_Order_JSPEmpHistory = true;
+                        form.clearFieldErrors("startDate", true);
                     }
-                }]
+                }
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 ID: "employmentHistories_endDate_JspEmploymentHistory",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('employmentHistories_endDate_JspEmploymentHistory', this, 'ymd', '/');
+                    click: function (form) {
+                        if (!(form.getValue("startDate"))) {
+                            dialogTeacher = isc.MyOkDialog.create({
+                                message: "ابتدا تاریخ شروع را انتخاب کنید",
+                            });
+                            dialogTeacher.addProperties({
+                                buttonClick: function () {
+                                    this.close();
+                                    form.getItem("startDate").selectValue();
+                                }
+                            });
+                        } else {
+                            closeCalendarWindow();
+                            displayDatePicker('employmentHistories_endDate_JspEmploymentHistory', this, 'ymd', '/');
+                        }
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspEmploymentHistory.getValue("persianStartDate") === undefined;
-                        if (!checkDate(value))
-                            return false;
-                        if (DynamicForm_JspEmploymentHistory.hasFieldErrors("persianStartDate"))
-                            return true;
-                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianStartDate"));
-                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("startDate");
+                    if (dateCheck === false) {
+                        endDateCheck_JSPEmpHistory = false;
+                        dateCheck_Order_JSPEmpHistory = true;
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (value < startDate) {
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDateCheck_JSPEmpHistory = true;
+                        dateCheck_Order_JSPEmpHistory = false;
+                    } else {
+                        form.clearFieldErrors("endDate", true);
+                        endDateCheck_JSPEmpHistory = true;
+                        dateCheck_Order_JSPEmpHistory = true;
                     }
-                }]
+                }
             }
         ]
     });
@@ -185,8 +231,40 @@
     IButton_Save_JspEmploymentHistory = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspEmploymentHistory.valuesHaveChanged() || !DynamicForm_JspEmploymentHistory.validate())
+            DynamicForm_JspEmploymentHistory.validate();
+            if (!DynamicForm_JspEmploymentHistory.valuesHaveChanged() ||
+                !DynamicForm_JspEmploymentHistory.validate() ||
+                dateCheck_Order_JSPEmpHistory == false ||
+                dateCheck_Order_JSPEmpHistory == false ||
+                endDateCheck_JSPEmpHistory == false ||
+                startDateCheck_JSPEmpHistory == false) {
+
+                if (dateCheck_Order_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
+                    DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                    }
+                if (dateCheck_Order_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("startDate", true);
+                    DynamicForm_JspEmploymentHistory.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDateCheck_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
+                    DynamicForm_JspEmploymentHistory.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
+                if (startDateCheck_JSPEmpHistory == false){
+                    DynamicForm_JspEmploymentHistory.clearFieldErrors("startDate", true);
+                    DynamicForm_JspEmploymentHistory.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
                 return;
+            }
+
+            if (DynamicForm_JspEmploymentHistory.getValue("startDate") != undefined && DynamicForm_JspEmploymentHistory.getValue("endDate") == undefined) {
+                DynamicForm_JspEmploymentHistory.clearFieldErrors("endDate", true);
+                DynamicForm_JspEmploymentHistory.getField("endDate").setValue(todayDate);
+            }
+
             waitEmploymentHistory = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlEmploymentHistory,
                 methodEmploymentHistory,
@@ -248,92 +326,66 @@
     ListGrid_JspEmploymentHistory = isc.TrLG.create({
         dataSource: RestDataSource_JspEmploymentHistory,
         contextMenu: Menu_JspEmploymentHistory,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
         fields: [
-            {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
-            },
             {
                 name: "jobTitle",
                 title: "<spring:message code='job.title'/>",
             },
             {
-                name: "categories",
+                name: "companyName",
+                title: "<spring:message code='company.name'/>",
+            },
+            {
+                name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let cat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        cat += "، " + value[i].titleFa;
-                    }
-                    return cat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.categories.length === 0)
-                        return;
-                    value.categories.sort();
-                    let cat = value.categories[0].titleFa.toString();
-                    for (let i = 1; i < value.categories.length; i++) {
-                        cat += "، " + value.categories[i].titleFa;
-                    }
-                    return cat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_Category_JspEmploymentHistory,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
-                name: "subCategories",
+                name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let subCat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        subCat += "، " + value[i].titleFa;
-                    }
-                    return subCat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.subCategories.length === 0)
-                        return;
-                    value.subCategories.sort();
-                    let subCat = value.subCategories[0].titleFa.toString();
-                    for (let i = 1; i < value.subCategories.length; i++) {
-                        subCat += "، " + value.subCategories[i].titleFa;
-                    }
-                    return subCat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 title: "<spring:message code='start.date'/>",
-                canFilter: false,
                 canSort: false
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 title: "<spring:message code='end.date'/>",
-                canFilter: false,
                 canSort: false
             }
         ],
         doubleClick: function () {
             ListGrid_EmploymentHistory_Edit();
-        }
+        },
+        filterEditorSubmit: function () {
+            ListGrid_JspEmploymentHistory.invalidateCache();
+        },
+        align: "center",
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     ToolStripButton_Refresh_JspEmploymentHistory = isc.ToolStripButtonRefresh.create({
@@ -347,7 +399,7 @@
             ListGrid_EmploymentHistory_Edit();
         }
     });
-    ToolStripButton_Add_JspEmploymentHistory = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspEmploymentHistory = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_EmploymentHistory_Add();
         }
@@ -397,11 +449,13 @@
         methodEmploymentHistory = "POST";
         saveActionUrlEmploymentHistory = employmentHistoryUrl + "/" + teacherIdEmploymentHistory;
         DynamicForm_JspEmploymentHistory.clearValues();
+        RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = null;
+        DynamicForm_JspEmploymentHistory.getField("subCategories").disable();
         Window_JspEmploymentHistory.show();
     }
 
     function ListGrid_EmploymentHistory_Edit() {
-        let record = ListGrid_JspEmploymentHistory.getSelectedRecord();
+        var record = ListGrid_JspEmploymentHistory.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -409,22 +463,22 @@
             saveActionUrlEmploymentHistory = employmentHistoryUrl + "/" + record.id;
             DynamicForm_JspEmploymentHistory.clearValues();
             DynamicForm_JspEmploymentHistory.editRecord(record);
-            let categoryIds = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
-            let subCategoryIds = DynamicForm_JspEmploymentHistory.getField("subCategories").getValue();
+            var categoryIds = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
+            var subCategoryIds = DynamicForm_JspEmploymentHistory.getField("subCategories").getValue();
             if (categoryIds == null || categoryIds.length === 0)
                 DynamicForm_JspEmploymentHistory.getField("subCategories").disable();
             else {
                 DynamicForm_JspEmploymentHistory.getField("subCategories").enable();
-                let catIds = [];
-                for (let i = 0; i < categoryIds.length; i++)
+                var catIds = [];
+                for (var i = 0; i < categoryIds.length; i++)
                     catIds.add(categoryIds[i].id);
                 DynamicForm_JspEmploymentHistory.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspEmploymentHistory.getField("subCategories").focus(null, null);
             }
             if (subCategoryIds != null && subCategoryIds.length > 0) {
-                let subCatIds = [];
-                for (let i = 0; i < subCategoryIds.length; i++)
+                var subCatIds = [];
+                for (var i = 0; i < subCategoryIds.length; i++)
                     subCatIds.add(subCategoryIds[i].id);
                 DynamicForm_JspEmploymentHistory.getField("subCategories").setValue(subCatIds);
             }
@@ -433,11 +487,11 @@
     }
 
     function ListGrid_EmploymentHistory_Remove() {
-        let record = ListGrid_JspEmploymentHistory.getSelectedRecord();
+        var record = ListGrid_JspEmploymentHistory.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='verify.delete'/>");
             Dialog_Delete.addProperties({
                 buttonClick: function (button, index) {
@@ -461,7 +515,7 @@
     function EmploymentHistory_save_result(resp) {
         waitEmploymentHistory.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             ListGrid_EmploymentHistory_refresh();
             Window_JspEmploymentHistory.close();
@@ -483,13 +537,13 @@
         waitEmploymentHistory.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_EmploymentHistory_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            let respText = resp.httpResponseText;
+            var respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {

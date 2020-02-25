@@ -39,6 +39,7 @@ public class PersonalInfoDTO {
     private String nationality;
     private String description;
     private String attachPhoto;
+    private String photo;
     private String jobTitle;
     private String jobLocation;
     private Integer militaryId;
@@ -49,6 +50,24 @@ public class PersonalInfoDTO {
     private Long educationOrientationId;
 //    private Long accountInfoId;
 //    private Long contactInfoId;
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonalInfoGrid")
+    public static class Grid{
+        private Long id;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String firstNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String lastNameFa;
+        private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
+        private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+        private ContactInfoDTO.Grid contactInfo;
+        private Integer version;
+    }
 
     @Getter
     @Setter

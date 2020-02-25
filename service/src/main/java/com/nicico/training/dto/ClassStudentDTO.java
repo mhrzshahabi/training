@@ -23,6 +23,8 @@ public class ClassStudentDTO implements Serializable {
 
     private Float score;
 
+    private String valence;
+
     private String applicantCompanyName;
 
     private Long presenceTypeId;
@@ -33,6 +35,7 @@ public class ClassStudentDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long tclassId;
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -42,6 +45,21 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Integer evaluationStatusReaction;
+        private Integer evaluationStatusLearning;
+        private Integer evaluationStatusBehavior;
+        private Integer evaluationStatusResults;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CoursesOfStudent - Info")
+    public static class CoursesOfStudent {
+        private Long id;
+        private TclassDTO.CoursesOfStudent tclass;
+        private StudentDTO.ClassesOfStudentInfo student;
+        private Float score;
     }
 
     @Getter
@@ -73,6 +91,7 @@ public class ClassStudentDTO implements Serializable {
         private String scoresState;
         private String failureReason;
         private Float score;
+        private String valence;
     }
 
 
@@ -107,8 +126,8 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.AttendanceInfo student;
 
         @Getter(AccessLevel.NONE)
-        private Long id;
-        public Long getId(){
+        private Long studentId;
+        public Long getStudentId(){
             return student.getId();
         }
         @Getter(AccessLevel.NONE)
@@ -142,6 +161,11 @@ public class ClassStudentDTO implements Serializable {
             return student.getPersonnelNo2();
         }
         private Long presenceTypeId;
+        private Long id;
+        private Integer evaluationStatusReaction;
+        private Integer evaluationStatusLearning;
+        private Integer evaluationStatusBehavior;
+        private Integer evaluationStatusResults;
     }
 
     @Getter
@@ -151,9 +175,49 @@ public class ClassStudentDTO implements Serializable {
     public static class ScoresInfo {
         private Long id;
         private StudentDTO.ScoresInfo student;
+        private TclassDTO.ScoreInfo tclass;
         private String scoresState;
         private String failureReason;
         private Float score;
+        private String valence;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("ClassStudentCountId")
+    public static class ClassStudentCountId {
+        private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - EvaluationInfo")
+    public static class EvaluationInfo{
+        private Long id;
+        private Integer evaluationStatusReaction;
+        private Integer evaluationStatusLearning;
+        private Integer evaluationStatusBehavior;
+        private Integer evaluationStatusResults;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - PreTestScoreInfo")
+    public static class PreTestScoreInfo{
+        private Long id;
+        private Float preTestScore;
+        private StudentDTO.ScoresInfo student;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - PreTestScoreUpdate")
+    public static class PreTestScoreUpdate{
+        private Long id;
+        private Float preTestScore;
     }
 
 }

@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EmploymentHistoryDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IEmploymentHistoryService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.EmploymentHistory;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -89,6 +92,7 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
     public SearchDTO.SearchRs<EmploymentHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        request.setDistinct(true);
         if (teacherId != null) {
             list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
@@ -100,6 +104,19 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
             } else
                 request.setCriteria(criteriaRq);
         }
+
+        for (SearchDTO.CriteriaRq criteriaRq : request.getCriteria().getCriteria()) {
+            if (criteriaRq.getFieldName() != null) {
+                if (criteriaRq.getFieldName().equalsIgnoreCase("subCategoriesIds"))
+                    criteriaRq.setFieldName("subCategories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("categoriesIds"))
+                    criteriaRq.setFieldName("categories");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("persianStartDate"))
+                    criteriaRq.setFieldName("startDate");
+                if (criteriaRq.getFieldName().equalsIgnoreCase("persianEndDate"))
+                    criteriaRq.setFieldName("endDate");
+            }
+        }
         return SearchUtil.search(employmentHistoryDAO, request, employmentHistory -> modelMapper.map(employmentHistory, EmploymentHistoryDTO.Info.class));
     }
 
@@ -108,12 +125,4 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
         return modelMapper.map(saved, EmploymentHistoryDTO.Info.class);
     }
 
-    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(operator);
-        criteriaRq.setFieldName(fieldName);
-        criteriaRq.setValue(value);
-        criteriaRq.setCriteria(criteriaRqList);
-        return criteriaRq;
-    }
 }

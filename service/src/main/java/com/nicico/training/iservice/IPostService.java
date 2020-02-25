@@ -19,5 +19,12 @@ public interface IPostService {
     @Transactional(readOnly = true)
     Page<Post> listByJobId(Long jobId, Pageable pageable);
 
+    @Transactional(readOnly = true)
+    Post getByPostCode(String postCode);
+
     SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq rq);
+
+    SearchDTO.SearchRs<PostDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<PostDTO.Info> unassignedSearch(SearchDTO.SearchRq request);
 }

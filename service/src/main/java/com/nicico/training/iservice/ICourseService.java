@@ -2,7 +2,6 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -15,10 +14,10 @@ public interface ICourseService {
 
     List<CourseDTO.Info> preCourseList(Long id);
 
-    @Transactional
     void setPreCourse(Long id, List<Long> preCourseList);
 
-    @Transactional
+    void updateHasSkill(Long id, Boolean hasSkill);
+
     void setEqualCourse(Long id, List<String> equalCourseList);
 
     List<Map> equalCourseList(Long id);
@@ -36,18 +35,20 @@ public interface ICourseService {
     //-------jafari--------
     SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request);
 
-    List<GoalDTO.Info> getgoal(Long courseId);
+    List<GoalDTO.Info> getGoal(Long courseId);
 
     List<GoalDTO.Info> getGoalWithOut(Long courseId);
 
     List<SkillDTO.Info> getSkill(Long courseId);
 
 
-    List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
+    List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId);
 
-    List<CompetenceDTO.Info> getCompetence(Long courseId);
+    List<CompetenceDTOOld.Info> getCompetence(Long courseId);
 
     List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
+
+    List<SkillDTO.Info> getMainObjective(Long courseId);
 
     List<JobDTO.Info> getJob(Long courseId);
 
@@ -63,10 +64,8 @@ public interface ICourseService {
 
     void deletGoal(Long id);
 
-    @Transactional
     String getDomain(Long id);
 
-    @Transactional(readOnly = true)
     List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId);
 
     int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
@@ -76,4 +75,6 @@ public interface ICourseService {
     CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
 
     List<CourseDTO.Info> getEvaluation(Long courseId);
+
+    CourseDTO.CourseGoals getCourseGoals(Long courseId);
 }

@@ -3,6 +3,30 @@
     {
       "code": "Parameter_R",
       "title": "پارارمتر - مشاهده"
+    },
+    {
+      "code": "Class_R",
+      "title": "کلاس - مشاهده"
+    },
+    {
+      "code": "Class_C",
+      "title": "کلاس - ایجاد"
+    },
+    {
+      "code": "Class_U",
+      "title": "کلاس - بروزرسانی"
+    },
+    {
+      "code": "Class_D",
+      "title": "کلاس - حذف"
+    },
+    {
+      "code": "Class_P",
+      "title": "کلاس - چاپ"
+    },
+    {
+      "code": "NeedsAssessment_Menu",
+      "title": "منو - نیازسنجی"
     }
   ]
 }

@@ -1,16 +1,17 @@
 /*
-ghazanfari_f, 9/7/2019, 10:50 AM
+ghazanfari_f,
+1/14/2020,
+1:48 PM
 */
 package com.nicico.training.dto;
 
-import com.nicico.training.model.enums.ECompetenceInputType;
-import com.nicico.training.model.enums.ETechnicalType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -20,55 +21,46 @@ import java.util.List;
 @Accessors(chain = true)
 public class CompetenceDTO implements Serializable {
 
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private String title;
     @NotNull
     @ApiModelProperty(required = true)
-    private String titleFa;
-
-    @ApiModelProperty
-    private String titleEn;
-
-    @NotNull
-    @ApiModelProperty(required = true)
-    private Integer etechnicalTypeId;
-
-    @NotNull
-    @ApiModelProperty(required = true)
-    private Integer ecompetenceInputTypeId;
-
-    @ApiModelProperty
+    private Long competenceTypeId;
     private String description;
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Competence - Create")
+    @ApiModel("CompetenceDTO - Info")
+    public static class Info extends CompetenceDTO {
+        private Long id;
+        private Integer version;
+        private ParameterValueDTO.MinInfo competenceType;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CompetenceDTO - Create")
     public static class Create extends CompetenceDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Competence - Update")
-    public static class Update extends CompetenceDTO {
+    @ApiModel("CompetenceDTO - Update")
+    public static class Update extends Create {
+        private Integer version;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Competence - Delete")
+    @ApiModel("CompetenceDTO - Delete")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
-        List<Long> ids;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("Competence - Info")
-    public static class Info extends CompetenceDTO {
-        private Long id;
-        private ETechnicalType eTechnicalType;
-        private ECompetenceInputType eCompetenceInputType;
+        private List<Long> ids;
     }
 }

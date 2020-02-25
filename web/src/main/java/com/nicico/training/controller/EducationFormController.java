@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/education")
 public class EducationFormController {
 
-    @RequestMapping(value = "/level/show-form")
+    @RequestMapping(value = "/show-form")
     public String showForm() {
         return "base/education";
     }
@@ -44,7 +44,7 @@ public class EducationFormController {
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         type = type.toUpperCase();
-        return restTemplate.exchange(restApiUrl + "/api/education/" + educationType + "/printWithCriteria/" + type,
+        return restTemplate.exchange(restApiUrl + "/api/" + educationType + "/printWithCriteria/" + type,
                 HttpMethod.POST,
                 entity,
                 byte[].class);

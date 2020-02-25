@@ -1,8 +1,6 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.AcademicBK;
-import com.nicico.training.model.SubCategory;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -13,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -31,6 +30,8 @@ public class TeacherDTO {
     private String economicalRecordNumber;
     private String otherActivities;
     private Long personalityId;
+    private Long majorCategoryId;
+    private Long majorSubCategoryId;
 
     @Getter
     @Setter
@@ -39,13 +40,68 @@ public class TeacherDTO {
     public static class Info extends TeacherDTO {
         private Long id;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
-        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private Set<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
         private PersonalInfoDTO.Info personality;
-        private Set<EmploymentHistoryDTO.Info> employmentHistories;
-        private Set<AcademicBKDTO.Info> academicBKs;
-        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
-        private Set<PublicationDTO.Info> publications;
+        private CategoryDTO.CategoryInfoTuple majorCategory;
+        private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
+//        private Set<EmploymentHistoryDTO.Info> employmentHistories;
+//        private Set<AcademicBKDTO.Info> academicBKs;
+//        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
+//        private Set<TeachingHistoryDTO.Info> teachingHistories;
+//        private Set<TeacherCertificationDTO.Info> teacherCertifications;
+//        private Set<PublicationDTO.Info> publications;
         private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherGrid")
+    public static class Grid{
+        private Long id;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String teacherCode;
+        private PersonalInfoDTO.Grid personality;
+        private Boolean enableStatus;
+        private Set<CategoryDTO.Info> categories;
+        private Set<SubcategoryDTO.Info> subCategories;
+        private Integer version;
+
+        public List<Long> getCategories() {
+            if (categories == null)
+                return null;
+            return categories.stream().map(CategoryDTO.Info::getId).collect(Collectors.toList());
+        }
+
+        public List<Long> getSubCategories() {
+            if (subCategories == null)
+                return null;
+            return subCategories.stream().map(SubcategoryDTO.Info::getId).collect(Collectors.toList());
+        }
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherSpecRsGrid")
+    public static class TeacherSpecRsGrid {
+        private SpecRsGrid response;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsGrid {
+        private List<Grid> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 
     @Getter
@@ -55,7 +111,7 @@ public class TeacherDTO {
     public static class Create extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -65,7 +121,7 @@ public class TeacherDTO {
     public static class Update extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
         private List<CategoryDTO.Info> categories;
-        private List<SubCategoryDTO.Info> subCategories;
+        private List<SubcategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -87,6 +143,7 @@ public class TeacherDTO {
         private SpecRs response;
     }
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -98,6 +155,7 @@ public class TeacherDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
 
     @Getter
     @Setter

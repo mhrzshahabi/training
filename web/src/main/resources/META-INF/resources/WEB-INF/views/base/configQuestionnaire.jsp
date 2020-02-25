@@ -31,14 +31,18 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        fetchDataURL: parameterValueUrl + "/iscList/49"
+        fetchDataURL: parameterUrl + "/iscList/test"
     });
 
     RestDataSource_QuestionIndicator_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
-            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", type: "boolean"}
+            {
+                name: "evalStatus",
+                title: "<spring:message code="evaluation.index.evalStatus"/>",
+                filterOperator: "iContains"
+            }
         ],
         fetchDataURL: evaluationIndexUrl + "/iscList"
     });
@@ -86,7 +90,8 @@
                         name: "code",
                         title: "<spring:message code="code"/>",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: true,
+                        autoFitWidthApproach: "both",
                     }
                 ]
             },
@@ -115,17 +120,23 @@
                     {
                         name: "evalStatus",
                         title: "<spring:message code="evaluation.index.evalStatus"/>",
-                        filterOperator: "iContains"
+                        autoFitWidth: true,
+                        autoFitWidthApproach: "both",
+                        valueMap:
+                            {
+                                "0": "<spring:message code='deActive'/>",
+                                "1": "<spring:message code='active'/>"
+                            }
                     }
                 ]
             }
         ]
     });
 
-    IButton_Save_JspConfigQuestionnaire = isc.TrSaveBtn.create({
+    IButton_Save_JspConfigQuestionnaire = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspConfigQuestionnaire.valuesHaveChanged()) {
+            if (!DynamicForm_JspConfigQuestionnaire.valuesHaveChanged() && methodConfigQuestionnaire === "PUT") {
                 Window_JspConfigQuestionnaire.close();
                 return;
             }
@@ -143,7 +154,7 @@
         }
     });
 
-    IButton_Cancel_JspConfigQuestionnaire = isc.TrCancelBtn.create({
+    IButton_Cancel_JspConfigQuestionnaire = isc.IButtonCancel.create({
         click: function () {
             DynamicForm_JspConfigQuestionnaire.clearValues();
             Window_JspConfigQuestionnaire.close();
@@ -159,7 +170,7 @@
     });
 
     Window_JspConfigQuestionnaire = isc.Window.create({
-        width: "500",
+        width: "700",
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='question'/>",
@@ -175,7 +186,7 @@
     Menu_JspConfigQuestionnaire = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
-                ListGrid_ConfigQuestionnaire_refresh();
+                refreshLG(ListGrid_JspConfigQuestionnaire);
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
@@ -196,17 +207,8 @@
     ListGrid_JspConfigQuestionnaire = isc.TrLG.create({
         dataSource: RestDataSource_JspConfigQuestionnaire,
         contextMenu: Menu_JspConfigQuestionnaire,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
+        sortField: 1,
         fields: [
             {
                 name: "question",
@@ -238,10 +240,16 @@
             ListGrid_ConfigQuestionnaire_Edit();
         },
         getCellCSSText: function (record) {
-            if (record.domain.code === "PRF")
+            if (record.domain.code === "SAT")
                 return "color:red;font-size: 12px;";
             if (record.domain.code === "EQP")
                 return "color:blue;font-size: 12px;";
+            if (record.domain.code === "CLASS")
+                return "color:black;font-size: 12px;";
+            if (record.domain.code === "Content")
+                return "color:green;font-size: 12px;";
+            if (record.domain.code === "TRAINING")
+                return "color:gray;font-size: 12px;";
         },
         filterEditorSubmit: function () {
             ListGrid_JspConfigQuestionnaire.invalidateCache();
@@ -250,7 +258,7 @@
 
     ToolStripButton_Refresh_JspConfigQuestionnaire = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_ConfigQuestionnaire_refresh();
+            refreshLG(ListGrid_JspConfigQuestionnaire);
         }
     });
 
@@ -259,7 +267,7 @@
             ListGrid_ConfigQuestionnaire_Edit();
         }
     });
-    ToolStripButton_Add_JspConfigQuestionnaire = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspConfigQuestionnaire = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_ConfigQuestionnaire_Add();
         }
@@ -301,20 +309,16 @@
         tabBarThickness: 125,
         tabs: [
             {title: "<spring:message code="question.bank"/>", pane: VLayout_Body_JspConfigQuestionnaire},
-            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})},
+            {
+                title: "<spring:message code="questionnaire"/>",
+                pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})
+            },
         ]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
-
-    function ListGrid_ConfigQuestionnaire_refresh() {
-        ListGrid_JspConfigQuestionnaire.invalidateCache();
-        ListGrid_JspConfigQuestionnaire.filterByEditor();
-        RestDataSource_QuestionDomain_JspConfigQuestionnaire.fetchData();
-        RestDataSource_QuestionIndicator_JspConfigQuestionnaire.fetchData();
-    }
 
     function ListGrid_ConfigQuestionnaire_Add() {
         methodConfigQuestionnaire = "POST";
@@ -363,36 +367,32 @@
     function ConfigQuestionnaire_save_result(resp) {
         waitConfigQuestionnaire.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
-            ListGrid_ConfigQuestionnaire_refresh();
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+            refreshLG(ListGrid_JspConfigQuestionnaire);
             Window_JspConfigQuestionnaire.close();
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
-            } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+            let errors = JSON.parse(resp.httpResponseText).errors;
+            let message = "";
+            for (let i = 0; i < errors.length; i++) {
+                message += errors[i].message + "<br/>";
             }
+            createDialog("info", message);
         }
     }
 
     function ConfigQuestionnaire_remove_result(resp) {
         waitConfigQuestionnaire.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_ConfigQuestionnaire_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            refreshLG(ListGrid_JspConfigQuestionnaire);
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            let respText = resp.httpResponseText;
-            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+            if (resp.httpResponseCode === 406) {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");

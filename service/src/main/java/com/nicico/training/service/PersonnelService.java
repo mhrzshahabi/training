@@ -73,6 +73,12 @@ public class PersonnelService implements IPersonnelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Personnel> getByPostCode(String postCode) {
+        return personnelDAO.findOneByPostCode(postCode);
+    }
+
+    @Override
     @Transactional
     public List<PersonnelDTO.Info> getByJobNo(String jobNo) {
         List<Personnel> personnelDTO = null;

@@ -31,7 +31,7 @@ public class CourseService implements ICourseService {
     private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
-    private final CompetenceDAO competenceDAO;
+    private final CompetenceDAOOld competenceDAO;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
@@ -41,72 +41,15 @@ public class CourseService implements ICourseService {
     @Transactional(readOnly = true)
     @Override
     public CourseDTO.Info get(Long id) {
-//        Float a = Float.valueOf(0);
-//        Float b = Float.valueOf(0);
-//        Float c = Float.valueOf(0);
-//        Long sumAll = Long.valueOf(0);
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-//        List<Goal> goalSet = course.getGoalSet();
-//        for (Goal goal : goalSet) {
-//            Set<Syllabus> syllabusSet = goal.getSyllabusSet();
-//            for (Syllabus syllabus : syllabusSet) {
-//                Integer eDomainTypeId = syllabus.getEDomainTypeId();
-//                switch (eDomainTypeId) {
-//                    case 1:
-//                        a += syllabus.getPracticalDuration();
-//                        break;
-//                    case 2:
-//                        b += syllabus.getPracticalDuration();
-//                        break;
-//                    case 3:
-//                        c += syllabus.getPracticalDuration();
-//                        break;
-//                }
-//                sumAll += syllabus.getPracticalDuration();
-//            }
-//        }
-//        course.setKnowledge((long) round(a * 100 / (Float.valueOf(sumAll))));
-//        course.setSkill((long) round(b * 100 / (Float.valueOf(sumAll))));
-//        course.setAttitude((long) round(c * 100 / (Float.valueOf(sumAll))));
-
         return modelMapper.map(course, CourseDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<CourseDTO.Info> list() {
-//        Long a = Long.valueOf(0);
-//        Long b = Long.valueOf(0);
-//        Long c = Long.valueOf(0);
-//        Long sumAll = Long.valueOf(0);
         final List<Course> cAll = courseDAO.findAll();
-//        for (Course course : cAll) {
-//            List<Goal> goalSet = course.getGoalSet();
-//            for (Goal goal : goalSet) {
-//                Set<Syllabus> syllabusSet = goal.getSyllabusSet();
-//                for (Syllabus syllabus : syllabusSet) {
-//                    Integer eDomainTypeId = syllabus.getEDomainTypeId();
-//                    switch (eDomainTypeId) {
-//                        case 1:
-//                            a += syllabus.getPracticalDuration();
-//                            break;
-//                        case 2:
-//                            b += syllabus.getPracticalDuration();
-//                            break;
-//                        case 3:
-//                            c += syllabus.getPracticalDuration();
-//                            break;
-//                    }
-//                    sumAll += syllabus.getPracticalDuration();
-//                }
-//            }
-//            if(sumAll != 0) {
-//                course.setKnowledge(a * 100 / sumAll);
-//                course.setSkill(b * 100 / sumAll);
-//                course.setAttitude(c * 100 / sumAll);
-//            }
-//        }
         return modelMapper.map(cAll, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
     }
@@ -140,6 +83,18 @@ public class CourseService implements ICourseService {
         String s = Joiner.on(',').join(preCourseListId);
         course.setPreCourse(s);
         course.setPerCourseList(allById);
+    }
+
+    @Transactional
+    @Override
+    public void updateHasSkill(Long id, Boolean hasSkill) {
+        final Optional<Course> cById = courseDAO.findById(id);
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        if (hasSkill != null)
+            course.setHasSkill(hasSkill);
+        else
+            course.setHasSkill(!course.getSkillSet().isEmpty());
+        courseDAO.saveAndFlush(course);
     }
 
     @Transactional
@@ -188,20 +143,25 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+//        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
+        if (true) {
             course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
             course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
-//            List<Long> preCourseListId = request.getPreCourseListId();
-//            List<Course> allById = courseDAO.findAllById(preCourseListId);
-//            course.setPerCourseList(allById);
-//            List<String> equalCourseListId = request.getEqualCourseListId();
-//            String s = Joiner.on(',').join(preCourseListId);
-//            String s1 = Joiner.on(',').join(equalCourseListId);
-//            course.setPreCourse(s);
-//            course.setEqualCourse(s1);
-            Course course1 = courseDAO.saveAndFlush(course);
+            if (request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty())
+                course.setHasSkill(true);
+            else
+                course.setHasSkill(false);
+            Course course1 = courseDAO.save(course);
+            if (request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty()) {
+                Set<Skill> setSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
+                for (Skill skill : setSkill) {
+                    skill.setCourseId(course1.getId());
+                    skill.setCourseMainObjectiveId(course1.getId());
+                    skillDAO.saveAndFlush(skill);
+                }
+            }
             return modelMapper.map(course1, CourseDTO.Info.class);
         } else
             return null;
@@ -227,7 +187,48 @@ public class CourseService implements ICourseService {
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
         course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
-        return modelMapper.map(courseDAO.saveAndFlush(course), CourseDTO.Info.class);
+
+        ////////////////////////////////////////////////////////////////////////
+        List<EqualCourse> equalCourses = new ArrayList<>();
+        for (String eqId : equalCourseListId) {
+            EqualCourse equalCourse = new EqualCourse();
+            equalCourse.setCourseId(course.getId());
+            equalCourse.setEqualAndList(modelMapper.map(eqId.split("_"), new TypeToken<List<Long>>() {
+            }.getType()));
+            equalCourses.add(equalCourse);
+        }
+        course.setEqualCourses(equalCourses);
+        ////////////////////////////////////////////////////////////////////////
+
+        if (course.getGoalSet().isEmpty()) {
+            course.setHasGoal(true);
+        } else {
+            course.setHasGoal(false);
+        }
+        course.setHasSkill(!course.getSkillSet().isEmpty());
+        Course save = courseDAO.save(course);
+        Set<Skill> savedSkills = save.getSkillMainObjectiveSet();
+        Set<Skill> savingSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
+        if (!savedSkills.equals(savingSkill)) {
+            if (savingSkill.containsAll(savedSkills)) {
+                for (Skill skill : savingSkill) {
+                    skill.setCourseMainObjectiveId(save.getId());
+                    skill.setCourseId(save.getId());
+                    skillDAO.save(skill);
+                }
+            } else {
+                for (Skill savedSkill : savedSkills) {
+                    savedSkill.setCourseMainObjectiveId(null);
+                    skillDAO.save(savedSkill);
+                }
+                for (Skill skill : savingSkill) {
+                    skill.setCourseMainObjectiveId(save.getId());
+                    skill.setCourseId(save.getId());
+                    skillDAO.save(skill);
+                }
+            }
+        }
+        return modelMapper.map(save, CourseDTO.Info.class);
     }
 
     @Transactional
@@ -251,44 +252,31 @@ public class CourseService implements ICourseService {
         SearchDTO.SearchRs<Course> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, Course.class));
         SearchDTO.SearchRs<CourseDTO.Info> exitList = new SearchDTO.SearchRs<>();
         exitList.setTotalCount(search.getTotalCount());
-//        Float a;
-//        Float b;
-//        Float c;
-//        Long sumAll;
         List<CourseDTO.Info> infoList = new ArrayList<>();
         List<Course> list = search.getList();
         for (Course course : list) {
-//            boolean empty = course.getGoalSet().isEmpty();
-//            a = Float.valueOf(0);
-//            b = Float.valueOf(0);
-//            c = Float.valueOf(0);
-//            sumAll = Long.valueOf(0);
-//            List<Goal> goalSet = course.getGoalSet();
-//            for (Goal goal : goalSet) {
-//                Set<Syllabus> syllabusSet = goal.getSyllabusSet();
-//                for (Syllabus syllabus : syllabusSet) {
-//                    Integer eDomainTypeId = syllabus.getEDomainTypeId();
-//                    switch (eDomainTypeId) {
-//                        case 1:
-//                            a += syllabus.getPracticalDuration();
-//                            break;
-//                        case 2:
-//                            b += syllabus.getPracticalDuration();
-//                            break;
-//                        case 3:
-//                            c += syllabus.getPracticalDuration();
-//                            break;
-//                    }
-//                    sumAll += syllabus.getPracticalDuration();
-//                }
-//            }
-//            course.setKnowledge((long) round(a * 100 / (Float.valueOf(sumAll))));
-//            course.setSkill((long) round(b * 100 / (Float.valueOf(sumAll))));
-//            course.setAttitude((long) round(c * 100 / (Float.valueOf(sumAll))));
             CourseDTO.Info map = modelMapper.map(course, CourseDTO.Info.class);
             infoList.add(map);
         }
         exitList.setList(infoList);
+        return exitList;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<CourseDTO.InfoPrint> searchPrint(SearchDTO.SearchRq request) {
+        SearchDTO.SearchRs<Course> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, Course.class));
+        SearchDTO.SearchRs<CourseDTO.InfoPrint> exitList = new SearchDTO.SearchRs<CourseDTO.InfoPrint>();
+        exitList.setTotalCount(search.getTotalCount());
+        List<CourseDTO.InfoPrint> infoList = new ArrayList<CourseDTO.InfoPrint>();
+//        List<Course> list = search.getList();
+        List<CourseDTO.InfoPrint> infoPrints = modelMapper.map(search.getList(), new TypeToken<List<CourseDTO.InfoPrint>>() {
+        }.getType());
+//        for (Course course : list) {
+//            CourseDTO.InfoPrint map = modelMapper.map(course, CourseDTO.InfoPrint.class);
+//            infoList.add(map);
+//        }
+        exitList.setList(infoPrints);
         return exitList;
     }
 
@@ -304,7 +292,7 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public List<GoalDTO.Info> getgoal(Long courseId) {
+    public List<GoalDTO.Info> getGoal(Long courseId) {
         final Optional<Course> ssById = courseDAO.findById(courseId);
         final Course course = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         List<GoalDTO.Info> goalInfo = new ArrayList<>();
@@ -343,6 +331,9 @@ public class CourseService implements ICourseService {
             goalSet.add(goal);
         }
         one.setGoalSet(goalSet);
+        if(!one.getGoalSet().isEmpty()){
+            one.setHasGoal(true);
+        }
     }
 
     @Transactional
@@ -356,6 +347,8 @@ public class CourseService implements ICourseService {
             goalSet.remove(goal);
         }
         one.setGoalSet(goalSet);
+        if(one.getGoalSet().isEmpty())
+            one.setHasGoal(false);
     }
 
     @Transactional
@@ -363,6 +356,20 @@ public class CourseService implements ICourseService {
     public List<SkillDTO.Info> getSkill(Long courseId) {
         Course one = courseDAO.getOne(courseId);
         Set<Skill> skillSet = one.getSkillSet();
+        List<SkillDTO.Info> skillInfo = new ArrayList<>();
+        Optional.ofNullable(skillSet)
+                .ifPresent(skills ->
+                        skills.forEach(skill ->
+                                skillInfo.add(modelMapper.map(skill, SkillDTO.Info.class))
+                        ));
+        return skillInfo;
+    }
+
+    @Transactional
+    @Override
+    public List<SkillDTO.Info> getMainObjective(Long courseId) {
+        Course one = courseDAO.getOne(courseId);
+        Set<Skill> skillSet = one.getSkillMainObjectiveSet();
         List<SkillDTO.Info> skillInfo = new ArrayList<>();
         Optional.ofNullable(skillSet)
                 .ifPresent(skills ->
@@ -397,7 +404,7 @@ public class CourseService implements ICourseService {
 
 
     //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//                for (Competence competence : competenceSet) {
+//                for (CompetenceOld competence : competenceSet) {
 //                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
 //                    for (JobCompetence jobCompetence : jobCompetenceSet) {
 //                        JobOld job = jobCompetence.getJob();
@@ -407,8 +414,8 @@ public class CourseService implements ICourseService {
     //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
 
 //            }
-//            Set<Competence> competenceSet = skill.getCompetenceSet();
-//            for (Competence competence : competenceSet) {
+//            Set<CompetenceOld> competenceSet = skill.getCompetenceSet();
+//            for (CompetenceOld competence : competenceSet) {
 //                Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
 //                for (JobCompetence jobCompetence : jobCompetenceSet) {
 //                    Job job = jobCompetence.getJob();
@@ -442,14 +449,14 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public List<CompetenceDTO.Info> getCompetenceQuery(Long courseId) {
-        List<CompetenceDTO.Info> compeInfoList = new ArrayList<>();
+    public List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId) {
+        List<CompetenceDTOOld.Info> compeInfoList = new ArrayList<>();
         //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        List<Competence> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
+//        List<CompetenceOld> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
 //        Optional.ofNullable(competenceList)
 //                .ifPresent(competence ->
 //                        competence.forEach(comp ->
-//                                compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
+//                                compeInfoList.add(modelMapper.map(comp, CompetenceDTOOld.Info.class))
 //                        ));
 //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
         return compeInfoList;
@@ -458,16 +465,16 @@ public class CourseService implements ICourseService {
     //-------------------------------
     @Transactional
     @Override
-    public List<CompetenceDTO.Info> getCompetence(Long courseId) {
-        List<CompetenceDTO.Info> compeInfoList = new ArrayList<>();
-        Set<Competence> competenceSet = new HashSet<>();
+    public List<CompetenceDTOOld.Info> getCompetence(Long courseId) {
+        List<CompetenceDTOOld.Info> compeInfoList = new ArrayList<>();
+        Set<CompetenceOld> competenceSet = new HashSet<>();
         Course one = courseDAO.getOne(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
             Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
             for (SkillGroup skillGroup : skillGroupSet) {
-                Set<Competence> competenceSet1 = skillGroup.getCompetenceSet();
-                for (Competence competence : competenceSet1) {
+                Set<CompetenceOld> competenceSet1 = skillGroup.getCompetenceSet();
+                for (CompetenceOld competence : competenceSet1) {
                     competenceSet.add(competence);
                 }
             }
@@ -475,7 +482,7 @@ public class CourseService implements ICourseService {
         Optional.ofNullable(competenceSet)
                 .ifPresent(competence ->
                         competence.forEach(comp ->
-                                compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
+                                compeInfoList.add(modelMapper.map(comp, CompetenceDTOOld.Info.class))
                         ));
         return compeInfoList;
     }
@@ -619,6 +626,13 @@ public class CourseService implements ICourseService {
         List<Course> course = courseDAO.findAllById(courseId);
         return modelMapper.map(course, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
+    }
+
+    @Transactional
+    @Override
+    public CourseDTO.CourseGoals getCourseGoals(Long courseId) {
+        Course course = courseDAO.findAllById(courseId).get(0);
+        return modelMapper.map(course, CourseDTO.CourseGoals.class);
     }
 
 }

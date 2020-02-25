@@ -55,7 +55,7 @@ public class Teacher extends Auditable {
     @JoinTable(name = "tbl_teacher_subcategory",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
-    private List<SubCategory> subCategories;
+    private List<Subcategory> subCategories;
 
     @Column(name = "c_economical_code")
     private String economicalCode;
@@ -83,4 +83,18 @@ public class Teacher extends Auditable {
 
     @Column(name = "c_other_activities", length = 500)
     private String otherActivities;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_major_category", insertable = false, updatable = false)
+    private Category majorCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_major_sub_category", insertable = false, updatable = false)
+    private Subcategory majorSubCategory;
+
+    @Column(name = "f_major_category")
+    private Long majorCategoryId;
+
+    @Column(name = "f_major_sub_category")
+    private Long majorSubCategoryId;
 }

@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// script
+// <script>
     var method = "POST";
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -890,7 +890,7 @@
         })
     });
     var ToolStripButton_Add_Job_Group_AddJob_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="job.png"/>",
+        <%--icon: "<spring:url value="job.png"/>",--%>
         title: "لیست شغل ها",
         click: function () {
             var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
@@ -1020,7 +1020,7 @@
         if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null)
             ListGrid_Job_Group_Jobs.setData([]);
         else
-            ListGrid_Job_Group_Jobs.invalidateCache();
+            refreshLG(ListGrid_Job_Group_Jobs);
     }
 
     function ListGrid_Job_Group_Competence_refresh() {
@@ -1028,7 +1028,7 @@
         if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null)
             ListGrid_Job_Group_Competence.setData([]);
         else
-            ListGrid_Job_Group_Competence.invalidateCache();
+            refreshLG(ListGrid_Job_Group_Competence);
     }
 
     function deleteJobFromJobGroup(jobId, jobGroupId) {
@@ -1155,7 +1155,7 @@
     };
 
     function ListGrid_Job_Group_refresh() {
-        ListGrid_Job_Group_Jsp.invalidateCache();
+        refreshLG(ListGrid_Job_Group_Jsp);
         ListGrid_Job_Group_Jobs_refresh();
         ListGrid_Job_Group_Competence_refresh();
 

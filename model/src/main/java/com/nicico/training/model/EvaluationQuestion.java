@@ -13,7 +13,8 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_evaluation_question")
+@Table(name = "tbl_evaluation_question",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_question", "f_domain_id"})})
 public class EvaluationQuestion extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evaluation_question_seq")
@@ -21,21 +22,19 @@ public class EvaluationQuestion extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_question", nullable = false)
+    @Column(name = "c_question", nullable = false, unique = true)
     private String question;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_domain_id", nullable = false, insertable = false, updatable = false)
     private ParameterValue domain;
 
     @Column(name = "f_domain_id")
     private Long domainId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tbl_evaluation_question_evaluation_index",
             joinColumns = {@JoinColumn(name = "f_evaluation_question", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_evaluation_index", referencedColumnName = "id")})
     private List<EvaluationIndex> evaluationIndices;
-
-
 }

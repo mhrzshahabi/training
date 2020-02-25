@@ -33,7 +33,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/education/level")
+@RequestMapping(value = "/api/educationLevel")
 public class EducationLevelRestController {
     private final IEducationLevelService educationLevelService;
     private final ObjectMapper objectMapper;
@@ -63,16 +63,10 @@ public class EducationLevelRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-
     @Loggable
-    @PostMapping(value = "/create")
+    @PostMapping
 //    @PreAuthorize("hasAuthority('c_educationLevel')")
     public ResponseEntity create(@Validated @RequestBody EducationLevelDTO.Create request) {
-//        EducationLevelDTO.Info educationLevelInfo = educationLevelService.create(request);
-//        if (educationLevelInfo != null)
-//            return new ResponseEntity<>(educationLevelInfo, HttpStatus.CREATED);
-//        else
-//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         try {
             return new ResponseEntity<>(educationLevelService.create(request), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -84,11 +78,6 @@ public class EducationLevelRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationLevel')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody EducationLevelDTO.Update request) {
-//        EducationLevelDTO.Info educationLevelInfo = educationLevelService.update(id, request);
-//        if (educationLevelInfo != null)
-//            return new ResponseEntity<>(educationLevelInfo, HttpStatus.OK);
-//        else
-//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         try {
             return new ResponseEntity<>(educationLevelService.update(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -100,11 +89,6 @@ public class EducationLevelRestController {
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationLevel')")
     public ResponseEntity delete(@PathVariable Long id) {
-//        if (educationLevelService.delete(id))
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        else {
-//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-//        }
         try {
             educationLevelService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -126,8 +110,8 @@ public class EducationLevelRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationLevel')")
-    public ResponseEntity<EducationLevelDTO.EducationLevelSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                       @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<EducationLevelDTO.EducationLevelSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                                        @RequestParam(value = "operator", required = false) String operator,
                                                                        @RequestParam(value = "criteria", required = false) String criteria,

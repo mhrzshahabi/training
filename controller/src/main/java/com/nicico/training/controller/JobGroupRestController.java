@@ -96,8 +96,8 @@ public class JobGroupRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_job_group')")
-    public ResponseEntity<JobGroupDTO.JobGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                           @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<JobGroupDTO.JobGroupSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                           @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                            @RequestParam(value = "_constructor", required = false) String constructor,
                                                            @RequestParam(value = "operator", required = false) String operator,
                                                            @RequestParam(value = "criteria", required = false) String criteria,
@@ -127,7 +127,7 @@ public class JobGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<JobGroupDTO.Info> response = jobGroupService.search(request);
+        SearchDTO.SearchRs<JobGroupDTO.Info> response = jobGroupService.searchWithoutPermission(request);
 
         final JobGroupDTO.SpecRs specResponse = new JobGroupDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -147,7 +147,7 @@ public class JobGroupRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_job_group')")
     public ResponseEntity<SearchDTO.SearchRs<JobGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(jobGroupService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(jobGroupService.searchWithoutPermission(request), HttpStatus.OK);
     }
 
     // ------------------------------
@@ -155,18 +155,18 @@ public class JobGroupRestController {
 //    @Loggable
 //    @GetMapping(value = "/{jobGroupId}/getCompetences")
 ////    @PreAuthorize("hasAnyAuthority('r_job_group')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long jobGroupId) {
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long jobGroupId) {
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 //
-//        List<CompetenceDTO.Info> list = jobGroupService.getCompetence(jobGroupId);
+//        List<CompetenceDTOOld.Info> list = jobGroupService.getCompetence(jobGroupId);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(list)
 //                .setStartRow(0)
 //                .setEndRow( list.size())
 //                .setTotalRows(list.size());
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs,HttpStatus.OK);

@@ -9,11 +9,13 @@
 
 // <script>
 
+    let maxFileSizeAttachment = 31457280;
     let objectTypeAttachment = null;
     let objectIdAttachment = null;
     let methodAttachment = "GET";
     let saveActionUrlAttachment;
     let attachmentWait;
+    let isAttachedAttachment = false;
 
     var RestDataSource_Attachments_JspAttachments = isc.TrDS.create({
         fields: [
@@ -24,7 +26,18 @@
         ]
     });
 
-    var DynamicForm_JspAttachments = isc.DynamicForm.create({
+    Label_FileUploadSize_JspAttachments = isc.Label.create({
+        height: "100%",
+        align: "center",
+        contents: "<spring:message code='file.size.hint'/>"
+    });
+
+    Button_Upload_JspAttachments = isc.HTMLFlow.create({
+        align: "center",
+        contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form_file_JspAttachments\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file_JspAttachments\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i><spring:message code='file.upload'/></label><input id=\"file_JspAttachments\" type=\"file\" name=\"file[]\" name=\"file\" onchange=\"Upload_Changed_JspAttachments()\" /></form>"
+    });
+
+    DynamicForm_JspAttachments = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         fields: [
@@ -32,17 +45,26 @@
             {
                 name: "fileName",
                 title: "<spring:message code="attach.file.name"/>",
-                required: true
+                required: true,
+                length: 50,
+                keyPressFilter: /^((?![/\\?%*:|"<>.]).)*$/
             },
             {
                 name: "fileTypeId",
-                type: "IntegerItem",
                 title: "<spring:message code='attach.file.format'/>",
                 required: true,
                 filterOnKeypress: true,
-                editorType: "SelectItem",
+                type: "ComboBoxItem",
+                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                textAlign: "center",
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false
                 },
@@ -53,55 +75,45 @@
             },
             {
                 name: "description",
-                title: "<spring:message code="description"/>"
-            },
-            {
-                name: "file",
-                ID: "file",
-                title: "<spring:message code="file.choose"/>",
-                type: "file",
-                multiple: false,
-                hint: "<spring:message code="file.size.hint"/>",
-                required: true,
-                maxFileSize: 31457280,
-                <%--maxFileSizeExceededMessage: "<spring:message code="file.size.hint"/>",--%>
-                <%--maxFileSizeExceeded: "<spring:message code="file.size.hint"/>",--%>
-                // accept: ".png,.gif,.jpg, .jpeg",
+                title: "<spring:message code="description"/>",
+                length: 255
             }
-        ],
-        itemChanged: function (item, newValue) {
-            if (item.name === "file") {
-                let fileName = newValue.split("\\");
-                fileName = fileName[fileName.getLength() - 1];
-                if (this.getItem("fileName").value === undefined) {
-                    this.getItem("fileName").setValue(fileName);
-                }
-            }
-        }
+        ]
     });
 
     IButton_Save_JspAttachments = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_JspAttachments.validate();
-            if (DynamicForm_JspAttachments.hasErrors()) {
+            if (!DynamicForm_JspAttachments.validate()) {
                 return;
             }
-            attachmentWait = createDialog("wait");
             if (methodAttachment === "POST") {
+                if (!isAttachedAttachment || document.getElementById('file_JspAttachments').files.length === 0) {
+                    createDialog("info", "<spring:message code='file.not.uploaded'/>");
+                    return;
+                }
+                if (document.getElementById('file_JspAttachments').files[0].size > maxFileSizeAttachment) {
+                    createDialog("info", "<spring:message code='file.size.hint'/>");
+                    return;
+                }
+                attachmentWait = createDialog("wait");
                 let formData1 = new FormData();
-                let fileBrowserId = document.getElementById(window.file.uploadItem.getElement().id);
-                let file = fileBrowserId.files[0];
-
+                let file = document.getElementById('file_JspAttachments').files[0];
+                let fileName = DynamicForm_JspAttachments.getValue("fileName");
+                if (file.name.split('.').length > 1)
+                    fileName += "." + file.name.split('.')[1];
                 formData1.append("file", file);
                 formData1.append("objectType", objectTypeAttachment);
                 formData1.append("objectId", objectIdAttachment);
-                formData1.append("fileName", DynamicForm_JspAttachments.getValue("fileName"));
+                formData1.append("fileName", fileName);
                 formData1.append("fileTypeId", DynamicForm_JspAttachments.getValue("fileTypeId"));
                 formData1.append("description", DynamicForm_JspAttachments.getValue("description"));
                 TrnXmlHttpRequest(formData1, saveActionUrlAttachment, methodAttachment, save_result_Attachments);
             } else if (methodAttachment === "PUT") {
+                attachmentWait = createDialog("wait");
                 let data = DynamicForm_JspAttachments.getValues();
+                if (ListGrid_JspAttachment.getSelectedRecord().fileName.split('.').length > 1)
+                    data.fileName += "." + ListGrid_JspAttachment.getSelectedRecord().fileName.split('.')[1];
                 isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlAttachment,
                     methodAttachment, JSON.stringify(data), save_result_Attachments));
             }
@@ -109,9 +121,6 @@
     });
 
     IButton_Cancel_JspAttachments = isc.IButtonCancel.create({
-        prompt: "",
-        width: 100,
-        orientation: "vertical",
         click: function () {
             DynamicForm_JspAttachments.clearValues();
             Window_JspAttachments.close();
@@ -126,14 +135,24 @@
         members: [IButton_Save_JspAttachments, IButton_Cancel_JspAttachments]
     });
 
+    VLayOut_Photo_JspAttachments = isc.TrVLayout.create({
+        showEdges: false,
+        edgeImage: "",
+        align: "top",
+        layoutMargin: 5,
+        members: [
+            DynamicForm_JspAttachments, Button_Upload_JspAttachments, Label_FileUploadSize_JspAttachments]
+    });
+
+
     Window_JspAttachments = isc.Window.create({
-        width: "300",
+        width: "400",
         align: "center",
         border: "1px solid gray",
         canDragResize: false,
         showMaximizeButton: false,
         items: [isc.TrVLayout.create({
-            members: [DynamicForm_JspAttachments, HLayout_SaveOrExit_JspAttachments]
+            members: [VLayOut_Photo_JspAttachments, HLayout_SaveOrExit_JspAttachments]
         })]
     });
 
@@ -142,7 +161,6 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     Menu_ListGrid_JspAttachments = isc.Menu.create({
-        // width: 150,
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
                 ListGrid_Attachments_refresh();
@@ -158,6 +176,19 @@
         }, {
             title: "<spring:message code='remove'/>", click: function () {
                 ListGrid_Attachments_Remove();
+            }
+        }, {
+            title: "<spring:message code='download'/>", click: function () {
+                Show_Attachment_Attachments(ListGrid_JspAttachment.getSelectedRecord());
+            }
+        }
+        ]
+    });
+
+    Menu_ListGrid_ReadOnly_JspAttachments = isc.Menu.create({
+        data: [{
+            title: "<spring:message code='refresh'/>", click: function () {
+                ListGrid_Attachments_refresh();
             }
         }, {
             title: "<spring:message code='download'/>", click: function () {
@@ -208,7 +239,7 @@
             ListGrid_Attachments_Edit();
         }
     });
-    ToolStripButton_Add_JspAttachment = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspAttachment = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Attachments_Add();
         }
@@ -269,16 +300,20 @@
             saveActionUrlAttachment = attachmentUrl + "/" + record.id;
             DynamicForm_JspAttachments.clearValues();
             DynamicForm_JspAttachments.editRecord(record);
-            DynamicForm_JspAttachments.getItem("file").hide();
+            DynamicForm_JspAttachments.setValue("fileName", record.fileName.split('.')[0]);
+            Button_Upload_JspAttachments.hide();
+            Label_FileUploadSize_JspAttachments.hide();
             Window_JspAttachments.show();
         }
     }
 
     function ListGrid_Attachments_Add() {
+        isAttachedAttachment = false;
         methodAttachment = "POST";
         saveActionUrlAttachment = attachmentUrl + "/upload";
         DynamicForm_JspAttachments.clearValues();
-        DynamicForm_JspAttachments.getItem("file").show();
+        Button_Upload_JspAttachments.show();
+        Label_FileUploadSize_JspAttachments.show();
         Window_JspAttachments.show();
     }
 
@@ -294,8 +329,7 @@
             respText = resp.httpResponseText;
         }
         if (stat === 200 || stat === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             ListGrid_Attachments_refresh();
             Window_JspAttachments.close();
             setTimeout(function () {
@@ -303,11 +337,9 @@
             }, 3000);
         } else {
             if (stat === 406 && respText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
     }
@@ -336,8 +368,7 @@
         attachmentWait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_Attachments_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -367,9 +398,22 @@
         downloadForm.submitForm();
     }
 
-    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, criteria) {
-        // criteria = {"fileTypeId": [1,2]};
-        // valueMap_EAttachmentType = {1: "رزومه", 2: "مدرک تحصیلی", 3: "گواهینامه"};
+    function Upload_Changed_JspAttachments() {
+        if (document.getElementById('file_JspAttachments').files.length === 0)
+            return;
+        if (document.getElementById('file_JspAttachments').files[0].size > maxFileSizeAttachment) {
+            createDialog("info", "<spring:message code='file.size.hint'/>");
+            DynamicForm_JspAttachments.getItem("fileName").setValue("");
+            return;
+        }
+        isAttachedAttachment = true;
+        let fileName = document.getElementById('file_JspAttachments').files[0].name;
+        if (DynamicForm_JspAttachments.getValue("fileName") === undefined) {
+            DynamicForm_JspAttachments.getItem("fileName").setValue(fileName.split('.')[0]);
+        }
+    }
+
+    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, readOnly = false, criteria = null) {
         VLayout_Body_JspAttachment.redraw();
         objectTypeAttachment = inputObjectType;
         objectIdAttachment = inputObjectId;
@@ -385,6 +429,17 @@
         ListGrid_JspAttachment.setImplicitCriteria(criteria);
         ListGrid_JspAttachment.fetchData(criteria);
         ListGrid_Attachments_refresh();
+        if (readOnly) {
+            ToolStripButton_Edit_JspAttachment.hide();
+            ToolStripButton_Add_JspAttachment.hide();
+            ToolStripButton_Remove_JspAttachment.hide();
+            ListGrid_JspAttachment.contextMenu = Menu_ListGrid_ReadOnly_JspAttachments;
+        } else {
+            ToolStripButton_Edit_JspAttachment.show();
+            ToolStripButton_Add_JspAttachment.show();
+            ToolStripButton_Remove_JspAttachment.show();
+            ListGrid_JspAttachment.contextMenu = Menu_ListGrid_JspAttachments;
+        }
     }
 
     function clear_Attachments() {

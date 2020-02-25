@@ -2,6 +2,19 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 // <script>
+
+    //----------------------------------------------------Rest Data Source----------------------------------------------
+    var RestDataSource_Category_Evaluation_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategory_Evaluation_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    //----------------------------------------------------Variables-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
         viewURL: "",
         overflow: "scroll",
@@ -12,7 +25,26 @@
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
 
-    //--------------------------------------------Dynamic Form-----------------------------------------------------
+    var upload_btn = isc.HTMLFlow.create({
+        align: "center",
+        contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file-upload\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i>آپلود تصویر</label><input id=\"file-upload\" type=\"file\" name=\"file[]\" name=\"attachPic\" onchange=\"upload()\" accept=\".png,.gif,.jpg, .jpeg\"/></form>"
+    });
+    //----------------------------------------------------Rest Data Sources---------------------------------------------
+    var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eGender/spec-list"
+    });
+
+    var RestDataSource_Emarried_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eMarried/spec-list"
+    });
+
+    var RestDataSource_Emilitary_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eMilitary/spec-list"
+    });
+    //--------------------------------------------Dynamic Form----------------------------------------------------------
     var vm = isc.ValuesManager.create({});
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
@@ -24,6 +56,7 @@
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
+        styleName: "teacher-form",
         numCols: 6,
         margin: 10,
         newPadding: 5,
@@ -36,18 +69,19 @@
                 title: "<spring:message code='teacher.type'/>",
                 type: "radioGroup",
                 width: "*",
-                valueMap: {"true": "<spring:message code='company.staff'/>", "false": "<spring:message code='external.teacher'/>"},
+                valueMap: {
+                    "true": "<spring:message code='company.staff'/>",
+                    "false": "<spring:message code='external.teacher'/>"
+                },
                 vertical: false,
                 defaultValue: "false",
                 changed: function () {
                     var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
                     vm.clearValues();
                     if (personnelStatusTemp == "true") {
-                        // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
-                    }
-                    else  if(personnelStatusTemp == "false"){
+                    } else if (personnelStatusTemp == "false") {
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
@@ -82,6 +116,8 @@
                 name: "personnelCode",
                 title: "<spring:message code='personnel.no'/>",
                 disabled: true,
+                keyPressFilter: "[0-9]",
+                length: "10",
                 blur: function () {
                     var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
                     fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
@@ -90,10 +126,9 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
-                // disabled: true,
                 canEdit: false,
+                baseStyle: "teacher-code"
             },
-
             {
                 name: "enableStatus",
                 title: "<spring:message code='status'/>",
@@ -154,7 +189,11 @@
                 }],
                 changed: function () {
                     var dateCheck;
-                    dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
+                    if (DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate") == null ||
+                        DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate") == "")
+                        dateCheck = true;
+                    else
+                        dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
                     persianDateCheck = dateCheck;
                     if (dateCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.birthDate", "<spring:message
@@ -210,8 +249,6 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
-
-
             {
                 name: "personality.marriedId",
                 type: "IntegerItem",
@@ -264,7 +301,6 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
-
             {
                 name: "personality.educationLevelId",
                 title: "<spring:message code='education.level'/>",
@@ -292,7 +328,6 @@
                     }
                 ]
             },
-
             {
                 name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
@@ -322,7 +357,6 @@
                     }
                 ]
             },
-
             {
                 name: "personality.educationOrientationId",
                 title: "<spring:message code='education.orientation'/>",
@@ -366,42 +400,6 @@
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
-                    gridComponents: [
-                        isc.ToolStrip.create({
-                            height: 30,
-                            width: "100%",
-                            members: [
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/approve.png",
-                                    title: "<spring:message code='select.all'/>",
-                                    click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories"),
-                                            fullData = item.pickList.data,
-                                            cache = fullData.localData,
-                                            values = [];
-
-                                        for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i]["id"];
-                                        }
-                                        item.setValue(values);
-                                        item.pickList.hide();
-                                    }
-                                }),
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/close.png",
-                                    title: "<spring:message code='deselect.all'/>",
-                                    click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories");
-                                        item.setValue([]);
-                                        item.pickList.hide();
-                                    }
-                                })
-                            ]
-                        }),
-                        "header", "body"
-                    ]
                 },
                 changed: function () {
                     isTeacherCategoriesChanged = true;
@@ -441,42 +439,6 @@
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
-                    gridComponents: [
-                        isc.ToolStrip.create({
-                            height: 30,
-                            width: "100%",
-                            members: [
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/approve.png",
-                                    title: "<spring:message code='select.all'/>",
-                                    click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories"),
-                                            fullData = item.pickList.data,
-                                            cache = fullData.localData,
-                                            values = [];
-
-                                        for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i]["id"];
-                                        }
-                                        item.setValue(values);
-                                        item.pickList.hide();
-                                    }
-                                }),
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/close.png",
-                                    title: "<spring:message code='deselect.all'/>",
-                                    click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
-                                        item.setValue([]);
-                                        item.pickList.hide();
-                                    }
-                                })
-                            ]
-                        }),
-                        "header", "body"
-                    ]
                 },
                 focus: function () {
                     if (isTeacherCategoriesChanged) {
@@ -514,20 +476,82 @@
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
                 }
             },
-
             {
                 name: "personality.nationality",
                 title: "<spring:message code='nationality'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "100"
+                length: "50"
             },
-
             {
                 name: "personality.description",
                 title: "<spring:message code='description'/>",
                 type: 'textArea',
                 colSpan: 3
-            }
+            },
+            {
+                name: "evaluation",
+                title: "",
+                canEdit: false,
+                baseStyle: "eval-code"
+            },
+            {
+                name: "majorCategoryId",
+                title: "<spring:message code='related.category'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Category_Evaluation_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "majorSubCategoryId",
+                title: "<spring:message code='related.sub.category'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_Evaluation_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
 
         ],
         itemChanged: function (item, newValue) {
@@ -540,8 +564,8 @@
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
                 } else if (levelId !== undefined && majorId !== undefined) {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
-                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl +
-                        "orientation/spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
+                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationOrientationUrl +
+                        "spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource =
                         RestDataSource_Education_Orientation_JspTeacher;
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
@@ -564,6 +588,12 @@
         }
     });
 
+    DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').setCellStyle('teacher-code-label');
+    DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').titleStyle = 'teacher-code-title';
+
+    DynamicForm_BasicInfo_JspTeacher.getItem('evaluation').setCellStyle('eval-code-label');
+
+
     var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
         align: "center",
         canSubmit: true,
@@ -584,7 +614,8 @@
                 type: "imageFile",
                 showFileInline: "true",
                 accept: ".png,.gif,.jpg, .jpeg",
-                multiple: ""
+                multiple: "",
+                // hidden: true,
             }
         ],
         itemChanged: function (item) {
@@ -599,29 +630,47 @@
             }
         }
     });
+
+    //------------------------------------------ Functions -------------------------------------------------------------
+    function upload() {
+        var upload = document.getElementById('file-upload');
+        var image = upload.files[0];
+        console.log(image);
+        showTempAttach();
+        setTimeout(function () {
+            if (attachNameTemp === null || attachNameTemp === "") {
+                upload.value = "";
+                showAttachViewLoader.setView();
+            }
+        }, 300);
+    }
+    // ------------------------------------------- Page UI -------------------------------------------------------------
+
     var HLayOut_ViewLoader_JspTeacher = isc.TrHLayout.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        align: "center",
+        styleName: "upload-hlayout",
+        align: "top",
+        height: "100",
         members: [showAttachViewLoader]
     });
 
     var HLayOut_Photo_JspTeacher = isc.TrHLayout.create({
         showEdges: false,
         edgeImage: "",
-        members: [DynamicForm_Photo_JspTeacher]
+        align: "top",
+        layoutMargin: 5,
+        members: [
+            upload_btn]
     });
 
     var VLayOut_Photo_JspTeacher = isc.TrVLayout.create({
-        layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        padding: 10,
-        membersMargin: 10,
-        // width: "15%",
+        height: "100%",
         width: "5%",
-        align: "center",
+        align: "top",
         members: [HLayOut_ViewLoader_JspTeacher, HLayOut_Photo_JspTeacher]
     });
 
@@ -644,5 +693,6 @@
         width: "100%",
         members: [VLayOut_Basic_JspTeacher, VLayOut_Photo_JspTeacher]
     });
+
 
     <%--</script>--%>

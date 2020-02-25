@@ -43,7 +43,7 @@ public class PostGradeGroupRestController {
     public ResponseEntity<ISC<PostGradeGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = postGradeGroupService.search(searchRq);
+        SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = postGradeGroupService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -92,8 +92,8 @@ public class PostGradeGroupRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationLevel')")
-    public ResponseEntity<PostGradeGroupDTO.PostGradeGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                       @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<PostGradeGroupDTO.PostGradeGroupSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                                        @RequestParam(value = "operator", required = false) String operator,
                                                                        @RequestParam(value = "criteria", required = false) String criteria,
@@ -115,7 +115,7 @@ public class PostGradeGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.search(request);
+        SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.searchWithoutPermission(request);
 
         final PostGradeGroupDTO.SpecRs specResponse = new PostGradeGroupDTO.SpecRs();
         specResponse.setData(response.getList())

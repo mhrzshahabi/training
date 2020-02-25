@@ -10,9 +10,11 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.repository.CourseDAO;
+import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.GoalService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,7 @@ public class CourseRestController {
     private final ObjectMapper objectMapper;
     private final CourseDAO courseDAO;
     private final ModelMapper modelMapper;
+    private final SkillDAO skillDAO;
 
     // ---------------------------------
     @Loggable
@@ -124,7 +127,7 @@ public class CourseRestController {
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
         if (check) {
-            List<GoalDTO.Info> goals = courseService.getgoal(id);
+            List<GoalDTO.Info> goals = courseService.getGoal(id);
             goals.forEach(g -> goalService.delete(g.getId()));
             courseService.deletGoal(id);
             courseService.delete(id);
@@ -205,7 +208,7 @@ public class CourseRestController {
 
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<GoalDTO.Info> goal = courseService.getgoal(courseId);
+        List<GoalDTO.Info> goal = courseService.getGoal(courseId);
 
         final GoalDTO.SpecRs specResponse = new GoalDTO.SpecRs();
         specResponse.setData(goal)
@@ -229,6 +232,29 @@ public class CourseRestController {
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/goal-mainObjective/{courseId}")
+    public ResponseEntity<List<Map<String, String>>> getGoalsAndMainObjectives(@PathVariable Long courseId) {
+        List<GoalDTO.Info> goals = courseService.getGoal(courseId);
+        List<SkillDTO.Info> mainObjectives = courseService.getMainObjective(courseId);
+        List<Map<String, String>> list = new ArrayList<>();
+        for (GoalDTO.Info goal : goals) {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", goal.getId().toString());
+            map.put("type", "goal");
+            map.put("title", goal.getTitleFa());
+            list.add(map);
+        }
+        for (SkillDTO.Info mainObjective : mainObjectives) {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", mainObjective.getId().toString());
+            map.put("type", "skill");
+            map.put("title", mainObjective.getTitleFa());
+            list.add(map);
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Loggable
@@ -309,28 +335,28 @@ public class CourseRestController {
 
 //    @Loggable
 //    @GetMapping(value = "/getcompetence/{courseId}")
-//    public ResponseEntity<CompetenceDTO.SpecRs> getCompetence(@PathVariable Long courseId) {
-//        List<CompetenceDTO.Info> comList = courseService.getCompetence(courseId);
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//    public ResponseEntity<CompetenceDTOOld.SpecRs> getCompetence(@PathVariable Long courseId) {
+//        List<CompetenceDTOOld.Info> comList = courseService.getCompetence(courseId);
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(comList)
 //                .setStartRow(0)
 //                .setEndRow(comList.size())
 //                .setTotalRows(comList.size());
-//        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs competenceSpecRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        competenceSpecRs.setResponse(specResponse);
 //        return new ResponseEntity(competenceSpecRs, HttpStatus.OK);
 //    }
 
 //    @Loggable
 //    @GetMapping(value = "/getcompetencequery/{courseId}")
-//    public ResponseEntity<CompetenceDTO.SpecRs> getCompetencequery(@PathVariable Long courseId) {
-//        List<CompetenceDTO.Info> comList = courseService.getCompetenceQuery(courseId);
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//    public ResponseEntity<CompetenceDTOOld.SpecRs> getCompetencequery(@PathVariable Long courseId) {
+//        List<CompetenceDTOOld.Info> comList = courseService.getCompetenceQuery(courseId);
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(comList)
 //                .setStartRow(0)
 //                .setEndRow(comList.size())
 //                .setTotalRows(comList.size());
-//        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs competenceSpecRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        competenceSpecRs.setResponse(specResponse);
 //        return new ResponseEntity(comList, HttpStatus.OK);
 //    }
@@ -372,7 +398,8 @@ public class CourseRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = courseService.search(searchRq);
+//        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = courseService.search(searchRq);
+        final SearchDTO.SearchRs<CourseDTO.InfoPrint> searchRs = courseService.searchPrint(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
@@ -471,5 +498,22 @@ public class CourseRestController {
         return new ResponseEntity(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/getCourseMainObjective/{courseId}")
+    public String getCourseMainObjective(@PathVariable Long courseId, HttpServletResponse response) throws IOException {
+
+        StringBuilder mainObjective =new StringBuilder();
+        List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(courseId);
+
+        for (Skill skill : skillList) {
+
+           if( mainObjective.length() > 0 )
+               mainObjective.append("_");
+
+            mainObjective.append(skill.getTitleFa());
+        }
+
+        return mainObjective.toString();
+    }
 
 }

@@ -54,6 +54,13 @@ public class CityRestController {
     }
 
     @Loggable
+    @PostMapping
+    public ResponseEntity<CityDTO.Info> create1(@Validated @RequestBody CityDTO.Create request) {
+        return new ResponseEntity<>(cityService.create(request), HttpStatus.CREATED);
+    }
+
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_city')")
     public ResponseEntity<CityDTO.Info> update(@PathVariable Long id, @Validated @RequestBody CityDTO.Update request) {
@@ -79,7 +86,10 @@ public class CityRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_city')")
-    public ResponseEntity<CityDTO.CitySpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<CityDTO.CitySpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                   @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

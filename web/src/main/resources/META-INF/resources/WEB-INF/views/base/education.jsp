@@ -5,12 +5,8 @@
 // <script>
     var methodEducation = "GET";
     var saveActionUrlEducation;
-    var educationLevelUrl = educationUrl + "level/";
-    var educationMajorUrl = educationUrl + "major/";
-    var educationOrientationUrl = educationUrl + "orientation/";
     var listGridEducation;
     var waitEducation;
-
 
     //////////////////////////////////////////////////////////
     ///////////////////////DataSource/////////////////////////
@@ -52,46 +48,45 @@
         data: [
             {
                 title: "<spring:message code='refresh'/>",
-                icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    ListGrid_Education_refresh(ListGrid_EducationOrientation);
+                    refreshLG(ListGrid_EducationOrientation);
                 }
             }, {
-                title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
+                title: "<spring:message code='create'/>",
+                click: function () {
                     ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.orientation'/>",
                         DynamicForm_EducationOrientation, Window_EducationOrientation);
                 }
             }, {
-                title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "<spring:message code='edit'/>",
+                click: function () {
                     DynamicForm_EducationOrientation.clearValues();
                     ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                         "<spring:message code='education.orientation'/>",
                         DynamicForm_EducationOrientation, Window_EducationOrientation);
                 }
             }, {
-                title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: "<spring:message code='remove'/>",
+                click: function () {
                     listGridEducation = ListGrid_EducationOrientation;
                     ListGrid_Education_Remove(educationOrientationUrl, "<spring:message code='msg.education.orientation.remove'/>");
                 }
             }, {isSeparator: true}, {
                 title: "<spring:message code='global.form.print.pdf'/>",
-                icon: "<spring:url value="pdf.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
+                    trPrintWithCriteria("<spring:url value="education/educationOrientation/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationOrientation.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.excel'/>",
-                icon: "<spring:url value="excel.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "excel",
+                    trPrintWithCriteria("<spring:url value="education/educationOrientation/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationOrientation.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.html'/>",
-                icon: "<spring:url value="html.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "html",
+                    trPrintWithCriteria("<spring:url value="education/educationOrientation/printWithCriteria/"/>" + "html",
                         ListGrid_EducationOrientation.getCriteria());
                 }
             }]
@@ -101,7 +96,7 @@
         dataSource: RestDataSourceEducationOrientation,
         contextMenu: Menu_ListGrid_EducationOrientation,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -110,7 +105,7 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
             },
             {
                 name: "titleEn",
@@ -137,7 +132,7 @@
                 }
             }
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                 "<spring:message code='education.orientation'/>",
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
@@ -153,7 +148,7 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
-                readonly: true,
+                validateOnExit: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -164,9 +159,10 @@
             {
                 name: "educationLevelId",
                 title: "<spring:message code="education.level"/>",
-                editorType: "TrComboAutoRefresh",
+                type: "SelectItem",
                 addUnknownValues: false,
                 required: true,
+                validateOnExit: true,
                 optionDataSource: RestDataSourceEducationLevel,
                 displayField: "titleFa",
                 valueField: "id",
@@ -177,22 +173,23 @@
             {
                 name: "educationMajorId",
                 title: "<spring:message code="education.major"/>",
-                editorType: "TrComboAutoRefresh",
+                type: "SelectItem",
                 addUnknownValues: false,
                 required: true,
+                validateOnExit: true,
                 optionDataSource: RestDataSourceEducationMajor,
                 displayField: "titleFa",
                 valueField: "id",
                 filterFields: ["titleFa"],
                 filterOperator: "iContains",
-                pickListFields: [{name: "titleFa"}]
+                pickListFields: [{name: "titleFa"}],
             }
         ]
     });
 
     var ToolStripButton_Refresh_EducationOrientation = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_Education_refresh(ListGrid_EducationOrientation);
+            refreshLG(ListGrid_EducationOrientation);
         }
     });
 
@@ -204,7 +201,7 @@
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
-    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.orientation'/>",
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
@@ -218,7 +215,7 @@
     });
     var ToolStripButton_Print_EducationOrientation = isc.ToolStripButtonPrint.create({
         click: function () {
-            trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
+            trPrintWithCriteria("<spring:url value="education/educationOrientation/printWithCriteria/"/>" + "pdf",
                 ListGrid_EducationOrientation.getCriteria());
         }
     });
@@ -245,8 +242,7 @@
     var IButton_EducationOrientation_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationOrientation.validate();
-            if (DynamicForm_EducationOrientation.hasErrors()) {
+            if (!DynamicForm_EducationOrientation.validate()) {
                 return;
             }
             var data = DynamicForm_EducationOrientation.getValues();
@@ -275,6 +271,11 @@
         border: "1px solid gray",
         closeClick: function () {
             this.Super("closeClick", arguments);
+        },
+        keyPress: function () {
+            if (isc.EventHandler.getKey() === "Enter") {
+                IButton_EducationOrientation_Save.click();
+            }
         },
         items: [isc.TrVLayout.create({
             members: [DynamicForm_EducationOrientation, HLayout_EducationOrientation_SaveOrExit]
@@ -306,46 +307,45 @@
         data: [
             {
                 title: "<spring:message code='refresh'/>",
-                icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    ListGrid_Education_refresh(ListGrid_EducationMajor);
+                    refreshLG(ListGrid_EducationMajor);
                 }
             }, {
-                title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
+                title: "<spring:message code='create'/>",
+                click: function () {
                     ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.major'/>",
                         DynamicForm_EducationMajor, Window_EducationMajor);
                 }
             }, {
-                title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "<spring:message code='edit'/>",
+                click: function () {
                     DynamicForm_EducationMajor.clearValues();
                     ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                         "<spring:message code='education.major'/>",
                         DynamicForm_EducationMajor, Window_EducationMajor);
                 }
             }, {
-                title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: "<spring:message code='remove'/>",
+                click: function () {
                     listGridEducation = ListGrid_EducationMajor;
                     ListGrid_Education_Remove(educationMajorUrl, "<spring:message code='msg.education.major.remove'/>");
                 }
             }, {isSeparator: true}, {
                 title: "<spring:message code='global.form.print.pdf'/>",
-                icon: "<spring:url value="pdf.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
+                    trPrintWithCriteria("<spring:url value="education/educationMajor/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationMajor.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.excel'/>",
-                icon: "<spring:url value="excel.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "excel",
+                    trPrintWithCriteria("<spring:url value="education/educationMajor/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationMajor.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.html'/>",
-                icon: "<spring:url value="html.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "html",
+                    trPrintWithCriteria("<spring:url value="education/educationMajor/printWithCriteria/"/>" + "html",
                         ListGrid_EducationMajor.getCriteria());
                 }
             }]
@@ -355,7 +355,7 @@
         dataSource: RestDataSourceEducationMajor,
         contextMenu: Menu_ListGrid_EducationMajor,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -373,7 +373,7 @@
                 filterOperator: "iContains"
             }
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                 "<spring:message code='education.major'/>",
                 DynamicForm_EducationMajor, Window_EducationMajor);
@@ -389,8 +389,8 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
+                validateOnExit: true,
                 length: "100",
-                readonly: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -404,7 +404,7 @@
 
     var ToolStripButton_Refresh_EducationMajor = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_Education_refresh(ListGrid_EducationMajor);
+            refreshLG(ListGrid_EducationMajor);
         }
     });
 
@@ -416,7 +416,7 @@
                 DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
-    var ToolStripButton_Add_EducationMajor = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationMajor = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.major'/>",
                 DynamicForm_EducationMajor, Window_EducationMajor);
@@ -430,7 +430,7 @@
     });
     var ToolStripButton_Print_EducationMajor = isc.ToolStripButtonPrint.create({
         click: function () {
-            trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
+            trPrintWithCriteria("<spring:url value="education/educationMajor/printWithCriteria/"/>" + "pdf",
                 ListGrid_EducationMajor.getCriteria());
         }
     });
@@ -458,8 +458,7 @@
     var IButton_EducationMajor_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationMajor.validate();
-            if (DynamicForm_EducationMajor.hasErrors()) {
+            if (!DynamicForm_EducationMajor.validate()) {
                 return;
             }
             var data = DynamicForm_EducationMajor.getValues();
@@ -490,6 +489,11 @@
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
+        keyPress: function () {
+            if (isc.EventHandler.getKey() === "Enter") {
+                IButton_EducationMajor_Save.click();
+            }
+        },
         items: [isc.TrVLayout.create({
             members: [DynamicForm_EducationMajor, HLayout_EducationMajor_SaveOrExit]
         })]
@@ -519,46 +523,45 @@
         data: [
             {
                 title: "<spring:message code='refresh'/>",
-                icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    ListGrid_Education_refresh(ListGrid_EducationLevel);
+                    refreshLG(ListGrid_EducationLevel);
                 }
             }, {
-                title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
+                title: "<spring:message code='create'/>",
+                click: function () {
                     ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.level'/>",
                         DynamicForm_EducationLevel, Window_EducationLevel);
                 }
             }, {
-                title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "<spring:message code='edit'/>",
+                click: function () {
                     DynamicForm_EducationLevel.clearValues();
                     ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                         "<spring:message code='education.level'/>",
                         DynamicForm_EducationLevel, Window_EducationLevel);
                 }
             }, {
-                title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: "<spring:message code='remove'/>",
+                click: function () {
                     listGridEducation = ListGrid_EducationLevel;
                     ListGrid_Education_Remove(educationLevelUrl, "<spring:message code='msg.education.level.remove'/>");
                 }
             }, {isSeparator: true}, {
                 title: "<spring:message code='global.form.print.pdf'/>",
-                icon: "<spring:url value="pdf.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
+                    trPrintWithCriteria("<spring:url value="education/educationLevel/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationLevel.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.excel'/>",
-                icon: "<spring:url value="excel.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "excel",
+                    trPrintWithCriteria("<spring:url value="education/educationLevel/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationLevel.getCriteria());
                 }
             }, {
                 title: "<spring:message code='global.form.print.html'/>",
-                icon: "<spring:url value="html.png"/>",
                 click: function () {
-                    trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "html",
+                    trPrintWithCriteria("<spring:url value="education/educationLevel/printWithCriteria/"/>" + "html",
                         ListGrid_EducationLevel.getCriteria());
                 }
             }]
@@ -568,7 +571,7 @@
         dataSource: RestDataSourceEducationLevel,
         contextMenu: Menu_ListGrid_EducationLevel,
         selectionType: "multiple",
-        sortField: 1,
+        sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
@@ -576,17 +579,20 @@
             {
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
-                align: "center",
                 filterOperator: "iContains"
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
-                align: "center",
                 filterOperator: "iContains"
-            }
+            },
+            {
+                name: "code",
+                title: "<spring:message code='code'/>",
+                filterOperator: "equals"
+            },
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                 "<spring:message code='education.level'/>",
                 DynamicForm_EducationLevel, Window_EducationLevel);
@@ -602,9 +608,9 @@
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
+                validateOnExit: true,
                 type: 'text',
                 length: "100",
-                readonly: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -618,6 +624,7 @@
                 name: "code",
                 title: "<spring:message code='code'/>",
                 required: true,
+                validateOnExit: true,
                 length: "5",
                 keyPressFilter: "[0-9]"
             },
@@ -626,7 +633,7 @@
 
     var ToolStripButton_Refresh_EducationLevel = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_Education_refresh(ListGrid_EducationLevel);
+            refreshLG(ListGrid_EducationLevel);
         }
     });
 
@@ -638,7 +645,7 @@
                 DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
-    var ToolStripButton_Add_EducationLevel = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_EducationLevel = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.level'/>",
                 DynamicForm_EducationLevel, Window_EducationLevel);
@@ -652,7 +659,7 @@
     });
     var ToolStripButton_Print_EducationLevel = isc.ToolStripButtonPrint.create({
         click: function () {
-            trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
+            trPrintWithCriteria("<spring:url value="education/educationLevel/printWithCriteria/"/>" + "pdf",
                 ListGrid_EducationLevel.getCriteria());
         }
     });
@@ -680,8 +687,7 @@
     var IButton_EducationLevel_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            DynamicForm_EducationLevel.validate();
-            if (DynamicForm_EducationLevel.hasErrors()) {
+            if (!DynamicForm_EducationLevel.validate()) {
                 return;
             }
             var data = DynamicForm_EducationLevel.getValues();
@@ -711,6 +717,11 @@
         border: "1px solid gray",
         closeClick: function () {
             this.Super("closeClick", arguments);
+        },
+        keyPress: function () {
+            if (isc.EventHandler.getKey() === "Enter") {
+                IButton_EducationLevel_Save.click();
+            }
         },
         items: [isc.TrVLayout.create({
             members: [DynamicForm_EducationLevel, HLayout_EducationLevel_SaveOrExit]
@@ -793,14 +804,9 @@
         }
     }
 
-    function ListGrid_Education_refresh(listGridEducation) {
-        listGridEducation.invalidateCache();
-        listGridEducation.filterByEditor();
-    }
-
     function ListGrid_Education_Add(Url, title, EducationDynamicForm, EducationWindows) {
         methodEducation = "POST";
-        saveActionUrlEducation = Url + "create/";
+        saveActionUrlEducation = Url;
         EducationDynamicForm.clearValues();
         EducationWindows.setTitle(title);
         EducationWindows.show();
@@ -810,13 +816,12 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var responseID = JSON.parse(resp.data).id;
             var gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
-            if (resp.context.actionURL.contains("major")) {
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+            if (resp.context.actionURL.toLowerCase().contains("major")) {
                 edu_after_save(ListGrid_EducationMajor, Window_EducationMajor, gridState);
-            } else if ((resp.context.actionURL).contains("level")) {
+            } else if ((resp.context.actionURL).toLowerCase().contains("level")) {
                 edu_after_save(ListGrid_EducationLevel, Window_EducationLevel, gridState);
-            } else if (resp.context.actionURL.contains("orientation")) {
+            } else if (resp.context.actionURL.toLowerCase().contains("orientation")) {
                 edu_after_save(ListGrid_EducationOrientation, Window_EducationOrientation, gridState);
             }
             setTimeout(function () {
@@ -825,13 +830,11 @@
         } else {
             let respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else if (resp.httpResponseCode === 406 && respText === "NotEditable") {
                 createDialog("info", "<spring:message code='msg.education.orientation.edit.error'/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
     }
@@ -839,9 +842,8 @@
     function edu_delete_result(resp) {
         waitEducation.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_Education_refresh(listGridEducation);
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            refreshLG(listGridEducation);
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -856,7 +858,7 @@
     }
 
     function edu_after_save(edu_grid, edu_window, gridState) {
-        ListGrid_Education_refresh(edu_grid);
+        refreshLG(edu_grid);
         setTimeout(function () {
             edu_grid.setSelectedState(gridState);
         }, 1000);

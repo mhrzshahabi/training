@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -38,13 +37,13 @@ public class EmploymentHistory extends Auditable {
     @JoinTable(name = "tbl_employment_history_subcategory",
             joinColumns = {@JoinColumn(name = "f_employment_history", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
-    private List<SubCategory> subCategories;
+    private List<Subcategory> subCategories;
 
-    @Column(name = "d_start_date")
-    private Date startDate;
+    @Column(name = "c_start_date")
+    private String startDate;
 
-    @Column(name = "d_end_date")
-    private Date endDate;
+    @Column(name = "c_end_date")
+    private String endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)

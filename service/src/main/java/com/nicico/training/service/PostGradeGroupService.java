@@ -2,10 +2,12 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
 import com.nicico.training.iservice.IPostGradeGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.PostGrade;
 import com.nicico.training.model.PostGradeGroup;
 import com.nicico.training.repository.PostGradeDAO;
@@ -23,6 +25,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.setCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     private final PostGradeGroupDAO postGradeGroupDAO;
     private final ModelMapper modelMapper;
     private final PostGradeDAO postGradeDAO;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -95,6 +101,13 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PostGradeGroupDTO.Info> search(SearchDTO.SearchRq request) {
+        setCriteria(request, workGroupService.applyPermissions(PostGradeGroup.class, SecurityUtil.getUserId()));
+        return SearchUtil.search(postGradeGroupDAO, request, postGradeGroup -> modelMapper.map(postGradeGroup, PostGradeGroupDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
         return SearchUtil.search(postGradeGroupDAO, request, postGradeGroup -> modelMapper.map(postGradeGroup, PostGradeGroupDTO.Info.class));
     }
 
@@ -103,12 +116,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     public List<PostGradeDTO.Info> getPostGrades(Long postGradeGroupId) {
         final Optional<PostGradeGroup> optionalPostGradeGroup = postGradeGroupDAO.findById(postGradeGroupId);
         final PostGradeGroup postGradeGroup = optionalPostGradeGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        Set<PostGrade> postGrades = postGradeGroup.getPostGradeSet();
-        ArrayList<PostGradeDTO.Info> postGradeList = new ArrayList<>();
-        for (PostGrade postGrade : postGrades) {
-            postGradeList.add(modelMapper.map(postGrade, PostGradeDTO.Info.class));
-        }
-        return postGradeList;
+        return postGradeGroup.getPostGradeSet().stream().map(postGrade -> modelMapper.map(postGrade, PostGradeDTO.Info.class)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Transactional

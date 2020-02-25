@@ -2,18 +2,31 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.util.CriteriaUtil;
+import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.dto.QuestionnaireQuestionDTO;
+import com.nicico.training.dto.SkillDTO;
+import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.model.EvaluationQuestion;
+import com.nicico.training.model.QuestionnaireQuestion;
+import com.nicico.training.model.Skill;
+import com.nicico.training.repository.EvaluationQuestionDAO;
+import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import com.nicico.training.service.QuestionnaireQuestionService;
+import com.nicico.training.service.SkillService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +36,10 @@ public class QuestionnaireQuestionRestController {
 
     private final QuestionnaireQuestionService questionnaireQuestionValueService;
     private final ModelMapper modelMapper;
+    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
+    private final SkillService skillService;
+
+    private EvaluationQuestionDAO evaluationQuestionDAO;
 
     @Loggable
     @GetMapping("/list")
@@ -30,12 +47,7 @@ public class QuestionnaireQuestionRestController {
         return new ResponseEntity<>(questionnaireQuestionValueService.list(), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/iscList")
-    public ResponseEntity<TotalResponse<QuestionnaireQuestionDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
-        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(questionnaireQuestionValueService.search(nicicoCriteria), HttpStatus.OK);
-    }
+
 
     @Loggable
     @GetMapping("/iscList/{questionnaireId}")
@@ -62,4 +74,77 @@ public class QuestionnaireQuestionRestController {
     public ResponseEntity<QuestionnaireQuestionDTO.Info> delete(@PathVariable Long id) {
         return new ResponseEntity<>(questionnaireQuestionValueService.delete(id), null, HttpStatus.OK);
     }
+
+//    @Loggable
+//    @GetMapping(value = "/teacherQuestionnaire")
+//    public ResponseEntity<TotalResponse<QuestionnaireQuestionDTO.Info>> teacherQuestionnaire() {
+//        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+//        return new ResponseEntity<>(questionnaireQuestionValueService.search(nicicoCriteria), HttpStatus.OK);
+//    }
+
+    @Loggable
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<TotalResponse<QuestionnaireQuestionDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        return new ResponseEntity<>(questionnaireQuestionValueService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/equipmentQuestionnaire")
+    public ResponseEntity<QuestionnaireQuestionDTO.QuestionnaireQuestionSpecRs> equipmentQuestionnaire() {
+
+        List<QuestionnaireQuestion> equipmentQuestionnaireQuestion = questionnaireQuestionValueService.getEvaluationQuestion(54L);
+
+        List<QuestionnaireQuestionDTO.Info> questionnaireQuestionInfo = modelMapper.map(equipmentQuestionnaireQuestion,
+                new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {
+        }.getType());
+        final QuestionnaireQuestionDTO.SpecRs specResponse = new QuestionnaireQuestionDTO.SpecRs();
+        specResponse.setData(questionnaireQuestionInfo)
+                .setStartRow(0)
+                .setEndRow(questionnaireQuestionInfo.size())
+                .setTotalRows(questionnaireQuestionInfo.size());
+        final QuestionnaireQuestionDTO.QuestionnaireQuestionSpecRs specRs = new QuestionnaireQuestionDTO.QuestionnaireQuestionSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/teacherQuestionnaire")
+    public ResponseEntity<QuestionnaireQuestionDTO.QuestionnaireQuestionSpecRs> teacherQuestionnaire() {
+
+        List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionValueService.getEvaluationQuestion(53L);
+
+        List<QuestionnaireQuestionDTO.Info> questionnaireQuestionInfo = modelMapper.map(teacherQuestionnaireQuestion,
+                new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {}.getType());
+        final QuestionnaireQuestionDTO.SpecRs specResponse = new QuestionnaireQuestionDTO.SpecRs();
+        specResponse.setData(questionnaireQuestionInfo)
+                .setStartRow(0)
+                .setEndRow(questionnaireQuestionInfo.size())
+                .setTotalRows(questionnaireQuestionInfo.size());
+        final QuestionnaireQuestionDTO.QuestionnaireQuestionSpecRs specRs = new QuestionnaireQuestionDTO.QuestionnaireQuestionSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/skillQuestionnaire/{courseId}")
+    public ResponseEntity<SkillDTO.SkillSpecRs> skillQuestionnaire(@PathVariable Long courseId) {
+
+        List<Skill> skillList = skillService.skillList(courseId);
+
+        List<SkillDTO.Info> skillInfo = modelMapper.map(skillList,
+                new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {}.getType());
+        final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
+        specResponse.setData(skillInfo)
+                .setStartRow(0)
+                .setEndRow(skillInfo.size())
+                .setTotalRows(skillInfo.size());
+        final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 }
+

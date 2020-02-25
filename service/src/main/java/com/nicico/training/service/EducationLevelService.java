@@ -45,10 +45,6 @@ public class EducationLevelService implements IEducationLevelService {
     @Override
     public EducationLevelDTO.Info create(EducationLevelDTO.Create request) {
         final EducationLevel educationLevel = modelMapper.map(request, EducationLevel.class);
-//        if (educationLevelDAO.findByTitleFa(educationLevel.getTitleFa()).isEmpty())
-//            return save(educationLevel);
-//        else
-//            return null;
         try {
             return save(educationLevel);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -61,13 +57,6 @@ public class EducationLevelService implements IEducationLevelService {
     public EducationLevelDTO.Info update(Long id, EducationLevelDTO.Update request) {
         final Optional<EducationLevel> cById = educationLevelDAO.findById(id);
         final EducationLevel educationLevel = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
-//        if (request.getTitleFa() != null) {
-//            List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(request.getTitleFa());
-//            if (byTitleFa.size() > 1)
-//                return null;
-//            if (byTitleFa.size() == 1 && !Objects.equals(educationLevel.getId(), byTitleFa.get(0).getId()))
-//                return null;
-//        }
         EducationLevel updating = new EducationLevel();
         modelMapper.map(educationLevel, updating);
         modelMapper.map(request, updating);
@@ -83,12 +72,6 @@ public class EducationLevelService implements IEducationLevelService {
     public void delete(Long id) {
         final Optional<EducationLevel> one = educationLevelDAO.findById(id);
         final EducationLevel educationLevel = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
-//        if (educationLevel.getPersonalInfoList().isEmpty() && educationLevel.getEducationOrientationList().isEmpty()) {
-//            educationLevelDAO.delete(educationLevel);
-//            return true;
-//        } else {
-//            return false;
-//        }
         try {
             educationLevelDAO.delete(educationLevel);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {

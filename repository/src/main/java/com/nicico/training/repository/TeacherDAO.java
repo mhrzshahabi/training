@@ -32,5 +32,4 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
 //    List<Teacher> findTeachersBy
 
 
-
 }

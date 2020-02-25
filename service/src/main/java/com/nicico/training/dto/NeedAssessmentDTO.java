@@ -73,7 +73,7 @@ public class NeedAssessmentDTO implements Serializable {
     public static class Info {
         private Long id;
         private PostDTO.Info post;
-        private CompetenceDTO.Info competence;
+        private CompetenceDTOOld.Info competence;
         private EDomainType eDomainType;
         private ENeedAssessmentPriority eNeedAssessmentPriority;
         private SkillDTO.Info skill;

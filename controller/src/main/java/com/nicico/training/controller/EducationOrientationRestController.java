@@ -30,7 +30,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/education/orientation")
+@RequestMapping(value = "/api/educationOrientation")
 public class EducationOrientationRestController {
     private final IEducationOrientationService educationOrientationService;
     private final ObjectMapper objectMapper;
@@ -61,15 +61,9 @@ public class EducationOrientationRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/create")
+    @PostMapping
 //    @PreAuthorize("hasAuthority('c_educationOrientation')")
     public ResponseEntity create(@Validated @RequestBody EducationOrientationDTO.Create request) {
-//        EducationOrientationDTO.Info educationOrientationInfo = educationOrientationService.create(request);
-//        if (educationOrientationInfo != null)
-//            return new ResponseEntity<>(educationOrientationInfo, HttpStatus.CREATED);
-//        else
-//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-
         try {
             return new ResponseEntity<>(educationOrientationService.create(request), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -92,11 +86,6 @@ public class EducationOrientationRestController {
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationOrientation')")
     public ResponseEntity delete(@PathVariable Long id) {
-//        if (educationOrientationService.delete(id))
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        else {
-//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-//        }
         try {
             educationOrientationService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -119,7 +108,8 @@ public class EducationOrientationRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
-    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow) {
+    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

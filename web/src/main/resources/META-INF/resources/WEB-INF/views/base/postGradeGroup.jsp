@@ -389,7 +389,7 @@
             ListGrid_Post_Grade_Group_edit();
         }
     });
-    var ToolStripButton_Add_Post_Grade_Group_Jsp = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_Post_Grade_Group_Jsp = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Post_Grade_Group_add();
         }
@@ -401,7 +401,7 @@
     });
 
     var ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="post.png"/>",
+        <%--icon: "<spring:url value="post.png"/>",--%>
         title: "<spring:message code="post.grade.list"/>",
         click: function () {
             Add_Post_Grade_Group_AddPostGrade_Jsp();

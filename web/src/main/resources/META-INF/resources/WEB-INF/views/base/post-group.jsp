@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// script
+// <script>
 
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -1073,7 +1073,7 @@
         })
     });
     var ToolStripButton_Add_Post_Group_AddPost_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="post.png"/>",
+        <%--icon: "<spring:url value="post.png"/>",--%>
         title: "لیست پست ها",
         click: function () {
             var record = ListGrid_Post_Group_Jsp.getSelectedRecord();

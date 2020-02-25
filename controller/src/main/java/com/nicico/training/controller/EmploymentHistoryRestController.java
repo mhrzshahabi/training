@@ -1,17 +1,20 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.EmploymentHistoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IEmploymentHistoryService;
-import com.nicico.training.iservice.ISubCategoryService;
+import com.nicico.training.iservice.ISubcategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -32,9 +35,10 @@ import java.util.List;
 public class EmploymentHistoryRestController {
 
     private final IEmploymentHistoryService employmentHistoryService;
-    private final ISubCategoryService subCategoryService;
+    private final ISubcategoryService subCategoryService;
     private final ICategoryService categoryService;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -45,10 +49,50 @@ public class EmploymentHistoryRestController {
 
     @GetMapping(value = "/iscList/{teacherId}")
     public ResponseEntity<ISC<EmploymentHistoryDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
-        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs = employmentHistoryService.search(searchRq, teacherId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                 @RequestParam(value = "id", required = false) Long id,
+                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        return request;
     }
 
     @Loggable
@@ -57,7 +101,7 @@ public class EmploymentHistoryRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity addEmploymentHistory(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
         List<CategoryDTO.Info> categories = null;
-        List<SubCategoryDTO.Info> subCategories = null;
+        List<SubcategoryDTO.Info> subCategories = null;
 
         if (request.get("categories") != null)
             categories = setCats(request);
@@ -96,7 +140,7 @@ public class EmploymentHistoryRestController {
 //    @PreAuthorize("hasAuthority('u_educationLevel')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
         List<CategoryDTO.Info> categories = null;
-        List<SubCategoryDTO.Info> subCategories = null;
+        List<SubcategoryDTO.Info> subCategories = null;
 
         if (request.get("categories") != null)
             categories = setCats(request);
@@ -128,14 +172,14 @@ public class EmploymentHistoryRestController {
 
     }
 
-    private List<SubCategoryDTO.Info> setSubCats(LinkedHashMap request) {
+    private List<SubcategoryDTO.Info> setSubCats(LinkedHashMap request) {
         SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         criteriaRq.setOperator(EOperator.inSet);
         criteriaRq.setFieldName("id");
         criteriaRq.setValue(request.get("subCategories"));
         subCategoriesRequest.setCriteria(criteriaRq);
-        List<SubCategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
+        List<SubcategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
         request.remove("subCategories");
         return subCategories;
     }

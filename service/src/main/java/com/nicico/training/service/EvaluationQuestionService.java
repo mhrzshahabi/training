@@ -1,11 +1,14 @@
 package com.nicico.training.service;
 
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.model.EvaluationIndex;
 import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.repository.EvaluationQuestionDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +29,12 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
     @Transactional
     public EvaluationQuestionDTO.Info create(EvaluationQuestionDTO.Create rq, List<Long> indexIds) {
         final EvaluationQuestion entity = modelMapper.map(rq, EvaluationQuestion.class);
-        entity.setEvaluationIndices(setIndices(indexIds));
-        return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        entity.setEvaluationIndices(getIndices(indexIds));
+        try {
+            return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -35,11 +42,15 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
         final EvaluationQuestion currentEntity = get(id);
         modelMapper.map(currentEntity, entity);
         modelMapper.map(rq, entity);
-        entity.setEvaluationIndices(setIndices(indexIds));
-        return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        entity.setEvaluationIndices(getIndices(indexIds));
+        try {
+            return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
-    private List<EvaluationIndex> setIndices(List<Long> indexIds) {
+    private List<EvaluationIndex> getIndices(List<Long> indexIds) {
         if (indexIds == null || indexIds.size() == 0)
             return null;
         return evaluationIndexService.getListByIds(indexIds);

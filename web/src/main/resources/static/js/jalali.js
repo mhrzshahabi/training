@@ -300,14 +300,16 @@ function checkDate(date) {
     var day = parseInt(date.substr(8, 2));
     var year = parseInt(date.substr(0, 4));
 
-    if (date[4] != "/" || date[7] != "/")
+    if(year < 1200)
+        return false;
+    if (date[4] !== "/" || date[7] !== "/")
         return false;
     if (month > 12)
         return false;
-    if (day > khMonth[month])
+    if (day > khMonth[month] || day < 1)
         return false;
     for (var i = 0; i < dateIndex.length; i++) {
-        if (date[dateIndex[i]] == "/") {
+        if (date[dateIndex[i]] === "/") {
             return false;
         }
     }

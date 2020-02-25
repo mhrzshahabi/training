@@ -17,7 +17,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "tbl_questionnaire_question")
+@Table(name = "tbl_questionnaire_question",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"f_evaluation_question", "f_questionnaire"})})
 public class QuestionnaireQuestion extends Auditable {
 
     @Id
@@ -31,7 +32,7 @@ public class QuestionnaireQuestion extends Auditable {
     @Column(name = "n_order", nullable = false)
     private Integer order;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_evaluation_question", nullable = false, insertable = false, updatable = false)
     private EvaluationQuestion evaluationQuestion;
 

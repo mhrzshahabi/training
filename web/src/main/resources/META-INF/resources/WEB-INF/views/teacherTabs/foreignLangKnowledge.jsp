@@ -8,6 +8,9 @@
     var saveActionUrlForeignLangKnowledge;
     var waitForeignLangKnowledge;
     var teacherIdForeignLangKnowledge = null;
+    var startDateCheck_JSPLang = true;
+    var endDateCheck_JSPLang = true;
+    var dateCheck_Order_JSPLang = true;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -17,16 +20,17 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "langName", filterOperator: "iContains"},
+            {name: "langLevelId", filterOperator: "equals"},
             {name: "langLevel.titleFa"},
             {name: "instituteName"},
             {name: "duration"},
-            {name: "persianStartDate"},
-            {name: "persianEndDate"}
+            {name: "startDate"},
+            {name: "endDate"}
         ]
     });
 
     var RestDataSource_ElangLevel_JspTeacher = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields:[{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: enumUrl + "eLangLevel/spec-list"
     });
 
@@ -45,7 +49,8 @@
             {
                 name: "langName",
                 title: "<spring:message code="foreign.language"/>",
-                required: true
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "langLevelId",
@@ -53,6 +58,7 @@
                 title: "<spring:message code="knowledge.level"/>",
                 textAlign: "center",
                 width: "*",
+                required: true,
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultToFirstOption: true,
@@ -75,18 +81,25 @@
             },
             {
                 name: "instituteName",
-                title: "<spring:message code="institute.place"/>"
+                title: "<spring:message code="institute.place"/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "duration",
-                title: "<spring:message code="duration"/>"
+                title: "<spring:message code="duration"/>",
+                type: "IntegerItem",
+                keyPressFilter: "[0-9]",
+                hint: "<spring:message code='hour'/>",
+                showHintInField: true,
+                length: 5
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 ID: "foreignLangKnowledge_startDate_JspForeignLangKnowledge",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
+                length: 10,
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
@@ -95,45 +108,74 @@
                         displayDatePicker('foreignLangKnowledge_startDate_JspForeignLangKnowledge', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return  DynamicForm_JspForeignLangKnowledge.getValue("persianEndDate") === undefined;
-                        return checkBirthDate(value);
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    var endDate = form.getValue("endDate");
+                    dateCheck = checkBirthDate(value);
+                    if (dateCheck === false) {
+                        startDateCheck_JSPLang = false;
+                        dateCheck_Order_JSPLang = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        dateCheck_Order_JSPLang = false;
+                        startDateCheck_JSPLang = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        startDateCheck_JSPLang = true;
+                        dateCheck_Order_JSPLang = true;
+                        form.clearFieldErrors("startDate", true);
                     }
-                }]
+                }
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 ID: "foreignLangKnowledge_endDate_JspForeignLangKnowledge",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('foreignLangKnowledge_endDate_JspForeignLangKnowledge', this, 'ymd', '/');
+                    click: function (form) {
+                        if (!(form.getValue("startDate"))) {
+                            dialogTeacher = isc.MyOkDialog.create({
+                                message: "ابتدا تاریخ شروع را انتخاب کنید",
+                            });
+                            dialogTeacher.addProperties({
+                                buttonClick: function () {
+                                    this.close();
+                                    form.getItem("startDate").selectValue();
+                                }
+                            });
+                        } else {
+                            closeCalendarWindow();
+                            displayDatePicker('foreignLangKnowledge_endDate_JspForeignLangKnowledge', this, 'ymd', '/');
+                        }
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return  DynamicForm_JspForeignLangKnowledge.getValue("persianStartDate") === undefined;
-                        if (!checkDate(value))
-                            return false;
-                        if ( DynamicForm_JspForeignLangKnowledge.hasFieldErrors("persianStartDate"))
-                            return true;
-                        var persianStartDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("persianStartDate"));
-                        var persianEndDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("startDate");
+                    if (dateCheck === false) {
+                        endDateCheck_JSPLang = false;
+                        dateCheck_Order_JSPLang = true;
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (value < startDate) {
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDateCheck_JSPLang = true;
+                        dateCheck_Order_JSPLang = false;
+                    } else {
+                        form.clearFieldErrors("endDate", true);
+                        endDateCheck_JSPLang = true;
+                        dateCheck_Order_JSPLang = true;
                     }
-                }]
+                }
             }
         ]
     });
@@ -142,8 +184,43 @@
         top: 260,
         click: function () {
             DynamicForm_JspForeignLangKnowledge.validate();
-            if (!DynamicForm_JspForeignLangKnowledge.valuesHaveChanged() || !DynamicForm_JspForeignLangKnowledge.validate())
+            if (!DynamicForm_JspForeignLangKnowledge.valuesHaveChanged() ||
+                !DynamicForm_JspForeignLangKnowledge.validate() ||
+                dateCheck_Order_JSPLang == false ||
+                dateCheck_Order_JSPLang == false ||
+                endDateCheck_JSPLang == false ||
+                startDateCheck_JSPLang == false) {
+
+                if (dateCheck_Order_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (dateCheck_Order_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("startDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDateCheck_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
+                if (startDateCheck_JSPLang == false){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("startDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
+                if (DynamicForm_JspForeignLangKnowledge.getValue("startDate") != undefined && DynamicForm_JspForeignLangKnowledge.getValue("endDate") == undefined){
+                    DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                    DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
+                }
                 return;
+            }
+
+            if (DynamicForm_JspForeignLangKnowledge.getValue("startDate") != undefined && DynamicForm_JspForeignLangKnowledge.getValue("endDate") == undefined) {
+                DynamicForm_JspForeignLangKnowledge.clearFieldErrors("endDate", true);
+                DynamicForm_JspForeignLangKnowledge.addFieldErrors("endDate", "<spring:message code='msg.field.is.required'/>", true);
+                return;
+            }
             waitForeignLangKnowledge = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlForeignLangKnowledge,
                 methodForeignLangKnowledge,
@@ -205,24 +282,20 @@
     ListGrid_JspForeignLangKnowledge = isc.TrLG.create({
         dataSource: RestDataSource_JspForeignLangKnowledge,
         contextMenu: Menu_JspForeignLangKnowledge,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
         fields: [
             {
                 name: "langName",
                 title: "<spring:message code='foreign.language'/>",
             },
             {
-                name: "langLevel.titleFa",
-                title:"<spring:message code='knowledge.level'/>"
+                name: "langLevelId",
+                title:"<spring:message code='knowledge.level'/>",
+                type: "IntegerItem",
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_ElangLevel_JspTeacher,
+                filterOnKeypress: true
             },
             {
                 name: "instituteName",
@@ -233,21 +306,31 @@
                 title: "<spring:message code="duration"/>"
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 title: "<spring:message code='start.date'/>",
-                canFilter: false,
                 canSort: false
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 title: "<spring:message code='end.date'/>",
-                canFilter: false,
                 canSort: false
             }
         ],
         rowDoubleClick: function () {
             ListGrid_ForeignLangKnowledge_Edit();
-        }
+        },
+        align: "center",
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     ToolStripButton_Refresh_JspForeignLangKnowledge = isc.ToolStripButtonRefresh.create({
@@ -261,7 +344,7 @@
             ListGrid_ForeignLangKnowledge_Edit();
         }
     });
-    ToolStripButton_Add_JspForeignLangKnowledge = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspForeignLangKnowledge = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_ForeignLangKnowledge_Add();
         }

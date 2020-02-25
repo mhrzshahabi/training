@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
 
@@ -25,6 +27,8 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
 
     @Query(value = "select C_CODE from tbl_post   where (ID=:postId )", nativeQuery = true)
     String findOneById(@Param("postId") Long postId);
+
+    Optional<Post> findByCode(@Param("code") String code);
 
 
 }

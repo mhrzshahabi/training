@@ -6,7 +6,7 @@ package com.nicico.training.iservice;/* com.nicico.training.iservice
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.SubcategoryDTO;
 
 import java.util.List;
 
@@ -27,6 +27,6 @@ public interface ICategoryService {
 
     // ---------------
 
-    List<SubCategoryDTO.Info> getSubCategories(Long categoryId);
+    List<SubcategoryDTO.Info> getSubCategories(Long categoryId);
 
 }

@@ -36,6 +36,7 @@
             }
         ]
     });
+
     isc.ViewLoader.create({
         ID: "taskConfirmViewLoader",
         width: "100%",
@@ -115,19 +116,27 @@
             <spring:url value="/web/workflow/getUserTaskHistoryForm/" var="getUserTaskHistoryForm"/>
 
             userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
-            userTaskViewLoader.show();
+
+            console.log(record);
+            console.log("${getUserTaskHistoryForm}");
+
+            activeDocumentDS.fetchDataURL = workflowUrl + "/userTaskHistory/list/" + pId;
 
             setTimeout(function () {
-                userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
-                userTaskViewLoader.show();
+                ListGrid_DocumentActivity.invalidateCache();
+                ListGrid_DocumentActivity.fetchData();
             }, 500);
         }
     }
+
+    userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + 0);
+    userTaskViewLoader.show();
 
     var TSB_Refresh_userCartableForm = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_UserTaskList.invalidateCache();
+            activitiRefreshButton.click();
         }
     });
 
@@ -151,7 +160,15 @@
     var ToolStrip_UserTask_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [
-            TSB_Refresh_userCartableForm, ToolStripButton_showUserTaskForm, ToolStripButton_showUserTaskHistoryForm
+            ToolStripButton_showUserTaskForm, ToolStripButton_showUserTaskHistoryForm,
+            isc.ToolStrip.create(
+                {
+                    width: "100%",
+                    align: "left",
+                    border: "0px",
+                    members: [TSB_Refresh_userCartableForm]
+                }
+            )
         ]
     });
 
@@ -204,7 +221,7 @@
 
             {name: "name", title: "<spring:message code="work.name"/>", width: "30%"},
             {name: "description", title: "<spring:message code="description"/>", width: "70%"},
-            {name: "id", title: "id", type: "text", width: "1%"},
+            {name: "id", title: "id", type: "text", width: "1%", hidden: true},
         ],
         sortField: 0,
         dataPageSize: 50,
@@ -218,7 +235,11 @@
         autoFitFieldText: "<spring:message code="autoFitFieldText"/>",
         filterUsingText: "<spring:message code="filterUsingText"/>",
         groupByText: "<spring:message code="groupByText"/>",
-        freezeFieldText: "<spring:message code="freezeFieldText"/>"
+        freezeFieldText: "<spring:message code="freezeFieldText"/>",
+        selectionUpdated: function(record, recordList) {
+            ListGrid_WorkflowUserTaskList_showTaskHistory();
+        }
+
 
     });
 

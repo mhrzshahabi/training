@@ -116,8 +116,8 @@ public class PersonalInfoRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
-    public ResponseEntity<PersonalInfoDTO.PersonalInfoSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                   @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<PersonalInfoDTO.PersonalInfoSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                    @RequestParam(value = "operator", required = false) String operator,
                                                                    @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();

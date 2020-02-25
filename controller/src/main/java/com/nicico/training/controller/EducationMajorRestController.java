@@ -31,7 +31,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/education/major")
+@RequestMapping(value = "/api/educationMajor")
 public class EducationMajorRestController {
     private final IEducationMajorService educationMajorService;
     private final ObjectMapper objectMapper;
@@ -62,7 +62,7 @@ public class EducationMajorRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/create")
+    @PostMapping
 //    @PreAuthorize("hasAuthority('c_educationMajor')")
     public ResponseEntity create(@Validated @RequestBody EducationMajorDTO.Create request) {
 //        EducationMajorDTO.Info educationMajorInfo = educationMajorService.create(request);
@@ -124,7 +124,8 @@ public class EducationMajorRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationMajor')")
-    public ResponseEntity<EducationMajorDTO.EducationMajorSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow) {
+    public ResponseEntity<EducationMajorDTO.EducationMajorSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                       @RequestParam(value = "_endRow", defaultValue = "75") Integer endRow) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

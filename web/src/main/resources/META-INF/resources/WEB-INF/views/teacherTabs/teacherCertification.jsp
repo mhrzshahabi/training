@@ -4,11 +4,14 @@
 
 // <script>
 
-    let methodTeacherCertification = "GET";
-    let saveActionUrlTeacherCertification;
-    let waitTeacherCertification;
-    let teacherIdTeacherCertification = null;
-    let isCategoriesChanged = false;
+    var methodTeacherCertification = "GET";
+    var saveActionUrlTeacherCertification;
+    var waitTeacherCertification;
+    var teacherIdTeacherCertification = null;
+    var isCategoriesChanged = false;
+    var startDateCheck_JSPTeachCertificate = true;
+    var endDateCheck_JSPTeachCertificate = true;
+    var dateCheck_Order_JSPTeachCertificate = true;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -21,10 +24,12 @@
             {name: "companyName", filterOperator: "iContains"},
             {name: "companyLocation", filterOperator: "iContains"},
             {name: "duration"},
-            {name: "categories", filterOperator: "iContains"},
-            {name: "subCategories", filterOperator: "iContains"},
-            {name: "persianStartDate"},
-            {name: "persianEndDate"}
+            {name: "categories"},
+            {name: "subCategories"},
+            {name: "categoriesIds", filterOperator: "inSet"},
+            {name: "subCategoriesIds", filterOperator: "inSet"},
+            {name: "startDate"},
+            {name: "endDate"}
         ]
     });
 
@@ -51,14 +56,18 @@
             {
                 name: "courseTitle",
                 title: "<spring:message code='course.title'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                required: true
             },
             {
                 name: "companyName",
                 title: "<spring:message code='company.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "companyLocation",
                 title: "<spring:message code='location.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "categories",
@@ -67,6 +76,7 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -77,7 +87,7 @@
                 },
                 changed: function () {
                     isCategoriesChanged = true;
-                    let subCategoryField = DynamicForm_JspTeacherCertification.getField("subCategories");
+                    var subCategoryField = DynamicForm_JspTeacherCertification.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -86,10 +96,10 @@
                     subCategoryField.enable();
                     if (subCategoryField.getValue() === undefined)
                         return;
-                    let subCategories = subCategoryField.getSelectedRecords();
-                    let categoryIds = this.getValue();
-                    let SubCats = [];
-                    for (let i = 0; i < subCategories.length; i++) {
+                    var subCategories = subCategoryField.getSelectedRecords();
+                    var categoryIds = this.getValue();
+                    var SubCats = [];
+                    for (var i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
@@ -106,6 +116,7 @@
                 disabled: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
                 valueField: "id",
+                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -117,7 +128,7 @@
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
-                        let ids = DynamicForm_JspTeacherCertification.getField("categories").getValue();
+                        var ids = DynamicForm_JspTeacherCertification.getField("categories").getValue();
                         if (ids === []) {
                             RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = null;
                         } else {
@@ -141,11 +152,12 @@
                 length: 5
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 ID: "teachingHistories_startDate_JspTeacherCertification",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
+                length: 10,
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
@@ -154,45 +166,80 @@
                         displayDatePicker('teachingHistories_startDate_JspTeacherCertification', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspTeacherCertification.getValue("persianEndDate") === undefined;
-                        return checkBirthDate(value);
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    var endDate = form.getValue("endDate");
+                    dateCheck = checkBirthDate(value);
+                    if (dateCheck === false) {
+                        startDateCheck_JSPTeachCertificate = false;
+                        dateCheck_Order_JSPTeachCertificate = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        if (DynamicForm_JspTeacherCertification.getValue("endDate") == undefined) {
+                            DynamicForm_JspTeacherCertification.getField("endDate").setValue(todayDate);
+                        }
+                        dateCheck_Order_JSPTeachCertificate = false;
+                        startDateCheck_JSPTeachCertificate = true;
+                        form.clearFieldErrors("startDate", true);
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        if (DynamicForm_JspTeacherCertification.getValue("endDate") == undefined) {
+                            DynamicForm_JspTeacherCertification.getField("endDate").setValue(todayDate);
+                        }
+                        startDateCheck_JSPTeachCertificate = true;
+                        dateCheck_Order_JSPTeachCertificate = true;
+                        form.clearFieldErrors("startDate", true);
                     }
-                }]
+                }
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 ID: "teachingHistories_endDate_JspTeacherCertification",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('teachingHistories_endDate_JspTeacherCertification', this, 'ymd', '/');
+                    click: function (form) {
+                        if (!(form.getValue("startDate"))) {
+                            dialogTeacher = isc.MyOkDialog.create({
+                                message: "ابتدا تاریخ شروع را انتخاب کنید",
+                            });
+                            dialogTeacher.addProperties({
+                                buttonClick: function () {
+                                    this.close();
+                                    form.getItem("startDate").selectValue();
+                                }
+                            });
+                        } else {
+                            closeCalendarWindow();
+                            displayDatePicker('teachingHistories_endDate_JspTeacherCertification', this, 'ymd', '/');
+                        }
                     }
                 }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspTeacherCertification.getValue("persianStartDate") === undefined;
-                        if (!checkDate(value))
-                            return false;
-                        if (DynamicForm_JspTeacherCertification.hasFieldErrors("persianStartDate"))
-                            return true;
-                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeacherCertification.getValue("persianStartDate"));
-                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeacherCertification.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                editorExit: function (form, item, value) {
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("startDate");
+                    if (dateCheck === false) {
+                        endDateCheck_JSPTeachCertificate = false;
+                        dateCheck_Order_JSPTeachCertificate = true;
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (value < startDate) {
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDateCheck_JSPTeachCertificate = true;
+                        dateCheck_Order_JSPTeachCertificate = false;
+                    } else {
+                        form.clearFieldErrors("endDate", true);
+                        endDateCheck_JSPTeachCertificate = true;
+                        dateCheck_Order_JSPTeachCertificate = true;
                     }
-                }]
+                }
             }
         ]
     });
@@ -200,8 +247,40 @@
     IButton_Save_JspTeacherCertification = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspTeacherCertification.valuesHaveChanged() || !DynamicForm_JspTeacherCertification.validate())
+            DynamicForm_JspTeacherCertification.validate();
+            if (!DynamicForm_JspTeacherCertification.valuesHaveChanged() ||
+                !DynamicForm_JspTeacherCertification.validate() ||
+                dateCheck_Order_JSPTeachCertificate == false ||
+                dateCheck_Order_JSPTeachCertificate == false ||
+                endDateCheck_JSPTeachCertificate == false ||
+                startDateCheck_JSPTeachCertificate == false) {
+
+                if (dateCheck_Order_JSPTeachCertificate == false){
+                    DynamicForm_JspTeacherCertification.clearFieldErrors("endDate", true);
+                    DynamicForm_JspTeacherCertification.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (dateCheck_Order_JSPTeachCertificate == false){
+                    DynamicForm_JspTeacherCertification.clearFieldErrors("startDate", true);
+                    DynamicForm_JspTeacherCertification.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDateCheck_JSPTeachCertificate == false){
+                    DynamicForm_JspTeacherCertification.clearFieldErrors("endDate", true);
+                    DynamicForm_JspTeacherCertification.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
+                if (startDateCheck_JSPTeachCertificate == false){
+                    DynamicForm_JspTeacherCertification.clearFieldErrors("startDate", true);
+                    DynamicForm_JspTeacherCertification.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                }
+
                 return;
+            }
+
+            if (DynamicForm_JspTeacherCertification.getValue("startDate") != undefined && DynamicForm_JspTeacherCertification.getValue("endDate") == undefined) {
+                DynamicForm_JspTeacherCertification.clearFieldErrors("endDate", true);
+                DynamicForm_JspTeacherCertification.getField("endDate").setValue(todayDate);
+            }
+
             waitTeacherCertification = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeacherCertification,
                 methodTeacherCertification,
@@ -263,17 +342,6 @@
     ListGrid_JspTeacherCertification = isc.TrLG.create({
         dataSource: RestDataSource_JspTeacherCertification,
         contextMenu: Menu_JspTeacherCertification,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        align: "center",
         fields: [
             {
                 name: "courseTitle",
@@ -288,54 +356,26 @@
                 title: "<spring:message code='location.name'/>",
             },
             {
-                name: "categories",
+                name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let cat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        cat += "، " + value[i].titleFa;
-                    }
-                    return cat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.categories.length === 0)
-                        return;
-                    value.categories.sort();
-                    let cat = value.categories[0].titleFa.toString();
-                    for (let i = 1; i < value.categories.length; i++) {
-                        cat += "، " + value.categories[i].titleFa;
-                    }
-                    return cat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_Category_JspTeacherCertification,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true,
             },
             {
-                name: "subCategories",
+                name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                // canFilter: false,
-                formatCellValue: function (value) {
-                    if (value.length === 0)
-                        return;
-                    value.sort();
-                    let subCat = value[0].titleFa.toString();
-                    for (let i = 1; i < value.length; i++) {
-                        subCat += "، " + value[i].titleFa;
-                    }
-                    return subCat;
-                },
-                sortNormalizer: function (value) {
-                    if (value.subCategories.length === 0)
-                        return;
-                    value.subCategories.sort();
-                    let subCat = value.subCategories[0].titleFa.toString();
-                    for (let i = 1; i < value.subCategories.length; i++) {
-                        subCat += "، " + value.subCategories[i].titleFa;
-                    }
-                    return subCat;
-                }
+                type: "selectItem",
+                optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
+                valueField: "id",
+                displayField: "titleFa",
+                multiple: true,
+                filterLocally: false,
+                filterOnKeypress: true,
             },
             {
                 name: "duration",
@@ -343,21 +383,34 @@
                 filterOperator: "equals"
             },
             {
-                name: "persianStartDate",
+                name: "startDate",
                 title: "<spring:message code='start.date'/>",
-                canFilter: false,
                 canSort: false
             },
             {
-                name: "persianEndDate",
+                name: "endDate",
                 title: "<spring:message code='end.date'/>",
-                canFilter: false,
                 canSort: false
             }
         ],
+        filterEditorSubmit: function () {
+            ListGrid_JspTeacherCertification.invalidateCache();
+        },
         doubleClick: function () {
             ListGrid_TeacherCertification_Edit();
-        }
+        },
+        align: "center",
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     ToolStripButton_Refresh_JspTeacherCertification = isc.ToolStripButtonRefresh.create({
@@ -371,7 +424,7 @@
             ListGrid_TeacherCertification_Edit();
         }
     });
-    ToolStripButton_Add_JspTeacherCertification = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspTeacherCertification = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_TeacherCertification_Add();
         }
@@ -421,11 +474,13 @@
         methodTeacherCertification = "POST";
         saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + teacherIdTeacherCertification;
         DynamicForm_JspTeacherCertification.clearValues();
+        RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = null;
+        DynamicForm_JspTeacherCertification.getField("subCategories").disable();
         Window_JspTeacherCertification.show();
     }
 
     function ListGrid_TeacherCertification_Edit() {
-        let record = ListGrid_JspTeacherCertification.getSelectedRecord();
+        var record = ListGrid_JspTeacherCertification.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -433,22 +488,22 @@
             saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + record.id;
             DynamicForm_JspTeacherCertification.clearValues();
             DynamicForm_JspTeacherCertification.editRecord(record);
-            let categoryIds = DynamicForm_JspTeacherCertification.getField("categories").getValue();
-            let subCategoryIds = DynamicForm_JspTeacherCertification.getField("subCategories").getValue();
+            var categoryIds = DynamicForm_JspTeacherCertification.getField("categories").getValue();
+            var subCategoryIds = DynamicForm_JspTeacherCertification.getField("subCategories").getValue();
             if (categoryIds == null || categoryIds.length === 0)
                 DynamicForm_JspTeacherCertification.getField("subCategories").disable();
             else {
                 DynamicForm_JspTeacherCertification.getField("subCategories").enable();
-                let catIds = [];
-                for (let i = 0; i < categoryIds.length; i++)
+                var catIds = [];
+                for (var i = 0; i < categoryIds.length; i++)
                     catIds.add(categoryIds[i].id);
                 DynamicForm_JspTeacherCertification.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspTeacherCertification.getField("subCategories").focus(null, null);
             }
             if (subCategoryIds != null && subCategoryIds.length > 0) {
-                let subCatIds = [];
-                for (let i = 0; i < subCategoryIds.length; i++)
+                var subCatIds = [];
+                for (var i = 0; i < subCategoryIds.length; i++)
                     subCatIds.add(subCategoryIds[i].id);
                 DynamicForm_JspTeacherCertification.getField("subCategories").setValue(subCatIds);
             }
@@ -457,11 +512,11 @@
     }
 
     function ListGrid_TeacherCertification_Remove() {
-        let record = ListGrid_JspTeacherCertification.getSelectedRecord();
+        var record = ListGrid_JspTeacherCertification.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='verify.delete'/>");
             Dialog_Delete.addProperties({
                 buttonClick: function (button, index) {
@@ -485,7 +540,7 @@
     function TeacherCertification_save_result(resp) {
         waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             ListGrid_TeacherCertification_refresh();
             Window_JspTeacherCertification.close();
@@ -507,13 +562,13 @@
         waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_TeacherCertification_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            let respText = resp.httpResponseText;
+            var respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {

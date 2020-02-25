@@ -58,6 +58,13 @@ public class StateRestController {
     }
 
     @Loggable
+    @PostMapping
+    public ResponseEntity<StateDTO.Info> create1(@Validated @RequestBody StateDTO.Create request) {
+        return new ResponseEntity<>(stateService.create(request), HttpStatus.CREATED);
+    }
+
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_state')")
     public ResponseEntity<StateDTO.Info> update(@PathVariable Long id, @Validated @RequestBody StateDTO.Update request) {
@@ -83,8 +90,9 @@ public class StateRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_state')")
-    public ResponseEntity<StateDTO.StateSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                     @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator,
+    public ResponseEntity<StateDTO.StateSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                     @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                     @RequestParam(value = "operator", required = false) String operator,
                                                      @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)

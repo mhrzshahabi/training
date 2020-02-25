@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// script
+// <script>
 
     // <<========== Global - Variables ==========
     {
@@ -207,6 +207,8 @@
                         title: "<spring:message code="unitCode"/>",
                         type: "text",
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                        validators: [TrValidators.NotEmpty],
                         length: 10
                     },
                     {
@@ -214,6 +216,8 @@
                         title: "<spring:message code="unitName"/>",
                         type: "text",
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                        validators: [TrValidators.NotEmpty],
                         length: 100
                     }
                 ]
@@ -328,6 +332,10 @@
 
         //*****update function*****
         function edit_OperationalUnit() {
+
+            if (!DynamicForm_OperationalUnit.validate())
+                return;
+
             let operationalUnitData = DynamicForm_OperationalUnit.getValues();
             let operationalUnitEditUrl = operationalUnitUrl;
             if (operational_method.localeCompare("PUT") === 0) {
@@ -369,6 +377,7 @@
         var MyOkDialog_Operational;
 
         function show_OperationalUnitActionResult(resp) {
+            console.log(resp);
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
                 ListGrid_operational.invalidateCache();
@@ -380,7 +389,8 @@
                 Window_OperationalUnit.close();
 
             } else {
-                let respText = resp.httpResponseText;
+
+                let respText = JSON.parse(resp.httpResponseText);
                 if (resp.httpResponseCode === 406) {
 
                     MyOkDialog_Operational = isc.MyOkDialog.create({
@@ -410,7 +420,7 @@
         //*****print*****
         function print_OperationalUnitListGrid(type) {
             var advancedCriteria_unit = ListGrid_operational.getCriteria();
-            var criteriaForm_course = isc.DynamicForm.create({
+            var criteriaForm_operational = isc.DynamicForm.create({
                 method: "POST",
                 action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
                 target: "_Blank",
@@ -421,10 +431,10 @@
                         {name: "myToken", type: "hidden"}
                     ]
             });
-            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
-            criteriaForm_course.setValue("myToken", "<%=accessToken%>");
-            criteriaForm_course.show();
-            criteriaForm_course.submitForm();
+            criteriaForm_operational.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
+            criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
+            criteriaForm_operational.show();
+            criteriaForm_operational.submitForm();
         }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>

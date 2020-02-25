@@ -61,18 +61,18 @@ public class OperationalUnitRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<OperationalUnitDTO.Info> create(@RequestBody OperationalUnitDTO.Create req) {
+    public ResponseEntity<OperationalUnitDTO.Info> create(@RequestBody OperationalUnitDTO.Create req, HttpServletResponse response) {
         OperationalUnitDTO.Create create = modelMapper.map(req, OperationalUnitDTO.Create.class);
-        return new ResponseEntity<>(operationalUnitService.create(create), HttpStatus.CREATED);
+        return new ResponseEntity<>(operationalUnitService.create(create, response), HttpStatus.CREATED);
     }
 
     //*********************************
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<OperationalUnitDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<OperationalUnitDTO.Info> update(@PathVariable Long id, @RequestBody Object request, HttpServletResponse response) {
         OperationalUnitDTO.Update update = modelMapper.map(request, OperationalUnitDTO.Update.class);
-        return new ResponseEntity<>(operationalUnitService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(operationalUnitService.update(id, update, response), HttpStatus.OK);
     }
 
     //*********************************
@@ -97,8 +97,8 @@ public class OperationalUnitRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<OperationalUnitDTO.OperationalUnitSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                         @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<OperationalUnitDTO.OperationalUnitSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                         @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                          @RequestParam(value = "_constructor", required = false) String constructor,
                                                                          @RequestParam(value = "operator", required = false) String operator,
                                                                          @RequestParam(value = "criteria", required = false) String criteria,

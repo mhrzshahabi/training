@@ -48,4 +48,8 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         return modelMapper.map(dao.saveAll(parameterValues), new TypeToken<List<ParameterValueDTO.Info>>() {
         }.getType());
     }
+
+    public Long getId(String code) {
+        return dao.findByCode(code).getId();
+    }
 }

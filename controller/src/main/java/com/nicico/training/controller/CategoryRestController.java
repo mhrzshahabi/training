@@ -8,7 +8,7 @@ com.nicico.training.controller
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -140,6 +142,16 @@ public class CategoryRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<CategoryDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        Integer startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<CategoryDTO.Info> searchRs = categoryService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
     // ---------------
 
     @Loggable
@@ -154,8 +166,8 @@ public class CategoryRestController {
     @Loggable
     @GetMapping(value = "{categoryId}/sub-categories")
 //    @PreAuthorize("hasAnyAuthority('r_sub_Category')")
-    public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> getSubCategories(@RequestParam("_startRow") Integer startRow,
-                                                                             @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<SubcategoryDTO.SubCategorySpecRs> getSubCategories(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                             @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
                                                                              @RequestParam(value = "operator", required = false) String operator,
                                                                              @RequestParam(value = "criteria", required = false) String criteria,
@@ -164,15 +176,15 @@ public class CategoryRestController {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<SubCategoryDTO.Info> subCategories = categoryService.getSubCategories(categoryId);
+        List<SubcategoryDTO.Info> subCategories = categoryService.getSubCategories(categoryId);
 
-        final SubCategoryDTO.SpecRs specResponse = new SubCategoryDTO.SpecRs();
+        final SubcategoryDTO.SpecRs specResponse = new SubcategoryDTO.SpecRs();
         specResponse.setData(subCategories)
                 .setStartRow(0)
                 .setEndRow(subCategories.size())
                 .setTotalRows(subCategories.size());
 
-        final SubCategoryDTO.SubCategorySpecRs specRs = new SubCategoryDTO.SubCategorySpecRs();
+        final SubcategoryDTO.SubCategorySpecRs specRs = new SubcategoryDTO.SubCategorySpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -181,8 +193,8 @@ public class CategoryRestController {
     @Loggable
     @GetMapping(value = "sub-categories/dummy")
 //    @PreAuthorize("hasAuthority('r_category')")
-    public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> dummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-        return new ResponseEntity<SubCategoryDTO.SubCategorySpecRs>(new SubCategoryDTO.SubCategorySpecRs(), HttpStatus.OK);
+    public ResponseEntity<SubcategoryDTO.SubCategorySpecRs> dummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+        return new ResponseEntity<SubcategoryDTO.SubCategorySpecRs>(new SubcategoryDTO.SubCategorySpecRs(), HttpStatus.OK);
     }
 
 }

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +44,7 @@ public class GoalRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final ModelMapper modelMapper;
 
     // ------------------------------
 
@@ -65,6 +67,13 @@ public class GoalRestController {
 //    @PreAuthorize("hasAuthority('c_goal')")
     public ResponseEntity<GoalDTO.Info> create(@Validated @RequestBody GoalDTO.Create request, @PathVariable Long courseId) {
         return new ResponseEntity<>(goalService.create(request, courseId), HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @PostMapping
+    public ResponseEntity<GoalDTO.Info> createWithoutCourse(@RequestBody Object request) {
+        GoalDTO.Create create = modelMapper.map(request, GoalDTO.Create.class);
+        return new ResponseEntity<>(goalService.createWithoutCourse(create), HttpStatus.CREATED);
     }
 
     @Loggable
@@ -93,11 +102,12 @@ public class GoalRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_goal')")
-    public ResponseEntity<GoalDTO.GoalSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                   @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<GoalDTO.GoalSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                   @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                    @RequestParam(value = "_constructor", required = false) String constructor,
                                                    @RequestParam(value = "operator", required = false) String operator,
                                                    @RequestParam(value = "criteria", required = false) String criteria,
+                                                   @RequestParam(value = "id", required = false) Long id,
                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
@@ -111,6 +121,15 @@ public class GoalRestController {
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -191,7 +210,7 @@ public class GoalRestController {
     public void printOneCourse(HttpServletResponse response,
                                @PathVariable Long courseId,
                                @PathVariable String type) throws Exception {
-        List<GoalDTO.Info> getGoal = courseService.getgoal(courseId);
+        List<GoalDTO.Info> getGoal = courseService.getGoal(courseId);
         CourseDTO.Info info = courseService.get(courseId);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

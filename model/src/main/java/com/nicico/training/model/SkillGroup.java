@@ -42,6 +42,6 @@ public class SkillGroup extends Auditable {
     @ManyToMany
     @JoinTable(name = "tbl_competence_skill_group", joinColumns = @JoinColumn(name = "f_skill_group_id"),
             inverseJoinColumns = @JoinColumn(name = "f_competence_id"))
-    private Set<Competence> competenceSet;
+    private Set<CompetenceOld> competenceSet;
 
 }

@@ -271,6 +271,50 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) AND rownum = 1 ");
 
 
+            //*****pre course test question*****
+            alarmScripts.add(" SELECT " +
+                    "    'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    LEFT JOIN tbl_class_pre_course_test_question ON tbl_class_pre_course_test_question.f_class_id = tbl_class.id " +
+                    " WHERE " +
+                    "    tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null AND :todaydat = :todaydat ");
+
+            //*****evaluation behaviour for student*****
+            alarmScripts.add(" SELECT " +
+                    "    'has alarm' AS hasalarm  " +
+                    "FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_class.id, " +
+                    "            'برای ' " +
+                    "            || COUNT(tbl_class.id) " +
+                    "            || ' فراگیر این کلاس ارزیابی رفتاری صادر نشده است' AS alarm " +
+                    "        FROM " +
+                    "            tbl_class " +
+                    "            INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id " +
+                    "            INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id " +
+                    "        WHERE " +
+                    "            tbl_class.id = :class_id " +
+                    "            AND tbl_course.c_evaluation = 3 " +
+                    "            AND tbl_class.c_status = 3 " +
+                    "            AND ( tbl_class_student.evaluation_status_behavior IS NULL " +
+                    "                  OR tbl_class_student.evaluation_status_behavior = 0 ) " +
+                    "            AND trunc(add_months(tbl_class.c_status_date,( " +
+                    "                CASE " +
+                    "                    WHEN tbl_class.start_evaluation IS NULL THEN " +
+                    "                        0 " +
+                    "                    ELSE " +
+                    "                        tbl_class.start_evaluation " +
+                    "                END " +
+                    "            ))) - trunc(sysdate) <= 14 " +
+                    "        GROUP BY " +
+                    "            tbl_class.id " +
+                    "        HAVING " +
+                    "            COUNT(tbl_class.id) > 0 AND :todaydat = :todaydat " +
+                    "    ) ");
+
+
             for (String script : alarmScripts) {
                 AlarmList = (List<String>) entityManager.createNativeQuery(script)
                         .setParameter("class_id", class_id)
@@ -775,9 +819,54 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) tbfreeplaces ON tbfreeplaces.c_session_date = tbalarm.c_session_date " +
                     "                      AND tbfreeplaces.c_session_start_hour = tbalarm.c_session_start_hour " +
                     "                      AND tbfreeplaces.c_session_end_hour = tbalarm.c_session_end_hour " +
-                    "                      AND tbfreeplaces.f_institute_id = tbalarm.f_institute_id                     " +
-                    " ORDER BY sortField                       " +
-                    "                      ");
+                    "                      AND tbfreeplaces.f_institute_id = tbalarm.f_institute_id ");
+
+            alarmScript.append(" UNION ALL ");
+
+            //*****pre course test question*****
+            alarmScript.append(" SELECT " +
+                    "    tbl_class.id AS targetRecordId, " +
+                    "    'classPreCourseTestQuestionsTab' AS tabName, " +
+                    "    '/tclass/show-form' AS pageAddress, " +
+                    "    'سوالات پیش آزمون' AS alarmType, " +
+                    "    'سوالات آزمون پیش از برگزاری کلاس ثبت نشده است.'  AS alarm, " +
+                    "    1 AS detailRecordId, " +
+                    "    'سوالات پیش آزمون' AS sortField " +
+                    " FROM " +
+                    "    tbl_class  " +
+                    "    LEFT JOIN tbl_class_pre_course_test_question ON tbl_class_pre_course_test_question.f_class_id = tbl_class.id " +
+                    " WHERE " +
+                    "    tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null ");
+
+            alarmScript.append(" UNION ALL ");
+
+            //*****evaluation behaviour for student*****
+            alarmScript.append(" SELECT  " +
+                    " id AS targetRecordId, " +
+                    " 'tabName' AS tabName, " +
+                    " '/tclass/show-form' AS pageAddress, " +
+                    " 'عدم صدور ارزیابی رفتاری' AS alarmType, " +
+                    " alarm, " +
+                    "   1 AS detailRecordId, " +
+                    "   'عدم صدور ارزیابی رفتاری' AS sortField " +
+                    " FROM " +
+                    " (SELECT " +
+                    " tbl_class.id,  'برای ' || COUNT( tbl_class.id) || ' فراگیر این کلاس ارزیابی رفتاری صادر نشده است'  as alarm " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id " +
+                    "    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id " +
+                    " WHERE " +
+                    " tbl_class.id = :class_id AND " +
+                    "    tbl_course.c_evaluation = 3 AND " +
+                    "    tbl_class.c_status = 3 " +
+                    "    AND ( tbl_class_student.evaluation_status_behavior IS NULL " +
+                    "          OR tbl_class_student.evaluation_status_behavior = 0 ) " +
+                    " AND      " +
+                    "    trunc(ADD_MONTHS(tbl_class.c_status_date, (CASE WHEN tbl_class.start_evaluation IS NULL THEN 0 ELSE tbl_class.start_evaluation END))) - trunc(sysdate) <= 14  " +
+                    " GROUP BY tbl_class.id     " +
+                    " HAVING COUNT( tbl_class.id) > 0) " +
+                    " ORDER BY sortField ");
 
             //***order by must be in the last script***
 
@@ -818,6 +907,7 @@ public class ClassAlarmService implements IClassAlarm {
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
 
         StringBuilder AlarmList = new StringBuilder();
+        StringBuilder endingClassAlarm = new StringBuilder();
 
         try {
 
@@ -837,7 +927,6 @@ public class ClassAlarmService implements IClassAlarm {
                     "        tbl_attendance.c_state IS NULL " +
                     "        OR    tbl_attendance.c_state = 0 " +
                     "    ) AND rownum = 1 ");
-
 
             //*****check list not verify*****
             alarmScripts.add(" SELECT  " +
@@ -868,16 +957,42 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) " +
                     "    AND rownum=1 AND :todaydat = :todaydat ");
 
+
             for (String script : alarmScripts) {
 
                 List<?> Alarm = (List<?>) entityManager.createNativeQuery(script)
                         .setParameter("class_id", class_id)
                         .setParameter("todaydat", todayDate).getResultList();
 
-                if(!Alarm.isEmpty())
-                AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
+                if (!Alarm.isEmpty())
+                    AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
             }
 
+            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+
+
+            //*****score alarm*****
+
+            String alarmLastScripts;
+
+            //*****student score*****
+            alarmLastScripts = " SELECT " +
+                    "    'ثبت نمرات کلاس تکمیل نشده است.' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    " WHERE " +
+                    "    tbl_class_student.class_id = :class_id " +
+                    "    AND   tbl_class_student.failure_reason IS NULL " +
+                    "    AND   tbl_class_student.score IS NULL " +
+                    "    AND   tbl_class_student.scores_state IS NULL " +
+                    "    AND   rownum = 1 AND :todaydat = :todaydat ";
+
+            List<?> Alarm = (List<?>) entityManager.createNativeQuery(alarmLastScripts)
+                    .setParameter("class_id", class_id)
+                    .setParameter("todaydat", todayDate).getResultList();
+
+            if (!Alarm.isEmpty())
+            endingClassAlarm.append(endingClassAlarm.length() > 0 ? " <br />و همچنین "+ Alarm.get(0) : Alarm.get(0));
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -886,7 +1001,7 @@ public class ClassAlarmService implements IClassAlarm {
             response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
         }
 
-        return (AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+        return endingClassAlarm.toString();
 
     }
     //*********************************

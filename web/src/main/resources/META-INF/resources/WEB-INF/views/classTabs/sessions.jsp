@@ -28,6 +28,7 @@
                 },
                 {
                     title: "<spring:message code="create"/>",
+                    // title: "<spring:message code="create"/>",
                     icon: "<spring:url value="create.png"/>",
                     click: function () {
                         create_Session();
@@ -106,8 +107,8 @@
                     {name: "sessionStateFa"},
                     {name: "description"}
                 ]
-                    //// fetchDataURL: sessionServiceUrl + "load-sessions/428"
-                    //// fetchDataURL: sessionServiceUrl + "spec-list"
+            //// fetchDataURL: sessionServiceUrl + "load-sessions/428"
+            //// fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
 
@@ -251,7 +252,7 @@
                 {name: "titleFa", title: "<spring:message code="location.name"/>"},
                 {name: "capacity", title: "<spring:message code="capacity"/>"}
             ],
-            fetchDataURL: instituteUrl + "0/training-places"
+            fetchDataURL: instituteUrl + "0/trainingPlaces"
         });
 
     }
@@ -267,9 +268,11 @@
         });
 
         var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-            click: function () {
-                create_Session();
-            }
+            title: "<spring:message code="create" />",
+            click:
+                function () {
+                    create_Session();
+                }
         });
 
         var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
@@ -328,7 +331,8 @@
                         title: "<spring:message code='date'/>",
                         ID: "sessionDate_jspSession",
                         required: true,
-                        hint: "YYYY/MM/DD",
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                        hint: "----/--/--",
                         keyPressFilter: "[0-9/]",
                         showHintInField: true,
                         icons: [{
@@ -339,16 +343,8 @@
                             }
                         }],
                         textAlign: "center",
-                        click: function (form) {
-
-                        },
-                        changed: function (form, item, value) {
-
-                            if (checkDate(value) === false) {
-                                form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
-                            } else {
-                                form.clearFieldErrors("sessionDate", true);
-                            }
+                        blur: function () {
+                            check_valid_date();
                         }
                     },
                     {
@@ -360,6 +356,7 @@
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         valueMap: {
                             "1": "08-10",
                             "2": "10-12",
@@ -372,6 +369,7 @@
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         valueMap: {
                             "1": "آموزش",
                             "2": "آزمون"
@@ -387,6 +385,7 @@
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         valueMap: {
                             "1": "شروع نشده",
                             "2": "در حال اجرا",
@@ -397,23 +396,24 @@
                     {
                         name: "instituteId",
                         colSpan: 5,
-                        editorType: "TrComboAutoRefresh",
+                        // editorType: "TrComboAutoRefresh",
+                        type: "ComboBoxItem",
+                        multiple: false,
                         title: "<spring:message code="presenter"/>",
                         autoFetchData: false,
+                        useClientFiltering: true,
                         optionDataSource: RestDataSource_Institute_JspSession,
                         displayField: "titleFa",
                         valueField: "id",
                         textAlign: "center",
-                        filterFields: ["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         pickListFields: [
                             {name: "titleFa"},
                             {name: "manager.firstNameFa"},
                             {name: "manager.lastNameFa"}
                         ],
-                        changed: function (form, item) {
-                            form.clearValue("trainingPlaceId")
-                        }
+                        filterFields: ["titleFa", "manager.firstNameFa", "manager.lastNameFa"]
                     },
                     {
                         name: "teacherId",
@@ -426,6 +426,7 @@
                         valueField: "id",
                         autoFetchData: false,
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         useClientFiltering: true,
                         optionDataSource: RestDataSource_Teacher_JspClass,
                         pickListFields: [
@@ -483,6 +484,7 @@
                         valueField: "id",
                         filterFields: ["titleFa", "capacity"],
                         required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         textAlign: "center",
                         pickListFields: [
                             {name: "titleFa"},
@@ -490,10 +492,10 @@
                         ],
                         click: function (form, item) {
                             if (form.getValue("instituteId")) {
-                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/trainingPlaces";
                                 item.fetchData();
                             } else {
-                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/trainingPlaces";
                                 item.fetchData();
                                 isc.MyOkDialog.create({
                                     message: "<spring:message code="chose.presenter"/>",
@@ -516,7 +518,7 @@
         var create_Buttons = isc.MyHLayoutButtons.create({
             members:
                 [
-                    isc.Button.create
+                    isc.IButtonSave.create
                     ({
                         title: "<spring:message code="save"/> ",
                         icon: "[SKIN]/actions/save.png",
@@ -528,7 +530,7 @@
                             }
                         }
                     }),
-                    isc.Button.create
+                    isc.IButtonCancel.create
                     ({
                         title: "<spring:message code="cancel"/>",
                         icon: "[SKIN]/actions/cancel.png",
@@ -578,6 +580,27 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
+        //*****check date is valid*****
+        function check_valid_date() {
+
+            DynamicForm_Session.clearFieldErrors("sessionDate", true);
+
+            if (DynamicForm_Session.getValue("sessionDate") === undefined || !checkDate(DynamicForm_Session.getValue("sessionDate"))) {
+                DynamicForm_Session.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
+            } else {
+                let class_startDate = ListGrid_Class_JspClass.getSelectedRecord().startDate;
+                let class_endDate = ListGrid_Class_JspClass.getSelectedRecord().endDate;
+                let class_sessionDate = DynamicForm_Session.getValue("sessionDate");
+
+                if (class_sessionDate < class_startDate)
+                    DynamicForm_Session.addFieldErrors("sessionDate", "<spring:message code="session.date.before.class.start.date"/>", true);
+                else if (class_sessionDate > class_endDate)
+                    DynamicForm_Session.addFieldErrors("sessionDate", "<spring:message code="session.date.after.class.end.date"/>", true);
+                else
+                    DynamicForm_Session.clearFieldErrors("sessionDate", true);
+            }
+        }
+
         //*****open insert window*****
         function create_Session() {
             if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
@@ -585,7 +608,7 @@
                     message: "<spring:message code="msg.record.select.class.ask"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -601,7 +624,11 @@
         //*****insert function*****
         function save_Session() {
 
-            if (!DynamicForm_Session.validate())
+            DynamicForm_Session.validate();
+
+            check_valid_date();
+
+            if (DynamicForm_Session.hasErrors())
                 return;
 
             let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
@@ -641,7 +668,7 @@
                 record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
 
                 DynamicForm_Session.getField("instituteId").fetchData();
-                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
+                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
                 RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
 
                 session_method = "PUT";
@@ -655,7 +682,11 @@
         //*****update function*****
         function edit_Session() {
 
-            if (!DynamicForm_Session.validate())
+            DynamicForm_Session.validate();
+
+            check_valid_date();
+
+            if (DynamicForm_Session.hasErrors())
                 return;
 
             let sessionData = DynamicForm_Session.getValues();
@@ -737,17 +768,14 @@
 
                     close_MyOkDialog_Session()
 
-                }
-                else if (resp.httpResponseCode === 503)
-                {
+                } else if (resp.httpResponseCode === 503) {
 
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: respText.message,
                         icon: "[SKIN]stop.png"
                     });
 
-                }
-                else {
+                } else {
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: "<spring:message code="msg.operation.error"/>"
                     });

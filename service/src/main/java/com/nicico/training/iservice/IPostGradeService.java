@@ -13,4 +13,6 @@ public interface IPostGradeService {
     List<PostGradeDTO.Info> list();
 
     SearchDTO.SearchRs<PostGradeDTO.Info> search(SearchDTO.SearchRq rq);
+
+    SearchDTO.SearchRs<PostGradeDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
 }

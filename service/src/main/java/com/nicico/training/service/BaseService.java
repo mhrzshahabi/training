@@ -3,14 +3,16 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IBaseService;
 import com.nicico.training.repository.BaseDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -63,8 +65,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     @Override
     @Transactional(readOnly = true)
     public List<INFO> list() {
-        return modelMapper.map(dao.findAll(), new TypeToken<List<INFO>>() {
-        }.getType());
+        return mapEntityToInfo(dao.findAll());
     }
 
     @Override
@@ -83,7 +84,11 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     @Transactional
     public INFO create(CREATE rq) {
         final E entity = modelMapper.map(rq, entityType);
-        return modelMapper.map(dao.save(entity), infoType);
+        try {
+            return modelMapper.map(dao.save(entity), infoType);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Override
@@ -93,7 +98,11 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         final E currentEntity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         modelMapper.map(currentEntity, entity);
         modelMapper.map(rq, entity);
-        return modelMapper.map(dao.save(entity), infoType);
+        try {
+            return modelMapper.map(dao.save(entity), infoType);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Override
@@ -101,26 +110,26 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     public INFO delete(ID id) {
         final Optional<E> optional = dao.findById(id);
         final E entity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        dao.deleteById(id);
-        return modelMapper.map(entity, infoType);
+        try {
+            dao.deleteById(id);
+            return modelMapper.map(entity, infoType);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Override
     @Transactional
     public Boolean isExist(ID id) {
         final Optional<E> optional = dao.findById(id);
-        if (optional.isPresent())
-            return true;
-        return false;
+        return optional.isPresent();
     }
 
     @Override
     @Transactional
     public E get(ID id) {
         final Optional<E> optional = dao.findById(id);
-        if (optional.isPresent())
-            return optional.get();
-        return null;
+        return optional.orElse(null);
     }
 
     @Override
@@ -129,5 +138,28 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         List<INFO> infoList = new ArrayList<>();
         Optional.ofNullable(eList).ifPresent(entities -> entities.forEach(entity -> infoList.add(modelMapper.map(entity, infoType))));
         return infoList;
+    }
+
+    public static SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
+    }
+
+    public static void setCriteria(SearchDTO.SearchRq request, SearchDTO.CriteriaRq criteria) {
+        request.setDistinct(true);
+        if (request.getCriteria() == null) {
+            request.setCriteria(criteria);
+            return;
+        }
+        SearchDTO.CriteriaRq mainCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        mainCriteria.getCriteria().add(criteria);
+        mainCriteria.getCriteria().add(request.getCriteria());
+        mainCriteria.setStart(request.getCriteria().getStart());
+        mainCriteria.setEnd(request.getCriteria().getEnd());
+        request.setCriteria(mainCriteria);
     }
 }
