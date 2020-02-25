@@ -23,7 +23,7 @@ public class ExcelUtil {
 
     static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
-    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n3) Part 1 For Import.xlsx";
+    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n3) Part 2 For Import.xlsx";
 
     static OAuth2RestTemplate restTemplate;
     static URI uri;

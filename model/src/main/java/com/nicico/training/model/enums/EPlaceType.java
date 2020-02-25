@@ -14,7 +14,15 @@ import lombok.ToString;
 public enum EPlaceType {
 
     Class(1, "کلاس"),
-    Salon(2, "سالن");
+    Salon(2, "سالن"),
+    ComputerSite(3, "سایت کامپیوتر"),
+    Salon1(4, "سالن (مرکز همایش و سمینارها)"),
+    LanguageLab(5, "آزمایشگاه زبان"),
+    Theory(6, "تئوری"),
+    Lab(7, "آزمایشگاهی"),
+    WorkShop(7, "کارگاهی"),
+    Public(7, "عمومی"),
+    Robotic(7, "رباتیک");
 
     private final Integer id;
     private final String titleFa;
