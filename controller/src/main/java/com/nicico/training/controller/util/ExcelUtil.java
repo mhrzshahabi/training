@@ -23,7 +23,7 @@ public class ExcelUtil {
 
     static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
-    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n2) For Import 1.xlsx";
+    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n3) For Import.xlsx";
 
     static OAuth2RestTemplate restTemplate;
     static URI uri;
@@ -64,7 +64,6 @@ public class ExcelUtil {
 
             for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
                 Sheet sheet = workbook.getSheetAt(i);
-
                 String className = sheet.getSheetName() + "DTO";
 
                 Class<?> clazz = Class.forName(baseDTOPath + "." + className + "$" + "Create");
@@ -94,24 +93,9 @@ public class ExcelUtil {
                     JsonObject jsonObject = new JsonObject();
                     for (int c = 0; c <= colsNum; c++) {
                         Cell cell = row.getCell(c);
+                        String value = null;
                         if (!(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK)) {
-                            String value = null;
-                            if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                                Double doubleValue = cell.getNumericCellValue();
-                                value = doubleValue.toString().replaceAll("\\.?0*$", "");
-                            } else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
-                                switch (cell.getCachedFormulaResultType()) {
-                                    case Cell.CELL_TYPE_NUMERIC:
-                                        Double doubleValue = cell.getNumericCellValue();
-                                        value = doubleValue.toString().replaceAll("\\.?0*$", "");
-                                        break;
-                                    case Cell.CELL_TYPE_STRING:
-                                        value = cell.getRichStringCellValue().toString();
-                                        break;
-                                }
-                            } else {
-                                value = cell.toString();
-                            }
+                            value = getCellValue(cell);
                             if (value != null && !value.isEmpty()) {
                                 jsonObject.addProperty(fields.get(c), value.trim());
                             }
@@ -138,4 +122,49 @@ public class ExcelUtil {
             }
         }
     }
+
+    private static String getCellValue(Cell cell) {
+
+        String value = null;
+        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+            Double doubleValue = cell.getNumericCellValue();
+            value = doubleValue.toString().replaceAll("\\.?0*$", "");
+        } else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+            switch (cell.getCachedFormulaResultType()) {
+                case Cell.CELL_TYPE_NUMERIC:
+                    Double doubleValue = cell.getNumericCellValue();
+                    value = doubleValue.toString().replaceAll("\\.?0*$", "");
+                    break;
+                case Cell.CELL_TYPE_STRING:
+                    value = cell.getRichStringCellValue().toString();
+                    break;
+            }
+        } else {
+            value = cell.toString();
+        }
+        return value;
+    }
 }
+
+//
+//                if(sheet.getSheetName().equals("PreCourse")) {
+//
+//                        Iterator<Row> rowIterator = sheet.iterator();
+//        Row row = rowIterator.next();
+//
+//        while (rowIterator.hasNext()) {
+//        row = rowIterator.next();
+//        String courseId = getCellValue(row.getCell(0));
+//        List<Long> test = new ArrayList<>();
+//        test.add(38L);
+//        Long preCourseCells = Long.parseLong(getCellValue(row.getCell(1)));
+//
+//        uri = new URI(baseUrl + "course/setPreCourse/" + courseId);
+//
+//        try {
+//        restTemplate.put(uri, preCourseCells);
+//        } catch (Exception ex) {
+//        ex.printStackTrace();
+//        }
+//        }
+//        }
