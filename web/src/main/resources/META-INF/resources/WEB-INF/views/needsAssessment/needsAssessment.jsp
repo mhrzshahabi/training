@@ -927,7 +927,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             "needAssessment": needAssessmentTitle,
                             "needAssessmentCreatorId": "${username}",
                             "needAssessmentCreator": userFullName,
-                            "REJECTVAL": "",
+                            "REJECTVAL": " ",
                             "REJECT": "",
                             "target": "/web/needsAssessment",
                             "targetTitleFa": "نیازسنجی",
