@@ -24,7 +24,7 @@ public class Syllabus extends Auditable {
     @Column(name = "c_code")
     private String code;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @Column(name = "c_title_fa", nullable = false, length = 700)
     private String titleFa;
 
     @Column(name = "c_title_en")

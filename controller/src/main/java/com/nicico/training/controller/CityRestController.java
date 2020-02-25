@@ -54,6 +54,13 @@ public class CityRestController {
     }
 
     @Loggable
+    @PostMapping
+    public ResponseEntity<CityDTO.Info> create1(@Validated @RequestBody CityDTO.Create request) {
+        return new ResponseEntity<>(cityService.create(request), HttpStatus.CREATED);
+    }
+
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_city')")
     public ResponseEntity<CityDTO.Info> update(@PathVariable Long id, @Validated @RequestBody CityDTO.Update request) {

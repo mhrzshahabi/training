@@ -58,6 +58,13 @@ public class StateRestController {
     }
 
     @Loggable
+    @PostMapping
+    public ResponseEntity<StateDTO.Info> create1(@Validated @RequestBody StateDTO.Create request) {
+        return new ResponseEntity<>(stateService.create(request), HttpStatus.CREATED);
+    }
+
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_state')")
     public ResponseEntity<StateDTO.Info> update(@PathVariable Long id, @Validated @RequestBody StateDTO.Update request) {

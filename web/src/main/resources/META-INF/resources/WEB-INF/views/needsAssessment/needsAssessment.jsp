@@ -45,12 +45,10 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
                     one(two);
-
                     function one(callBack) {
                         editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                         callBack();
                     }
-
                     function two() {
                         NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function() {
                             Window_NeedsAssessment_JspNeedsAssessment.show();
@@ -149,7 +147,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        cacheAllData:true,
         fetchDataURL: jobUrl + "/iscList"
     });
     JobGroupDs_needsAssessment = isc.TrDS.create({
@@ -582,6 +579,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             isc.DynamicForm.create({
                 ID: "NeedsAssessmentTargetDF_needsAssessment",
                 numCols: 2,
+                readOnlyDisplay: "readOnly",
                 fields: [
                     {
                         name: "objectType",
@@ -607,12 +605,13 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         type: "SelectItem",
                         valueField: "id",
                         displayField: "titleFa",
-                        filterLocally: true,
-                        // useClientFiltering: true,
                         autoFetchData: false,
                         pickListFields: [{name: "code"}, {name: "titleFa"}],
                         click: function(form){
                             // updateObjectIdLG(form, form.getValue("objectType"));
+                            if(form.getValue("objectType")=="Post"){
+                                Window_AddPost_JspNeedsAssessment.show();
+                            }
                         },
                         changed: function (form, item, value, oldValue) {
                             if(value != oldValue){
@@ -667,6 +666,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         minWidth: 1024,
         keepInParentRect: true,
         autoSize: false,
+        show(){
+            ListGrid_Post_JspNeedsAssessment.invalidateCache();
+            ListGrid_Post_JspNeedsAssessment.fetchData();
+            this.Super("show", arguments);
+        },
         items: [
             isc.TrHLayout.create({
                 members: [
@@ -675,7 +679,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         dataSource: PostDs_needsAssessment,
                         selectionType: "single",
                         filterOnKeypress: false,
-                        autoFetchData:true,
+                        // autoFetchData:true,
                         fields: [
                             {name: "id", primaryKey: true, hidden: true},
                             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -696,6 +700,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
+                                editNeedsAssessmentRecord(record.id, "Post");
                             })
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
 
@@ -711,7 +716,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     });
 
     function updateObjectIdLG(form, value) {
-        form.getItem("objectId").enable();
+        form.getItem("objectId").canEdit = true;
         switch (value) {
             case 'Job':
                 form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
@@ -719,28 +724,23 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false }
                     ];
-                // form.getItem("objectId").canEdit = true;
                 break;
             case 'JobGroup':
                 form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
-                form.getItem("objectId").canEdit = true;
                 break;
             case 'Post':
-                Window_AddPost_JspNeedsAssessment.show();
                 form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
-                form.getItem("objectId").disable();
+                form.getItem("objectId").canEdit = false;
                 PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
-                // form.getItem("objectId").fetchData();
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
-                // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGrade':
                 form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
@@ -748,17 +748,14 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
                     ];
-                // form.getItem("objectId").canEdit = true;
                 break;
             case 'PostGradeGroup':
                 form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
                     ];
-                // form.getItem("objectId").canEdit = true;
                 break;
         }
-        // form.getItem("objectId").fetchData(x);
     }
 
     function createNeedsAssessmentRecords(data) {
