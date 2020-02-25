@@ -10,5 +10,9 @@
         <createSequence sequenceName="seq_syllabus_id"/>
     </changeSet>
 
+    <changeSet author="ghazanfari_f (generated)" id="1582600827336-244">
+        <createSequence sequenceName="seq_state_id"/>
+    </changeSet>
+
 
 </databaseChangeLog>

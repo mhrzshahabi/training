@@ -23,7 +23,7 @@ public class ExcelUtil {
 
     static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
-    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n3) For Import.xlsx";
+    static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n3) Part 1 For Import.xlsx";
 
     static OAuth2RestTemplate restTemplate;
     static URI uri;
@@ -57,7 +57,6 @@ public class ExcelUtil {
 
     public static void parseWorkbook() {
         FileInputStream file = null;
-        ModelMapper modelMapper = new ModelMapper();
         try {
             file = new FileInputStream(new File(excelFilePath));
             XSSFWorkbook workbook = new XSSFWorkbook(file);
