@@ -479,6 +479,7 @@
                         createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="job"/>",
                     click: function () {
