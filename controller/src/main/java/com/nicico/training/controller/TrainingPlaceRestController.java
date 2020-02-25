@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/training-place")
+@RequestMapping(value = "/api/trainingPlace")
 public class TrainingPlaceRestController {
     private final ITrainingPlaceService trainingPlaceService;
     private final ObjectMapper objectMapper;

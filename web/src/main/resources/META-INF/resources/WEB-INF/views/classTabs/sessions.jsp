@@ -252,7 +252,7 @@
                 {name: "titleFa", title: "<spring:message code="location.name"/>"},
                 {name: "capacity", title: "<spring:message code="capacity"/>"}
             ],
-            fetchDataURL: instituteUrl + "0/training-places"
+            fetchDataURL: instituteUrl + "0/trainingPlaces"
         });
 
     }
@@ -492,10 +492,10 @@
                         ],
                         click: function (form, item) {
                             if (form.getValue("instituteId")) {
-                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/trainingPlaces";
                                 item.fetchData();
                             } else {
-                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/trainingPlaces";
                                 item.fetchData();
                                 isc.MyOkDialog.create({
                                     message: "<spring:message code="chose.presenter"/>",
@@ -668,7 +668,7 @@
                 record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
 
                 DynamicForm_Session.getField("instituteId").fetchData();
-                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
+                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
                 RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
 
                 session_method = "PUT";

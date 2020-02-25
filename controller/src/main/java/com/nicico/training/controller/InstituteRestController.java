@@ -521,7 +521,7 @@ public class InstituteRestController {
     }
 
     @Loggable
-    @GetMapping(value = "{instituteId}/training-places")
+    @GetMapping(value = "{instituteId}/trainingPlaces")
 //    @PreAuthorize("hasAnyAuthority('r_teacher')")
     public ResponseEntity<TrainingPlaceDTO.TrainingPlaceSpecRs> getTrainingPlaces(@PathVariable Long instituteId) {
         List<TrainingPlaceDTO.Info> trainingPlaces = new ArrayList<>();
@@ -578,7 +578,7 @@ public class InstituteRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/training-places")
+    @GetMapping(value = "/trainingPlaces")
 //    @PreAuthorize("hasAuthority('r_institute')")
     public ResponseEntity<InstituteDTO.InstituteSpecRs> listOfInstituteWithTrainingPlace(
             @RequestParam(value = "_startRow", required = false) Integer startRow,
