@@ -747,11 +747,13 @@ public class TeacherRestController {
         int table_2_relation = 0;
         Category teacherMajorCategory = teacher.getMajorCategory();
         Subcategory teacherMajorSubCategory = teacher.getMajorSubCategory();
-        if(category_selected.getId() == teacherMajorCategory.getId()) {
-            table_2_relation += 1;
-            if (subCategory_selected != null)
-                if (subCategory_selected.getId() == teacherMajorSubCategory.getId())
-                    table_2_relation += 1;
+        if(teacherMajorCategory != null) {
+            if (category_selected.getId() == teacherMajorCategory.getId()) {
+                table_2_relation += 1;
+                if (subCategory_selected != null && teacherMajorSubCategory != null)
+                    if (subCategory_selected.getId() == teacherMajorSubCategory.getId())
+                        table_2_relation += 1;
+            }
         }
         if(teacher_educationLevel == 1)
             table_2_grade = (float) 2.5;
