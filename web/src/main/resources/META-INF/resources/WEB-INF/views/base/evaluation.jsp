@@ -297,7 +297,7 @@
                                             // '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
                                         switch(value){
                                             case "SEFT":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"TRAINING"}';
+                                                criteria= '{"fieldName":"questionnaireType.code","operator":"equals","value":"SEFT"}';
                                                 criteriaEdit +=
                                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":141},' +
                                                     '{"fieldName":"evaluatorId","operator":"equals","value":<%= SecurityUtil.getUserId()%>},' +
@@ -314,7 +314,7 @@
                                                 Window_AddStudent_JspEvaluation.show();
                                                 return;
                                             case "TEFC":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"CLASS"}';
+                                                criteria= '{"fieldName":"questionnaireType.code","operator":"equals","value":"TEFC"}';
                                                 criteriaEdit +=
                                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":140},' +
                                                     '{"fieldName":"evaluatorId","operator":"equals","value":'+teacherIdJspEvaluation+'},' +
@@ -323,7 +323,7 @@
                                                 form.setValue("evaluated", form.getValue("titleClass"));
                                                 break;
                                             case "OEFS":
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                                criteria= '{"fieldName":"questionnaireType.code","operator":"equals","value":"OEFS"}';
                                                 criteriaEdit +=
                                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":230},' +
                                                     '{"fieldName":"evaluatorId","operator":"equals","value":'+studentIdJspEvaluation+'},' +
@@ -344,7 +344,7 @@
                                     endRow:true,
                                     changed(form, item, value){
                                         DynamicForm_Questions_Body_JspEvaluation.clearValues();
-                                        var criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                        var criteria= '{"fieldName":"questionnaireType.code","operator":"equals","value":""}';
                                         var criteriaEdit=
                                             '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},' +
                                             '{"fieldName":"questionnaireTypeId","operator":"equals","value":139},' +
@@ -365,7 +365,7 @@
                                                 break;
                                             case "Reactive":
                                                 evaluationLevelId = 154;
-                                                criteria= '{"fieldName":"domain.code","operator":"equals","value":"EQP"},{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
+                                                criteria= '{"fieldName":"questionnaireType.code","operator":"equals","value":"SEFC"}';
                                                 criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154}';
                                                 requestEvaluationQuestions(criteria, criteriaEdit,  1);
                                                 break;
@@ -565,7 +565,7 @@
                         let itemList = [];
                         Window_Questions_JspEvaluation.show();
                         function requestEvaluationQuestions(criteria, criteriaEdit, type=0){
-                            isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
+                            isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
                             localQuestions = JSON.parse(resp.data).response.data;
                             for (let i = 0; i < localQuestions.length; i++) {
                                 let item = {};
