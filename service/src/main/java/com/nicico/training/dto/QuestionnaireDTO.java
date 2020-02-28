@@ -1,5 +1,6 @@
 package com.nicico.training.dto;
 
+import com.nicico.training.model.QuestionnaireQuestion;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class QuestionnaireDTO implements Serializable {
         private Long id;
         private Integer version;
         private ParameterValueDTO.MinInfo questionnaireType;
+        private List<QuestionnaireQuestion> questionnaireQuestionList;
     }
 
     @Getter

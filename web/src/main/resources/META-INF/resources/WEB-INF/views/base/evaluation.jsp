@@ -287,7 +287,7 @@
                                         form.clearValue("evaluationLevel");
                                         form.clearValue("evaluator");
                                         form.clearValue("evaluated");
-                                        var criteria= '{"fieldName":"domain.code","operator":"equals","value":""}';
+                                        var criteria= '{"fieldName":"questionnaireType.code","operator":"equals","value":""}';
                                         DynamicForm_Questions_Body_JspEvaluation.setFields([]);
                                         form.getItem("evaluationLevel").disable();
                                         var criteriaEdit=
@@ -566,34 +566,36 @@
                         Window_Questions_JspEvaluation.show();
                         function requestEvaluationQuestions(criteria, criteriaEdit, type=0){
                             isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
-                            localQuestions = JSON.parse(resp.data).response.data;
-                            for (let i = 0; i < localQuestions.length; i++) {
-                                let item = {};
-                                switch (localQuestions[i].domain.code) {
-                                    case "EQP":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "امکانات: " + (i + 1).toString() + "- " + localQuestions[i].question;
-                                        break;
-                                    case "CLASS":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "کلاس: " + (i + 1).toString() + "- " + localQuestions[i].question;
-                                        break;
-                                    case "SAT":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "استاد: " + (i + 1).toString() + "- " + localQuestions[i].question;
-                                        break;
-                                    default:
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = (i + 1).toString() + "- " + localQuestions[i].question;
+                                if(JSON.parse(resp.data).response.data.length > 0) {
+                                    localQuestions = JSON.parse(resp.data).response.data[0].questionnaireQuestionList;
+                                    for (let i = 0; i < localQuestions.length; i++) {
+                                        let item = {};
+                                        switch (localQuestions[i].evaluationQuestion.domain.code) {
+                                            case "EQP":
+                                                item.name = "Q" + localQuestions[i].id;
+                                                item.title = "امکانات: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                break;
+                                            case "CLASS":
+                                                item.name = "Q" + localQuestions[i].id;
+                                                item.title = "کلاس: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                break;
+                                            case "SAT":
+                                                item.name = "Q" + localQuestions[i].id;
+                                                item.title = "استاد: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                break;
+                                            default:
+                                                item.name = "Q" + localQuestions[i].id;
+                                                item.title = (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                        }
+                                        item.type = "radioGroup";
+                                        item.vertical = false;
+                                        // item.required = true;
+                                        item.fillHorizontalSpace = true;
+                                        item.valueMap = valueMapAnswer;
+                                        // item.colSpan = ,
+                                        itemList.add(item);
+                                    }
                                 }
-                                item.type = "radioGroup";
-                                item.vertical = false;
-                                // item.required = true;
-                                item.fillHorizontalSpace = true;
-                                item.valueMap = valueMapAnswer;
-                                // item.colSpan = ,
-                                itemList.add(item);
-                            }
                             if(type !== 0){
                                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "goal-mainObjective/" + ListGrid_evaluation_class.getSelectedRecord().course.id, "GET", null, function (resp) {
                                     localQuestions = JSON.parse(resp.data);

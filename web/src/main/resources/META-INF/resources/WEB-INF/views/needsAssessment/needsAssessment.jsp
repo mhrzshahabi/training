@@ -44,10 +44,12 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             isc.ToolStripButtonEdit.create({
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
-                    var criteria = '{"fieldName":"id","operator":"equals","value":"'+ ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId +'"}';
-                    PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+                    if(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType == "Post") {
+                        var criteria = '{"fieldName":"id","operator":"equals","value":"' + ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId + '"}';
+                        PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+                    }
                     NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
-                        editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, "Post");
+                        editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                         Window_NeedsAssessment_JspNeedsAssessment.show();
                         NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
                     })
@@ -225,7 +227,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name:"title"}
         ],
         fetchDataURL: parameterValueUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"parameter.code\",\"operator\":\"equals\",\"value\":\"NeedsAssessmentPriority\"}"
-    })
+    });
     var RestDataSource_Competence_JspNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -336,8 +338,8 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 if(removeRecord_JspNeedsAssessment(data[i])){
                     return;
                 }
-                DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
             }
+            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
         },
         dataChanged(){
             editing = true;
@@ -624,6 +626,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         click: function(form){
                             // updateObjectIdLG(form, form.getValue("objectType"));
                             if(form.getValue("objectType")=="Post"){
+                                PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
                                 Window_AddPost_JspNeedsAssessment.show();
                             }
                         },
@@ -750,7 +753,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
                 form.getItem("objectId").canEdit = false;
-                PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
+                // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
