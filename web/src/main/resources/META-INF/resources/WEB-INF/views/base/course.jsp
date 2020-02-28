@@ -2776,6 +2776,9 @@
                 }
             }
             let sum = da + ma + ne;
+            if(sum == 0){
+                sum = 1;
+            }
             lblCourse.getField("domainCourse").setValue("دانشی: " + getFormulaMessage(Math.round(da * 100 / sum) + "%", 2, "brown") + "، مهارتی: " + getFormulaMessage(Math.round(ma * 100 / sum) + "%", 2, "green") + "، نگرشی: " + getFormulaMessage(Math.round(ne * 100 / sum) + "%", 2, "blue"));
         }, 1000)
     }

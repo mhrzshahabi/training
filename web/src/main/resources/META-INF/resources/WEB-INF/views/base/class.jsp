@@ -395,6 +395,7 @@
 // width: "700",
         validateOnExit: true,
         height: "100%",
+        readOnlyDisplay: "disabled",
         wrapItemTitles: true,
         isGroup: true,
         groupTitle: "اطلاعات پایه کلاس",
@@ -484,7 +485,7 @@
                 name: "code",
                 title: "<spring:message code='class.code'/>:",
                 colSpan: 3,
-                // textAlign: "center",
+                textAlign: "center",
                 readOnlyHover: "به منظور تولید اتوماتیک کد کلاس، باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
                 canEdit: false,
                 // type: "staticText", textBoxStyle: "textItemLite"
@@ -721,7 +722,7 @@
                 colSpan: 1,
                 readOnlyHover: "به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
                 canEdit: false,
-                // textAlign: "center",
+                textAlign: "center",
                 // type: "staticText",
                 // textBoxStyle: "textItemLite"
             },
@@ -858,6 +859,7 @@
             {
                 name: "acceptancelimit",
                 title: "حد نمره قبولی",
+                textAlign: "center",
                 required: true,
             },
             {
