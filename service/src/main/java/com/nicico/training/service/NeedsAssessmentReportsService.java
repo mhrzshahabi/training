@@ -40,10 +40,9 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostId(Long postId) {
-        Long passedCodeId = parameterValueService.getId("Passed");
+    public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostId(Long postId, String personnelNo) {
 
-        PersonnelDTO.Info student = personnelService.getByPostCode(postId).get(0);
+        Long passedCodeId = parameterValueService.getId("Passed");
 
         List<NeedsAssessment> needsAssessmentList = getNeedsAssessmentByPostId(postId);
         needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
@@ -68,22 +67,20 @@ public class NeedsAssessmentReportsService {
                 }
             }
         }
-
-        Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
-        Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
-
-        for (int i = 0; i < courses.size(); i++) {
+        for (int i = 0; i < courses.size(); i++)
             courses.get(i).setNeedsAssessmentPriorityId(needsAssessmentList.get(i).getNeedsAssessmentPriorityId());
-            if (classStudentReportService.isPassedCoursesOfStudentByNationalCode(mustTakeCourses.get(i), isPassed))
-                courses.get(i).setStatus(passedCodeId.toString());
+
+        if (personnelNo != null && !courses.isEmpty()) {
+            PersonnelDTO.Info student = personnelService.get(personnelNo);
+            Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
+            Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
+
+            for (int i = 0; i < courses.size(); i++) {
+                if (classStudentReportService.isPassedCoursesOfStudentByNationalCode(mustTakeCourses.get(i), isPassed))
+                    courses.get(i).setStatus(passedCodeId.toString());
+            }
         }
         return courses;
-    }
-
-    @Transactional(readOnly = true)
-//    @Override
-    public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostCode(String postCode) {
-        return getCoursesByPostId(postService.getByPostCode(postCode).getId());
     }
 
     @Transactional(readOnly = true)
@@ -103,8 +100,8 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> search(SearchDTO.SearchRq request, String postCode) {
-        List<NeedsAssessmentReportsDTO.NeedsCourses> courses = getCoursesByPostCode(postCode);
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> search(SearchDTO.SearchRq request, Long postCode, String personnelNo) {
+        List<NeedsAssessmentReportsDTO.NeedsCourses> courses = getCoursesByPostId(postCode, personnelNo);
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) courses.size());
         rs.setList(courses);

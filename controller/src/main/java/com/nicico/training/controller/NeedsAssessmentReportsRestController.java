@@ -38,21 +38,21 @@ public class NeedsAssessmentReportsRestController {
     private final ReportUtil reportUtil;
     private final MessageSource messageSource;
 
-    @GetMapping(value = "/courses-for-post/{postCode}")
+    @GetMapping
     public ResponseEntity fullList(HttpServletRequest iscRq,
-                                   @PathVariable String postCode,
+                                   @RequestParam Long postId,
+                                   @RequestParam(required = false) String personnelNo,
                                    HttpServletResponse response) throws IOException {
-        postCode = postCode.replace('.', '/');
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         try {
-            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> searchRs = needsAssessmentReportsService.search(searchRq, postCode);
+            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> searchRs = needsAssessmentReportsService.search(searchRq, postId, personnelNo);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
         } catch (TrainingException e) {
             Locale locale = LocaleContextHolder.getLocale();
-            String message = e.getMessage().equals("PostNotFound") ? messageSource.getMessage("needsAssessmentReport.postCode.not.Found",null, locale) : e.getMessage();
+            String message = e.getMessage().equals("PostNotFound") ? messageSource.getMessage("needsAssessmentReport.postCode.not.Found", null, locale) : e.getMessage();
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }

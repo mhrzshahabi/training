@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_questionnaire_question",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"f_evaluation_question", "f_questionnaire"})})

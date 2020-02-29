@@ -39,6 +39,19 @@ public class PersonnelService implements IPersonnelService {
 
     @Transactional(readOnly = true)
     @Override
+    public PersonnelDTO.Info get(String personnelNo) {
+        return modelMapper.map(getPersonnel(personnelNo), PersonnelDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Personnel getPersonnel(String personnelNo) {
+        Optional<Personnel> optPersonnel = personnelDAO.findById(personnelNo);
+        return optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public SearchDTO.SearchRs<PersonnelDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(personnelDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelDTO.Info.class));
     }

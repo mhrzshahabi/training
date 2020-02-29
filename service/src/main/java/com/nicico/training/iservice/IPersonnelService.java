@@ -12,6 +12,10 @@ public interface IPersonnelService {
 
     List<PersonnelDTO.Info> list();
 
+    PersonnelDTO.Info get(String personnelNo);
+
+    Personnel getPersonnel(String personnelNo);
+
     SearchDTO.SearchRs<PersonnelDTO.Info> search(SearchDTO.SearchRq rq);
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
