@@ -32,14 +32,14 @@ public class QuestionnaireQuestion extends Auditable {
     @Column(name = "n_order", nullable = false)
     private Integer order;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_evaluation_question", nullable = false, insertable = false, updatable = false)
     private EvaluationQuestion evaluationQuestion;
 
     @Column(name = "f_evaluation_question")
     private Long evaluationQuestionId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_questionnaire", nullable = false, insertable = false, updatable = false)
     private Questionnaire questionnaire;
 

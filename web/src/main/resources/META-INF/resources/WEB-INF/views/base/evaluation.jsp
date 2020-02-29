@@ -567,68 +567,108 @@
                         function requestEvaluationQuestions(criteria, criteriaEdit, type=0){
                             isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
                                 if(JSON.parse(resp.data).response.data.length > 0) {
-                                    localQuestions = JSON.parse(resp.data).response.data[0].questionnaireQuestionList;
-                                    for (let i = 0; i < localQuestions.length; i++) {
-                                        let item = {};
-                                        switch (localQuestions[i].evaluationQuestion.domain.code) {
-                                            case "EQP":
-                                                item.name = "Q" + localQuestions[i].id;
-                                                item.title = "امکانات: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
-                                                break;
-                                            case "CLASS":
-                                                item.name = "Q" + localQuestions[i].id;
-                                                item.title = "کلاس: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
-                                                break;
-                                            case "SAT":
-                                                item.name = "Q" + localQuestions[i].id;
-                                                item.title = "استاد: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
-                                                break;
-                                            default:
-                                                item.name = "Q" + localQuestions[i].id;
-                                                item.title = (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                    let criteria= '{"fieldName":"id","operator":"equals","value":'+ JSON.parse(resp.data).response.data[0].id +'}';
+                                    isc.RPCManager.sendRequest(TrDSRequest(questionnaireQuestionUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
+                                        localQuestions = JSON.parse(resp.data).response.data;
+                                        for (let i = 0; i < localQuestions.length; i++) {
+                                            let item = {};
+                                            switch (localQuestions[i].evaluationQuestion.domain.code) {
+                                                case "EQP":
+                                                    item.name = "Q" + localQuestions[i].id;
+                                                    item.title = "امکانات: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    break;
+                                                case "CLASS":
+                                                    item.name = "Q" + localQuestions[i].id;
+                                                    item.title = "کلاس: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    break;
+                                                case "SAT":
+                                                    item.name = "Q" + localQuestions[i].id;
+                                                    item.title = "استاد: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    break;
+                                                default:
+                                                    item.name = "Q" + localQuestions[i].id;
+                                                    item.title = (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                            }
+                                            console.log(item)
+                                            item.type = "radioGroup";
+                                            item.vertical = false;
+                                            // item.required = true;
+                                            item.fillHorizontalSpace = true;
+                                            item.valueMap = valueMapAnswer;
+                                            // item.colSpan = ,
+                                            itemList.add(item);
+                                        };
+                                        if(type !== 0){
+                                            isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "goal-mainObjective/" + ListGrid_evaluation_class.getSelectedRecord().course.id, "GET", null, function (resp) {
+                                                localQuestions = JSON.parse(resp.data);
+                                                for (let i = 0; i < localQuestions.length; i++) {
+                                                    let item = {};
+                                                    switch (localQuestions[i].type) {
+                                                        case "goal":
+                                                            item.name = "G" + localQuestions[i].id;
+                                                            item.title = "هدف: " + (i + 1).toString() + "- " + localQuestions[i].title;
+                                                            break;
+                                                        case "skill":
+                                                            item.name = "M" + localQuestions[i].id;
+                                                            item.title = "هدف اصلي: " + (i + 1).toString() + "- " + localQuestions[i].title;
+                                                            break;
+                                                        // default:
+                                                        //     return;
+                                                    }
+                                                    item.type = "radioGroup";
+                                                    item.vertical = false;
+                                                    // item.required = true;
+                                                    item.fillHorizontalSpace = true;
+                                                    item.valueMap = valueMapAnswer;
+                                                    // item.colSpan = ,
+                                                    itemList.add(item);
+                                                }
+                                                DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                                                requestEvaluationQuestionsEdit(criteriaEdit);
+                                            }));
                                         }
-                                        item.type = "radioGroup";
-                                        item.vertical = false;
-                                        // item.required = true;
-                                        item.fillHorizontalSpace = true;
-                                        item.valueMap = valueMapAnswer;
-                                        // item.colSpan = ,
-                                        itemList.add(item);
+                                        else {
+                                            DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                                            requestEvaluationQuestionsEdit(criteriaEdit);
+                                        }
+                                    }));
+                                }
+                                else {
+                                    if(type !== 0){
+                                        isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "goal-mainObjective/" + ListGrid_evaluation_class.getSelectedRecord().course.id, "GET", null, function (resp) {
+                                            localQuestions = JSON.parse(resp.data);
+                                            for (let i = 0; i < localQuestions.length; i++) {
+                                                let item = {};
+                                                switch (localQuestions[i].type) {
+                                                    case "goal":
+                                                        item.name = "G" + localQuestions[i].id;
+                                                        item.title = "هدف: " + (i + 1).toString() + "- " + localQuestions[i].title;
+                                                        break;
+                                                    case "skill":
+                                                        item.name = "M" + localQuestions[i].id;
+                                                        item.title = "هدف اصلي: " + (i + 1).toString() + "- " + localQuestions[i].title;
+                                                        break;
+                                                    // default:
+                                                    //     return;
+                                                }
+                                                item.type = "radioGroup";
+                                                item.vertical = false;
+                                                // item.required = true;
+                                                item.fillHorizontalSpace = true;
+                                                item.valueMap = valueMapAnswer;
+                                                // item.colSpan = ,
+                                                itemList.add(item);
+                                            }
+                                            DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                                            requestEvaluationQuestionsEdit(criteriaEdit);
+                                        }));
+                                    }
+                                    else {
+                                        DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                                        requestEvaluationQuestionsEdit(criteriaEdit);
                                     }
                                 }
-                            if(type !== 0){
-                                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "goal-mainObjective/" + ListGrid_evaluation_class.getSelectedRecord().course.id, "GET", null, function (resp) {
-                                    localQuestions = JSON.parse(resp.data);
-                                    for (let i = 0; i < localQuestions.length; i++) {
-                                        let item = {};
-                                        switch (localQuestions[i].type) {
-                                            case "goal":
-                                                item.name = "G" + localQuestions[i].id;
-                                                item.title = "هدف: " + (i + 1).toString() + "- " + localQuestions[i].title;
-                                                break;
-                                            case "skill":
-                                                item.name = "M" + localQuestions[i].id;
-                                                item.title = "هدف اصلي: " + (i + 1).toString() + "- " + localQuestions[i].title;
-                                                break;
-                                            // default:
-                                            //     return;
-                                        }
-                                        item.type = "radioGroup";
-                                        item.vertical = false;
-                                        // item.required = true;
-                                        item.fillHorizontalSpace = true;
-                                        item.valueMap = valueMapAnswer;
-                                        // item.colSpan = ,
-                                        itemList.add(item);
-                                    }
-                                    DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
-                                    requestEvaluationQuestionsEdit(criteriaEdit);
-                                }));
-                            }
-                            else {
-                                DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
-                                requestEvaluationQuestionsEdit(criteriaEdit);
-                            }
+
                         }));
                         }
                         function requestEvaluationQuestionsEdit(criteria){

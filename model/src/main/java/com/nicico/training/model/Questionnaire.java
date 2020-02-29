@@ -39,7 +39,7 @@ public class Questionnaire extends Auditable {
     @Column(name="f_parameter_value")
     private Long questionnaireTypeId;
 
-//    @OneToMany(mappedBy = "questionnaire")
-//    private List<QuestionnaireQuestion> questionnaireQuestionList;
+    @OneToMany(mappedBy = "questionnaire", fetch = FetchType.EAGER)
+    private List<QuestionnaireQuestion> questionnaireQuestionList;
 }
 
