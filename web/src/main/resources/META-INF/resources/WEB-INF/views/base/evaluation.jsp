@@ -585,6 +585,10 @@
                                                     item.name = "Q" + localQuestions[i].id;
                                                     item.title = "استاد: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
                                                     break;
+                                                case "Content":
+                                                    item.name = "Q" + localQuestions[i].id;
+                                                    item.title = "محتواي کلاس: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    break;
                                                 default:
                                                     item.name = "Q" + localQuestions[i].id;
                                                     item.title = (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
