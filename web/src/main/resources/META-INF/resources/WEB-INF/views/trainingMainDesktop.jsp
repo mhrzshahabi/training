@@ -25,7 +25,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
-    <%--<SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>--%>
+    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
@@ -426,7 +426,7 @@
                 },
                 <%--                </sec:authorize>--%>
                 {
-                    title: "<spring:message code="skill.categorize"/>",
+                    title: "<spring:message code="category&subcategory"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/category/show-form"/>");
                     }
@@ -531,13 +531,13 @@
                         createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="need.assessment.skill.based"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");
-                    }
-                },
+                <%--{isSeparator: true},--%>
+                <%--{--%>
+                <%--    title: "<spring:message code="need.assessment.skill.based"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
@@ -637,12 +637,12 @@
                         createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="evaluation.analysis"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                <%--    title: "<spring:message code="evaluation.analysis"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");--%>
+                <%--    }--%>
+                <%--},--%>
                 {
                     title: "<spring:message code="evaluation.Coefficient"/>",
                     click: function () {
