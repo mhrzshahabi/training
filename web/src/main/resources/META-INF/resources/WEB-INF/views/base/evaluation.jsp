@@ -575,23 +575,23 @@
                                             switch (localQuestions[i].evaluationQuestion.domain.code) {
                                                 case "EQP":
                                                     item.name = "Q" + localQuestions[i].id;
-                                                    item.title = "امکانات: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    item.title = "امکانات: " + localQuestions[i].evaluationQuestion.question;
                                                     break;
                                                 case "CLASS":
                                                     item.name = "Q" + localQuestions[i].id;
-                                                    item.title = "کلاس: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    item.title = "کلاس: " + localQuestions[i].evaluationQuestion.question;
                                                     break;
                                                 case "SAT":
                                                     item.name = "Q" + localQuestions[i].id;
-                                                    item.title = "استاد: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    item.title = "استاد: " + localQuestions[i].evaluationQuestion.question;
                                                     break;
                                                 case "Content":
                                                     item.name = "Q" + localQuestions[i].id;
-                                                    item.title = "محتواي کلاس: " + (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    item.title = "محتواي کلاس: " + localQuestions[i].evaluationQuestion.question;
                                                     break;
                                                 default:
                                                     item.name = "Q" + localQuestions[i].id;
-                                                    item.title = (i + 1).toString() + "- " + localQuestions[i].evaluationQuestion.question;
+                                                    item.title = localQuestions[i].evaluationQuestion.question;
                                             }
                                             console.log(item)
                                             item.type = "radioGroup";
@@ -610,11 +610,11 @@
                                                     switch (localQuestions[i].type) {
                                                         case "goal":
                                                             item.name = "G" + localQuestions[i].id;
-                                                            item.title = "هدف: " + (i + 1).toString() + "- " + localQuestions[i].title;
+                                                            item.title = "هدف: " + localQuestions[i].title;
                                                             break;
                                                         case "skill":
                                                             item.name = "M" + localQuestions[i].id;
-                                                            item.title = "هدف اصلي: " + (i + 1).toString() + "- " + localQuestions[i].title;
+                                                            item.title = "هدف اصلي: " + localQuestions[i].title;
                                                             break;
                                                         // default:
                                                         //     return;
