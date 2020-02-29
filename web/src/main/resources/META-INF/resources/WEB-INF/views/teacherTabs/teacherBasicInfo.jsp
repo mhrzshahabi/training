@@ -78,6 +78,7 @@
                 changed: function () {
                     var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
                     vm.clearValues();
+                    DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     if (personnelStatusTemp == "true") {
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
