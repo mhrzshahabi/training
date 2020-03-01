@@ -251,7 +251,7 @@
         loaded: false,
         initialSort: [
 // {property: "createdBy", direction: "ascending"},
-            {property: "code", direction: "descending", primarySort: true}
+            {property: "startDate", direction: "ascending", primarySort: true}
         ],
         // selectionUpdated: function (record) {
         //     refreshSelectedTab_class(tabSetClass.getSelectedTab());
@@ -395,7 +395,8 @@
 // width: "700",
         validateOnExit: true,
         height: "100%",
-        readOnlyDisplay: "disabled",
+        // backgroundColor: "#fe9d4f",
+        readOnlyDisplay: "readOnly",
         wrapItemTitles: true,
         isGroup: true,
         groupTitle: "اطلاعات پایه کلاس",
@@ -910,6 +911,7 @@
         height: "100%",
         validateOnExit: true,
         isGroup: true,
+        // backgroundColor: "#fe9d4f",
         titleAlign: "left",
         wrapItemTitles: true,
         groupTitle: "<spring:message code="class.meeting.time"/>",
@@ -1308,7 +1310,6 @@
             delete data.course;
             delete data.term;
             if (data.scoringMethod == "1") {
-
                 data.acceptancelimit = data.acceptancelimit_a
             }
             var classSaveUrl = classUrl;
@@ -1401,6 +1402,7 @@
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
         // width: "90%",
+        bodyColor : "#cbeaff",
         minWidth: 1024,
         // autoSize: false,
         // height: "87%",
