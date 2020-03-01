@@ -35,7 +35,6 @@ public class ClassStudentDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long tclassId;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)

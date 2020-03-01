@@ -713,9 +713,9 @@
                     }
                 },
                 {
-                    title: "<spring:message code="personnel.needsAssessment.courses.report"/>",
+                    title: "<spring:message code="reports.need.assessment"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/needsAssessment-by-one-person"/>");
+                        createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                     }
                 },
                 {

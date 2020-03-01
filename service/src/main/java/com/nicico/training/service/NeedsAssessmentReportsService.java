@@ -33,61 +33,62 @@ public class NeedsAssessmentReportsService {
     private final PostGradeDAO postGradeDAO;
     private final NeedsAssessmentDAO needsAssessmentDAO;
 
-    private final IPostService postService;
     private final ClassStudentReportService classStudentReportService;
     private final IPersonnelService personnelService;
     private final ParameterValueService parameterValueService;
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedsAssessmentReportsDTO.NeedsCourses> getCoursesByPostId(Long postId, String personnelNo) {
-
-        Long passedCodeId = parameterValueService.getId("Passed");
-
-        List<NeedsAssessment> needsAssessmentList = getNeedsAssessmentByPostId(postId);
-        needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
-        List<Course> mustTakeCourses = needsAssessmentList.stream().map(NA -> NA.getSkill().getCourse()).collect(Collectors.toList());
-
-        List<NeedsAssessmentReportsDTO.NeedsCourses> courses = modelMapper.map(mustTakeCourses, new TypeToken<List<NeedsAssessmentReportsDTO.NeedsCourses>>() {
-        }.getType());
-
-        for (int i = 1; i < courses.size(); i++) {
-            for (int j = 0; j < i; j++) {
-                if (courses.get(i).getId().equals(courses.get(j).getId())) {
-                    if (needsAssessmentList.get(i).getNeedsAssessmentPriorityId().equals(needsAssessmentList.get(j).getNeedsAssessmentPriorityId())) {
-                        courses.remove(i);
-                        needsAssessmentList.remove(i--);
-                        break;
-                    }
-                    NeedsAssessmentReportsDTO.NeedsCourses newCourse = new NeedsAssessmentReportsDTO.NeedsCourses();
-                    modelMapper.map(courses.get(i), newCourse);
-                    courses.remove(i);
-                    courses.add(i, newCourse);
-                    break;
-                }
-            }
-        }
-        for (int i = 0; i < courses.size(); i++)
-            courses.get(i).setNeedsAssessmentPriorityId(needsAssessmentList.get(i).getNeedsAssessmentPriorityId());
-
-        if (personnelNo != null && !courses.isEmpty()) {
-            PersonnelDTO.Info student = personnelService.get(personnelNo);
-            Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
-            Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
-
-            for (int i = 0; i < courses.size(); i++) {
-                if (classStudentReportService.isPassedCoursesOfStudentByNationalCode(mustTakeCourses.get(i), isPassed))
-                    courses.get(i).setStatus(passedCodeId.toString());
-            }
-        }
-        return courses;
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, String personnelNo) {
+        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelNo);
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) needsAssessmentReportList.size());
+        rs.setList(needsAssessmentReportList);
+        return rs;
     }
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedsAssessment> getNeedsAssessmentByPostId(Long postId) {
+    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, String personnelNo) {
+
+        Long passedCodeId = parameterValueService.getId("Passed");
+
+        List<NeedsAssessment> needsAssessmentList = getNeedsAssessmentList(objectId, objectType);
+        needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
+        List<NeedsAssessmentReportsDTO.ReportInfo> mustPass = modelMapper.map(needsAssessmentList, new TypeToken<List<NeedsAssessmentReportsDTO.ReportInfo>>() {
+        }.getType());
+//        for (int i = 1; i < mustPass.size(); i++) {
+//            for (int j = 0; j < i; j++) {
+//                if (mustPass.get(i).getSkill().getCourse().getId().equals(mustPass.get(j).getSkill().getCourse().getId())) {
+//                    if (mustPass.get(i).getNeedsAssessmentPriorityId().equals(mustPass.get(j).getNeedsAssessmentPriorityId())) {
+//                        mustPass.remove(i--);
+//                        break;
+//                    }
+//                    CourseDTO.NeedsAssessmentReportInfo newCourse = new CourseDTO.NeedsAssessmentReportInfo();
+//                    modelMapper.map(mustPass.get(i).getSkill().getCourse(), newCourse);
+//                    mustPass.get(i).getSkill().setCourse(newCourse);
+//                    break;
+//                }
+//            }
+//        }
+        if (personnelNo != null && !mustPass.isEmpty()) {
+            PersonnelDTO.Info student = personnelService.get(personnelNo);
+            Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
+            Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
+
+            for (int i = 0; i < mustPass.size(); i++) {
+                if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed))
+                    mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId.toString());
+            }
+        }
+        return mustPass;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public List<NeedsAssessment> getNeedsAssessmentList(Long objectId, String objectType) {
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
-        addCriteria(criteriaRq, "Post", postId);
+        addCriteria(criteriaRq, objectType, objectId);
         List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
         needsAssessmentList.sort(Comparator.comparingInt(a -> NeedsAssessment.priorityList.indexOf(a.getObjectType())));
         List<NeedsAssessment> withoutDuplicate = new ArrayList<>();
@@ -96,16 +97,6 @@ public class NeedsAssessmentReportsService {
                 withoutDuplicate.add(needsAssessment);
         });
         return withoutDuplicate;
-    }
-
-    @Transactional(readOnly = true)
-//    @Override
-    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> search(SearchDTO.SearchRq request, Long postCode, String personnelNo) {
-        List<NeedsAssessmentReportsDTO.NeedsCourses> courses = getCoursesByPostId(postCode, personnelNo);
-        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> rs = new SearchDTO.SearchRs<>();
-        rs.setTotalCount((long) courses.size());
-        rs.setList(courses);
-        return rs;
     }
 
     @Transactional(readOnly = true)

@@ -40,7 +40,8 @@ public class NeedsAssessmentReportsRestController {
 
     @GetMapping
     public ResponseEntity fullList(HttpServletRequest iscRq,
-                                   @RequestParam Long postId,
+                                   @RequestParam Long objectId,
+                                   @RequestParam String objectType,
                                    @RequestParam(required = false) String personnelNo,
                                    HttpServletResponse response) throws IOException {
         int startRow = 0;
@@ -48,7 +49,7 @@ public class NeedsAssessmentReportsRestController {
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         try {
-            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.NeedsCourses> searchRs = needsAssessmentReportsService.search(searchRq, postId, personnelNo);
+            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
         } catch (TrainingException e) {
             Locale locale = LocaleContextHolder.getLocale();
