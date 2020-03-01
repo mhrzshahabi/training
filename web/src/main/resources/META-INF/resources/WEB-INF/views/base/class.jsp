@@ -30,6 +30,15 @@
         fetchDataURL: teacherUrl + "fullName-list"
     });
 
+    var RestDataSource_category_JspCourse = isc.TrDS.create({
+        ID: "categoryDS",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+
     // var RestDataSource_EAttachmentType_JspClass = isc.TrDS.create({
     //     fields: [
     //         {name: "id", primaryKey: true},
@@ -115,7 +124,6 @@
         ],
         fetchDataURL: classUrl + "student"
     });
-
     var RestDataSource_Term_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -148,7 +156,7 @@
             {name: "capacity", title: "ظرفیت"}
         ],
 // fetchDataURL: instituteUrl + "0/trainingPlaces"
-        fetchDataURL: trainingPlaceUrl + "/with-institute"
+//         fetchDataURL: trainingPlaceUrl + "/with-institute"
     });
 
 
@@ -415,6 +423,7 @@
                 textAlign: "center",
                 pickListWidth: "600",
                 optionDataSource: RestDataSource_Course_JspClass,
+                canEdit: false,
                 // autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
                 filterFields: ["titleFa", "code", "createdBy"],
@@ -424,7 +433,7 @@
                     {name: "titleFa", autoFitWidth: true},
                     {name: "createdBy"}
                 ],
-                changed: function (form, item, value) {
+                changed: function (form, item) {
                     form.getItem("startEvaluation").setDisabled(false);
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
                     form.setValue("scoringMethod", item.getSelectedRecord().scoringMethod);
@@ -454,6 +463,10 @@
                         form.getItem("preCourseTest").hide();
                     } else
                         form.getItem("preCourseTest").show();
+                },
+                click(form){
+                    Window_AddCourse_JspClass.show();
+
                 }
             },
             {
@@ -787,6 +800,7 @@
                         isc.MyOkDialog.create({
                             message: "ابتدا برگزار کننده را انتخاب کنید",
                         });
+                        form.getItem("instituteId").selectValue();
                     }
 // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
 // return {category:category};
@@ -1433,6 +1447,77 @@
         })]
     });
 
+    var Window_AddCourse_JspClass = isc.Window.create({
+        title: "<spring:message code="course.plural.list"/>",
+        placement: "fillScreen",
+        // width: "80%",
+        // height: "50%",
+        minWidth: 1024,
+        keepInParentRect: true,
+        autoSize: false,
+        show(){
+            ListGrid_Course_JspClass.invalidateCache();
+            ListGrid_Course_JspClass.fetchData();
+            this.Super("show", arguments);
+        },
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    isc.TrLG.create({
+                        ID: "ListGrid_Course_JspClass",
+                        dataSource: RestDataSource_Course_JspClass,
+                        selectionType: "single",
+                        filterOnKeypress: false,
+                        // autoFetchData:true,
+                        fields: [
+                            // {name: "scoringMethod"},
+                            // {name: "acceptancelimit"},
+                            // {name: "startEvaluation"},
+                            {
+                                name: "code",
+                                title: "<spring:message code="course.code"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            },
+                            {
+                                name: "titleFa",
+                                title: "<spring:message code="course.title"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            },
+                            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+                            {name: "theoryDuration", title: "<spring:message code="course_Running_time"/>"},
+                            {
+                                name: "categoryId",
+                                title: "<spring:message code="category"/> ",
+                                optionDataSource: RestDataSource_category_JspCourse,
+                                valueField:"id",
+                                displayField:"titleFa"
+                            },
+                        ],
+                        gridComponents: ["filterEditor", "header", "body"],
+                        recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
+                            DynamicForm_Class_JspClass.setValue("course.id", record.id);
+                            setTimeout(function () {
+                                DynamicForm_Class_JspClass.getItem("course.id").changed(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("course.id"));
+                                Window_AddCourse_JspClass.close();
+                            },1000)
+
+                            // var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
+                            // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+                            // DynamicForm_Class_JspClass.getItem("course.id").fetchData(function () {
+                            //     DynamicForm_Class_JspClass.setValue("objectId", record.id);
+                            //     editNeedsAssessmentRecord(record.id, "Post");
+                            // })
+                            // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
+
+                        }
+                    }),
+                ]
+            })]
+    })
+
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Add Student Section*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -2058,8 +2143,6 @@
         }
     }
 
-
-
     function GetScoreState(resp) {
 
         console.log(resp.httpResponseCode)
@@ -2225,7 +2308,6 @@
             }));
     }
 
-
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendEndingClassToWorkflow() {
 
@@ -2357,21 +2439,14 @@
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
-
-
     //*****set save button status*****
     function saveButtonStatus() {
-
         if ("${username}" === "ahmadi_z") {
-
             IButton_Class_Save_JspClass.enable();
             IButton_Class_Save_JspClass.setOpacity(100);
-
             return;
         }
-
         let sRecord = VM_JspClass.getValues();
-
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
 
             let workflowStatusCode = resp.data;
@@ -2390,5 +2465,4 @@
             }
 
         }));
-
     }
