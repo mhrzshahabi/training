@@ -429,12 +429,12 @@ public class CourseService implements ICourseService {
     @Override
     public String getMaxCourseCode(String str) {
         List<Course> courseList = courseDAO.findByCodeStartingWith(str);
-        int max = 0;
+        Integer max = 0;
         if (courseList.size() == 0)
             return "0";
         for (Course course : courseList) {
-            if (max < Integer.parseInt(course.getCode().substring(6, 10)))
-                max = Integer.parseInt(course.getCode().substring(6, 10));
+            if (max < Integer.parseInt(course.getCode().substring(6)))
+                max = Integer.parseInt(course.getCode().substring(6));
         }
         return String.valueOf(max);
     }

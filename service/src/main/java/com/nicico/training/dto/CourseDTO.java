@@ -99,6 +99,7 @@ public class CourseDTO implements Serializable {
         private ETheoType eTheoType;
 //        private CategoryDTO.CategoryInfoTuple category;
         private Long categoryId;
+        private Long subCategoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
         private Boolean hasSkill;
