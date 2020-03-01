@@ -637,12 +637,12 @@
                         createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
                     }
                 },
-                <%--{--%>
-                <%--    title: "<spring:message code="evaluation.analysis"/>",--%>
-                <%--    click: function () {--%>
-                <%--        createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");--%>
-                <%--    }--%>
-                <%--},--%>
+                {
+                    title: "<spring:message code="evaluation.analysis"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");
+                    }
+                },
                 {
                     title: "<spring:message code="evaluation.Coefficient"/>",
                     click: function () {
@@ -713,9 +713,9 @@
                     }
                 },
                 {
-                    title: "<spring:message code="personnel.needsAssessment.courses.report"/>",
+                    title: "<spring:message code="reports.need.assessment"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/needsAssessment-by-one-person"/>");
+                        createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                     }
                 },
                 {

@@ -26,9 +26,11 @@ public class ClassStudentReportService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<ClassStudent> searchCoursesOfStudentByNationalCode(String nationalCode) {
+    public List<ClassStudent> searchPassedCoursesOfStudentByNationalCode(String nationalCode) {
         if (nationalCode != null) {
-            SearchDTO.CriteriaRq criteria = makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null);
+            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            criteria.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
+            criteria.getCriteria().add(makeNewCriteria("scoresState", "مردود", EOperator.notEqual, null));
             return classStudentDAO.findAll(NICICOSpecification.of(criteria));
         }
         return null;
@@ -37,7 +39,7 @@ public class ClassStudentReportService {
     @Transactional(readOnly = true)
 //    @Override
     public Set<Long> getPassedCourseAndEQSIdsByNationalCode(String nationalCode) {
-        List<Course> passedCourses = searchCoursesOfStudentByNationalCode(nationalCode).stream().map(classStudent -> classStudent.getTclass().getCourse()).collect(Collectors.toList());
+        List<Course> passedCourses = searchPassedCoursesOfStudentByNationalCode(nationalCode).stream().map(classStudent -> classStudent.getTclass().getCourse()).collect(Collectors.toList());
         Set<Long> equalCourseIds = new HashSet<>();
         for (Course course : passedCourses) {
             getEqualCourseIds(course, equalCourseIds);
@@ -59,13 +61,13 @@ public class ClassStudentReportService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public Boolean isPassedCoursesOfStudentByNationalCode(Course course, Map<Long, Boolean> isPassed) {
+    public Boolean isPassed(Course course, Map<Long, Boolean> isPassed) {
         if (isPassed.containsKey(course.getId()))
             return isPassed.get(course.getId());
         isPassed.put(course.getId(), false);
         Boolean result = course.getEqualCourses().stream().anyMatch
                 (eq -> eq.getEqualAndList().stream().allMatch
-                        (aId -> isPassedCoursesOfStudentByNationalCode(courseDAO.getOne(aId), isPassed)));
+                        (aId -> isPassed(courseDAO.getOne(aId), isPassed)));
         if (result)
             isPassed.replace(course.getId(), true);
         return result;

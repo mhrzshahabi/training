@@ -78,6 +78,17 @@ public class SkillDTO {
         private CourseDTO.CourseInfoTupleLite course;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentReportInfo")
+    public static class NeedsAssessmentReportInfo {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private CourseDTO.NeedsAssessmentReportInfo course;
+    }
+
     // ------------------------------
 
     @Getter

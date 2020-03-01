@@ -259,7 +259,7 @@
         loaded: false,
         initialSort: [
 // {property: "createdBy", direction: "ascending"},
-            {property: "startDate", direction: "ascending", primarySort: true}
+            {property: "code", direction: "descending", primarySort: true}
         ],
         // selectionUpdated: function (record) {
         //     refreshSelectedTab_class(tabSetClass.getSelectedTab());
@@ -403,8 +403,6 @@
 // width: "700",
         validateOnExit: true,
         height: "100%",
-        // backgroundColor: "#fe9d4f",
-        readOnlyDisplay: "readOnly",
         wrapItemTitles: true,
         isGroup: true,
         groupTitle: "اطلاعات پایه کلاس",
@@ -499,7 +497,7 @@
                 name: "code",
                 title: "<spring:message code='class.code'/>:",
                 colSpan: 3,
-                textAlign: "center",
+                // textAlign: "center",
                 readOnlyHover: "به منظور تولید اتوماتیک کد کلاس، باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
                 canEdit: false,
                 // type: "staticText", textBoxStyle: "textItemLite"
@@ -736,7 +734,7 @@
                 colSpan: 1,
                 readOnlyHover: "به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
                 canEdit: false,
-                textAlign: "center",
+                // textAlign: "center",
                 // type: "staticText",
                 // textBoxStyle: "textItemLite"
             },
@@ -874,7 +872,6 @@
             {
                 name: "acceptancelimit",
                 title: "حد نمره قبولی",
-                textAlign: "center",
                 required: true,
             },
             {
@@ -925,7 +922,6 @@
         height: "100%",
         validateOnExit: true,
         isGroup: true,
-        // backgroundColor: "#fe9d4f",
         titleAlign: "left",
         wrapItemTitles: true,
         groupTitle: "<spring:message code="class.meeting.time"/>",
@@ -1324,6 +1320,7 @@
             delete data.course;
             delete data.term;
             if (data.scoringMethod == "1") {
+
                 data.acceptancelimit = data.acceptancelimit_a
             }
             var classSaveUrl = classUrl;
@@ -1416,7 +1413,6 @@
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
         // width: "90%",
-        bodyColor : "#cbeaff",
         minWidth: 1024,
         // autoSize: false,
         // height: "87%",
