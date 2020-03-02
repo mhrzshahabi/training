@@ -556,7 +556,7 @@
                 required: true,
                 showHintInField: true,
                 keyPressFilter: "[0-9.]",
-                mapValueToDisplay: function (value) {
+                mapValueToDisplay: function(value){
                     if (isNaN(value)) {
                         return "";
                     }

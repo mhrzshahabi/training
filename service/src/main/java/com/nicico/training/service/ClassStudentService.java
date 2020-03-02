@@ -164,4 +164,10 @@ public class ClassStudentService implements IClassStudentService {
          return classStudentList;
 
      }
+
+    @Transactional
+    public List<ClassStudent> findByClassIdAndStudentId(Long classId, Long studentId) {
+        return classStudentDAO.findByTclassIdAndStudentId(classId, studentId);
+
+    }
 }
