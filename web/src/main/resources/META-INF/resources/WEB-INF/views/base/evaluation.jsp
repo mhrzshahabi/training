@@ -465,36 +465,17 @@
                                 }))
                             }
                         });
-                        var IButton_Questions_Edit = isc.IButtonSave.create({
-                            title: "ویرایش",
+                        var IButton_Questions_Print = isc.IButtonSave.create({
+                            title: "چاپ",
                             click: function () {
-                                // let data = vm_JspEvaluation.getValues();
-
-                                let data = DynamicForm_Questions_Title_JspEvaluation.getValues()
-                                data.evaluationAnswerList = DynamicForm_Questions_Body_JspEvaluation.getValues();
-
-                                data.record = ListGrid_evaluation_class.getSelectedRecord();
-                                data.evaluator = "${username}";
-                                isc.RPCManager.sendRequest({
-                                    actionURL: evaluationUrl + "/" + 29,
-                                    httpMethod: "PUT",
-                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                    useSimpleHttp: true,
-                                    contentType: "application/json; charset=utf-8",
-                                    showPrompt: false,
-                                    serverOutputAsString: false,
-                                    data: JSON.stringify(data),
-                                    callback: function (resp) {
-                                        if(resp.httpResponseCode == 201 || resp.httpResponseCode == 201){
-                                            Window_Questions_JspEvaluation.close();
-                                            createDialog("info", "<spring:message code="msg.operation.successful"/>");
-                                        }
-                                        else{
-                                            createDialog("info", "<spring:message code="msg.operation.error"/>");
-                                        }
-                                    }
-                                });
-
+                                let fields = DynamicForm_Questions_Body_JspEvaluation.getFields()
+                               let questions=[];
+                                for (var i = 0; i < fields.length; i++) {
+                                    let record = {};
+                                    record.title = fields[i].title
+                                    questions.push(record);
+                                }
+                                print_Question(questions)
                             }
                         });
                         var Window_Questions_JspEvaluation = isc.Window.create({
@@ -509,7 +490,7 @@
                                 isc.TrHLayoutButtons.create({
                                     members: [
                                         IButton_Questions_Save,
-                                        // IButton_Questions_Edit,
+                                        IButton_Questions_Print,
                                         isc.IButtonCancel.create({
                                         click: function () {
                                             Window_Questions_JspEvaluation.close();
@@ -1181,7 +1162,8 @@
                         click: function () {
                             Window_OperationalUnit.close();
                         }
-                    })
+                    }),
+
                 ]
         });
 
@@ -1679,4 +1661,26 @@
         }
 
     }
+
+    function print_Question(questions) {
+
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/questionnaireReport/questionnaire/"/>" + "pdf",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                   {name: "token", type: "hidden"},
+                   {name: "questionnaire", type: "hidden"},
+                   {name: "title", type: "hidden"}
+                ]
+
+        })
+        criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.setValue("questionnaire", JSON.stringify(questions));
+        criteriaForm.setValue("title", JSON.stringify(DynamicForm_Questions_Title_JspEvaluation.getValues()));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    };
     // ------------------------------------------------- Functions ------------------------------------------>>
