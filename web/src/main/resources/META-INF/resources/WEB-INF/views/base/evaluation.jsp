@@ -567,7 +567,7 @@
                         function requestEvaluationQuestions(criteria, criteriaEdit, type=0){
                             isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
                                 if(JSON.parse(resp.data).response.data.length > 0) {
-                                    let criteria= '{"fieldName":"id","operator":"equals","value":'+ JSON.parse(resp.data).response.data[0].id +'}';
+                                    let criteria= '{"fieldName":"questionnaireId","operator":"equals","value":'+ JSON.parse(resp.data).response.data[0].id +'}';
                                     isc.RPCManager.sendRequest(TrDSRequest(questionnaireQuestionUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
                                         localQuestions = JSON.parse(resp.data).response.data;
                                         for (let i = 0; i < localQuestions.length; i++) {
