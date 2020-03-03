@@ -44,8 +44,6 @@ public class EvaluationRestController {
     private final SkillService skillService;
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
-
-
     private final TclassService tclassService;
     private final QuestionnaireQuestionService questionnaireQuestionService;
 

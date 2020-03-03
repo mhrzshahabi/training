@@ -106,9 +106,7 @@
                 endRow: false,
                 click(form, item) {
                     form.clearValues();
-                    if (form.hasErrors()) {
-                        return;
-                    }
+                    form.clearErrors();
                     ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
                 }
             },

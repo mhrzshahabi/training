@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,14 +39,12 @@ public class TrainingOverTimeController {
     private final DateUtil dateUtil;
     private final AttendanceService attendanceService;
     private final ClassSessionService classSessionService;
-    private final StudentService studentService;
-    private final TclassService tclassService;
-
 
     // ------------------------------
 
     @Loggable
     @GetMapping(value = "/list")
+    @Transactional(readOnly = true)
 //	@PreAuthorize("hasAuthority('r_syllabus')")
     public ResponseEntity<List> list(
             @RequestParam(value = "startDate", required = false) String startDate,
@@ -55,20 +54,20 @@ public class TrainingOverTimeController {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         List<Map<String, String>> list = new ArrayList<>();
         for (Attendance a : attendances) {
-            ClassSessionDTO.Info session = classSessionService.get(a.getSessionId());
-            Student student = studentService.getStudent(a.getStudentId());
-            TclassDTO.Info tclassDTO = tclassService.get(session.getClassId());
+//            ClassSessionDTO.Info session = classSessionService.get(a.getSessionId());
+//            Student student = studentService.getStudent(a.getStudentId());
+//            TclassDTO.Info tclassDTO = tclassService.get(session.getClassId());
             HashMap<String, String> map = new HashMap<>();
-            map.put("personalNum", student.getPersonnelNo());
-            map.put("personalNum2", student.getPersonnelNo2());
-            map.put("nationalCode", student.getNationalCode());
-            map.put("name", student.getFirstName() + " " + student.getLastName());
-            map.put("ccpArea", student.getCcpArea());
-            map.put("classCode", tclassDTO.getCode());
-            map.put("className", tclassDTO.getTitleClass());
-            map.put("date", session.getSessionDate());
+            map.put("personalNum", a.getStudent().getPersonnelNo());
+            map.put("personalNum2", a.getStudent().getPersonnelNo2());
+            map.put("nationalCode", a.getStudent().getNationalCode());
+            map.put("name", a.getStudent().getFirstName() + " " + a.getStudent().getLastName());
+            map.put("ccpArea", a.getStudent().getCcpArea());
+            map.put("classCode", a.getSession().getTclass().getCode());
+            map.put("className", a.getSession().getTclass().getTitleClass());
+            map.put("date", a.getSession().getSessionDate());
             try {
-                Long time = (sdf.parse(session.getSessionEndHour()).getTime() - sdf.parse(session.getSessionStartHour()).getTime())/60000;
+                Long time = (sdf.parse(a.getSession().getSessionEndHour()).getTime() - sdf.parse(a.getSession().getSessionStartHour()).getTime())/60000;
                 map.put("time", time.toString());
             } catch (ParseException e) {
                 e.printStackTrace();
