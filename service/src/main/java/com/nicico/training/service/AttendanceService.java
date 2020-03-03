@@ -6,10 +6,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.iservice.IAttendanceService;
-import com.nicico.training.model.Attendance;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Student;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -385,4 +382,10 @@ public class AttendanceService implements IAttendanceService {
         final Attendance saved = attendanceDAO.saveAndFlush(attendance);
         return modelMapper.map(saved, AttendanceDTO.Info.class);
     }
+
+    @Transactional(readOnly = true)
+    public List<Attendance> findBySessionInAndState(List<ClassSession> sessions, String state){
+        return attendanceDAO.findBySessionInAndState(sessions, state);
+    }
+
 }

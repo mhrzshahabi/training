@@ -453,5 +453,9 @@ public class ClassSessionService implements IClassSession {
 
 
     //*********************************
+    @Transactional(readOnly = true)
+    public List<ClassSession> findBySessionDateBetween(String start, String end){
+        return classSessionDAO.findBySessionDateBetween(start, end);
+    }
 
 }
