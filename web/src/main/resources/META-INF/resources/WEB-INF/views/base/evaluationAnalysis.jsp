@@ -13,6 +13,7 @@
     var studentsGradeToGoals = 0;
     var chartData = null;
     var userId = "<%= SecurityUtil.getUserId()%>";
+    var totalCountStudent=0;
     //----------------------------------------------------Rest Data Sources---------------------------------------------
 
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
@@ -145,15 +146,19 @@
             },
             {name: "titleClass", hidden: true}
         ],
-        selectionUpdated: function () {
+        selectionUpdated: function (record) {
+            totalCountStudent=record.studentCount
             DynamicForm_Reaction_EvaluationAnalysis_Header.show();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
             chartSelector.show();
             ReactionEvaluationChart.show();
             ReactionEvaluationChart.setChartType("Column");
+            SelectedTab_evaluationAnalysis();
             fill_evaluation_result();
-        }
+        },
+
+
     });
 
     //----------------------------------------------------Reaction Evaluation-------------------------------------------
@@ -415,24 +420,28 @@
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
         ID: "tabSetEvaluationAnalysis",
         tabBarPosition: "top",
-        enabled: false,
         tabs: [
             {
-                id: "TabPane_Reaction_Evaluation_Analysis",
+                ID: "TabPane_Reaction_Evaluation_Analysis",
+                enabled: false,
                 title: "<spring:message code="evaluation.reaction"/>",
                 pane: Hlayout_ReactionEvaluationResult
             }
             ,
             {
-                id: "TabPane_Learning_Evaluation_Analysis",
-                title: "<spring:message code="evaluation.learning"/>"
+                ID: "TabPane_Learning_Evaluation_Analysis",
+                enabled: false,
+                title: "<spring:message code="evaluation.learning"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysist-learning/evaluationAnalysis-learningTab"})
             },
             {
-                id: "TabPane_Behavior_Evaluation_Analysis",
+                ID: "TabPane_Behavior_Evaluation_Analysis",
+                enabled: false,
                 title: "<spring:message code="evaluation.behavioral"/>"
             },
             {
-                id: "TabPane_Results_Evaluation_Analysis",
+                ID: "TabPane_Results_Evaluation_Analysis",
+                enabled: false,
                 title: "<spring:message code="evaluation.results"/>"
             }
         ],
@@ -610,3 +619,18 @@
     chartSelector.hide();
     ReactionEvaluationChart.hide();
     ReactionEvaluationChart.setChartType("Column");
+
+   function SelectedTab_evaluationAnalysis()
+   {
+
+       var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+
+       if ((!(Record == undefined || Record == null ))) {
+           if(Record.course.evaluation =="2") {
+               TabPane_Learning_Evaluation_Analysis.enable();
+               tabSetEvaluationAnalysis.selectTab(TabPane_Learning_Evaluation_Analysis)
+               if (typeof evaluationAnalysist_learning !== "undefined")
+                   evaluationAnalysist_learning(totalCountStudent);
+           }
+       }
+   }
