@@ -147,14 +147,12 @@
             {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function (record) {
-            totalCountStudent=record.studentCount
+            totalCountStudent=record.studentCount;
             DynamicForm_Reaction_EvaluationAnalysis_Header.show();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
             chartSelector.show();
             ReactionEvaluationChart.show();
-            ReactionEvaluationChart.setChartType("Column");
-            SelectedTab_evaluationAnalysis();
             fill_evaluation_result();
         },
 
@@ -420,6 +418,7 @@
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
         ID: "tabSetEvaluationAnalysis",
         tabBarPosition: "top",
+        enabled: false,
         tabs: [
             {
                 ID: "TabPane_Reaction_Evaluation_Analysis",
@@ -437,7 +436,8 @@
             {
                 ID: "TabPane_Behavior_Evaluation_Analysis",
                 enabled: false,
-                title: "<spring:message code="evaluation.behavioral"/>"
+                title: "<spring:message code="evaluation.behavioral"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysis/evaluationAnalysis-behavioralTab/show-form"})
             },
             {
                 ID: "TabPane_Results_Evaluation_Analysis",
@@ -543,6 +543,13 @@
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.enableTab(3);
         }
+
+        /////////////////////////TEMP////////////////////////
+        Detail_Tab_Evaluation_Analysis.enableTab(0);
+        Detail_Tab_Evaluation_Analysis.enableTab(1);
+        Detail_Tab_Evaluation_Analysis.enableTab(2);
+        Detail_Tab_Evaluation_Analysis.enableTab(3);
+        ////////////////////////TEMP///////////////////////
     }
 
     function load_evluation_analysis_data(record) {
@@ -620,17 +627,3 @@
     ReactionEvaluationChart.hide();
     ReactionEvaluationChart.setChartType("Column");
 
-   function SelectedTab_evaluationAnalysis()
-   {
-
-       var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-
-       if ((!(Record == undefined || Record == null ))) {
-           if(Record.course.evaluation =="2") {
-               TabPane_Learning_Evaluation_Analysis.enable();
-               tabSetEvaluationAnalysis.selectTab(TabPane_Learning_Evaluation_Analysis)
-               if (typeof evaluationAnalysist_learning !== "undefined")
-                   evaluationAnalysist_learning(totalCountStudent);
-           }
-       }
-   }
