@@ -122,7 +122,8 @@
         dynamicTitle: true,
         filterOnKeypress: true,
         gridComponents: [DynamicForm_TrainingOverTime, "header", "filterEditor", "body"],
-        groupByField:"name", groupStartOpen:"all",
+        groupByField:"name",
+        groupStartOpen:"none",
         showGridSummary:true,
         showGroupSummary:true,
         fields: [
