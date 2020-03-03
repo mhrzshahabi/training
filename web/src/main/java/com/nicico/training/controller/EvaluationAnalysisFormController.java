@@ -39,6 +39,11 @@ public class EvaluationAnalysisFormController {
         return "base/evaluationAnalysis";
     }
 
+    @RequestMapping("/evaluationAnalysis-behavioralTab/show-form")
+    public String behavioralTab() {
+        return "evaluationAnalysis/evaluationAnalysist_behavioral";
+    }
+
     @PostMapping("/printReactionEvaluation")
     public ResponseEntity<?> printWithDetail(final HttpServletRequest request) {
         String token = request.getParameter("token");
