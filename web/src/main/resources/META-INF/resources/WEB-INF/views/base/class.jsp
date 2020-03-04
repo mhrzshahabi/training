@@ -1417,6 +1417,7 @@
         // width: "90%",
         bodyColor : "#cbeaff",
         minWidth: 1024,
+        isModal: false,
         // autoSize: false,
         // height: "87%",
         keepInParentRect: true,

@@ -1,266 +1,258 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+<%@ page import="com.nicico.copper.core.SecurityUtil" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+    var vm_Behavioral_evaluation = isc.ValuesManager.create({});
 
-// <script>
-
-    let parameterMethod_parameter;
-    let parameterValueMethod_parameter;
-
-    // ------------------------------------------- Menu -------------------------------------------
-    isc.Menu.create({
-        ID: "ParameterMenu_parameter",
-        data: [
-            {title: "<spring:message code="refresh"/>", click: function () { refreshLG(ParameterLG_parameter, cleanLG(ParameterValueLG_parameter)); }},
-            {title: "<spring:message code="create"/>", click: function () { createParameter_parameter(); }},
-            // {title: "<spring:message code="edit"/>", click: function () { editParameter_parameter(); }},
-            // {title: "<spring:message code="remove"/>", click: function () { removeParameter_parameter(); }},
-        ]
-    });
-
-    isc.Menu.create({
-        ID: "ParameterValueMenu_parameter",
-        data: [
-            {title: "<spring:message code="refresh"/>", click: function () { refreshParameterValueLG_parameter(); }},
-            {title: "<spring:message code="create"/>", click: function () { createParameterValue_parameter(); }},
-            // {title: "<spring:message code="edit"/>", click: function () { editParameterValue_parameter(); }},
-            // {title: "<spring:message code="remove"/>", click: function () { removeParameterValue_parameter(); }},
-        ]
-    });
-
-    // ------------------------------------------- ToolStrip -------------------------------------------
-    isc.ToolStrip.create({
-        ID: "ParameterTS_parameter",
-        members: [
-            isc.ToolStripButtonRefresh.create({click: function () { refreshLG(ParameterLG_parameter, cleanLG(ParameterValueLG_parameter)); }}),
-            isc.ToolStripButtonCreate.create({click: function () { createParameter_parameter(); }}),
-            // isc.ToolStripButtonEdit.create({click: function () { editParameter_parameter(); }}),
-            // isc.ToolStripButtonRemove.create({click: function () { removeParameter_parameter(); }}),
-            isc.LayoutSpacer.create({width: "*"}),
-            isc.Label.create({ID: "ParameterLGCountLabel_parameter"}),
-        ]
-    });
-
-    isc.ToolStrip.create({
-        ID: "ParameterValueTS_parameter",
-        members: [
-            isc.ToolStripButtonRefresh.create({click: function () { refreshParameterValueLG_parameter(); }}),
-            isc.ToolStripButtonCreate.create({click: function () { createParameterValue_parameter(); }}),
-            // isc.ToolStripButtonEdit.create({click: function () { editParameterValue_parameter(); }}),
-            // isc.ToolStripButtonRemove.create({click: function () { removeParameterValue_parameter(); }}),
-            isc.LayoutSpacer.create({width: "*"}),
-            isc.Label.create({ID: "ParameterValueLGCount_parameter"}),
-        ]
-    });
-
-    // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    ParameterDS_parameter = isc.TrDS.create({
-        ID: "ParameterDS_parameter",
+    DynamicForm_Behavioral_EvaluationAnalysis_Header = isc.DynamicForm.create({
+        width: "60%",
+        canSubmit: true,
+        border: "3px solid orange",
+        titleWidth: 120,
+        valuesManager: vm_Behavioral_evaluation,
+        titleAlign: "right",
+        showInlineErrors: true,
+        showErrorText: false,
+        styleName: "evaluation-form",
+        numCols: 2,
+        margin: 10,
+        newPadding: 5,
+        canTabToIcons: false,
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
-        ],
-        fetchDataURL: parameterUrl + "/iscList",
+            {
+                name: "studentCount",
+                title: "<spring:message code='student.count'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
+                name: "numberOfFilledBehavioralEvaluationForms",
+                title: "<spring:message code='numberOfFilledBehavioralEvaluationForms'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
+                name: "numberOfInCompletedBehavioralEvaluationForms",
+                title: "<spring:message code='numberOfInCompletedBehavioralEvaluationForms'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
+                name: "numberOfEmptyBehavioralEvaluationForms",
+                title: "<spring:message code='numberOfEmptyBehavioralEvaluationForms'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
+                name: "percenetOfFilledBehavioralEvaluationForms",
+                title: "<spring:message code='percenetOfFilledBehavioralEvaluationForms'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
+                name: "numberOfExportedBehavioralEvaluationForms",
+                title: "<spring:message code='numberOfExportedBehavioralEvaluationForms'/>",
+                hidden: true
+            }
+        ]
     });
 
-    ParameterLG_parameter = isc.TrLG.create({
-        ID: "ParameterLG_parameter",
-        dataSource: ParameterDS_parameter,
-        autoFetchData: true,
-        fields: [{name: "id"}, {name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
-        gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="type"/>" + "</b></span>",}),
-            ParameterTS_parameter, "filterEditor", "header", "body"
-        ],
-        contextMenu: ParameterMenu_parameter,
-        dataChanged: function () { updateCountLabel(this, ParameterLGCountLabel_parameter)},
-        recordDoubleClick: function () { editParameter_parameter(); },
-        selectionUpdated: function (record) { refreshParameterValueLG_parameter(); }
-    });
-
-    ParameterValueDS_parameter = isc.TrDS.create({
-        ID: "ParameterValueDS_parameter",
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer = isc.DynamicForm.create({
+        canSubmit: true,
+        titleAlign: "right",
+        titleWidth: 120,
+        width: "54%",
+        border: "3px solid orange",
+        showInlineErrors: true,
+        showErrorText: false,
+        valuesManager: vm_Behavioral_evaluation,
+        styleName: "teacher-form",
+        numCols: 2,
+        margin: 10,
+        newPadding: 5,
+        canTabToIcons: false,
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "value", title: "<spring:message code="value"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
-        ],
+            {
+                name: "FERGrade",
+                title: "<spring:message code='FERGrade'/>",
+                baseStyle: "evaluation-code",
+                fillHorizontalSpace: true,
+                canEdit: false
+            },
+            {
+                name: "FETGrade",
+                title: "<spring:message code='FETGrade'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
+                name: "FECRGrade",
+                title: "<spring:message code='FECRGrade'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
+                name: "FECRPass",
+                title: "<spring:message code='evaluation.status'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false,
+                valueMap: {
+                    "true": "تائید",
+                    "false": "عدم تائید"
+                }
+            },
+            {
+                name: "FERPass",
+                hidden: true
+            },
+            {
+                name: "FETPass",
+                hidden: true
+            },
+            {
+                name: "minScore_ER",
+                hidden: true
+            },
+            {
+                name: "minScore_ET",
+                hidden: true
+            },
+            {name: "teacherGradeToClass", hidden: true},
+            {name: "studentsGradeToTeacher", hidden: true},
+            {name: "studentsGradeToFacility", hidden: true},
+            {name: "studentsGradeToGoals", hidden: true},
+            {name: "trainingGradeToTeacher", hidden: true}
+        ]
     });
 
-    ParameterValueLG_parameter = isc.TrLG.create({
-        ID: "ParameterValueLG_parameter",
-        dataSource: ParameterValueDS_parameter,
-        fields: [{name: "title"}, {name: "code"}, {name: "type"}, {name: "value"}, {name: "description"},],
-        gridComponents: [
-            isc.LgLabel.create({
-                contents: "<span><b>" + "<spring:message code="values"/>" + "</b></span>"
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('studentCount').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('studentCount').titleStyle = 'evaluation-code-title';
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('numberOfFilledBehavioralEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('numberOfFilledBehavioralEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('numberOfInCompletedBehavioralEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('numberOfInCompletedBehavioralEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('numberOfEmptyBehavioralEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('numberOfEmptyBehavioralEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('percenetOfFilledBehavioralEvaluationForms').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Header.getItem('percenetOfFilledBehavioralEvaluationForms').titleStyle = 'evaluation-code-title';
+
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FERGrade').titleStyle = 'evaluation-code-title';
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FETGrade').titleStyle = 'evaluation-code-title';
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FECRGrade').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FECRGrade').titleStyle = 'evaluation-code-title';
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FECRPass').setCellStyle('evaluation-code-label');
+    DynamicForm_Behavioral_EvaluationAnalysis_Footer.getItem('FECRPass').titleStyle = 'evaluation-code-title';
+
+    var IButton_Print_BehavioralEvaluation_Evaluation_Analysis = isc.IButton.create({
+        top: 260,
+        width: "300",
+        height: "25",
+        title: "چاپ خلاصه نتیجه ارزیابی واکنشی",
+        click: function () {
+            var obj1 = vm_Behavioral_evaluation.getValues();
+            var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+            delete obj1['studentCount'];
+            var obj1_str = JSON.stringify(obj1);
+            var obj2_str = JSON.stringify(obj2);
+            obj1_str = obj1_str.substr(0, obj1_str.length - 1);
+            obj1_str = obj1_str + ",";
+            obj2_str = obj2_str.substr(1, obj2_str.length);
+            var object = obj1_str + obj2_str;
+            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printBehavioralEvaluation"/>", null, object);
+        }
+    });
+
+    var Hlayout_Tab_BehavioralEvaluation_Evaluation_Analysis_Print = isc.HLayout.create({
+        width: "100%",
+        height: "49%",
+        align: "center",
+        members: [
+            IButton_Print_BehavioralEvaluation_Evaluation_Analysis
+        ]
+    });
+
+    var Vlayout_DynamicForms_BehavioralEvaluation = isc.VLayout.create({
+        defaultLayoutAlign: "center",
+        members: [
+            isc.LayoutSpacer.create({
+                height: 20,
+                width: "*",
             }),
-            ParameterValueTS_parameter, "filterEditor", "header", "body"
-        ],
-        contextMenu: ParameterValueMenu_parameter,
-        dataChanged: function () { updateCountLabel(this, ParameterValueLGCount_parameter)},
-        recordDoubleClick: function () { editParameterValue_parameter(); }
-    });
-
-    // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    ParameterDF_parameter = isc.DynamicForm.create({
-        ID: "ParameterDF_parameter",
-        fields: [
-            {name: "id", hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "code", title: "<spring:message code="code"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "type", title: "<spring:message code="type"/>"},
-            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
+            DynamicForm_Behavioral_EvaluationAnalysis_Header,
+            isc.LayoutSpacer.create({
+                height: 40,
+                width: "*",
+            }),
+            DynamicForm_Behavioral_EvaluationAnalysis_Footer
         ]
     });
 
-    ParameterWin_parameter = isc.Window.create({
-        ID: "ParameterWin_parameter",
-        width: 800,
-        items: [ParameterDF_parameter, isc.TrHLayoutButtons.create({
-            members: [
-                isc.IButtonSave.create({click: function () { saveParameter_parameter(); }}),
-                isc.IButtonCancel.create({click: function () { ParameterWin_parameter.close(); }}),
-            ],
-        }),]
+    var VLayout_Body_evaluation_analysis_Behavioral = isc.VLayout.create({
+        width: "50%",
+        height: "100%",
+        members: [Vlayout_DynamicForms_BehavioralEvaluation,
+            isc.LayoutSpacer.create({
+                height: 20,
+                width: "*",
+            }),
+            Hlayout_Tab_BehavioralEvaluation_Evaluation_Analysis_Print]
     });
 
-    ParameterValueDF_parameter = isc.DynamicForm.create({
-        ID: "ParameterValueDF_parameter",
-        fields: [
-            {name: "id", hidden: true},
-            {name: "parameter.id", dataPath: "parameterId", hidden: true,},
-            {name: "parameter.title", title: "<spring:message code="parameter.type"/>", canEdit: false},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "code", title: "<spring:message code="code"/>",},
-            {name: "value", title: "<spring:message code="value"/>",},
-            {name: "type", title: "<spring:message code="type"/>",},
-            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
+    var BehavioralEvaluationChart = isc.FacetChart.create({
+        titleAlign: "center",
+        minLabelGap: 5,
+        width: "80%",
+        height: "90%",
+        barMargin: "100",
+        allowedChartTypes: [],
+        facets: [
+            {id: "region", title: "حیطه"}],
+        data: chartData,
+        valueProperty: "grade",
+        valueTitle: "نمره ارزیابی از صد",
+        title: "تحلیل ارزیابی واکنشی کلاس",
+    });
+
+
+    var chartSelector = isc.DynamicForm.create({
+        canSubmit: true,
+        titleAlign: "right",
+        titleWidth: 120,
+        width: "200",
+        fields: [{
+            name: "chartType",
+            title: "انتخاب نوع نمودار",
+            type: "select",
+            width: "200",
+            valueMap: ["ستونی", "راداری"],
+            defaultValue: "ستونی",
+            changed: function (form, item, value) {
+                if (value == "ستونی") {
+                    BehavioralEvaluationChart.setChartType("Column");
+                }
+                if (value == "راداری") {
+                    BehavioralEvaluationChart.setChartType("Radar");
+                }
+            }
+        }]
+    });
+
+    var BehavioralEvaluationChartLayout = isc.VLayout.create({
+        defaultLayoutAlign: "center",
+        width: "50%",
+        height: "100%",
+        members: [chartSelector, BehavioralEvaluationChart]
+    });
+
+    var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [
+            VLayout_Body_evaluation_analysis_Behavioral,
+            BehavioralEvaluationChartLayout
         ]
     });
-
-    ParameterValueWin_parameter = isc.Window.create({
-        ID: "ParameterValueWin_parameter",
-        width: 800,
-        items: [ParameterValueDF_parameter, isc.TrHLayoutButtons.create({
-            members: [
-                isc.IButtonSave.create({click: function () { saveParameterValue_parameter(); }}),
-                isc.IButtonCancel.create({click: function () { ParameterValueWin_parameter.close(); }}),
-            ],
-        }),]
-    });
-
-    // ------------------------------------------- Page UI -------------------------------------------
-    isc.TrHLayout.create({
-        members: [ParameterLG_parameter, ParameterValueLG_parameter]
-    });
-
-    // ------------------------------------------- Functions -------------------------------------------
-    function createParameter_parameter() {
-        parameterMethod_parameter = "POST";
-        ParameterDF_parameter.clearValues();
-        ParameterWin_parameter.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="parameter.type"/>");
-        ParameterWin_parameter.show();
-    }
-
-    function editParameter_parameter() {
-        let record = ParameterLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
-            parameterMethod_parameter = "PUT";
-            ParameterDF_parameter.clearValues();
-            ParameterDF_parameter.editRecord(record);
-            ParameterWin_parameter.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="parameter.type"/>");
-            ParameterWin_parameter.show();
-        }
-    }
-
-    function saveParameter_parameter() {
-        if (!ParameterDF_parameter.validate()) {
-            return;
-        }
-        let parameterSaveUrl = parameterUrl;
-        action = '<spring:message code="create"/>';
-        if (parameterMethod_parameter.localeCompare("PUT") == 0) {
-            let record = ParameterLG_parameter.getSelectedRecord();
-            parameterSaveUrl += "/" + record.id;
-            action = '<spring:message code="edit"/>';
-        }
-        let data = ParameterDF_parameter.getValues();
-        isc.RPCManager.sendRequest(
-            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="parameter.type"/>', ParameterWin_parameter, ParameterLG_parameter)")
-        );
-    }
-
-    function removeParameter_parameter() {
-        let record = ParameterLG_parameter.getSelectedRecord();
-        var entityType = '<spring:message code="parameter.type"/>';
-        if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(parameterUrl + "/" + record.id, entityType, record.title, 'ParameterLG_parameter');
-        }
-    }
-
-    // ---------------------------------------------------------------------------------------------------
-
-    function refreshParameterValueLG_parameter() {
-        var record = ParameterLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, false)) {
-            refreshLgDs(ParameterValueLG_parameter, ParameterValueDS_parameter, parameterValueUrl + "/iscList/" + record.id)
-        }
-    }
-
-    function createParameterValue_parameter() {
-        let record = ParameterLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
-            parameterValueMethod_parameter = "POST";
-            ParameterValueDF_parameter.clearValues();
-            ParameterValueDF_parameter.getItem("parameter.id").setValue(record.id);
-            ParameterValueDF_parameter.getItem("parameter.title").setValue(record.title);
-            ParameterValueWin_parameter.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="parameter.value"/>");
-            ParameterValueWin_parameter.show();
-        }
-    }
-
-    function editParameterValue_parameter() {
-        let parameterRecord = ParameterLG_parameter.getSelectedRecord();
-        let record = ParameterValueLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.value"/>")) {
-            parameterValueMethod_parameter = "PUT";
-            ParameterValueDF_parameter.clearValues();
-            ParameterValueDF_parameter.editRecord(record);
-            ParameterValueDF_parameter.getItem("parameter.id").setValue(parameterRecord.id);
-            ParameterValueDF_parameter.getItem("parameter.title").setValue(parameterRecord.title);
-            ParameterValueWin_parameter.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="parameter.value"/>");
-            ParameterValueWin_parameter.show();
-        }
-    }
-
-    function saveParameterValue_parameter() {
-        if (!ParameterValueDF_parameter.validate()) {
-            return;
-        }
-        let parameterValueSaveUrl = parameterValueUrl;
-        let action = '<spring:message code="create"/>';
-        if (parameterValueMethod_parameter.localeCompare("PUT") == 0) {
-            let record = ParameterValueLG_parameter.getSelectedRecord();
-            parameterValueSaveUrl += "/" + record.id;
-            action = '<spring:message code="edit"/>';
-        }
-        let data = ParameterValueDF_parameter.getValues();
-        isc.RPCManager.sendRequest(
-            TrDSRequest(parameterValueSaveUrl, parameterValueMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.value"/>" +
-                "', ParameterValueWin_parameter, ParameterValueLG_parameter)")
-        );
-    }
-
-    function removeParameterValue_parameter() {
-        let record = ParameterValueLG_parameter.getSelectedRecord();
-        var entityType = '<spring:message code="parameter.value"/>';
-        if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(parameterValueUrl + "/" + record.id, entityType, record.title, 'ParameterValueLG_parameter');
-        }
-    }
