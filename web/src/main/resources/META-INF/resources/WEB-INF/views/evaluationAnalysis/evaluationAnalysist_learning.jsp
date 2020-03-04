@@ -188,7 +188,7 @@
         ]
     });
 
-    function evaluationAnalysist_learning(a) {
+    function evaluationAnalysist_learning() {
 
         var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
         if (!(Record === undefined || Record == null)) {
@@ -196,10 +196,6 @@
             ListGrid_evaluationAnalysist_learning.invalidateCache()
             ListGrid_evaluationAnalysist_learning.fetchData()
         }
-
-
-
-
     }
 
     function print_evaluationAnalysist_learning() {

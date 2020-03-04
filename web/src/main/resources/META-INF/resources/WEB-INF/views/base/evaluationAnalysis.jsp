@@ -154,6 +154,7 @@
             chartSelector.show();
             ReactionEvaluationChart.show();
             fill_evaluation_result();
+            evaluationAnalysist_learning();
         },
     });
 
