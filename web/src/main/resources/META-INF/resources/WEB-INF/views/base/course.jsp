@@ -2329,6 +2329,7 @@
             members: [isc.TrVLayout.create({
                 members: [HLayOut_Tab_JspCourse, courseSaveOrExitHlayout],
                 border: "3px solid lightBlue",
+                showResizeBar: true,
                 borderRadius: "10px",
                 height: "40%",
                 layoutMargin: 5,
