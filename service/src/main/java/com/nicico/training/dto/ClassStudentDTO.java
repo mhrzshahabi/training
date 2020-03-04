@@ -221,4 +221,16 @@ public class ClassStudentDTO implements Serializable {
         private Float preTestScore;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain=true)
+    @ApiModel("ClassStudent - evaluationAnalysistLearning")
+    public static class evaluationAnalysistLearning
+    {
+        private Long id;
+        private Float preTestScore;
+        private Float score;
+    }
+
+
 }

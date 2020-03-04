@@ -556,7 +556,7 @@
                 required: true,
                 showHintInField: true,
                 keyPressFilter: "[0-9.]",
-                mapValueToDisplay: function (value) {
+                mapValueToDisplay: function(value){
                     if (isNaN(value)) {
                         return "";
                     }
@@ -1417,6 +1417,7 @@
         // width: "90%",
         bodyColor : "#cbeaff",
         minWidth: 1024,
+        isModal: false,
         // autoSize: false,
         // height: "87%",
         keepInParentRect: true,

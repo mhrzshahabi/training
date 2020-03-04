@@ -566,6 +566,10 @@
                                                     item.name = "Q" + localQuestions[i].id;
                                                     item.title = "استاد: " + localQuestions[i].evaluationQuestion.question;
                                                     break;
+                                                case "TRAINING":
+                                                    item.name = "Q" + localQuestions[i].id;
+                                                    item.title = "استاد: " + localQuestions[i].evaluationQuestion.question;
+                                                    break;
                                                 case "Content":
                                                     item.name = "Q" + localQuestions[i].id;
                                                     item.title = "محتواي کلاس: " + localQuestions[i].evaluationQuestion.question;
