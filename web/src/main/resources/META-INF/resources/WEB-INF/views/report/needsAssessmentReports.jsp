@@ -19,6 +19,14 @@
     var selectedObject_NABOP = null;
     var reportType_NABOP = "0";
     var objectType_NABOP;
+    var chartData_NABOP = [
+        {title: "<spring:message code='essential'/>",  type: "<spring:message code='total'/>", duration: 0},
+        {title: "<spring:message code='essential'/>",  type: "<spring:message code='passed'/>", duration: 0},
+        {title: "<spring:message code='improving'/>", type: "<spring:message code='total'/>", duration: 0},
+        {title: "<spring:message code='improving'/>", type: "<spring:message code='passed'/>", duration: 0},
+        {title: "<spring:message code='developmental'/>",  type: "<spring:message code='total'/>", duration: 0},
+        {title: "<spring:message code='developmental'/>",  type: "<spring:message code='passed'/>", duration: 0}
+    ];
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*post form*/
@@ -191,9 +199,6 @@
             {title: "<spring:message code="job.group"/>", name: "JobGroup", pane: JobGroupLG_NABOP},
             {title: "<spring:message code="post.grade.group"/>", name: "PostGradeGroup", pane: PostGradeGroupLG_NABOP},
         ],
-        // tabSelected: function () {
-        //     Set_For_This_Object_Data();
-        // }
     });
 
     IButton_Post_Ok_NABOP = isc.IButtonSave.create({
@@ -248,69 +253,18 @@
     PersonnelDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {
-                name: "firstName",
-                title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "lastName",
-                title: "<spring:message code="lastName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "nationalCode",
-                title: "<spring:message code="national.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "companyName",
-                title: "<spring:message code="company.name"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "personnelNo",
-                title: "<spring:message code="personnel.no"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "personnelNo2",
-                title: "<spring:message code="personnel.no.6.digits"/>",
-                filterOperator: "iContains",
-            },
-            {
-                name: "postTitle",
-                title: "<spring:message code="post"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "postCode",
-                title: "<spring:message code="post.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
-            {
-                name: "ccpAssistant",
-                title: "<spring:message code="reward.cost.center.assistant"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "ccpAffairs",
-                title: "<spring:message code="reward.cost.center.affairs"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "ccpSection",
-                title: "<spring:message code="reward.cost.center.section"/>",
-                filterOperator: "iContains"
-            },
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
             {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: personnelUrl + "/iscList"
@@ -402,6 +356,7 @@
                 {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
             ],
+        autoFetchData: false,
         autoCacheAllData: true,
         fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
     });
@@ -439,66 +394,16 @@
     CourseDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {
-                name: "needsAssessmentPriorityId",
-                title: "<spring:message code='priority'/>",
-                filterOperator: "equals",
-                autoFitWidth: true
-            },
-            {
-                name: "needsAssessmentDomainId",
-                title: "<spring:message code='domain'/>",
-                filterOperator: "equals",
-                autoFitWidth: true
-            },
-            {
-                name: "competence.title",
-                title: "<spring:message code="competence"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "competence.competenceTypeId",
-                title: "<spring:message code="competence.type"/>",
-                filterOperator: "equals",
-                autoFitWidth: true
-            },
-            {
-                name: "skill.code",
-                title: "<spring:message code="skill.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "skill.titleFa",
-                title: "<spring:message code="skill"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "skill.course.theoryDuration",
-                title: "<spring:message code="duration"/>",
-                filterOperator: "equals",
-                autoFitWidth: true
-            },
-            {
-                name: "skill.course.scoresState",
-                title: "<spring:message code='status'/>",
-                filterOperator: "equals",
-                autoFitWidth: true
-            },
-            {
-                name: "skill.course.code",
-                title: "<spring:message code="course.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "skill.course.titleFa",
-                title: "<spring:message code="course"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
+            {name: "needsAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "needsAssessmentDomainId", title: "<spring:message code='domain'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="competence"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: null
@@ -532,10 +437,10 @@
     });
 
     ReportTypeDF_NABOP = isc.DynamicForm.create({
-        numCols: 7,
+        numCols: 3,
         padding: 10,
         titleAlign: "left",
-        colWidths: [500, 100, 100, 100, 100, 150, 100],
+        colWidths: [700, 150, 150],
         fields: [
             {
                 name: "reportType",
@@ -543,21 +448,18 @@
                 type: "radioGroup",
                 width: "*",
                 valueMap: {
-                    0: "گزارش نیازسنجی پرسنل",
-                    1: "گزارش نیازسنجی پست",
-                    2: "گزارش نیازسنجی ارتقاء پرسنل",
+                    0: "<spring:message code='needsAssessmentReport.personnel'/>",
+                    1: "<spring:message code='needsAssessmentReport.post/job/postGrade'/>",
+                    2: "<spring:message code='needsAssessmentReport.job.promotion'/>",
                 },
                 vertical: false,
                 defaultValue: 0,
                 changed: function (form, item, value) {
-                    selectedPerson_NABOP = null;
-                    selectedObject_NABOP = null;
-                    // form.getItem("showReport").disable();
                     if (value === "0") {
                         reportType_NABOP = "0";
                         form.getItem("personnelId").enable();
-                        form.getItem("postId").disable();
-                        DynamicForm_Title_NABOP.getItem("Title_NASB").title = "گزارش نیازسنجی خانم/آقای " + getFormulaMessage("...", 2, "red", "b");
+                        form.getItem("objectId").disable();
+                        DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + getFormulaMessage("...", 2, "red", "b");
                         CoursesLG_NABOP.hideField("competence.title");
                         CoursesLG_NABOP.hideField("competence.competenceTypeId");
                         CoursesLG_NABOP.hideField("needsAssessmentDomainId");
@@ -568,8 +470,8 @@
                     } else if (value === "1") {
                         reportType_NABOP = "1";
                         form.getItem("personnelId").disable();
-                        form.getItem("postId").enable();
-                        DynamicForm_Title_NABOP.getItem("Title_NASB").title = "گزارش نیازسنجی پست " + getFormulaMessage("...", 2, "red", "b");
+                        form.getItem("objectId").enable();
+                        DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.post/job/postGrade'/> " + getFormulaMessage("...", 2, "red", "b");
                         CoursesLG_NABOP.showField("competence.title");
                         CoursesLG_NABOP.showField("competence.competenceTypeId");
                         CoursesLG_NABOP.showField("needsAssessmentDomainId");
@@ -580,8 +482,8 @@
                     } else {
                         reportType_NABOP = "2";
                         form.getItem("personnelId").enable();
-                        form.getItem("postId").enable();
-                        DynamicForm_Title_NABOP.getItem("Title_NASB").title = "گزارش نیازسنجی ارتقاء خانم/آقای " + getFormulaMessage("...", 2, "red", "b") + " در پست " + getFormulaMessage("...", 2, "red", "b");
+                        form.getItem("objectId").enable();
+                        DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + " <spring:message code='Mrs/Mr'/> " + getFormulaMessage("...", 2, "red", "b") + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
                         CoursesLG_NABOP.hideField("competence.title");
                         CoursesLG_NABOP.hideField("competence.competenceTypeId");
                         CoursesLG_NABOP.hideField("needsAssessmentDomainId");
@@ -590,8 +492,20 @@
                         CoursesLG_NABOP.showField("skill.course.scoresState");
                         CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
                     }
+                    selectedPerson_NABOP = null;
+                    selectedObject_NABOP = null;
+                    // form.getItem("showReport").disable();
                     DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
                     CoursesLG_NABOP.setData([]);
+                    Chart_NABOP.setData([]);
+                    chartData_NABOP = [
+                        {title: "<spring:message code='essential'/>",  type: "<spring:message code='total'/>", duration: 0},
+                        {title: "<spring:message code='essential'/>",  type: "<spring:message code='passed'/>", duration: 0},
+                        {title: "<spring:message code='improving'/>", type: "<spring:message code='total'/>", duration: 0},
+                        {title: "<spring:message code='improving'/>", type: "<spring:message code='passed'/>", duration: 0},
+                        {title: "<spring:message code='developmental'/>",  type: "<spring:message code='total'/>", duration: 0},
+                        {title: "<spring:message code='developmental'/>",  type: "<spring:message code='passed'/>", duration: 0}
+                    ];
                     CourseDS_NABOP.fetchDataURL = null;
                 }
             },
@@ -608,8 +522,8 @@
                 }
             },
             {
-                name: "postId",
-                title: "انتخاب پست",
+                name: "objectId",
+                title: "<spring:message code='needsAssessmentReport.choose.post/job/postGrade'/>",
                 disabled: true,
                 type: "ButtonItem",
                 width: "*",
@@ -641,7 +555,7 @@
             {
                 name: "Title_NASB",
                 type: "staticText",
-                title: "گزارش نیازسنجی خانم/آقای " + getFormulaMessage("...", 2, "red", "b"),
+                title: "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + getFormulaMessage("...", 2, "red", "b"),
                 titleAlign: "center",
                 wrapTitle: false
             }
@@ -654,18 +568,24 @@
             for (let i = 0; i < records.length; i++) {
                 total += records[i].skill.course.theoryDuration;
             }
-            if (total !== 0)
-                totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = total;
+            let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
+            if (total !== 0) {
+                totalDuration_NABOP[index] = total;
+                chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
+            }
             return "<spring:message code="duration.hour.sum"/>" + total;
         },
         function (records) {
             let passed = 0;
             for (let i = 0; i < records.length; i++) {
-                if (records[i].status === passedStatusId_NABOP)
+                if (records[i].skill.course.scoresState === passedStatusId_NABOP)
                     passed += records[i].skill.course.theoryDuration;
             }
-            if (passed !== 0)
-                passedDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = passed;
+            let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
+            if (passed !== 0) {
+                passedDuration_NABOP[index] = passed;
+                chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration = passed;
+            }
             return "<spring:message code="duration.hour.sum.passed"/>" + passed;
         },
         function (records) {
@@ -684,8 +604,11 @@
             for (let i = 0; i < records.length; i++) {
                 total += records[i].skill.course.theoryDuration;
             }
-            if (total !== 0)
-                totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] = total;
+            let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
+            if (total !== 0) {
+                totalDuration_NABOP[index] = total;
+                chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
+            }
             return "<spring:message code="duration.hour.sum"/>" + total;
         }
     ];
@@ -780,6 +703,9 @@
                 ],
             },
         ],
+        dataArrived: function () {
+            Chart_NABOP.setData(chartData_NABOP);
+        }
     });
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
@@ -813,9 +739,28 @@
             ]
     });
 
+    Chart_NABOP = isc.FacetChart.create({
+        width: "35%",
+        facets: [
+            {id: "title", title: "<spring:message code='priority'/>"},
+            {id: "type", title: "<spring:message code='status'/>"}
+        ],
+        data: [],
+        valueProperty: "duration",
+        chartType: "Radar",
+        showTitle: false,
+        filled: true,
+        stacked: false,
+    });
+
+    Main_HLayout_NABOP = isc.TrHLayout.create({
+        // border: "2px solid blue",
+        members: [CoursesLG_NABOP, Chart_NABOP]
+    });
+
     Main_VLayout_NABOP = isc.TrVLayout.create({
         border: "2px solid blue",
-        members: [ToolStrip_Actions_NABOP, CoursesLG_NABOP]
+        members: [ToolStrip_Actions_NABOP, Main_HLayout_NABOP]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -830,15 +775,12 @@
     }
 
     function Select_Person_NABOP() {
-        priorities_NABOP = PriorityDS_NABOP.getCacheData();
+
         if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-        for (let i = 0; i < 3; i++) {
-            totalDuration_NABOP[i] = 0;
-            passedDuration_NABOP[i] = 0;
-        }
+
         if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined && reportType_NABOP === "0") {
             postCode_NABOP = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
             wait_NABOP = createDialog("wait");
@@ -867,14 +809,9 @@
     }
 
     function Select_Post_NABOP() {
-        priorities_NABOP = PriorityDS_NABOP.getCacheData();
         if (Tabset_Object_NABOP.getSelectedTab().pane.getSelectedRecord() == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
-        }
-        for (let i = 0; i < 3; i++) {
-            totalDuration_NABOP[i] = 0;
-            passedDuration_NABOP[i] = 0;
         }
         selectedObject_NABOP = Tabset_Object_NABOP.getSelectedTab().pane.getSelectedRecord();
         setTitle_NABOP();
@@ -882,11 +819,25 @@
     }
 
     function setTitle_NABOP(postId = null) {
+        // priorities_NABOP = PriorityDS_NABOP.getCacheData();
+        chartData_NABOP = [
+            {title: "<spring:message code='essential'/>",  type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='essential'/>",  type: "<spring:message code='passed'/>", duration: 0},
+            {title: "<spring:message code='improving'/>", type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='improving'/>", type: "<spring:message code='passed'/>", duration: 0},
+            {title: "<spring:message code='developmental'/>",  type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='developmental'/>",  type: "<spring:message code='passed'/>", duration: 0}
+        ];
+        for (let i = 0; i < priorities_NABOP.length; i++) {
+            totalDuration_NABOP[i] = 0;
+            passedDuration_NABOP[i] = 0;
+        }
         switch (reportType_NABOP) {
             case "0":
                 // ReportTypeDF_NABOP.getItem("showReport").enable();
                 CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + postId + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
-                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "گزارش نیازسنجی خانم/آقای " +
+                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " +
+                    "<spring:message code='Mrs/Mr'/> " +
                     getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " +
                     getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b");
                 DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
@@ -895,7 +846,7 @@
             case "1":
                 // ReportTypeDF_NABOP.getItem("showReport").enable();
                 CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&objectType=" + Tabset_Object_NABOP.getSelectedTab().name;
-                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "گزارش نیازسنجی " +
+                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " +
                     Tabset_Object_NABOP.getSelectedTab().title + " " +
                     getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b");
                 DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
@@ -909,7 +860,7 @@
                 }
                 let personName = selectedPerson_NABOP != null ? getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
                 let postName = selectedObject_NABOP != null ? getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
-                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "گزارش نیازسنجی ارتقاء خانم/آقای " + personName + " در پست " + postName;
+                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + "<spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + postName;
                 DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
         }
     }
@@ -932,7 +883,7 @@
                 "titleFa": records[i].titleFa,
                 "theoryDuration": records[i].theoryDuration,
                 "needsAssessmentPriorityId": records[i].needsAssessmentPriorityId,
-                "status": records[i].status
+                "status": records[i].skill.course.scoresState
             });
         }
         let personnel = {
@@ -990,6 +941,25 @@
         for (let i = 0; i < priorities_NABOP.length; i++) {
             if (priorities_NABOP[i].code === code)
                 return i;
+        }
+    }
+
+    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/NeedsAssessmentPriority", "GET", null, setPriorities));
+
+    function setPriorities(resp){
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            priorities_NABOP = JSON.parse(resp.httpResponseText).response.data;
+            // priorities_NABOP = resp;
+            for (let i = 0; i < priorities_NABOP.length; i++) {
+                if (priorities_NABOP[i].title === "عملکردی ضروری")
+                    priorities_NABOP[i].title = "<spring:message code='essential'/>";
+                else if (priorities_NABOP[i].title === "عملکردی بهبود")
+                    priorities_NABOP[i].title = "<spring:message code='improving'/>";
+                else if (priorities_NABOP[i].title === "عملکردی توسعه")
+                    priorities_NABOP[i].title = "<spring:message code='developmental'/>";
+            }
+        } else {
+            createDialog("info", "<spring:message code="msg.operation.error"/>");
         }
     }
 

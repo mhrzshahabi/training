@@ -154,9 +154,8 @@
             chartSelector.show();
             ReactionEvaluationChart.show();
             fill_evaluation_result();
+            evaluationAnalysist_learning();
         },
-
-
     });
 
     //----------------------------------------------------Reaction Evaluation-------------------------------------------
@@ -414,6 +413,7 @@
         ]
     });
 
+    //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
 
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
         ID: "tabSetEvaluationAnalysis",
@@ -450,7 +450,6 @@
 
     });
 
-    //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
 
     var ToolStripButton_Refresh_Evaluation_Analysis = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",

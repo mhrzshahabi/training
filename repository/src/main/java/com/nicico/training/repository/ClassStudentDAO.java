@@ -47,4 +47,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     void setTotalStudentWithOutScore(@Param("id") Long id);
 
     List<ClassStudent> findByTclassIdAndStudentId(Long tclassId, Long studentId);
+
+    List<ClassStudent> findByTclassId(Long classId);
+
 }
