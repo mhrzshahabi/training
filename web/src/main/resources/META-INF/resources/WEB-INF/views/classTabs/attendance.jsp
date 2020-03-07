@@ -139,12 +139,9 @@
         fields: [
             {
                 name: "attendanceTitle",
-                // type:"StaticItem",
                 showTitle: false,
                 canEdit: false,
-                // width:300,
                 textBoxStyle: "font-weight:bold; font-color:red;",
-                // readOnlyTextBoxStyle:"font-color:red",
                 textAlign: "center",
                 width: "*"
             },
@@ -158,24 +155,6 @@
                     1:"حضور و غیاب براساس تاریخ:",
                     2:"حضور و غیاب براساس فراگیر:"
                 },
-                <%--click: function (form, item) {--%>
-                    <%--attendanceGrid.endEditing();--%>
-                    <%--if (attendanceGrid.getAllEditRows().isEmpty()) {--%>
-                    <%--} else {--%>
-                        <%--isc.MyYesNoDialog.create({--%>
-                            <%--title: "<spring:message code='message'/>",--%>
-                            <%--message: "<spring:message code='msg.save.changes?'/>",--%>
-                            <%--buttonClick: function (button, index) {--%>
-                                <%--this.close();--%>
-                                <%--if (index === 0) {--%>
-                                    <%--saveBtn.click();--%>
-                                <%--} else {--%>
-                                    <%--cancelBtn.click();--%>
-                                <%--}--%>
-                            <%--}--%>
-                        <%--});--%>
-                    <%--}--%>
-                <%--},--%>
                 changed: function (form, item, value) {
                   if(attendanceGrid.getAllEditRows().length>0){
                       // loadPage_Attendance();
@@ -255,6 +234,7 @@
                     }
                 },
                 changed: function (form, item, value) {
+                    var wait = createDialog("wait");
                     if (form.getValue("filterType") == 1) {
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/session-in-date?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
@@ -265,6 +245,7 @@
                             showPrompt: false,
                             serverOutputAsString: false,
                             callback: function (resp) {
+                                wait.close();
                                 let fields1 = [
                                     {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true},
                                     {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true},
@@ -543,10 +524,16 @@
                             showPrompt: false,
                             serverOutputAsString: false,
                             callback: function (resp) {
+                                wait.close();
                                 if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
                                     let fields1 = [
                                         {name: "sessionType", title: "نوع جلسه"},
-                                        {name: "sessionDate", title: "تاریخ", valueMap: filterValuesUnique, multiple: true},
+                                        {
+                                            name: "sessionDate",
+                                            title: "تاریخ",
+                                            valueMap: filterValuesUnique,
+                                            multiple: true
+                                        },
                                         {name: "startHour", title: "ساعت شروع"},
                                         {name: "endHour", title: "ساعت پایان"},
                                         {name: "state", title: "وضعیت", valueMap:attendanceState},
@@ -783,6 +770,9 @@
                                             }
                                         },
                                     });
+                                    ListGrid_Attendance_AttendanceJSP.clearSort();
+                                    ListGrid_Attendance_AttendanceJSP.sortDirection = "descending";
+                                    ListGrid_Attendance_AttendanceJSP.sort("sessionDate");
                                     var data2 = JSON.parse(resp.data);
                                     filterValues.length = 0;
                                     filterValuesUnique.length = 0;
@@ -892,8 +882,6 @@
                         }
                         attendanceGrid.endEditing();
                         attendanceGrid.saveAllEdits();
-
-
                         // attendanceGrid.endEditing();
                     }
                 }),
@@ -930,7 +918,6 @@
                             } else {
                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                             }
-
                         }
                     });
                 }
