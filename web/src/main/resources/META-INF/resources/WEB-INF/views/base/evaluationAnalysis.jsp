@@ -13,7 +13,7 @@
     var studentsGradeToGoals = 0;
     var chartData = null;
     var userId = "<%= SecurityUtil.getUserId()%>";
-    var totalCountStudent=0;
+
     //----------------------------------------------------Rest Data Sources---------------------------------------------
 
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
