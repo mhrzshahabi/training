@@ -33,7 +33,8 @@
             {name: "evaluationStatus"},
             {name: "course.id"},
             {name: "instituteId"},
-            {name: "titleClass"}
+            {name: "titleClass"},
+            {name: "scoringMethod"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
     });
@@ -147,7 +148,6 @@
             {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function (record) {
-            totalCountStudent=record.studentCount;
             DynamicForm_Reaction_EvaluationAnalysis_Header.show();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();

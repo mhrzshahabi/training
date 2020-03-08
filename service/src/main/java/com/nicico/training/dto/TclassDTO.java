@@ -256,6 +256,7 @@ public class TclassDTO {
         private String classStatus;
         private String evaluationStatus;
         private String titleClass;
+        private String scoringMethod;
 
         public String getTeacher() {
             if (teacher != null)

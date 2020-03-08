@@ -24,6 +24,7 @@ public class EvaluationAnalysistLearningFormController {
     public ResponseEntity<?> printWithCriteri(final HttpServletRequest request) {
         String token = (String) request.getParameter("token");
         String recordId=(String)request.getParameter("recordId");
+        String scoringMethod=(String)request.getParameter("scoringMethod");
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
         final HttpHeaders headers = new HttpHeaders();
@@ -31,6 +32,7 @@ public class EvaluationAnalysistLearningFormController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("recordId",recordId);
+        map.add("scoringMethod",scoringMethod);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map,headers);
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysist-learning-Rest/print", HttpMethod.POST, entity, byte[].class);

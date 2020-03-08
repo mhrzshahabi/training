@@ -209,7 +209,6 @@ public class ClassStudentDTO implements Serializable {
         private Float preTestScore;
         private Float score;
         private StudentDTO.ScoresInfo student;
-        private Long totalCount;
     }
 
     @Getter
@@ -230,6 +229,8 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private Float preTestScore;
         private Float score;
+        private String valence;
+        private StudentDTO.ScoresInfo student;
     }
 
 

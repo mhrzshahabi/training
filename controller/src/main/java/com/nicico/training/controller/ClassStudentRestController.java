@@ -89,6 +89,18 @@ public class ClassStudentRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/evaluationAnalysistLearning/{classId}")
+    public ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> evaluationAnalysistLearning(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs =
+                classStudentService.searchClassStudents(searchRq, classId, ClassStudentDTO.evaluationAnalysistLearning.class);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
 
 
 

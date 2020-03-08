@@ -31,6 +31,7 @@
             },
             {name:"preTestScore", filterOperator: "iContains"},
             {name:"score", filterOperator: "iContains"},
+            {name:"valence", filterOperator: "iContains"},
         ],
     });
     //**************************************************************************
@@ -76,12 +77,13 @@
 
             },
             {
-                name:"score", title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true
+                name:"score", title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true,
+
             },
                 {
                 name: "preTestScore",
                 title: "نمره پيش تست",
-                filterOperator: "iContains",autoFitWidth:true,
+                filterOperator: "iContains",
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
@@ -107,6 +109,10 @@
                     }
 
              },
+            {
+                name:"valence",title: "نمره معادل ارزشی",  filterOperator: "iContains",autoFitWidth:true,
+                valueMap: {"1001": "20", "1002": "50", "1003": "65", "1004": "100"},
+            },
 
 
         ],
@@ -192,9 +198,24 @@
 
         var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
         if (!(Record === undefined || Record == null)) {
-            RestDataSource_evaluationAnalysist_learning.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + Record.id
+            RestDataSource_evaluationAnalysist_learning.fetchDataURL = tclassStudentUrl + "/evaluationAnalysistLearning/" + Record.id
             ListGrid_evaluationAnalysist_learning.invalidateCache()
             ListGrid_evaluationAnalysist_learning.fetchData()
+            if (Record.scoringMethod == "1") {
+                ListGrid_evaluationAnalysist_learning.hideField('score');
+                ListGrid_evaluationAnalysist_learning.showField('valence')
+            } else if (Record.scoringMethod == "2") {
+                ListGrid_evaluationAnalysist_learning.showField('score')
+                ListGrid_evaluationAnalysist_learning.hideField('valence');
+            }
+            else if (Record.scoringMethod == "3") {
+                ListGrid_evaluationAnalysist_learning.showField('score')
+                ListGrid_evaluationAnalysist_learning.hideField('valence');
+            }
+            else if (Record.scoringMethod == "4") {
+                ListGrid_evaluationAnalysist_learning.hideField('valence')
+                ListGrid_evaluationAnalysist_learning.hideField('score');
+            }
         }
     }
 
@@ -208,12 +229,14 @@
             fields:
                 [
                     {name: "recordId", type: "hidden"},
-                    {name: "token", type: "hidden"}
+                    {name: "token", type: "hidden"},
+                    {name: "scoringMethod", type: "hidden"},
 
                 ]
 
         })
         criteriaForm.setValue("recordId", JSON.stringify(Record.id));
+        criteriaForm.setValue("scoringMethod", Record.scoringMethod);
         criteriaForm.setValue("token", "<%= accessToken %>")
         criteriaForm.show();
         criteriaForm.submitForm();
