@@ -88,6 +88,7 @@
             },
             {
                 name: "titleFa",
+                type: "textArea",
                 title: "نام فارسی",
                 required: true,
                 readonly: true,
@@ -98,7 +99,7 @@
                     type: "isString",
                     validateOnExit: true,
                     stopOnError: true,
-                    errorMessage: "نام مجاز حداکثر دویست کاراکتر است"
+                    errorMessage: "نام مجاز حداکثر پانصد کاراکتر است"
                 }]
             },
             {
