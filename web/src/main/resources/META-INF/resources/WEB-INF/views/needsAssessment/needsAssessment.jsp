@@ -577,7 +577,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     var Window_NeedsAssessment_JspNeedsAssessment = isc.Window.create({
         title: "<spring:message code="needs.assessment"/>",
         minWidth: 1024,
+        autoCenter: false,
+        showMaximizeButton: false,
+        autoSize: false,
         keepInParentRect: true,
+        isModal:false,
         placement:"fillScreen",
         close(){
           clearAllGrid();
