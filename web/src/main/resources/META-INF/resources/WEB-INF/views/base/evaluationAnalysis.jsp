@@ -13,7 +13,7 @@
     var studentsGradeToGoals = 0;
     var chartData = null;
     var userId = "<%= SecurityUtil.getUserId()%>";
-    var totalCountStudent=0;
+
     //----------------------------------------------------Rest Data Sources---------------------------------------------
 
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
@@ -33,7 +33,8 @@
             {name: "evaluationStatus"},
             {name: "course.id"},
             {name: "instituteId"},
-            {name: "titleClass"}
+            {name: "titleClass"},
+            {name: "scoringMethod"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
     });
@@ -147,16 +148,14 @@
             {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function (record) {
-            totalCountStudent=record.studentCount;
             DynamicForm_Reaction_EvaluationAnalysis_Header.show();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
             chartSelector.show();
             ReactionEvaluationChart.show();
             fill_evaluation_result();
+            evaluationAnalysist_learning();
         },
-
-
     });
 
     //----------------------------------------------------Reaction Evaluation-------------------------------------------
@@ -414,6 +413,7 @@
         ]
     });
 
+    //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
 
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
         ID: "tabSetEvaluationAnalysis",
@@ -450,7 +450,6 @@
 
     });
 
-    //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
 
     var ToolStripButton_Refresh_Evaluation_Analysis = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
