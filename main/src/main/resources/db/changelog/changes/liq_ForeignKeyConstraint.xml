@@ -2,5 +2,16 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-
+    <changeSet author="rastegari_h (generated)" id="1583734442111-242">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_questionnaire_question" constraintName="FK5dh7tb7nytxp47o5wjktgw40u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1583734442111-246">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_questionnaire_question" constraintName="FKsb124gpii2j1kre3rx6oxnock" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1583735901398-245">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_questionnaire" constraintName="FKf4sdtk6jwmfrbsxd3i0g1i10s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1583735901398-248">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_questionnaire" constraintName="FKr5og8ha1s1wvy2xcx2f5cr03f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

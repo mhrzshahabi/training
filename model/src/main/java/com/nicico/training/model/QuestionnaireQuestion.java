@@ -19,7 +19,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_questionnaire_question",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"f_evaluation_question", "f_questionnaire"})})
-public class QuestionnaireQuestion extends Auditable {
+public class QuestionnaireQuestion extends AuditableNew {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_questionnaire_question_id")
