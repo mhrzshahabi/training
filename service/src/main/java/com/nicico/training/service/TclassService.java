@@ -371,8 +371,6 @@ public class TclassService implements ITclassService {
         evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
         evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher(classId, trainingId));
         evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
-
-
         return evaluationResult;
     }
 

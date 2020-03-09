@@ -421,6 +421,7 @@
                 name: "course.id", editorType: "ComboBoxItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
                 pickListWidth: "600",
+                validateOnChange: true,
                 optionDataSource: RestDataSource_Course_JspClass,
                 canEdit: false,
                 // autoFetchData: false,
@@ -1416,9 +1417,11 @@
         title: "<spring:message code='class'/>",
         // width: "90%",
         bodyColor : "#cbeaff",
+        autoCenter: false,
+        showMaximizeButton: false,
+        autoSize: false,
         minWidth: 1024,
         isModal: false,
-        // autoSize: false,
         // height: "87%",
         keepInParentRect: true,
         placement: "fillPanel",
@@ -1442,9 +1445,11 @@
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
-        items: [isc.TrVLayout.create({
+        items: [
+            isc.TrVLayout.create({
             members: [VLayOut_FormClass_JspClass, HLayOut_ClassSaveOrExit_JspClass]
-        })]
+        })
+        ]
     });
 
     var Window_AddCourse_JspClass = isc.Window.create({
@@ -1491,8 +1496,9 @@
                                 name: "categoryId",
                                 title: "<spring:message code="category"/> ",
                                 optionDataSource: RestDataSource_category_JspCourse,
-                                valueField:"id",
-                                displayField:"titleFa"
+                                valueField: "id",
+                                displayField: "titleFa",
+                                filterOperator: "equals",
                             },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
@@ -1502,7 +1508,6 @@
                                 DynamicForm_Class_JspClass.getItem("course.id").changed(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("course.id"));
                                 Window_AddCourse_JspClass.close();
                             },1000)
-
                             // var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
                             // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
                             // DynamicForm_Class_JspClass.getItem("course.id").fetchData(function () {
@@ -1510,7 +1515,6 @@
                             //     editNeedsAssessmentRecord(record.id, "Post");
                             // })
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
-
                         }
                     }),
                 ]

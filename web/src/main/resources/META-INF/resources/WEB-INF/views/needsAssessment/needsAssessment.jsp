@@ -578,7 +578,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         title: "<spring:message code="needs.assessment"/>",
         minWidth: 1024,
         keepInParentRect: true,
-        placement:"fillPanel",
+        placement:"fillScreen",
         close(){
           clearAllGrid();
           ListGridNeedsAssessment_Refresh();
