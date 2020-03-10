@@ -97,8 +97,9 @@ public class CourseDTO implements Serializable {
         private ELevelType eLevelType;
         private ETechnicalType eTechnicalType;
         private ETheoType eTheoType;
-//        private CategoryDTO.CategoryInfoTuple category;
+        //        private CategoryDTO.CategoryInfoTuple category;
         private Long categoryId;
+        private Long subCategoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
         private Boolean hasSkill;
@@ -123,7 +124,7 @@ public class CourseDTO implements Serializable {
         private ETechnicalType eTechnicalType;
         private ETheoType eTheoType;
         private CategoryDTO.CategoryInfoTuple category;
-//        private Long categoryId;
+        //        private Long categoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
         private Boolean hasSkill;
@@ -270,8 +271,8 @@ public class CourseDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<CourseDTO.Info> data;
+    public static class SpecRs<T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -300,12 +301,41 @@ public class CourseDTO implements Serializable {
         private String titleFa;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("NeedsAssessmentReportInfo")
+    public static class NeedsAssessmentReportInfo {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private Float theoryDuration;
+        private String scoresState;
+    }
+
     // ------------------------------
 
     @Getter
     @Setter
     @ApiModel("CourseGoals")
-    public static class CourseGoals{
+    public static class CourseGoals {
         private List<Goal> goalSet;
     }
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @ApiModel("CourseInfoComboClass")
+    public static class CourseInfoComboClass {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private String createdBy;
+        private Float theoryDuration;
+        private Integer startEvaluation;
+        private String scoringMethod;
+        private String acceptancelimit;
+        private CategoryDTO.CategoryInfoTuple category;
+    }
+
+    // ------------------------------
 }

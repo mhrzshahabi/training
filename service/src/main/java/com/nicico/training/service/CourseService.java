@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.google.common.base.Joiner;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -264,21 +265,12 @@ public class CourseService implements ICourseService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public SearchDTO.SearchRs<CourseDTO.InfoPrint> searchPrint(SearchDTO.SearchRq request) {
-        SearchDTO.SearchRs<Course> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, Course.class));
-        SearchDTO.SearchRs<CourseDTO.InfoPrint> exitList = new SearchDTO.SearchRs<CourseDTO.InfoPrint>();
-        exitList.setTotalCount(search.getTotalCount());
-        List<CourseDTO.InfoPrint> infoList = new ArrayList<CourseDTO.InfoPrint>();
-//        List<Course> list = search.getList();
-        List<CourseDTO.InfoPrint> infoPrints = modelMapper.map(search.getList(), new TypeToken<List<CourseDTO.InfoPrint>>() {
-        }.getType());
-//        for (Course course : list) {
-//            CourseDTO.InfoPrint map = modelMapper.map(course, CourseDTO.InfoPrint.class);
-//            infoList.add(map);
-//        }
-        exitList.setList(infoPrints);
-        return exitList;
+    public <T> SearchDTO.SearchRs<T> searchGeneric(SearchDTO.SearchRq request, Class<T> infoType) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        return SearchUtil.search(courseDAO, request, e -> modelMapper.map(e, infoType));
     }
+
+
 
     //-------jafari--------
     @Transactional(readOnly = true)
@@ -437,12 +429,12 @@ public class CourseService implements ICourseService {
     @Override
     public String getMaxCourseCode(String str) {
         List<Course> courseList = courseDAO.findByCodeStartingWith(str);
-        int max = 0;
+        Integer max = 0;
         if (courseList.size() == 0)
             return "0";
         for (Course course : courseList) {
-            if (max < Integer.parseInt(course.getCode().substring(6, 10)))
-                max = Integer.parseInt(course.getCode().substring(6, 10));
+            if (max < Integer.parseInt(course.getCode().substring(6)))
+                max = Integer.parseInt(course.getCode().substring(6));
         }
         return String.valueOf(max);
     }

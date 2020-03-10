@@ -25,7 +25,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
-    <%--<SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>--%>
+    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
@@ -426,7 +426,7 @@
                 },
                 <%--                </sec:authorize>--%>
                 {
-                    title: "<spring:message code="skill.categorize"/>",
+                    title: "<spring:message code="category&subcategory"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/category/show-form"/>");
                     }
@@ -479,6 +479,7 @@
                         createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="job"/>",
                     click: function () {
@@ -530,13 +531,13 @@
                         createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="need.assessment.skill.based"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");
-                    }
-                },
+                <%--{isSeparator: true},--%>
+                <%--{--%>
+                <%--    title: "<spring:message code="need.assessment.skill.based"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
@@ -712,9 +713,9 @@
                     }
                 },
                 {
-                    title: "<spring:message code="personnel.needsAssessment.courses.report"/>",
+                    title: "<spring:message code="reports.need.assessment"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/needsAssessment-by-one-person"/>");
+                        createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                     }
                 },
                 {
@@ -1467,7 +1468,8 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
-
+        <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
+        <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
 
     // ---------------------------------------- Not Ok - End ----------------------------------------

@@ -12,8 +12,8 @@
         data: [
             {title: "<spring:message code="refresh"/>", click: function () { refreshLG(ParameterLG_parameter, cleanLG(ParameterValueLG_parameter)); }},
             {title: "<spring:message code="create"/>", click: function () { createParameter_parameter(); }},
-            {title: "<spring:message code="edit"/>", click: function () { editParameter_parameter(); }},
-            {title: "<spring:message code="remove"/>", click: function () { removeParameter_parameter(); }},
+            // {title: "<spring:message code="edit"/>", click: function () { editParameter_parameter(); }},
+            // {title: "<spring:message code="remove"/>", click: function () { removeParameter_parameter(); }},
         ]
     });
 
@@ -22,8 +22,8 @@
         data: [
             {title: "<spring:message code="refresh"/>", click: function () { refreshParameterValueLG_parameter(); }},
             {title: "<spring:message code="create"/>", click: function () { createParameterValue_parameter(); }},
-            {title: "<spring:message code="edit"/>", click: function () { editParameterValue_parameter(); }},
-            {title: "<spring:message code="remove"/>", click: function () { removeParameterValue_parameter(); }},
+            // {title: "<spring:message code="edit"/>", click: function () { editParameterValue_parameter(); }},
+            // {title: "<spring:message code="remove"/>", click: function () { removeParameterValue_parameter(); }},
         ]
     });
 
@@ -33,8 +33,8 @@
         members: [
             isc.ToolStripButtonRefresh.create({click: function () { refreshLG(ParameterLG_parameter, cleanLG(ParameterValueLG_parameter)); }}),
             isc.ToolStripButtonCreate.create({click: function () { createParameter_parameter(); }}),
-            isc.ToolStripButtonEdit.create({click: function () { editParameter_parameter(); }}),
-            isc.ToolStripButtonRemove.create({click: function () { removeParameter_parameter(); }}),
+            // isc.ToolStripButtonEdit.create({click: function () { editParameter_parameter(); }}),
+            // isc.ToolStripButtonRemove.create({click: function () { removeParameter_parameter(); }}),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "ParameterLGCountLabel_parameter"}),
         ]
@@ -45,8 +45,8 @@
         members: [
             isc.ToolStripButtonRefresh.create({click: function () { refreshParameterValueLG_parameter(); }}),
             isc.ToolStripButtonCreate.create({click: function () { createParameterValue_parameter(); }}),
-            isc.ToolStripButtonEdit.create({click: function () { editParameterValue_parameter(); }}),
-            isc.ToolStripButtonRemove.create({click: function () { removeParameterValue_parameter(); }}),
+            // isc.ToolStripButtonEdit.create({click: function () { editParameterValue_parameter(); }}),
+            // isc.ToolStripButtonRemove.create({click: function () { removeParameterValue_parameter(); }}),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "ParameterValueLGCount_parameter"}),
         ]
@@ -256,7 +256,6 @@
                 "', ParameterValueWin_parameter, ParameterValueLG_parameter)")
         );
     }
-
 
     function removeParameterValue_parameter() {
         let record = ParameterValueLG_parameter.getSelectedRecord();

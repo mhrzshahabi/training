@@ -8,7 +8,8 @@ spring:
       connection-test-query: SELECT 1 FROM DUAL
   jpa:
     hibernate:
-      ddl-auto: validate
+#      ddl-auto: validate
+    ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
@@ -114,8 +115,8 @@ spring:
   profiles: Development
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: n_training
-    password: n_training
+    username: devtraining
+    password: devtraining
   redis:
     host: devapp01.icico.net.ir
     password: nicico
@@ -153,8 +154,8 @@ spring:
   profiles: Local
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: n_training
-    password: n_training
+    username: devtraining
+    password: devtraining
   redis:
     host: devapp01.icico.net.ir
     password: nicico

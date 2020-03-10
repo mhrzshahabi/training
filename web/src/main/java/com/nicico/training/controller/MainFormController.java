@@ -29,9 +29,9 @@ public class MainFormController {
         return "report/trainingFile";
     }
 
-    @RequestMapping("/needsAssessment-by-one-person")
-    public String showNeedsAssessmentByOnePersonForm() {
-        return "report/needsAssessmentByOnePerson";
+    @RequestMapping("/needsAssessment-reports")
+    public String showNeedsAssessmentReportsForm() {
+        return "report/needsAssessmentReports";
     }
 
     @RequestMapping("/oaUser")

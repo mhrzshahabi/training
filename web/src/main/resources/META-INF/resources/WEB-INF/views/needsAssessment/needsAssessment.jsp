@@ -23,7 +23,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "id", primaryKey: true, hidden: true},
             {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "objectType", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "objectType", title: "<spring:message code="title"/>", width:90, valueMap: priorityList},
             {name: "competence.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "skill.titleFa", title: "<spring:message code="type"/>", filterOperator: "iContains"},
@@ -44,16 +44,26 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             isc.ToolStripButtonEdit.create({
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
-                    one(two);
-                    function one(callBack) {
+                    if(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType == "Post") {
+                        var criteria = '{"fieldName":"id","operator":"equals","value":"' + ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId + '"}';
+                        PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+                    }
+                    NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                         editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                        callBack();
-                    }
-                    function two() {
-                        NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function() {
-                            Window_NeedsAssessment_JspNeedsAssessment.show();
-                        })
-                    }
+                        Window_NeedsAssessment_JspNeedsAssessment.show();
+                        NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
+                    })
+                    // editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                    // one(two);
+                    // function one(callBack) {
+                    //     editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                    //     callBack();
+                    // }
+                    // function two() {
+                    //     NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData({"id":ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId} ,function() {
+                    //         Window_NeedsAssessment_JspNeedsAssessment.show();
+                    //     })
+                    // }
                 }
             }),
             isc.ToolStripButton.create({
@@ -84,12 +94,15 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
+        // groupByField:["objectType"],
         // groupByField:["objectType", "objectName"],
         // groupStartOpen: "none",
+        allowAdvancedCriteria:true,
+        filterOnKeypress:true,
         autoFetchData: true,
         fields:[
-            {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true,  valueMap: priorityList},
-            {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, },
+            {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", valueMap: priorityList},
+            {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -214,7 +227,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name:"title"}
         ],
         fetchDataURL: parameterValueUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"parameter.code\",\"operator\":\"equals\",\"value\":\"NeedsAssessmentPriority\"}"
-    })
+    });
     var RestDataSource_Competence_JspNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -325,8 +338,8 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 if(removeRecord_JspNeedsAssessment(data[i])){
                     return;
                 }
-                DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
             }
+            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
         },
         dataChanged(){
             editing = true;
@@ -605,11 +618,15 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         type: "SelectItem",
                         valueField: "id",
                         displayField: "titleFa",
-                        autoFetchData: false,
-                        pickListFields: [{name: "code"}, {name: "titleFa"}],
+                        // autoFetchData: false,
+                        pickListFields: [
+                            {name: "code"},
+                            {name: "titleFa"}
+                        ],
                         click: function(form){
                             // updateObjectIdLG(form, form.getValue("objectType"));
                             if(form.getValue("objectType")=="Post"){
+                                PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
                                 Window_AddPost_JspNeedsAssessment.show();
                             }
                         },
@@ -736,7 +753,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
                 form.getItem("objectId").canEdit = false;
-                PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
+                // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
@@ -927,7 +944,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             "needAssessment": needAssessmentTitle,
                             "needAssessmentCreatorId": "${username}",
                             "needAssessmentCreator": userFullName,
-                            "REJECTVAL": "",
+                            "REJECTVAL": " ",
                             "REJECT": "",
                             "target": "/web/needsAssessment",
                             "targetTitleFa": "نیازسنجی",

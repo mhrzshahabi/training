@@ -269,33 +269,35 @@
             // DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
         },
-        selectionUpdated: function (record) {
-            courseRecord = record;
-            RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
-            ListGrid_CourseSyllabus.fetchData();
-            ListGrid_CourseSyllabus.invalidateCache();
-            RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseRecord.id;
-            ListGrid_CourseSkill.fetchData();
-            ListGrid_CourseSkill.invalidateCache();
-            RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseRecord.id;
-            ListGrid_CourseJob.fetchData();
-            ListGrid_CourseJob.invalidateCache();
-            RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "skill-group/" + courseRecord.id;
-            ListGrid_CourseCompetence.fetchData();
-            ListGrid_CourseCompetence.invalidateCache();
-            // RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
-            // ListGrid_Post_JspCourse.fetchData();
-            // ListGrid_Post_JspCourse.invalidateCache();
-            // for (let i = 0; i < trainingTabSet.tabs.length; i++) {
-            //     if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
-            //         trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
-            //     }
-            // }
-            // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
+        selectionChanged: function (record, state) {
+            if(state) {
+                courseRecord = record;
+                RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
+                ListGrid_CourseSyllabus.fetchData();
+                ListGrid_CourseSyllabus.invalidateCache();
+                RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseRecord.id;
+                ListGrid_CourseSkill.fetchData();
+                ListGrid_CourseSkill.invalidateCache();
+                RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseRecord.id;
+                ListGrid_CourseJob.fetchData();
+                ListGrid_CourseJob.invalidateCache();
+                RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "skill-group/" + courseRecord.id;
+                ListGrid_CourseCompetence.fetchData();
+                ListGrid_CourseCompetence.invalidateCache();
+                // RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
+                // ListGrid_Post_JspCourse.fetchData();
+                // ListGrid_Post_JspCourse.invalidateCache();
+                // for (let i = 0; i < trainingTabSet.tabs.length; i++) {
+                //     if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
+                //         trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
+                //     }
+                // }
+                // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
 
-            // },
-            // selectionUpdated:function(record){
-            refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
+                // },
+                // selectionUpdated:function(record){
+                refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
+            }
         },
 
         //working
@@ -1198,7 +1200,6 @@
                     }
                 }
             },
-
             {
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
@@ -1209,7 +1210,6 @@
                     1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "11", 12: "12"
                 }
             },
-
             {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>",
@@ -1218,7 +1218,7 @@
                 vertical: false,
                 endRow: true,
                 fillHorizontalSpace: true,
-                //  defaultValue: "مشاهده",
+                  defaultValue: "1",
                 valueMap: {
                     "1": "مشاهده",
                     "2": "مصاحبه",
@@ -1306,8 +1306,6 @@
                     "1004": "خيلي خوب",
                 },
             }
-
-
             // {
             //     defaultValue: "معادل دوره", type: "section", sectionExpanded: false,
             //     itemIds: ["courseAllEqualGrid","imgEqualMove","equalCourseGrid"]
@@ -1662,9 +1660,10 @@
                             var responseID = JSON.parse(resp.data).id;
                             var gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                            courseRecord = JSON.parse(resp.data);
+                            ListGrid_Course_Edit();
                             setTimeout(function () {
                                 ListGrid_Course.setSelectedState(gridState);
-                                ListGrid_Course_Edit();
                             }, 3000);
 
                         } else if (resp.httpResponseCode === 406) {
@@ -1678,7 +1677,6 @@
                             });
                         } else {
                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-
                         }
                     }))
                 }));
@@ -2582,9 +2580,7 @@
         equalCourse.length = 0;
         preCourseGrid.invalidateCache();
         equalCourseGrid.invalidateCache();
-
         var sRecord = courseRecord;
-
         if (sRecord == null || sRecord.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -2593,7 +2589,7 @@
             vm_JspCourse.clearErrors();
             // DynamicForm_course_GroupTab.clearValues();
             isc.RPCManager.sendRequest({
-                actionURL: courseUrl + "preCourse/" + ListGrid_Course.getSelectedRecord().id,
+                actionURL: courseUrl + "preCourse/" + courseRecord.id,
                 httpMethod: "GET",
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -2607,7 +2603,7 @@
                 }
             });
             isc.RPCManager.sendRequest({
-                actionURL: courseUrl + "equalCourse/" + ListGrid_Course.getSelectedRecord().id,
+                actionURL: courseUrl + "equalCourse/" + courseRecord.id,
                 httpMethod: "GET",
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -2628,7 +2624,6 @@
             DynamicForm_course_GroupTab.getItem("erunType.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("elevelType.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("etheoType.id").setDisabled(true);
-
             course_method = "PUT";
             course_url = courseUrl + sRecord.id;
             // DynamicForm_course.getItem("epSection").enable();
@@ -2636,10 +2631,11 @@
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(sRecord);
+            DynamicForm_course_GroupTab.setValue("subCategory.id",courseRecord.subCategoryId);
 //======================================================
-            if (ListGrid_Course.getSelectedRecord().hasGoal && DynamicForm_course_MainTab.getValue("evaluation") != null) {
-                Window_course.show();
-            }
+//             if (courseRecord.hasGoal && DynamicForm_course_MainTab.getValue("evaluation") != null) {
+//                 Window_course.show();
+//             }
             if (DynamicForm_course_MainTab.getValue("evaluation") === "3") {
                 DynamicForm_course_MainTab.getItem("behavioralLevel").enable();
                 DynamicForm_course_MainTab.getItem("startEvaluation").enable();
@@ -2647,8 +2643,6 @@
                 DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
                 DynamicForm_course_MainTab.getItem("startEvaluation").disable();
             }
-
-
 //=======================================================
 
             Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
@@ -2671,7 +2665,6 @@
             // if (ListGrid_Course.getSelectedRecord().theoryDuration != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) {
             // DynamicForm_course.getItem("theoryDuration").setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
             // }
-
             // DynamicForm_course.getFields().get(5).prompt = "  جمع مدت زمان اجرای سرفصل ها " + (ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration).toString() + " ساعت می باشد."
         }
     };
@@ -2776,6 +2769,9 @@
                 }
             }
             let sum = da + ma + ne;
+            if(sum == 0){
+                sum = 1;
+            }
             lblCourse.getField("domainCourse").setValue("دانشی: " + getFormulaMessage(Math.round(da * 100 / sum) + "%", 2, "brown") + "، مهارتی: " + getFormulaMessage(Math.round(ma * 100 / sum) + "%", 2, "green") + "، نگرشی: " + getFormulaMessage(Math.round(ne * 100 / sum) + "%", 2, "blue"));
         }, 1000)
     }
