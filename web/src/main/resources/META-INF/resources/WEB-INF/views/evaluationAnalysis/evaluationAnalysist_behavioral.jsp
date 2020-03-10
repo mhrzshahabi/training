@@ -6,7 +6,6 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-
     var behavioral_chartData = null;
 
     var vm_Behavioral_evaluation = isc.ValuesManager.create({});
@@ -205,7 +204,7 @@
         allowedChartTypes: [],
         facets: [{
             id: "student",
-            title: "دانشجوی ارزیابی شده"
+            title: "فراگیر ارزیابی شده"
         },{
             id: "evaluator",
             title: "ارزیاب کننده"
