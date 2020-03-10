@@ -19,7 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "tbl_questionnaire")
-public class Questionnaire extends Auditable {
+public class Questionnaire extends AuditableNew {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_questionnaire_id")

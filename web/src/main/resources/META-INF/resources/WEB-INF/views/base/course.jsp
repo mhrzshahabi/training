@@ -123,7 +123,7 @@
     });
     var RestDataSource_CourseJob = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
+            {name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
         ],
         fetchDataURL: courseUrl + "job/" + courseRecord.id
     });
@@ -138,7 +138,7 @@
         ],
         fetchDataURL: syllabusUrl + "spec-list"
     });
-    var RestDataSource_CourseCompetence = isc.TrDS.create({
+    var RestDataSource_SkillGroup = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"},
@@ -167,7 +167,7 @@
                 // ListGrid_CourseSyllabus.setData([]);
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
                 // ListGrid_CourseGoal.setData([]);
-                // ListGrid_CourseCompetence.setData([]);
+                // ListGrid_SkillGroup.setData([]);
             }
         }, {
             title: "<spring:message code="create"/>",
@@ -281,12 +281,12 @@
                 RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseRecord.id;
                 ListGrid_CourseJob.fetchData();
                 ListGrid_CourseJob.invalidateCache();
-                RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "skill-group/" + courseRecord.id;
-                ListGrid_CourseCompetence.fetchData();
-                ListGrid_CourseCompetence.invalidateCache();
-                // RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
-                // ListGrid_Post_JspCourse.fetchData();
-                // ListGrid_Post_JspCourse.invalidateCache();
+                RestDataSource_SkillGroup.fetchDataURL = courseUrl + "skill-group/" + courseRecord.id;
+                ListGrid_SkillGroup.fetchData();
+                ListGrid_SkillGroup.invalidateCache();
+                RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
+                ListGrid_Post_JspCourse.fetchData();
+                ListGrid_Post_JspCourse.invalidateCache();
                 // for (let i = 0; i < trainingTabSet.tabs.length; i++) {
                 //     if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                 //         trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -501,10 +501,10 @@
     var ListGrid_CourseJob = isc.TrLG.create({
         dataSource: RestDataSource_CourseJob,
         fields: [
-            {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}
+            // {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
+            {name: "titleFa", title: "<spring:message code="job.title"/>", align: "center"},
+            {name: "code", title: "<spring:message code="job.code"/>", align: "center"},
+            // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
         autoFetchData: false,
@@ -515,8 +515,8 @@
         showResizeBar: false,
 
     });
-    var ListGrid_CourseCompetence = isc.TrLG.create({
-        dataSource: RestDataSource_CourseCompetence,
+    var ListGrid_SkillGroup = isc.TrLG.create({
+        dataSource: RestDataSource_SkillGroup,
         fields: [
             {name: "id", title: "شماره", canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
@@ -1618,6 +1618,7 @@
 //------------------------------------
             if (course_method == "POST") {
                 x = courseCode();
+                var wait = createDialog("wait");
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
                     var newCourseCounter = courseCounterCode(resp.data);
                     x = x + newCourseCounter;
@@ -1654,6 +1655,7 @@
                     // data2["workflowStatusCode"] = "0";
 
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
+                        wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             TabSet_Goal_JspCourse.enable();
                             ListGrid_Course_refresh();
@@ -1667,7 +1669,7 @@
                             }, 3000);
 
                         } else if (resp.httpResponseCode === 406) {
-                            var myDialog = createDialog("info", "قبلاً دوره\u200cای با این نام ذخیره شده است.",
+                            var myDialog = createDialog("info", "قبلاً دوره\u200cای با این کد ذخیره شده است.",
                                 "<spring:message code="message"/>");
                             myDialog.addProperties({
                                 buttonClick: function () {
@@ -2238,6 +2240,7 @@
                         name: "minTeacherDegree",
                         colSpan: 2,
                         title: "<spring:message code="course_minTeacherDegree"/>:",
+                        defaultValue: "دیپلم",
                         // autoFetchData: true,
                         required: true,
                         // height: "30",
@@ -2257,10 +2260,11 @@
                         name: "minTeacherExpYears",
                         colSpan: 2,
                         title: "<spring:message code="course_minTeacherExpYears"/>" + ":",
-                        prompt: "لطفا حداقل سال سابقه تدریس وارد کنید",
+                        prompt: "لطفا یک عدد بین 1 تا 15 وارد کنید",
                         // shouldSaveValue: true,
                         textAlign: "center",
                         required: true,
+                        defaultValue: 1,
                         validators: [{
                             type: "integerRange", min: 1, max: 50,
                             errorMessage: "لطفا یک عدد بین 1 تا 50 وارد کنید",
@@ -2276,9 +2280,10 @@
                         name: "minTeacherEvalScore",
                         colSpan: 2,
                         title: "<spring:message code="course_minTeacherEvalScore"/>" + ":",
-                        prompt: "لطفا حداقل نمره ارزیابی را وارد کنید",
+                        prompt: "لطفا یک عدد بین 65 تا 100 وارد کنید",
                         shouldSaveValue: true,
                         textAlign: "center",
+                        defaultValue: 65,
                         writeStackedIcons: true,
                         // height: "30",
                         required: true,
@@ -2337,6 +2342,9 @@
             }), TabSet_Goal_JspCourse],
         })],
         minWidth: 1024,
+        autoCenter: false,
+        showMaximizeButton: false,
+        autoSize: false,
         closeClick: function () {
             // formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
             // formEqualCourse.reset();
@@ -2392,7 +2400,7 @@
     // var HLayout_Tab_Course_Competence = isc.HLayout.create({
     //     width: "100%",
     //     height: "100%",
-    //     members: [ListGrid_CourseCompetence]
+    //     members: [ListGrid_SkillGroup]
     // });
     var Detail_Tab_Course = isc.TabSet.create({
         ID: "tabSetCourse",
@@ -2415,12 +2423,13 @@
                     ID: "ListGrid_Post_JspCourse",
                     showResizeBar: false,
                     dataSource: isc.TrDS.create({
-                        fields: [{name: "id", primaryKey: true, hidden: true},
+                        fields: [
+                            {name: "id", primaryKey: true, hidden: true},
                             {name: "titleFa", title: "نام فارسی", align: "center"},
-                            {name: "titleEn", title: "نام لاتین", align: "center"}
+                            {name: "code", title: "کد", align: "center"}
                         ],
                         ID: "RestData_Post_JspCourse",
-                        // fetchDataURL:courseUrl + "post/" + courseRecord.id,
+                        fetchDataURL:courseUrl + "post/" + courseRecord.id,
                     }),
                 })
             },
@@ -2433,7 +2442,7 @@
             {
                 // id: "TabPane_Competence",
                 title: "گروه مهارت",
-                pane: ListGrid_CourseCompetence
+                pane: ListGrid_SkillGroup
             },
             <%-- {--%>
             <%-- title: "<spring:message code="course.evaluation"/>",--%>
@@ -2466,7 +2475,7 @@
         ListGrid_CourseSkill.setData([]);
         ListGrid_CourseSyllabus.setData([]);
         // ListGrid_CourseGoal.setData([]);
-        ListGrid_CourseCompetence.setData([]);
+        ListGrid_SkillGroup.setData([]);
         courseRecord = null;
         // for (j = 0; j < trainingTabSet.tabs.length; j++) {
         //     if (trainingTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
@@ -2549,7 +2558,7 @@
                                     ListGrid_CourseSkill.setData([]);
                                     ListGrid_CourseSyllabus.setData([]);
                                     // ListGrid_CourseGoal.setData([]);
-                                    ListGrid_CourseCompetence.setData([]);
+                                    ListGrid_SkillGroup.setData([]);
                                     var OK = isc.Dialog.create({
                                         message: "<spring:message code="msg.record.remove.successful"/>",
                                         icon: "[SKIN]say.png",

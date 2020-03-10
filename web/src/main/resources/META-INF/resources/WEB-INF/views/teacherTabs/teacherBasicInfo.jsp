@@ -213,6 +213,7 @@
             {
                 name: "personality.birthCertificate",
                 title: "<spring:message code='birth.certificate'/>",
+                required: true,
                 keyPressFilter: "[0-9]",
                 length: "15"
             },
@@ -332,6 +333,7 @@
             {
                 name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
+                required: true,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
@@ -461,6 +463,7 @@
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
+                required: true,
                 keyPressFilter: "[0-9]",
                 length: "11",
                 hint: "*********09",

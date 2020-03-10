@@ -6,7 +6,6 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
-
     var classMethod = "POST";
     var autoValid = false;
     var classWait;
@@ -225,7 +224,7 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     var ListGrid_Class_JspClass = isc.TrLG.create({
-        ID: "classListGrid",
+        // ID: "classListGrid",
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Class_JspClass,
@@ -242,31 +241,30 @@
         <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
         <%--groupByText: "<spring:message code='groupByText'/>",--%>
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
-        styleName: 'expandList-tapBar',
-        cellHeight: 43,
+        // styleName: 'expandList-tapBar',
+        // cellHeight: 43,
         autoFetchData: true,
-        alternateRecordStyles: true,
-        canExpandRecords: true,
-        canExpandMultipleRecords: false,
-        wrapCells: true,
-        showRollOver: false,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        expansionMode: "related",
-        autoFitExpandField: true,
-        virtualScrolling: true,
-        loadOnExpand: true,
-        loaded: false,
+        // alternateRecordStyles: true,
+        // canExpandRecords: true,
+        // canExpandMultipleRecords: false,
+        // wrapCells: true,
+        // showRollOver: false,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
+        // expansionMode: "related",
+        // autoFitExpandField: true,
+        // virtualScrolling: true,
+        // loadOnExpand: true,
+        // loaded: false,
         initialSort: [
 // {property: "createdBy", direction: "ascending"},
             {property: "startDate", direction: "descending", primarySort: true}
         ],
-        // selectionUpdated: function (record) {
-        //     refreshSelectedTab_class(tabSetClass.getSelectedTab());
-        // },
+        selectionUpdated: function (record) {
+            refreshSelectedTab_class(tabSetClass.getSelectedTab());
+        },
         doubleClick: function () {
             ListGrid_class_edit();
-
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -365,32 +363,32 @@
 
         ],
 
-        getCellCSSText: function (record, rowNum, colNum) {
-            if (this.isSelected(record)) {
-                return "background-color: #fe9d2a;";
-            } else {
-                if (record.classStatus === "1")
-                    return "background-color: #a5a5a5;";
-                else if (record.classStatus === "3")
-                    return "background-color: #C7E1FF;";
-            }
-        },
+        // getCellCSSText: function (record, rowNum, colNum) {
+        //     if (this.isSelected(record)) {
+        //         return "background-color: #fe9d2a;";
+        //     } else {
+        //         if (record.classStatus === "1")
+        //             return "background-color: #a5a5a5;";
+        //         else if (record.classStatus === "3")
+        //             return "background-color: #C7E1FF;";
+        //     }
+        // },
         dataArrived: function () {
             selectWorkflowRecord();
         },
-        getExpansionComponent: function (record) {
-            ListGrid_Class_JspClass.selectSingleRecord(record);
-            refreshSelectedTab_class(tabSetClass.getSelectedTab());
-            var layout = isc.VLayout.create({
-                styleName: "expand-layout",
-                height: 300,
-                padding: 0,
-                membersMargin: 0,
-                members: [HLayout_Tab_Class]
-            });
-
-            return layout;
-        },
+        // getExpansionComponent: function (record) {
+        //     ListGrid_Class_JspClass.selectSingleRecord(record);
+        //     refreshSelectedTab_class(tabSetClass.getSelectedTab());
+        //     var layout = isc.VLayout.create({
+        //         styleName: "expand-layout",
+        //         height: 300,
+        //         padding: 0,
+        //         membersMargin: 0,
+        //         members: [HLayout_Tab_Class]
+        //     });
+        //
+        //     return layout;
+        // },
     });
 
     var VM_JspClass = isc.ValuesManager.create({});
@@ -421,6 +419,7 @@
                 name: "course.id", editorType: "ComboBoxItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
                 pickListWidth: "600",
+                validateOnChange: true,
                 optionDataSource: RestDataSource_Course_JspClass,
                 canEdit: false,
                 // autoFetchData: false,
@@ -1416,9 +1415,11 @@
         title: "<spring:message code='class'/>",
         // width: "90%",
         bodyColor : "#cbeaff",
+        autoCenter: false,
+        showMaximizeButton: false,
+        autoSize: false,
         minWidth: 1024,
         isModal: false,
-        // autoSize: false,
         // height: "87%",
         keepInParentRect: true,
         placement: "fillPanel",
@@ -1442,9 +1443,11 @@
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
-        items: [isc.TrVLayout.create({
+        items: [
+            isc.TrVLayout.create({
             members: [VLayOut_FormClass_JspClass, HLayOut_ClassSaveOrExit_JspClass]
-        })]
+        })
+        ]
     });
 
     var Window_AddCourse_JspClass = isc.Window.create({
@@ -1491,8 +1494,9 @@
                                 name: "categoryId",
                                 title: "<spring:message code="category"/> ",
                                 optionDataSource: RestDataSource_category_JspCourse,
-                                valueField:"id",
-                                displayField:"titleFa"
+                                valueField: "id",
+                                displayField: "titleFa",
+                                filterOperator: "equals",
                             },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
@@ -1502,7 +1506,6 @@
                                 DynamicForm_Class_JspClass.getItem("course.id").changed(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("course.id"));
                                 Window_AddCourse_JspClass.close();
                             },1000)
-
                             // var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
                             // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
                             // DynamicForm_Class_JspClass.getItem("course.id").fetchData(function () {
@@ -1510,7 +1513,6 @@
                             //     editNeedsAssessmentRecord(record.id, "Post");
                             // })
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
-
                         }
                     }),
                 ]
@@ -1899,7 +1901,7 @@
 
     var HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
-        height: "100%",
+        height: "39%",
         members: [TabSet_Class]
     });
 
@@ -1907,7 +1909,7 @@
         members: [
             HLayout_Actions_Class_JspClass,
             HLayout_Grid_Class_JspClass,
-            // HLayout_Tab_Class
+            HLayout_Tab_Class
         ]
     });
 

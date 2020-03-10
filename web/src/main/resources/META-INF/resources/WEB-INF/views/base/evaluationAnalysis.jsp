@@ -6,14 +6,14 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
+    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
     var teacherGradeToClass = 0;
     var studentsGradeToTeacher = 0;
     var studentsGradeToFacility = 0;
     var studentsGradeToGoals = 0;
-    var chartData = null;
     var userId = "<%= SecurityUtil.getUserId()%>";
-
+    var listGrid_record = null;
     //----------------------------------------------------Rest Data Sources---------------------------------------------
 
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
@@ -148,269 +148,10 @@
             {name: "titleClass", hidden: true}
         ],
         selectionUpdated: function (record) {
-            DynamicForm_Reaction_EvaluationAnalysis_Header.show();
-            DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
-            IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
-            chartSelector.show();
-            ReactionEvaluationChart.show();
-            fill_evaluation_result();
-            evaluationAnalysist_learning();
+            listGrid_record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+            set_evaluation_analysis_tabset_status();
+            Detail_Tab_Evaluation_Analysis.selectTab(0);
         },
-    });
-
-    //----------------------------------------------------Reaction Evaluation-------------------------------------------
-
-    var vm_reaction_evaluation = isc.ValuesManager.create({});
-
-    DynamicForm_Reaction_EvaluationAnalysis_Header = isc.DynamicForm.create({
-        width: "60%",
-        canSubmit: true,
-        border: "3px solid orange",
-        titleWidth: 120,
-        valuesManager: vm_reaction_evaluation,
-        titleAlign: "right",
-        showInlineErrors: true,
-        showErrorText: false,
-        styleName: "evaluation-form",
-        numCols: 2,
-        margin: 10,
-        newPadding: 5,
-        canTabToIcons: false,
-        fields: [
-            {
-                name: "studentCount",
-                title: "<spring:message code='student.count'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
-            {
-                name: "numberOfFilledReactionEvaluationForms",
-                title: "<spring:message code='numberOfFilledReactionEvaluationForms'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
-            {
-                name: "numberOfInCompletedReactionEvaluationForms",
-                title: "<spring:message code='numberOfInCompletedReactionEvaluationForms'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
-            {
-                name: "numberOfEmptyReactionEvaluationForms",
-                title:"<spring:message code='numberOfEmptyReactionEvaluationForms'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
-            {
-                name: "percenetOfFilledReactionEvaluationForms",
-                title: "<spring:message code='percenetOfFilledReactionEvaluationForms'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
-            {
-                name: "numberOfExportedReactionEvaluationForms",
-                title: "<spring:message code='numberOfExportedReactionEvaluationForms'/>",
-                hidden: true
-            }
-        ]
-    });
-
-    DynamicForm_Reaction_EvaluationAnalysis_Footer = isc.DynamicForm.create({
-        canSubmit: true,
-        titleAlign: "right",
-        titleWidth: 120,
-        width: "54%",
-        border: "3px solid orange",
-        showInlineErrors: true,
-        showErrorText: false,
-        valuesManager: vm_reaction_evaluation,
-        styleName: "teacher-form",
-        numCols: 2,
-        margin: 10,
-        newPadding: 5,
-        canTabToIcons: false,
-        fields: [
-            {
-                name: "FERGrade",
-                title: "<spring:message code='FERGrade'/>",
-                baseStyle: "evaluation-code",
-                fillHorizontalSpace: true,
-                canEdit: false
-            },
-            {
-                name: "FETGrade",
-                title:"<spring:message code='FETGrade'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
-            {
-                name: "FECRGrade",
-                title: "<spring:message code='FECRGrade'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
-            {
-                name: "FECRPass",
-                title: "<spring:message code='evaluation.status'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false,
-                valueMap: {
-                    "true": "تائید",
-                    "false": "عدم تائید"
-                }
-            },
-            {
-                name: "FERPass",
-                hidden: true
-            },
-            {
-                name: "FETPass",
-                hidden: true
-            },
-            {
-                name: "minScore_ER",
-                hidden: true
-            },
-            {
-                name: "minScore_ET",
-                hidden: true
-            },
-            {name: "teacherGradeToClass", hidden: true},
-            {name: "studentsGradeToTeacher", hidden: true},
-            {name: "studentsGradeToFacility" , hidden: true},
-            {name: "studentsGradeToGoals", hidden: true},
-            {name: "trainingGradeToTeacher", hidden: true}
-        ]
-    });
-
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('studentCount').titleStyle = 'evaluation-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').titleStyle = 'evaluation-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').titleStyle = 'evaluation-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').titleStyle = 'evaluation-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').titleStyle = 'evaluation-code-title';
-
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').titleStyle = 'evaluation-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').titleStyle = 'evaluation-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRGrade').titleStyle = 'evaluation-code-title';
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').setCellStyle('evaluation-code-label');
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FECRPass').titleStyle = 'evaluation-code-title';
-
-    var IButton_Print_ReactionEvaluation_Evaluation_Analysis = isc.IButton.create({
-        top: 260,
-        width: "300",
-        height: "25",
-        title: "چاپ خلاصه نتیجه ارزیابی واکنشی",
-        click: function () {
-            var obj1 = vm_reaction_evaluation.getValues();
-            var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-            delete obj1['studentCount'];
-            var obj1_str = JSON.stringify(obj1);
-            var obj2_str = JSON.stringify(obj2);
-            obj1_str = obj1_str.substr(0,obj1_str.length-1);
-            obj1_str = obj1_str + ",";
-            obj2_str = obj2_str.substr(1,obj2_str.length);
-            var object = obj1_str + obj2_str;
-            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluation"/>",null,object);
-        }
-    });
-
-    var Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print = isc.HLayout.create({
-        width: "100%",
-        height: "49%",
-        align: "center",
-        members: [
-            IButton_Print_ReactionEvaluation_Evaluation_Analysis
-        ]
-    });
-
-    var Vlayout_DynamicForms_ReactionEvaluation = isc.VLayout.create({
-        defaultLayoutAlign: "center",
-        members: [
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
-            DynamicForm_Reaction_EvaluationAnalysis_Header,
-            isc.LayoutSpacer.create({
-                height: 40,
-                width: "*",
-            }),
-            DynamicForm_Reaction_EvaluationAnalysis_Footer
-        ]
-    });
-
-    var VLayout_Body_evaluation_analysis_reaction = isc.VLayout.create({
-        width: "50%",
-        height: "100%",
-        members: [Vlayout_DynamicForms_ReactionEvaluation ,
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
-            Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print]
-    });
-
-    var ReactionEvaluationChart = isc.FacetChart.create({
-        titleAlign: "center",
-        minLabelGap: 5,
-        width: "80%",
-        height: "90%",
-        barMargin: "100",
-        allowedChartTypes: [],
-        facets: [
-            {id: "region", title: "حیطه"}],
-        data: chartData,
-        valueProperty: "grade",
-        valueTitle: "نمره ارزیابی از صد",
-        title: "تحلیل ارزیابی واکنشی کلاس",
-    });
-
-
-    var chartSelector  = isc.DynamicForm.create({
-        canSubmit: true,
-        titleAlign: "right",
-        titleWidth: 120,
-        width: "200",
-        fields: [{
-            name: "chartType",
-            title: "انتخاب نوع نمودار",
-            type: "select",
-            width: "200",
-            valueMap: ["ستونی", "راداری"],
-            defaultValue: "ستونی",
-            changed : function (form, item, value) {
-                if(value == "ستونی"){
-                    ReactionEvaluationChart.setChartType("Column");
-                }
-                if(value == "راداری"){
-                    ReactionEvaluationChart.setChartType("Radar");
-                }
-            }
-        }]
-    });
-
-    var ReactionEvaluationChartLayout =  isc.VLayout.create({
-        defaultLayoutAlign: "center",
-        width: "50%",
-        height: "100%",
-        members: [chartSelector, ReactionEvaluationChart]
-    });
-
-    var Hlayout_ReactionEvaluationResult = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [
-            VLayout_Body_evaluation_analysis_reaction,
-            ReactionEvaluationChartLayout
-        ]
     });
 
     //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
@@ -424,7 +165,7 @@
                 ID: "TabPane_Reaction_Evaluation_Analysis",
                 enabled: false,
                 title: "<spring:message code="evaluation.reaction"/>",
-                pane: Hlayout_ReactionEvaluationResult
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysis/evaluationAnalysis-reactionTab/show-form"})
             }
             ,
             {
@@ -434,7 +175,7 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysist-learning/evaluationAnalysis-learningTab"})
             },
             {
-                ID: "TabPane_Behavior_Evaluation_Analysis",
+                ID: "TabPane_Behavioral_Evaluation_Analysis",
                 enabled: false,
                 title: "<spring:message code="evaluation.behavioral"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysis/evaluationAnalysis-behavioralTab/show-form"})
@@ -522,21 +263,30 @@
         Detail_Tab_Evaluation_Analysis.enable();
 
         if (evaluationType === "1") {
+            fill_reaction_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.disableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "2") {
+            fill_reaction_evaluation_result();
+            evaluationAnalysist_learning();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "3") {
+            fill_reaction_evaluation_result();
+            evaluationAnalysist_learning();
+            fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "4") {
+            fill_reaction_evaluation_result();
+            evaluationAnalysist_learning();
+            fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
@@ -544,6 +294,9 @@
         }
 
         /////////////////////////TEMP////////////////////////
+        fill_reaction_evaluation_result();
+        evaluationAnalysist_learning();
+        fill_behavioral_evaluation_result();
         Detail_Tab_Evaluation_Analysis.enableTab(0);
         Detail_Tab_Evaluation_Analysis.enableTab(1);
         Detail_Tab_Evaluation_Analysis.enableTab(2);
@@ -551,7 +304,7 @@
         ////////////////////////TEMP///////////////////////
     }
 
-    function load_evluation_analysis_data(record) {
+    function load_reaction_evluation_analysis_data(record) {
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfFilledReactionEvaluationForms").setValue(record.numberOfFilledReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
@@ -596,33 +349,75 @@
             DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FETGrade').setCellStyle('evaluation-code-fail-label');
         }
 
-        chartData  = [
+        reaction_chartData  = [
             {region: "محتوی", grade: studentsGradeToGoals},
             {region: "مدرس", grade: studentsGradeToTeacher},
             {region: "امکانات", grade: studentsGradeToFacility},
             {region: "نظر استاد", grade: teacherGradeToClass}
         ];
 
-        ReactionEvaluationChart.setData(chartData);
+        ReactionEvaluationChart.setData(reaction_chartData);
     }
 
-    function fill_evaluation_result() {
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "evaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + userId, "GET", null,
-            "callback: fill_evaluation_result_resp(rpcResponse)"));
+    function load_behavioral_evluation_analysis_data(record) {
+        dummy = record;
+        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("studentCount").setValue(listGrid_record.studentCount);
+        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("classPassedTime").setValue(record.classPassedTime);
+        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("numberOfFilledFormsBySuperviosers").setValue(record.numberOfFilledFormsBySuperviosers);
+        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("numberOfFilledFormsByStudents").setValue(record.numberOfFilledFormsByStudents);
+
+        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("studentsMeanGrade").setValue(record.studentsMeanGrade);
+        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("supervisorsMeanGrade").setValue(record.supervisorsMeanGrade);
+        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FEBGrade").setValue(record.febgrade);
+        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FEBPass").setValue(record.febpass);
+        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FECBGrade").setValue(record.fecbgrade);
+        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FECBPass").setValue(record.fecbpass);
+
+        behavioral_chartData = new Array();
+        var i = 0;
+        for (i=0;i<record.supervisorsGrade.size();i++) {
+            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.studentsGrade.get(i) , evaluator : "فراگیر"});
+            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.supervisorsGrade.get(i), evaluator : "سرپرست"});
+        }
+
+        // behavioral_chartData  = [
+        //     {student: "دانشجو1", grade: "20", evaluator : "فراگیر"},
+        //     {student: "دانشجو2", grade: "20", evaluator : "فراگیر"},
+        //     {student: "دانشجو3", grade: "20", evaluator : "فراگیر"},
+        //     {student: "دانشجو4", grade: "20" , evaluator : "فراگیر"},
+        //
+        //     {student: "دانشجو1", grade: "30", evaluator : "سرپرست"},
+        //     {student: "دانشجو2", grade: "30", evaluator : "سرپرست"},
+        //     {student: "دانشجو3", grade: "30", evaluator : "سرپرست"},
+        //     {student: "دانشجو4", grade: "30" , evaluator : "سرپرست"},
+        // ];
+
+        BehavioralEvaluationChart.setData(behavioral_chartData);
     }
 
-    function fill_evaluation_result_resp(resp) {
-        load_evluation_analysis_data(JSON.parse(resp.data));
-        set_evaluation_analysis_tabset_status();
-        Detail_Tab_Evaluation_Analysis.selectTab(0);
+    function fill_reaction_evaluation_result() {
+        DynamicForm_Reaction_EvaluationAnalysis_Header.show();
+        DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
+        IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
+        chartSelector.show();
+        ReactionEvaluationChart.show();
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "reactionEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + userId, "GET", null,
+            "callback: fill_reaction_evaluation_result_resp(rpcResponse)"));
     }
 
-    //------------------------------------------------------------------------------------------------------------------
+    function fill_reaction_evaluation_result_resp(resp) {
+        load_reaction_evluation_analysis_data(JSON.parse(resp.data));
+    }
 
-    DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
-    DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
-    IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();
-    chartSelector.hide();
-    ReactionEvaluationChart.hide();
-    ReactionEvaluationChart.setChartType("Column");
+    function fill_behavioral_evaluation_result() {
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "behavioralEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+            "callback: fill_behavioral_evaluation_result_resp(rpcResponse)"));
+    }
+
+    function fill_behavioral_evaluation_result_resp(resp) {
+        load_behavioral_evluation_analysis_data(JSON.parse(resp.data));
+    }
+
+
+
 

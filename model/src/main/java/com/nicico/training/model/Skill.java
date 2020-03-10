@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -85,5 +86,6 @@ public class Skill extends Auditable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skillSet")
     private Set<SkillGroup> skillGroupSet;
 
-
+    @OneToMany(mappedBy = "skill")
+    private List<NeedsAssessment> needsAssessments;
 }

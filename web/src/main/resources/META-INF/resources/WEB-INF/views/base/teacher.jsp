@@ -331,6 +331,7 @@
         showResizeBar: true,
         titleEditorTopOffset: 2,
         width: "100%",
+        minWidth:1350,
         height: "65%",
         tabs: [
             {
@@ -435,7 +436,6 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
-        minWidth: 1024,
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,

@@ -273,26 +273,28 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId) {
+    public ResponseEntity<ISC> getJob(@PathVariable Long courseId) {
         List<JobDTO.Info> job = courseService.getJob(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(job)
                 .setStartRow(0)
                 .setEndRow(job.size())
                 .setTotalRows(job.size());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ISC<Object> isc = new ISC<>(response);
+        return new ResponseEntity<>(isc, HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/post/{courseId}")
-    public ResponseEntity<ISC.Response> getPost(@PathVariable Long courseId) {
+    public ResponseEntity<ISC> getPost(@PathVariable Long courseId) {
         List<PostDTO.Info> post = courseService.getPost(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(post)
                 .setStartRow(0)
                 .setEndRow(post.size())
                 .setTotalRows(post.size());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ISC<Object> isc = new ISC<>(response);
+        return new ResponseEntity<>(isc, HttpStatus.OK);
     }
 
     @Loggable

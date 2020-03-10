@@ -29,5 +29,7 @@ public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecification
     public int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
 
     List<Course> findAllById(Long courseId);
+
+    List<Course> findByCodeEquals(String code);
 }
 
