@@ -639,4 +639,47 @@ public class TclassService implements ITclassService {
     }
     ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
 
+    //----------------------------------------------- Behavioral Evaluation --------------------------------------------
+    @Override
+    @Transactional
+    public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId) {
+        Tclass tclass = getTClass(classId);
+        TclassDTO.BehavioralEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.BehavioralEvaluationResult.class);
+
+        List<Double> studentsGrade = new ArrayList<Double>();
+        studentsGrade.add(Double.parseDouble("20"));
+        studentsGrade.add(Double.parseDouble("20"));
+        studentsGrade.add(Double.parseDouble("20"));
+        studentsGrade.add(Double.parseDouble("20"));
+
+        List<Double> supervisorsGrade = new ArrayList<Double>();
+        supervisorsGrade.add(Double.parseDouble("30"));
+        supervisorsGrade.add(Double.parseDouble("30"));
+        supervisorsGrade.add(Double.parseDouble("30"));
+        supervisorsGrade.add(Double.parseDouble("30"));
+
+        List<String> classStudentsName = new ArrayList<String>();
+        classStudentsName.add("علی");
+        classStudentsName.add("حسن");
+        classStudentsName.add("مهدی");
+        classStudentsName.add("ایمان");
+
+        evaluationResult.setClassPassedTime(3);
+        evaluationResult.setNumberOfFilledFormsByStudents(20);
+        evaluationResult.setNumberOfFilledFormsBySuperviosers(20);
+        evaluationResult.setSupervisorsMeanGrade(50);
+        evaluationResult.setStudentsMeanGrade(50);
+        evaluationResult.setFEBGrade(50);
+        evaluationResult.setFEBPass(true);
+        evaluationResult.setFECBGrade(50);
+        evaluationResult.setFECBPass(true);
+        evaluationResult.setStudentsGrade(studentsGrade);
+        evaluationResult.setSupervisorsGrade(supervisorsGrade);
+        evaluationResult.setClassStudentsName(classStudentsName);
+//        evaluationResult.setClassStudents(tclass.getClassStudents());
+
+        return evaluationResult;
+    }
+    //----------------------------------------------- Behavioral Evaluation --------------------------------------------
+
 }
