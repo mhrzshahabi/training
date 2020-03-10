@@ -19,6 +19,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,6 +112,21 @@ public class PersonnelService implements IPersonnelService {
         Optional<Personnel> optPersonnel = personnelDAO.findOneByPersonnelNo(personnelCode);
         final Personnel personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(personnel, PersonnelDTO.PersonalityInfo.class);
+    }
+
+    @Override
+    @Transactional
+    public List<PersonnelDTO.Info> findAllComplex() {
+
+        List<String> allComplex = personnelDAO.findAllComplexFromPersonnel();
+        List<PersonnelDTO.Complex> listComplex = new ArrayList<>();
+
+        for(String complex : allComplex)
+        {
+            listComplex.add(new PersonnelDTO.Complex(complex));
+        }
+
+        return modelMapper.map(listComplex, new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
     }
 
 }

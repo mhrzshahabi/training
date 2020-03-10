@@ -282,7 +282,7 @@
                                     optionDataSource: RestData_EvaluationType_JspEvaluation,
                                     valueField: "code",
                                     displayField: "title",
-                                    changed(form, item, value){
+                                    changed:function(form, item, value){
                                         DynamicForm_Questions_Body_JspEvaluation.clearValues();
                                         form.clearValue("evaluationLevel");
                                         form.clearValue("evaluator");
@@ -342,7 +342,7 @@
                                     displayField: "title",
                                     disabled: true,
                                     endRow:true,
-                                    changed(form, item, value){
+                                    changed:function(form, item, value){
                                         DynamicForm_Questions_Body_JspEvaluation.clearValues();
                                         var criteria= '{"fieldName":"questionnaireType.code","operator":"equals","value":""}';
                                         var criteriaEdit=
@@ -531,7 +531,7 @@
                                                 }
                                             ],
                                             gridComponents: ["filterEditor", "header", "body"],
-                                            recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
+                                            recordDoubleClick:function(viewer, record, recordNum, field, fieldNum, value, rawValue){
                                                 DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", record.student.firstName + " " + record.student.lastName);
                                                 studentIdJspEvaluation = record.id;
                                                 Window_AddStudent_JspEvaluation.close();

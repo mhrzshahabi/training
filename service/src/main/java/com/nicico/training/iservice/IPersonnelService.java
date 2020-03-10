@@ -28,4 +28,6 @@ public interface IPersonnelService {
 
     PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
 
+    List<PersonnelDTO.Info> findAllComplex();
+
 }
