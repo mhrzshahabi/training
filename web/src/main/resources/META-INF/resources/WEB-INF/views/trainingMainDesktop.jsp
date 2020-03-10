@@ -30,6 +30,7 @@
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
     <link rel="stylesheet" href="<spring:url value='/css/training.css' />"/>
+    <link rel="stylesheet" href='<spring:url value="/static/css/OAManagementUsers.css"/>'/>
     <script src="<spring:url value='/js/calendar.js'/>"></script>
     <script src="<spring:url value='/js/jalali.js'/>"></script>
     <script src="<spring:url value='/js/training_function.js'/>"></script>
@@ -746,25 +747,31 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                {
+                    title: "مدیریت کاربران",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/oauth/landing/show-form" />", false);
+                    }
+                },
                 <%--{--%>
                 <%--    title: "<spring:message code="user.plural"/>",--%>
                 <%--    click: function () {--%>
                 <%--        createTab(this.title, "<spring:url value="web/oaUser"/>");--%>
                 <%--    }--%>
                 <%--},--%>
-                {
-                    title: "کاربران",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "کاربران",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {isSeparator: true},
-                {
-                    title: "گروه دسترسی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "گروه دسترسی",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {
                     title: "<spring:message code="workGroup"/>",
                     click: function () {
@@ -772,19 +779,19 @@
                     },
                 },
                 {isSeparator: true},
-                {
-                    title: "نقش ها",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                {
-                    title: "تخصیص نقش",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "نقش ها",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{isSeparator: true},--%>
+                <%--{--%>
+                    <%--title: "تخصیص نقش",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {
                     title: "لیست سیاه",
                     click: function () {
@@ -836,20 +843,20 @@
         width: 100,
         title: "<spring:message code="close.all"/>",
         click: function () {
-            if (trainingTabSet.tabs.length == 0) return;
+            if (mainTabSet.tabs.length == 0) return;
             var dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        trainingTabSet.removeTabs(trainingTabSet.tabs);
+                        mainTabSet.removeTabs(mainTabSet.tabs);
                     }
                 }
             });
         }
     });
 
-    trainingTabSet = isc.TabSet.create({
+    mainTabSet = isc.TabSet.create({
         minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton],
@@ -894,7 +901,7 @@
         members: [
             headerLayout,
             MainDesktopMenuH,
-            trainingTabSet,
+            mainTabSet,
         ]
     });
 
@@ -951,14 +958,14 @@
     }
 
     function createTab(title, url, autoRefresh) {
-        tab = trainingTabSet.getTabObject(title);
+        tab = mainTabSet.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true)) {
-                trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
+            if ((autoRefresh !== undefined) && (autoRefresh == true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
+                mainTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
-            trainingTabSet.selectTab(tab);
+            mainTabSet.selectTab(tab);
         } else {
-            trainingTabSet.addTab({
+            mainTabSet.addTab({
                 title: title,
                 ID: title,
                 pane: isc.ViewLoader.create({
