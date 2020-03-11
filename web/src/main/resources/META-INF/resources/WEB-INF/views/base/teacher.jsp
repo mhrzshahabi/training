@@ -999,7 +999,6 @@
         attachName = req.response;
     }
 
-
     function showTempAttach() {
         var formData1 = new FormData();
         var fileBrowserId = document.getElementById('file-upload');
