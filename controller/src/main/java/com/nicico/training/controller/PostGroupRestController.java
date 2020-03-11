@@ -132,7 +132,7 @@ public class PostGroupRestController {
         final PostGroupDTO.SpecRs specResponse = new PostGroupDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final PostGroupDTO.PostGroupSpecRs specRs = new PostGroupDTO.PostGroupSpecRs();

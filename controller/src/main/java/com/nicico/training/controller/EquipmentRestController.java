@@ -126,7 +126,7 @@ public class EquipmentRestController {
         final EquipmentDTO.EquipmentSpecRs specRs = new EquipmentDTO.EquipmentSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);

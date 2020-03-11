@@ -113,7 +113,7 @@ public class CompanyRestController {
         final CompanyDTO.SpecRs specResponse = new CompanyDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CompanyDTO.CompanySpecRs specRs = new CompanyDTO.CompanySpecRs();

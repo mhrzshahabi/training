@@ -69,7 +69,7 @@ public class ISC<T> {
     public static <T> ISC<T> convertToIscRs(SearchDTO.SearchRs<T> searchRs, Integer startRow) {
         Response<T> response = new Response<T>();
         response.setData(searchRs.getList()).setStartRow(startRow)
-                .setEndRow(startRow + searchRs.getTotalCount().intValue())
+                .setEndRow(startRow + searchRs.getList().size())
                 .setTotalRows(searchRs.getTotalCount().intValue());
         return new ISC(response);
     }

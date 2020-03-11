@@ -182,7 +182,7 @@ public class SkillRestController {
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);

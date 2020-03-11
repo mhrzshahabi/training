@@ -99,7 +99,7 @@ public class CityRestController {
         final CityDTO.SpecRs specResponse = new CityDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CityDTO.CitySpecRs specRs = new CityDTO.CitySpecRs();

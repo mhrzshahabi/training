@@ -129,7 +129,7 @@ public class PersonalInfoRestController {
         final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final PersonalInfoDTO.PersonalInfoSpecRs specRs = new PersonalInfoDTO.PersonalInfoSpecRs();

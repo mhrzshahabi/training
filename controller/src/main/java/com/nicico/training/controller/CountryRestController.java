@@ -80,7 +80,7 @@ public class CountryRestController {
         final CountryDTO.SpecRs specResponse = new CountryDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CountryDTO.CountrySpecRs specRs = new CountryDTO.CountrySpecRs();

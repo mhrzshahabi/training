@@ -129,7 +129,7 @@ public class CategoryRestController {
         final CategoryDTO.SpecRs specResponse = new CategoryDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         if (StringUtils.isNotEmpty(sortBy)) {

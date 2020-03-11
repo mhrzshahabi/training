@@ -213,7 +213,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -248,7 +248,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -275,7 +275,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -303,7 +303,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -962,7 +962,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
