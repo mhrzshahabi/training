@@ -165,7 +165,7 @@ public class SubcategoryRestController {
         final SubcategoryDTO.SpecRs specResponse = new SubcategoryDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final SubcategoryDTO.SubCategorySpecRs specRs = new SubcategoryDTO.SubCategorySpecRs();

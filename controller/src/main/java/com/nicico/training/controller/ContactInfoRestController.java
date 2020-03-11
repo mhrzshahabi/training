@@ -96,7 +96,7 @@ public class ContactInfoRestController {
         final ContactInfoDTO.SpecRs specResponse = new ContactInfoDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final ContactInfoDTO.ContactInfoSpecRs specRs = new ContactInfoDTO.ContactInfoSpecRs();

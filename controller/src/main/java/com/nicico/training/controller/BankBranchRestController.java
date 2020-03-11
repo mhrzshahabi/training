@@ -121,7 +121,7 @@ public class BankBranchRestController {
         final BankBranchDTO.BankBranchSpecRs specRs = new BankBranchDTO.BankBranchSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);

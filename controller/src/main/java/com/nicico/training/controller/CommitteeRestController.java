@@ -118,7 +118,7 @@ public class CommitteeRestController {
         final CommitteeDTO.SpecRs specResponse = new CommitteeDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CommitteeDTO.CommitteeSpecRs specRs = new CommitteeDTO.CommitteeSpecRs();

@@ -208,7 +208,6 @@
                 displayField: "titleFa",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
             },
             {
                 name: "subCategories",
@@ -219,7 +218,6 @@
                 displayField: "titleFa",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false,
             },
             {
                 name: "personality.educationLevel.titleFa",
