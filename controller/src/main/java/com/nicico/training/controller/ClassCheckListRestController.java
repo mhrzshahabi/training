@@ -1,14 +1,17 @@
 package com.nicico.training.controller;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.service.ClassCheckListService;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -82,9 +85,6 @@ public class ClassCheckListRestController {
 //                                                       @RequestParam(value = "criteria", required = false) String criteria,
 //                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//
-//
 //        SearchDTO.CriteriaRq criteriaRq;
 //        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
 //            criteria = "[" + criteria + "]";
@@ -97,30 +97,25 @@ public class ClassCheckListRestController {
 //        if (StringUtils.isNotEmpty(sortBy)) {
 //            request.setSortBy(sortBy);
 //        }
-//
 //        request.setStartIndex(startRow)
 //                .setCount(endRow - startRow);
-//
 //        SearchDTO.SearchRs<ClassCheckListDTO.Info> response = classCheckListService.search(request);
-//
 //        final ClassCheckListDTO.SpecRs specResponse = new ClassCheckListDTO.SpecRs();
 //        specResponse.setData(response.getList())
 //                .setStartRow(startRow)
 //                .setEndRow(startRow + response.getTotalCount().intValue())
 //                .setTotalRows(response.getTotalCount().intValue());
-//
 //        final ClassCheckListDTO.ClassCheckListSpecRs specRs = new ClassCheckListDTO.ClassCheckListSpecRs();
 //        specRs.setResponse(specResponse);
-//
 //        return new ResponseEntity<>(specRs, HttpStatus.OK);
 //    }
-//
+
+
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<TotalResponse<ClassCheckListDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
+    public ResponseEntity<ClassCheckListDTO.Info> list(@RequestParam MultiValueMap<String, String> criteria) {
         return new ResponseEntity(classCheckListService.newSearch(criteria), HttpStatus.OK);
     }
-
 
     @Loggable
     @PostMapping(value = "/search")

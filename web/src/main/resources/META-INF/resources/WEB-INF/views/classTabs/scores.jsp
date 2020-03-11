@@ -1,7 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 //<script>
     var score_value = null //بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
     var classRecord_acceptancelimit = null
@@ -98,6 +101,16 @@
                 }
 
             }),
+
+                isc.IButton.create({
+                name: "Button",
+               // disabled: true,
+                title: "<spring:message code="print"/>",
+                width: "14%",
+                click: function () {
+                printScore()
+                }
+                }),
 
             isc.ToolStrip.create({
                 width: "50%",
@@ -524,7 +537,36 @@
         }
     }
 
-    function loadPage_Scores() {
+
+                function printScore() {
+                var Record = ListGrid_Class_JspClass.getSelectedRecord();
+                var advancedCriteria = ListGrid_Class_Student.getCriteria();
+                var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/score/print"/>",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                [
+                {name: "recordId", type: "hidden"},
+                {name: "token", type: "hidden"},
+                {name: "record", type: "hidden"},
+
+                ]
+                })
+                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                criteriaForm.setValue("record", JSON.stringify(Record));
+                criteriaForm.setValue("classId", JSON.stringify(Record.id));
+                criteriaForm.setValue("token", "<%= accessToken %>")
+                criteriaForm.show();
+                criteriaForm.submitForm();
+                };
+
+
+
+
+
+function loadPage_Scores() {
            isc.MyOkDialog.create({
             message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
             });
