@@ -102,10 +102,9 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/complex")
-    public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findAllComplex() {
-//        return new ResponseEntity<>(personnelService.findAllComplex(), HttpStatus.OK);
-        List<PersonnelDTO.Info> list =  personnelService.findAllComplex();
+    @GetMapping("/statisticalReport/{reportType}")
+    public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findAllStatisticalReport(@PathVariable String reportType) {
+        List<PersonnelDTO.Info> list =  personnelService.findAllStatisticalReportFilter(reportType);
 
         final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
         final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();

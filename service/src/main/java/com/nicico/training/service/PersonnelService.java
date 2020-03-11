@@ -116,17 +116,57 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
-    public List<PersonnelDTO.Info> findAllComplex() {
+    public List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType) {
 
-        List<String> allComplex = personnelDAO.findAllComplexFromPersonnel();
-        List<PersonnelDTO.Complex> listComplex = new ArrayList<>();
+        String complexTitle = null, assistant = null, affairs = null, section = null, unit = null;
+        List<String> allReportFilter = null;
 
-        for(String complex : allComplex)
-        {
-            listComplex.add(new PersonnelDTO.Complex(complex));
+        switch (reportType) {
+            case "complex":
+                allReportFilter = personnelDAO.findAllComplexFromPersonnel();
+                break;
+            case "assistant":
+                allReportFilter = personnelDAO.findAllAssistantFromPersonnel();
+                break;
+            case "affairs":
+                allReportFilter = personnelDAO.findAllAffairsFromPersonnel();
+                break;
+            case "section":
+                allReportFilter = personnelDAO.findAllSectionFromPersonnel();
+                break;
+            case "unit":
+                allReportFilter = personnelDAO.findAllUnitFromPersonnel();
+                break;
         }
 
-        return modelMapper.map(listComplex, new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+        List<PersonnelDTO.StatisticalReport> listComplex = new ArrayList<>();
+        listComplex.add(new PersonnelDTO.StatisticalReport("همه", "همه", "همه", "همه", "همه"));
+
+        for (String filter : allReportFilter) {
+
+            switch (reportType) {
+                case "complex":
+                    complexTitle = filter;
+                    break;
+                case "assistant":
+                    assistant = filter;
+                    break;
+                case "affairs":
+                    affairs = filter;
+                    break;
+                case "section":
+                    section = filter;
+                    break;
+                case "unit":
+                    unit = filter;
+                    break;
+            }
+
+            listComplex.add(new PersonnelDTO.StatisticalReport(complexTitle, assistant, affairs, section, unit));
+        }
+
+        return modelMapper.map(listComplex, new TypeToken<List<PersonnelDTO.Info>>() {
+        }.getType());
     }
 
 }

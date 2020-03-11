@@ -147,8 +147,11 @@ public class PersonnelDTO implements Serializable {
     @AllArgsConstructor
     @Accessors(chain = true)
     @ApiModel("ComplexTitle")
-    public static class Complex {
+    public static class StatisticalReport {
         private String complexTitle;
+        private String ccpAssistant;
+        private String ccpAffairs;
+        private String ccpSection;
+        private String ccpUnit;
     }
-
 }
