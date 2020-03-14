@@ -30,24 +30,24 @@
                 {name: "ccpAffairs", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: personnelUrl + "/statisticalReport/affairs"
-        })
+        });
 
         var RestDataSource_Section_MSReport = isc.TrDS.create({
             fields: [
                 {name: "ccpSection", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: personnelUrl + "/statisticalReport/section"
-        })
+        });
 
         var RestDataSource_Unit_MSReport = isc.TrDS.create({
             fields: [
                 {name: "ccpUnit", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: personnelUrl + "/statisticalReport/unit"
-        })
+        });
 
 
-        var RestDataSource_session = isc.TrDS.create({
+        var RestDataSource_MSReport = isc.TrDS.create({
             transformRequest: function (dsRequest) {
                 dsRequest.httpHeaders = {
                     "Authorization": "Bearer <%= accessToken %>"
@@ -56,32 +56,18 @@
             },
             fields:
                 [
-                    {name: "id", primaryKey: true},
-                    {name: "dayCode"},
-                    {name: "dayName"},
-                    {name: "sessionDate"},
-                    {name: "sessionStartHour"},
-                    {name: "sessionEndHour"},
-                    {name: "sessionTypeId"},
-                    {name: "sessionType"},
-                    {name: "instituteId"},
-                    {name: "institute.titleFa"},
-                    {name: "trainingPlaceId"},
-                    {name: "trainingPlace.titleFa"},
-                    {name: "teacherId"},
-                    {name: "teacher"},
-                    {name: "sessionState"},
-                    {name: "sessionStateFa"},
-                    {name: "description"}
+                    {name: "ccp_unit"},
+                    {name: "present"},
+                    {name: "Overtime"},
+                    {name: "UnjustifiedAbsence"},
+                    {name: "AcceptableAbsence"}
                 ]
-            //// fetchDataURL: sessionServiceUrl + "load-sessions/428"
-            //// fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
-        var ListGrid_session = isc.TrLG.create({
+        var ListGrid_MSReport = isc.TrLG.create({
             width: "100%",
             height: "100%",
-            dataSource: RestDataSource_session,
+            dataSource: RestDataSource_MSReport,
             canAddFormulaFields: false,
             // autoFetchData: true,
             showFilterEditor: true,
@@ -90,107 +76,38 @@
             filterOnKeypress: true,
             selectionType: "single",
             initialSort: [
-                {property: "sessionDate", direction: "ascending"},
-                {property: "sessionStartHour", direction: "ascending"}
+                {property: "ccp_unit", direction: "ascending"}
             ],
             fields: [
-                {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
-                    name: "dayCode",
-                    title: "dayCode",
-                    align: "center",
-                    filterOperator: "iContains",
-                    hidden: true
-                },
-                {
-                    name: "dayName",
-                    title: "<spring:message code="week.day"/>",
+                    name: "ccp_unit",
+                    title: "نام واحد",
+                    <%--title: "<spring:message code="week.day"/>",--%>
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "sessionDate",
-                    title: "<spring:message code="date"/>",
+                    name: "present",
+                    title: "جمع ساعت حاضر",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "sessionStartHour",
-                    title: "<spring:message code="start.time"/>",
+                    name: "overtime",
+                    title: "جمع ساعت حاضر و اضافه کار",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "sessionEndHour",
-                    title: "<spring:message code="end.time"/>",
+                    name: "unjustifiedAbsence",
+                    title: "جمع ساعت غیبت غیر موجه",
                     align: "center",
                     filterOperator: "iContains"
                 }, {
-                    name: "sessionTypeId",
-                    title: "sessionTypeId",
+                    name: "acceptableAbsence",
+                    title: "جمع ساعت غیبت موجه",
                     align: "center",
                     filterOperator: "iContains",
-                    hidden: true
-                },
-                {
-                    name: "sessionType",
-                    title: "<spring:message code="session.type"/>",
-                    align: "center",
-                    filterOperator: "iContains"
-                }, {
-                    name: "instituteId",
-                    title: "instituteId",
-                    align: "center",
-                    filterOperator: "iContains",
-                    hidden: true
-                },
-                {
-                    name: "institute.titleFa",
-                    title: "<spring:message code="presenter"/>",
-                    align: "center",
-                    filterOperator: "iContains"
-                }, {
-                    name: "trainingPlaceId",
-                    title: "trainingPlaceId",
-                    align: "center",
-                    filterOperator: "iContains",
-                    hidden: true
-                }
-                , {
-                    name: "trainingPlace.titleFa",
-                    title: "<spring:message code="present.location"/>",
-                    align: "center",
-                    filterOperator: "iContains"
-                }, {
-                    name: "teacherId",
-                    title: "teacherId",
-                    align: "center",
-                    filterOperator: "iContains",
-                    hidden: true
-                },
-                {
-                    name: "teacher",
-                    title: "<spring:message code="trainer"/>",
-                    align: "center",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "sessionState",
-                    title: "sessionState",
-                    align: "center",
-                    filterOperator: "iContains",
-                    hidden: true
-                },
-                {
-                    name: "sessionStateFa",
-                    title: "<spring:message code="session.state"/>",
-                    align: "center",
-                    filterOperator: "iContains"
-                }, {
-                    name: "description",
-                    title: "<spring:message code="description"/>",
-                    align: "center",
-                    filterOperator: "iContains"
                 }
             ]
         });
@@ -218,6 +135,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
+                    required:true,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -231,7 +149,7 @@
                     },
                     changed: function (form, item, value) {
 
-                        evaluation_check_date();
+                        MSReport_check_date();
                     }
                 },
                 {
@@ -242,6 +160,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
+                    required:true,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -255,14 +174,14 @@
                     },
                     changed: function (form, item, value) {
 
-                        evaluation_check_date();
+                        MSReport_check_date();
                     }
 
                 },
                 {
                     name: "complex_MSReport",
-                    // colSpan: 5,
-                    // editorType: "TrComboAutoRefresh",
+                    ID: "complex_MSReport",
+                    defaultToFirstOption:true,
                     multiple: false,
                     title: "مجتمع",
                     autoFetchData: false,
@@ -278,6 +197,8 @@
                 },
                 {
                     name: "Assistant",
+                    ID: "Assistant",
+                    defaultToFirstOption:true,
                     multiple: false,
                     title: "معاونت",
                     autoFetchData: true,
@@ -293,6 +214,8 @@
                 },
                 {
                     name: "Affairs",
+                    ID: "Affairs",
+                    defaultToFirstOption:true,
                     multiple: false,
                     title: "امور",
                     autoFetchData: true,
@@ -308,6 +231,8 @@
                 },
                 {
                     name: "Section",
+                    ID: "Section",
+                    defaultToFirstOption:true,
                     multiple: false,
                     title: "قسمت",
                     autoFetchData: true,
@@ -323,6 +248,8 @@
                 },
                 {
                     name: "Unit",
+                    ID: "Unit",
+                    defaultToFirstOption:true,
                     multiple: false,
                     title: "واحد",
                     autoFetchData: true,
@@ -339,31 +266,51 @@
                 {
                     type: "button",
                     width: "100%",
-                    height:30,
-                    colSpan:2,
+                    height: 30,
+                    colSpan: 2,
                     align: "left",
                     title: "جستجو",
 
                     click: function () {
-                        alert("here");
+
+                        MSReport_check_date();
+
+                        if (DynamicForm_MSReport.hasErrors())
+                            return;
+
+                        var reportParameters = {
+                            firstDate: firstDate_MSReport._value.replace(/\//g ,"^"),
+                            secondDate: secondDate_MSReport._value.replace(/\//g,"^"),
+                            complex_title: complex_MSReport._value,
+                            assistant: Assistant._value,
+                            affairs: Affairs._value,
+                            section: Section._value,
+                            unit: Unit._value
+                        };
+
+                        RestDataSource_MSReport.fetchDataURL = monthlyStatistical + "list" + "/" + JSON.stringify(reportParameters);
+                        ListGrid_MSReport.invalidateCache();
+                        ListGrid_MSReport.fetchData();
+
+                        // }
                     }
                 }
             ]
-        })
+        });
 
         var VLayout_DynamicForm_MSReport = isc.VLayout.create({
             width: "230px",
             height: "100%",
             border: "1px solid blue",
             members: [DynamicForm_MSReport]
-        })
+        });
 
         var VLayout_ListGrid_MSReport = isc.VLayout.create({
             width: "95%",
             height: "100%",
             border: "1px solid green",
-            members: [ListGrid_session]
-        })
+            members: [ListGrid_MSReport]
+        });
 
         var Hlayout_Body_MSReport = isc.HLayout.create({
             width: "100%",
@@ -373,5 +320,32 @@
 
     }
     // ----------------------------------- Create - DynamicForm & Window & Layout --------------------------->>
+
+    // <<----------------------------------------------- Functions --------------------------------------------
+    {
+        //*****check date is valid*****
+        function MSReport_check_date() {
+
+            DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
+            DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
+
+            if (DynamicForm_MSReport.getValue("firstDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("firstDate_MSReport"))) {
+                DynamicForm_MSReport.addFieldErrors("firstDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
+            }
+            else {
+                DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
+            }
+
+            if (DynamicForm_MSReport.getValue("secondDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("secondDate_MSReport"))) {
+                DynamicForm_MSReport.addFieldErrors("secondDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
+            }
+            else {
+                DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
+            }
+
+        }
+
+    }
+    // ------------------------------------------------- Functions ------------------------------------------>>
 
     // </script>

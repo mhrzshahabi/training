@@ -1166,6 +1166,7 @@
     const sessionServiceUrl = rootUrl + "/sessionService/";
     const classStudent = rootUrl + "/classStudent/";
     const classAlarm = rootUrl + "/classAlarm/";
+    const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
 
 
