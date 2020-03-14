@@ -109,7 +109,7 @@ public class SyllabusRestController {
         final SyllabusDTO.SpecRs specResponse = new SyllabusDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final SyllabusDTO.SyllabusSpecRs specRs = new SyllabusDTO.SyllabusSpecRs();

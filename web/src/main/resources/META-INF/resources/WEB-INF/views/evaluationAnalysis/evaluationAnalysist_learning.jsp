@@ -8,6 +8,8 @@
 %>
 // <script>
     var change_value
+    var arrData = [];
+    var minscoreValue;
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
@@ -152,7 +154,8 @@
 
         title: "چاپ خلاصه ای از وضعیت ارزیابی یادگیری",
         click: function () {
-            print_evaluationAnalysist_learning()
+            printEvaluationAnalysistLearning(minscoreValue);
+
         }
     });
 
@@ -198,6 +201,7 @@
 
         var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
         if (!(Record === undefined || Record == null)) {
+            isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEL", "GET", null, "callback:results(rpcResponse)"))
             RestDataSource_evaluationAnalysist_learning.fetchDataURL = tclassStudentUrl + "/evaluationAnalysistLearning/" + Record.id
             ListGrid_evaluationAnalysist_learning.invalidateCache()
             ListGrid_evaluationAnalysist_learning.fetchData()
@@ -219,24 +223,44 @@
         }
     }
 
-    function print_evaluationAnalysist_learning() {
-        var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-             var criteriaForm = isc.DynamicForm.create({
+    function results(resp)
+    {
+
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            arrData = (JSON.parse(resp.data)).response.data;
+            minscoreValue=arrData[0].value;
+        } else {
+
+        }
+
+    }
+
+
+
+
+
+
+    function printEvaluationAnalysistLearning(a) {
+
+            var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+            var criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/evaluationAnalysist-learning/evaluaationAnalysist-learningReport"/>",
             target: "_Blank",
             canSubmit: true,
             fields:
                 [
-                    {name: "recordId", type: "hidden"},
-                    {name: "token", type: "hidden"},
-                    {name: "scoringMethod", type: "hidden"},
+                   {name: "recordId", type: "hidden"},
+                   {name: "token", type: "hidden"},
+                   {name: "record", type: "hidden"},
+                   {name: "minScore", type: "hidden"},
 
                 ]
 
         })
         criteriaForm.setValue("recordId", JSON.stringify(Record.id));
-        criteriaForm.setValue("scoringMethod", Record.scoringMethod);
+        criteriaForm.setValue("record", JSON.stringify(Record));
+        criteriaForm.setValue("minScore",a);
         criteriaForm.setValue("token", "<%= accessToken %>")
         criteriaForm.show();
         criteriaForm.submitForm();

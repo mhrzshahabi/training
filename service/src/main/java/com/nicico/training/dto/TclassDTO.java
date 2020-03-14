@@ -333,6 +333,25 @@ public class TclassDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("BehavioralEvaluationResult")
+    public static class BehavioralEvaluationResult {
+        double classPassedTime;
+        Integer numberOfFilledFormsBySuperviosers;
+        Integer numberOfFilledFormsByStudents;
+        double supervisorsMeanGrade;
+        double studentsMeanGrade;
+        double FEBGrade;
+        boolean FEBPass;
+        double FECBGrade;
+        boolean FECBPass;
+        List<Double> studentsGrade = new ArrayList<>();
+        List<Double> supervisorsGrade = new ArrayList<>();
+        List<String> classStudentsName;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("TclassEvaluatedSpecRs")
     public static class TclassEvaluatedSpecRs {

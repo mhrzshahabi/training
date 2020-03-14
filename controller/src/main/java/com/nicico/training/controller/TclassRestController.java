@@ -160,7 +160,7 @@ public class TclassRestController {
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -203,7 +203,7 @@ public class TclassRestController {
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -246,7 +246,7 @@ public class TclassRestController {
         final TclassDTO.TclassEvaluatedSpecRs specRs = new TclassDTO.TclassEvaluatedSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -348,9 +348,15 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/evaluationResult/{classId}/{userId}")
-    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
+    @GetMapping(value = "/reactionEvaluationResult/{classId}/{userId}")
+    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
         return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId,userId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/behavioralEvaluationResult/{classId}")
+    public ResponseEntity<TclassDTO.BehavioralEvaluationResult> getBehavioralEvaluationResult(@PathVariable Long classId) {
+        return new ResponseEntity<TclassDTO.BehavioralEvaluationResult>(tclassService.getBehavioralEvaluationResult(classId), HttpStatus.OK);
     }
 
     @Loggable

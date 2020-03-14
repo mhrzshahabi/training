@@ -107,7 +107,6 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
@@ -147,7 +146,6 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
@@ -393,7 +391,6 @@
                 valueField: "id",
                 displayField: "titleFa",
                 multiple: true,
-                filterLocally: false,
                 filterOnKeypress: true
             },
             {
@@ -404,7 +401,6 @@
                 valueField: "id",
                 displayField: "titleFa",
                 multiple: true,
-                filterLocally: false,
                 filterOnKeypress: true
             },
             {

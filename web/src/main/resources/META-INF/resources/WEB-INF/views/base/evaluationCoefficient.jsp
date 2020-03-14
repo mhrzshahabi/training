@@ -200,6 +200,17 @@
                 }
             },
             {
+                hint: "%",
+                width: "200",
+                name: "minScoreEL",
+                title: "حد قبولی",
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
+            },
+            {
                 width: "200",
                 hint: "%",
                 mask: "###",
@@ -485,6 +496,12 @@
                         createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
                         createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").focusInItem()
+                        return;
+                    }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").getValue() == null) {
+                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").title
+                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+                        DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").title

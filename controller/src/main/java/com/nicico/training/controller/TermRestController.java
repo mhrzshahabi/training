@@ -131,7 +131,7 @@ public class TermRestController {
         final TermDTO.SpecRs specResponse = new TermDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final TermDTO.TermSpecRs specRs = new TermDTO.TermSpecRs();

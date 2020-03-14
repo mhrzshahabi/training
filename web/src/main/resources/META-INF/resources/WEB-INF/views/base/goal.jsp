@@ -88,10 +88,10 @@
             },
             {
                 name: "titleFa",
-                type: "textArea",
+                type: "TextAreaItem",
                 title: "نام فارسی",
                 required: true,
-                readonly: true,
+                height: "50",
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
@@ -189,8 +189,6 @@
     });
 
     var IButton_Goal_Save = isc.IButtonSave.create({
-        top: 260, title: "ذخیره",
-        //icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
@@ -226,9 +224,11 @@
         }
     });
     var IButton_Syllabus_Save = isc.IButtonSave.create({
-        top: 260, title: "ذخیره",
-        //icon: "[SKIN]/actions/save.png",
         click: function () {
+            if(DynamicForm_Syllabus.getValue("practicalDuration")==0 && DynamicForm_Syllabus.getValue("theoreticalDuration")==0){
+                createDialog("info", "مدت زمان سرفصل نمیتواند صفر باشد.");
+                return;
+            }
             DynamicForm_Syllabus.validate();
             if (DynamicForm_Syllabus.hasErrors()) {
                 return;
