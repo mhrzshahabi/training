@@ -3,10 +3,6 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-
 // <script>
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
@@ -48,12 +44,6 @@
 
 
         var RestDataSource_MSReport = isc.TrDS.create({
-            transformRequest: function (dsRequest) {
-                dsRequest.httpHeaders = {
-                    "Authorization": "Bearer <%= accessToken %>"
-                };
-                return this.Super("transformRequest", arguments);
-            },
             fields:
                 [
                     {name: "ccp_unit"},
@@ -69,45 +59,49 @@
             height: "100%",
             dataSource: RestDataSource_MSReport,
             canAddFormulaFields: false,
-            // autoFetchData: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
             selectionType: "single",
+            showGridSummary: true,
             initialSort: [
                 {property: "ccp_unit", direction: "ascending"}
             ],
             fields: [
                 {
                     name: "ccp_unit",
-                    title: "نام واحد",
-                    <%--title: "<spring:message code="week.day"/>",--%>
+                    title: "<spring:message code="unitName"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    summaryFunction: totalSummary
                 },
                 {
                     name: "present",
-                    title: "جمع ساعت حاضر",
+                    title: "<spring:message code="sum.of.present.hours"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    summaryFunction: totalPresent
                 },
                 {
                     name: "overtime",
-                    title: "جمع ساعت حاضر و اضافه کار",
+                    title: "<spring:message code="total.hours.of.overtime"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    summaryFunction: totalOvertime
                 },
                 {
                     name: "unjustifiedAbsence",
-                    title: "جمع ساعت غیبت غیر موجه",
-                    align: "center",
-                    filterOperator: "iContains"
-                }, {
-                    name: "acceptableAbsence",
-                    title: "جمع ساعت غیبت موجه",
+                    title: "<spring:message code="sum.of.unjustified.absence.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
+                    summaryFunction: totalUnjustifiedAbsence
+                }, {
+                    name: "acceptableAbsence",
+                    title: "<spring:message code="sum.of.justified.absence.hours"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    summaryFunction: totalAcceptableAbsence
                 }
             ]
         });
@@ -128,7 +122,7 @@
             fields: [
                 {
                     name: "firstDate_MSReport",
-                    title: "از تاریخ",
+                    title: "<spring:message code="start.date"/>",
                     ID: "firstDate_MSReport",
                     width: "100px",
                     hint: "----/--/--",
@@ -144,13 +138,13 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkFirstDate()
+                        checkFirstDate();
                         MSReport_check_date();
                     }
                 },
                 {
                     name: "secondDate_MSReport",
-                    title: "تا تاریخ",
+                    title: "<spring:message code="end.date"/>",
                     ID: "secondDate_MSReport",
                     width: "100px",
                     hint: "----/--/--",
@@ -167,16 +161,16 @@
                     textAlign: "center",
                     blur: function (form, item, value) {
                         checkSecondDate();
-                         MSReport_check_date();
+                        MSReport_check_date();
                     }
 
                 },
                 {
                     name: "complex_MSReport",
                     ID: "complex_MSReport",
-                    emptyDisplayValue:"همه",
+                    emptyDisplayValue: "همه",
                     multiple: false,
-                    title: "مجتمع",
+                    title: "<spring:message code="complex"/>",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Complex_MSReport,
@@ -191,9 +185,9 @@
                 {
                     name: "Assistant",
                     ID: "Assistant",
-                    emptyDisplayValue:"همه",
+                    emptyDisplayValue: "همه",
                     multiple: false,
-                    title: "معاونت",
+                    title: "<spring:message code="assistance"/>",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Assistant_MSReport,
@@ -208,9 +202,9 @@
                 {
                     name: "Affairs",
                     ID: "Affairs",
-                    emptyDisplayValue:"همه",
+                    emptyDisplayValue: "همه",
                     multiple: false,
-                    title: "امور",
+                    title: "<spring:message code="affairs"/>",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Affairs_MSReport,
@@ -225,9 +219,9 @@
                 {
                     name: "Section",
                     ID: "Section",
-                    emptyDisplayValue:"همه",
+                    emptyDisplayValue: "همه",
                     multiple: false,
-                    title: "قسمت",
+                    title: "<spring:message code="section"/>",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Section_MSReport,
@@ -242,9 +236,9 @@
                 {
                     name: "Unit",
                     ID: "Unit",
-                    emptyDisplayValue:"همه",
+                    emptyDisplayValue: "همه",
                     multiple: false,
-                    title: "واحد",
+                    title: "<spring:message code="unit"/>",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Unit_MSReport,
@@ -257,18 +251,20 @@
                     filterFields: ["ccpUnit"]
                 },
                 {
+                    ID: "ffffff",
                     type: "button",
                     width: "100%",
                     height: 30,
                     colSpan: 2,
                     align: "left",
-                    title: "جستجو",
+                    title: "<spring:message code="search"/>",
                     click: function () {
                         searchResult();
                     }
                 }
             ]
         });
+
 
         var VLayout_DynamicForm_MSReport = isc.VLayout.create({
             width: "230px",
@@ -297,7 +293,7 @@
         //*****check date is valid*****
         function checkFirstDate() {
 
-             DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
+            DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
 
             if (DynamicForm_MSReport.getValue("firstDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("firstDate_MSReport"))) {
                 DynamicForm_MSReport.addFieldErrors("firstDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
@@ -308,7 +304,7 @@
 
         function checkSecondDate() {
 
-             DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
+            DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
 
             if (DynamicForm_MSReport.getValue("secondDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("secondDate_MSReport"))) {
                 DynamicForm_MSReport.addFieldErrors("secondDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
@@ -330,6 +326,7 @@
             }
 
         }
+
         //***************************
 
         //*****search report result*****
@@ -345,11 +342,11 @@
             var reportParameters = {
                 firstDate: firstDate_MSReport._value.replace(/\//g, "^"),
                 secondDate: secondDate_MSReport._value.replace(/\//g, "^"),
-                complex_title: DynamicForm_MSReport.getValue("complex_MSReport") !==undefined ? DynamicForm_MSReport.getValue("complex_MSReport") : "همه",
-                assistant:  DynamicForm_MSReport.getValue("Assistant") !==undefined ? DynamicForm_MSReport.getValue("Assistant") : "همه",
-                affairs:  DynamicForm_MSReport.getValue("Affairs") !==undefined ? DynamicForm_MSReport.getValue("Affairs") : "همه",
-                section:  DynamicForm_MSReport.getValue("Section") !==undefined ? DynamicForm_MSReport.getValue("Section") : "همه",
-                unit:  DynamicForm_MSReport.getValue("Unit") !==undefined ? DynamicForm_MSReport.getValue("Unit") : "همه"
+                complex_title: DynamicForm_MSReport.getValue("complex_MSReport") !== undefined ? DynamicForm_MSReport.getValue("complex_MSReport") : "همه",
+                assistant: DynamicForm_MSReport.getValue("Assistant") !== undefined ? DynamicForm_MSReport.getValue("Assistant") : "همه",
+                affairs: DynamicForm_MSReport.getValue("Affairs") !== undefined ? DynamicForm_MSReport.getValue("Affairs") : "همه",
+                section: DynamicForm_MSReport.getValue("Section") !== undefined ? DynamicForm_MSReport.getValue("Section") : "همه",
+                unit: DynamicForm_MSReport.getValue("Unit") !== undefined ? DynamicForm_MSReport.getValue("Unit") : "همه"
             };
 
 
@@ -360,6 +357,82 @@
         }
 
     }
+
+    //*****calculate total summary*****
+    function totalSummary() {
+        return "جمع کل :";
+    }
+
+    function totalPresent(records) {
+
+        let hours = 0;
+        let minutes = 0;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].present !== "0") {
+                hours += parseInt(records[i].present.split(":")[0]);
+                minutes += parseInt(records[i].present.split(":")[1]);
+            }
+        }
+
+        hours += Math.floor(minutes / 60);
+        minutes = minutes % 60;
+
+        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+    }
+
+    function totalOvertime(records) {
+
+        let hours = 0;
+        let minutes = 0;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].overtime !== "0") {
+                hours += parseInt(records[i].overtime.split(":")[0]);
+                minutes += parseInt(records[i].overtime.split(":")[1]);
+            }
+        }
+
+        hours += Math.floor(minutes / 60);
+        minutes = minutes % 60;
+
+        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+    }
+
+    function totalUnjustifiedAbsence(records) {
+
+        let hours = 0;
+        let minutes = 0;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].unjustifiedAbsence !== "0") {
+                hours += parseInt(records[i].unjustifiedAbsence.split(":")[0]);
+                minutes += parseInt(records[i].unjustifiedAbsence.split(":")[1]);
+            }
+        }
+
+        hours += Math.floor(minutes / 60);
+        minutes = minutes % 60;
+
+        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+    }
+
+    function totalAcceptableAbsence(records) {
+
+        let hours = 0;
+        let minutes = 0;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].acceptableAbsence !== "0") {
+                hours += parseInt(records[i].acceptableAbsence.split(":")[0]);
+                minutes += parseInt(records[i].acceptableAbsence.split(":")[1]);
+            }
+        }
+
+        hours += Math.floor(minutes / 60);
+        minutes = minutes % 60;
+
+        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+    }
+
+    //***********************************
+
     // ------------------------------------------------- Functions ------------------------------------------>>
 
-    //
+    // </script>
