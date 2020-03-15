@@ -472,7 +472,7 @@
                                let questions=[];
                                 for (var i = 0; i < fields.length; i++) {
                                     let record = {};
-                                    record.title = fields[i].title
+                                    record.title = fields[i].title;
                                     questions.push(record);
                                 }
                                 print_Question(questions)

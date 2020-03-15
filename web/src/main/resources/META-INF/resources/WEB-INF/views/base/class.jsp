@@ -158,7 +158,6 @@
 //         fetchDataURL: trainingPlaceUrl + "/with-institute"
     });
 
-
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1489,11 +1488,16 @@
                                 autoFitWidth: true
                             },
                             {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
-                            {name: "theoryDuration", title: "<spring:message code="course_Running_time"/>"},
+                            {
+                                name: "theoryDuration",
+                                title: "<spring:message code="course_Running_time"/>",
+                                filterOperator: "equals",
+                            },
                             {
                                 name: "categoryId",
                                 title: "<spring:message code="category"/> ",
                                 optionDataSource: RestDataSource_category_JspCourse,
+                                filterOnKeypress: true,
                                 valueField: "id",
                                 displayField: "titleFa",
                                 filterOperator: "equals",

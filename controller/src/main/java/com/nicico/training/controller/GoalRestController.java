@@ -197,8 +197,9 @@ public class GoalRestController {
     // -----------------
 
     @Loggable
-    @GetMapping(value = {"/print-all/{type}"})
-    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+    @PostMapping(value = {"/print-all/{type}"})
+    public void print(HttpServletResponse response,
+                      @PathVariable String type) throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Goal.jasper", params, response);
