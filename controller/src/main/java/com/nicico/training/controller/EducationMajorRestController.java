@@ -135,7 +135,7 @@ public class EducationMajorRestController {
         final EducationMajorDTO.SpecRs specResponse = new EducationMajorDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final EducationMajorDTO.EducationMajorSpecRs specRs = new EducationMajorDTO.EducationMajorSpecRs();

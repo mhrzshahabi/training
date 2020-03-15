@@ -120,7 +120,7 @@ public class PostGradeGroupRestController {
         final PostGradeGroupDTO.SpecRs specResponse = new PostGradeGroupDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final PostGradeGroupDTO.PostGradeGroupSpecRs specRs = new PostGradeGroupDTO.PostGradeGroupSpecRs();

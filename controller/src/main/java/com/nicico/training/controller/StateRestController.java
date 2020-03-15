@@ -103,7 +103,7 @@ public class StateRestController {
         final StateDTO.SpecRs specResponse = new StateDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final StateDTO.StateSpecRs specRs = new StateDTO.StateSpecRs();

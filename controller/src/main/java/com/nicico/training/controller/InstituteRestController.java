@@ -152,7 +152,7 @@ public class InstituteRestController {
             specRs = new InstituteDTO.InstituteSpecRs();
             specResponse.setData(response.getList())
                     .setStartRow(startRow)
-                    .setEndRow(startRow + response.getTotalCount().intValue())
+                    .setEndRow(startRow + response.getList().size())
                     .setTotalRows(response.getTotalCount().intValue());
             specRs.setResponse(specResponse);
         } catch (Exception e) {
@@ -625,7 +625,7 @@ public class InstituteRestController {
             specResponse.setData(new ModelMapper().map(list, new TypeToken<List<InstituteDTO.InstituteWithTrainingPlace>>() {
             }.getType()))
                     .setStartRow(startRow)
-                    .setEndRow(startRow + response.getTotalCount().intValue())
+                    .setEndRow(startRow + response.getList().size())
                     .setTotalRows(response.getTotalCount().intValue());
             specRs.setResponse(specResponse);
         } catch (Exception e) {

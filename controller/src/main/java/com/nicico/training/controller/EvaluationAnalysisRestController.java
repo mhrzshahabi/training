@@ -41,7 +41,7 @@ public class EvaluationAnalysisRestController {
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
-    public void printWithDetail(HttpServletResponse response,
+    public void printReactionEvaluation(HttpServletResponse response,
                                 @RequestParam(value = "code") String code, @RequestParam(value = "titleClass") String titleClass,
                                 @RequestParam(value = "term") String term, @RequestParam(value = "studentCount") String studentCount,
                                 @RequestParam(value = "classStatus") String classStatus, @RequestParam(value = "teacher") String teacher,
@@ -127,4 +127,41 @@ public class EvaluationAnalysisRestController {
         return result;
     }
 
-}
+    @Loggable
+    @PostMapping(value = {"/printBehavioralEvaluation"})
+    public void printBehavioralEvaluation(HttpServletResponse response,
+                                          @RequestParam(value = "code") String code, @RequestParam(value = "titleClass") String titleClass,
+                                          @RequestParam(value = "term") String term, @RequestParam(value = "studentCount") String studentCount,
+                                          @RequestParam(value = "teacher") String teacher, @RequestParam(value = "classPassedTime") String classPassedTime,
+                                          @RequestParam(value = "numberOfFilledFormsBySuperviosers") String numberOfFilledFormsBySuperviosers,
+                                          @RequestParam(value = "numberOfFilledFormsByStudents") String numberOfFilledFormsByStudents,
+                                          @RequestParam(value = "studentsMeanGrade") String studentsMeanGrade,
+                                          @RequestParam(value = "supervisorsMeanGrade") String supervisorsMeanGrade,
+                                          @RequestParam(value = "FEBGrade") String FEBGrade,@RequestParam(value = "FEBPass") String FEBPass,
+                                          @RequestParam(value = "FECBGrade") String FECBGrade,@RequestParam(value = "FECBPass") String FECBPass) throws Exception {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", DateUtil.todayDate());
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
+
+        params.put("code",code);
+        params.put("titleClass",titleClass);
+        params.put("term",term);
+        params.put("studentCount", studentCount);
+        params.put("teacher", teacher);
+        params.put("classPassedTime",classPassedTime);
+        params.put("numberOfFilledFormsBySuperviosers",numberOfFilledFormsBySuperviosers);
+        params.put("numberOfFilledFormsByStudents",numberOfFilledFormsByStudents);
+        params.put("studentsMeanGrade",studentsMeanGrade);
+        params.put("supervisorsMeanGrade",supervisorsMeanGrade);
+        params.put("FEBGrade",FEBGrade);
+        params.put("FEBPass", Boolean.parseBoolean(FEBPass));
+        params.put("FECBGrade",FECBGrade);
+        params.put("FECBPass",Boolean.parseBoolean(FECBPass));
+
+        ArrayList<String> list = new ArrayList();
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/BehavioralEvaluationResult.jasper", params, jsonDataSource, response);
+    }
+
+    }

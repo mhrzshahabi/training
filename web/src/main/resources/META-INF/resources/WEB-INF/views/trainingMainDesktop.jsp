@@ -731,6 +731,12 @@
                         createTab(this.title, "<spring:url value="web/trainingOverTime/"/>");
                     }
                 },
+                {
+                    title: "<spring:message code="report.monthly.statistical"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
+                    }
+                }
                 <%--{--%>
                     <%--title: "غيبت ناموجه",--%>
                     <%--click: function () {--%>
@@ -1160,6 +1166,7 @@
     const sessionServiceUrl = rootUrl + "/sessionService/";
     const classStudent = rootUrl + "/classStudent/";
     const classAlarm = rootUrl + "/classAlarm/";
+    const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
 
 

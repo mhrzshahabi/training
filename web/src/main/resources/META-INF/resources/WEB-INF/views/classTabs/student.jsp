@@ -188,7 +188,6 @@
                 optionDataSource: StudentsDS_PresenceType,
                 valueField: "id",
                 displayField: "title",
-                filterLocally: true,
                 filterOnKeypress: true,
                 canEdit: true,
                 changed: function (form, item, value) {
@@ -266,7 +265,6 @@
                 canEdit: true,
                 valueField: "id",
                 displayField: "title",
-                filterLocally: true,
                 filterOnKeypress: true,
             },
             <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>

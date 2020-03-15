@@ -592,7 +592,6 @@
                 valueField: "id",
                 autoFetchData: false,
                 required: true,
-// filterLocally:true,
                 useClientFiltering: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 pickListFields: [

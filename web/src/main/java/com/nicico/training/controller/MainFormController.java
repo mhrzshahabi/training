@@ -104,6 +104,9 @@ public class MainFormController {
         return "base/configQuestionnaire";
     }
 
+    @RequestMapping("/monthlyStatisticalReport")
+    public String showMonthlyStatisticalReportForm(){ return "report/monthlyStatisticalReport"; }
+
     @PostMapping("/post_print_list/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("myToken");

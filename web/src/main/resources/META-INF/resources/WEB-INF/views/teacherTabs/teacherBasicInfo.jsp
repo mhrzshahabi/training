@@ -29,6 +29,7 @@
         align: "center",
         contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file-upload\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i>آپلود تصویر</label><input id=\"file-upload\" type=\"file\" name=\"file[]\" name=\"attachPic\" onchange=\"upload()\" accept=\".png,.gif,.jpg, .jpeg\"/></form>"
     });
+
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -213,6 +214,7 @@
             {
                 name: "personality.birthCertificate",
                 title: "<spring:message code='birth.certificate'/>",
+                required: true,
                 keyPressFilter: "[0-9]",
                 length: "15"
             },
@@ -332,6 +334,7 @@
             {
                 name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
+                required: true,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
@@ -397,7 +400,6 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
@@ -436,7 +438,6 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains",
@@ -461,6 +462,7 @@
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
+                required: true,
                 keyPressFilter: "[0-9]",
                 length: "11",
                 hint: "*********09",
@@ -615,8 +617,7 @@
                 type: "imageFile",
                 showFileInline: "true",
                 accept: ".png,.gif,.jpg, .jpeg",
-                multiple: "",
-                // hidden: true,
+                multiple: ""
             }
         ],
         itemChanged: function (item) {

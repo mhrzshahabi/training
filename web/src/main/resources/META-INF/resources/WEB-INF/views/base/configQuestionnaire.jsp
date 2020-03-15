@@ -74,7 +74,6 @@
                 displayField: "title",
                 filterFields: ["title"],
                 multiple: false,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains"
@@ -105,7 +104,6 @@
                 displayField: "nameFa",
                 filterFields: ["nameFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains"
@@ -221,7 +219,6 @@
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "title",
-                filterLocally: true,
                 filterOnKeypress: true
             },
             {
@@ -233,7 +230,6 @@
                 displayField: "nameFa",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
             }
         ],
         rowDoubleClick: function () {

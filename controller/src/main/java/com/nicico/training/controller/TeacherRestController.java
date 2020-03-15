@@ -12,6 +12,8 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
+import com.nicico.training.repository.PersonalInfoDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +53,8 @@ public class TeacherRestController {
     private final ITeacherCertificationService teacherCertificationService;
     private final IPublicationService publicationService;
     private final IForeignLangKnowledgeService foreignLangService;
+    private final TclassDAO tclassDAO;
+
 
     private float evaluationGrade = 0;
     private boolean pass = false;
@@ -157,15 +161,25 @@ public class TeacherRestController {
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity delete(@PathVariable Long id) {
-        try {
-            teacherService.delete(id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException | DataIntegrityViolationException e) {
-            return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        List<Tclass> tclassList = tclassDAO.getTeacherClasses(id);
+        if(tclassList != null && tclassList.size() != 0)
+            return new ResponseEntity<>(tclassList.get(0).getTitleClass(), HttpStatus.NOT_ACCEPTABLE);
+        else{
+            try {
+//                final Optional<Teacher> cById = teacherDAO.findById(id);
+//                final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//                String fileName = teacher.getPersonality().getPhoto();
+//                if (!(fileName == null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))) {
+//                    File file1 = new File(personUploadDir + "/" + fileName);
+//                    file1.delete();
+//                }
+                teacherService.delete(id);
+                return new ResponseEntity<>("ok", HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>("personalFail", HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
-
 
     @Loggable
     @DeleteMapping(value = "/list")
@@ -199,7 +213,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -234,7 +248,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -261,7 +275,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -289,7 +303,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -948,7 +962,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
