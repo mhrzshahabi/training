@@ -324,17 +324,22 @@
                 // ],
             },
             {
-                name: "courseId", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
+                name: "courseId", editorType: "SelectItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
                 pickListWidth: 500,
                 optionDataSource: RestDataSource_Course_JspSkill,
                 displayField: "titleFa", valueField: "id",
-                filterFields: ["titleFa", "code", "createdBy"],
+                // filterFields: ["titleFa", "code", "createdBy"],
                 pickListFields: [
                     {name: "code"},
                     {name: "titleFa"},
                     {name: "createdBy"}
                 ],
+                pickListProperties: {
+                    showFilterEditor: true,
+                    alternateRecordStyles: true,
+                    autoFitWidthApproach: "both",
+                },
             },
             {
                 name: "description",

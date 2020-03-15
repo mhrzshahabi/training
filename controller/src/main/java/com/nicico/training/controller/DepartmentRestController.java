@@ -102,7 +102,7 @@ public class DepartmentRestController {
             final DepartmentDTO.SpecRs specResponse = new DepartmentDTO.SpecRs();
             specResponse.setData(response.getList())
                     .setStartRow(startRow)
-                    .setEndRow(startRow + response.getTotalCount().intValue())
+                    .setEndRow(startRow + response.getList().size())
                     .setTotalRows(response.getTotalCount().intValue());
 
             return new DepartmentDTO.DepartmentSpecRs().setResponse(specResponse);

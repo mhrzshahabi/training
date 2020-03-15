@@ -172,16 +172,12 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
                 Post currentPost = optionalPost.orElseThrow(trainingExceptionSupplier);
                 if (currentPost.getJob() != null)
                     addCriteria(criteriaRq, "Job", currentPost.getJob().getId());
-                for (PostGroup postGroup : currentPost.getPostGroupSet()) {
-                    addCriteria(criteriaRq, "PostGroup", postGroup.getId());
-                }
+                currentPost.getPostGroupSet().forEach(postGroup -> addCriteria(criteriaRq, "PostGroup", postGroup.getId()));
                 break;
             case "Job":
                 Optional<Job> optionalJob = jobDAO.findById(objectId);
                 Job currentJob = optionalJob.orElseThrow(trainingExceptionSupplier);
-                for (JobGroup jobGroup : currentJob.getJobGroupSet()) {
-                    addCriteria(criteriaRq, "JobGroup", jobGroup.getId());
-                }
+                currentJob.getJobGroupSet().forEach(jobGroup -> addCriteria(criteriaRq, "JobGroup", jobGroup.getId()));
                 break;
         }
     }

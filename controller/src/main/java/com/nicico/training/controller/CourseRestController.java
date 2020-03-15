@@ -184,7 +184,7 @@ public class CourseRestController {
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();

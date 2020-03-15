@@ -120,7 +120,7 @@ public class EvaluationIndexRestController {
         final EvaluationIndexDTO.SpecRs specResponse = new EvaluationIndexDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final EvaluationIndexDTO.EvaluationIndexSpecRs specRs = new EvaluationIndexDTO.EvaluationIndexSpecRs();

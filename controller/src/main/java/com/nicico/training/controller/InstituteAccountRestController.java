@@ -122,7 +122,7 @@ public class InstituteAccountRestController {
         final InstituteAccountDTO.AccountSpecRs specRs = new InstituteAccountDTO.AccountSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);

@@ -26,4 +26,9 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "select MAX(C_WORKFLOW_ENDING_STATUS_CODE) from TBL_CLASS where ID = :classId", nativeQuery = true)
     public Integer getWorkflowEndingStatusCode(Long classId);
 
+    @Query(value = "select * from TBL_CLASS where F_TEACHER = :tID", nativeQuery = true)
+    public List<Tclass> getTeacherClasses(Long tID);
+
+
+
 }

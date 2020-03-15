@@ -103,7 +103,7 @@ public class ClassCheckListRestController {
 //        final ClassCheckListDTO.SpecRs specResponse = new ClassCheckListDTO.SpecRs();
 //        specResponse.setData(response.getList())
 //                .setStartRow(startRow)
-//                .setEndRow(startRow + response.getTotalCount().intValue())
+//                .setEndRow(startRow + response.getList().size())
 //                .setTotalRows(response.getTotalCount().intValue());
 //        final ClassCheckListDTO.ClassCheckListSpecRs specRs = new ClassCheckListDTO.ClassCheckListSpecRs();
 //        specRs.setResponse(specResponse);

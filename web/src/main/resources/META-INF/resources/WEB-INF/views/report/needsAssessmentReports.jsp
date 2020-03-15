@@ -597,7 +597,6 @@
         dataSource: CourseDS_NABOP,
         contextMenu: Menu_Courses_NABOP,
         selectionType: "single",
-        filterLocally: true,
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,

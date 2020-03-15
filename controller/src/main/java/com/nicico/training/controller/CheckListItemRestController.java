@@ -110,7 +110,7 @@ public class CheckListItemRestController {
         final CheckListItemDTO.SpecRs specResponse = new CheckListItemDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CheckListItemDTO.CheckListItemSpecRs specRs = new CheckListItemDTO.CheckListItemSpecRs();
