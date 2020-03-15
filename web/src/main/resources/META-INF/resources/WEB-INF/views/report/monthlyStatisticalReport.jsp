@@ -125,7 +125,6 @@
             cellPadding: 5,
             numCols: 2,
             colWidths: ["1%", "99%"],
-            border: "1px solid red",
             fields: [
                 {
                     name: "firstDate_MSReport",
@@ -135,7 +134,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required:true,
+                    required: true,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -144,11 +143,8 @@
                         }
                     }],
                     textAlign: "center",
-                    click: function (form) {
-
-                    },
-                    changed: function (form, item, value) {
-
+                    blur: function (form, item, value) {
+                        checkFirstDate()
                         MSReport_check_date();
                     }
                 },
@@ -160,7 +156,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required:true,
+                    required: true,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -169,19 +165,16 @@
                         }
                     }],
                     textAlign: "center",
-                    click: function (form) {
-
-                    },
-                    changed: function (form, item, value) {
-
-                        MSReport_check_date();
+                    blur: function (form, item, value) {
+                        checkSecondDate();
+                         MSReport_check_date();
                     }
 
                 },
                 {
                     name: "complex_MSReport",
                     ID: "complex_MSReport",
-                    defaultToFirstOption:true,
+                    emptyDisplayValue:"همه",
                     multiple: false,
                     title: "مجتمع",
                     autoFetchData: false,
@@ -198,10 +191,10 @@
                 {
                     name: "Assistant",
                     ID: "Assistant",
-                    defaultToFirstOption:true,
+                    emptyDisplayValue:"همه",
                     multiple: false,
                     title: "معاونت",
-                    autoFetchData: true,
+                    autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Assistant_MSReport,
                     displayField: "ccpAssistant",
@@ -215,10 +208,10 @@
                 {
                     name: "Affairs",
                     ID: "Affairs",
-                    defaultToFirstOption:true,
+                    emptyDisplayValue:"همه",
                     multiple: false,
                     title: "امور",
-                    autoFetchData: true,
+                    autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Affairs_MSReport,
                     displayField: "ccpAffairs",
@@ -232,10 +225,10 @@
                 {
                     name: "Section",
                     ID: "Section",
-                    defaultToFirstOption:true,
+                    emptyDisplayValue:"همه",
                     multiple: false,
                     title: "قسمت",
-                    autoFetchData: true,
+                    autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Section_MSReport,
                     displayField: "ccpSection",
@@ -249,10 +242,10 @@
                 {
                     name: "Unit",
                     ID: "Unit",
-                    defaultToFirstOption:true,
+                    emptyDisplayValue:"همه",
                     multiple: false,
                     title: "واحد",
-                    autoFetchData: true,
+                    autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Unit_MSReport,
                     displayField: "ccpUnit",
@@ -270,29 +263,8 @@
                     colSpan: 2,
                     align: "left",
                     title: "جستجو",
-
                     click: function () {
-
-                        MSReport_check_date();
-
-                        if (DynamicForm_MSReport.hasErrors())
-                            return;
-
-                        var reportParameters = {
-                            firstDate: firstDate_MSReport._value.replace(/\//g ,"^"),
-                            secondDate: secondDate_MSReport._value.replace(/\//g,"^"),
-                            complex_title: complex_MSReport._value,
-                            assistant: Assistant._value,
-                            affairs: Affairs._value,
-                            section: Section._value,
-                            unit: Unit._value
-                        };
-
-                        RestDataSource_MSReport.fetchDataURL = monthlyStatistical + "list" + "/" + JSON.stringify(reportParameters);
-                        ListGrid_MSReport.invalidateCache();
-                        ListGrid_MSReport.fetchData();
-
-                        // }
+                        searchResult();
                     }
                 }
             ]
@@ -301,7 +273,6 @@
         var VLayout_DynamicForm_MSReport = isc.VLayout.create({
             width: "230px",
             height: "100%",
-            border: "1px solid blue",
             members: [DynamicForm_MSReport]
         });
 
@@ -324,28 +295,71 @@
     // <<----------------------------------------------- Functions --------------------------------------------
     {
         //*****check date is valid*****
-        function MSReport_check_date() {
+        function checkFirstDate() {
 
-            DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
-            DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
+             DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
 
             if (DynamicForm_MSReport.getValue("firstDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("firstDate_MSReport"))) {
                 DynamicForm_MSReport.addFieldErrors("firstDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
-            }
-            else {
+            } else {
                 DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
             }
+        }
+
+        function checkSecondDate() {
+
+             DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
 
             if (DynamicForm_MSReport.getValue("secondDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("secondDate_MSReport"))) {
                 DynamicForm_MSReport.addFieldErrors("secondDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
-            }
-            else {
+            } else {
                 DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
             }
+        }
+
+        function MSReport_check_date() {
+
+            if (DynamicForm_MSReport.getValue("firstDate_MSReport") !== undefined && DynamicForm_MSReport.getValue("secondDate_MSReport") !== undefined) {
+                if (DynamicForm_MSReport.getValue("firstDate_MSReport") > DynamicForm_MSReport.getValue("secondDate_MSReport")) {
+                    DynamicForm_MSReport.addFieldErrors("firstDate_MSReport", "<spring:message code="start.date.must.be.shorter.than.end.date"/>");
+                    DynamicForm_MSReport.addFieldErrors("secondDate_MSReport", "<spring:message code="start.date.must.be.shorter.than.end.date"/> ");
+                } else {
+                    DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
+                    DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
+                }
+            }
+
+        }
+        //***************************
+
+        //*****search report result*****
+        function searchResult() {
+
+            checkSecondDate();
+            checkFirstDate();
+            MSReport_check_date();
+
+            if (DynamicForm_MSReport.hasErrors())
+                return;
+
+            var reportParameters = {
+                firstDate: firstDate_MSReport._value.replace(/\//g, "^"),
+                secondDate: secondDate_MSReport._value.replace(/\//g, "^"),
+                complex_title: DynamicForm_MSReport.getValue("complex_MSReport") !==undefined ? DynamicForm_MSReport.getValue("complex_MSReport") : "همه",
+                assistant:  DynamicForm_MSReport.getValue("Assistant") !==undefined ? DynamicForm_MSReport.getValue("Assistant") : "همه",
+                affairs:  DynamicForm_MSReport.getValue("Affairs") !==undefined ? DynamicForm_MSReport.getValue("Affairs") : "همه",
+                section:  DynamicForm_MSReport.getValue("Section") !==undefined ? DynamicForm_MSReport.getValue("Section") : "همه",
+                unit:  DynamicForm_MSReport.getValue("Unit") !==undefined ? DynamicForm_MSReport.getValue("Unit") : "همه"
+            };
+
+
+            RestDataSource_MSReport.fetchDataURL = monthlyStatistical + "list" + "/" + JSON.stringify(reportParameters);
+            ListGrid_MSReport.invalidateCache();
+            ListGrid_MSReport.fetchData();
 
         }
 
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 
-    // </script>
+    //
