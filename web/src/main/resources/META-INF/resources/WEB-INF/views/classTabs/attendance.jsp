@@ -891,8 +891,10 @@
                     }
                     let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
                     let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                    let sessionKeys = keys.filter(k => k.startsWith("se"));
+                    console.log(sessionKeys);
                     for (let i = 0; i < allRows.length; i++) {
-                        console.log(allRows)
+
                     }
                     downloadForm.setValue("myToken", "<%=accessToken%>");
                     downloadForm.setValue("fields", JSON.stringify(sendFields));
