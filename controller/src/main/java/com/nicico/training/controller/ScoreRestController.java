@@ -35,12 +35,9 @@ public class ScoreRestController {
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
     private final ClassStudentService classStudentService;
-
     @Loggable
     @PostMapping(value = {"/printWithCriteria"})
     public void printWithCriteria(HttpServletResponse response,@RequestParam(value = "classId") String classId,@RequestParam(value = "CriteriaStr") String criteriaStr,@RequestParam(value = "class") String classRecord) throws Exception {
-
-
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
         if (criteriaStr.equalsIgnoreCase("{}")) {
@@ -58,9 +55,11 @@ public class ScoreRestController {
         params.put("course",json.getString("course"));
         params.put("endDate",json.getString("endDate"));
         params.put("startDate",json.getString("startDate"));
+        params.put("scoringMethod",json.getString("scoringMethod"));
+        params.put("acceptancelimit",json.getString("acceptancelimit"));
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, "pdf");
-       // reportUtil.export("/reports/TermByCriteria.jasper", params, jsonDataSource, response);
+        reportUtil.export("/reports/scoreOf20OR100.jasper", params, jsonDataSource, response);
     }
 }

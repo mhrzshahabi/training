@@ -10,6 +10,8 @@
     var classRecord_acceptancelimit = null
     var scoresState_value = null
     var failureReason_value = null
+    var scoringMethodPrint=null
+    var acceptancelimitPrint=null
     var valence_value = null
     var valence_value_failureReason = null
     var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"}
@@ -342,6 +344,8 @@
 
         dataArrived: function () {
             var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
+
         <%--    return (myMap.get(classRecord.scoringMethod) === "ارزشی") ? totalsLabel_scores.setContents("<spring:message--%>
         <%--code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message--%>
         <%--code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>") : totalsLabel_scores.setContents("<spring:message--%>
@@ -350,15 +354,17 @@
       if( myMap.get(classRecord.scoringMethod) === "ارزشی")
         {
          totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>")
+         acceptancelimitPrint=myMap1.get(classRecord.acceptancelimit)
         }
         else if ( myMap.get(classRecord.scoringMethod) === "نمره از صد"  ||  myMap.get(classRecord.scoringMethod) ==="نمره از بیست")
             {
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + (classRecord.acceptancelimit) + "</b>");
+        acceptancelimitPrint=classRecord.acceptancelimit
             }
             else {
 
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" +  "ندارد" + "</b>");
-
+        acceptancelimitPrint="ندارد"
             }
 
 
@@ -546,6 +552,8 @@
                 course:Record.course.titleFa,
                 endDate:Record.endDate,
                 startDate:Record.startDate,
+                scoringMethod:scoringMethodPrint,
+                acceptancelimit:acceptancelimitPrint,
                 }
                 var advancedCriteria = ListGrid_Class_Student.getCriteria();
                 var criteriaForm = isc.DynamicForm.create({
