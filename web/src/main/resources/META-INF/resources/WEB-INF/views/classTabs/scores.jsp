@@ -540,6 +540,13 @@
 
                 function printScore() {
                 var Record = ListGrid_Class_JspClass.getSelectedRecord();
+                var classObj={
+                code:Record.code,
+                teacher:Record.teacher,
+                course:Record.course.titleFa,
+                endDate:Record.endDate,
+                startDate:Record.startDate,
+                }
                 var advancedCriteria = ListGrid_Class_Student.getCriteria();
                 var criteriaForm = isc.DynamicForm.create({
                 method: "POST",
@@ -548,14 +555,14 @@
                 canSubmit: true,
                 fields:
                 [
-                {name: "recordId", type: "hidden"},
+                {name: "classId", type: "hidden"},
                 {name: "token", type: "hidden"},
-                {name: "record", type: "hidden"},
-
+                {name: "class", type: "hidden"},
+                {name: "CriteriaStr", type: "hidden"},
                 ]
                 })
                 criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.setValue("record", JSON.stringify(Record));
+                criteriaForm.setValue("class", JSON.stringify(classObj));
                 criteriaForm.setValue("classId", JSON.stringify(Record.id));
                 criteriaForm.setValue("token", "<%= accessToken %>")
                 criteriaForm.show();

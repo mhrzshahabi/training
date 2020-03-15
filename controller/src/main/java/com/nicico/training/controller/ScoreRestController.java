@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
@@ -14,6 +15,7 @@ import com.nicico.training.service.ClassStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +38,7 @@ public class ScoreRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria"})
-    public void printWithCriteria(HttpServletResponse response,@RequestParam(value = "classId") String classId,@RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+    public void printWithCriteria(HttpServletResponse response,@RequestParam(value = "classId") String classId,@RequestParam(value = "CriteriaStr") String criteriaStr,@RequestParam(value = "class") String classRecord) throws Exception {
 
 
         final SearchDTO.CriteriaRq criteriaRq;
@@ -47,10 +49,15 @@ public class ScoreRestController {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
-
+        JSONObject json=new JSONObject(classRecord);
         final SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs =  classStudentService.searchClassStudents(searchRq, Long.valueOf(classId), ClassStudentDTO.ScoresInfo.class);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
+        params.put("code",json.getString("code"));
+        params.put("teacher",json.getString("teacher"));
+        params.put("course",json.getString("course"));
+        params.put("endDate",json.getString("endDate"));
+        params.put("startDate",json.getString("startDate"));
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, "pdf");
