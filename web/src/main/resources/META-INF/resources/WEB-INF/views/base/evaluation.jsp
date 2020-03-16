@@ -201,7 +201,7 @@
                                 {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
                             ],
                             fetchDataURL : parameterValueUrl + "/iscList/143",
-                        })
+                        });
                         var RestData_EvaluationLevel_JspEvaluation = isc.TrDS.create({
                             fields: [
                                 {name: "id", primaryKey: true, hidden: true},
@@ -212,7 +212,7 @@
                                 {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
                             ],
                             fetchDataURL : parameterValueUrl + "/iscList/163",
-                        })
+                        });
                         var RestData_Students_JspEvaluation = isc.TrDS.create({
                             fields: [
                                 {name: "id", primaryKey: true, hidden: true},
@@ -233,7 +233,7 @@
                                 {name: "student.ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
                             ],
                             fetchDataURL: tclassStudentUrl + "/students-iscList/"
-                        })
+                        });
                         var RestData_StudentPresenceType_JspEvaluation = isc.TrDS.create({
                             fields: [
                                 {name: "id", primaryKey: true, hidden: true},
@@ -383,14 +383,14 @@
                                     name: "evaluator",
                                     title: "<spring:message code="evaluator"/>",
                                     // canEdit: false,
-                                    disabled: true,
+                                    disabled: true
                                 },
                                 {
                                     name: "evaluated",
                                     title: "<spring:message code="evaluation.evaluated"/>",
-                                    disabled: true,
+                                    disabled: true
                                     // canEdit: false,
-                                },
+                                }
                             ]
                         });
                         var DynamicForm_Questions_Body_JspEvaluation = isc.DynamicForm.create({
@@ -411,7 +411,7 @@
                             click: function () {
                                 // let data = vm_JspEvaluation.getValues();
                                 let evaluationAnswerList = [];
-                                let data = {}
+                                let data = {};
                                 let evaluationFull = true;
                                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                                 for (let i = 0; i < questions.length; i++) {
@@ -459,7 +459,7 @@
                                 }
                                 data.classId = ListGrid_evaluation_class.getSelectedRecord().id;
                                 isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
-                                    if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
+                                    if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201){
                                         Window_Questions_JspEvaluation.close();
                                     }
                                 }))
@@ -468,11 +468,11 @@
                         var IButton_Questions_Print = isc.IButtonSave.create({
                             title: "چاپ",
                             click: function () {
-                                let fields = DynamicForm_Questions_Body_JspEvaluation.getFields()
+                                let fields = DynamicForm_Questions_Body_JspEvaluation.getFields();
                                let questions=[];
                                 for (var i = 0; i < fields.length; i++) {
                                     let record = {};
-                                    record.title = fields[i].title
+                                    record.title = fields[i].title;
                                     questions.push(record);
                                 }
                                 print_Question(questions)
@@ -537,10 +537,10 @@
                                                 Window_AddStudent_JspEvaluation.close();
                                                 DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").enable();
                                             }
-                                        }),
+                                        })
                                     ]
                                 })]
-                        })
+                        });
                         DynamicForm_Questions_Title_JspEvaluation.editRecord(ListGrid_evaluation_class.getSelectedRecord());
                         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
                         let itemList = [];
@@ -578,7 +578,7 @@
                                                     item.name = "Q" + localQuestions[i].id;
                                                     item.title = localQuestions[i].evaluationQuestion.question;
                                             }
-                                            console.log(item)
+
                                             item.type = "radioGroup";
                                             item.vertical = false;
                                             // item.required = true;
@@ -735,7 +735,6 @@
         })
     }
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
-
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
@@ -1166,7 +1165,7 @@
                         click: function () {
                             Window_OperationalUnit.close();
                         }
-                    }),
+                    })
 
                 ]
         });
@@ -1664,27 +1663,29 @@
 
         }
 
+        function print_Question(questions) {
+
+            var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/questionnaireReport/questionnaire/"/>" + "pdf",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "token", type: "hidden"},
+                        {name: "questionnaire", type: "hidden"},
+                        {name: "title", type: "hidden"}
+                    ]
+
+            });
+            criteriaForm.setValue("token", "<%= accessToken %>");
+            criteriaForm.setValue("questionnaire", JSON.stringify(questions));
+            criteriaForm.setValue("title", JSON.stringify(DynamicForm_Questions_Title_JspEvaluation.getValues()));
+            criteriaForm.show();
+            criteriaForm.submitForm();
+        }
+
     }
-
-    function print_Question(questions) {
-
-        var criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/questionnaireReport/questionnaire/"/>" + "pdf",
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                   {name: "token", type: "hidden"},
-                   {name: "questionnaire", type: "hidden"},
-                   {name: "title", type: "hidden"}
-                ]
-
-        })
-        criteriaForm.setValue("token", "<%= accessToken %>")
-        criteriaForm.setValue("questionnaire", JSON.stringify(questions));
-        criteriaForm.setValue("title", JSON.stringify(DynamicForm_Questions_Title_JspEvaluation.getValues()));
-        criteriaForm.show();
-        criteriaForm.submitForm();
-    };
     // ------------------------------------------------- Functions ------------------------------------------>>
+
+    // </script>

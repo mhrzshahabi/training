@@ -251,7 +251,6 @@
                     filterFields: ["ccpUnit"]
                 },
                 {
-                    ID: "ffffff",
                     type: "button",
                     width: "100%",
                     height: 30,
@@ -356,83 +355,82 @@
 
         }
 
-    }
-
-    //*****calculate total summary*****
-    function totalSummary() {
-        return "جمع کل :";
-    }
-
-    function totalPresent(records) {
-
-        let hours = 0;
-        let minutes = 0;
-        for (let i = 0; i < records.length; i++) {
-            if (records[i].present !== "0") {
-                hours += parseInt(records[i].present.split(":")[0]);
-                minutes += parseInt(records[i].present.split(":")[1]);
-            }
+        //*****calculate total summary*****
+        function totalSummary() {
+            return "جمع کل :";
         }
 
-        hours += Math.floor(minutes / 60);
-        minutes = minutes % 60;
+        function totalPresent(records) {
 
-        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
-    }
-
-    function totalOvertime(records) {
-
-        let hours = 0;
-        let minutes = 0;
-        for (let i = 0; i < records.length; i++) {
-            if (records[i].overtime !== "0") {
-                hours += parseInt(records[i].overtime.split(":")[0]);
-                minutes += parseInt(records[i].overtime.split(":")[1]);
+            let hours = 0;
+            let minutes = 0;
+            for (let i = 0; i < records.length; i++) {
+                if (records[i].present !== "0") {
+                    hours += parseInt(records[i].present.split(":")[0]);
+                    minutes += parseInt(records[i].present.split(":")[1]);
+                }
             }
+
+            hours += Math.floor(minutes / 60);
+            minutes = minutes % 60;
+
+            return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
         }
 
-        hours += Math.floor(minutes / 60);
-        minutes = minutes % 60;
+        function totalOvertime(records) {
 
-        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
-    }
-
-    function totalUnjustifiedAbsence(records) {
-
-        let hours = 0;
-        let minutes = 0;
-        for (let i = 0; i < records.length; i++) {
-            if (records[i].unjustifiedAbsence !== "0") {
-                hours += parseInt(records[i].unjustifiedAbsence.split(":")[0]);
-                minutes += parseInt(records[i].unjustifiedAbsence.split(":")[1]);
+            let hours = 0;
+            let minutes = 0;
+            for (let i = 0; i < records.length; i++) {
+                if (records[i].overtime !== "0") {
+                    hours += parseInt(records[i].overtime.split(":")[0]);
+                    minutes += parseInt(records[i].overtime.split(":")[1]);
+                }
             }
+
+            hours += Math.floor(minutes / 60);
+            minutes = minutes % 60;
+
+            return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
         }
 
-        hours += Math.floor(minutes / 60);
-        minutes = minutes % 60;
+        function totalUnjustifiedAbsence(records) {
 
-        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
-    }
-
-    function totalAcceptableAbsence(records) {
-
-        let hours = 0;
-        let minutes = 0;
-        for (let i = 0; i < records.length; i++) {
-            if (records[i].acceptableAbsence !== "0") {
-                hours += parseInt(records[i].acceptableAbsence.split(":")[0]);
-                minutes += parseInt(records[i].acceptableAbsence.split(":")[1]);
+            let hours = 0;
+            let minutes = 0;
+            for (let i = 0; i < records.length; i++) {
+                if (records[i].unjustifiedAbsence !== "0") {
+                    hours += parseInt(records[i].unjustifiedAbsence.split(":")[0]);
+                    minutes += parseInt(records[i].unjustifiedAbsence.split(":")[1]);
+                }
             }
+
+            hours += Math.floor(minutes / 60);
+            minutes = minutes % 60;
+
+            return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
         }
 
-        hours += Math.floor(minutes / 60);
-        minutes = minutes % 60;
+        function totalAcceptableAbsence(records) {
 
-        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+            let hours = 0;
+            let minutes = 0;
+            for (let i = 0; i < records.length; i++) {
+                if (records[i].acceptableAbsence !== "0") {
+                    hours += parseInt(records[i].acceptableAbsence.split(":")[0]);
+                    minutes += parseInt(records[i].acceptableAbsence.split(":")[1]);
+                }
+            }
+
+            hours += Math.floor(minutes / 60);
+            minutes = minutes % 60;
+
+            return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+        }
+
+        //***********************************
+
     }
-
-    //***********************************
-
     // ------------------------------------------------- Functions ------------------------------------------>>
 
     // </script>
