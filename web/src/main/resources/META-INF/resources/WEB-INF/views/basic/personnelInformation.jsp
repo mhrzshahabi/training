@@ -113,200 +113,198 @@
 //*****create fields*****
         var DynamicForm_PersonnelInfo = isc.DynamicForm.create({
             numCols: 6,
-            colWidths: ["3%", "18%", "3%", "18%", "3%", "18%"],
+            colWidths: ["1%", "10%", "1%", "10%", "1%", "10%"],
             cellPadding: 3,
-            isGroup: true,
-            groupTitle: "مشخصات شخصی",
-            groupLabelBackgroundColor: "#b7dee8",
-            groupBorderCSS: "1px solid #b7dee8",
             fields:
                 [
                     {
-                        name: "firstName",
+                        name: "header_PersonnelInfo",
+                        type: "HeaderItem",
+                        defaultValue: "مشخصات شخصی",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "fullName",
                         title: "نام و نام خانوادگی : ",
+                        canEdit: false,
+                    },
+                    {
+                        name: "personnelNo",
+                        title: "کد پرسنلی : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
-                        title: "کد پرسنلی",
+                        name: "fatherName",
+                        title: "نام پدر : ",
                         canEdit: false
                     },
                     {
-                        name: "firstName",
-                        title: "نام پدر",
+                        name: "birth",
+                        title: "تولد : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
-                        title: "تولد",
+                        name: "nationalCode",
+                        title: "کد ملی : ",
                         canEdit: false
                     },
                     {
-                        name: "firstName",
-                        title: "کد ملی",
-                        canEdit: false
-                    },
-                    {
-                        name: "lastName",
+                        name: "birthCertificateNo",
                         title: "شماره شناسنامه",
                         canEdit: false
                     },
                     {
-                        name: "firstName",
-                        title: "تحصیلات",
+                        name: "educationLevelTitle",
+                        title: "تحصیلات : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
-                        title: "جنسیت",
+                        name: "gender",
+                        title: "جنسیت : ",
                         canEdit: false
-                    }
-                ]
-        });
-
-        var DynamicForm_PersonnelCompanyInfo = isc.DynamicForm.create({
-            numCols: 6,
-            colWidths: ["3%", "18%", "3%", "18%", "3%", "18%"],
-            cellPadding: 3,
-            isGroup: true,
-            groupTitle: "مشخصات سازمانی",
-            groupLabelBackgroundColor: "#d8e4bc",
-            groupBorderCSS: "1px solid #d8e4bc",
-            fields:
-                [
+                    },
                     {
-                        name: "firstName",
+                        name: "header_CompanyInfo",
+                        type: "HeaderItem",
+                        defaultValue: "مشخصات سازمانی",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "notExists",
                         title: "سرپرست : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "notExists",
                         title: "رابط : ",
                         canEdit: false
                     },
                     {
-                        name: "firstName",
+                        name: "employmentStatus",
                         title: "وضعیت اشتغال : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "ccpAssistant",
                         title: "حوزه : ",
                         canEdit: false
-                    },
+                    }, {
+                    name: "ccpAffairs",
+                    title: "واحد : ",
+                    canEdit: false
+                },
                     {
-                        name: "firstName",
+                        name: "ccpSection",
                         title: "بخش : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "companyName",
                         title: "شعبه : ",
                         canEdit: false
                     },
                     {
-                        name: "firstName",
+                        name: "postTitle",
                         title: "شغل : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "jobTitle",
                         title: "سمت : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "postGradeTitle",
                         title: "رده : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "notExists",
                         title: "رسته شغلی : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "notExists",
                         title: "طبقه شغلی : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
-                        title: "کدرسنلی شش رقمی : ",
+                        name: "personnelNo2",
+                        title: "کد پرسنلی شش رقمی : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "notExists",
                         title: "پایه سمت : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "notExists",
                         title: "پایه شخص : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "employmentTypeTitle",
                         title: "نوع استخدام : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "employmentDate",
                         title: "تاریخ استخدام : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "workPlaceTitle",
                         title: "محل جغرافیایی خدمت : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "notExists",
                         title: "عوامل : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "workTurnTitle",
                         title: "تقسیم کارکنان : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "notExists",
                         title: "وضعیت خدمت : ",
                         canEdit: false
-                    }
-                ]
-        });
-
-        var DynamicForm_PersonnelContactInfo = isc.DynamicForm.create({
-            numCols: 6,
-            colWidths: ["3%", "18%", "3%", "18%", "3%", "18%"],
-            cellPadding: 3,
-            isGroup: true,
-            groupTitle: "اطلاعات تماس",
-            groupLabelBackgroundColor: "#b8cce4",
-            groupBorderCSS: "1px solid #b8cce4",
-            fields:
-                [
+                    },
                     {
-                        name: "firstName",
+                        name: "header_ContactInfo",
+                        type: "HeaderItem",
+                        defaultValue: "اطلاعات تماس",
+                        colSpan: 6,
+                        startRow: true,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "tel",
                         title: "تلفن : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "mobile",
                         title: "همراه : ",
                         canEdit: false
                     },
                     {
-                        name: "firstName",
+                        name: "email",
                         title: "پست الکترونیکی : ",
                         canEdit: false
                     },
                     {
-                        name: "lastName",
+                        name: "address",
                         title: "آدرس : ",
                         canEdit: false
-                    },
+                    }
                 ]
         });
     }
@@ -318,7 +316,7 @@
             width: "100%",
             height: "100%",
             membersMargin: 5,
-            members: [DynamicForm_PersonnelInfo, DynamicForm_PersonnelCompanyInfo, DynamicForm_PersonnelContactInfo]
+            members: [DynamicForm_PersonnelInfo]
         });
 
         var PersonnelInfo_Tab = isc.TabSet.create({
@@ -371,15 +369,36 @@
     {
         function set_PersonnelInfo_Details() {
 
-            let selectedPersonnel = PersonnelInfoListGrid_PersonnelList.getSelectedRecord();
+            let personnelId = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().id
 
-            console.log(selectedPersonnel);
+            if (personnelId !== null) {
 
-            if (selectedPersonnel !== null) {
-                DynamicForm_PersonnelInfo.clearValues();
-                DynamicForm_PersonnelInfo.editRecord(selectedPersonnel);
+                isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelId/" + personnelId, "GET", null, function (resp) {
+
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                        let currentPersonnel = JSON.parse(resp.data);
+
+                        currentPersonnel.fullName =
+                            (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
+                            + " " +
+                            (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
+
+                        currentPersonnel.birth = currentPersonnel.birthDate + " - " + currentPersonnel.birthPlace;
+
+                        currentPersonnel.educationLevelTitle =
+                            (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
+                            + " / " +
+                            (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
+
+                        currentPersonnel.gender = currentPersonnel.gender + " - " + currentPersonnel.maritalStatusTitle;
+                        DynamicForm_PersonnelInfo.clearValues();
+                        DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
+
+                    }
+
+                }));
             }
-
         }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>

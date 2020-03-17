@@ -120,4 +120,10 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/byPersonnelId/{personnelId}")
+    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable Long personnelId)
+    {
+        return  new ResponseEntity<>(personnelDAO.findPersonnelById(personnelId), HttpStatus.OK);
+    }
+
 }

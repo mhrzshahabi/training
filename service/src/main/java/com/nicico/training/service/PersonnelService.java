@@ -169,4 +169,11 @@ public class PersonnelService implements IPersonnelService {
         }.getType());
     }
 
+    @Override
+    @Transactional
+    public Personnel findPersonnelByPersonnelId(Long personnelId)
+    {
+        return  personnelDAO.findPersonnelById(personnelId);
+    }
+
 }
