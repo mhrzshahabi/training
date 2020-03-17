@@ -647,23 +647,11 @@ public class TclassService implements ITclassService {
         TclassDTO.BehavioralEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.BehavioralEvaluationResult.class);
 
         List<Double> studentsGrade = new ArrayList<Double>();
-        studentsGrade.add(Double.parseDouble("20"));
-        studentsGrade.add(Double.parseDouble("20"));
-        studentsGrade.add(Double.parseDouble("20"));
-        studentsGrade.add(Double.parseDouble("20"));
-
         List<Double> supervisorsGrade = new ArrayList<Double>();
-        supervisorsGrade.add(Double.parseDouble("30"));
-        supervisorsGrade.add(Double.parseDouble("30"));
-        supervisorsGrade.add(Double.parseDouble("30"));
-        supervisorsGrade.add(Double.parseDouble("30"));
-
-        List<String> classStudentsName = new ArrayList<String>();
-        classStudentsName.add("علی");
-        classStudentsName.add("حسن");
-        classStudentsName.add("مهدی");
-        classStudentsName.add("ایمان");
-
+        for (int i = 0; i < tclass.getClassStudents().size(); i++){
+            studentsGrade.add(Double.parseDouble("20"));
+            supervisorsGrade.add(Double.parseDouble("30"));
+        }
         evaluationResult.setClassPassedTime(3);
         evaluationResult.setNumberOfFilledFormsByStudents(20);
         evaluationResult.setNumberOfFilledFormsBySuperviosers(20);
@@ -675,8 +663,7 @@ public class TclassService implements ITclassService {
         evaluationResult.setFECBPass(true);
         evaluationResult.setStudentsGrade(studentsGrade);
         evaluationResult.setSupervisorsGrade(supervisorsGrade);
-        evaluationResult.setClassStudentsName(classStudentsName);
-//        evaluationResult.setClassStudents(tclass.getClassStudents());
+        evaluationResult.setClassStudentsName();
 
         return evaluationResult;
     }
