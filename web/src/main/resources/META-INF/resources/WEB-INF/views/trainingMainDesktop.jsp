@@ -748,8 +748,7 @@
                         createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                     }
                 },
-                {isSeparator: true}
-                },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="گزارش اساتید"/>",
                     click:function(){
