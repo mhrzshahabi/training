@@ -132,10 +132,10 @@
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
-        numCols: 6,
+        numCols: 7,
         padding: 10,
         // cellBorder:2,
-        colWidths:[250,200,200,100,100,50],
+        colWidths:[250,200,200,100,100,20],
         fields: [
             {
                 name: "attendanceTitle",
@@ -850,6 +850,66 @@
                 endRow:false,
                 click () {
                     loadPage_Attendance()
+                }
+            },
+            {
+                name: "printBtn",
+                ID: "printBtnAttendanceJsp",
+                // showTitle: false,
+                title: "چاپ",
+                <%--prompt:"<spring:message code="refresh"/>",--%>
+                startRow:false,
+                type: "ButtonItem",
+                // icon: "[SKIN]/actions/refresh.png",
+                endRow:false,
+                click () {
+                    // var data = {};
+                    // data.fields = ListGrid_Attendance_AttendanceJSP.getFields().toArray();
+                    // data.allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
+                    // window.open("/training/attendance/download","download",data);
+                    // isc.RPCManager.sendRequest(TrDSRequest("/training/attendance/download" , "GET", JSON.stringify(data), function (resp) {
+                    // }));
+                    let downloadForm = isc.DynamicForm.create({
+                        method: "POST",
+                        action: "/training/attendance/download/",
+                        target: "_Blank",
+                        canSubmit: true,
+                        fields:
+                            [
+                                {name: "myToken", type: "hidden"},
+                                {name: "fields", type: "hidden"},
+                                {name: "allRows", type: "hidden"},
+                            ]
+                    });
+                    let fields = ListGrid_Attendance_AttendanceJSP.getFields();
+                    let sendFields = [];
+                    for (let i = 1; i < fields.length; i++) {
+                        let record = {};
+                        record.title = fields[i].title;
+                        record.name = fields[i].name;
+                        sendFields.push(record)
+                    }
+                    let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
+                    let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                    console.log(keys);
+                    let sessionKeys = keys.filter(k => k.startsWith("se"));
+                    if(sessionKeys.indexOf("sessionDate") == -1) {
+                        for (let i = 0; i < allRows.length; i++) {
+                            for (let j = 0; j < sessionKeys.length; j++) {
+                                allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
+                            }
+                        }
+                    }
+                    else{
+                        for (let i = 0; i < allRows.length; i++) {
+                            allRows[i]["state"] = attendanceState[allRows[i]["state"]];
+                        }
+                    }
+                    downloadForm.setValue("myToken", "<%=accessToken%>");
+                    downloadForm.setValue("fields", JSON.stringify(sendFields));
+                    downloadForm.setValue("allRows", JSON.stringify(ListGrid_Attendance_AttendanceJSP.data.allRows.toArray()));
+                    downloadForm.show();
+                    downloadForm.submitForm();
                 }
             },
         ],

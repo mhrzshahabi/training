@@ -296,8 +296,8 @@
                                     ListGrid_Cell_score_Update(record, newValue, 4);
                                 } else {
 
-                                    createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
-                                    ListGrid_Cell_score_Update(record, null, 2);
+                                   // createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
+                                    ListGrid_Cell_score_Update(record, newValue, 2);
                                     ListGrid_Class_Student.invalidateCache();
 
                                 }
@@ -419,8 +419,8 @@
             record.scoresState = "قبول با نمره"
             record.failureReason = null
         } else if (a == 2) {
-            record.scoresState = null
-            record.failureReason = null
+             record.scoresState = "مردود"
+             record.failureReason = "عدم کسب حد نصاب نمره"
         } else if (a == 3) {
             record.scoresState = "مردود"
             record.failureReason = failureReason_value
@@ -525,9 +525,9 @@
     }
 
     function loadPage_Scores() {
-           isc.MyOkDialog.create({
-            message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
-            });
+           // isc.MyOkDialog.create({
+            // message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
+            // });
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
         if (!(classRecord == undefined || classRecord == null)) {

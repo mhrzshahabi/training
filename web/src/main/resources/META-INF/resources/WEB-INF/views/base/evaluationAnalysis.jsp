@@ -6,7 +6,6 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
     var teacherGradeToClass = 0;
     var studentsGradeToTeacher = 0;
@@ -294,13 +293,13 @@
         }
 
         /////////////////////////TEMP////////////////////////
-        fill_reaction_evaluation_result();
-        evaluationAnalysist_learning();
-        fill_behavioral_evaluation_result();
-        Detail_Tab_Evaluation_Analysis.enableTab(0);
-        Detail_Tab_Evaluation_Analysis.enableTab(1);
-        Detail_Tab_Evaluation_Analysis.enableTab(2);
-        Detail_Tab_Evaluation_Analysis.enableTab(3);
+        // fill_reaction_evaluation_result();
+        // evaluationAnalysist_learning();
+        // fill_behavioral_evaluation_result();
+        // Detail_Tab_Evaluation_Analysis.enableTab(0);
+        // Detail_Tab_Evaluation_Analysis.enableTab(1);
+        // Detail_Tab_Evaluation_Analysis.enableTab(2);
+        // Detail_Tab_Evaluation_Analysis.enableTab(3);
         ////////////////////////TEMP///////////////////////
     }
 
@@ -360,7 +359,6 @@
     }
 
     function load_behavioral_evluation_analysis_data(record) {
-        dummy = record;
         DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("studentCount").setValue(listGrid_record.studentCount);
         DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("classPassedTime").setValue(record.classPassedTime);
         DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("numberOfFilledFormsBySuperviosers").setValue(record.numberOfFilledFormsBySuperviosers);
@@ -376,21 +374,9 @@
         behavioral_chartData = new Array();
         var i = 0;
         for (i=0;i<record.supervisorsGrade.size();i++) {
-            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.studentsGrade.get(i) , evaluator : "فراگیر"});
-            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.supervisorsGrade.get(i), evaluator : "سرپرست"});
+            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.studentsGrade.get(i) , evaluator :  "<spring:message code='student'/>"});
+            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.supervisorsGrade.get(i), evaluator : "<spring:message code='boss'/>"});
         }
-
-        // behavioral_chartData  = [
-        //     {student: "دانشجو1", grade: "20", evaluator : "فراگیر"},
-        //     {student: "دانشجو2", grade: "20", evaluator : "فراگیر"},
-        //     {student: "دانشجو3", grade: "20", evaluator : "فراگیر"},
-        //     {student: "دانشجو4", grade: "20" , evaluator : "فراگیر"},
-        //
-        //     {student: "دانشجو1", grade: "30", evaluator : "سرپرست"},
-        //     {student: "دانشجو2", grade: "30", evaluator : "سرپرست"},
-        //     {student: "دانشجو3", grade: "30", evaluator : "سرپرست"},
-        //     {student: "دانشجو4", grade: "30" , evaluator : "سرپرست"},
-        // ];
 
         BehavioralEvaluationChart.setData(behavioral_chartData);
     }

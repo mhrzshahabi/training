@@ -1196,6 +1196,7 @@
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(true);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(true);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(false);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").clearErrors();
                         DynamicForm_course_MainTab.getItem("startEvaluation").setValue()
                     }
                 }
@@ -1203,6 +1204,7 @@
             {
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
+                // validateOnChange: true,
                 required: false,
                 textAlign: "center",
                 hint: "&nbsp;ماه",
@@ -2185,7 +2187,7 @@
                 } else if (tabSet.valueOf() == 0) {
                     setTimeout(function () {
                         ListGrid_Goal_refresh();
-                    }, 200)
+                    }, 1000)
                 } else if (tabSet.valueOf() == 1) {
                     ToolStripButton_addSkill.click();
                     // tabSet.setTabPane(1,HLayoutWindowAddSkill)
