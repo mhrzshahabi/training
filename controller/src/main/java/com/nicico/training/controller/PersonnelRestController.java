@@ -104,7 +104,7 @@ public class PersonnelRestController {
 
     @GetMapping("/statisticalReport/{reportType}")
     public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findAllStatisticalReport(@PathVariable String reportType) {
-        List<PersonnelDTO.Info> list =  personnelService.findAllStatisticalReportFilter(reportType);
+        List<PersonnelDTO.Info> list = personnelService.findAllStatisticalReportFilter(reportType);
 
         final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
         final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
@@ -120,10 +120,9 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/byPersonnelId/{personnelId}")
-    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable Long personnelId)
-    {
-        return  new ResponseEntity<>(personnelDAO.findPersonnelById(personnelId), HttpStatus.OK);
+    @GetMapping(value = "/byPersonnelNo/{personnelNo}")
+    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable String personnelNo) {
+        return new ResponseEntity<>(personnelService.findPersonnelByPersonnelNo(personnelNo), HttpStatus.OK);
     }
 
 }

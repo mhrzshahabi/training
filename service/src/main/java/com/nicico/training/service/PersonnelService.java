@@ -7,12 +7,14 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PostDAO;
+import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -30,6 +32,7 @@ public class PersonnelService implements IPersonnelService {
     private final PersonnelDAO personnelDAO;
     private final ModelMapper modelMapper;
     private final PostDAO postDAO;
+    private final TclassDAO tclassDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -171,9 +174,11 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
-    public Personnel findPersonnelByPersonnelId(Long personnelId)
-    {
-        return  personnelDAO.findPersonnelById(personnelId);
+    public Personnel findPersonnelByPersonnelNo(String personnelNo) {
+        Personnel personnel = personnelDAO.findPersonnelByPersonnelNo(personnelNo);
+        Long trainingTime = tclassDAO.getStudentTrainingTime(personnel.getNationalCode(), DateUtil.getYear());
+        personnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
+        return personnel;
     }
 
 }

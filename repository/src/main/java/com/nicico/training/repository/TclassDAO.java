@@ -29,6 +29,10 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "select * from TBL_CLASS where F_TEACHER = :tID", nativeQuery = true)
     public List<Tclass> getTeacherClasses(Long tID);
 
+    @Query(value = "SELECT SUM(C.n_h_duration) as TrainingTime FROM tbl_class_student CS INNER JOIN tbl_class C ON C.id = CS.class_id INNER JOIN tbl_student S ON S.id = CS.student_id WHERE S.national_code =:national_code AND INSTR(C.c_start_date, :year) > 0", nativeQuery = true)
+    public Long getStudentTrainingTime(String national_code, String year);
 
+    @Query(value = "SELECT C.* FROM tbl_class C INNER JOIN tbl_class_student CS ON C.id = CS.class_id  INNER JOIN tbl_student S ON S.id = CS.student_id WHERE S.national_code = :national_code", nativeQuery = true)
+    public List<Tclass> findAllPersonnelClass(String national_code);
 
 }

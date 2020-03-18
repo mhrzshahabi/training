@@ -105,6 +105,158 @@
             }
         });
 
+
+        var RestDataSource_PersonnelTraining = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true},
+                {name: "group"},
+// {name: "lastModifiedDate",hidden:true},
+// {name: "createdBy",hidden:true},
+// {name: "createdDate",hidden:true,type:d},
+                {name: "titleClass"},
+                {name: "startDate"},
+                {name: "endDate"},
+                {name: "code"},
+                {name: "term.titleFa"},
+// {name: "teacher.personality.lastNameFa"},
+// {name: "course.code"},
+                {name: "course.titleFa"},
+                {name: "course.id"},
+                {name: "teacherId"},
+                {name: "teacher"},
+                {name: "reason"},
+                {name: "classStatus"},
+                {name: "topology"},
+                {name: "trainingPlaceIds"},
+                {name: "instituteId"},
+                {name: "workflowEndingStatusCode"},
+                {name: "workflowEndingStatus"},
+                {name: "preCourseTest", type: "boolean"}
+            ]
+        });
+
+
+        var ListGrid_PersonnelTraining = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_PersonnelTraining,
+            selectionType: "single",
+            autoFetchData: false,
+            initialSort: [
+                {property: "startDate", direction: "descending", primarySort: true}
+            ],
+            selectionUpdated: function (record) {
+
+            },
+            doubleClick: function () {
+
+            },
+            fields: [
+                {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                {
+                    name: "code",
+                    title: "<spring:message code='class.code'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "titleClass",
+                    title: "titleClass",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    hidden: true
+                },
+                {
+                    name: "course.titleFa",
+                    title: "<spring:message code='course.title'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.course.titleFa;
+                    }
+                },
+                {
+                    name: "term.titleFa",
+                    title: "term",
+                    align: "center",
+                    filterOperator: "iContains",
+                    hidden: true
+                },
+                {
+                    name: "startDate",
+                    title: "<spring:message code='start.date'/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "endDate",
+                    title: "<spring:message code='end.date'/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "group",
+                    title: "<spring:message code='group'/>",
+                    align: "center",
+                    filterOperator: "equals",
+                    autoFitWidth: true
+                },
+                {
+                    name: "teacher",
+                    title: "<spring:message code='teacher'/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "reason", title: "<spring:message code='training.request'/>", align: "center",
+                    valueMap: {
+                        "1": "نیازسنجی",
+                        "2": "درخواست واحد",
+                        "3": "نیاز موردی",
+                    },
+                },
+                {
+                    name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                    valueMap: {
+                        "1": "برنامه ریزی",
+                        "2": "در حال اجرا",
+                        "3": "پایان یافته",
+                    },
+                },
+                {
+                    name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
+                        "1": "U شکل",
+                        "2": "عادی",
+                        "3": "مدور",
+                        "4": "سالن"
+                    }
+                },
+                {name: "createdBy", hidden: true},
+                {name: "createdDate", hidden: true},
+                {
+                    name: "workflowEndingStatusCode",
+                    title: "workflowCode",
+                    align: "center",
+                    filterOperator: "iContains",
+                    hidden: true
+                },
+                {
+                    name: "workflowEndingStatus",
+                    title: "<spring:message code="ending.class.status"/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
+
+            ],
+            dataArrived: function () {
+
+            }
+        });
+
     }
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
@@ -113,7 +265,7 @@
 //*****create fields*****
         var DynamicForm_PersonnelInfo = isc.DynamicForm.create({
             numCols: 6,
-            colWidths: ["1%", "10%", "1%", "10%", "1%", "10%"],
+            colWidths: ["1%", "3%", "1%", "3%", "1%", "3%"],
             cellPadding: 3,
             fields:
                 [
@@ -152,7 +304,7 @@
                     },
                     {
                         name: "birthCertificateNo",
-                        title: "شماره شناسنامه",
+                        title: "شماره شناسنامه : ",
                         canEdit: false
                     },
                     {
@@ -163,6 +315,11 @@
                     {
                         name: "gender",
                         title: "جنسیت : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "workYears",
+                        title: "آموزش جاری : ",
                         canEdit: false
                     },
                     {
@@ -331,7 +488,8 @@
                 },
                 {
                     id: "PersonnelInfo_Tab_Training",
-                    title: "آموزش ها"
+                    title: "آموزش ها",
+                    pane: ListGrid_PersonnelTraining
                 },
                 {
                     id: "PersonnelInfo_Tab_NeedAssessment",
@@ -369,11 +527,12 @@
     {
         function set_PersonnelInfo_Details() {
 
-            let personnelId = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().id
+            let personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo
+            let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode
 
-            if (personnelId !== null) {
+            if (personnelNo !== null) {
 
-                isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelId/" + personnelId, "GET", null, function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
 
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
@@ -384,20 +543,32 @@
                             + " " +
                             (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
 
-                        currentPersonnel.birth = currentPersonnel.birthDate + " - " + currentPersonnel.birthPlace;
+                        currentPersonnel.birth =
+                            (currentPersonnel.birthDate !== undefined ? currentPersonnel.birthDate : "")
+                            + " - " +
+                            (currentPersonnel.birthPlace !== undefined ? currentPersonnel.birthPlace : "");
 
                         currentPersonnel.educationLevelTitle =
                             (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
                             + " / " +
                             (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
 
-                        currentPersonnel.gender = currentPersonnel.gender + " - " + currentPersonnel.maritalStatusTitle;
+                        currentPersonnel.gender =
+                            (currentPersonnel.gender !== undefined ? currentPersonnel.gender : "")
+                            + " - " +
+                            (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
+
                         DynamicForm_PersonnelInfo.clearValues();
                         DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
-
                     }
 
                 }));
+            }
+
+            if (nationalCode !== null) {
+                RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode;
+                ListGrid_PersonnelTraining.invalidateCache();
+                ListGrid_PersonnelTraining.fetchData();
             }
         }
     }

@@ -682,4 +682,11 @@ public class TclassService implements ITclassService {
     }
     //----------------------------------------------- Behavioral Evaluation --------------------------------------------
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<TclassDTO.Info> findAllPersonnelClass(String national_code) {
+        return modelMapper.map(tclassDAO.findAllPersonnelClass(national_code), new TypeToken<List<TclassDTO.Info>>() {
+        }.getType());
+    }
+
 }
