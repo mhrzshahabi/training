@@ -77,7 +77,7 @@
             },
             {
                 name: "supervisorsMeanGrade",
-                title: "میانگین نمره بالادستان",
+                title: "<spring:message code='supervisors.average.grade'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
