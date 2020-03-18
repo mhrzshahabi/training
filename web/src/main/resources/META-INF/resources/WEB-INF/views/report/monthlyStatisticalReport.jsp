@@ -74,34 +74,35 @@
                     title: "<spring:message code="unitName"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: totalSummary
+                    showGridSummary: true,
+                    summaryFunction: "totalSummary()"
                 },
                 {
                     name: "present",
                     title: "<spring:message code="sum.of.present.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: totalPresent
+                    summaryFunction: "totalPresent(records)"
                 },
                 {
                     name: "overtime",
                     title: "<spring:message code="total.hours.of.overtime"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: totalOvertime
+                    summaryFunction: "totalOvertime(records)"
                 },
                 {
                     name: "unjustifiedAbsence",
                     title: "<spring:message code="sum.of.unjustified.absence.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: totalUnjustifiedAbsence
+                    summaryFunction: "totalUnjustifiedAbsence(records)"
                 }, {
                     name: "acceptableAbsence",
                     title: "<spring:message code="sum.of.justified.absence.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: totalAcceptableAbsence
+                    summaryFunction: "totalAcceptableAbsence(records)"
                 }
             ]
         });
