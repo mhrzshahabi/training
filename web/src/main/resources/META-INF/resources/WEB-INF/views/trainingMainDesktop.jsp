@@ -736,6 +736,12 @@
                     click:function(){
                         createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                     }
+                },
+                {
+                    title: "<spring:message code="گزارش اساتید"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="web/teacherReport"/>");
+                    }
                 }
                 <%--{--%>
                     <%--title: "غيبت ناموجه",--%>
