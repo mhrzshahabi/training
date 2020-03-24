@@ -2,10 +2,42 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-
 // <script>
+    var nationalCodeCheck_JspTeacherReport = true;
+    var isCriteriaCategoriesChanged = false;
+    var isEvaluationCategoriesChanged;
+
+    var RestDataSource_Category_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "spec-list"
+    });
+
+    var RestDataSource_SubCategory_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    var RestDataSource_Education_Level_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationLevelUrl + "iscList"
+    });
+
+    var RestDataSource_Education_Major_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationMajorUrl + "spec-list"
+    });
+
+    var RestDataSource_City_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "name"}]
+    });
+
+    var RestDataSource_State_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "name"}],
+        fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
+    });
+
     var DynamicForm_CriteriaForm_JspTeacherReport = isc.DynamicForm.create({
-        width: "100%",
+        width: "80%",
         height: "80%",
         align: "right",
         titleWidth: 0,
@@ -24,15 +56,15 @@
                 showHintInField: true,
                 blur: function () {
                     var codeCheck;
-                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
-                    nationalCodeCheck = codeCheck;
+                    codeCheck = checkNationalCode(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode"));
+                    nationalCodeCheck_JspTeacherReport = codeCheck;
                     if (codeCheck === false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
+                        DynamicForm_CriteriaForm_JspTeacherReport.addFieldErrors("personality.nationalCode", "<spring:message
         code='msg.national.code.validation'/>", true);
                     if (codeCheck === true) {
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
-                        var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
-                        fillPersonalInfoFields(nationalCodeTemp);
+                        DynamicForm_CriteriaForm_JspTeacherReport.clearFieldErrors("personality.nationalCode", true);
+                        // var nationalCodeTemp = DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode");
+                        // fillPersonalInfoFields(nationalCodeTemp);
                     }
                 }
             },
@@ -70,20 +102,20 @@
                 },
                 vertical: false,
                 defaultValue: "false",
-                changed: function () {
-                    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
-                    vm.clearValues();
-                    DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
-                    if (personnelStatusTemp == "true") {
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
-                    } else if (personnelStatusTemp == "false") {
-                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
-                    }
+                <%--changed: function () {--%>
+                <%--    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");--%>
+                <%--    vm.clearValues();--%>
+                <%--    DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");--%>
+                <%--    if (personnelStatusTemp == "true") {--%>
+                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();--%>
+                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");--%>
+                <%--    } else if (personnelStatusTemp == "false") {--%>
+                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();--%>
+                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();--%>
+                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");--%>
+                <%--    }--%>
 
-                }
+                <%--}--%>
             },
             {
                 name: "categories",
@@ -91,7 +123,7 @@
                 type: "selectItem",
                 textAlign: "center",
                 required: true,
-                optionDataSource: RestDataSource_Category_JspTeacher,
+                optionDataSource: RestDataSource_Category_JspTeacherReport,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
@@ -102,8 +134,8 @@
                     filterOperator: "iContains",
                 },
                 changed: function () {
-                    isTeacherCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
+                    isCriteriaCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -130,7 +162,7 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
-                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                optionDataSource: RestDataSource_SubCategory_JspTeacherReport,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
@@ -141,13 +173,13 @@
                     filterOperator: "iContains",
                 },
                 focus: function () {
-                    if (isTeacherCategoriesChanged) {
-                        isTeacherCategoriesChanged = false;
-                        var ids = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
+                    if (isCriteriaCategoriesChanged) {
+                        isCriteriaCategoriesChanged = false;
+                        var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("categories").getValue();
                         if (ids === []) {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                            RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = null;
                         } else {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                            RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = {
                                 _constructor: "AdvancedCriteria",
                                 operator: "and",
                                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
@@ -166,7 +198,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher,
+                optionDataSource: RestDataSource_Education_Major_JspTeacherReport,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -196,7 +228,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 required: true,
-                optionDataSource: RestDataSource_Education_Level_JspTeacher,
+                optionDataSource: RestDataSource_Education_Level_JspTeacherReport,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -223,7 +255,7 @@
                 changeOnKeypress: true,
                 displayField: "name",
                 valueField: "id",
-                optionDataSource: RestDataSource_Home_State_JspTeacher,
+                optionDataSource: RestDataSource_State_JspTeacherReport,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -288,7 +320,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 required: true,
-                optionDataSource: RestDataSource_Category_JspTeacher,
+                optionDataSource: RestDataSource_Category_JspTeacherReport,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -304,8 +336,8 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
 
                 changed: function () {
-                    isCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_Evaluation_JspTeacher.getField("subCategory");
+                    isEvaluationCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategory");
                     subCategoryField.clearValue();
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
@@ -338,7 +370,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 required: true,
-                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                optionDataSource: RestDataSource_SubCategory_JspTeacherReport,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -353,13 +385,13 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 focus: function () {
-                    if (isCategoriesChanged) {
-                        isCategoriesChanged = false;
-                        var ids = DynamicForm_Evaluation_JspTeacher.getField("category").getValue();
+                    if (isEvaluationCategoriesChanged) {
+                        isEvaluationCategoriesChanged = false;
+                        var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("category").getValue();
                         if (ids === []) {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                            RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = null;
                         } else {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                            RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = {
                                 _constructor: "AdvancedCriteria",
                                 operator: "and",
                                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
@@ -398,6 +430,7 @@
 
     IButton_Confirm_JspTeacherReport = isc.IButtonSave.create({
         top: 260,
+        title: "گزارش گیری",
         click: function () {
             Window_Result_JspTeacherReport.show();
         }
@@ -407,7 +440,7 @@
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "100%",
+        width: "80%",
         alignLayout: "center",
         padding: 10,
         members: [
@@ -417,123 +450,123 @@
 
     var VLayout_Body_Teacher_JspTeacher = isc.TrVLayout.create({
         members: [
-            DynamicForm_CriteriaForm_JspTeacherReport
+            DynamicForm_CriteriaForm_JspTeacherReport,
             HLayOut_Confirm_JspTeacherReport
         ]
     });
-///////////////////////result set///////////////////////////////////////////////////////////////////////////////////////
-    var DynamicForm_Titr_JspTeacherReport = isc.DynamicForm.create({
-        height: "100%",
-        align: "right",
-        canSubmit: true,
-        titleWidth: 120,
-        titleAlign: "left",
-        showInlineErrors: true,
-        showErrorText: false,
-        valuesManager: "vm",
-        styleName: "teacher-form",
-        numCols: 6,
-        margin: 10,
-        newPadding: 5,
-        canTabToIcons: false,
-        fields: [
-            {name: "personality.id", hidden: true},
-        ]
-    });
+    ///////////////////////result set///////////////////////////////////////////////////////////////////////////////////////
+    <%--    var DynamicForm_Titr_JspTeacherReport = isc.DynamicForm.create({--%>
+    <%--        height: "100%",--%>
+    <%--        align: "right",--%>
+    <%--        canSubmit: true,--%>
+    <%--        titleWidth: 120,--%>
+    <%--        titleAlign: "left",--%>
+    <%--        showInlineErrors: true,--%>
+    <%--        showErrorText: false,--%>
+    <%--        valuesManager: "vm",--%>
+    <%--        styleName: "teacher-form",--%>
+    <%--        numCols: 6,--%>
+    <%--        margin: 10,--%>
+    <%--        newPadding: 5,--%>
+    <%--        canTabToIcons: false,--%>
+    <%--        fields: [--%>
+    <%--            {name: "personality.id", hidden: true},--%>
+    <%--        ]--%>
+    <%--    });--%>
 
-    var ListGrid_Result_JspTeacherReport = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_Teacher_JspTeacherResult,
-        fields: [
-            {name: "id", title: "id", canEdit: false, hidden: true},
-            {
-                name: "teacherCode",
-                title: "<spring:message code='code'/>"
-            },
-            {
-                name: "personality.nationalCode",
-                title: "<spring:message code='firstName'/>"
-            },
-            {
-                name: "personnelCode",
-                title: "<spring:message code='lastName'/>"
-            },
-            {
-                name: "name",
-                title: "<spring:message code='category'/>"
-            },
-            {
-                name: "personality.educationMajor.titleFa",
-                title: "<spring:message code='education.major'/>",
-                align: "center",
-                sortNormalizer: function (record) {
-                    return record.personality.educationLevel.titleFa;
-                },
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "titleFa",
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher
-            },
-            {
-                name: "personnelStatus",
-                title: "<spring:message code='status'/>",
-                align: "center",
-                type: "boolean"
-            },
-            {
-                name: "mobile",
-                title: "موبايل"
-            },
-            {
-                name: "numberOfCourses",
-                title: "تعداد دوره هاي تدريسي در شرکت"
-            },
-            {
-                name: "evaluationGrade",
-                title: "نمره ارزيباي در گروه و زيرگروه انتخابي"
-            },
-            {
-                name: "lastCourse",
-                title: "نام آخرين دوره ي تدريسي در شرکت"
-            },
-            {
-                name: "lastCourseEvaluationGrade",
-                title: "نمره ارزيابي کلاسي آخرين دوره تدريسي در شرکت"
-            }
-        ],
-        filterEditorSubmit: function () {
-            ListGrid_Teacher_JspTeacher.invalidateCache();
-        },
-        cellHeight: 43,
-        filterOperator: "iContains",
-        filterOnKeypress: true,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
-    });
+    <%--    var ListGrid_Result_JspTeacherReport = isc.TrLG.create({--%>
+    <%--        width: "100%",--%>
+    <%--        height: "100%",--%>
+    <%--        dataSource: RestDataSource_Teacher_JspTeacherResult,--%>
+    <%--        fields: [--%>
+    <%--            {name: "id", title: "id", canEdit: false, hidden: true},--%>
+    <%--            {--%>
+    <%--                name: "teacherCode",--%>
+    <%--                title: "<spring:message code='code'/>"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "personality.nationalCode",--%>
+    <%--                title: "<spring:message code='firstName'/>"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "personnelCode",--%>
+    <%--                title: "<spring:message code='lastName'/>"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "name",--%>
+    <%--                title: "<spring:message code='category'/>"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "personality.educationMajor.titleFa",--%>
+    <%--                title: "<spring:message code='education.major'/>",--%>
+    <%--                align: "center",--%>
+    <%--                sortNormalizer: function (record) {--%>
+    <%--                    return record.personality.educationLevel.titleFa;--%>
+    <%--                },--%>
+    <%--                editorType: "SelectItem",--%>
+    <%--                displayField: "titleFa",--%>
+    <%--                valueField: "titleFa",--%>
+    <%--                filterOperator: "equals",--%>
+    <%--                optionDataSource: RestDataSource_Education_Major_JspTeacher--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "personnelStatus",--%>
+    <%--                title: "<spring:message code='status'/>",--%>
+    <%--                align: "center",--%>
+    <%--                type: "boolean"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "mobile",--%>
+    <%--                title: "موبايل"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "numberOfCourses",--%>
+    <%--                title: "تعداد دوره هاي تدريسي در شرکت"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "evaluationGrade",--%>
+    <%--                title: "نمره ارزيباي در گروه و زيرگروه انتخابي"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "lastCourse",--%>
+    <%--                title: "نام آخرين دوره ي تدريسي در شرکت"--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                name: "lastCourseEvaluationGrade",--%>
+    <%--                title: "نمره ارزيابي کلاسي آخرين دوره تدريسي در شرکت"--%>
+    <%--            }--%>
+    <%--        ],--%>
+    <%--        filterEditorSubmit: function () {--%>
+    <%--            ListGrid_Teacher_JspTeacher.invalidateCache();--%>
+    <%--        },--%>
+    <%--        cellHeight: 43,--%>
+    <%--        filterOperator: "iContains",--%>
+    <%--        filterOnKeypress: true,--%>
+    <%--        sortField: 1,--%>
+    <%--        sortDirection: "descending",--%>
+    <%--        dataPageSize: 50,--%>
+    <%--        autoFetchData: true,--%>
+    <%--        allowAdvancedCriteria: true,--%>
+    <%--        allowFilterExpressions: true,--%>
+    <%--        filterUsingText: "<spring:message code='filterUsingText'/>",--%>
+    <%--        groupByText: "<spring:message code='groupByText'/>",--%>
+    <%--        freezeFieldText: "<spring:message code='freezeFieldText'/>"--%>
+    <%--    });--%>
 
-    var Window_Result_JspTeacherReport = isc.Window.create({
-        placement: "fillScreen",
-        title: "<spring:message code='teacher'/>",
-        canDragReposition: true,
-        align: "center",
-        autoDraw: false,
-        border: "1px solid gray",
-        minWidth: 1024,
-        items: [isc.TrVLayout.create({
-            members: [
-                DynamicForm_Titr_JspTeacherReport,
-                ListGrid_Result_JspTeacherReport
-            ]
-        })]
-    });
+    <%--    var Window_Result_JspTeacherReport = isc.Window.create({--%>
+    <%--        placement: "fillScreen",--%>
+    <%--        title: "<spring:message code='teacher'/>",--%>
+    <%--        canDragReposition: true,--%>
+    <%--        align: "center",--%>
+    <%--        autoDraw: false,--%>
+    <%--        border: "1px solid gray",--%>
+    <%--        minWidth: 1024,--%>
+    <%--        items: [isc.TrVLayout.create({--%>
+    <%--            members: [--%>
+    <%--                DynamicForm_Titr_JspTeacherReport,--%>
+    <%--                ListGrid_Result_JspTeacherReport--%>
+    <%--            ]--%>
+    <%--        })]--%>
+    <%--    });--%>
 
-    Window_Result_JspTeacherReport.hide();
+    <%--    Window_Result_JspTeacherReport.hide();--%>
