@@ -14,6 +14,7 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
+import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -40,6 +41,7 @@ import java.util.Map;
 public class TclassRestController {
 
     private final ITclassService tclassService;
+    private final TclassService tClassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ClassAlarmService classAlarmService;
@@ -380,7 +382,7 @@ public class TclassRestController {
     @GetMapping(value = "/personnel-training/{national_code}")
     public ResponseEntity<TclassDTO.TclassSpecRs> personnelTraining(@PathVariable String national_code) {
 
-        List<TclassDTO.Info> list = tclassService.findAllPersonnelClass(national_code);
+        List<TclassDTO.Info> list = tClassService.findAllPersonnelClass(national_code);
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();

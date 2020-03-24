@@ -376,4 +376,24 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
+//    @Getter
+//    @Setter
+//    @Accessors(chain = true)
+//    @ApiModel("PersonnelClassInfo")
+//    public static class PersonnelClassInfo
+//    {
+//        private long id
+//        c_code,
+//        private String code
+//        c_title_class,
+//        duration,
+//        c_start_date,
+//        c_end_date,
+//        c_status,
+//        classstatus,
+//        score_state,
+//        state_id,
+//        erun_type
+//    }
+
 }
