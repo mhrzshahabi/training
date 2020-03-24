@@ -344,8 +344,6 @@
 
         dataArrived: function () {
             var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
-
         <%--    return (myMap.get(classRecord.scoringMethod) === "ارزشی") ? totalsLabel_scores.setContents("<spring:message--%>
         <%--code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message--%>
         <%--code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>") : totalsLabel_scores.setContents("<spring:message--%>
@@ -354,17 +352,15 @@
       if( myMap.get(classRecord.scoringMethod) === "ارزشی")
         {
          totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>")
-         acceptancelimitPrint=myMap1.get(classRecord.acceptancelimit)
         }
         else if ( myMap.get(classRecord.scoringMethod) === "نمره از صد"  ||  myMap.get(classRecord.scoringMethod) ==="نمره از بیست")
             {
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + (classRecord.acceptancelimit) + "</b>");
-        acceptancelimitPrint=classRecord.acceptancelimit
             }
             else {
 
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" +  "ندارد" + "</b>");
-        acceptancelimitPrint="ندارد"
+
             }
 
 
@@ -438,8 +434,8 @@
             record.scoresState = "قبول با نمره"
             record.failureReason = null
         } else if (a == 2) {
-            record.scoresState = null
-            record.failureReason = null
+             record.scoresState = "مردود"
+             record.failureReason = "عدم کسب حد نصاب نمره"
         } else if (a == 3) {
             record.scoresState = "مردود"
             record.failureReason = failureReason_value
@@ -585,6 +581,10 @@ function loadPage_Scores() {
            isc.MyOkDialog.create({
             message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
             });
+    function loadPage_Scores() {
+           // isc.MyOkDialog.create({
+            // message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
+            // });
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
         if (!(classRecord == undefined || classRecord == null)) {

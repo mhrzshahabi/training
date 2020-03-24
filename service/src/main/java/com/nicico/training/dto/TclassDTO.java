@@ -344,9 +344,15 @@ public class TclassDTO {
         boolean FEBPass;
         double FECBGrade;
         boolean FECBPass;
+        private Set<ClassStudentDTO.EvaluationInfo> classStudents;
         List<Double> studentsGrade = new ArrayList<>();
         List<Double> supervisorsGrade = new ArrayList<>();
-        List<String> classStudentsName;
+        List<String> classStudentsName = new ArrayList<>();
+        public void setClassStudentsName(){
+            for (ClassStudentDTO.EvaluationInfo classStudent : classStudents) {
+                classStudentsName.add(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+            }
+        }
     }
 
     @Getter

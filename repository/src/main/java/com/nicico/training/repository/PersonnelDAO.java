@@ -35,4 +35,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
     @Query(value = "SELECT DISTINCT tbl_personnel.ccp_unit FROM tbl_personnel WHERE tbl_personnel.ccp_unit IS NOT NULL ORDER BY  tbl_personnel.ccp_unit", nativeQuery = true)
     List<String> findAllUnitFromPersonnel();
 
+    Personnel findPersonnelByPersonnelNo(String  personnelNo);
+
 }

@@ -891,10 +891,19 @@
                     }
                     let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
                     let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                    console.log(keys);
                     let sessionKeys = keys.filter(k => k.startsWith("se"));
-                    console.log(sessionKeys);
-                    for (let i = 0; i < allRows.length; i++) {
-
+                    if(sessionKeys.indexOf("sessionDate") == -1) {
+                        for (let i = 0; i < allRows.length; i++) {
+                            for (let j = 0; j < sessionKeys.length; j++) {
+                                allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
+                            }
+                        }
+                    }
+                    else{
+                        for (let i = 0; i < allRows.length; i++) {
+                            allRows[i]["state"] = attendanceState[allRows[i]["state"]];
+                        }
                     }
                     downloadForm.setValue("myToken", "<%=accessToken%>");
                     downloadForm.setValue("fields", JSON.stringify(sendFields));

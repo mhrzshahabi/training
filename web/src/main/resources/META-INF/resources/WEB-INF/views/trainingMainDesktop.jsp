@@ -453,6 +453,13 @@
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
                 },
+                {isSeparator: true},
+                {
+                    title:"<spring:message code="personnel.information"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
+                    }
+                }
                 <%--{--%>
                 <%--    title: "<spring:message code="department"/>",--%>
                 <%--    click: function () {--%>
@@ -713,28 +720,39 @@
                         createTab(this.title, "<spring:url value="web/trainingFile/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="reports.need.assessment"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="report.training.overtime"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/trainingOverTime/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="report.monthly.statistical"/>",
                     click:function(){
                         createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="گزارش اساتید"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="web/teacherReport"/>");
                     }
                 }
                 <%--{--%>

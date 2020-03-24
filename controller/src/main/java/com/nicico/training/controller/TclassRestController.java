@@ -376,4 +376,24 @@ public class TclassRestController {
         }
     }
 
+    @Loggable
+    @GetMapping(value = "/personnel-training/{national_code}")
+    public ResponseEntity<TclassDTO.TclassSpecRs> personnelTraining(@PathVariable String national_code) {
+
+        List<TclassDTO.Info> list = tclassService.findAllPersonnelClass(national_code);
+
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 }

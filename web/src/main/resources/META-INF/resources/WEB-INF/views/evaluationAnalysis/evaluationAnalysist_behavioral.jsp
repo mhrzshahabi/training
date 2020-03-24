@@ -33,19 +33,19 @@
             },
             {
                 name: "classPassedTime",
-                title: "مدت زمان گذشتن از کلاس",
+                title: "<spring:message code='passed.time.from.class'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "numberOfFilledFormsBySuperviosers",
-                title: "تعداد بالا دستی که جواب داده اند",
+                title: "<spring:message code='number.of.supervisors.answers'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
             {
                 name: "numberOfFilledFormsByStudents",
-                title: "تعداد فراگیری که جواب داده اند",
+                title:  "<spring:message code='number.of.students.answers'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false,
                 hidden: true
@@ -70,14 +70,14 @@
         fields: [
             {
                 name: "studentsMeanGrade",
-                title: "میانگین نمره فراگیران",
+                title:  "<spring:message code='students.average.grade'/>",
                 baseStyle: "evaluation-code",
                 fillHorizontalSpace: true,
                 canEdit: false
             },
             {
                 name: "supervisorsMeanGrade",
-                title: "میانگین نمره بالادستان",
+                title: "<spring:message code='supervisors.average.grade'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -99,7 +99,7 @@
             },
             {
                 name: "FECBGrade",
-                title: "نمره اثربخشی",
+                title:  "<spring:message code='FECRGrade'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -143,7 +143,7 @@
         top: 260,
         width: "300",
         height: "25",
-        title: "چاپ خلاصه نتیجه ارزیابی رفتاری",
+        title: "<spring:message code='print.behavioral.evaluation.analysis'/>",
         click: function () {
             var obj1 = vm_Behavioral_evaluation.getValues();
             var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
@@ -204,15 +204,15 @@
         allowedChartTypes: [],
         facets: [{
             id: "student",
-            title: "فراگیر ارزیابی شده"
+            title:  "<spring:message code='evaluated.student'/>"
         },{
             id: "evaluator",
-            title: "ارزیاب کننده"
+            title: "<spring:message code='evaluator'/>"
         }],
         data: behavioral_chartData,
         valueProperty: "grade",
         valueTitle: "تفاوت نمره ی فراگیر به خودش و نمره ی سرپرست به فراگیر",
-        title: "تحلیل ارزیابی رفتاری کلاس",
+        title: "<spring:message code='class.behavioral.evaluation.analysis'/>",
     });
 
     var BehavioralEvaluationChartLayout = isc.VLayout.create({

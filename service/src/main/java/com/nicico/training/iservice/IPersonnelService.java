@@ -30,4 +30,6 @@ public interface IPersonnelService {
 
     List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType);
 
+    Personnel findPersonnelByPersonnelNo(String personnelNo);
+
 }
