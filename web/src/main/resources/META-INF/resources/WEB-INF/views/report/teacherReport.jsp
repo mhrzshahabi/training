@@ -37,18 +37,16 @@
     });
 
     var DynamicForm_CriteriaForm_JspTeacherReport = isc.DynamicForm.create({
-        width: "80%",
-        height: "80%",
         align: "right",
         titleWidth: 0,
+        titleAlign: "center",
         showInlineErrors: true,
         showErrorText: false,
-        numCols: 4,
+        numCols: 6,
         fields: [
             {
                 name: "personality.nationalCode",
                 title: "<spring:message code='national.code'/>",
-                required: true,
                 wrapTitle: false,
                 keyPressFilter: "[0-9]",
                 length: "10",
@@ -71,14 +69,12 @@
             {
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
-                required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
 
             {
                 name: "personality.lastNameFa",
                 title: "<spring:message code='lastName'/>",
-                required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
@@ -86,7 +82,6 @@
                 title: "<spring:message code='status'/>",
                 type: "radioGroup",
                 width: "*",
-                colSpan: 2,
                 valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true"
@@ -118,11 +113,15 @@
                 <%--}--%>
             },
             {
+                name: "temp1",
+                title: "",
+                canEdit: false,
+            },
+            {
                 name: "categories",
                 title: "<spring:message code='education.categories'/>",
                 type: "selectItem",
                 textAlign: "center",
-                required: true,
                 optionDataSource: RestDataSource_Category_JspTeacherReport,
                 valueField: "id",
                 displayField: "titleFa",
@@ -190,6 +189,11 @@
                 }
             },
             {
+                name: "temp2",
+                title: "",
+                canEdit: false,
+            },
+            {
                 name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
                 textAlign: "center",
@@ -227,7 +231,6 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                required: true,
                 optionDataSource: RestDataSource_Education_Level_JspTeacherReport,
                 autoFetchData: true,
                 addUnknownValues: false,
@@ -245,7 +248,11 @@
                     }
                 ]
             },
-
+            {
+                name: "temp3",
+                title: "",
+                canEdit: false,
+            },
             {
                 name: "personality.contactInfo.homeAddress.stateId",
                 title: "<spring:message code='state'/>",
@@ -304,14 +311,19 @@
                 ]
             },
             {
-                name: "evaluation",
+                name: "temp4",
                 title: "",
                 canEdit: false,
-                baseStyle: "eval-code"
             },
+            // {
+            //     name: "evaluation",
+            //     title: "",
+            //     canEdit: false,
+            //     baseStyle: "eval-code"
+            // },
             {
                 name: "category",
-                title: "<spring:message code='category'/>",
+                title: "حداکثر نمره ی ارزیابی استاد در گروه: ",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -319,7 +331,6 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                required: true,
                 optionDataSource: RestDataSource_Category_JspTeacherReport,
                 autoFetchData: false,
                 addUnknownValues: false,
@@ -361,15 +372,15 @@
             },
             {
                 name: "subCategory",
-                title: "<spring:message code='subcategory'/>",
+                title: "و زیرگروه: ",
                 textAlign: "center",
                 width: "*",
+                titleAlign: "center",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultValue: null,
                 displayField: "titleFa",
                 valueField: "id",
-                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeacherReport,
                 autoFetchData: false,
                 addUnknownValues: false,
@@ -402,31 +413,37 @@
                 }
             },
             {
-                name: "evaluation",
-                title: "",
-                canEdit: false,
-                baseStyle: "eval-code"
-            },
-            {
                 name: "grade",
-                colSpan: 2,
+                title: "=",
+                hint: "100",
+                titleAlign: "center",
                 formatOnBlur: true,
-                title: "<spring:message code='duration'/>:",
-                hint: "<spring:message code='hour'/>",
                 textAlign: "center",
-                required: true,
                 showHintInField: true,
-                keyPressFilter: "[0-9.]",
-                mapValueToDisplay: function (value) {
-                    if (isNaN(value)) {
-                        return "";
-                    }
-                    return value + " ساعت ";
-                }
+                keyPressFilter: "[0-9.]"
             },
+            // {
+            //     name: "evaluation",
+            //     title: "",
+            //     canEdit: false,
+            //     baseStyle: "eval-code"
+            // },
 
-        ]
+        ],
+        itemChanged: function (item, newValue) {
+            if (item.name === "personality.contactInfo.homeAddress.stateId") {
+                if (newValue === undefined) {
+                    DynamicForm_CriteriaForm_JspTeacherReport.clearValue("personality.contactInfo.homeAddress.cityId");
+                } else {
+                    DynamicForm_CriteriaForm_JspTeacherReport.clearValue("personality.contactInfo.homeAddress.cityId");
+                    RestDataSource_City_JspTeacherReport.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").optionDataSource = RestDataSource_City_JspTeacherReport;
+                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").fetchData();
+                }
+            }
+        }
     });
+    // DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluation").setValue("نمره ارزیابی استاد در گروه و زیرگروه انتخابی بیشتر از ");
 
     IButton_Confirm_JspTeacherReport = isc.IButtonSave.create({
         top: 260,
@@ -436,11 +453,24 @@
         }
     });
 
+    var HLayOut_CriteriaForm_JspTeacherReport = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "75%",
+        height: "80%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            DynamicForm_CriteriaForm_JspTeacherReport
+        ]
+    });
     var HLayOut_Confirm_JspTeacherReport = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "80%",
+        width: "75%",
+        height: "10%",
         alignLayout: "center",
         padding: 10,
         members: [
@@ -450,7 +480,7 @@
 
     var VLayout_Body_Teacher_JspTeacher = isc.TrVLayout.create({
         members: [
-            DynamicForm_CriteriaForm_JspTeacherReport,
+            HLayOut_CriteriaForm_JspTeacherReport,
             HLayOut_Confirm_JspTeacherReport
         ]
     });
