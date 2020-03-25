@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.Course;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Map;
 public interface ICourseService {
 
     CourseDTO.Info get(Long id);
+
+    Course getCourse(Long id);
 
     List<CourseDTO.Info> list();
 

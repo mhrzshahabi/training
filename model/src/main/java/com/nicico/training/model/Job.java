@@ -28,4 +28,7 @@ public class Job extends Auditable {
 
     @ManyToMany(mappedBy = "jobSet")
     private Set<JobGroup> jobGroupSet;
+
+    @OneToMany(mappedBy = "job")
+    private Set<Post> postSet;
 }
