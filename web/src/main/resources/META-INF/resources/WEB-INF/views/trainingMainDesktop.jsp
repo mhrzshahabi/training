@@ -750,9 +750,9 @@
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="گزارش اساتید"/>",
+                    title: "<spring:message code="teachers.report"/>",
                     click:function(){
-                        createTab(this.title, "<spring:url value="web/teacherReport"/>");
+                        createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
                     }
                 }
                 <%--{--%>
