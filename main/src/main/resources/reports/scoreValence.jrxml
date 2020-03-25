@@ -129,8 +129,8 @@
 		<field name="student.lastName" class="java.lang.String"/>
 		<field name="student.personnelNo" class="java.lang.String"/>
 		<field name="scoresState" class="java.lang.String"/>
-		<field name="score" class="java.lang.String"/>
 		<field name="failureReason" class="java.lang.String"/>
+		<field name="valence" class="java.lang.String"/>
 		<variable name="Row_Number" class="java.lang.Integer">
 			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
 		</variable>
@@ -318,17 +318,17 @@
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
-										<text><![CDATA[نمره]]></text>
+										<text><![CDATA[نوع ارزشی]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
 									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-									<textField isBlankWhenNull="true">
-										<reportElement style="Table 2_TH" x="0" y="0" width="40" height="26" uuid="c3a07bd4-6b17-4c24-b0d5-1afb78e1b24c"/>
+									<textField>
+										<reportElement x="3" y="0" width="37" height="26" uuid="a5da3ff4-b61a-474e-b9e1-6895a0abed63"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Shabnam-FD"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$F{valence}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>

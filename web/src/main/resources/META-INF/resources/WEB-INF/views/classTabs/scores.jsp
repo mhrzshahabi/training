@@ -352,15 +352,20 @@
       if( myMap.get(classRecord.scoringMethod) === "ارزشی")
         {
          totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>")
+            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
+            acceptancelimitPrint= myMap1.get(classRecord.acceptancelimit)
         }
         else if ( myMap.get(classRecord.scoringMethod) === "نمره از صد"  ||  myMap.get(classRecord.scoringMethod) ==="نمره از بیست")
             {
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + (classRecord.acceptancelimit) + "</b>");
+            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
+            acceptancelimitPrint=classRecord.acceptancelimit
             }
             else {
 
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" +  "ندارد" + "</b>");
-
+            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
+            acceptancelimitPrint="ندارد";
             }
 
 
@@ -551,6 +556,7 @@
                 scoringMethod:scoringMethodPrint,
                 acceptancelimit:acceptancelimitPrint,
                 }
+
                 var advancedCriteria = ListGrid_Class_Student.getCriteria();
                 var criteriaForm = isc.DynamicForm.create({
                 method: "POST",
@@ -577,15 +583,13 @@
 
 
 
-function loadPage_Scores() {
-           isc.MyOkDialog.create({
-            message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
-            });
+
     function loadPage_Scores() {
            // isc.MyOkDialog.create({
             // message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
             // });
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        console.log(classRecord)
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
@@ -627,4 +631,5 @@ function loadPage_Scores() {
         } else {
             ListGrid_Class_Student.setData([]);
         }
-    }
+
+}
