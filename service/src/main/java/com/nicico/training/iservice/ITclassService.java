@@ -64,5 +64,5 @@ public interface ITclassService {
 
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 
-    public List<TclassDTO.Info> findAllPersonnelClass(String national_code);
+    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code);
 }

@@ -380,12 +380,12 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/personnel-training/{national_code}")
-    public ResponseEntity<TclassDTO.TclassSpecRs> personnelTraining(@PathVariable String national_code) {
+    public ResponseEntity<TclassDTO.PersonnelClassInfo_TclassSpecRs> personnelTraining(@PathVariable String national_code) {
 
-        List<TclassDTO.Info> list = tClassService.findAllPersonnelClass(national_code);
+        List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(national_code);
 
-        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
-        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        final TclassDTO.PersonnelClassInfo_SpecRs specResponse = new TclassDTO.PersonnelClassInfo_SpecRs();
+        final TclassDTO.PersonnelClassInfo_TclassSpecRs specRs = new TclassDTO.PersonnelClassInfo_TclassSpecRs();
 
         if (list != null) {
             specResponse.setData(list)

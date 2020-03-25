@@ -109,29 +109,16 @@
         var RestDataSource_PersonnelTraining = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
-                {name: "group"},
-// {name: "lastModifiedDate",hidden:true},
-// {name: "createdBy",hidden:true},
-// {name: "createdDate",hidden:true,type:d},
+                {name: "code"},
                 {name: "titleClass"},
+                {name: "hduration"},
                 {name: "startDate"},
                 {name: "endDate"},
-                {name: "code"},
-                {name: "term.titleFa"},
-// {name: "teacher.personality.lastNameFa"},
-// {name: "course.code"},
-                {name: "course.titleFa"},
-                {name: "course.id"},
-                {name: "teacherId"},
-                {name: "teacher"},
-                {name: "reason"},
+                {name: "classStatusId"},
                 {name: "classStatus"},
-                {name: "topology"},
-                {name: "trainingPlaceIds"},
-                {name: "instituteId"},
-                {name: "workflowEndingStatusCode"},
-                {name: "workflowEndingStatus"},
-                {name: "preCourseTest", type: "boolean"}
+                {name: "scoreStateId"},
+                {name: "scoreState"},
+                {name: "erunType"}
             ]
         });
 
@@ -142,15 +129,6 @@
             dataSource: RestDataSource_PersonnelTraining,
             selectionType: "single",
             autoFetchData: false,
-            initialSort: [
-                {property: "startDate", direction: "descending", primarySort: true}
-            ],
-            selectionUpdated: function (record) {
-
-            },
-            doubleClick: function () {
-
-            },
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -164,97 +142,65 @@
                     name: "titleClass",
                     title: "titleClass",
                     align: "center",
-                    filterOperator: "iContains",
-                    autoFitWidth: true,
-                    hidden: true
+                    filterOperator: "iContains"
                 },
                 {
-                    name: "course.titleFa",
-                    title: "<spring:message code='course.title'/>",
+                    name: "hduration",
+                    title: "hduration",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true,
-                    sortNormalizer: function (record) {
-                        return record.course.titleFa;
-                    }
-                },
-                {
-                    name: "term.titleFa",
-                    title: "term",
-                    align: "center",
-                    filterOperator: "iContains",
-                    hidden: true
+                    autoFitWidth: true
                 },
                 {
                     name: "startDate",
                     title: "<spring:message code='start.date'/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "endDate",
                     title: "<spring:message code='end.date'/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
-                    name: "group",
-                    title: "<spring:message code='group'/>",
+                    name: "classStatusId",
+                    title: "classStatusId",
                     align: "center",
                     filterOperator: "equals",
                     autoFitWidth: true
                 },
                 {
-                    name: "teacher",
-                    title: "<spring:message code='teacher'/>",
+                    name: "classStatus",
+                    title: "classStatus",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "equals",
+                    autoFitWidth: true
                 },
                 {
-                    name: "reason", title: "<spring:message code='training.request'/>", align: "center",
-                    valueMap: {
-                        "1": "نیازسنجی",
-                        "2": "درخواست واحد",
-                        "3": "نیاز موردی",
-                    },
-                },
-                {
-                    name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
-                    valueMap: {
-                        "1": "برنامه ریزی",
-                        "2": "در حال اجرا",
-                        "3": "پایان یافته",
-                    },
-                },
-                {
-                    name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
-                        "1": "U شکل",
-                        "2": "عادی",
-                        "3": "مدور",
-                        "4": "سالن"
-                    }
-                },
-                {name: "createdBy", hidden: true},
-                {name: "createdDate", hidden: true},
-                {
-                    name: "workflowEndingStatusCode",
-                    title: "workflowCode",
+                    name: "scoreStateId",
+                    title: "scoreStateId",
                     align: "center",
                     filterOperator: "iContains",
-                    hidden: true
+                    autoFitWidth: true
                 },
                 {
-                    name: "workflowEndingStatus",
-                    title: "<spring:message code="ending.class.status"/>",
+                    name: "scoreState",
+                    title: "scoreState",
                     align: "center",
                     filterOperator: "iContains"
                 },
-                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
+                {
+                    name: "erunType",
+                    title: "erunType",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                }
 
-            ],
-            dataArrived: function () {
-
-            }
+            ]
         });
 
     }
@@ -569,6 +515,7 @@
                 RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode;
                 ListGrid_PersonnelTraining.invalidateCache();
                 ListGrid_PersonnelTraining.fetchData();
+                console.log(RestDataSource_PersonnelTraining)
             }
         }
     }

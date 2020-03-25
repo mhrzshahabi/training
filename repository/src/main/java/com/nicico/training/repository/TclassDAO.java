@@ -33,10 +33,10 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     public Long getStudentTrainingTime(String national_code, String year);
 
     @Query(value = " SELECT " +
-            "    c.id, c.c_code, c.c_title_class, c.n_h_duration as duration, c.c_start_date, c.c_end_date, c.c_status, " +
+            "    c.id, c.c_code, c.c_title_class, c.n_h_duration , c.c_start_date, c.c_end_date, c.c_status as classStatus_id, " +
             "    case when c.c_status = 1 then 'برنامه ریزی' when c.c_status = 2 then 'در حال اجرا' when c.c_status = 3 then 'پایان یافته' end as classStatus, " +
-            "    '(' || cs.scores_state || ')' || case when cs.score is not null then ' نمره: ' || cs.score else '' end || case when  cs.failure_reason is not null then ' <' ||  cs.failure_reason || '>' else '' end as score_state, " +
-            "    case when INSTR(cs.scores_state, 'قبول')>0 then 1 when INSTR(cs.scores_state, 'مردود')>0 then 0 end as state_id, " +
+            "    case when INSTR(cs.scores_state, 'قبول')>0 then 1 when INSTR(cs.scores_state, 'مردود')>0 then 0 end as score_state_id, " +
+            "    '(<b class=\"'|| case when INSTR(cs.scores_state, 'قبول')>0 then 'acceptRTL' when INSTR(cs.scores_state, 'مردود')>0 then 'rejectedRTL' end ||'\">' || cs.scores_state || '</b>)' || case when cs.score is not null then ' نمره: ' || cs.score else '' end || case when  cs.failure_reason is not null then ' <' ||  cs.failure_reason || '>' else '' end as score_state, " +
             "    case when co.e_run_type = 1 then 'داخلي' when co.e_run_type = 2 then 'اعزام' when co.e_run_type = 3 then 'سمينار داخلي' " +
             "     when co.e_run_type = 4 then 'سمينار اعزام' when co.e_run_type = 5 then 'حين كار' when co.e_run_type = 6 then 'خارجی' " +
             "      when co.e_run_type = 7 then 'سمینار خارجی' when co.e_run_type = 8 then 'مجازي' when co.e_run_type = 9 then 'بازآموزي' " +
@@ -47,7 +47,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "    INNER JOIN tbl_student s ON s.id = cs.student_id " +
             "    INNER JOIN tbl_course co ON co.id = c.f_course " +
             " WHERE " +
-            "    s.national_code =:national_code", nativeQuery = true)
-    public List<Tclass> findAllPersonnelClass(String national_code);
+            "    s.national_code =:national_code ", nativeQuery = true)
+    public List<?> findAllPersonnelClass(String national_code);
 
 }
