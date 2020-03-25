@@ -1149,6 +1149,25 @@
         })
     }
 
+    function exportToExcel(fields, data) {
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/export-to-excel/download/",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "myToken", type: "hidden"},
+                    {name: "fields", type: "hidden"},
+                    {name: "data", type: "hidden"},
+                ]
+        });
+        <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
+        downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
+        downloadForm.setValue("data", JSON.stringify(data.toArray()));
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";

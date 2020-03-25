@@ -31,13 +31,13 @@ public class ExportToExcelController {
     private final SpecListUtil specListUtil;
 
     @PostMapping(value = {"/download"})
-    public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields, @RequestParam(value = "allRows") String allRows) {
+    public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields, @RequestParam(value = "data") String data) {
 
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
         }.getType();
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
-        List<HashMap<String, String>> allData = gson.fromJson(allRows, resultType);
+        List<HashMap<String, String>> allData = gson.fromJson(data, resultType);
         String fileFullPath = "export.xlsx";
         try {
 
