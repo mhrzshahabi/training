@@ -104,13 +104,15 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedsAssessmentReportsDTO.CourseNAS> getCourseNAList(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
+    public List<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
 
         List<NeedsAssessmentReportsDTO.CourseNAS> result = new ArrayList<>();
         Course course = courseService.getCourse(courseId);
         List<NeedsAssessment> needsAssessments = new ArrayList<>();
         course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments()));
-        needsAssessments.sort(Comparator.comparingInt(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType())));
+        Comparator<NeedsAssessment> comparator = Comparator.comparing(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType()));
+        comparator = comparator.thenComparing(NeedsAssessment::getNeedsAssessmentPriorityId);
+        needsAssessments.sort(comparator);
         MultiValueMap postCodes = new MultiValueMap();
         needsAssessments.forEach(needsAssessment -> {
             switch (needsAssessment.getObjectType()) {
