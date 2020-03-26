@@ -129,6 +129,7 @@
             dataSource: RestDataSource_PersonnelTraining,
             selectionType: "single",
             autoFetchData: false,
+            showGridSummary: true,
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -136,13 +137,14 @@
                     title: "<spring:message code='class.code'/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    summaryFunction: "totalPlanning(records)"
                 },
                 {
                     name: "titleClass",
                     title: "titleClass",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    summaryFunction: "totalPassed(records)"
                 },
                 {
                     name: "hduration",
@@ -177,7 +179,7 @@
                     title: "classStatus",
                     align: "center",
                     filterOperator: "equals",
-                    autoFitWidth: true
+                    summaryFunction: "totalRejected(records)"
                 },
                 {
                     name: "scoreStateId",
@@ -190,7 +192,8 @@
                     name: "scoreState",
                     title: "scoreState",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    summaryFunction: "totalAll(records)"
                 },
                 {
                     name: "erunType",
@@ -518,6 +521,45 @@
                 console.log(RestDataSource_PersonnelTraining)
             }
         }
+
+        //*****calculate total summary*****
+
+        function totalPlanning(records) {
+            let totalPlanning_ = 0;
+            for (i = 0; i < records.length; i++) {
+                if(records[i].classStatusId === 1)
+                totalPlanning_ += records[i].hduration;
+            }
+            return  "جمع برنامه ریزی : " + totalPlanning_ + " ساعت ";
+        }
+
+        function totalPassed(records) {
+            let totalPassed_ = 0;
+            for (i = 0; i < records.length; i++) {
+                if(records[i].classStatusId !== 1)
+                    totalPassed_ += records[i].hduration;
+            }
+            return  "جمع گذرانده یا در حال اجرا : " + totalPassed_ + " ساعت ";
+        }
+
+        function totalRejected(records) {
+            let totalRejected_ = 0;
+            for (i = 0; i < records.length; i++) {
+                if(records[i].scoreStateId === 0)
+                    totalRejected_ += records[i].hduration;
+            }
+            return  "جمع مردودی یا غایبی : " + totalRejected_ + " ساعت ";
+        }
+
+        function totalAll(records) {
+            let totalAll_ = 0;
+            for (i = 0; i < records.length; i++) {
+                totalAll_ += records[i].hduration;
+            }
+            return  "جمع کل : " + totalAll_ + " ساعت ";
+        }
+
+        //***********************************
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 
