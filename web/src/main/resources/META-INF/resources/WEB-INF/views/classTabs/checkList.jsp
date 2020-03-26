@@ -28,6 +28,7 @@
     var RestDataSource_Class_Item = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "checkListItem.group"},
             {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", align: "center"},
             {name: "description", title: "<spring:message code="description"/>", align: "center"},
             {name: "enableStatus", title: "<spring:message code="status"/>", align: "center"},
@@ -511,20 +512,15 @@
         modalEditing: true,
         height: 500,
         showGroupSummary: true,
-        showGroupSummaryInHeader: true,
+       // showGroupSummaryInHeader: true,
         groupStartOpen: "all",
-        groupByField: ['checkListItem.group'],
-        nullGroupTitle: "",
+        groupByField: 'checkListItem.group',
+        nullGroupTitle:"",
         dataSource: RestDataSource_Class_Item,
         fields: [
             {name: "checkListItem.group", title: "<spring:message code="group"/>", align: "center", hidden: true},
             {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", canEdit: false, align: "center"},
-
-            {
-                name: "description",
-                title: "<spring:message code="description"/>",
-                canEdit: true,
-                align: "center",
+            {name: "description",title: "<spring:message code="description"/>",canEdit: true,align: "center",
                 change: function (form, item, value) {
                     if (value == null) {
                         item.setValue("")
@@ -606,7 +602,7 @@
         errorOrientation: "right",
         numCols: 6,
         padding: 20,
-        colWidths: ["1%", "30%", "49%", "20%", "30"],
+        colWidths: ["1%", "20%","15%", "30"],
         items: [
             {
                 name: "checkList",
@@ -657,10 +653,10 @@
                     isc.RPCManager.sendRequest(TrDSRequest(classCheckListUrl + "fill-Table/" + a1.toString() + "/" + a2.toString(), "GET", null, "callback:fill(rpcResponse)"));
                 }
             },
-            {
-                type: "SpacerItem",
-
-            },
+            // {
+            //     type: "SpacerItem",
+            //
+            // },
             {
                 type: "button",
                 title: "<spring:message code="checkList.Design"/>",

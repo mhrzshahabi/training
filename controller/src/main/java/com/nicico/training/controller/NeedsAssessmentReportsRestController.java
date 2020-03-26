@@ -58,6 +58,21 @@ public class NeedsAssessmentReportsRestController {
         }
     }
 
+    @GetMapping(value = "/courseNA")
+    public ResponseEntity courseNA(HttpServletRequest iscRq,
+                                   @RequestParam Long courseId,
+                                   @RequestParam Boolean passedReport) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        List<NeedsAssessmentReportsDTO.CourseNAS> courseNAS = needsAssessmentReportsService.getCourseNA(searchRq, courseId, passedReport);
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) courseNAS.size());
+        searchRs.setList(courseNAS);
+        return new ResponseEntity(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
     @Loggable
     @PostMapping(value = {"/print-course-list-for-a-personnel/{type}"})
     public void printWithCriteria(HttpServletResponse response,

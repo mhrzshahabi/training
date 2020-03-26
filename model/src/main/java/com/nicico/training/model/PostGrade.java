@@ -30,4 +30,7 @@ public class PostGrade extends Auditable {
     @ManyToMany(mappedBy = "postGradeSet")
     private Set<PostGradeGroup> postGradeGroup;
 
+    @OneToMany(mappedBy = "postGrade")
+    private Set<Post> postSet;
+
 }

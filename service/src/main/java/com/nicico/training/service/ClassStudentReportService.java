@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.EqualCourse;
+import com.nicico.training.model.Student;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.CourseDAO;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +72,13 @@ public class ClassStudentReportService {
         if (result)
             isPassed.replace(course.getId(), true);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public Boolean isPassed(Course course, String nationalCode) {
+        Set<Long> passedCourseIds = getPassedCourseAndEQSIdsByNationalCode(nationalCode);
+        Map<Long, Boolean> Passed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
+        return isPassed(course, Passed);
     }
 }

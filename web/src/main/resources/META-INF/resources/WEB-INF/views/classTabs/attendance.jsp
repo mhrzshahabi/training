@@ -863,15 +863,9 @@
                 // icon: "[SKIN]/actions/refresh.png",
                 endRow:false,
                 click () {
-                    // var data = {};
-                    // data.fields = ListGrid_Attendance_AttendanceJSP.getFields().toArray();
-                    // data.allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
-                    // window.open("/training/attendance/download","download",data);
-                    // isc.RPCManager.sendRequest(TrDSRequest("/training/attendance/download" , "GET", JSON.stringify(data), function (resp) {
-                    // }));
                     let downloadForm = isc.DynamicForm.create({
                         method: "POST",
-                        action: "/training/attendance/download/",
+                        action: "/training/export-to-excel/download/",
                         target: "_Blank",
                         canSubmit: true,
                         fields:
@@ -891,7 +885,6 @@
                     }
                     let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
                     let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
-                    console.log(keys);
                     let sessionKeys = keys.filter(k => k.startsWith("se"));
                     if(sessionKeys.indexOf("sessionDate") == -1) {
                         for (let i = 0; i < allRows.length; i++) {
@@ -905,11 +898,12 @@
                             allRows[i]["state"] = attendanceState[allRows[i]["state"]];
                         }
                     }
-                    downloadForm.setValue("myToken", "<%=accessToken%>");
-                    downloadForm.setValue("fields", JSON.stringify(sendFields));
-                    downloadForm.setValue("allRows", JSON.stringify(ListGrid_Attendance_AttendanceJSP.data.allRows.toArray()));
-                    downloadForm.show();
-                    downloadForm.submitForm();
+                    exportToExcel(sendFields, allRows);
+                    <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
+                    <%--downloadForm.setValue("fields", JSON.stringify(sendFields));--%>
+                    <%--downloadForm.setValue("allRows", JSON.stringify(ListGrid_Attendance_AttendanceJSP.data.allRows.toArray()));--%>
+                    <%--downloadForm.show();--%>
+                    <%--downloadForm.submitForm();--%>
                 }
             },
         ],
@@ -1089,6 +1083,7 @@
             }, 500)
         }
     }
+
 
     // isc.confirm.addProperties({
     //     buttonClick: function (button, index) {

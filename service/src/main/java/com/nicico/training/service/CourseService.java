@@ -44,9 +44,14 @@ public class CourseService implements ICourseService {
     @Transactional(readOnly = true)
     @Override
     public CourseDTO.Info get(Long id) {
+        return modelMapper.map(getCourse(id), CourseDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Course getCourse(Long id) {
         final Optional<Course> cById = courseDAO.findById(id);
-        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        return modelMapper.map(course, CourseDTO.Info.class);
+        return cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
     }
 
     @Transactional(readOnly = true)
