@@ -61,8 +61,6 @@
         code='msg.national.code.validation'/>", true);
                     if (codeCheck === true) {
                         DynamicForm_CriteriaForm_JspTeacherReport.clearFieldErrors("personality.nationalCode", true);
-                        // var nationalCodeTemp = DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode");
-                        // fillPersonalInfoFields(nationalCodeTemp);
                     }
                 }
             },
@@ -96,21 +94,7 @@
                     "false": "<spring:message code='external.teacher'/>"
                 },
                 vertical: false,
-                defaultValue: "false",
-                <%--changed: function () {--%>
-                <%--    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");--%>
-                <%--    vm.clearValues();--%>
-                <%--    DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");--%>
-                <%--    if (personnelStatusTemp == "true") {--%>
-                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();--%>
-                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");--%>
-                <%--    } else if (personnelStatusTemp == "false") {--%>
-                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();--%>
-                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();--%>
-                <%--        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");--%>
-                <%--    }--%>
-
-                <%--}--%>
+                defaultValue: "false"
             },
             {
                 name: "temp1",
@@ -315,12 +299,6 @@
                 title: "",
                 canEdit: false,
             },
-            // {
-            //     name: "evaluation",
-            //     title: "",
-            //     canEdit: false,
-            //     baseStyle: "eval-code"
-            // },
             {
                 name: "category",
                 title: "حداکثر نمره ی ارزیابی استاد در گروه: ",
@@ -421,14 +399,7 @@
                 textAlign: "center",
                 showHintInField: true,
                 keyPressFilter: "[0-9.]"
-            },
-            // {
-            //     name: "evaluation",
-            //     title: "",
-            //     canEdit: false,
-            //     baseStyle: "eval-code"
-            // },
-
+            }
         ],
         itemChanged: function (item, newValue) {
             if (item.name === "personality.contactInfo.homeAddress.stateId") {
@@ -443,7 +414,6 @@
             }
         }
     });
-    // DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluation").setValue("نمره ارزیابی استاد در گروه و زیرگروه انتخابی بیشتر از ");
 
     IButton_Confirm_JspTeacherReport = isc.IButtonSave.create({
         top: 260,
@@ -484,6 +454,7 @@
             HLayOut_Confirm_JspTeacherReport
         ]
     });
+
     ///////////////////////result set///////////////////////////////////////////////////////////////////////////////////////
     <%--    var DynamicForm_Titr_JspTeacherReport = isc.DynamicForm.create({--%>
     <%--        height: "100%",--%>
