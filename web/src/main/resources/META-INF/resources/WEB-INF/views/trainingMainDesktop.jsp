@@ -582,6 +582,13 @@
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
                 },
+                {isSeparator: true},
+                {
+                    title: "گزارش نیازسنجی دوره",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/course-needs-assessment-reports"/>");
+                    }
+                },
             ]
         }),
     });
