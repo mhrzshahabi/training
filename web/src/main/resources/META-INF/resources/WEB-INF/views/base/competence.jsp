@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-// script
+// <script>
 
     let competenceMethod_competence;
 
@@ -140,7 +140,8 @@
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa"},],
-        fetchDataURL: enumUrl + "eTechnicalType/spec-list"
+        <%--fetchDataURL: enumUrl + "eTechnicalType/spec-list"--%>
+    fetchDataURL: parameterValueUrl + "/iscList/103"
     });
 
     let ECompetenceInputTypeDS_competence = isc.TrDS.create({

@@ -1,4 +1,17 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="razmnoosh (generated)" id="1585378115600-247">
+        <addColumn tableName="tbl_province">
+            <column name="c_name_en" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1585380867033-248">
+        <addColumn tableName="tbl_polis">
+            <column name="c_name_en" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

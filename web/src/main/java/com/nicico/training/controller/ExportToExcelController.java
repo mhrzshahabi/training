@@ -1,27 +1,32 @@
 package com.nicico.training.controller;
 
 import com.google.gson.Gson;
+import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import com.nicico.training.utility.SpecListUtil;
 import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -29,6 +34,7 @@ import java.util.List;
 public class ExportToExcelController {
     private final MakeExcelOutputUtil makeExcelOutputUtil;
     private final SpecListUtil specListUtil;
+    private final ReportUtil reportUtil;
 
     @PostMapping(value = {"/download"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields, @RequestParam(value = "data") String data) {
@@ -114,5 +120,26 @@ public class ExportToExcelController {
         } catch (Exception ex) {
             System.out.println(ex);
         }
+    }
+
+    @PostMapping(value = {"/print/{type}"})
+    public void print(HttpServletResponse response,
+                      @PathVariable String type,
+                      @RequestParam(value = "fileName") String fileName,
+                      @RequestParam(value = "data") String data,
+                      @RequestParam(value = "params") String receiveParams
+                      ) throws Exception {
+        //-------------------------------------
+        Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+//        final Map<String, Object> params = new HashMap<>();
+        data = "{" + "\"content\": " + data + "}";
+        params.put("todayDate", DateUtil.todayDate());
+        params.put(ConstantVARs.REPORT_TYPE,type);
+        JsonDataSource jsonDataSource = null;
+        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 }

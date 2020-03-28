@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.service.EvaluationAnalysistLearningService;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -25,6 +27,7 @@ import java.util.Map;
 public class EvaluationAnalysistLearningRestController {
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final ReportUtil reportUtil;
+    private final ObjectMapper objectMapper;
 
     @PostMapping(value = "/print")
     public void print(HttpServletResponse response, @RequestParam(value = "recordId") String recordId,@RequestParam(value = "minScoreLearning") String minScoreLearning, @RequestParam(value = "Record") String Record) throws Exception {
@@ -56,7 +59,8 @@ public class EvaluationAnalysistLearningRestController {
         {
             params.put("resault","عدم تایید");
         }
-        String data = "{" + "\"content\": " + Record + "}";
+        List<?> list=evaluationAnalysistLearningService.getStudentWithOutPreTest(Long.parseLong(recordId));
+        String data = "{" + "\"studentWithOutPreTest\": " + objectMapper.writeValueAsString(list) + "}";
         params.put(ConstantVARs.REPORT_TYPE, "pdf");
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/evaluationAnalysistLearning.jasper", params, jsonDataSource, response);
