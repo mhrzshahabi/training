@@ -40,20 +40,18 @@ span {
 .lineFieldRTL .headerItemOverRTL,
 .lineField .headerItemRTL,
 .lineField .headerItemOver,
-.lineField .headerItemOverRTL{
-    background-color: #b7dee8 !important;
+.lineField .headerItemOverRTL {
+    background-color: #97cefc !important;
     font-weight: normal !important;
     font-size: 13px !important;
 }
 
-.acceptRTL, .accept
-{
-    color : #199435 !important;
+.acceptRTL, .accept {
+    color: #199435 !important;
 }
 
-.rejectedRTL, .rejected
-{
-    color :#FF0000 !important;
+.rejectedRTL, .rejected {
+    color: #FF0000 !important;
 }
 
 

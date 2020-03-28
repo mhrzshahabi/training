@@ -52,6 +52,12 @@
                     autoFitWidth: true
                 },
                 {
+                    name: "postCode",
+                    title: "<spring:message code="post.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
                     name: "ccpArea",
                     title: "<spring:message code="reward.cost.center.area"/>",
                     filterOperator: "iContains"
@@ -94,6 +100,7 @@
                 {name: "personnelNo"},
                 {name: "personnelNo2"},
                 {name: "postTitle"},
+                {name: "postCode"},
                 {name: "ccpArea"},
                 {name: "ccpAssistant"},
                 {name: "ccpAffairs"},
@@ -134,21 +141,35 @@
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
                     name: "code",
-                    title: "<spring:message code='class.code'/>",
+                    title: "<spring:message code="class.code"/>",
                     align: "center",
                     filterOperator: "iContains",
                     summaryFunction: "totalPlanning(records)"
                 },
                 {
-                    name: "titleClass",
-                    title: "titleClass",
+                    name: "courseId",
+                    title: "courseId",
+                    align: "center",
+                    filterOperator: "iContains",
+                    hidden: true
+                },
+                {
+                    name: "courseTitle",
+                    title: "<spring:message code="course.title"/>",
                     align: "center",
                     filterOperator: "iContains",
                     summaryFunction: "totalPassed(records)"
                 },
                 {
+                    name: "titleClass",
+                    title: "<spring:message code='class.title'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    hidden: true
+                },
+                {
                     name: "hduration",
-                    title: "hduration",
+                    title: "<spring:message code="class.duration"/>",
                     align: "center",
                     filterOperator: "iContains",
                     autoFitWidth: true
@@ -172,11 +193,12 @@
                     title: "classStatusId",
                     align: "center",
                     filterOperator: "equals",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    hidden: true
                 },
                 {
                     name: "classStatus",
-                    title: "classStatus",
+                    title: "<spring:message code="class.status"/>",
                     align: "center",
                     filterOperator: "equals",
                     summaryFunction: "totalRejected(records)"
@@ -186,18 +208,19 @@
                     title: "scoreStateId",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    hidden: true
                 },
                 {
                     name: "scoreState",
-                    title: "scoreState",
+                    title: "<spring:message code="score.state"/>",
                     align: "center",
                     filterOperator: "iContains",
                     summaryFunction: "totalAll(records)"
                 },
                 {
                     name: "erunType",
-                    title: "erunType",
+                    title: "<spring:message code="course_eruntype"/>",
                     align: "center",
                     filterOperator: "iContains",
                     autoFitWidth: true
@@ -298,11 +321,12 @@
                         name: "ccpAssistant",
                         title: "حوزه : ",
                         canEdit: false
-                    }, {
-                    name: "ccpAffairs",
-                    title: "واحد : ",
-                    canEdit: false
-                },
+                    },
+                    {
+                        name: "ccpAffairs",
+                        title: "واحد : ",
+                        canEdit: false
+                    },
                     {
                         name: "ccpSection",
                         title: "بخش : ",
@@ -442,9 +466,14 @@
                 },
                 {
                     id: "PersonnelInfo_Tab_NeedAssessment",
-                    title: "شایستگی"
+                    title: "شایستگی",
+                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "web/needsAssessment-reports"})
                 }
-            ]
+
+            ],
+            tabSelected: function () {
+                set_PersonnelInfo_Details();
+            }
         });
     }
     // ---------------------------------------- Create - TabSet & Tab --------------------------------------->>
@@ -476,49 +505,55 @@
     {
         function set_PersonnelInfo_Details() {
 
-            let personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo
-            let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode
+            if (PersonnelInfoListGrid_PersonnelList.getSelectedRecord() !== null) {
 
-            if (personnelNo !== null) {
+                let personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
+                let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
 
-                isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
+                if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
+                    if (personnelNo !== null) {
 
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
 
-                        let currentPersonnel = JSON.parse(resp.data);
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                        currentPersonnel.fullName =
-                            (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
-                            + " " +
-                            (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
+                                let currentPersonnel = JSON.parse(resp.data);
 
-                        currentPersonnel.birth =
-                            (currentPersonnel.birthDate !== undefined ? currentPersonnel.birthDate : "")
-                            + " - " +
-                            (currentPersonnel.birthPlace !== undefined ? currentPersonnel.birthPlace : "");
+                                currentPersonnel.fullName =
+                                    (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
+                                    + " " +
+                                    (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
 
-                        currentPersonnel.educationLevelTitle =
-                            (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
-                            + " / " +
-                            (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
+                                currentPersonnel.birth =
+                                    (currentPersonnel.birthDate !== undefined ? currentPersonnel.birthDate : "")
+                                    + " - " +
+                                    (currentPersonnel.birthPlace !== undefined ? currentPersonnel.birthPlace : "");
 
-                        currentPersonnel.gender =
-                            (currentPersonnel.gender !== undefined ? currentPersonnel.gender : "")
-                            + " - " +
-                            (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
+                                currentPersonnel.educationLevelTitle =
+                                    (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
+                                    + " / " +
+                                    (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
 
-                        DynamicForm_PersonnelInfo.clearValues();
-                        DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
+                                currentPersonnel.gender =
+                                    (currentPersonnel.gender !== undefined ? currentPersonnel.gender : "")
+                                    + " - " +
+                                    (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
+
+                                DynamicForm_PersonnelInfo.clearValues();
+                                DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
+                            }
+
+                        }));
                     }
-
-                }));
-            }
-
-            if (nationalCode !== null) {
-                RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode;
-                ListGrid_PersonnelTraining.invalidateCache();
-                ListGrid_PersonnelTraining.fetchData();
-                console.log(RestDataSource_PersonnelTraining)
+                } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Training") {
+                    if (nationalCode !== null) {
+                        RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode;
+                        ListGrid_PersonnelTraining.invalidateCache();
+                        ListGrid_PersonnelTraining.fetchData();
+                    }
+                } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
+                    call_needsAssessmentReports(PersonnelInfoListGrid_PersonnelList);
+                }
             }
         }
 
@@ -527,28 +562,28 @@
         function totalPlanning(records) {
             let totalPlanning_ = 0;
             for (i = 0; i < records.length; i++) {
-                if(records[i].classStatusId === 1)
-                totalPlanning_ += records[i].hduration;
+                if (records[i].classStatusId === 1)
+                    totalPlanning_ += records[i].hduration;
             }
-            return  "جمع برنامه ریزی : " + totalPlanning_ + " ساعت ";
+            return "جمع برنامه ریزی : " + totalPlanning_ + " ساعت ";
         }
 
         function totalPassed(records) {
             let totalPassed_ = 0;
             for (i = 0; i < records.length; i++) {
-                if(records[i].classStatusId !== 1)
+                if (records[i].classStatusId !== 1)
                     totalPassed_ += records[i].hduration;
             }
-            return  "جمع گذرانده یا در حال اجرا : " + totalPassed_ + " ساعت ";
+            return "جمع گذرانده یا در حال اجرا : " + totalPassed_ + " ساعت ";
         }
 
         function totalRejected(records) {
             let totalRejected_ = 0;
             for (i = 0; i < records.length; i++) {
-                if(records[i].scoreStateId === 0)
+                if (records[i].scoreStateId === 0)
                     totalRejected_ += records[i].hduration;
             }
-            return  "جمع مردودی یا غایبی : " + totalRejected_ + " ساعت ";
+            return "جمع مردودی یا غایبی : " + totalRejected_ + " ساعت ";
         }
 
         function totalAll(records) {
@@ -556,7 +591,7 @@
             for (i = 0; i < records.length; i++) {
                 totalAll_ += records[i].hduration;
             }
-            return  "جمع کل : " + totalAll_ + " ساعت ";
+            return "جمع کل : " + totalAll_ + " ساعت ";
         }
 
         //***********************************
