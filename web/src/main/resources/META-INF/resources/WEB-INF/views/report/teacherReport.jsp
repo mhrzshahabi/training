@@ -3,10 +3,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    //----------------------------------------------------Variables-----------------------------------------------------
     var nationalCodeCheck_JspTeacherReport = true;
     var isCriteriaCategoriesChanged = false;
     var isEvaluationCategoriesChanged;
-
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
     var RestDataSource_Category_JspTeacherReport = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: categoryUrl + "spec-list"
@@ -35,7 +36,125 @@
         fields: [{name: "id"}, {name: "name"}],
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
+    //----------------------------------------------------ListGrid Result-----------------------------------------------
+    var DynamicForm_Titr_JspTeacherReport = isc.DynamicForm.create({
+        height: "100%",
+        align: "right",
+        canSubmit: true,
+        titleWidth: 120,
+        titleAlign: "left",
+        showInlineErrors: true,
+        showErrorText: false,
+        valuesManager: "vm",
+        // styleName: "teacher-form",
+        // numCols: 6,
+        margin: 10,
+        newPadding: 5,
+        canTabToIcons: false,
+        fields: [
+            {
+                name: "titr",
+                title: "گزارش اساتید",
+                canEdit: false,
+            }
+        ]
+    });
 
+    var ListGrid_Result_JspTeacherReport = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        // dataSource: RestDataSource_Teacher_JspTeacherResult,
+        fields: [
+            {name: "id", title: "id", canEdit: false, hidden: true},
+            {
+                name: "teacherCode",
+                title: "<spring:message code='code'/>"
+            },
+            {
+                name: "personality.nationalCode",
+                title: "<spring:message code='firstName'/>"
+            },
+            {
+                name: "personnelCode",
+                title: "<spring:message code='lastName'/>"
+            },
+            {
+                name: "name",
+                title: "<spring:message code='category'/>"
+            },
+            {
+                name: "personality.educationMajor.titleFa",
+                title: "<spring:message code='education.major'/>",
+                align: "center",
+                // sortNormalizer: function (record) {
+                //     return record.personality.educationLevel.titleFa;
+                // },
+                // editorType: "SelectItem",
+                // displayField: "titleFa",
+                // valueField: "titleFa",
+                // filterOperator: "equals",
+                // optionDataSource: RestDataSource_Education_Major_JspTeacher
+            },
+            {
+                name: "personnelStatus",
+                title: "<spring:message code='status'/>",
+                align: "center",
+                type: "boolean"
+            },
+            {
+                name: "mobile",
+                title: "موبايل"
+            },
+            {
+                name: "numberOfCourses",
+                title: "تعداد دوره هاي تدريسي در شرکت"
+            },
+            {
+                name: "evaluationGrade",
+                title: "نمره ارزيباي در گروه و زيرگروه انتخابي"
+            },
+            {
+                name: "lastCourse",
+                title: "نام آخرين دوره ي تدريسي در شرکت"
+            },
+            {
+                name: "lastCourseEvaluationGrade",
+                title: "نمره ارزيابي کلاسي آخرين دوره تدريسي در شرکت"
+            }
+        ],
+        // filterEditorSubmit: function () {
+        //     ListGrid_Teacher_JspTeacher.invalidateCache();
+        // },
+        cellHeight: 43,
+        filterOperator: "iContains",
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+    });
+
+    var Window_Result_JspTeacherReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "<spring:message code='teacher'/>",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [isc.TrVLayout.create({
+            members: [
+                DynamicForm_Titr_JspTeacherReport,
+                ListGrid_Result_JspTeacherReport
+            ]
+        })]
+    });
+    //----------------------------------------------------Criteria Form-------------------------------------------------
     var DynamicForm_CriteriaForm_JspTeacherReport = isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
@@ -418,6 +537,7 @@
     IButton_Confirm_JspTeacherReport = isc.IButtonSave.create({
         top: 260,
         title: "گزارش گیری",
+        width: 300,
         click: function () {
             Window_Result_JspTeacherReport.show();
         }
@@ -454,120 +574,5 @@
             HLayOut_Confirm_JspTeacherReport
         ]
     });
-
-    ///////////////////////result set///////////////////////////////////////////////////////////////////////////////////////
-    <%--    var DynamicForm_Titr_JspTeacherReport = isc.DynamicForm.create({--%>
-    <%--        height: "100%",--%>
-    <%--        align: "right",--%>
-    <%--        canSubmit: true,--%>
-    <%--        titleWidth: 120,--%>
-    <%--        titleAlign: "left",--%>
-    <%--        showInlineErrors: true,--%>
-    <%--        showErrorText: false,--%>
-    <%--        valuesManager: "vm",--%>
-    <%--        styleName: "teacher-form",--%>
-    <%--        numCols: 6,--%>
-    <%--        margin: 10,--%>
-    <%--        newPadding: 5,--%>
-    <%--        canTabToIcons: false,--%>
-    <%--        fields: [--%>
-    <%--            {name: "personality.id", hidden: true},--%>
-    <%--        ]--%>
-    <%--    });--%>
-
-    <%--    var ListGrid_Result_JspTeacherReport = isc.TrLG.create({--%>
-    <%--        width: "100%",--%>
-    <%--        height: "100%",--%>
-    <%--        dataSource: RestDataSource_Teacher_JspTeacherResult,--%>
-    <%--        fields: [--%>
-    <%--            {name: "id", title: "id", canEdit: false, hidden: true},--%>
-    <%--            {--%>
-    <%--                name: "teacherCode",--%>
-    <%--                title: "<spring:message code='code'/>"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "personality.nationalCode",--%>
-    <%--                title: "<spring:message code='firstName'/>"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "personnelCode",--%>
-    <%--                title: "<spring:message code='lastName'/>"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "name",--%>
-    <%--                title: "<spring:message code='category'/>"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "personality.educationMajor.titleFa",--%>
-    <%--                title: "<spring:message code='education.major'/>",--%>
-    <%--                align: "center",--%>
-    <%--                sortNormalizer: function (record) {--%>
-    <%--                    return record.personality.educationLevel.titleFa;--%>
-    <%--                },--%>
-    <%--                editorType: "SelectItem",--%>
-    <%--                displayField: "titleFa",--%>
-    <%--                valueField: "titleFa",--%>
-    <%--                filterOperator: "equals",--%>
-    <%--                optionDataSource: RestDataSource_Education_Major_JspTeacher--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "personnelStatus",--%>
-    <%--                title: "<spring:message code='status'/>",--%>
-    <%--                align: "center",--%>
-    <%--                type: "boolean"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "mobile",--%>
-    <%--                title: "موبايل"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "numberOfCourses",--%>
-    <%--                title: "تعداد دوره هاي تدريسي در شرکت"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "evaluationGrade",--%>
-    <%--                title: "نمره ارزيباي در گروه و زيرگروه انتخابي"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "lastCourse",--%>
-    <%--                title: "نام آخرين دوره ي تدريسي در شرکت"--%>
-    <%--            },--%>
-    <%--            {--%>
-    <%--                name: "lastCourseEvaluationGrade",--%>
-    <%--                title: "نمره ارزيابي کلاسي آخرين دوره تدريسي در شرکت"--%>
-    <%--            }--%>
-    <%--        ],--%>
-    <%--        filterEditorSubmit: function () {--%>
-    <%--            ListGrid_Teacher_JspTeacher.invalidateCache();--%>
-    <%--        },--%>
-    <%--        cellHeight: 43,--%>
-    <%--        filterOperator: "iContains",--%>
-    <%--        filterOnKeypress: true,--%>
-    <%--        sortField: 1,--%>
-    <%--        sortDirection: "descending",--%>
-    <%--        dataPageSize: 50,--%>
-    <%--        autoFetchData: true,--%>
-    <%--        allowAdvancedCriteria: true,--%>
-    <%--        allowFilterExpressions: true,--%>
-    <%--        filterUsingText: "<spring:message code='filterUsingText'/>",--%>
-    <%--        groupByText: "<spring:message code='groupByText'/>",--%>
-    <%--        freezeFieldText: "<spring:message code='freezeFieldText'/>"--%>
-    <%--    });--%>
-
-    <%--    var Window_Result_JspTeacherReport = isc.Window.create({--%>
-    <%--        placement: "fillScreen",--%>
-    <%--        title: "<spring:message code='teacher'/>",--%>
-    <%--        canDragReposition: true,--%>
-    <%--        align: "center",--%>
-    <%--        autoDraw: false,--%>
-    <%--        border: "1px solid gray",--%>
-    <%--        minWidth: 1024,--%>
-    <%--        items: [isc.TrVLayout.create({--%>
-    <%--            members: [--%>
-    <%--                DynamicForm_Titr_JspTeacherReport,--%>
-    <%--                ListGrid_Result_JspTeacherReport--%>
-    <%--            ]--%>
-    <%--        })]--%>
-    <%--    });--%>
-
-    <%--    Window_Result_JspTeacherReport.hide();--%>
+    //----------------------------------------------------End-----------------------------------------------------------
+    Window_Result_JspTeacherReport.hide();
