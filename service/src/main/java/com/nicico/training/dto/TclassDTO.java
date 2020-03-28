@@ -364,6 +364,8 @@ public class TclassDTO {
         private EvaluatedSpecRs response;
     }
 
+    // ------------------------------
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -374,6 +376,53 @@ public class TclassDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassSpecRs")
+    public static class PersonnelClassInfo_TclassSpecRs {
+        private PersonnelClassInfo_SpecRs response;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PersonnelClassInfo_SpecRs {
+        private List<TclassDTO.PersonnelClassInfo> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("PersonnelClassInfo")
+    public static class PersonnelClassInfo
+    {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private Long hDuration;
+        private String startDate;
+        private String endDate;
+        private Long classStatusId;
+        private String classStatus;
+        private Long scoreStateId;
+        private String scoreState;
+        private String ERunType;
     }
 
 }

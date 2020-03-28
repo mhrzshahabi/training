@@ -46,5 +46,16 @@ span {
     font-size: 13px !important;
 }
 
+.acceptRTL, .accept
+{
+    color : #199435 !important;
+}
+
+.rejectedRTL, .rejected
+{
+    color :#FF0000 !important;
+}
+
+
 
 
