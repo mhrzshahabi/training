@@ -82,7 +82,7 @@
         dataSource: RestDataSourceProvince, contextMenu: Menu_ListGrid_Province, selectionType: "multiple", sortField: 0, sortDirection: "descending", dataPageSize: 50, autoFetchData: true,
         fields: [
             {name: "nameFa", title: "<spring:message code="global.titleFa"/>", filterOperator: "iContains"},
-            {name: "nameEn", title: "<spring:message code="global.titleFa"/>", filterOperator: "iContains"},
+            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", filterOperator: "iContains"},
         ],
         rowDoubleClick: function () {
             editProvince("<spring:message code='province'/>");
@@ -105,6 +105,7 @@
         fields: [
             {name: "provinceId", primaryKey: true},
             {name: "nameFa"},
+            {name: "nameEn"},
         ],
     });
 
@@ -113,6 +114,7 @@
         dataSource: RestDataSourcePolis, contextMenu: Menu_ListGrid_Polis, selectionType: "multiple", sortField: 0, sortDirection: "descending", dataPageSize: 50, autoFetchData: true,
         fields: [
             {name: "nameFa", title: "<spring:message code="global.titleFa"/>", filterOperator: "iContains"},
+            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", filterOperator: "iContains"},
         ],
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -133,7 +135,7 @@
         fields: [
             {name: "id", hidden: true},
             {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"},
-            {name: "nameEn", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[a-z|A-Z|0-9|' ']"},
+            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[a-z|A-Z|0-9|' ']"},
         ]
     });
 
@@ -162,6 +164,7 @@
             {name: "id", hidden: true},
             {name: "province.id", dataPath: "provinceId", hidden: true,},
             {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"},
+            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[a-z|A-Z|0-9|' ']"},
         ]
     });
 

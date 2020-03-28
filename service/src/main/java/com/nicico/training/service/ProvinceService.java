@@ -113,6 +113,9 @@ public class ProvinceService implements IProvinceService {
     // ------------------------------
 
     private ProvinceDTO.Info save(Province province){
+        if(province.getNameEn() == null){
+            province.setNameEn(" ");
+        }
         final Province saved = provinceDAO.saveAndFlush(province);
         return modelMapper.map(saved,ProvinceDTO.Info.class);
     }

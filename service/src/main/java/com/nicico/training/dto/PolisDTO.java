@@ -23,6 +23,7 @@ public class PolisDTO {
     @ApiModelProperty(required = true)
     private Long provinceId;
     private String nameFa;
+    private String nameEn;
 
     // ------------------------------
 
