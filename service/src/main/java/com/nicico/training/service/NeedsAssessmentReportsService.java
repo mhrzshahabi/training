@@ -117,8 +117,13 @@ public class NeedsAssessmentReportsService {
         needsAssessments.forEach(needsAssessment -> {
             switch (needsAssessment.getObjectType()) {
                 case "Post":
-                    if (!postCodes.containsValue(((Post) needsAssessment.getObject()).getCode()))
-                        postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), ((Post) needsAssessment.getObject()).getCode());
+                    try {
+                        if (!postCodes.containsValue(((Post) needsAssessment.getObject()).getCode()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), ((Post) needsAssessment.getObject()).getCode());
+                    } catch (Exception ex){
+                        ex.printStackTrace();
+                        return;
+                    }
                     break;
                 case "PostGroup":
                     ((PostGroup) needsAssessment.getObject()).getPostSet().forEach(post -> {
