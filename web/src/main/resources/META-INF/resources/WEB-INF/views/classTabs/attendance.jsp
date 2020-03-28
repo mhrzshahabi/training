@@ -923,7 +923,7 @@
                             }
                             data.push(obj);
                         }
-                        Print_Attendance(data, params, "attendance.jasper");
+                        printToJasper(data, params, "attendance.jasper");
                     }
                 }
             },
@@ -1119,25 +1119,6 @@
         }
     }
 
-    function Print_Attendance(data, params, fileName, type = "pdf") {
-        var criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/export-to-excel/print/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "fileName", type: "hidden"},
-                    {name: "data", type: "hidden"},
-                    {name: "params", type: "hidden"}
-                ]
-        });
-        criteriaForm.setValue("data", JSON.stringify(data));
-        criteriaForm.setValue("fileName", fileName);
-        criteriaForm.setValue("params", JSON.stringify(params));
-        criteriaForm.show();
-        criteriaForm.submitForm();
-    }
 
     // isc.confirm.addProperties({
     //     buttonClick: function (button, index) {
