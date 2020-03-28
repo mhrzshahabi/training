@@ -459,7 +459,14 @@
                     click:function(){
                         createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
                     }
-                }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="polisAndprovince"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/polis_and_province/show-form"/>");
+                    }
+                },
                 <%--{--%>
                 <%--    title: "<spring:message code="department"/>",--%>
                 <%--    click: function () {--%>
@@ -1175,6 +1182,27 @@
         downloadForm.show();
         downloadForm.submitForm();
     }
+
+    function printToJasper(data, params, fileName, type = "pdf") {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/export-to-excel/print/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "data", type: "hidden"},
+                    {name: "params", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("data", JSON.stringify(data));
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
+
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
@@ -1212,6 +1240,8 @@
     const classAlarm = rootUrl + "/classAlarm/";
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
+    const provinceUrl = rootUrl + "/province/";
+    const polisUrl = rootUrl + "/polis/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

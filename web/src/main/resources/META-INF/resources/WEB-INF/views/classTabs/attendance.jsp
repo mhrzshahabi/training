@@ -24,6 +24,13 @@
         "3": "غیبت غیر موجه",
         "4": "غیبت موجه",
     };
+    var printAttendanceState = {
+        "0": "",
+        "1": "حاضر",
+        "2": "اضافه کار",
+        "3": "غیبت بدون مجوز",
+        "4": "غیبت با مجوز",
+    };
     var DataSource_SessionInOneDate = isc.DataSource.create({
         ID: "attendanceDS",
         clientOnly: true,
@@ -34,6 +41,7 @@
             {name: "studentId", hidden: true, primaryKey: true},
             {name: "studentName", type: "text", title: "نام"},
             {name: "studentFamily", type: "text", title: "نام خانوادگی"},
+            {name: "personalNum", type: "text", title: "شماره پرسنلی"},
             {name: "nationalCode", type: "text", title: "کد ملی"},
             {name: "company", type: "text", title: "شرکت"},
             {name: "studentState", type: "text", title: "وضعیت"},
@@ -132,10 +140,10 @@
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
-        numCols: 7,
+        numCols: 8,
         padding: 10,
         // cellBorder:2,
-        colWidths:[250,200,200,100,100,20],
+        colWidths:[250,200,200,100,100,20,20],
         fields: [
             {
                 name: "attendanceTitle",
@@ -167,7 +175,6 @@
                       createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
                       return;
                   }
-
                   if(value == 1){
                       form.getItem("sessionDate").pickListFields = [
                           {name: "dayName", title: "روز هفته"},
@@ -839,42 +846,16 @@
                 }
             },
             {
-                name: "refreshBtn",
-                ID: "refreshBtnAttendanceJsp",
-                // showTitle: false,
-                title: "",
-                prompt:"<spring:message code="refresh"/>",
-                startRow:false,
-                type: "ButtonItem",
-                icon: "[SKIN]/actions/refresh.png",
-                endRow:false,
-                click () {
-                    loadPage_Attendance()
-                }
-            },
-            {
                 name: "printBtn",
                 ID: "printBtnAttendanceJsp",
                 // showTitle: false,
-                title: "چاپ",
+                title: "خروجی اکسل",
                 <%--prompt:"<spring:message code="refresh"/>",--%>
                 startRow:false,
                 type: "ButtonItem",
                 // icon: "[SKIN]/actions/refresh.png",
                 endRow:false,
                 click () {
-                    let downloadForm = isc.DynamicForm.create({
-                        method: "POST",
-                        action: "/training/export-to-excel/download/",
-                        target: "_Blank",
-                        canSubmit: true,
-                        fields:
-                            [
-                                {name: "myToken", type: "hidden"},
-                                {name: "fields", type: "hidden"},
-                                {name: "allRows", type: "hidden"},
-                            ]
-                    });
                     let fields = ListGrid_Attendance_AttendanceJSP.getFields();
                     let sendFields = [];
                     for (let i = 1; i < fields.length; i++) {
@@ -904,6 +885,60 @@
                     <%--downloadForm.setValue("allRows", JSON.stringify(ListGrid_Attendance_AttendanceJSP.data.allRows.toArray()));--%>
                     <%--downloadForm.show();--%>
                     <%--downloadForm.submitForm();--%>
+                }
+            },
+            {
+                name: "printBtn1",
+                // showTitle: false,
+                title: "چاپ",
+                <%--prompt:"<spring:message code="refresh"/>",--%>
+                startRow:false,
+                type: "ButtonItem",
+                // icon: "[SKIN]/actions/refresh.png",
+                endRow:false,
+                click () {
+                    let params = {};
+                    params.code = classGridRecordInAttendanceJsp.code;
+                    params.titleClass = classGridRecordInAttendanceJsp.titleClass;
+                    params.startDate = classGridRecordInAttendanceJsp.startDate;
+                    params.teacher = classGridRecordInAttendanceJsp.teacher;
+                    params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
+                    params.date = DynamicForm_Attendance.getValue("sessionDate");
+                    let localData = ListGrid_Attendance_AttendanceJSP.data.localData.toArray();
+                    let data = [];
+                    if(DynamicForm_Attendance.getValue("filterType") == "1") {
+                        let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                        let sessionKeys = keys.filter(k => k.startsWith("se"));
+                        sessionKeys.sort();
+                        for (let k = 0; k < sessionKeys.length; k++) {
+                            params["se" + (k + 1).toString()] = ListGrid_Attendance_AttendanceJSP.getField(sessionKeys[k]).title;
+                        }
+                        for (let i = 0; i < localData.length; i++) {
+                            let obj = {};
+                            obj.fullName = localData[i].studentName + " " + localData[i].studentFamily;
+                            obj.nationalCode = localData[i].nationalCode;
+                            obj.personalNum = localData[i].personalNum;
+                            for (let j = 0; j < sessionKeys.length; j++) {
+                                obj["session" + (j + 1).toString()] = printAttendanceState[localData[i][sessionKeys[j]]]
+                            }
+                            data.push(obj);
+                        }
+                        printToJasper(data, params, "attendance.jasper");
+                    }
+                }
+            },
+            {
+                name: "refreshBtn",
+                ID: "refreshBtnAttendanceJsp",
+                // showTitle: false,
+                title: "",
+                prompt:"<spring:message code="refresh"/>",
+                startRow:false,
+                type: "ButtonItem",
+                icon: "[SKIN]/actions/refresh.png",
+                endRow:false,
+                click () {
+                    loadPage_Attendance()
                 }
             },
         ],

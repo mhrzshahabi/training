@@ -11,4 +11,17 @@
     <changeSet author="heydaripoor (generated)" id="1585399828296-217">
         <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_term"/>
     </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1585378115600-247">
+        <addColumn tableName="tbl_province">
+            <column name="c_name_en" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1585380867033-248">
+        <addColumn tableName="tbl_polis">
+            <column name="c_name_en" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
