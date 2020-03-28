@@ -36,6 +36,23 @@
         fields: [{name: "id"}, {name: "name"}],
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
+
+    var RestDataSource_Teacher_JspTeacherResult = isc.TrDS.create({
+        fields: [
+            {name: "id"},
+            {name: "teacherCode"},
+            {name: "personality.nationalCode"},
+            {name: "personnelCode"},
+            {name: "personality.firstNameFa"},
+            {name: "personality.educationMajor.titleFa"},
+            {name: "personnelStatus"},
+            {name: "mobile"},
+            {name: "numberOfCourses"},
+            {name: "evaluationGrade"},
+            {name: "lastCourse"},
+            {name: "lastCourseEvaluationGrade"}],
+        fetchDataURL: teacherUrl + "spec-list-grid"
+    });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var DynamicForm_Titr_JspTeacherReport = isc.DynamicForm.create({
         height: "100%",
@@ -63,7 +80,7 @@
     var ListGrid_Result_JspTeacherReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        // dataSource: RestDataSource_Teacher_JspTeacherResult,
+        dataSource: RestDataSource_Teacher_JspTeacherResult,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
@@ -79,8 +96,11 @@
                 title: "<spring:message code='lastName'/>"
             },
             {
-                name: "name",
-                title: "<spring:message code='category'/>"
+                name: "personality.firstNameFa",
+                title: "<spring:message code='firstName'/>",
+                sortNormalizer: function (record) {
+                    return record.personality.firstNameFa;
+                }
             },
             {
                 name: "personality.educationMajor.titleFa",
@@ -209,8 +229,8 @@
                 type: "radioGroup",
                 width: "*",
                 valueMap: {
-                    "true": "<spring:message code='company.staff'/>",
-                    "false": "<spring:message code='external.teacher'/>"
+                    "true" : "<spring:message code='company.staff'/>",
+                    "false" : "<spring:message code='external.teacher'/>"
                 },
                 vertical: false,
                 defaultValue: "false"
@@ -539,6 +559,29 @@
         title: "گزارش گیری",
         width: 300,
         click: function () {
+            if (DynamicForm_CriteriaForm_JspTeacherReport.hasErrors())
+                return;
+
+            // var reportParameters = {
+            //     // complex_title: DynamicForm_MSReport.getValue("complex_MSReport") !== undefined ? DynamicForm_MSReport.getValue("complex_MSReport") : "همه",
+            //     // assistant: DynamicForm_MSReport.getValue("Assistant") !== undefined ? DynamicForm_MSReport.getValue("Assistant") : "همه",
+            //     // affairs: DynamicForm_MSReport.getValue("Affairs") !== undefined ? DynamicForm_MSReport.getValue("Affairs") : "همه",
+            //     // section: DynamicForm_MSReport.getValue("Section") !== undefined ? DynamicForm_MSReport.getValue("Section") : "همه",
+            //     // unit: DynamicForm_MSReport.getValue("Unit") !== undefined ? DynamicForm_MSReport.getValue("Unit") : "همه"
+            // };
+            // RestDataSource_Teacher_JspTeacherResult.fetchDataURL = teacherUrl + "reportList" + "/" + JSON.stringify(reportParameters);
+            var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
+            for(var i=0;i<data_values.criteria.size();i++)
+                if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
+                    if(data_values.criteria[i].value == "true")
+                        data_values.criteria[i].value = true;
+                    else if(data_values.criteria[i].value == "false")
+                        data_values.criteria[i].value = false;
+                    }
+            ListGrid_Result_JspTeacherReport.setCriteria(data_values);
+            // ListGrid_Result_JspTeacherReport.invalidateCache();
+            // ListGrid_Result_JspTeacherReport.fetchData();
+
             Window_Result_JspTeacherReport.show();
         }
     });
