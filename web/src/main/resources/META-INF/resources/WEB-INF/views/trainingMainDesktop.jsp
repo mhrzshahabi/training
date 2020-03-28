@@ -459,7 +459,14 @@
                     click:function(){
                         createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
                     }
-                }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="polisAndprovince"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/polis_and_province/show-form"/>");
+                    }
+                },
                 <%--{--%>
                 <%--    title: "<spring:message code="department"/>",--%>
                 <%--    click: function () {--%>
@@ -1212,6 +1219,8 @@
     const classAlarm = rootUrl + "/classAlarm/";
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
+    const provinceUrl = rootUrl + "/province/";
+    const polisUrl = rootUrl + "/polis/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

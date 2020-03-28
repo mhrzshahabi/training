@@ -15,4 +15,8 @@
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_questionnaire" constraintName="FKr5og8ha1s1wvy2xcx2f5cr03f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1585378115600-253">
+        <addForeignKeyConstraint baseColumnNames="f_province_id" baseTableName="tbl_polis" constraintName="FKr88eacjbyrs3u0b0w6v7vxyyd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_province" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>
