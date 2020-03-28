@@ -591,7 +591,7 @@
                 },
                 {isSeparator: true},
                 {
-                    title: "گزارش نیازسنجی دوره",
+                    title: "<spring:message code='needsAssessment.report.course'/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/course-needs-assessment-reports"/>");
                     }

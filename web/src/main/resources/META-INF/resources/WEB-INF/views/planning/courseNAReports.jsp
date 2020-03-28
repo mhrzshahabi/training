@@ -38,12 +38,22 @@
             {name: "titleFa", title: "<spring:message code="course_fa_name"/>", filterOperator: "iContains"},
             {name: "description", title: "<spring:message code='description'/>", autoFitWidth: true, filterOperator: "iContains"},
         ],
-        rowDoubleClick: Select_Course_Or_Personnel_Group_CNAR
+        rowDoubleClick: function () {
+            Window_Course_CNAR.close();
+            Select_Course_Or_Personnel_Group_CNAR();
+        }
     });
 
     IButton_Course_Ok_CNAR = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Course_Or_Personnel_Group_CNAR
+        click: function () {
+            if (CourseLG_CNAR.getSelectedRecord() == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_Course_CNAR.close();
+            Select_Course_Or_Personnel_Group_CNAR();
+        }
     });
 
     HLayout_Course_Ok_CNAR = isc.TrHLayoutButtons.create({
@@ -101,13 +111,13 @@
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
 
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "equals"},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "equals"},
+            {name: "companyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
+            {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "equals"},
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "equals"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "equals"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "equals"},
+            {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "equals"},
+            {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
             <%--{name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "equals"},--%>
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "equals"},
+            {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "equals"},
             {name: "educationLevelTitle", title: "<spring:message code="education.level"/>", filterOperator: "equals"},
             {name: "jobTitle", title: "<spring:message code="job.title"/>", filterOperator: "equals"},
             <%--{name: "jobNo", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},--%>
@@ -118,7 +128,7 @@
 
     CompanyDS_CNAR = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
@@ -126,7 +136,7 @@
 
     AreaDS_CNAR = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
@@ -134,7 +144,7 @@
 
     ComplexDS_CNAR = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
@@ -142,7 +152,7 @@
 
     AssistantDS_CNAR = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
@@ -150,7 +160,7 @@
 
     AffairsDS_CNAR = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
@@ -387,7 +397,14 @@
 
     IButton_Personnel_Ok_CNAR = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Course_Or_Personnel_Group_CNAR
+        click: function () {
+            if (PersonnelsLG_CNAR.getCriteria() === undefined || PersonnelsLG_CNAR.getCriteria().operator === undefined || PersonnelsLG_CNAR.getCriteria().criteria[0].value === undefined) {
+                createDialog("info", "<spring:message code='msg.no.filter.selected'/>");
+                return;
+            }
+            Window_Personnel_CNAR.close();
+            Select_Course_Or_Personnel_Group_CNAR();
+        }
     });
 
     HLayout_Personnel_Ok_CNAR = isc.TrHLayoutButtons.create({
@@ -449,8 +466,8 @@
     CourseNAReportDS_CNAR = isc.TrDS.create({
         fields: [
             {name: "needsAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "totalPersonnelCount", title: "تعداد کل پرسنل", filterOperator: "iContains", autoFitWidth: true},
-            {name: "passedPersonnelCount", title: "تعداد پرسنل گذرانده", filterOperator: "equals", autoFitWidth: true},
+            {name: "totalPersonnelCount", title: "<spring:message code='personnel.total'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "passedPersonnelCount", title: "<spring:message code='personnel.passed'/>", filterOperator: "equals", autoFitWidth: true},
         ],
         fetchDataURL: null
     });
@@ -481,7 +498,7 @@
     });
 
     MenuButton_GroupType_CNAR = isc.MenuButton.create({
-        title: "انتخاب گروه پرسنل بر اساس",
+        title: "<spring:message code='personnel.pased.on'/>",
         height: 27,
         width: 160,
         menu: isc.Menu.create({
@@ -489,24 +506,23 @@
             showShadow: true,
             shadowDepth: 10,
             data: [
-                {title: "شرکت", click: function () {Show_Personnel_Window_CNAR(8)}},
-                {title: "حوزه", click: function () {Show_Personnel_Window_CNAR(9)}},
-                {title: "مجتمع", click: function () {Show_Personnel_Window_CNAR(10)}},
-                {title: "معاونت", click: function () {Show_Personnel_Window_CNAR(11)}},
-                {title: "امور", click: function () {Show_Personnel_Window_CNAR(12)}},
-                {title: "واحد", click: function () {Show_Personnel_Window_CNAR(13)}},
-                {title: "مقطع تحصیلی", click: function () {Show_Personnel_Window_CNAR(14)}},
-                {title: "شغل", click: function () {Show_Personnel_Window_CNAR(15)}},
+                {title: "<spring:message code='company'/>", click: function () {Show_Personnel_Window_CNAR(8)}},
+                {title: "<spring:message code='area'/>", click: function () {Show_Personnel_Window_CNAR(9)}},
+                {title: "<spring:message code='complex'/>", click: function () {Show_Personnel_Window_CNAR(10)}},
+                {title: "<spring:message code='assistance'/>", click: function () {Show_Personnel_Window_CNAR(11)}},
+                {title: "<spring:message code='affairs'/>", click: function () {Show_Personnel_Window_CNAR(12)}},
+                {title: "<spring:message code='unit'/>", click: function () {Show_Personnel_Window_CNAR(13)}},
+                {title: "<spring:message code='education.level'/>", click: function () {Show_Personnel_Window_CNAR(14)}},
+                {title: "<spring:message code='job'/>", click: function () {Show_Personnel_Window_CNAR(15)}},
             ]
         }),
     });
 
     HeaderDF_CNAR = isc.DynamicForm.create({
-        // titleAlign: "left",
         fields: [
             {
                 name: "courseId",
-                title: "انتخاب دوره",
+                title: "<spring:message code='course.select'/>",
                 type: "ButtonItem",
                 height: 27,
                 click() {
@@ -528,7 +544,7 @@
             {
                 name: "title",
                 type: "staticText",
-                title: "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='course'/> " + getFormulaMessage("...", 2, "red", "b") + " برای پرسنل " + getFormulaMessage("...", 2, "red", "b"),
+                title: "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='course'/> " + getFormulaMessage("...", 2, "red", "b") + " <spring:message code='personnel.for'/> " + getFormulaMessage("...", 2, "red", "b"),
                 titleAlign: "center",
                 wrapTitle: false
             }
@@ -627,14 +643,11 @@
     }
 
     function Select_Course_Or_Personnel_Group_CNAR () {
-        Window_Personnel_CNAR.close();
-        Window_Course_CNAR.close();
-
         let courseTitle = getFormulaMessage(CourseLG_CNAR.getSelectedRecord() !== null ? CourseLG_CNAR.getSelectedRecord().titleFa : "...", 2, "red", "b");
         let groupTitle = getFormulaMessage("...", 2, "red", "b");
         if (PersonnelsLG_CNAR.getCriteria() !== undefined && PersonnelsLG_CNAR.getCriteria().operator !== undefined)
             groupTitle = getFormulaMessage(MenuButton_GroupType_CNAR.menu.data[selectedGroup_CNAR].title + " " + PersonnelsLG_CNAR.getCriteria().criteria[0].value, 2, "red", "b");
-        DynamicForm_Title_CNAR.getItem("title").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='course'/> " + courseTitle + " برای پرسنل " + groupTitle;
+        DynamicForm_Title_CNAR.getItem("title").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='course'/> " + courseTitle + " <spring:message code='personnel.for'/> " + groupTitle;
         DynamicForm_Title_CNAR.getItem("title").redraw();
 
         if (CourseLG_CNAR.getSelectedRecord() !== null){
