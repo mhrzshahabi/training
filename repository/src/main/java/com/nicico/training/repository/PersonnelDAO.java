@@ -20,6 +20,9 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
 
     List<Personnel> findOneByJobNo(String jobNo);
 
+    @Query(value = "SELECT DISTINCT  tbl_personnel.company_name FROM tbl_personnel WHERE  tbl_personnel.company_name is not null order by  tbl_personnel.company_name", nativeQuery = true)
+    List<String> findAllCompanyFromPersonnel();
+
     @Query(value = "SELECT DISTINCT  tbl_personnel.complex_title FROM tbl_personnel WHERE  tbl_personnel.complex_title is not null order by  tbl_personnel.complex_title", nativeQuery = true)
     List<String> findAllComplexFromPersonnel();
 
@@ -35,6 +38,9 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
     @Query(value = "SELECT DISTINCT tbl_personnel.ccp_unit FROM tbl_personnel WHERE tbl_personnel.ccp_unit IS NOT NULL ORDER BY  tbl_personnel.ccp_unit", nativeQuery = true)
     List<String> findAllUnitFromPersonnel();
 
-    Personnel findPersonnelByPersonnelNo(String  personnelNo);
+    @Query(value = "SELECT DISTINCT tbl_personnel.ccp_area FROM tbl_personnel WHERE tbl_personnel.ccp_area IS NOT NULL ORDER BY  tbl_personnel.ccp_area", nativeQuery = true)
+    List<String> findAllAreaFromPersonnel();
+
+    Personnel findPersonnelByPersonnelNo(String personnelNo);
 
 }

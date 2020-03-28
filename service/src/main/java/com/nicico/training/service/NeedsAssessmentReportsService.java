@@ -120,7 +120,7 @@ public class NeedsAssessmentReportsService {
                     try {
                         if (!postCodes.containsValue(((Post) needsAssessment.getObject()).getCode()))
                             postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), ((Post) needsAssessment.getObject()).getCode());
-                    } catch (Exception ex){
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                         return;
                     }
