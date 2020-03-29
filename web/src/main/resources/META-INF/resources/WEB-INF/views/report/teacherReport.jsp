@@ -85,22 +85,23 @@
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
                 name: "teacherCode",
-                title: "<spring:message code='code'/>"
+                title: "کد مدرس"
             },
             {
                 name: "personality.nationalCode",
-                title: "<spring:message code='firstName'/>"
+                title: "کد ملی"
             },
             {
                 name: "personnelCode",
-                title: "<spring:message code='lastName'/>"
+                title: "کد پرسنلی"
             },
             {
                 name: "personality.firstNameFa",
-                title: "<spring:message code='firstName'/>",
-                sortNormalizer: function (record) {
-                    return record.personality.firstNameFa;
-                }
+                title: "نام"
+            },
+            {
+                name: "personality.lastNameFa",
+                title: "نام خانوادگی"
             },
             {
                 name: "personality.educationMajor.titleFa",
@@ -573,16 +574,15 @@
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
             for(var i=0;i<data_values.criteria.size();i++)
                 if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
-                    alert(data_values.criteria[i].fieldName);
                     if(data_values.criteria[i].value == "true")
                         data_values.criteria[i].value = true;
                     else if(data_values.criteria[i].value == "false")
                         data_values.criteria[i].value = false;
                     }
-            ListGrid_Result_JspTeacherReport.setCriteria(data_values);
-            // ListGrid_Result_JspTeacherReport.invalidateCache();
-            // ListGrid_Result_JspTeacherReport.fetchData();
 
+            ListGrid_Result_JspTeacherReport.fetchData(data_values);
+            // ListGrid_Result_JspTeacherReport.setCriteria(data_values);
+            // ListGrid_Result_JspTeacherReport.invalidateCache();
             Window_Result_JspTeacherReport.show();
         }
     });
