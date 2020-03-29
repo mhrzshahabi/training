@@ -244,195 +244,195 @@
                     {
                         name: "header_PersonnelInfo",
                         type: "HeaderItem",
-                        defaultValue: "مشخصات شخصی",
+                        defaultValue: "<spring:message code="personal.information"/>",
                         startRow: true,
                         colSpan: 6,
                         cellStyle: "lineField"
                     },
                     {
                         name: "fullName",
-                        title: "نام و نام خانوادگی : ",
+                        title: "<spring:message code="full.name"/> : ",
                         canEdit: false,
                     },
                     {
                         name: "personnelNo",
-                        title: "کد پرسنلی : ",
+                        title: "<spring:message code="personnel.code"/> : ",
                         canEdit: false
                     },
                     {
                         name: "fatherName",
-                        title: "نام پدر : ",
+                        title: "<spring:message code="father.name"/> : ",
                         canEdit: false
                     },
                     {
                         name: "birth",
-                        title: "تولد : ",
+                        title: "<spring:message code="birth"/> : ",
                         canEdit: false
                     },
                     {
                         name: "nationalCode",
-                        title: "کد ملی : ",
+                        title: "<spring:message code="national.code"/> : ",
                         canEdit: false
                     },
                     {
                         name: "birthCertificateNo",
-                        title: "شماره شناسنامه : ",
+                        title: "<spring:message code="birth.certificate.no"/> : ",
                         canEdit: false
                     },
                     {
                         name: "educationLevelTitle",
-                        title: "تحصیلات : ",
+                        title: "<spring:message code="education"/> : ",
                         canEdit: false
                     },
                     {
                         name: "gender",
-                        title: "جنسیت : ",
+                        title: "<spring:message code="gender"/> : ",
                         canEdit: false
                     },
                     {
                         name: "workYears",
-                        title: "آموزش جاری : ",
+                        title: "<spring:message code="current.education"/> : ",
                         canEdit: false
                     },
                     {
                         name: "header_CompanyInfo",
                         type: "HeaderItem",
-                        defaultValue: "مشخصات سازمانی",
+                        defaultValue: "<spring:message code="company.profile"/>",
                         startRow: true,
                         colSpan: 6,
                         cellStyle: "lineField"
                     },
                     {
                         name: "notExists",
-                        title: "سرپرست : ",
+                        title: "<spring:message code="boss"/> : ",
                         canEdit: false
                     },
                     {
                         name: "notExists",
-                        title: "رابط : ",
+                        title: "<spring:message code="connective"/> : ",
                         canEdit: false
                     },
                     {
                         name: "employmentStatus",
-                        title: "وضعیت اشتغال : ",
+                        title: "<spring:message code="employment.status"/> : ",
                         canEdit: false
                     },
                     {
                         name: "ccpAssistant",
-                        title: "حوزه : ",
+                        title: "<spring:message code="area"/> : ",
                         canEdit: false
                     },
                     {
                         name: "ccpAffairs",
-                        title: "واحد : ",
+                        title: "<spring:message code="unit"/> : ",
                         canEdit: false
                     },
                     {
                         name: "ccpSection",
-                        title: "بخش : ",
+                        title: "<spring:message code="section"/> : ",
                         canEdit: false
                     },
                     {
                         name: "companyName",
-                        title: "شعبه : ",
+                        title: "<spring:message code="branch"/> : ",
                         canEdit: false
                     },
                     {
                         name: "postTitle",
-                        title: "شغل : ",
+                        title: "<spring:message code="job"/> : ",
                         canEdit: false
                     },
                     {
                         name: "jobTitle",
-                        title: "سمت : ",
+                        title: "<spring:message code="post"/> : ",
                         canEdit: false
                     },
                     {
                         name: "postGradeTitle",
-                        title: "رده : ",
+                        title: "<spring:message code="post.grade"/> : ",
                         canEdit: false
                     },
                     {
                         name: "notExists",
-                        title: "رسته شغلی : ",
+                        title: "<spring:message code="job.group"/> : ",
                         canEdit: false
                     },
                     {
                         name: "notExists",
-                        title: "طبقه شغلی : ",
+                        title: "<spring:message code="business.class"/> : ",
                         canEdit: false
                     },
                     {
                         name: "personnelNo2",
-                        title: "کد پرسنلی شش رقمی : ",
+                        title: "<spring:message code="personnel.code.six.digit"/> : ",
                         canEdit: false
                     },
                     {
                         name: "notExists",
-                        title: "پایه سمت : ",
+                        title: "<spring:message code="post.group"/> : ",
                         canEdit: false
                     },
                     {
                         name: "notExists",
-                        title: "پایه شخص : ",
+                        title: "<spring:message code="person.basic"/> : ",
                         canEdit: false
                     },
                     {
                         name: "employmentTypeTitle",
-                        title: "نوع استخدام : ",
+                        title: "<spring:message code="employment.type"/> : ",
                         canEdit: false
                     },
                     {
                         name: "employmentDate",
-                        title: "تاریخ استخدام : ",
+                        title: "<spring:message code="employment.date"/> : ",
                         canEdit: false
                     },
                     {
                         name: "workPlaceTitle",
-                        title: "محل جغرافیایی خدمت : ",
+                        title: "<spring:message code="geographical.location.of.service"/> : ",
                         canEdit: false
                     },
                     {
                         name: "notExists",
-                        title: "عوامل : ",
+                        title: "<spring:message code="agents"/> : ",
                         canEdit: false
                     },
                     {
                         name: "workTurnTitle",
-                        title: "تقسیم کارکنان : ",
+                        title: "<spring:message code="division.of.staff"/> : ",
                         canEdit: false
                     },
                     {
                         name: "notExists",
-                        title: "وضعیت خدمت : ",
+                        title: "<spring:message code="military"/> : ",
                         canEdit: false
                     },
                     {
                         name: "header_ContactInfo",
                         type: "HeaderItem",
-                        defaultValue: "اطلاعات تماس",
+                        defaultValue: "<spring:message code="contact.information"/>",
                         colSpan: 6,
                         startRow: true,
                         cellStyle: "lineField"
                     },
                     {
                         name: "tel",
-                        title: "تلفن : ",
+                        title: "<spring:message code="telephone"/> : ",
                         canEdit: false
                     },
                     {
                         name: "mobile",
-                        title: "همراه : ",
+                        title: "<spring:message code="cellPhone"/> : ",
                         canEdit: false
                     },
                     {
                         name: "email",
-                        title: "پست الکترونیکی : ",
+                        title: "<spring:message code="email"/> : ",
                         canEdit: false
                     },
                     {
                         name: "address",
-                        title: "آدرس : ",
+                        title: "<spring:message code="address"/> : ",
                         canEdit: false
                     }
                 ]
@@ -455,18 +455,18 @@
             tabs: [
                 {
                     id: "PersonnelInfo_Tab_Info",
-                    title: "اطلاعات شخصی",
+                    title: "<spring:message code="personnelReg.baseInfo"/>",
                     pane: VLayout_PersonnelInfo_Detail
 
                 },
                 {
                     id: "PersonnelInfo_Tab_Training",
-                    title: "آموزش ها",
+                    title: "<spring:message code="trainings"/>",
                     pane: ListGrid_PersonnelTraining
                 },
                 {
                     id: "PersonnelInfo_Tab_NeedAssessment",
-                    title: "شایستگی",
+                    title: "<spring:message code="competence"/>",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "web/needsAssessment-reports"})
                 }
 
@@ -503,6 +503,7 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
+        var nationalCode_Info, nationalCode_Training, nationalCode_Need;
         function set_PersonnelInfo_Details() {
 
             if (PersonnelInfoListGrid_PersonnelList.getSelectedRecord() !== null) {
@@ -511,8 +512,8 @@
                 let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
 
                 if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
-                    if (personnelNo !== null) {
-
+                    if (personnelNo !== null && nationalCode_Info !== nationalCode) {
+                        nationalCode_Info = nationalCode;
                         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
 
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -546,13 +547,18 @@
                         }));
                     }
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Training") {
-                    if (nationalCode !== null) {
+                    if (nationalCode !== null && nationalCode_Training !== nationalCode) {
+                        nationalCode_Training = nationalCode;
                         RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode;
                         ListGrid_PersonnelTraining.invalidateCache();
                         ListGrid_PersonnelTraining.fetchData();
                     }
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
-                    call_needsAssessmentReports(PersonnelInfoListGrid_PersonnelList);
+                    if(nationalCode_Need !== nationalCode)
+                    {
+                        nationalCode_Need = nationalCode
+                        call_needsAssessmentReports(PersonnelInfoListGrid_PersonnelList);
+                    }
                 }
             }
         }
