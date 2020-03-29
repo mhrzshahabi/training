@@ -504,6 +504,7 @@
     // <<----------------------------------------------- Functions --------------------------------------------
     {
         var nationalCode_Info, nationalCode_Training, nationalCode_Need;
+
         function set_PersonnelInfo_Details() {
 
             if (PersonnelInfoListGrid_PersonnelList.getSelectedRecord() !== null) {
@@ -554,9 +555,8 @@
                         ListGrid_PersonnelTraining.fetchData();
                     }
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
-                    if(nationalCode_Need !== nationalCode)
-                    {
-                        nationalCode_Need = nationalCode
+                    if (nationalCode_Need !== nationalCode) {
+                        nationalCode_Need = nationalCode;
                         call_needsAssessmentReports(PersonnelInfoListGrid_PersonnelList);
                     }
                 }
@@ -571,7 +571,7 @@
                 if (records[i].classStatusId === 1)
                     totalPlanning_ += records[i].hduration;
             }
-            return "جمع برنامه ریزی : " + totalPlanning_ + " ساعت ";
+            return "<spring:message code='planning.sum'/> : " + totalPlanning_ + " <spring:message code='hour'/> ";
         }
 
         function totalPassed(records) {
@@ -580,7 +580,7 @@
                 if (records[i].classStatusId !== 1)
                     totalPassed_ += records[i].hduration;
             }
-            return "جمع گذرانده یا در حال اجرا : " + totalPassed_ + " ساعت ";
+            return "<spring:message code='passed.or.running.sum'/> : " + totalPassed_ + " <spring:message code='hour'/> ";
         }
 
         function totalRejected(records) {
@@ -589,7 +589,7 @@
                 if (records[i].scoreStateId === 0)
                     totalRejected_ += records[i].hduration;
             }
-            return "جمع مردودی یا غایبی : " + totalRejected_ + " ساعت ";
+            return "<spring:message code='missing.or.absent.sum'/> : " + totalRejected_ + " <spring:message code='hour'/> ";
         }
 
         function totalAll(records) {
@@ -597,7 +597,7 @@
             for (i = 0; i < records.length; i++) {
                 totalAll_ += records[i].hduration;
             }
-            return "جمع کل : " + totalAll_ + " ساعت ";
+            return "<spring:message code='total.sum'/> : " + totalAll_ + " <spring:message code='hour'/> ";
         }
 
         //***********************************

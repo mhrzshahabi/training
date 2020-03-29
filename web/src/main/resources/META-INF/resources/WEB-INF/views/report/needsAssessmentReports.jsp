@@ -955,7 +955,6 @@
 
     //*************this function calls from personnelInformation page**************
     function call_needsAssessmentReports(selected_PersonnelsLG) {
-
         Select_Person_NABOP(selected_PersonnelsLG);
     }
 
