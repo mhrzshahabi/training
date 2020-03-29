@@ -181,4 +181,38 @@ public class PersonnelService implements IPersonnelService {
         return personnel;
     }
 
+    @Override
+    @Transactional
+    public SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName) {
+        List<String> values = null;
+        switch (fieldName) {
+            case "companyName":
+                values = personnelDAO.findAllCompanyFromPersonnel();
+                break;
+            case "complexTitle":
+                values = personnelDAO.findAllComplexFromPersonnel();
+                break;
+            case "ccpAssistant":
+                values = personnelDAO.findAllAssistantFromPersonnel();
+                break;
+            case "ccpAffairs":
+                values = personnelDAO.findAllAffairsFromPersonnel();
+                break;
+            case "ccpSection":
+                values = personnelDAO.findAllSectionFromPersonnel();
+                break;
+            case "ccpUnit":
+                values = personnelDAO.findAllUnitFromPersonnel();
+                break;
+            case "ccpArea":
+                values = personnelDAO.findAllAreaFromPersonnel();
+                break;
+        }
+        SearchDTO.SearchRs<PersonnelDTO.FieldValue> response = new SearchDTO.SearchRs<>();
+        response.setList(new ArrayList<>());
+        values.forEach(value -> response.getList().add(new PersonnelDTO.FieldValue(value)));
+        response.setTotalCount((long) response.getList().size());
+        return response;
+    }
+
 }

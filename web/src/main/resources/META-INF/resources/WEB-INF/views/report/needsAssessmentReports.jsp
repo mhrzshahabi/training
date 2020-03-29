@@ -749,7 +749,7 @@
             wait_NABOP = createDialog("wait");
             selectedPerson_NABOP = selected_PersonnelsLG_NABOP.getSelectedRecord();
             isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + postCode_NABOP, "GET", null, PostCodeSearch_result_NABOP));
-        } else if (reportType_NABOP !== 0) {
+        } else if (reportType_NABOP !== "0") {
             selectedPerson_NABOP = selected_PersonnelsLG_NABOP.getSelectedRecord();
             setTitle_NABOP();
             Window_Personnel_NABOP.close();

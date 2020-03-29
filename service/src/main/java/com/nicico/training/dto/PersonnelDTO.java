@@ -154,4 +154,13 @@ public class PersonnelDTO implements Serializable {
         private String ccpSection;
         private String ccpUnit;
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("FieldValue")
+    public static class FieldValue {
+        private String value;
+    }
 }
