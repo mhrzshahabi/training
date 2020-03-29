@@ -573,6 +573,7 @@
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
             for(var i=0;i<data_values.criteria.size();i++)
                 if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
+                    alert(data_values.criteria[i].fieldName);
                     if(data_values.criteria[i].value == "true")
                         data_values.criteria[i].value = true;
                     else if(data_values.criteria[i].value == "false")
