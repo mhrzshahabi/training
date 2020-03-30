@@ -719,6 +719,13 @@
                         }
                     ]
                 },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code='student.portal'/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/student-portal"/>");
+                    }
+                },
             ]
         }),
     });
