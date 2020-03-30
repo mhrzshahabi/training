@@ -21,11 +21,17 @@
                 {
                     title: "<spring:message code="training.file"/>",
                     click: function () {
-                        <%--Promise.resolve(createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>").promise()).then(call_trainingFile(person_SP).promise());--%>
                         createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>");
-                        MainTS_SP.selectTab(this.title);
-                        // if (typeof call_trainingFile !== "undefined")
-                        //     call_trainingFile(person_SP);
+                        // while (true){
+                        //     if (typeof call_trainingFile !== "undefined") {
+                        //         call_trainingFile(person_SP);
+                        //         break;
+                        //     }
+                        // }
+                        setTimeout(function () {
+                            if (typeof call_trainingFile !== "undefined")
+                                call_trainingFile(person_SP);
+                        }, 100);
                     }
                 },
                 {isSeparator: true},
@@ -81,10 +87,6 @@
         minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton_SP],
-        tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            if (isc.Page.isLoaded())
-                refreshSelectedTab_SP();
-        }
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -174,9 +176,9 @@
     }
 
     function createTab_SP(title, url, autoRefresh) {
-        let tab = MainTS_SP.getTabObject(title);
+        tab = MainTS_SP.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh === true)) {
+            if ((autoRefresh !== undefined) && (autoRefresh == true)) {
                 MainTS_SP.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             MainTS_SP.selectTab(tab);
@@ -184,29 +186,14 @@
             MainTS_SP.addTab({
                 title: title,
                 ID: title,
-                pane: isc.ViewLoader.create({viewURL: url, handleError() {createDialog("info", "خطا در ایجاد تب");}}),
+                pane: isc.ViewLoader.create({
+                    viewURL: url,
+                    handleError() {createDialog("info", "خطا در ایجاد تب")}
+                }),
                 canClose: true,
             });
-            // createTab_SP(title, url);
+            createTab_SP(title, url);
         }
-    }
-
-    function refreshSelectedTab_SP() {
-        switch (MainTS_SP.getSelectedTab().ID) {
-            case "<spring:message code='training.file'/>":
-                // if (typeof call_trainingFile !== "undefined")
-                    call_trainingFile(person_SP);
-                break;
-        }
-    }
-
-    //*************this function calls from studentPortal page**************
-    function call_trainingFile(selected_person) {
-        // Select_Person_NABOP(selected_PersonnelsLG);
-        DynamicForm_TrainingFile.hide();
-        RestDataSource_Course_JspTrainingFile.fetchDataURL = tclassStudentUrl + "/classes-of-student/" + selected_person.nationalCode;
-        ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-        ListGrid_TrainingFile_TrainingFileJSP.fetchData();
     }
 
     // </script>
