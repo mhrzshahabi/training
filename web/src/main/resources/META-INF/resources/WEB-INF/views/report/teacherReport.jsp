@@ -93,7 +93,25 @@
                 canEdit: false,
                 title: "",
                 align: "center"
-            }
+            },
+            {
+                name: "teacherInfo",
+                canEdit: false,
+                title: "",
+                align: "center"
+            },
+            {
+                name: "evalInfo",
+                canEdit: false,
+                title: "",
+                align: "center"
+            },
+            {
+                name: "teachingInfo",
+                canEdit: false,
+                title: "",
+                align: "center"
+            },
             ]
 
     });
@@ -725,8 +743,16 @@
         click: function () {
             if (DynamicForm_CriteriaForm_JspTeacherReport.hasErrors())
                 return;
-            DynamicForm_Titr_JspTeacherReport.getField("titr").setValue("گزارش اساتید بر اساس محدودیت های زیر");
+
             var personalInfo = "";
+            var teacherInfo = "";
+            var evalInfo = "";
+            var teachingInfo = "";
+
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode") != undefined){
+                personalInfo += "کد ملی: ";
+                personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode") + ", ";
+            }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.firstNameFa") != undefined){
                 personalInfo += "نام: ";
                 personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.firstNameFa") + ", ";
@@ -735,7 +761,28 @@
                 personalInfo += "نام خانوادگی: ";
                 personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.lastNameFa") + ", ";
             }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.educationMajorId") != undefined){
+                personalInfo += "رشته تحصیلی: ";
+                personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationMajorId").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.educationLevelId") != undefined){
+                personalInfo += "مدرک تحصیلی: ";
+                personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationLevelId").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.contactInfo.homeAddress.stateId") != undefined){
+                personalInfo += "استان: ";
+                personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.stateId").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.contactInfo.homeAddress.cityId") != undefined){
+                personalInfo += "شهر: ";
+                personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").getDisplayValue() + ", ";
+            }
+            ynamicForm_Titr_JspTeacherReport.getField("titr").setValue("گزارش اساتید بر اساس محدودیت های: ");
             DynamicForm_Titr_JspTeacherReport.getField("personalInfo").setValue(personalInfo);
+            DynamicForm_Titr_JspTeacherReport.getField("teacherInfo").setValue(personalInfo);
+            DynamicForm_Titr_JspTeacherReport.getField("evalInfo").setValue(personalInfo);
+            DynamicForm_Titr_JspTeacherReport.getField("teachingInfo").setValue(personalInfo);
+
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
             for(var i=0;i<data_values.criteria.size();i++)
                 if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
