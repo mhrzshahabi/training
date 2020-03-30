@@ -245,6 +245,7 @@ public class TeacherRestController {
         ////////////////////////////////////////////////
         List<Object> removedObjects = new ArrayList<>();
         Object evaluationGrade = null;
+        Long evalGrade = null;
         for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
             if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
                 evaluationGrade = criterion.getValue().get(0);
@@ -255,6 +256,7 @@ public class TeacherRestController {
         for (Object removedObject : removedObjects) {
             request.getCriteria().getCriteria().remove(removedObject);
         }
+       evalGrade =  Long.parseLong(evaluationGrade.toString());
         ///////////////////////////////////////////////
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 

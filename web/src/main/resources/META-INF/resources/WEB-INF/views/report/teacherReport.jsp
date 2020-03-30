@@ -75,26 +75,27 @@
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var DynamicForm_Titr_JspTeacherReport = isc.DynamicForm.create({
-        height: "100%",
-        align: "right",
-        canSubmit: true,
-        titleWidth: 120,
-        titleAlign: "left",
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
         showInlineErrors: true,
         showErrorText: false,
-        valuesManager: "vm",
-        // styleName: "teacher-form",
-        // numCols: 6,
-        margin: 10,
-        newPadding: 5,
-        canTabToIcons: false,
+        numCols: 2,
         fields: [
             {
                 name: "titr",
-                title: "گزارش اساتید",
                 canEdit: false,
+                title: "",
+                align: "center",
+            },
+            {
+                name: "personalInfo",
+                canEdit: false,
+                title: "",
+                align: "center"
             }
-        ]
+            ]
+
     });
 
     var ListGrid_Result_JspTeacherReport = isc.TrLG.create({
@@ -174,6 +175,7 @@
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
+        showFilterEditor: false,
         allowFilterExpressions: true,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
@@ -723,15 +725,17 @@
         click: function () {
             if (DynamicForm_CriteriaForm_JspTeacherReport.hasErrors())
                 return;
-
-            // var reportParameters = {
-            //     // complex_title: DynamicForm_MSReport.getValue("complex_MSReport") !== undefined ? DynamicForm_MSReport.getValue("complex_MSReport") : "همه",
-            //     // assistant: DynamicForm_MSReport.getValue("Assistant") !== undefined ? DynamicForm_MSReport.getValue("Assistant") : "همه",
-            //     // affairs: DynamicForm_MSReport.getValue("Affairs") !== undefined ? DynamicForm_MSReport.getValue("Affairs") : "همه",
-            //     // section: DynamicForm_MSReport.getValue("Section") !== undefined ? DynamicForm_MSReport.getValue("Section") : "همه",
-            //     // unit: DynamicForm_MSReport.getValue("Unit") !== undefined ? DynamicForm_MSReport.getValue("Unit") : "همه"
-            // };
-            // RestDataSource_Teacher_JspTeacherResult.fetchDataURL = teacherUrl + "reportList" + "/" + JSON.stringify(reportParameters);
+            DynamicForm_Titr_JspTeacherReport.getField("titr").setValue("گزارش اساتید بر اساس محدودیت های زیر");
+            var personalInfo = "";
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.firstNameFa") != undefined){
+                personalInfo += "نام: ";
+                personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.firstNameFa") + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.lastNameFa") != undefined){
+                personalInfo += "نام خانوادگی: ";
+                personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.lastNameFa") + ", ";
+            }
+            DynamicForm_Titr_JspTeacherReport.getField("personalInfo").setValue(personalInfo);
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
             for(var i=0;i<data_values.criteria.size();i++)
                 if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
@@ -742,8 +746,6 @@
                     }
 
             ListGrid_Result_JspTeacherReport.fetchData(data_values);
-            // ListGrid_Result_JspTeacherReport.setCriteria(data_values);
-            // ListGrid_Result_JspTeacherReport.invalidateCache();
             Window_Result_JspTeacherReport.show();
         }
     });
