@@ -764,6 +764,13 @@
                 },
                 {isSeparator: true},
                 {
+                    title:"<spring:message code="unfinished.classes"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="web/unfinishedClassesReport"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
                     title: "<spring:message code="teachers.report"/>",
                     click:function(){
                         createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
