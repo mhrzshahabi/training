@@ -37,6 +37,26 @@
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
 
+    var RestDataSource_Category_Evaluation_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategory_Evaluation_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    var RestDataSource_Teaching_Category_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "spec-list"
+    });
+
+    var RestDataSource_Teaching_SubCategory_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
     var RestDataSource_Teacher_JspTeacherResult = isc.TrDS.create({
         fields: [
             {name: "id"},
@@ -243,7 +263,7 @@
             },
             {
                 name: "categories",
-                title: "<spring:message code='education.categories'/>",
+                title: "زمینه های آموزشی",
                 type: "selectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherReport,
@@ -280,7 +300,7 @@
             },
             {
                 name: "subCategories",
-                title: "<spring:message code='sub.education.categories'/>",
+                title: "زیر زمینه های آموزشی",
                 type: "selectItem",
                 textAlign: "center",
                 autoFetchData: false,
@@ -318,6 +338,69 @@
                 canEdit: false,
             },
             {
+                name: "majorCategoryId",
+                title: "گروه مرتبط",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Category_Evaluation_JspTeacherReport,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "majorSubCategoryId",
+                title: "و زیرگروه مرتبط با رشته ی تحصیلی",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_Evaluation_JspTeacherReport,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "temp3",
+                title: "",
+                canEdit: false,
+            },
+            {
                 name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
                 textAlign: "center",
@@ -348,7 +431,7 @@
             },
             {
                 name: "personality.educationLevelId",
-                title: "<spring:message code='education.level'/>",
+                title: "مدرک تحصیلی",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -373,7 +456,7 @@
                 ]
             },
             {
-                name: "temp3",
+                name: "temp4",
                 title: "",
                 canEdit: false,
             },
@@ -435,13 +518,13 @@
                 ]
             },
             {
-                name: "temp4",
+                name: "temp5",
                 title: "",
                 canEdit: false,
             },
             {
-                name: "category",
-                title: "حداکثر نمره ی ارزیابی استاد در گروه: ",
+                name: "evaluationCategory",
+                title: " حداقل نمره ی ارزیابی استاد در گروه",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -489,8 +572,8 @@
 
             },
             {
-                name: "subCategory",
-                title: "و زیرگروه: ",
+                name: "evaluationSubCategory",
+                title: "و زیرگروه",
                 textAlign: "center",
                 width: "*",
                 titleAlign: "center",
@@ -531,7 +614,7 @@
                 }
             },
             {
-                name: "grade",
+                name: "evaluationGrade",
                 title: "=",
                 hint: "100",
                 titleAlign: "center",
@@ -539,7 +622,85 @@
                 textAlign: "center",
                 showHintInField: true,
                 keyPressFilter: "[0-9.]"
-            }
+            },
+            {
+                name: "teachingCategories",
+                title: "استاد در حوزه های",
+                titleAlign: "center",
+                type: "selectItem",
+                textAlign: "center",
+                optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                },
+                // changed: function () {
+                //     isCriteriaCategoriesChanged = true;
+                //     var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories");
+                //     if (this.getSelectedRecords() == null) {
+                //         subCategoryField.clearValue();
+                //         subCategoryField.disable();
+                //         return;
+                //     }
+                //     subCategoryField.enable();
+                //     if (subCategoryField.getValue() === undefined)
+                //         return;
+                //     var subCategories = subCategoryField.getSelectedRecords();
+                //     var categoryIds = this.getValue();
+                //     var SubCats = [];
+                //     for (var i = 0; i < subCategories.length; i++) {
+                //         if (categoryIds.contains(subCategories[i].categoryId))
+                //             SubCats.add(subCategories[i].id);
+                //     }
+                //     subCategoryField.setValue(SubCats);
+                //     subCategoryField.focus(this.form, subCategoryField);
+                // }
+            },
+            {
+                name: "teachingSubCategories",
+                title: "و زیر حوزه های",
+                titleAlign: "center",
+                type: "selectItem",
+                textAlign: "center",
+                autoFetchData: false,
+                disabled: true,
+                optionDataSource: RestDataSource_Teaching_SubCategory_JspTeacherReport,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                },
+                // focus: function () {
+                //     if (isCriteriaCategoriesChanged) {
+                //         isCriteriaCategoriesChanged = false;
+                //         var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("categories").getValue();
+                //         if (ids === []) {
+                //             RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = null;
+                //         } else {
+                //             RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = {
+                //                 _constructor: "AdvancedCriteria",
+                //                 operator: "and",
+                //                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                //             };
+                //         }
+                //         this.fetchData();
+                //     }
+                // }
+            },
+            {
+                name: "temp6",
+                title: "تدریس داشته است.",
+                canEdit: false,
+            },
         ],
         itemChanged: function (item, newValue) {
             if (item.name === "personality.contactInfo.homeAddress.stateId") {
@@ -591,7 +752,7 @@
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "75%",
+        width: "70%",
         height: "80%",
         alignLayout: "center",
         padding: 10,
@@ -603,7 +764,7 @@
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "75%",
+        width: "70%",
         height: "10%",
         alignLayout: "center",
         padding: 10,
