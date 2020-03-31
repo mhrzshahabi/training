@@ -27,6 +27,8 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequiredArgsConstructor
 public class NeedsAssessmentReportsService {
 
+    private final List<String> needsAssessmentPriorityCodes = Arrays.asList(new String[]{"AZ", "AB", "AT"});
+
     private final ModelMapper modelMapper;
 
     private final PostDAO postDAO;
@@ -104,9 +106,13 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
 
         List<NeedsAssessmentReportsDTO.CourseNAS> result = new ArrayList<>();
+        needsAssessmentPriorityCodes.forEach(code -> {
+            Long pId = parameterValueService.getId(code);
+            result.add(new NeedsAssessmentReportsDTO.CourseNAS().setNeedsAssessmentPriorityId(pId));
+        });
         Course course = courseService.getCourse(courseId);
         List<NeedsAssessment> needsAssessments = new ArrayList<>();
         course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments()));
@@ -120,7 +126,7 @@ public class NeedsAssessmentReportsService {
                     try {
                         if (!postCodes.containsValue(((Post) needsAssessment.getObject()).getCode()))
                             postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), ((Post) needsAssessment.getObject()).getCode());
-                    } catch (Exception ex){
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                         return;
                     }
@@ -157,23 +163,26 @@ public class NeedsAssessmentReportsService {
                     break;
             }
         });
-
         postCodes.forEach((priority, pCodes) -> {
             SearchDTO.CriteriaRq personnelCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             if (request.getCriteria() != null)
                 personnelCriteria.getCriteria().add(request.getCriteria());
             personnelCriteria.getCriteria().add(makeNewCriteria("postCode", pCodes, EOperator.inSet, null));
             List<PersonnelDTO.Info> personnelInfoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(personnelCriteria).setDistinct(true)).getList();
-            NeedsAssessmentReportsDTO.CourseNAS courseNAS = new NeedsAssessmentReportsDTO.CourseNAS().setNeedsAssessmentPriorityId((Long) priority).setTotalPersonnelCount(personnelInfoList.size());
+            NeedsAssessmentReportsDTO.CourseNAS courseNAS = result.stream().filter(courseNAS1 -> courseNAS1.getNeedsAssessmentPriorityId().equals((Long) priority)).findFirst().orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            courseNAS.setTotalPersonnelCount(personnelInfoList.size());
             if (passedReport) {
                 personnelInfoList.forEach(p -> {
                     if (classStudentReportService.isPassed(course, p.getNationalCode()))
                         courseNAS.setPassedPersonnelCount(courseNAS.getPassedPersonnelCount() + 1);
                 });
             }
-            result.add(courseNAS);
+//            result.add(courseNAS);
         });
-        return result;
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) result.size());
+        searchRs.setList(result);
+        return searchRs;
     }
 
     @Transactional(readOnly = true)

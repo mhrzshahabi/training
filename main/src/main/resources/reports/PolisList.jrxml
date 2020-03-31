@@ -34,6 +34,8 @@
 		</queryString>
 		<field name="nameFa" class="java.lang.String"/>
 		<field name="province.nameFa" class="java.lang.String"/>
+		<field name="nameEn" class="java.lang.String"/>
+		<field name="province.nameEn" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -52,7 +54,7 @@
 				<reportElement x="2" y="0" width="550" height="84" uuid="184863ae-989d-4549-ba9d-c806b28af35d"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="227" y="27" width="100" height="30" uuid="e054191d-dd30-472d-bb50-03d58ab1d3f8"/>
+				<reportElement x="230" y="10" width="100" height="30" uuid="e054191d-dd30-472d-bb50-03d58ab1d3f8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
@@ -62,6 +64,13 @@
 				<reportElement x="494" y="17" width="50" height="50" uuid="13c85262-295f-40c9-b69b-2e999b47d217"/>
 				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="230" y="40" width="100" height="30" uuid="6bcc02b9-d265-44de-ae45-603605bc3dcf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Polisies]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -80,41 +89,79 @@
 					<datasetRun subDataset="Empty Dataset1" uuid="21df1446-cfaf-45dd-b054-3dec13d47c80">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("content")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="280" uuid="58d796dd-98fd-4f08-9dd2-78a91e37436b">
+					<jr:column width="140" uuid="2fc76cca-7213-4a53-aa60-8281b68b9dd4">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="280" height="30" uuid="42d4f105-923b-49d5-af01-19d43fc43ad8"/>
+								<reportElement x="0" y="0" width="140" height="30" uuid="6c6b82ea-c277-4d51-9d54-e8fff0471f81"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="14"/>
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[province]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="140" height="30" uuid="7518cb73-20cf-4b54-925b-6d39ec6cf30a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{province.nameEn}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="58d796dd-98fd-4f08-9dd2-78a91e37436b">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="140" height="30" uuid="42d4f105-923b-49d5-af01-19d43fc43ad8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
 								</textElement>
 								<text><![CDATA[استان]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="280" height="30" uuid="7c876c2b-2c73-41ae-92f4-8be560b4235e"/>
+								<reportElement x="0" y="0" width="140" height="30" uuid="7c876c2b-2c73-41ae-92f4-8be560b4235e"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{province.nameFa}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="330" uuid="6e8a1e95-b771-4268-b81c-668fc59d5d93">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+					<jr:column width="140" uuid="6e8a1e95-b771-4268-b81c-668fc59d5d93">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="330" height="30" uuid="2776694b-ad06-48e0-bd11-d334e6bafa33"/>
+								<reportElement x="0" y="0" width="140" height="30" uuid="2776694b-ad06-48e0-bd11-d334e6bafa33"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="14"/>
+									<font size="14" isBold="true"/>
 								</textElement>
 								<text><![CDATA[شهر]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="330" height="30" uuid="76fead08-bc9a-439d-9b31-e9efaeae3713"/>
+								<reportElement x="0" y="0" width="140" height="30" uuid="76fead08-bc9a-439d-9b31-e9efaeae3713"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{nameFa}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="dbe625ae-0f6f-4490-96be-2c98795e9de3">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="ee6061d2-929a-47ed-886b-1c55a25583dc"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[polis]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="130" height="30" uuid="4d793241-fd42-45a1-9d9e-1b08acf8eab7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{nameEn}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -133,7 +180,7 @@
 				<textFieldExpression><![CDATA[$P{todayDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="80" y="1" width="100" height="18" uuid="4c32dc6b-8a9d-4dc1-bfd3-95f514cf2ba9"/>
+				<reportElement x="80" y="-9" width="100" height="18" uuid="4c32dc6b-8a9d-4dc1-bfd3-95f514cf2ba9"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
@@ -145,9 +192,21 @@
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="487" y="0" width="64" height="20" uuid="dbaa10aa-7457-4e7c-a405-3675fd0da136"/>
+				<reportElement x="487" y="-7" width="64" height="20" uuid="dbaa10aa-7457-4e7c-a405-3675fd0da136"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[صفحه:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="10" width="100" height="18" uuid="c0e2c1ac-3103-422c-95f1-14c9fd9a5e28"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="487" y="9" width="64" height="20" uuid="c4fdf505-889a-497d-bad5-7d7de802b52c"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[:page.No]]></text>
 			</staticText>
 		</band>
 	</pageFooter>

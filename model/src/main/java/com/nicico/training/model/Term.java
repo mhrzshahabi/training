@@ -23,13 +23,13 @@ public class Term extends Auditable {
     @Column(name = "c_code")
     private String code;
 
-    @Column(name = "c_title_fa")
+    @Column(name = "c_title_fa",nullable = false)
     private String titleFa;
 
-    @Column(name = "c_startdate")
+    @Column(name = "c_startdate",nullable = false)
     private String startDate;
 
-    @Column(name = "c_enddate")
+    @Column(name = "c_enddate",nullable = false)
     private String endDate;
 
 

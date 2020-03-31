@@ -34,6 +34,7 @@
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
+		<field name="nameEn" class="java.lang.String"/>
 		<field name="nameFa" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
@@ -103,23 +104,40 @@
 					<datasetRun subDataset="Dataset1" uuid="8fe27ec1-b216-488b-9047-8a76be364697">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("content")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="550" uuid="1e6d7cb0-c75a-41d4-85d0-518e279383fe">
+					<jr:column width="290" uuid="1e6d7cb0-c75a-41d4-85d0-518e279383fe">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="550" height="30" uuid="e139c21a-19f3-464c-a6df-79b52d754614"/>
+								<reportElement x="0" y="0" width="290" height="30" uuid="e139c21a-19f3-464c-a6df-79b52d754614"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Arial" isBold="true"/>
+									<font fontName="Arial" size="14" isBold="true"/>
 								</textElement>
 								<text><![CDATA[province]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="550" height="30" uuid="d5c05bcb-82e1-4b7a-b3ae-a99591a5678f"/>
+							<textField>
+								<reportElement x="0" y="0" width="290" height="30" uuid="fec4438a-274f-4732-ae52-e5ef4e7c87ab"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{nameEn}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="260" uuid="45841234-d321-4427-a507-daf033ac04ca">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="260" height="30" uuid="e1bfcd66-c631-4501-8c62-eec8e48807f1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Arial" size="8"/>
+									<font fontName="Arial" size="14" isBold="true"/>
 								</textElement>
+								<text><![CDATA[استان]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="260" height="30" uuid="e380e266-8eae-44cb-851e-b6127d3aaeae"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{nameFa}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -139,7 +157,7 @@
 				<textFieldExpression><![CDATA[$P{todayDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="100" y="15" width="40" height="25" uuid="3584d135-e487-421d-b50b-a1446aac3614"/>
+				<reportElement x="100" y="0" width="40" height="25" uuid="3584d135-e487-421d-b50b-a1446aac3614"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<text><![CDATA[تاریخ:]]></text>
 			</staticText>
@@ -151,9 +169,19 @@
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="500" y="10" width="55" height="30" uuid="d239158c-507e-4cd9-824e-79644b4552d4"/>
+				<reportElement x="500" y="-3" width="55" height="30" uuid="d239158c-507e-4cd9-824e-79644b4552d4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<text><![CDATA[شماره صفحه:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="25" width="40" height="25" uuid="81c39018-cc75-4979-8852-0b25fd8cf127"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[:date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="500" y="25" width="55" height="30" uuid="e85f617e-c829-4ad1-a6fb-e19b8c3b54a8"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[:Page.No]]></text>
 			</staticText>
 		</band>
 	</pageFooter>

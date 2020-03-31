@@ -25,6 +25,9 @@ public class Polis extends Auditable{
     @Column(name = "c_name_fa", nullable = false)
     private String nameFa;
 
+    @Column(name = "c_name_en")
+    private String nameEn;
+
     @Column(name = "f_province_id")
     private Long provinceId;
 

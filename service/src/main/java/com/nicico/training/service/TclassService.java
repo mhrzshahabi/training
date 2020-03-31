@@ -702,7 +702,9 @@ public class TclassService implements ITclassService {
                         classInfo[7].toString(),
                         Long.parseLong(classInfo[8].toString()),
                         classInfo[9].toString(),
-                        classInfo[10].toString()));
+                        classInfo[10].toString(),
+                        Long.parseLong(classInfo[11].toString()),
+                        classInfo[12].toString()));
             }
         }
 

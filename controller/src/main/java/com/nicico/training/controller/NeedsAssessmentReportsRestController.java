@@ -66,11 +66,7 @@ public class NeedsAssessmentReportsRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        List<NeedsAssessmentReportsDTO.CourseNAS> courseNAS = needsAssessmentReportsService.getCourseNA(searchRq, courseId, passedReport);
-        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setTotalCount((long) courseNAS.size());
-        searchRs.setList(courseNAS);
-        return new ResponseEntity(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity(ISC.convertToIscRs(needsAssessmentReportsService.getCourseNA(searchRq, courseId, passedReport), startRow), HttpStatus.OK);
     }
 
     @Loggable

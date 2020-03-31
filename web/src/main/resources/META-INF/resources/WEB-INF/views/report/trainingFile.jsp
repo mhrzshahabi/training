@@ -192,4 +192,13 @@
         ]
     });
 
+    //*************this function calls from studentPortal page**************
+    function call_trainingFile(selected_person) {
+        // Select_Person_NABOP(selected_PersonnelsLG);
+        DynamicForm_TrainingFile.hide();
+        RestDataSource_Course_JspTrainingFile.fetchDataURL = tclassStudentUrl + "/classes-of-student/" + selected_person.nationalCode;
+        ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
+        ListGrid_TrainingFile_TrainingFileJSP.fetchData();
+    }
+
  //</script>

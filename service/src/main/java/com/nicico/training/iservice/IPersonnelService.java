@@ -32,4 +32,5 @@ public interface IPersonnelService {
 
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
+    SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
 }
