@@ -5,9 +5,9 @@
 // <script>
 
     const userNationalCode = '<%= SecurityUtil.getNationalCode()%>';
-    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/getOneByNationalCode/3051383600", "GET", null, userData_Result_SP));
+    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/getOneByNationalCode/" + userNationalCode, "GET", null, userData_Result_SP));
 
-    var person_SP;
+    var person_SP = null;
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*Main Menu*/
@@ -21,17 +21,7 @@
                 {
                     title: "<spring:message code="training.file"/>",
                     click: function () {
-                        createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>");
-                        // while (true){
-                        //     if (typeof call_trainingFile !== "undefined") {
-                        //         call_trainingFile(person_SP);
-                        //         break;
-                        //     }
-                        // }
-                        setTimeout(function () {
-                            if (typeof call_trainingFile !== "undefined")
-                                call_trainingFile(person_SP);
-                        }, 100);
+                        createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>", "call_trainingFile");
                     }
                 },
                 {isSeparator: true},
@@ -170,15 +160,19 @@
             PostLabel_SP.redraw();
             AffairsLabel_SP.redraw();
         } else {
-            person_SP = resp;
+            person_SP = null;
             createDialog("info", resp.httpResponseText);
         }
     }
 
-    function createTab_SP(title, url, autoRefresh) {
+    function createTab_SP(title, url, callFunction, autoRefresh) {
+        if (person_SP == null) {
+            createDialog("info", "<spring:message code='person.not.found'/>");
+            return;
+        }
         tab = MainTS_SP.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true)) {
+            if ((autoRefresh !== undefined) && (autoRefresh === true)) {
                 MainTS_SP.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             MainTS_SP.selectTab(tab);
@@ -188,7 +182,8 @@
                 ID: title,
                 pane: isc.ViewLoader.create({
                     viewURL: url,
-                    handleError() {createDialog("info", "خطا در ایجاد تب")}
+                    handleError() {createDialog("info", "خطا در ایجاد تب")},
+                    viewLoaded() {window[callFunction](person_SP)}
                 }),
                 canClose: true,
             });
