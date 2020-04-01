@@ -880,11 +880,6 @@
                         }
                     }
                     exportToExcel(sendFields, allRows);
-                    <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
-                    <%--downloadForm.setValue("fields", JSON.stringify(sendFields));--%>
-                    <%--downloadForm.setValue("allRows", JSON.stringify(ListGrid_Attendance_AttendanceJSP.data.allRows.toArray()));--%>
-                    <%--downloadForm.show();--%>
-                    <%--downloadForm.submitForm();--%>
                 }
             },
             {
@@ -960,6 +955,7 @@
         editEvent: "none",
         editOnFocus: true,
         editByCell: true,
+        showHeaderContextMenu:false,
         gridComponents: [DynamicForm_Attendance, "header", "filterEditor", "body", isc.TrHLayoutButtons.create({
             members: [
                 isc.IButtonSave.create({

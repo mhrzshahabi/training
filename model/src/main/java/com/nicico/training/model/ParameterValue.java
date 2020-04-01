@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_parameter_value")
 public class ParameterValue extends Auditable {
