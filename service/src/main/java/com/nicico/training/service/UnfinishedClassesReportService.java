@@ -4,6 +4,7 @@ import com.nicico.training.dto.UnfinishedClassesReportDTO;
 import com.nicico.training.iservice.IUnfinishedClassesReportService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class UnfinishedClassesReportService implements IUnfinishedClassesReportS
     @Transactional
     public List<UnfinishedClassesReportDTO> UnfinishedClassesList() {
 
-        String nationalCode ="";
+        String nationalCode = "2559979705";
 
         List<?> unfinishedClasses = null;
         List<UnfinishedClassesReportDTO> unfinishedClassesList = null;
@@ -66,17 +67,20 @@ public class UnfinishedClassesReportService implements IUnfinishedClassesReportS
                 "    c.id, c.c_code, c.f_course, co.c_code, co.c_title_fa, c.n_h_duration, c.c_start_date, c.c_end_date, tbl_institute.c_title_fa, " +
                 "    cs.student_id, hs.held_sessions, p.c_first_name_fa, p.c_last_name_fa, st.national_code, st.first_name, st.last_name ";
 
-        unfinishedClasses = (List<?>) entityManager.createNativeQuery(reportScript).setParameter("national_code", "555").getResultList();
+        unfinishedClasses = (List<?>) entityManager.createNativeQuery(reportScript).setParameter("national_code", nationalCode).getResultList();
 
         if (unfinishedClasses != null) {
 
             unfinishedClassesList = new ArrayList<>(unfinishedClasses.size());
 
             for (int i = 0; i < unfinishedClasses.size(); i++) {
-                unfinishedClassesList.add(new UnfinishedClassesReportDTO());
+                Object[] classes = (Object[]) unfinishedClasses.get(i);
+                unfinishedClassesList.add(new UnfinishedClassesReportDTO(Long.parseLong(classes[0].toString()), classes[1].toString(), Long.parseLong(classes[2].toString()), classes[3].toString(), classes[4].toString(), Long.parseLong(classes[5].toString()), classes[6].toString(),
+                        classes[7].toString(), classes[8].toString(), classes[9].toString(), Integer.parseInt(classes[10].toString()), Integer.parseInt(classes[11].toString()), classes[12].toString(), Long.parseLong(classes[13].toString()), classes[14].toString(), classes[15].toString(), classes[16].toString()));
             }
         }
 
-        return null;
+        return (unfinishedClassesList != null ? modelMapper.map(unfinishedClassesList, new TypeToken<List<UnfinishedClassesReportDTO>>() {
+        }.getType()) : null);
     }
 }

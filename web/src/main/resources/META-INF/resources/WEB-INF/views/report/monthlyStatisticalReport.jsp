@@ -275,7 +275,7 @@
         var VLayout_ListGrid_MSReport = isc.VLayout.create({
             width: "95%",
             height: "100%",
-            border: "1px solid green",
+            border: "1px solid gray",
             members: [ListGrid_MSReport]
         });
 
