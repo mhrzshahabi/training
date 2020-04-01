@@ -751,6 +751,7 @@
 
             if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode") != undefined){
                 personalInfo += "کد ملی: ";
+                // personalInfo += "<h1 style='color:#ff0842;'>کد ملی: </h1>";
                 personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode") + ", ";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.firstNameFa") != undefined){
@@ -777,11 +778,65 @@
                 personalInfo += "شهر: ";
                 personalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").getDisplayValue() + ", ";
             }
-            ynamicForm_Titr_JspTeacherReport.getField("titr").setValue("گزارش اساتید بر اساس محدودیت های: ");
+
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("enableStatus") == "true"){
+                teacherInfo += "وضعیت استاد: ";
+                teacherInfo += "فعال" + ", ";
+            }
+            else  if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("enableStatus") == "false"){
+                teacherInfo += "وضعیت استاد: ";
+                teacherInfo += "غیرفعال" + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personnelStatus") == "true"){
+                teacherInfo += "نوع استاد: ";
+                teacherInfo += "داخلی شرکت مس" + ", ";
+            }
+            else  if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personnelStatus") == "false"){
+                teacherInfo += "نوع استاد: ";
+                teacherInfo += "بیرونی" + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("categories") != undefined){
+                teacherInfo += "زمینه های آموزشی: ";
+                teacherInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("categories").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("subCategories") != undefined){
+                teacherInfo += "زیر زمینه های آموزشی: ";
+                teacherInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("majorCategoryId") != undefined){
+                teacherInfo += "گروه مرتبط با رشته ی تحصیلی: ";
+                teacherInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("majorCategoryId").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("majorSubCategoryId") != undefined){
+                teacherInfo += "زیرگروه مرتبط با رشته ی تحصیلی: ";
+                teacherInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("majorSubCategoryId").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationCategory") != undefined){
+                evalInfo += "حداقل نمره ی ارزیابی استاد در گروه: ";
+                evalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue();
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationSubCategory") != undefined){
+                evalInfo += "و زیرگروه: ";
+                evalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getDisplayValue();
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationGrade") != undefined){
+                evalInfo += "مساوی";
+                evalInfo += DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationGrade");
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("teachingCategories") != undefined){
+                teachingInfo += "زمینه های تدریس استاد: ";
+                teachingInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getDisplayValue() + ", ";
+            }
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("teachingSubCategories") != undefined){
+                teachingInfo += "زیر زمینه های تدریس استاد: ";
+                teachingInfo += DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getDisplayValue();
+            }
+
+            DynamicForm_Titr_JspTeacherReport.getField("titr").setValue("گزارش اساتید بر اساس محدودیت های زیر");
             DynamicForm_Titr_JspTeacherReport.getField("personalInfo").setValue(personalInfo);
-            DynamicForm_Titr_JspTeacherReport.getField("teacherInfo").setValue(personalInfo);
-            DynamicForm_Titr_JspTeacherReport.getField("evalInfo").setValue(personalInfo);
-            DynamicForm_Titr_JspTeacherReport.getField("teachingInfo").setValue(personalInfo);
+            DynamicForm_Titr_JspTeacherReport.getField("teacherInfo").setValue(teacherInfo);
+            DynamicForm_Titr_JspTeacherReport.getField("evalInfo").setValue(evalInfo);
+            DynamicForm_Titr_JspTeacherReport.getField("teachingInfo").setValue(teachingInfo);
 
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
             for(var i=0;i<data_values.criteria.size();i++)
