@@ -7,7 +7,7 @@
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
-        var RestDataSource_MSReport = isc.TrDS.create({
+        var RestDataSource_UCReport = isc.TrDS.create({
             fields:
                 [
                     {name: "id"},
@@ -31,10 +31,10 @@
             fetchDataURL: unfinishedClasses + "list"
         });
 
-        var ListGrid_MSReport = isc.TrLG.create({
+        var  ListGrid_UCReport = isc.TrLG.create({
             width: "100%",
             height: "100%",
-            dataSource: RestDataSource_MSReport,
+            dataSource: RestDataSource_UCReport,
             canAddFormulaFields: false,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
@@ -49,103 +49,116 @@
 
                 {
                     name: "id",
-                    title: "<spring:message code="unitName"/>",
+                    title: "id",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "classCode",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="class.code"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "courseId",
-                    title: "<spring:message code="unitName"/>",
+                    title: "courseId",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "courseCode",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="course.code"/>",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
                     name: "courseName",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="course.title"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "duration",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="class.duration"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "startDate",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="start.date"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "endDate",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="end.date"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "firstSession",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="first.session"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "instituteName",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="present.location"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "sessionCount",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="sessions.count"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "heldSessions",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="held.sessions"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "teacher",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="teacher"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
                     name: "studentId",
-                    title: "<spring:message code="unitName"/>",
+                    title: "studentId",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "nationalCode",
-                    title: "<spring:message code="unitName"/>",
+                    title: "<spring:message code="national.code"/>",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
                     name: "firstName",
-                    title: "<spring:message code="unitName"/>",
+                    title: "studentFirstName",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
                     name: "lastName",
-                    title: "<spring:message code="unitName"/>",
+                    title: "studentLastName",
                     align: "center",
                     filterOperator: "iContains"
                 }
@@ -155,14 +168,46 @@
     }
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
+    var ToolStripButton_Print_UCReport = isc.ToolStripButtonPrint.create({
+        click: function () {
+            alert("hi");
+        }
+    });
+
+    var ToolStripButton_Refresh_UCReport = isc.ToolStripButtonRefresh.create({
+        click: function () {
+            ListGrid_UCReport.invalidateCache();
+        }
+    });
+
+    var ToolStrip_UCReport = isc.ToolStrip.create({
+        width: "100%",
+        height: "100%",
+        members: [
+            ToolStripButton_Print_UCReport,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                members: [ToolStripButton_Refresh_UCReport]
+            })
+        ]
+
+    });
+
     // <<--------------------------------- Create - DynamicForm & Window & Layout -----------------------------
     {
 
-        var Hlayout_Body_MSReport = isc.HLayout.create({
+        var Hlayout_ToolStrip_UCReport = isc.HLayout.create({
             width: "100%",
-            height: "100%",
-            members: [ListGrid_MSReport]
-        })
+            height: "5%",
+            members: [ToolStrip_UCReport]
+        });
+
+        var Hlayout_Body_UCReport = isc.VLayout.create({
+            width: "100%",
+            height: "95%",
+            members: [Hlayout_ToolStrip_UCReport,  ListGrid_UCReport]
+        });
 
     }
     // ----------------------------------- Create - DynamicForm & Window & Layout --------------------------->>
@@ -171,9 +216,9 @@
     {
         //*****search report result*****
         // function searchResult() {
-        // RestDataSource_MSReport.fetchDataURL = monthlyStatistical + "list" + "/" + JSON.stringify(reportParameters);
-        //     ListGrid_MSReport.invalidateCache();
-        //     ListGrid_MSReport.fetchData();
+        // RestDataSource_UCReport.fetchDataURL = monthlyStatistical + "list" + "/" + JSON.stringify(reportParameters);
+        //      ListGrid_UCReport.invalidateCache();
+        //      ListGrid_UCReport.fetchData();
         //
         // }
     }
