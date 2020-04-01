@@ -50,8 +50,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     }
                     NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                         editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                        Window_NeedsAssessment_JspNeedsAssessment.show();
+                        NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                         NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
+                        Window_NeedsAssessment_JspNeedsAssessment.show();
                     })
                     // editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                     // one(two);
@@ -397,14 +398,20 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 // valueMap:["عملکرد ضروری","عملکرد توسعه ای","عملکرد بهبود"]
             }
         ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "needsAssessmentPriorityId"],
+                title: "<spring:message code="knowledge"/>"
+            }],
+        headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
         // width: "25%",
         canAcceptDroppedRecords: true,
-        canHover: true,
+        // canHover: true,
         showHoverComponents: true,
-        hoverMode: "detailField",
+        // hoverMode: "detailField",
         canRemoveRecords:true,
         showHeaderContextMenu: false,
         showFilterEditor:false,
@@ -456,16 +463,22 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 }
             }
         ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "needsAssessmentPriorityId"],
+                title: "<spring:message code="ability"/>"
+            }],
+        headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
         // width: "25%",
         showHeaderContextMenu: false,
         canAcceptDroppedRecords: true,
-        canHover: true,
+        // canHover: true,
         showHoverComponents: true,
         autoSaveEdits:false,
-        hoverMode: "details",
+        // hoverMode: "details",
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":109},
@@ -520,15 +533,21 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 }
             }
         ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "needsAssessmentPriorityId"],
+                title: "<spring:message code="attitude"/>"
+            }],
+        headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
         // width: "25%",
         canAcceptDroppedRecords: true,
-        canHover: true,
+        // canHover: true,
         autoSaveEdits:false,
         showHoverComponents: true,
-        hoverMode: "details",
+        // hoverMode: "details",
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":110},
@@ -567,7 +586,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     //--------------------------------------------------------------------
 
     var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
-        width: "25%",
+        // width: "25%",
         // wrap: true,
         align:"left",
         contents:"",
@@ -602,6 +621,25 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         },
         show(){
             // updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
+            if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")=="Post"){
+                var record;
+                myVar = setInterval(function () {
+                        record = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord()
+                        if(record != undefined){
+                            Label_PlusData_JspNeedsAssessment.setContents(
+                                "عنوان پست: " + record.titleFa
+                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
+                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
+                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
+                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                            );
+                            clearInterval(myVar)
+                        }
+                    },100)
+            }
+            else {
+                Label_PlusData_JspNeedsAssessment.setContents("")
+            }
             this.Super("show",arguments)
         },
         items:[
@@ -624,6 +662,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                 updateObjectIdLG(form, value);
                                 clearAllGrid();
                                 form.getItem("objectId").clearValue();
+                                Label_PlusData_JspNeedsAssessment.setContents("");
                             }
                         },
                     },
@@ -669,9 +708,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 members: [
                     // isc.LgLabel.create({width: "25%", customEdges: []}),
                     Label_PlusData_JspNeedsAssessment,
-                    isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="knowledge"/>" + "</b></span>", customEdges: ["R", "B", "T"]}),
-                    isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="ability"/>" + "</b></span>",customEdges: ["R", "B", "T"]}),
-                    isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="attitude"/>" + "</b></span>", customEdges: ["R", "L", "B", "T"]}),
+                    <%--isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="knowledge"/>" + "</b></span>", customEdges: ["R", "B", "T"]}),--%>
+                    <%--isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="ability"/>" + "</b></span>",customEdges: ["R", "B", "T"]}),--%>
+                    <%--isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="attitude"/>" + "</b></span>", customEdges: ["R", "L", "B", "T"]}),--%>
                 ]
             }),
             isc.TrHLayout.create({
@@ -741,10 +780,10 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                 editNeedsAssessmentRecord(record.id, "Post");
                                 Label_PlusData_JspNeedsAssessment.setContents(
                                     "عنوان پست: " + record.titleFa
-                                    + "     " + "عنوان رده پستی: " + record.postGrade.titleFa
-                                    + "     " + "حوزه: " + record.area
-                                    + "</br>" + "معاونت: " + record.assistance
-                                    + "     " + "امور: " + record.affairs
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
                                 )
                                 wating.close();
                             });
