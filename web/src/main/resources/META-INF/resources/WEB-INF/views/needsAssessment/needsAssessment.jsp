@@ -621,9 +621,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         },
         show(){
             // updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
-            if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")=="Post"){
+            if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")==="Post"){
                 var record;
-                myVar = setInterval(function () {
+                var myVar = setInterval(function () {
                         record = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord()
                         if(record != undefined){
                             Label_PlusData_JspNeedsAssessment.setContents(
