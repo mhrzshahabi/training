@@ -6,7 +6,10 @@
     //----------------------------------------------------Variables-----------------------------------------------------
     var nationalCodeCheck_JspTeacherReport = true;
     var isCriteriaCategoriesChanged = false;
-    var isEvaluationCategoriesChanged;
+    var isTeachingCategoriesChanged = false;
+    var isMajorCategoriesChanged = false;
+    var isEvaluationCategoriesChanged = false;
+
     var titr = isc.HTMLFlow.create({
         align: "center",
         border: "1px solid black",
@@ -54,6 +57,16 @@
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
 
+    var RestDataSource_Category_Major_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategory_Major_JspTeacherReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
     var RestDataSource_Category_Evaluation_JspTeacherReport = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: categoryUrl + "iscList"
@@ -66,7 +79,7 @@
 
     var RestDataSource_Teaching_Category_JspTeacherReport = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: categoryUrl + "spec-list"
+        fetchDataURL: categoryUrl + "iscList"
     });
 
     var RestDataSource_Teaching_SubCategory_JspTeacherReport = isc.TrDS.create({
@@ -258,7 +271,7 @@
             {
                 name: "temp1",
                 title: "",
-                canEdit: false,
+                canEdit: false
             },
             {
                 name: "categories",
@@ -273,7 +286,7 @@
                 filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCriteriaCategoriesChanged = true;
@@ -334,7 +347,7 @@
             {
                 name: "temp2",
                 title: "",
-                canEdit: false,
+                canEdit: false
             },
             {
                 name: "majorCategoryId",
@@ -345,7 +358,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Category_Evaluation_JspTeacherReport,
+                optionDataSource: RestDataSource_Category_Major_JspTeacherReport,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -363,7 +376,17 @@
                         width: "70%",
                         filterOperator: "iContains"
                     }
-                ]
+                ],
+                changed: function () {
+                    isMajorCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("majorSubCategoryId");
+                    if (this.getValue() == null || this.getValue() == undefined) {
+                        subCategoryField.clearValue();
+                        subCategoryField.disable();
+                        return;
+                    }
+                    subCategoryField.enable();
+                }
             },
             {
                 name: "majorSubCategoryId",
@@ -371,11 +394,12 @@
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
+                disabled: true,
+                autoFetchData: false,
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_SubCategory_Evaluation_JspTeacherReport,
-                autoFetchData: true,
+                optionDataSource: RestDataSource_SubCategory_Major_JspTeacherReport,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
@@ -392,7 +416,23 @@
                         width: "70%",
                         filterOperator: "iContains"
                     }
-                ]
+                ],
+                focus: function () {
+                    if (isMajorCategoriesChanged) {
+                        isMajorCategoriesChanged = false;
+                        var id = DynamicForm_CriteriaForm_JspTeacherReport.getField("majorCategoryId").getValue();
+                        if (id == null || id == undefined) {
+                            RestDataSource_SubCategory_Major_JspTeacherReport.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_Major_JspTeacherReport.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: id}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
             },
             {
                 name: "temp3",
@@ -457,7 +497,7 @@
             {
                 name: "temp4",
                 title: "",
-                canEdit: false,
+                canEdit: false
             },
             {
                 name: "personality.contactInfo.homeAddress.stateId",
@@ -519,7 +559,7 @@
             {
                 name: "temp5",
                 title: "",
-                canEdit: false,
+                canEdit: false
             },
             {
                 name: "evaluationCategory",
@@ -531,7 +571,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Category_JspTeacherReport,
+                optionDataSource: RestDataSource_Category_Evaluation_JspTeacherReport,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -545,11 +585,89 @@
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-
                 changed: function () {
                     isEvaluationCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategory");
-                    subCategoryField.clearValue();
+                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory");
+                    if (this.getValue() == null || this.getValue() == undefined) {
+                        subCategoryField.clearValue();
+                        subCategoryField.disable();
+                        return;
+                    }
+                    subCategoryField.enable();
+                }
+            },
+            {
+                name: "evaluationSubCategory",
+                title: "و زیرگروه",
+                textAlign: "center",
+                width: "*",
+                titleAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                defaultValue: null,
+                displayField: "titleFa",
+                valueField: "id",
+                disabled: true,
+                optionDataSource: RestDataSource_SubCategory_Evaluation_JspTeacherReport,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                focus: function () {
+                    if (isEvaluationCategoriesChanged) {
+                        isEvaluationCategoriesChanged = false;
+                        var id = DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue();
+                        if (id == null || id == undefined) {
+                            RestDataSource_SubCategory_Evaluation_JspTeacherReport.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_Evaluation_JspTeacherReport.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: id}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
+            },
+            {
+                name: "evaluationGrade",
+                title: "=",
+                hint: "100",
+                length: 3,
+                titleAlign: "center",
+                formatOnBlur: true,
+                textAlign: "center",
+                showHintInField: true,
+                keyPressFilter: "[0-9]"
+            },
+            {
+                name: "teachingCategories",
+                title: "استاد در حوزه های",
+                type: "selectItem",
+                textAlign: "center",
+                optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains"
+                },
+                changed: function () {
+                    isTeachingCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -568,97 +686,6 @@
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
                 }
-
-            },
-            {
-                name: "evaluationSubCategory",
-                title: "و زیرگروه",
-                textAlign: "center",
-                width: "*",
-                titleAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultValue: null,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_SubCategory_JspTeacherReport,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                focus: function () {
-                    if (isEvaluationCategoriesChanged) {
-                        isEvaluationCategoriesChanged = false;
-                        var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("category").getValue();
-                        if (ids === []) {
-                            RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = null;
-                        } else {
-                            RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = {
-                                _constructor: "AdvancedCriteria",
-                                operator: "and",
-                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
-                            };
-                        }
-                        this.fetchData();
-                    }
-                }
-            },
-            {
-                name: "evaluationGrade",
-                title: "=",
-                hint: "100",
-                titleAlign: "center",
-                formatOnBlur: true,
-                textAlign: "center",
-                showHintInField: true,
-                keyPressFilter: "[0-9.]"
-            },
-            {
-                name: "teachingCategories",
-                title: "استاد در حوزه های",
-                titleAlign: "center",
-                type: "selectItem",
-                textAlign: "center",
-                optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
-                },
-                // changed: function () {
-                //     isCriteriaCategoriesChanged = true;
-                //     var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories");
-                //     if (this.getSelectedRecords() == null) {
-                //         subCategoryField.clearValue();
-                //         subCategoryField.disable();
-                //         return;
-                //     }
-                //     subCategoryField.enable();
-                //     if (subCategoryField.getValue() === undefined)
-                //         return;
-                //     var subCategories = subCategoryField.getSelectedRecords();
-                //     var categoryIds = this.getValue();
-                //     var SubCats = [];
-                //     for (var i = 0; i < subCategories.length; i++) {
-                //         if (categoryIds.contains(subCategories[i].categoryId))
-                //             SubCats.add(subCategories[i].id);
-                //     }
-                //     subCategoryField.setValue(SubCats);
-                //     subCategoryField.focus(this.form, subCategoryField);
-                // }
             },
             {
                 name: "teachingSubCategories",
@@ -678,22 +705,22 @@
                     showFilterEditor: true,
                     filterOperator: "iContains",
                 },
-                // focus: function () {
-                //     if (isCriteriaCategoriesChanged) {
-                //         isCriteriaCategoriesChanged = false;
-                //         var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("categories").getValue();
-                //         if (ids === []) {
-                //             RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = null;
-                //         } else {
-                //             RestDataSource_SubCategory_JspTeacherReport.implicitCriteria = {
-                //                 _constructor: "AdvancedCriteria",
-                //                 operator: "and",
-                //                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
-                //             };
-                //         }
-                //         this.fetchData();
-                //     }
-                // }
+                focus: function () {
+                    if (isTeachingCategoriesChanged) {
+                        isTeachingCategoriesChanged = false;
+                        var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue();
+                        if (ids === []) {
+                            RestDataSource_Teaching_SubCategory_JspTeacherReport.implicitCriteria = null;
+                        } else {
+                            RestDataSource_Teaching_SubCategory_JspTeacherReport.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
             },
             {
                 name: "temp6",
