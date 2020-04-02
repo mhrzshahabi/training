@@ -161,6 +161,11 @@ public class MainFormController {
         return "planning/courseNAReports";
     }
 
+    @RequestMapping("/student-portal")
+    public String showStudentPortalForm() {
+        return "portal/studentPortal";
+    }
+
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
     public ResponseEntity<?> perintPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("myToken");

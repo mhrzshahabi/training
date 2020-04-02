@@ -423,6 +423,8 @@ public class TclassDTO {
         private Long scoreStateId;
         private String scoreState;
         private String ERunType;
+        private Long courseId;
+        private String courseTitle;
     }
 
 }

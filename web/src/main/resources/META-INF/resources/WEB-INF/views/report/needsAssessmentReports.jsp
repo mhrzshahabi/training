@@ -297,12 +297,12 @@
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
-        rowDoubleClick: Select_Person_NABOP
+        rowDoubleClick: "Select_Person_NABOP(PersonnelsLG_NABOP)"
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Person_NABOP
+        click: "Select_Person_NABOP(PersonnelsLG_NABOP)"
     });
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -737,19 +737,20 @@
         CoursesLG_NABOP.fetchData();
     }
 
-    function Select_Person_NABOP() {
+    function Select_Person_NABOP(selected_PersonnelsLG_NABOP) {
 
-        if (PersonnelsLG_NABOP.getSelectedRecord() == null) {
+        if (selected_PersonnelsLG_NABOP.getSelectedRecord() == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
 
-        if (PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined && reportType_NABOP === "0") {
-            postCode_NABOP = PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
+        if (selected_PersonnelsLG_NABOP.getSelectedRecord().postCode !== undefined && reportType_NABOP === "0") {
+            postCode_NABOP = selected_PersonnelsLG_NABOP.getSelectedRecord().postCode.replace("/", ".");
             wait_NABOP = createDialog("wait");
+            selectedPerson_NABOP = selected_PersonnelsLG_NABOP.getSelectedRecord();
             isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + postCode_NABOP, "GET", null, PostCodeSearch_result_NABOP));
         } else if (reportType_NABOP !== "0") {
-            selectedPerson_NABOP = PersonnelsLG_NABOP.getSelectedRecord();
+            selectedPerson_NABOP = selected_PersonnelsLG_NABOP.getSelectedRecord();
             setTitle_NABOP();
             Window_Personnel_NABOP.close();
         } else {
@@ -761,7 +762,6 @@
     function PostCodeSearch_result_NABOP(resp) {
         wait_NABOP.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
-            selectedPerson_NABOP = PersonnelsLG_NABOP.getSelectedRecord();
             setTitle_NABOP(JSON.parse(resp.httpResponseText).id);
             Window_Personnel_NABOP.close();
         } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
@@ -951,6 +951,11 @@
             stacked: false,
         });
         Main_HLayout_NABOP.addMember(Chart_NABOP);
+    }
+
+    //*************this function calls from personnelInformation page**************
+    function call_needsAssessmentReports(selected_PersonnelsLG) {
+        Select_Person_NABOP(selected_PersonnelsLG);
     }
 
     //</script>

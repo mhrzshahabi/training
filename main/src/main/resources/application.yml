@@ -8,8 +8,7 @@ spring:
       connection-test-query: SELECT 1 FROM DUAL
   jpa:
     hibernate:
-      ddl-auto: none
-#      ddl-auto: validate
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
@@ -40,7 +39,7 @@ spring:
 
 
 server:
-  port: 8081
+  port: 8080
   servlet:
     context-path: /training
     session:
