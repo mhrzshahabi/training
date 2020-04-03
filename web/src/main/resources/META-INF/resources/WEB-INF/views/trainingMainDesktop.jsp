@@ -672,7 +672,13 @@
                     }
                 },
                 {
-                    title: "ثبت نمرات پیش آزمون",
+                    title: "ثبت نتایج",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");
+                    }
+                },
+                {
+                    title:"<spring:message code="register.Score.PreTest"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
                     }
