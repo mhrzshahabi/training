@@ -209,9 +209,9 @@ public class CourseService implements ICourseService {
         ////////////////////////////////////////////////////////////////////////
 
         if (course.getGoalSet().isEmpty()) {
-            course.setHasGoal(true);
-        } else {
             course.setHasGoal(false);
+        } else {
+            course.setHasGoal(true);
         }
         course.setHasSkill(!course.getSkillSet().isEmpty());
         Course save = courseDAO.save(course);

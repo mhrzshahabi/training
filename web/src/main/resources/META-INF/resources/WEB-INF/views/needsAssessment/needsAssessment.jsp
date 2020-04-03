@@ -44,27 +44,37 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             isc.ToolStripButtonEdit.create({
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
-                    if(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType == "Post") {
-                        var criteria = '{"fieldName":"id","operator":"equals","value":"' + ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId + '"}';
-                        PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+                    if(checkSelectedRecord(ListGrid_NeedsAssessment_JspNeedAssessment)) {
+                        if (ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType == "Post") {
+                            var criteria = '{"fieldName":"id","operator":"equals","value":"' + ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId + '"}';
+                            PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+                        }
+                        NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
+                            editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                            NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                            NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
+                            Window_NeedsAssessment_JspNeedsAssessment.show();
+                        })
+                        // editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                        // one(two);
+                        // function one(callBack) {
+                        //     editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                        //     callBack();
+                        // }
+                        // function two() {
+                        //     NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData({"id":ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId} ,function() {
+                        //         Window_NeedsAssessment_JspNeedsAssessment.show();
+                        //     })
+                        // }
                     }
-                    NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
-                        editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                        NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                        NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
-                        Window_NeedsAssessment_JspNeedsAssessment.show();
-                    })
-                    // editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                    // one(two);
-                    // function one(callBack) {
-                    //     editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                    //     callBack();
-                    // }
-                    // function two() {
-                    //     NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData({"id":ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId} ,function() {
-                    //         Window_NeedsAssessment_JspNeedsAssessment.show();
-                    //     })
-                    // }
+                }
+            }),
+            isc.ToolStripButton.create({
+                title: "<spring:message code="more.information"/>",
+                click: function () {
+                    if(checkSelectedRecord(ListGrid_NeedsAssessment_JspNeedAssessment)){
+                        Window_MoreInformation_JspNeedsAssessment.show()
+                    }
                 }
             }),
             isc.ToolStripButton.create({
@@ -94,6 +104,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             })
         ]
     });
+    var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
+        contents:"",
+        customEdges: ["R","L","T", "B"]});
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
         // groupByField:["objectType"],
         // groupByField:["objectType", "objectName"],
@@ -141,6 +154,30 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
             selectWorkflowRecord();
         }
+    });
+    var ListGrid_MoreInformation_JspNeedAssessment = isc.ListGrid.create({
+        // groupByField:["objectType"],
+        groupByField:["competence.competenceType.title", "needsAssessmentDomain.title", "needsAssessmentPriority.title", "competence.title", "skill.titleFa"],
+        allowAdvancedCriteria: true,
+        showFilterEditor: false,
+        showHeaderContextMenu: false,
+        // filterOnKeypress:true,
+        autoFetchData: false,
+        fields:[
+            <%--{name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", valueMap: priorityList},--%>
+            <%--{name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},--%>
+            <%--{name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},--%>
+            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "skill.course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+        ],
+        dataSource: RestDataSourceNeedsAssessment,
+        gridComponents: [Label_Title_JspNeedsAssessment ,"header", "body"],
+        groupStartOpen: "all",
     });
 
     //----------------------components of window--------------------------
@@ -795,6 +832,83 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 ]
             })]
     })
+    var Window_MoreInformation_JspNeedsAssessment = isc.Window.create({
+        title: "<spring:message code="more.information"/>",
+        // placement: "fillScreen",
+        width: "60%",
+        height: "90%",
+        minWidth: 1024,
+        keepInParentRect: true,
+        autoSize: false,
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    isc.TabSet.create({
+                        ID: "tabSetClass",
+                        // enabled: false,
+                        tabBarPosition: "top",
+                        tabs: [
+                            {
+                                ID: "classSessionsTab",
+                                title: "درخت نیازسنجی",
+                                pane: ListGrid_MoreInformation_JspNeedAssessment
+                            },
+                            {
+                                ID: "classCheckListTab",
+                                name: "checkList",
+                                enabled: false,
+                                title: "شرایط احراز",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
+                            },
+                            {
+                                ID: "classStudentsTab",
+                                enabled: false,
+                                title: "شرح شغل",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})
+                            },
+                            {
+                                ID: "classAttachmentsTab",
+                                enabled: false,
+                                title: "آموزش ها",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+                            },
+                            {
+                                ID: "classAttendanceTab",
+                                enabled: false,
+                                title: "پراکندگی شغل در سازمان",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attendance-tab"})
+                            },
+                            {
+                                ID: "classScoresTab",
+                                enabled: false,
+                                title: "شناسنامه شغل",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
+                            },
+                        ],
+                        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+
+                        }
+                    })
+                ]
+            })
+        ],
+        show(){
+            let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
+            Label_Title_JspNeedsAssessment.setContents(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
+            // this.setTitle(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
+            let advancedCriteria = {
+                _constructor:"AdvancedCriteria",
+                operator:"and",
+                criteria:[
+                    { fieldName:"objectId", operator:"equals", value:rec.objectId },
+                    { fieldName:"objectType", operator:"equals", value:rec.objectType }
+                ]
+            };
+            ListGrid_MoreInformation_JspNeedAssessment.invalidateCache();
+            ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
+            this.Super("show", arguments)
+        }
+    })
 
     isc.TrVLayout.create({
         members: [ListGrid_NeedsAssessment_JspNeedAssessment],
@@ -1110,6 +1224,15 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
 
+    function checkSelectedRecord(lg) {
+        if(lg.getSelectedRecord() == undefined){
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
     function sendToWorkflowAfterUpdate_needsAssessment(selectedRecord, workflowType) {
 
