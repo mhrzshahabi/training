@@ -1654,6 +1654,7 @@
                     // data2["workflowStatus"] = "ثبت اولیه";
                     data2.workflowStatus = "ثبت اولیه";
                     data2.workflowStatusCode = "0";
+                    delete data2.subCategory;
                     // data2["workflowStatusCode"] = "0";
 
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
@@ -1707,6 +1708,7 @@
                 data1.mainObjectiveIds = mainObjectiveIdList;
                 data1.equalCourseListId = equalCourseIdList;
                 data1.preCourseListId = preCourseIdList;
+                delete data1.subCategory;
 
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
