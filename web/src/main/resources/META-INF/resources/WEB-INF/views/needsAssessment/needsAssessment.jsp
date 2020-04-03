@@ -169,15 +169,31 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             <%--{name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},--%>
             {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
-            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: false},
             {name: "skill.course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
             {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
         ],
+        showClippedValuesOnHover: true,
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [Label_Title_JspNeedsAssessment ,"header", "body"],
         groupStartOpen: "all",
+        getCellCSSText: function (record, rowNum, colNum) {
+
+            if (record.skill == undefined) {
+                return "color:black; font-size: 12px;";
+            }
+            else if(record.skill.course == undefined){
+                return "color:crimson; font-size: 13px;";
+            }
+            else{
+                return "color:blue; font-size: 13px;";
+            }
+            // if (!record.hasSkill) {
+            //     return "color:orange;font-size: 12px;";
+            // }
+        }
     });
 
     //----------------------components of window--------------------------
