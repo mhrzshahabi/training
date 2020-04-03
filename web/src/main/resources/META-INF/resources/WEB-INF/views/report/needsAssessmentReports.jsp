@@ -567,7 +567,6 @@
             {
                 name: "needsAssessmentPriorityId",
                 hidden: true,
-                // type: "IntegerItem",
                 filterOnKeypress: true,
                 editorType: "SelectItem",
                 displayField: "title",
@@ -580,13 +579,15 @@
                     {name: "title", width: "30%"}
                 ],
             },
-            {name: "competence.title", hidden: true},
+            {
+                name: "competence.title",
+                // hidden: true
+            },
             {
                 name: "competence.competenceTypeId",
-                hidden: true,
+                // hidden: true,
                 type: "SelectItem",
                 filterOnKeypress: true,
-                // editorType: "SelectItem",
                 displayField: "title",
                 valueField: "id",
                 optionDataSource: CompetenceTypeDS_NABOP,
@@ -599,7 +600,7 @@
             },
             {
                 name: "needsAssessmentDomainId",
-                hidden: true,
+                // hidden: true,
                 // type: "IntegerItem",
                 filterOnKeypress: true,
                 editorType: "SelectItem",
@@ -613,9 +614,14 @@
                     {name: "title", width: "30%"}
                 ],
             },
-            {name: "skill.code", hidden: true},
-            {name: "skill.titleFa", hidden: true},
-
+            {
+                name: "skill.code",
+                // hidden: true
+            },
+            {
+                name: "skill.titleFa",
+                // hidden: true
+            },
 
             {name: "skill.course.code"},
             {name: "skill.course.titleFa"},
@@ -928,11 +934,11 @@
             changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
             ReportTypeDF_NABOP.getItem("objectId").hide();
-            CoursesLG_NABOP.hideField("competence.title");
-            CoursesLG_NABOP.hideField("competence.competenceTypeId");
-            CoursesLG_NABOP.hideField("needsAssessmentDomainId");
-            CoursesLG_NABOP.hideField("skill.code");
-            CoursesLG_NABOP.hideField("skill.titleFa");
+            // CoursesLG_NABOP.hideField("competence.title");
+            // CoursesLG_NABOP.hideField("competence.competenceTypeId");
+            // CoursesLG_NABOP.hideField("needsAssessmentDomainId");
+            // CoursesLG_NABOP.hideField("skill.code");
+            // CoursesLG_NABOP.hideField("skill.titleFa");
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
         } else if (ReportTypeDF_NABOP.getValue("reportType") === "1") {
@@ -941,11 +947,11 @@
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.post/job/postGrade'/> " + postName;
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post/job/postGrade'/>");
-            CoursesLG_NABOP.showField("competence.title");
-            CoursesLG_NABOP.showField("competence.competenceTypeId");
-            CoursesLG_NABOP.showField("needsAssessmentDomainId");
-            CoursesLG_NABOP.showField("skill.code");
-            CoursesLG_NABOP.showField("skill.titleFa");
+            // CoursesLG_NABOP.showField("competence.title");
+            // CoursesLG_NABOP.showField("competence.competenceTypeId");
+            // CoursesLG_NABOP.showField("needsAssessmentDomainId");
+            // CoursesLG_NABOP.showField("skill.code");
+            // CoursesLG_NABOP.showField("skill.titleFa");
             CoursesLG_NABOP.hideField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = totalSummaryFunc_NABOP;
             Tabset_Object_NABOP.tabs.forEach(tab => Tabset_Object_NABOP.enableTab(tab));
@@ -955,15 +961,16 @@
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post'/>");
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + postName;
-            CoursesLG_NABOP.hideField("competence.title");
-            CoursesLG_NABOP.hideField("competence.competenceTypeId");
-            CoursesLG_NABOP.hideField("needsAssessmentDomainId");
-            CoursesLG_NABOP.hideField("skill.code");
-            CoursesLG_NABOP.hideField("skill.titleFa");
+            // CoursesLG_NABOP.hideField("competence.title");
+            // CoursesLG_NABOP.hideField("competence.competenceTypeId");
+            // CoursesLG_NABOP.hideField("needsAssessmentDomainId");
+            // CoursesLG_NABOP.hideField("skill.code");
+            // CoursesLG_NABOP.hideField("skill.titleFa");
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             for (let i = 1; i < Tabset_Object_NABOP.tabs.length; i++)
                 Tabset_Object_NABOP.disableTab(Tabset_Object_NABOP.tabs[i]);
+            Tabset_Object_NABOP.selectTab("Post");
         }
         DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
         CoursesLG_NABOP.setData([]);
