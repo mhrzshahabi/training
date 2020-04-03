@@ -2,6 +2,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 // <script>
 
@@ -170,7 +173,7 @@
 
     var ToolStripButton_Print_UCReport = isc.ToolStripButtonPrint.create({
         click: function () {
-            alert("hi");
+            print_UCReport("pdf");
         }
     });
 
@@ -214,13 +217,25 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
-        //*****search report result*****
-        // function searchResult() {
-        // RestDataSource_UCReport.fetchDataURL = monthlyStatistical + "list" + "/" + JSON.stringify(reportParameters);
-        //      ListGrid_UCReport.invalidateCache();
-        //      ListGrid_UCReport.fetchData();
-        //
-        // }
+        //*****print*****
+        function print_UCReport(type) {
+            var advancedCriteria_unit = ListGrid_UCReport.getCriteria();
+            var criteriaForm_UCReport = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/unfinishedClasses-report/printWithCriteria/"/>" + type,
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "CriteriaStr", type: "hidden"},
+                        {name: "myToken", type: "hidden"}
+                    ]
+            });
+            criteriaForm_UCReport.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
+            criteriaForm_UCReport.setValue("myToken", "<%=accessToken%>");
+            criteriaForm_UCReport.show();
+            criteriaForm_UCReport.submitForm();
+        }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

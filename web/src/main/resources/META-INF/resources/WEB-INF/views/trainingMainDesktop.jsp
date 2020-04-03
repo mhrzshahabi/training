@@ -766,7 +766,7 @@
                 {
                     title:"<spring:message code="unfinished.classes"/>",
                     click:function(){
-                        createTab(this.title, "<spring:url value="web/unfinishedClassesReport"/>");
+                        createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                     }
                 },
                 {isSeparator: true},
