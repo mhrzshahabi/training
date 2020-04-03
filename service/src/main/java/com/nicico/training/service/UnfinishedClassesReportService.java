@@ -1,11 +1,13 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.UnfinishedClassesReportDTO;
 import com.nicico.training.iservice.IUnfinishedClassesReportService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +27,7 @@ public class UnfinishedClassesReportService implements IUnfinishedClassesReportS
     @Transactional
     public List<UnfinishedClassesReportDTO> UnfinishedClassesList() {
 
-        String nationalCode = "2559979705";
+        final String nationalCode = modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode();
 
         List<?> unfinishedClasses = null;
         List<UnfinishedClassesReportDTO> unfinishedClassesList = null;

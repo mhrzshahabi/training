@@ -19,10 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -76,6 +74,7 @@ public class UnfinishedClassesReportRestController {
 //        final SearchDTO.SearchRs<UnfinishedClassesReportDTO.Info> searchRs = unfinishedClassesReportService.search(searchRq);
 
         List<UnfinishedClassesReportDTO> list = unfinishedClassesReportService.UnfinishedClassesList();
+
 
         String studentName = "";
         if (list.size() > 0)

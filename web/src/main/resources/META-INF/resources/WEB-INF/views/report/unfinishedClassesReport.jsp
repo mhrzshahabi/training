@@ -151,19 +151,22 @@
                     name: "nationalCode",
                     title: "<spring:message code="national.code"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "firstName",
                     title: "studentFirstName",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "lastName",
                     title: "studentLastName",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 }
             ]
         });
