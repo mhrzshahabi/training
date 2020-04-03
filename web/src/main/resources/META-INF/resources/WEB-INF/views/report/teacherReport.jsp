@@ -190,22 +190,24 @@
 
     var Window_Result_JspTeacherReport = isc.Window.create({
         placement: "fillScreen",
-        title: "<spring:message code='teacher'/>",
+        title: "گزارش اساتید",
         canDragReposition: true,
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
         minWidth: 1024,
-        items: [isc.TrVLayout.create({
-            members: [
-                titr,
-                personalInfo,
-                teacherInfo,
-                evalInfo,
-                teachingInfo,
-                ListGrid_Result_JspTeacherReport
-            ]
-        })]
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    titr,
+                    personalInfo,
+                    teacherInfo,
+                    evalInfo,
+                    teachingInfo,
+                    ListGrid_Result_JspTeacherReport
+                    ]
+            }),
+        ]
     });
     //----------------------------------------------------Criteria Form-------------------------------------------------
     var DynamicForm_CriteriaForm_JspTeacherReport = isc.DynamicForm.create({
@@ -644,6 +646,7 @@
                 title: "=",
                 hint: "100",
                 length: 3,
+                disabled: true,
                 titleAlign: "center",
                 formatOnBlur: true,
                 textAlign: "center",
@@ -739,6 +742,20 @@
                     DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                 }
             }
+            if(item.name == "evaluationSubCategory" || item.name=="evaluationGrade"){
+                if(newValue != undefined)
+                    item.clearErrors();
+            }
+            if(item.name == "evaluationCategory"){
+                if(newValue == undefined){
+                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationGrade").clearValue();
+                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationSubCategory").clearErrors();
+                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationGrade").clearErrors();
+                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();
+                }
+                if(newValue != undefined)
+                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").enable();
+            }
         }
     });
 
@@ -749,6 +766,16 @@
         click: function () {
             if (DynamicForm_CriteriaForm_JspTeacherReport.hasErrors())
                 return;
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationCategory") != undefined){
+                if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationSubCategory")==undefined ||
+                    DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationGrade")==undefined){
+                    if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationSubCategory")==undefined)
+                        DynamicForm_CriteriaForm_JspTeacherReport.addFieldErrors("evaluationSubCategory", "فیلد اجباری است", true);
+                    if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("evaluationGrade")==undefined)
+                        DynamicForm_CriteriaForm_JspTeacherReport.addFieldErrors("evaluationGrade", "فیلد اجباری است", true);
+                    return;
+                }
+            }
 
             if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode") != undefined){
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "کد ملی: " +"</span>" ;
