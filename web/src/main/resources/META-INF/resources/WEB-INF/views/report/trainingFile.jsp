@@ -176,9 +176,31 @@
             }
         }
     });
+
+    Menu_Courses_TrainingFileJSP = isc.Menu.create({
+        data: [
+            {
+                title: "<spring:message code="global.form.print.pdf"/>",
+                click: function () {
+                    print_Training_File();
+                }
+            }, {
+                title: "<spring:message code="global.form.print.excel"/>",
+                click: function () {
+                    print_Training_File("excel");
+                }
+            }, {
+                title: "<spring:message code="global.form.print.html"/>",
+                click: function () {
+                    print_Training_File("html");
+                }
+        }]
+    });
+
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
+        contextMenu: Menu_Courses_TrainingFileJSP,
         dataSource: RestDataSource_Course_JspTrainingFile,
         filterOnKeypress: true,
         gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
@@ -195,10 +217,25 @@
         ]
 
     });
-    var VLayout_Body_Training_File = isc.VLayout.create({
+
+    ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({
+        <%--title: "<spring:message code='print'/>",--%>
+        click: function () {
+            print_Training_File();
+        }
+    });
+
+    ToolStrip_Actions_Training_File = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [ToolStripButton_Training_File]
+    });
+
+    VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
+            ToolStrip_Actions_Training_File,
             ListGrid_TrainingFile_TrainingFileJSP
         ]
     });
@@ -213,7 +250,10 @@
     }
 
     function print_Training_File(type = "pdf") {
-
+        if (selectedPerson_TrainingFile == null){
+            createDialog("info", "<spring:message code='personnel.not.selected'/>");
+            return;
+        }
         let params = {};
         params.firstName = selectedPerson_TrainingFile.firstName;
         params.lastName = selectedPerson_TrainingFile.lastName;
