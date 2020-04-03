@@ -149,6 +149,7 @@
                 title: "<spring:message code="skill.code"/>",
                 length: 10,
                 type: 'staticText',
+                canEdit: false,
                 required: false,
                 keyPressFilter: "^[A-Z|0-9 ]",
                 width: "300"
@@ -191,6 +192,102 @@
                     errorMessage: "نام مجاز بین چهار تا دویست کاراکتر است"
                 }]
             },
+
+            {
+                name: "categoryId",
+                title: "<spring:message code="skill.group"/>",
+// hint:"<spring:message code="skill.group"/>",
+                showHintInField: true,
+                width: "300",
+                required: true,
+                textAlign: "right",
+                // editorType: "ComboBoxItem",
+                addUnknownValues: false,
+                useClientFiltering: true,
+                cachePickListResults: true,
+                changeOnKeypress: false,
+                filterOnKeypress: true, pickListWidth: 300,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Skill_Category,
+                autoFetchData: true,
+                // filterFields: ["titleFa"],
+                sortField: ["id"],
+                // textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                // pickListProperties: {
+                //     showFilterEditor: true
+                // },
+                // pickListFields: [
+                //     {
+                //         name: "titleFa",
+                //         width: "30%",
+                //         filterOperator: "iContains"
+                //     }
+                // ],
+                changed: function (form, item, value) {
+                    if (value == null || value.length == 0) {
+
+                    } else {
+                        RestDataSource_Skill_SubCategory.fetchDataURL = skill_CategoryHomeUrl + "/" + value + "/sub-categories";
+                        form.getItem("subCategoryId").fetchData();
+                        form.getItem("subCategoryId").setValue([]);
+                        form.getItem("subCategoryId").setDisabled(false);
+                        form.getItem("skillLevelId").setValue([]);
+                        form.getItem("skillLevelId").setDisabled(true);
+                        form.clearValue('code');
+
+                    }
+                }
+            },
+
+
+             {
+                name: "subCategoryId",
+                title: "<spring:message code="skill.subcategory"/>",
+// hint:"<spring:message code="skill.subcategory"/>",
+                showHintInField: true,
+                width: "300",
+                required: true,
+                textAlign: "right",
+                // editorType: "ComboBoxItem",
+                pickListWidth: 300,
+                displayField: "titleFa",
+                valueField: "id",
+                addUnknownValues: false,
+                // useClientFiltering: true,
+                cachePickListResults: true,
+                // changeOnKeypress: false,
+                // filterOnKeypress: true,
+                optionDataSource: RestDataSource_Skill_SubCategory,
+                autoFetchData: false,
+                // filterFields: ["titleFa"],
+                sortField: ["id"],
+                // textMatchStyle: "startsWith",
+                // generateExactMatchCriteria: true,
+                // pickListProperties: {
+                //     showFilterEditor: true
+                // },
+                // pickListFields: [
+                //     {
+                //         name: "code",
+                //         width: "40%",
+                //         filterOperator: "iContains"
+                //     },
+                //     {
+                //         name: "titleFa",
+                        <%--title: "<spring:message code="subcategory"/>",--%>
+                        // width: "60%",
+                        // filterOperator: "iContains"
+                    // }
+                // ],
+                changed:function (form,item,value) {
+                     form.getItem("skillLevelId").setDisabled(false);
+                     form.getItem("skillLevelId").setValue([]);
+                     form.clearValue('code');
+                }
+            },
+
             {
                 name: "skillLevelId",
                 title: "<spring:message code="skill.level"/>",
@@ -237,92 +334,13 @@
                             skill_Level_Symbol = "C";
                             break;
                     }
-
-                }
-            },
-            {
-                name: "categoryId",
-                title: "<spring:message code="skill.group"/>",
-// hint:"<spring:message code="skill.group"/>",
-                showHintInField: true,
-                width: "300",
-                required: true,
-                textAlign: "right",
-                // editorType: "ComboBoxItem",
-                addUnknownValues: false,
-                useClientFiltering: true,
-                cachePickListResults: true,
-                changeOnKeypress: false,
-                filterOnKeypress: true, pickListWidth: 300,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Skill_Category,
-                autoFetchData: true,
-                // filterFields: ["titleFa"],
-                sortField: ["id"],
-                // textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                // pickListProperties: {
-                //     showFilterEditor: true
-                // },
-                // pickListFields: [
-                //     {
-                //         name: "titleFa",
-                //         width: "30%",
-                //         filterOperator: "iContains"
-                //     }
-                // ],
-                changed: function (form, item, value) {
-                    if (value == null || value.length == 0) {
-
-                    } else {
-                        RestDataSource_Skill_SubCategory.fetchDataURL = skill_CategoryHomeUrl + "/" + value + "/sub-categories";
-                        form.getItem("subCategoryId").fetchData();
-                        form.getItem("subCategoryId").setValue([]);
-                        form.getItem("subCategoryId").setDisabled(false);
+                     var code;
+                     code = DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord().code;
+                     isc.RPCManager.sendRequest(TrDSRequest(skill_ActionUrl +"/getMaxSkillCode/"+(code + skill_Level_Symbol), "GET", null,"result_resp(rpcResponse)"));
                     }
-                }
             },
-            {
-                name: "subCategoryId",
-                title: "<spring:message code="skill.subcategory"/>",
-// hint:"<spring:message code="skill.subcategory"/>",
-                showHintInField: true,
-                width: "300",
-                required: true,
-                textAlign: "right",
-                // editorType: "ComboBoxItem",
-                pickListWidth: 300,
-                displayField: "titleFa",
-                valueField: "id",
-                addUnknownValues: false,
-                // useClientFiltering: true,
-                cachePickListResults: true,
-                // changeOnKeypress: false,
-                // filterOnKeypress: true,
-                optionDataSource: RestDataSource_Skill_SubCategory,
-                autoFetchData: false,
-                // filterFields: ["titleFa"],
-                sortField: ["id"],
-                // textMatchStyle: "startsWith",
-                // generateExactMatchCriteria: true,
-                // pickListProperties: {
-                //     showFilterEditor: true
-                // },
-                // pickListFields: [
-                //     {
-                //         name: "code",
-                //         width: "40%",
-                //         filterOperator: "iContains"
-                //     },
-                //     {
-                //         name: "titleFa",
-                        <%--title: "<spring:message code="subcategory"/>",--%>
-                        // width: "60%",
-                        // filterOperator: "iContains"
-                    // }
-                // ],
-            },
+
+
             {
                 name: "courseId", editorType: "SelectItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
@@ -361,7 +379,7 @@
                 var sub_cat_code;
                 if (DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord() != null)
                     sub_cat_code = DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord().code;
-                DynamicForm_Skill_Skill.getItem('code').setValue(sub_cat_code + skill_Level_Symbol);
+                    DynamicForm_Skill_Skill.getItem('code').setValue(sub_cat_code + skill_Level_Symbol);
             }
             DynamicForm_Skill_Skill.validate();
             if (DynamicForm_Skill_Skill.hasErrors()) {
@@ -379,6 +397,7 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
+
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "<spring:message code="msg.operation.successful"/>",
@@ -406,6 +425,13 @@
 
         }
     });
+
+        function result_resp(resp) {
+            if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201)
+            {
+              DynamicForm_Skill_Skill.getItem('code').setValue(resp.data);
+            }
+        }
 
     var Hlayout_Skill_Skill_SaveOrExit = isc.HLayout.create({
         layoutMargin: 5,
@@ -597,8 +623,8 @@
         DynamicForm_Skill_Skill.clearValues();
         DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(false);
         DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
-        DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(false);
-        DynamicForm_Skill_Skill.getItem("code").visible = false;
+        DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(true);
+       // DynamicForm_Skill_Skill.getItem("code").visible = false;
         Window_Skill_Skill.setTitle("<spring:message code="create.skill"/>");
         Window_Skill_Skill.show();
     };

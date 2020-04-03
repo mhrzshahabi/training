@@ -231,6 +231,9 @@ public class TclassDTO {
         private CourseDTO.CourseInfoTupleLite course;
         private String code;
         private String classStatus;
+        private String startDate;
+        private String endDate;
+        private TermDTO term;
     }
 
     //-------------------------------

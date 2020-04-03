@@ -242,6 +242,22 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
         request.setDistinct(true);
+        ////////////////////////////////////////////////
+        List<Object> removedObjects = new ArrayList<>();
+        Object evaluationGrade = null;
+        Long evalGrade = null;
+        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
+                evaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+        }
+
+        for (Object removedObject : removedObjects) {
+            request.getCriteria().getCriteria().remove(removedObject);
+        }
+       evalGrade =  Long.parseLong(evaluationGrade.toString());
+        ///////////////////////////////////////////////
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();

@@ -7,16 +7,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.model.Personnel;
+
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -25,6 +32,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +45,9 @@ public class PersonnelRestController {
     final CourseService courseService;
     final DateUtil dateUtil;
     final ReportUtil reportUtil;
+    private final MessageSource messageSource;
     private final PersonnelService personnelService;
+    private final IPersonnelRegisteredService personnelRegisteredService;
     private final PersonnelDAO personnelDAO;
     private final PostDAO postDAO;
 
@@ -129,5 +140,23 @@ public class PersonnelRestController {
     @GetMapping("/all-field-values")
     public ResponseEntity<ISC<PersonnelDTO.FieldValue>> findAllValuesOfOneFieldFromPersonnel(@RequestParam String fieldName) throws IOException {
         return new ResponseEntity<>(ISC.convertToIscRs(personnelService.findAllValuesOfOneFieldFromPersonnel(fieldName), 0), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
+//    @PreAuthorize("hasAuthority('r_personalInfo')")
+    public ResponseEntity getOneByNationalCode(@PathVariable String nationalCode) {
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null,null, EOperator.and,new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("active",-1,EOperator.equals,null));
+        criteria.getCriteria().add(makeNewCriteria("nationalCode",nationalCode,EOperator.equals,null));
+        List<PersonnelDTO.Info> personnelList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
+        if(personnelList.size()>0)
+            return new ResponseEntity<>(personnelList.get(0), HttpStatus.OK);
+
+        List<PersonnelRegisteredDTO.Info> personnelRegisteredList = personnelRegisteredService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
+        if(personnelRegisteredList.size()>0)
+            return new ResponseEntity<>(personnelRegisteredList.get(0), HttpStatus.OK);
+
+        return new ResponseEntity<>( messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
     }
 }
