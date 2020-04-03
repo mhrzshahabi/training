@@ -197,6 +197,7 @@
             ListGrid_evaluationAnalysis_class.invalidateCache();
             DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
+            ListGrid_evaluationAnalysist_learning.setData([])
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();
             chartSelector.hide();
             ReactionEvaluationChart.hide();
