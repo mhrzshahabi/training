@@ -92,6 +92,21 @@ public class SkillRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/getMaxSkillCode/{code}")
+    public String MaxSkillCode(@PathVariable String code) throws Exception {
+            String maxSkillCode = "";
+            String newSkillCode = "";
+            Integer maxId;
+            maxSkillCode = skillService.getMaxSkillCode(code);
+            if (maxSkillCode == null)
+                throw new Exception("Skill with this Code wrong");
+            maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
+            maxId++;
+            newSkillCode = code + String.format("%04d", maxId);
+            return newSkillCode;
+    }
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_skill')")
     public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
@@ -182,7 +197,7 @@ public class SkillRestController {
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);

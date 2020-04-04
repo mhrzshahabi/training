@@ -85,6 +85,7 @@
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
+    const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -452,6 +453,20 @@
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
                 },
+                {isSeparator: true},
+                {
+                    title:"<spring:message code="personnel.information"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="polisAndprovince"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/polis_and_province/show-form"/>");
+                    }
+                },
                 <%--{--%>
                 <%--    title: "<spring:message code="department"/>",--%>
                 <%--    click: function () {--%>
@@ -574,6 +589,13 @@
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
                 },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code='needsAssessment.report.course'/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/course-needs-assessment-reports"/>");
+                    }
+                },
             ]
         }),
     });
@@ -650,7 +672,13 @@
                     }
                 },
                 {
-                    title: "ثبت نمرات پیش آزمون",
+                    title: "ثبت نتایج",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");
+                    }
+                },
+                {
+                    title:"<spring:message code="register.Score.PreTest"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
                     }
@@ -697,6 +725,13 @@
                         }
                     ]
                 },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code='student.portal'/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/student-portal"/>");
+                    }
+                },
             ]
         }),
     });
@@ -712,16 +747,46 @@
                         createTab(this.title, "<spring:url value="web/trainingFile/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="reports.need.assessment"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="report.training.overtime"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/trainingOverTime/"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="teachers.report"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="report.monthly.statistical"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title:"<spring:message code="unfinished.classes"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                     }
                 },
                 <%--{--%>
@@ -1118,6 +1183,46 @@
         })
     }
 
+    function exportToExcel(fields, data) {
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/export-to-excel/download/",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "myToken", type: "hidden"},
+                    {name: "fields", type: "hidden"},
+                    {name: "data", type: "hidden"},
+                ]
+        });
+        <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
+        downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
+        downloadForm.setValue("data", JSON.stringify(data.toArray()));
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
+
+    function printToJasper(data, params, fileName, type = "pdf") {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/export-to-excel/print/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "data", type: "hidden"},
+                    {name: "params", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("data", JSON.stringify(data));
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
+
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
@@ -1153,7 +1258,11 @@
     const sessionServiceUrl = rootUrl + "/sessionService/";
     const classStudent = rootUrl + "/classStudent/";
     const classAlarm = rootUrl + "/classAlarm/";
+    const monthlyStatistical = rootUrl + "/monthlyStatistical/";
+    const unfinishedClasses = rootUrl + "/unfinishedClasses/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
+    const provinceUrl = rootUrl + "/province/";
+    const polisUrl = rootUrl + "/polis/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

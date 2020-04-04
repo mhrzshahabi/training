@@ -61,4 +61,8 @@ public interface ITclassService {
     Integer getWorkflowEndingStatusCode(Long classId);
 
     public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId, Long trainingId);
+
+    public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
+
+    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code);
 }

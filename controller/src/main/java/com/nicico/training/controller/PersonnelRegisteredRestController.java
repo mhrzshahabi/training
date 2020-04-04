@@ -149,7 +149,7 @@ public class PersonnelRegisteredRestController {
         final PersonnelRegisteredDTO.PersonnelRegisteredSpecRs specRs = new PersonnelRegisteredDTO.PersonnelRegisteredSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);

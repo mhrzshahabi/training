@@ -231,6 +231,9 @@ public class TclassDTO {
         private CourseDTO.CourseInfoTupleLite course;
         private String code;
         private String classStatus;
+        private String startDate;
+        private String endDate;
+        private TermDTO term;
     }
 
     //-------------------------------
@@ -256,6 +259,7 @@ public class TclassDTO {
         private String classStatus;
         private String evaluationStatus;
         private String titleClass;
+        private String scoringMethod;
 
         public String getTeacher() {
             if (teacher != null)
@@ -332,11 +336,38 @@ public class TclassDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("BehavioralEvaluationResult")
+    public static class BehavioralEvaluationResult {
+        double classPassedTime;
+        Integer numberOfFilledFormsBySuperviosers;
+        Integer numberOfFilledFormsByStudents;
+        double supervisorsMeanGrade;
+        double studentsMeanGrade;
+        double FEBGrade;
+        boolean FEBPass;
+        double FECBGrade;
+        boolean FECBPass;
+        private Set<ClassStudentDTO.EvaluationInfo> classStudents;
+        List<Double> studentsGrade = new ArrayList<>();
+        List<Double> supervisorsGrade = new ArrayList<>();
+        List<String> classStudentsName = new ArrayList<>();
+        public void setClassStudentsName(){
+            for (ClassStudentDTO.EvaluationInfo classStudent : classStudents) {
+                classStudentsName.add(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+            }
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("TclassEvaluatedSpecRs")
     public static class TclassEvaluatedSpecRs {
         private EvaluatedSpecRs response;
     }
+
+    // ------------------------------
 
     @Getter
     @Setter
@@ -348,6 +379,55 @@ public class TclassDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassSpecRs")
+    public static class PersonnelClassInfo_TclassSpecRs {
+        private PersonnelClassInfo_SpecRs response;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PersonnelClassInfo_SpecRs {
+        private List<TclassDTO.PersonnelClassInfo> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("PersonnelClassInfo")
+    public static class PersonnelClassInfo
+    {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private Long hDuration;
+        private String startDate;
+        private String endDate;
+        private Long classStatusId;
+        private String classStatus;
+        private Long scoreStateId;
+        private String scoreState;
+        private String ERunType;
+        private Long courseId;
+        private String courseTitle;
     }
 
 }

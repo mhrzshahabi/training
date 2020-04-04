@@ -88,9 +88,10 @@
             },
             {
                 name: "titleFa",
+                type: "TextAreaItem",
                 title: "نام فارسی",
                 required: true,
-                readonly: true,
+                height: "50",
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
@@ -98,7 +99,7 @@
                     type: "isString",
                     validateOnExit: true,
                     stopOnError: true,
-                    errorMessage: "نام مجاز حداکثر دویست کاراکتر است"
+                    errorMessage: "نام مجاز حداکثر پانصد کاراکتر است"
                 }]
             },
             {
@@ -188,8 +189,6 @@
     });
 
     var IButton_Goal_Save = isc.IButtonSave.create({
-        top: 260, title: "ذخیره",
-        //icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
@@ -225,9 +224,11 @@
         }
     });
     var IButton_Syllabus_Save = isc.IButtonSave.create({
-        top: 260, title: "ذخیره",
-        //icon: "[SKIN]/actions/save.png",
         click: function () {
+            if(DynamicForm_Syllabus.getValue("practicalDuration")==0 && DynamicForm_Syllabus.getValue("theoreticalDuration")==0){
+                createDialog("info", "مدت زمان سرفصل نمیتواند صفر باشد.");
+                return;
+            }
             DynamicForm_Syllabus.validate();
             if (DynamicForm_Syllabus.hasErrors()) {
                 return;
@@ -681,7 +682,8 @@
         showShadow: true,
         shadowDepth: 10
     });
-    var ToolStripButton_Syllabus_Print = isc.ToolStripButtonPrint.create({
+    var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
+    // var ToolStripButton_Syllabus_Print = isc.ToolStripButtonPrint.create({
         // icon: "[SKIN]/RichTextEditor/print.png",
         autoDraw: false,
         width: 100,
@@ -691,30 +693,41 @@
         mouseMove: function () {
             // ToolStripButton_Syllabus_Print.hideClickMask();
             if (ListGrid_Goal.getSelectedRecord() == null) {
-                Menu_Print_GoalJsp.setData([{
-                    title: "همه اهداف",
-                    click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'
-                }, {
+                Menu_Print_GoalJsp.setData([
+                    <%--{--%>
+                    <%--title: "همه اهداف",--%>
+                    <%--click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'--%>
+                <%--},--%>
+                    {
                     title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
                     click: 'window.open("goal/print-one-course/"+courseRecord.id+"/pdf/<%=accessToken%>")'
-                }, {isSeparator: true}, {
-                    title: "همه سرفصل ها",
-                    click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'
-                }, {
+                },
+                    {isSeparator: true},
+                    <%--{--%>
+                    <%--title: "همه سرفصل ها",--%>
+                    <%--click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'--%>
+                <%--},--%>
+                    {
                     title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
                     click: 'window.open("syllabus/print-one-course/"+courseRecord.id+"/pdf/<%=accessToken%>")'
-                }])
+                }
+                ])
             } else {
-                Menu_Print_GoalJsp.setData([{
-                    title: "همه اهداف",
-                    click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'
-                }, {
+                Menu_Print_GoalJsp.setData([
+                    <%--{--%>
+                    <%--title: "همه اهداف",--%>
+                    <%--click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'--%>
+                <%--}, --%>
+                    {
                     title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
                     click: 'window.open("goal/print-one-course/"+courseRecord.id+"/pdf/<%=accessToken%>")'
-                }, {isSeparator: true}, {
-                    title: "همه سرفصل ها",
-                    click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'
-                }, {
+                },
+                    {isSeparator: true},
+                    <%--{--%>
+                    <%--title: "همه سرفصل ها",--%>
+                    <%--click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'--%>
+                <%--},--%>
+                    {
                     title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
                     click: 'window.open("syllabus/print-one-course/"+courseRecord.id+"/pdf/<%=accessToken%>")'
                 },

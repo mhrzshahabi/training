@@ -16,10 +16,10 @@ import java.util.List;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_questionnaire")
-public class Questionnaire extends Auditable {
+public class Questionnaire extends AuditableNew {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_questionnaire_id")

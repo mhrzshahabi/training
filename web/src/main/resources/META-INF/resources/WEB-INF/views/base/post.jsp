@@ -432,7 +432,7 @@
         var advancedCriteria_post = PostLG_post.getCriteria();
         var print_form_post = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/web/post_print_list/"/>" + type,
+            action: "<spring:url value="/web/print/post/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields: [

@@ -193,6 +193,27 @@ public class TeacherService implements ITeacherService {
         return searchRs;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TeacherDTO.Report> deepSearchReport(SearchDTO.SearchRq request) {
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("inBlackList", false, EOperator.equals, null);
+
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else {
+                criteriaRqList.add(criteriaRq);
+                request.getCriteria().setCriteria(criteriaRqList);
+            }
+        } else
+            request.setCriteria(criteriaRq);
+
+        SearchDTO.SearchRs<TeacherDTO.Report> searchRs = SearchUtil.search(teacherDAO, request, needAssessment -> modelMapper.map(needAssessment,
+                TeacherDTO.Report.class));
+
+        return searchRs;
+    }
 
 
     @Override

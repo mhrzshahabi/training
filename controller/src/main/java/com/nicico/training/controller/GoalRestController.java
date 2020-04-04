@@ -139,7 +139,7 @@ public class GoalRestController {
         final GoalDTO.SpecRs specResponse = new GoalDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final GoalDTO.GoalSpecRs specRs = new GoalDTO.GoalSpecRs();
@@ -197,8 +197,9 @@ public class GoalRestController {
     // -----------------
 
     @Loggable
-    @GetMapping(value = {"/print-all/{type}"})
-    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+    @PostMapping(value = {"/print-all/{type}"})
+    public void print(HttpServletResponse response,
+                      @PathVariable String type) throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Goal.jasper", params, response);

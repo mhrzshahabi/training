@@ -14,6 +14,7 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
+import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -40,6 +41,7 @@ import java.util.Map;
 public class TclassRestController {
 
     private final ITclassService tclassService;
+    private final TclassService tClassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ClassAlarmService classAlarmService;
@@ -160,7 +162,7 @@ public class TclassRestController {
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -203,7 +205,7 @@ public class TclassRestController {
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -246,7 +248,7 @@ public class TclassRestController {
         final TclassDTO.TclassEvaluatedSpecRs specRs = new TclassDTO.TclassEvaluatedSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -348,9 +350,15 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/evaluationResult/{classId}/{userId}")
-    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
+    @GetMapping(value = "/reactionEvaluationResult/{classId}/{userId}")
+    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
         return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId,userId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/behavioralEvaluationResult/{classId}")
+    public ResponseEntity<TclassDTO.BehavioralEvaluationResult> getBehavioralEvaluationResult(@PathVariable Long classId) {
+        return new ResponseEntity<TclassDTO.BehavioralEvaluationResult>(tclassService.getBehavioralEvaluationResult(classId), HttpStatus.OK);
     }
 
     @Loggable
@@ -368,6 +376,26 @@ public class TclassRestController {
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @Loggable
+    @GetMapping(value = "/personnel-training/{national_code}")
+    public ResponseEntity<TclassDTO.PersonnelClassInfo_TclassSpecRs> personnelTraining(@PathVariable String national_code) {
+
+        List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(national_code);
+
+        final TclassDTO.PersonnelClassInfo_SpecRs specResponse = new TclassDTO.PersonnelClassInfo_SpecRs();
+        final TclassDTO.PersonnelClassInfo_TclassSpecRs specRs = new TclassDTO.PersonnelClassInfo_TclassSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

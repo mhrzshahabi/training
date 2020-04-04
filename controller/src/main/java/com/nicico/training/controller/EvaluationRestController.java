@@ -9,9 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.Goal;
-import com.nicico.training.model.QuestionnaireQuestion;
-import com.nicico.training.model.Skill;
+import com.nicico.training.model.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +43,7 @@ public class EvaluationRestController {
     private final CourseService courseService;
     private final SkillService skillService;
     private final EvaluationService evaluationService;
-
-
+    private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final QuestionnaireQuestionService questionnaireQuestionService;
 
@@ -54,8 +51,10 @@ public class EvaluationRestController {
 
     @Loggable
     @PostMapping(value = {"/{type}/{classId}"})
-    public void printWithCriteria(HttpServletResponse response, @PathVariable String type,
-                                  @PathVariable Long classId, @RequestParam(value = "printData") String printData) throws Exception {
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @PathVariable Long classId,
+                                  @RequestParam(value = "printData") String printData) throws Exception {
 
         JSONObject jsonObject = new JSONObject(printData);
         Long courseId = Long.parseLong(jsonObject.get("courseId").toString());
@@ -165,14 +164,18 @@ public class EvaluationRestController {
     @PostMapping
     public ResponseEntity<EvaluationDTO.Info> create(@RequestBody Object req) {
         EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
-        return new ResponseEntity<>(evaluationService.create(create), HttpStatus.CREATED);
+        EvaluationDTO.Info info = evaluationService.create(create);
+        studentEvaluationRegister(info);
+        return new ResponseEntity<>(info, HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<EvaluationDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         EvaluationDTO.Update update = modelMapper.map(request, EvaluationDTO.Update.class);
-        return new ResponseEntity<>(evaluationService.update(id, update), HttpStatus.OK);
+        EvaluationDTO.Info info = evaluationService.update(id, update);
+        studentEvaluationRegister(info);
+        return new ResponseEntity<>(info, HttpStatus.OK);
     }
 
     @Loggable
@@ -226,7 +229,7 @@ public class EvaluationRestController {
         final EvaluationDTO.SpecRs specResponse = new EvaluationDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final EvaluationDTO.EvaluationSpecRs specRs = new EvaluationDTO.EvaluationSpecRs();
@@ -248,4 +251,27 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.getEvaluationByData(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId), HttpStatus.OK);
     }
 
+    //-------------------------------
+
+    private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
+        if(evaluation.getQuestionnaireTypeId().equals(139L)){
+            Integer x;
+            if(evaluation.getEvaluationFull()) {
+                x = 2;
+            }
+            else {
+                x = 3;
+            }
+            ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
+            if (evaluation.getEvaluationLevelId() == 154L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusReaction(x), ClassStudentDTO.ClassStudentInfo.class);
+            } else if (evaluation.getEvaluationLevelId() == 155L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusLearning(x), ClassStudentDTO.ClassStudentInfo.class);
+            } else if (evaluation.getEvaluationLevelId() == 156L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusBehavior(x), ClassStudentDTO.ClassStudentInfo.class);
+            } else if (evaluation.getEvaluationLevelId() == 157L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusResults(x), ClassStudentDTO.ClassStudentInfo.class);
+            }
+        }
+    }
 }

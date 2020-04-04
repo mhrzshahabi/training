@@ -128,7 +128,7 @@ public class TrainingPlaceRestController {
         final TrainingPlaceDTO.TrainingPlaceSpecRs specRs = new TrainingPlaceDTO.TrainingPlaceSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -307,7 +307,7 @@ public class TrainingPlaceRestController {
         specResponse.setData(new ModelMapper().map(response.getList(), new TypeToken<List<TrainingPlaceDTO.TrainingPlaceWithInstitute>>() {
         }.getType()))
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);

@@ -24,6 +24,13 @@
         "3": "غیبت غیر موجه",
         "4": "غیبت موجه",
     };
+    var printAttendanceState = {
+        "0": "",
+        "1": "حاضر",
+        "2": "اضافه کار",
+        "3": "غیبت بدون مجوز",
+        "4": "غیبت با مجوز",
+    };
     var DataSource_SessionInOneDate = isc.DataSource.create({
         ID: "attendanceDS",
         clientOnly: true,
@@ -34,6 +41,7 @@
             {name: "studentId", hidden: true, primaryKey: true},
             {name: "studentName", type: "text", title: "نام"},
             {name: "studentFamily", type: "text", title: "نام خانوادگی"},
+            {name: "personalNum", type: "text", title: "شماره پرسنلی"},
             {name: "nationalCode", type: "text", title: "کد ملی"},
             {name: "company", type: "text", title: "شرکت"},
             {name: "studentState", type: "text", title: "وضعیت"},
@@ -132,19 +140,16 @@
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
-        numCols: 6,
+        numCols: 8,
         padding: 10,
         // cellBorder:2,
-        colWidths:[250,200,200,100,100,50],
+        colWidths:[250,200,200,100,100,20,20],
         fields: [
             {
                 name: "attendanceTitle",
-                // type:"StaticItem",
                 showTitle: false,
                 canEdit: false,
-                // width:300,
                 textBoxStyle: "font-weight:bold; font-color:red;",
-                // readOnlyTextBoxStyle:"font-color:red",
                 textAlign: "center",
                 width: "*"
             },
@@ -158,24 +163,6 @@
                     1:"حضور و غیاب براساس تاریخ:",
                     2:"حضور و غیاب براساس فراگیر:"
                 },
-                <%--click: function (form, item) {--%>
-                    <%--attendanceGrid.endEditing();--%>
-                    <%--if (attendanceGrid.getAllEditRows().isEmpty()) {--%>
-                    <%--} else {--%>
-                        <%--isc.MyYesNoDialog.create({--%>
-                            <%--title: "<spring:message code='message'/>",--%>
-                            <%--message: "<spring:message code='msg.save.changes?'/>",--%>
-                            <%--buttonClick: function (button, index) {--%>
-                                <%--this.close();--%>
-                                <%--if (index === 0) {--%>
-                                    <%--saveBtn.click();--%>
-                                <%--} else {--%>
-                                    <%--cancelBtn.click();--%>
-                                <%--}--%>
-                            <%--}--%>
-                        <%--});--%>
-                    <%--}--%>
-                <%--},--%>
                 changed: function (form, item, value) {
                   if(attendanceGrid.getAllEditRows().length>0){
                       // loadPage_Attendance();
@@ -188,7 +175,6 @@
                       createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
                       return;
                   }
-
                   if(value == 1){
                       form.getItem("sessionDate").pickListFields = [
                           {name: "dayName", title: "روز هفته"},
@@ -255,6 +241,7 @@
                     }
                 },
                 changed: function (form, item, value) {
+                    var wait = createDialog("wait");
                     if (form.getValue("filterType") == 1) {
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/session-in-date?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
@@ -265,6 +252,7 @@
                             showPrompt: false,
                             serverOutputAsString: false,
                             callback: function (resp) {
+                                wait.close();
                                 let fields1 = [
                                     {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true},
                                     {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true},
@@ -543,10 +531,16 @@
                             showPrompt: false,
                             serverOutputAsString: false,
                             callback: function (resp) {
+                                wait.close();
                                 if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
                                     let fields1 = [
                                         {name: "sessionType", title: "نوع جلسه"},
-                                        {name: "sessionDate", title: "تاریخ", valueMap: filterValuesUnique, multiple: true},
+                                        {
+                                            name: "sessionDate",
+                                            title: "تاریخ",
+                                            valueMap: filterValuesUnique,
+                                            multiple: true
+                                        },
                                         {name: "startHour", title: "ساعت شروع"},
                                         {name: "endHour", title: "ساعت پایان"},
                                         {name: "state", title: "وضعیت", valueMap:attendanceState},
@@ -783,6 +777,9 @@
                                             }
                                         },
                                     });
+                                    ListGrid_Attendance_AttendanceJSP.clearSort();
+                                    ListGrid_Attendance_AttendanceJSP.sortDirection = "descending";
+                                    ListGrid_Attendance_AttendanceJSP.sort("sessionDate");
                                     var data2 = JSON.parse(resp.data);
                                     filterValues.length = 0;
                                     filterValuesUnique.length = 0;
@@ -849,6 +846,83 @@
                 }
             },
             {
+                name: "printBtn",
+                ID: "printBtnAttendanceJsp",
+                // showTitle: false,
+                title: "خروجی اکسل",
+                <%--prompt:"<spring:message code="refresh"/>",--%>
+                startRow:false,
+                type: "ButtonItem",
+                // icon: "[SKIN]/actions/refresh.png",
+                endRow:false,
+                click () {
+                    let fields = ListGrid_Attendance_AttendanceJSP.getFields();
+                    let sendFields = [];
+                    for (let i = 1; i < fields.length; i++) {
+                        let record = {};
+                        record.title = fields[i].title;
+                        record.name = fields[i].name;
+                        sendFields.push(record)
+                    }
+                    let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
+                    let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                    let sessionKeys = keys.filter(k => k.startsWith("se"));
+                    if(sessionKeys.indexOf("sessionDate") == -1) {
+                        for (let i = 0; i < allRows.length; i++) {
+                            for (let j = 0; j < sessionKeys.length; j++) {
+                                allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
+                            }
+                        }
+                    }
+                    else{
+                        for (let i = 0; i < allRows.length; i++) {
+                            allRows[i]["state"] = attendanceState[allRows[i]["state"]];
+                        }
+                    }
+                    exportToExcel(sendFields, allRows);
+                }
+            },
+            {
+                name: "printBtn1",
+                // showTitle: false,
+                title: "چاپ",
+                <%--prompt:"<spring:message code="refresh"/>",--%>
+                startRow:false,
+                type: "ButtonItem",
+                // icon: "[SKIN]/actions/refresh.png",
+                endRow:false,
+                click () {
+                    let params = {};
+                    params.code = classGridRecordInAttendanceJsp.code;
+                    params.titleClass = classGridRecordInAttendanceJsp.titleClass;
+                    params.startDate = classGridRecordInAttendanceJsp.startDate;
+                    params.teacher = classGridRecordInAttendanceJsp.teacher;
+                    params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
+                    params.date = DynamicForm_Attendance.getValue("sessionDate");
+                    let localData = ListGrid_Attendance_AttendanceJSP.data.localData.toArray();
+                    let data = [];
+                    if(DynamicForm_Attendance.getValue("filterType") == "1") {
+                        let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                        let sessionKeys = keys.filter(k => k.startsWith("se"));
+                        sessionKeys.sort();
+                        for (let k = 0; k < sessionKeys.length; k++) {
+                            params["se" + (k + 1).toString()] = ListGrid_Attendance_AttendanceJSP.getField(sessionKeys[k]).title;
+                        }
+                        for (let i = 0; i < localData.length; i++) {
+                            let obj = {};
+                            obj.fullName = localData[i].studentName + " " + localData[i].studentFamily;
+                            obj.nationalCode = localData[i].nationalCode;
+                            obj.personalNum = localData[i].personalNum;
+                            for (let j = 0; j < sessionKeys.length; j++) {
+                                obj["session" + (j + 1).toString()] = printAttendanceState[localData[i][sessionKeys[j]]]
+                            }
+                            data.push(obj);
+                        }
+                        printToJasper(data, params, "attendance.jasper");
+                    }
+                }
+            },
+            {
                 name: "refreshBtn",
                 ID: "refreshBtnAttendanceJsp",
                 // showTitle: false,
@@ -881,6 +955,7 @@
         editEvent: "none",
         editOnFocus: true,
         editByCell: true,
+        showHeaderContextMenu:false,
         gridComponents: [DynamicForm_Attendance, "header", "filterEditor", "body", isc.TrHLayoutButtons.create({
             members: [
                 isc.IButtonSave.create({
@@ -892,8 +967,6 @@
                         }
                         attendanceGrid.endEditing();
                         attendanceGrid.saveAllEdits();
-
-
                         // attendanceGrid.endEditing();
                     }
                 }),
@@ -930,7 +1003,6 @@
                             } else {
                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                             }
-
                         }
                     });
                 }
@@ -1042,6 +1114,7 @@
             }, 500)
         }
     }
+
 
     // isc.confirm.addProperties({
     //     buttonClick: function (button, index) {

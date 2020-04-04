@@ -38,11 +38,7 @@ public class ClassCheckListDTO implements Serializable {
     public static class Info extends ClassCheckListDTO {
         private Long id;
         private CheckListItemDTO.Info checkListItem;
-        private TclassDTO.Info tclass;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
+       // private TclassDTO.Info tclass;
     }
 
     @Getter

@@ -208,7 +208,6 @@
                 displayField: "titleFa",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false
             },
             {
                 name: "subCategories",
@@ -219,7 +218,6 @@
                 displayField: "titleFa",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false,
             },
             {
                 name: "personality.educationLevel.titleFa",
@@ -331,6 +329,7 @@
         showResizeBar: true,
         titleEditorTopOffset: 2,
         width: "100%",
+        minWidth:1350,
         height: "65%",
         tabs: [
             {
@@ -435,7 +434,6 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
-        minWidth: 1024,
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
@@ -1001,16 +999,15 @@
         attachName = req.response;
     }
 
-
     function showTempAttach() {
         var formData1 = new FormData();
         var fileBrowserId = document.getElementById('file-upload');
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
-        if (file.size > 1024000) {
+        if (file.size > 30000000) {
             createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
         } else {
-            TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
+            TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach/" + selectedRecordID, "POST", personalInfo_showTempAttach_result)
         }
     }
 
@@ -1020,7 +1017,7 @@
             showAttachViewLoader.setViewURL("<spring:url value="/personalInfo/getTempAttach/"/>" + attachNameTemp);
             showAttachViewLoader.show();
         } else if (req.status === 406) {
-            if (req.response.data === "wrong size")
+            if (req.response === "wrong size")
                 createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
             else if (req.response === "wrong dimension")
                 createDialog("info", "<spring:message code="photo.dimension.hint"/>", "<spring:message code='error'/>");
@@ -1031,7 +1028,7 @@
 
     function teacher_delete_result(resp) {
         teacherWait.close();
-        if (resp.httpResponseCode === 200) {
+        if (resp.httpResponseCode === 200 && resp.httpResponseText == "ok") {
             var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
@@ -1039,10 +1036,12 @@
             }, 3000);
             // refreshSelectedTab_teacher(null);
             ListGrid_teacher_refresh();
-        } else if (resp.data === false) {
-            createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
-        } else {
-            createDialog("info", "<spring:message code='msg.record.remove.failed'/>");
+        } else if (resp.httpResponseText === "personalFail") {
+            createDialog("info", "<spring:message code='teacher.delete.personal.fail.message'/>");
+        } else{
+            var msg = getFormulaMessage(resp.httpResponseText, 2, "red", null);
+            createDialog("info", "این استاد بعلت استفاده در کلاس"+ " " + msg + " " +
+                "قابل حذف نمی باشد");
         }
     }
 

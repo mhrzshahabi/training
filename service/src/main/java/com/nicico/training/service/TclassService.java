@@ -23,10 +23,15 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
+import javax.persistence.EntityManager;
+import javax.persistence.SqlResultSetMapping;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +43,8 @@ public class TclassService implements ITclassService {
     private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
+
+    private final EntityManager entityManager;
 
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     private final IEvaluationService evaluationService;
@@ -371,8 +378,6 @@ public class TclassService implements ITclassService {
         evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
         evaluationResult.setTrainingGradeToTeacher(getTrainingGradeToTeacher(classId, trainingId));
         evaluationResult.setTeacherGradeToClass(getTeacherGradeToClass(classId));
-
-
         return evaluationResult;
     }
 
@@ -640,5 +645,76 @@ public class TclassService implements ITclassService {
         return result;
     }
     ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
+
+    //----------------------------------------------- Behavioral Evaluation --------------------------------------------
+    @Override
+    @Transactional
+    public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId) {
+        Tclass tclass = getTClass(classId);
+        TclassDTO.BehavioralEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.BehavioralEvaluationResult.class);
+
+        List<Double> studentsGrade = new ArrayList<Double>();
+        List<Double> supervisorsGrade = new ArrayList<Double>();
+        for (int i = 0; i < tclass.getClassStudents().size(); i++) {
+            studentsGrade.add(Double.parseDouble("20"));
+            supervisorsGrade.add(Double.parseDouble("30"));
+        }
+        evaluationResult.setClassPassedTime(3);
+        evaluationResult.setNumberOfFilledFormsByStudents(20);
+        evaluationResult.setNumberOfFilledFormsBySuperviosers(20);
+        evaluationResult.setSupervisorsMeanGrade(50);
+        evaluationResult.setStudentsMeanGrade(50);
+        evaluationResult.setFEBGrade(50);
+        evaluationResult.setFEBPass(true);
+        evaluationResult.setFECBGrade(50);
+        evaluationResult.setFECBPass(true);
+        evaluationResult.setStudentsGrade(studentsGrade);
+        evaluationResult.setSupervisorsGrade(supervisorsGrade);
+        evaluationResult.setClassStudentsName();
+
+        return evaluationResult;
+    }
+    //----------------------------------------------- Behavioral Evaluation --------------------------------------------
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code) {
+
+        List<TclassDTO.PersonnelClassInfo> personnelClassInfo = null;
+
+        List<?> personnelClassInfoList = tclassDAO.findAllPersonnelClass(national_code);
+
+        if (personnelClassInfoList != null) {
+
+            personnelClassInfo = new ArrayList<>(personnelClassInfoList.size());
+
+            for (int i = 0; i < personnelClassInfoList.size(); i++) {
+                Object[] classInfo = (Object[]) personnelClassInfoList.get(i);
+                personnelClassInfo.add(new TclassDTO.PersonnelClassInfo(
+                        Long.parseLong(classInfo[0].toString()),
+                        classInfo[1].toString(),
+                        classInfo[2].toString(),
+                        Long.parseLong(classInfo[3].toString()),
+                        classInfo[4].toString(),
+                        classInfo[5].toString(),
+                        Long.parseLong(classInfo[6].toString()),
+                        classInfo[7].toString(),
+                        Long.parseLong(classInfo[8].toString()),
+                        classInfo[9].toString(),
+                        classInfo[10].toString(),
+                        Long.parseLong(classInfo[11].toString()),
+                        classInfo[12].toString()));
+            }
+        }
+
+        return (personnelClassInfo != null ? modelMapper.map(personnelClassInfo, new TypeToken<List<TclassDTO.PersonnelClassInfo>>() {
+        }.getType()) : null);
+
+
+//        return modelMapper.map(tclassDAO.findAllPersonnelClass(national_code), new TypeToken<List<TclassDTO.Info>>() {
+//        }.getType());
+
+    }
 
 }

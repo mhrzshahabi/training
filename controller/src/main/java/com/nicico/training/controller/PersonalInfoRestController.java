@@ -129,7 +129,7 @@ public class PersonalInfoRestController {
         final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final PersonalInfoDTO.PersonalInfoSpecRs specRs = new PersonalInfoDTO.PersonalInfoSpecRs();
@@ -196,13 +196,13 @@ public class PersonalInfoRestController {
 
     @Loggable
     @Transactional
-    @PostMapping(value = "/addTempAttach")
-    public ResponseEntity<String> addTempAttach(@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping(value = "/addTempAttach/{id}")
+    public ResponseEntity<String> addTempAttach(@RequestParam("file") MultipartFile file,@PathVariable Long id) throws IOException {
         FileInfo fileInfo = new FileInfo();
         File destinationFile = null;
-        String changedFileName = "";
+        String fileType = "";
         String fileName = "";
-        double fileSize = file.getSize() / 1000.0;
+        double fileSize = file.getSize() / 1000000.0;
 
         String[] tempFiles = new File(tempUploadDir).list();
         for (String tempFile : tempFiles) {
@@ -211,16 +211,15 @@ public class PersonalInfoRestController {
         }
 
         try {
-            if (!file.isEmpty() && fileSize < 1000.0 && fileSize > 5.0) {
-                destinationFile = new File(tempUploadDir + File.separator + file.getOriginalFilename());
-                changedFileName = file.getOriginalFilename().replace(file.getOriginalFilename(), "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
+            if (!file.isEmpty() && fileSize < 30.0) {
+                fileType = file.getOriginalFilename().replace(file.getOriginalFilename(), "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
+                fileName = "Teacher_Photo"+"_"+id+fileType;
+                destinationFile = new File(tempUploadDir + File.separator + fileName);
                 file.transferTo(destinationFile);
                 fileInfo.setFileName(destinationFile.getPath());
                 fileInfo.setFileSize(file.getSize());
-                fileName = file.getOriginalFilename();
-
                 BufferedImage readImage = null;
-                readImage = ImageIO.read(new File(tempUploadDir + "/" + file.getOriginalFilename()));
+                readImage = ImageIO.read(new File(tempUploadDir + "/" + fileName));
                 int h = readImage.getHeight();
                 int w = readImage.getWidth();
                 if (100 > h || h > 500 || 100 > w || w > 500) {
@@ -228,7 +227,6 @@ public class PersonalInfoRestController {
                 }
             } else
                 return new ResponseEntity<>("wrong size", HttpStatus.NOT_ACCEPTABLE);
-
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ResponseEntity<>(fileName, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -242,7 +240,7 @@ public class PersonalInfoRestController {
     public ResponseEntity<String> addAttach(@RequestParam("file") MultipartFile file, @PathVariable Long Id) {
         FileInfo fileInfo = new FileInfo();
         File destinationFile = null;
-        String changedFileName = "";
+        String fileName = "";
         try {
             if (!file.isEmpty()) {
                 final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
@@ -251,21 +249,21 @@ public class PersonalInfoRestController {
                     File file1 = new File(personUploadDir + "/" + personalInfo.getPhoto());
                     file1.delete();
                 }
-                String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                changedFileName = Id.toString() + "_" + currentDate + "_" + file.getOriginalFilename();
-                destinationFile = new File(personUploadDir + File.separator + changedFileName);
+                String fileType = file.getOriginalFilename().replace(file.getOriginalFilename(), "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
+                fileName = "Teacher_Photo"+"_"+Id+fileType;
+                destinationFile = new File(personUploadDir + File.separator + fileName);
                 file.transferTo(destinationFile);
                 fileInfo.setFileName(destinationFile.getPath());
                 fileInfo.setFileSize(file.getSize());
-                personalInfo.setPhoto(changedFileName);
+                personalInfo.setPhoto(fileName);
             } else
-                return new ResponseEntity<>(changedFileName, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(fileName, HttpStatus.NO_CONTENT);
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            return new ResponseEntity<>(changedFileName, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(fileName, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(changedFileName, HttpStatus.OK);
+        return new ResponseEntity<>(fileName, HttpStatus.OK);
     }
 
 

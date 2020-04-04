@@ -44,12 +44,6 @@ public class TeacherDTO {
         private PersonalInfoDTO.Info personality;
         private CategoryDTO.CategoryInfoTuple majorCategory;
         private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
-//        private Set<EmploymentHistoryDTO.Info> employmentHistories;
-//        private Set<AcademicBKDTO.Info> academicBKs;
-//        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
-//        private Set<TeachingHistoryDTO.Info> teachingHistories;
-//        private Set<TeacherCertificationDTO.Info> teacherCertifications;
-//        private Set<PublicationDTO.Info> publications;
         private Integer version;
     }
 
@@ -85,10 +79,45 @@ public class TeacherDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("TeacherReport")
+    public static class Report{
+        private Long id;
+        private String teacherCode;
+        private String personnelCode;
+        private PersonalInfoDTO.Report personality;
+        private Boolean personnelStatus;
+        Set<TeachingHistoryDTO.Info> teachingHistories;
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("TeacherSpecRsGrid")
     public static class TeacherSpecRsGrid {
         private SpecRsGrid response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherSpecRsReport")
+    public static class TeacherSpecRsReport {
+        private SpecRsReport response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsReport {
+        private List<Report> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 
 

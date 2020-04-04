@@ -29,6 +29,11 @@ public class MainFormController {
         return "report/trainingFile";
     }
 
+    @RequestMapping("/trainingOverTime")
+    public String showTrainingOverTime() {
+        return "report/trainingOverTime";
+    }
+
     @RequestMapping("/needsAssessment-reports")
     public String showNeedsAssessmentReportsForm() {
         return "report/needsAssessmentReports";
@@ -99,8 +104,13 @@ public class MainFormController {
         return "base/configQuestionnaire";
     }
 
-    @PostMapping("/post_print_list/{type}")
-    public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String type) {
+    @RequestMapping("/monthlyStatisticalReport")
+    public String showMonthlyStatisticalReportForm() {
+        return "report/monthlyStatisticalReport";
+    }
+
+    @PostMapping("/print/{entityUrl}/{type}")
+    public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String entityUrl, @PathVariable String type) {
         String token = request.getParameter("myToken");
 
         final RestTemplate restTemplate = new RestTemplate();
@@ -113,19 +123,23 @@ public class MainFormController {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        map.add("params", request.getParameter("params"));
+        map.add("formData", request.getParameter("formData"));
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-        if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/post/print_list/PDF", HttpMethod.POST, entity, byte[].class);
-        else if (type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/post/print_list/EXCEL", HttpMethod.POST, entity, byte[].class);
-        else if (type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/post/print_list/HTML", HttpMethod.POST, entity, byte[].class);
-        else
-            return null;
+        switch (type) {
+            case "pdf":
+                return restTemplate.exchange(restApiUrl + "/api/" + entityUrl + "/print/PDF", HttpMethod.POST, entity, byte[].class);
+            case "excel":
+                return restTemplate.exchange(restApiUrl + "/api/" + entityUrl + "/print/EXCEL", HttpMethod.POST, entity, byte[].class);
+            case "html":
+                return restTemplate.exchange(restApiUrl + "/api/" + entityUrl + "/print/HTML", HttpMethod.POST, entity, byte[].class);
+            default:
+                return null;
+        }
     }
 
     @RequestMapping("/questionnaire")
@@ -148,8 +162,18 @@ public class MainFormController {
         return "security/workGroup";
     }
 
+    @RequestMapping("/course-needs-assessment-reports")
+    public String showCourseNAReportsForm() {
+        return "planning/courseNAReports";
+    }
+
+    @RequestMapping("/student-portal")
+    public String showStudentPortalForm() {
+        return "portal/studentPortal";
+    }
+
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
-    public ResponseEntity<?> perintPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
+    public ResponseEntity<?> printPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("myToken");
 
         final RestTemplate restTemplate = new RestTemplate();

@@ -311,7 +311,6 @@
                 filterField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false,
                 pickListProperties: {
                     showFilterEditor: true
                 },
@@ -452,7 +451,6 @@
                 filterField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
-                filterLocally: false,
                 pickListProperties: {
                     showFilterEditor: true
                 },

@@ -28,4 +28,9 @@ public interface IPersonnelService {
 
     PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
 
+    List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType);
+
+    Personnel findPersonnelByPersonnelNo(String personnelNo);
+
+    SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
 }

@@ -37,4 +37,14 @@ public class NeedsAssessmentReportsDTO implements Serializable {
         private Long needsAssessmentDomainId;
         private Long needsAssessmentPriorityId;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentDTO - CourseNAS")
+    public static class CourseNAS {
+        private Long needsAssessmentPriorityId;
+        private Integer passedPersonnelCount = 0;
+        private Integer TotalPersonnelCount = 0;
+    }
 }

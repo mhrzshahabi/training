@@ -6,11 +6,12 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.IPostService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequiredArgsConstructor
 public class NeedsAssessmentReportsService {
 
+    private final List<String> needsAssessmentPriorityCodes = Arrays.asList(new String[]{"AZ", "AB", "AT"});
+
     private final ModelMapper modelMapper;
 
     private final PostDAO postDAO;
@@ -36,10 +39,12 @@ public class NeedsAssessmentReportsService {
     private final ClassStudentReportService classStudentReportService;
     private final IPersonnelService personnelService;
     private final ParameterValueService parameterValueService;
+    private final ICourseService courseService;
 
     @Transactional(readOnly = true)
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, String personnelNo) {
+//        getCourseNAList(request, 5679L, true);
         List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelNo);
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) needsAssessmentReportList.size());
@@ -97,6 +102,87 @@ public class NeedsAssessmentReportsService {
                 withoutDuplicate.add(needsAssessment);
         });
         return withoutDuplicate;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
+
+        List<NeedsAssessmentReportsDTO.CourseNAS> result = new ArrayList<>();
+        needsAssessmentPriorityCodes.forEach(code -> {
+            Long pId = parameterValueService.getId(code);
+            result.add(new NeedsAssessmentReportsDTO.CourseNAS().setNeedsAssessmentPriorityId(pId));
+        });
+        Course course = courseService.getCourse(courseId);
+        List<NeedsAssessment> needsAssessments = new ArrayList<>();
+        course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments()));
+        Comparator<NeedsAssessment> comparator = Comparator.comparing(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType()));
+        comparator = comparator.thenComparing(NeedsAssessment::getNeedsAssessmentPriorityId);
+        needsAssessments.sort(comparator);
+        MultiValueMap postCodes = new MultiValueMap();
+        needsAssessments.forEach(needsAssessment -> {
+            switch (needsAssessment.getObjectType()) {
+                case "Post":
+                    try {
+                        if (!postCodes.containsValue(((Post) needsAssessment.getObject()).getCode()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), ((Post) needsAssessment.getObject()).getCode());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        return;
+                    }
+                    break;
+                case "PostGroup":
+                    ((PostGroup) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post.getCode()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
+                    });
+                    break;
+                case "Job":
+                    ((Job) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post.getCode()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
+                    });
+                    break;
+                case "JobGroup":
+                    ((JobGroup) needsAssessment.getObject()).getJobSet().forEach(job -> job.getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post.getCode()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
+                    }));
+                    break;
+                case "PostGrade":
+                    ((PostGrade) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post.getCode()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
+                    });
+                    break;
+                case "PostGradeGroup":
+                    ((PostGradeGroup) needsAssessment.getObject()).getPostGradeSet().forEach(postGrade -> postGrade.getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post.getCode()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
+                    }));
+                    break;
+            }
+        });
+        postCodes.forEach((priority, pCodes) -> {
+            SearchDTO.CriteriaRq personnelCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            if (request.getCriteria() != null)
+                personnelCriteria.getCriteria().add(request.getCriteria());
+            personnelCriteria.getCriteria().add(makeNewCriteria("postCode", pCodes, EOperator.inSet, null));
+            List<PersonnelDTO.Info> personnelInfoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(personnelCriteria).setDistinct(true)).getList();
+            NeedsAssessmentReportsDTO.CourseNAS courseNAS = result.stream().filter(courseNAS1 -> courseNAS1.getNeedsAssessmentPriorityId().equals((Long) priority)).findFirst().orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            courseNAS.setTotalPersonnelCount(personnelInfoList.size());
+            if (passedReport) {
+                personnelInfoList.forEach(p -> {
+                    if (classStudentReportService.isPassed(course, p.getNationalCode()))
+                        courseNAS.setPassedPersonnelCount(courseNAS.getPassedPersonnelCount() + 1);
+                });
+            }
+//            result.add(courseNAS);
+        });
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) result.size());
+        searchRs.setList(result);
+        return searchRs;
     }
 
     @Transactional(readOnly = true)

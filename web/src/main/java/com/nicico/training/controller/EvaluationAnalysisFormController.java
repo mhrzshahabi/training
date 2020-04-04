@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 
-import jdk.nashorn.internal.parser.JSONParser;
 import lombok.RequiredArgsConstructor;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.http.*;
@@ -9,16 +8,12 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 
 @RequiredArgsConstructor
 @Controller
@@ -30,8 +25,18 @@ public class EvaluationAnalysisFormController {
         return "base/evaluationAnalysis";
     }
 
+    @RequestMapping("/evaluationAnalysis-behavioralTab/show-form")
+    public String behavioralTab() {
+        return "evaluationAnalysis/evaluationAnalysist_behavioral";
+    }
+
+    @RequestMapping("/evaluationAnalysis-reactionTab/show-form")
+    public String reactionTab() {
+        return "evaluationAnalysis/evaluationAnalysist_reaction";
+    }
+
     @PostMapping("/printReactionEvaluation")
-    public ResponseEntity<?> printWithDetail(final HttpServletRequest request) {
+    public ResponseEntity<?> printReactionEvaluation(final HttpServletRequest request) {
         String token = request.getParameter("token");
         JSONObject object = new JSONObject(request.getParameter("data"));
         final RestTemplate restTemplate = new RestTemplate();
@@ -81,6 +86,44 @@ public class EvaluationAnalysisFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printReactionEvaluation" , HttpMethod.POST, entity, byte[].class);
+    }
+
+
+    @PostMapping("/printBehavioralEvaluation")
+    public ResponseEntity<?> printBehavioralEvaluation(final HttpServletRequest request) {
+        String token = request.getParameter("token");
+        JSONObject object = new JSONObject(request.getParameter("data"));
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap();
+        params.add("code",object.get("code").toString());
+        params.add("titleClass",object.get("titleClass").toString());
+        params.add("term",object.getJSONObject("term").get("titleFa").toString());
+        params.add("studentCount", object.get("studentCount").toString());
+        params.add("teacher", object.get("teacher").toString());
+        params.add("classPassedTime", object.get("classPassedTime").toString());
+        params.add("numberOfFilledFormsBySuperviosers", object.get("numberOfFilledFormsBySuperviosers").toString());
+        params.add("numberOfFilledFormsByStudents", object.get("numberOfFilledFormsByStudents").toString());
+        params.add("studentsMeanGrade", object.get("studentsMeanGrade").toString());
+        params.add("supervisorsMeanGrade", object.get("supervisorsMeanGrade").toString());
+        params.add("FEBGrade", object.get("FEBGrade").toString());
+        params.add("FEBPass", object.get("FEBPass").toString());
+        params.add("FECBGrade", object.get("FECBGrade").toString());
+        params.add("FECBPass", object.get("FECBPass").toString());
+
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printBehavioralEvaluation" , HttpMethod.POST, entity, byte[].class);
     }
 
 }

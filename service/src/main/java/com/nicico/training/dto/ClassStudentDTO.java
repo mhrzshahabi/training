@@ -59,6 +59,7 @@ public class ClassStudentDTO implements Serializable {
         private TclassDTO.CoursesOfStudent tclass;
         private StudentDTO.ClassesOfStudentInfo student;
         private Float score;
+        private String scoresState;
     }
 
     @Getter
@@ -198,6 +199,7 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusLearning;
         private Integer evaluationStatusBehavior;
         private Integer evaluationStatusResults;
+        private StudentDTO.ClassStudentInfo student;
     }
 
     @Getter
@@ -207,6 +209,7 @@ public class ClassStudentDTO implements Serializable {
     public static class PreTestScoreInfo{
         private Long id;
         private Float preTestScore;
+        private Float score;
         private StudentDTO.ScoresInfo student;
     }
 
@@ -218,5 +221,19 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private Float preTestScore;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain=true)
+    @ApiModel("ClassStudent - evaluationAnalysistLearning")
+    public static class evaluationAnalysistLearning
+    {
+        private Long id;
+        private Float preTestScore;
+        private Float score;
+        private String valence;
+        private StudentDTO.ScoresInfo student;
+    }
+
 
 }
