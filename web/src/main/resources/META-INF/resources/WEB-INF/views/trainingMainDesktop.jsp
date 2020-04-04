@@ -770,6 +770,13 @@
                 },
                 {isSeparator: true},
                 {
+                    title: "<spring:message code="teachers.report"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
                     title: "<spring:message code="report.monthly.statistical"/>",
                     click:function(){
                         createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
@@ -782,13 +789,6 @@
                         createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="teachers.report"/>",
-                    click:function(){
-                        createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
-                    }
-                }
                 <%--{--%>
                     <%--title: "غيبت ناموجه",--%>
                     <%--click: function () {--%>

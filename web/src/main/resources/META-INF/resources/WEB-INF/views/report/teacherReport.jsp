@@ -371,6 +371,7 @@
                 changed: function () {
                     isMajorCategoriesChanged = true;
                     var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("majorSubCategoryId");
+                    subCategoryField.clearValue();
                     if (this.getValue() == null || this.getValue() == undefined) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -736,8 +737,8 @@
                     item.clearErrors();
             }
             if(item.name == "evaluationCategory"){
+                DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationSubCategory").clearValue();
                 if(newValue == undefined){
-                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationGrade").clearValue();
                     DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationSubCategory").clearErrors();
                     DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationGrade").clearErrors();
                     DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();

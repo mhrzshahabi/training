@@ -269,20 +269,39 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
         request.setDistinct(true);
-//        List<Object> removedObjects = new ArrayList<>();
-//        Object evaluationGrade = null;
-//        Long evalGrade = null;
-//        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-//            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
-//                evaluationGrade = criterion.getValue().get(0);
-//                removedObjects.add(criterion);
-//            }
-//        }
-//
-//        for (Object removedObject : removedObjects) {
-//            request.getCriteria().getCriteria().remove(removedObject);
-//        }
-//        evalGrade =  Long.parseLong(evaluationGrade.toString());
+
+        List<Object> removedObjects = new ArrayList<>();
+        Object evaluationCategory = null;
+        Object evaluationSubCategory = null;
+        Object evaluationGrade = null;
+        Object teachingCategories = null;
+        Object teachingSubCategories = null;
+        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationCategory")){
+                evaluationCategory = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationSubCategory")){
+                evaluationSubCategory = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
+                evaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("teachingCategories")){
+                teachingCategories = criterion.getValue();
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("teachingSubCategories")){
+                teachingSubCategories = criterion.getValue();
+                removedObjects.add(criterion);
+            }
+        }
+
+        for (Object removedObject : removedObjects) {
+            request.getCriteria().getCriteria().remove(removedObject);
+        }
         SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
         final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
@@ -292,9 +311,71 @@ public class TeacherRestController {
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
+        List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
+
+        List<Long> teaching_cats = null;
+        List<Long> teaching_subcats = null;
+
+        if(teachingCategories != null)
+            teaching_cats = modelMapper.map(teachingCategories,List.class);
+        if(teachingSubCategories != null)
+            teaching_subcats = modelMapper.map(teachingSubCategories,List.class);;
+
+        Float min_evalGrade = null;
+        if(evaluationGrade != null)
+           min_evalGrade = Float.parseFloat(evaluationGrade.toString());
+
+        if(evaluationGrade!=null || teachingCategories!=null || teachingSubCategories!=null) {
+            for (TeacherDTO.Report datum : specResponse.getData()) {
+                if (evaluationGrade != null) {
+                    ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
+                    Float teacher_evalGrade = t.getBody();
+                    if (teacher_evalGrade < min_evalGrade)
+                        listRemovedObjects.add(datum);
+                }
+                boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
+                if (relatedTeachingHistory == false)
+                    listRemovedObjects.add(datum);
+            }
+        }
+
+        for (TeacherDTO.Report listRemovedObject : listRemovedObjects) {
+            specResponse.getData().remove(listRemovedObject);
+        }
+
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    public Boolean getRelatedTeachingHistory(TeacherDTO.Report teacher, List<Long> related_cats, List<Long> related_subCats){
+        Boolean relation = false;
+        List<TeachingHistoryDTO.Info> teachingHistories = modelMapper.map(teacher.getTeachingHistories(),List.class);
+
+        for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
+            boolean thisTeachingHistoryRelation = true;
+            List<Long> teacher_cats = teachingHistory.getCategoriesIds();
+            List<Long> teacher_subCats = teachingHistory.getSubCategoriesIds();
+            if(teacher_cats != null && related_cats != null){
+                for (Long related_cat : related_cats) {
+                    if(!teacher_cats.contains(related_cat))
+                        thisTeachingHistoryRelation = false;
+                }
+            }
+            if(teacher_subCats != null && related_subCats != null){
+                for (Long related_subCat : related_subCats) {
+                    if(!teacher_subCats.contains(related_subCat))
+                        thisTeachingHistoryRelation = false;
+                }
+            }
+            if(thisTeachingHistoryRelation == true)
+                relation = thisTeachingHistoryRelation;
+        }
+
+        if(related_cats == null || related_subCats == null)
+            relation = true;
+
+        return relation;
     }
 
     @Loggable
