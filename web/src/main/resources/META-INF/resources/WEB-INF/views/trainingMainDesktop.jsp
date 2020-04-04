@@ -672,7 +672,13 @@
                     }
                 },
                 {
-                    title: "ثبت نمرات پیش آزمون",
+                    title: "ثبت نتایج",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");
+                    }
+                },
+                {
+                    title:"<spring:message code="register.Score.PreTest"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
                     }
@@ -767,6 +773,13 @@
                     title: "<spring:message code="report.monthly.statistical"/>",
                     click:function(){
                         createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title:"<spring:message code="unfinished.classes"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                     }
                 },
                 {isSeparator: true},
@@ -1246,6 +1259,7 @@
     const classStudent = rootUrl + "/classStudent/";
     const classAlarm = rootUrl + "/classAlarm/";
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
+    const unfinishedClasses = rootUrl + "/unfinishedClasses/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/"

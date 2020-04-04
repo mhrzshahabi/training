@@ -22,10 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RestController
@@ -53,7 +52,14 @@ public class ScoreRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
         JSONObject json = new JSONObject(classRecord);
-        final SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.searchClassStudents(searchRq, Long.valueOf(classId), ClassStudentDTO.ScoresInfo.class);
+
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
+        if (searchRq.getCriteria() != null)
+            criteria.getCriteria().add(searchRq.getCriteria());
+        searchRq.setCriteria(criteria);
+
+        final SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.ScoresInfo.class);
         Map<String, String> map1 = new HashMap<>();
         map1.put("1001", "ضعیف");
         map1.put("1002", "متوسط");

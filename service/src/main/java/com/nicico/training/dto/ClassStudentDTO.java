@@ -59,6 +59,7 @@ public class ClassStudentDTO implements Serializable {
         private TclassDTO.CoursesOfStudent tclass;
         private StudentDTO.ClassesOfStudentInfo student;
         private Float score;
+        private String scoresState;
     }
 
     @Getter

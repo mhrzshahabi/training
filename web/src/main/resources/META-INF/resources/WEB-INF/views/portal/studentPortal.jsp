@@ -13,7 +13,7 @@
     //*Main Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    basicInfoTSMB = isc.ToolStripMenuButton.create({
+    basicInfoTSMB_SP = isc.ToolStripMenuButton.create({
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             placement: "none",
@@ -21,7 +21,44 @@
                 {
                     title: "<spring:message code="training.file"/>",
                     click: function () {
-                        createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>", "call_trainingFile");
+                        createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>", "call_trainingFile(person_SP)");
+                    }
+                },
+                {isSeparator: true},
+            ]
+        }),
+    });
+
+    NAreportTSMB_SP = isc.ToolStripMenuButton.create({
+        title: "<spring:message code="needsAssessmentReport"/>",
+        menu: isc.Menu.create({
+            placement: "none",
+            data: [
+                {
+                    title: "<spring:message code="your.needs.assessment"/>",
+                    click: function () {
+                        if (person_SP == null)
+                            return;
+                        if (typeof call_needsAssessmentReports === "undefined")
+                            createTab_SP("<spring:message code="needsAssessmentReport"/>", "<spring:url value="/web/needsAssessment-reports"/>", "call_needsAssessmentReports('0',false,person_SP,false)");
+                        else {
+                            call_needsAssessmentReports('0',false,person_SP,false);
+                            MainTS_SP.selectTab("<spring:message code="needsAssessmentReport"/>");
+                        }
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code='your.needs.assessment.on.post'/>",
+                    click: function () {
+                        if (person_SP == null)
+                            return;
+                        if (typeof call_needsAssessmentReports === "undefined")
+                            createTab_SP("<spring:message code="needsAssessmentReport"/>", "<spring:url value="/web/needsAssessment-reports"/>", "call_needsAssessmentReports('2',false,person_SP,false)");
+                        else {
+                            call_needsAssessmentReports('2',false,person_SP,false);
+                            MainTS_SP.selectTab("<spring:message code="needsAssessmentReport"/>");
+                        }
                     }
                 },
                 {isSeparator: true},
@@ -37,7 +74,8 @@
         shadowDepth: 3,
         shadowColor: "#153560",
         members: [
-            basicInfoTSMB,
+            basicInfoTSMB_SP,
+            NAreportTSMB_SP,
         ]
     });
 
@@ -183,7 +221,7 @@
                 pane: isc.ViewLoader.create({
                     viewURL: url,
                     handleError() {createDialog("info", "خطا در ایجاد تب")},
-                    viewLoaded() {window[callFunction](person_SP)}
+                    viewLoaded() {eval(callFunction)}
                 }),
                 canClose: true,
             });

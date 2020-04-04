@@ -87,8 +87,8 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
             monthlyStatisticalDTO = new ArrayList<>(MSReportList.size());
 
             for (int i = 0; i < MSReportList.size(); i++) {
-                Object[] alarm = (Object[]) MSReportList.get(i);
-                monthlyStatisticalDTO.add(new MonthlyStatisticalReportDTO(alarm[0].toString(), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
+                Object[] msReport = (Object[]) MSReportList.get(i);
+                monthlyStatisticalDTO.add(new MonthlyStatisticalReportDTO(msReport[0].toString(), msReport[1].toString(), msReport[2].toString(), msReport[3].toString(), msReport[4].toString()));
 
             }
         }

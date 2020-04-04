@@ -94,7 +94,7 @@ public class PostRestController {
     }
 
     @Loggable
-    @PostMapping(value = {"/print_list/{type}"})
+    @PostMapping(value = {"/print/{type}"})
     public void printList(HttpServletResponse response,
                           @PathVariable String type,
                           @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {

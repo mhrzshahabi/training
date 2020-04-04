@@ -557,7 +557,7 @@
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
                     if (nationalCode_Need !== nationalCode) {
                         nationalCode_Need = nationalCode;
-                        call_needsAssessmentReports(PersonnelInfoListGrid_PersonnelList);
+                        call_needsAssessmentReports("0",true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
                     }
                 }
             }
