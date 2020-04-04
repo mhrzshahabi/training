@@ -313,13 +313,15 @@ public class TeacherRestController {
 
         List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
 
-        List<Long> teaching_cats = null;
-        List<Long> teaching_subcats = null;
+        List<Integer> teaching_cats = null;
+        List<Integer> teaching_subcats = null;
 
-        if(teachingCategories != null)
-            teaching_cats = modelMapper.map(teachingCategories,List.class);
-        if(teachingSubCategories != null)
-            teaching_subcats = modelMapper.map(teachingSubCategories,List.class);;
+        if(teachingCategories != null) {
+            teaching_cats = modelMapper.map(teachingCategories, List.class);
+        }
+        if(teachingSubCategories != null) {
+            teaching_subcats = modelMapper.map(teachingSubCategories, List.class);
+        }
 
         Float min_evalGrade = null;
         if(evaluationGrade != null)
@@ -348,32 +350,35 @@ public class TeacherRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    public Boolean getRelatedTeachingHistory(TeacherDTO.Report teacher, List<Long> related_cats, List<Long> related_subCats){
+    public Boolean getRelatedTeachingHistory(TeacherDTO.Report teacher, List<Integer> related_cats, List<Integer> related_subCats){
         Boolean relation = false;
         List<TeachingHistoryDTO.Info> teachingHistories = modelMapper.map(teacher.getTeachingHistories(),List.class);
 
-        for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
-            boolean thisTeachingHistoryRelation = true;
-            List<Long> teacher_cats = teachingHistory.getCategoriesIds();
-            List<Long> teacher_subCats = teachingHistory.getSubCategoriesIds();
-            if(teacher_cats != null && related_cats != null){
-                for (Long related_cat : related_cats) {
-                    if(!teacher_cats.contains(related_cat))
-                        thisTeachingHistoryRelation = false;
+        if(teachingHistories != null) {
+            for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
+                boolean thisTeachingHistoryRelation = true;
+                List<Long> teacher_cats = teachingHistory.getCategoriesIds();
+                List<Long> teacher_subCats = teachingHistory.getSubCategoriesIds();
+                if (teacher_cats != null && related_cats != null) {
+                    for (Integer related_cat : related_cats) {
+                        if (!teacher_cats.contains(Long.parseLong("" + related_cat)))
+                            thisTeachingHistoryRelation = false;
+                    }
                 }
-            }
-            if(teacher_subCats != null && related_subCats != null){
-                for (Long related_subCat : related_subCats) {
-                    if(!teacher_subCats.contains(related_subCat))
-                        thisTeachingHistoryRelation = false;
+                if (teacher_subCats != null && related_subCats != null) {
+                    for (Integer related_subCat : related_subCats) {
+                        if (!teacher_subCats.contains(Long.parseLong("" + related_subCat)))
+                            thisTeachingHistoryRelation = false;
+                    }
                 }
+                if (thisTeachingHistoryRelation == true)
+                    relation = thisTeachingHistoryRelation;
             }
-            if(thisTeachingHistoryRelation == true)
-                relation = thisTeachingHistoryRelation;
         }
 
-        if(related_cats == null || related_subCats == null)
+        if(related_cats == null && related_subCats == null)
             relation = true;
+
 
         return relation;
     }
