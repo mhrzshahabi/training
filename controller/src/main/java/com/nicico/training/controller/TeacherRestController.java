@@ -327,7 +327,7 @@ public class TeacherRestController {
         if(evaluationGrade != null)
            min_evalGrade = Float.parseFloat(evaluationGrade.toString());
 
-        if(evaluationGrade!=null || teachingCategories!=null || teachingSubCategories!=null) {
+        if(evaluationGrade!=null) {
             for (TeacherDTO.Report datum : specResponse.getData()) {
                 if (evaluationGrade != null) {
                     ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
@@ -335,15 +335,21 @@ public class TeacherRestController {
                     if (teacher_evalGrade < min_evalGrade)
                         listRemovedObjects.add(datum);
                 }
+            }
+        }
+        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
+            specResponse.getData().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if(teachingCategories!=null || teachingSubCategories!=null) {
+            for (TeacherDTO.Report datum : specResponse.getData()) {
                 boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
                 if (relatedTeachingHistory == false)
                     listRemovedObjects.add(datum);
             }
         }
-
-        for (TeacherDTO.Report listRemovedObject : listRemovedObjects) {
+        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
             specResponse.getData().remove(listRemovedObject);
-        }
 
         specRs.setResponse(specResponse);
 
