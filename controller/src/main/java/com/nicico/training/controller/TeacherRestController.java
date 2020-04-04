@@ -242,26 +242,51 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
         request.setDistinct(true);
-        ////////////////////////////////////////////////
-        List<Object> removedObjects = new ArrayList<>();
-        Object evaluationGrade = null;
-        Long evalGrade = null;
-        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
-                evaluationGrade = criterion.getValue().get(0);
-                removedObjects.add(criterion);
-            }
-        }
-
-        for (Object removedObject : removedObjects) {
-            request.getCriteria().getCriteria().remove(removedObject);
-        }
-       evalGrade =  Long.parseLong(evaluationGrade.toString());
-        ///////////////////////////////////////////////
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
         final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/spec-list-report")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRsReport> reportList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+        request.setDistinct(true);
+//        List<Object> removedObjects = new ArrayList<>();
+//        Object evaluationGrade = null;
+//        Long evalGrade = null;
+//        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+//            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
+//                evaluationGrade = criterion.getValue().get(0);
+//                removedObjects.add(criterion);
+//            }
+//        }
+//
+//        for (Object removedObject : removedObjects) {
+//            request.getCriteria().getCriteria().remove(removedObject);
+//        }
+//        evalGrade =  Long.parseLong(evaluationGrade.toString());
+        SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
+
+        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
+        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())

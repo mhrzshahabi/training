@@ -101,7 +101,7 @@
             {name: "evaluationGrade"},
             {name: "lastCourse"},
             {name: "lastCourseEvaluationGrade"}],
-        fetchDataURL: teacherUrl + "spec-list-grid"
+        fetchDataURL: teacherUrl + "spec-list-report"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_Result_JspTeacherReport = isc.TrLG.create({
@@ -123,34 +123,26 @@
                 title: "کد پرسنلی"
             },
             {
-                name: "personality.firstNameFa",
-                title: "نام"
-            },
-            {
-                name: "personality.lastNameFa",
-                title: "نام خانوادگی"
+                name: "personality.name",
+                title: "نام و نام خانوادگی"
             },
             {
                 name: "personality.educationMajor.titleFa",
-                title: "<spring:message code='education.major'/>",
-                align: "center",
-                // sortNormalizer: function (record) {
-                //     return record.personality.educationLevel.titleFa;
-                // },
-                // editorType: "SelectItem",
-                // displayField: "titleFa",
-                // valueField: "titleFa",
-                // filterOperator: "equals",
-                // optionDataSource: RestDataSource_Education_Major_JspTeacher
+                title: "رشته ی تحصیلی",
+                align: "center"
             },
             {
                 name: "personnelStatus",
-                title: "<spring:message code='status'/>",
+                title: "نوع استاد",
                 align: "center",
-                type: "boolean"
+                valueMap: {
+                    true: "<spring:message code='company.staff'/>",
+                    false: "<spring:message code='external.teacher'/>"
+                },
+
             },
             {
-                name: "mobile",
+                name: "personality.contactInfo.mobile",
                 title: "موبايل"
             },
             {
@@ -159,7 +151,7 @@
             },
             {
                 name: "evaluationGrade",
-                title: "نمره ارزيباي در گروه و زيرگروه انتخابي"
+                title: "نمره ارزيابی در گروه و زيرگروه انتخابي"
             },
             {
                 name: "lastCourse",
@@ -170,9 +162,6 @@
                 title: "نمره ارزيابي کلاسي آخرين دوره تدريسي در شرکت"
             }
         ],
-        // filterEditorSubmit: function () {
-        //     ListGrid_Teacher_JspTeacher.invalidateCache();
-        // },
         cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: true,
@@ -894,13 +883,16 @@
             titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش اساتید با توجه به محدودیت های اعمال شده" +"</span>";
 
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
-            for(var i=0;i<data_values.criteria.size();i++)
+            for(var i=0;i<data_values.criteria.size();i++){
                 if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
                     if(data_values.criteria[i].value == "true")
                         data_values.criteria[i].value = true;
                     else if(data_values.criteria[i].value == "false")
                         data_values.criteria[i].value = false;
                     }
+                if(data_values.criteria[i].fieldName == "majorCategoryId" || data_values.criteria[i].fieldName == "majorSubCategoryId")
+                    data_values.criteria[i].operator = "equals";
+                }
 
             ListGrid_Result_JspTeacherReport.fetchData(data_values);
             Window_Result_JspTeacherReport.show();
