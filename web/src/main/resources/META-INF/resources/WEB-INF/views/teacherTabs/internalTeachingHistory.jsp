@@ -27,36 +27,31 @@
     ListGrid_JspInternalTeachingHistory = isc.TrLG.create({
         dataSource: RestDataSource_JspInternalTeachingHistory ,
         fields: [
+            {name: "id",hidden: true},
             {
-                name: "courseTitle",
-                title: "<spring:message code='course.title'/>",
+                name: "code",
+                title: "کد کلاس",
             },
             {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
-            },
-            {
-                name: "educationLevelId",
-            },
-            {
-                name: "categoriesIds",
-                title: "<spring:message code='category'/>",
-            },
-            {
-                name: "subCategoriesIds",
-                title: "<spring:message code='subcategory'/>",
-            {
-                name: "duration",
-                title: "<spring:message code='duration'/>",
+                name: "titleClass",
+                title: "نام کلاس",
             },
             {
                 name: "startDate",
+                title: "تاریخ شروع",
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
+                title: "تاریخ خاتمه",
+            },
+            {
+                name: "evaluationGrade",
+                title: "نمره ارزیابی فراگیران به استاد",
             }
         ],
+        filterEditorSubmit: function () {
+            ListGrid_JspInternalTeachingHistory.invalidateCache();
+        },
         align: "center",
         filterOperator: "iContains",
         filterOnKeypress: false,
@@ -78,7 +73,6 @@
     });
 
     function loadPage_InternalTeachingHistory(id) {
-        alert('hi');
         if (teacherIdInternalTeachingHistory !== id) {
             teacherIdInternalTeachingHistory = id;
             RestDataSource_JspInternalTeachingHistory.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingHistory;
