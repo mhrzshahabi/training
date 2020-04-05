@@ -185,6 +185,7 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private Double evaluationGrade;
+        private Double evaluationReactionGrade;
     }
 
     @Getter
