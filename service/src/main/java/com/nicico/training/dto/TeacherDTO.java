@@ -87,6 +87,10 @@ public class TeacherDTO {
         private PersonalInfoDTO.Report personality;
         private Boolean personnelStatus;
         Set<TeachingHistoryDTO.Info> teachingHistories;
+        private String numberOfCourses;
+        private String evaluationGrade;
+        private String lastCourse;
+        private String lastCourseEvaluationGrade;
         private Integer version;
     }
 
