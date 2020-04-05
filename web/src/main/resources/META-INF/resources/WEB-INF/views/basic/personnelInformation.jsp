@@ -226,7 +226,10 @@
                     autoFitWidth: true
                 }
 
-            ]
+            ],
+            cellClick: function (record, rowNum, colNum) {
+                show_ClassInformation(record, rowNum, colNum);
+            }
         });
 
     }
@@ -234,7 +237,7 @@
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
     {
-//*****create fields*****
+
         var DynamicForm_PersonnelInfo = isc.DynamicForm.create({
             numCols: 6,
             colWidths: ["1%", "3%", "1%", "3%", "1%", "3%"],
@@ -475,6 +478,36 @@
                 set_PersonnelInfo_Details();
             }
         });
+
+        var PersonnelInfo_ClassInfo_Tab =isc.TabSet.create({
+            ID: "PersonnelInfo_ClassInfo_Tab",
+            width: "100%",
+            height: 400,
+            tabBarPosition: "top",
+            tabs:[
+                {
+                    id: "ClassInfo_Tab_Course",
+                    title: "<spring:message code="course"/> "
+                },
+                {
+                    id: "ClassInfo_Tab_Class",
+                    title: "<spring:message code="class"/>"
+                },
+                {
+                    id: "ClassInfo_Tab_Records",
+                    title: "<spring:message code="course.records"/>"
+                }
+            ]
+        });
+
+        var window_class_Information = isc.Window.create({
+            title:"",
+            width:"60%",
+            minWidth:500,
+            height: 400,
+            visibility: "hidden",
+            items:[PersonnelInfo_ClassInfo_Tab]
+        });
     }
     // ---------------------------------------- Create - TabSet & Tab --------------------------------------->>
 
@@ -557,7 +590,7 @@
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
                     if (nationalCode_Need !== nationalCode) {
                         nationalCode_Need = nationalCode;
-                        call_needsAssessmentReports("0",true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                        call_needsAssessmentReports("0", true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
                     }
                 }
             }
@@ -601,6 +634,13 @@
         }
 
         //***********************************
+
+        function show_ClassInformation(record, rowNum, colNum) {
+            if (colNum === 1) {
+                window_class_Information.setTitle(record.courseTitle);
+                window_class_Information.show();
+            }
+        }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

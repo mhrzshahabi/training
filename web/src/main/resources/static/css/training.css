@@ -54,6 +54,18 @@ span {
     color: #FF0000 !important;
 }
 
+.clickableCellRTL, .clickableCell
+{
+    color: #0066cc !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+}
+
+.clickableCellRTL:hover, .clickableCell:hover
+{
+    color: #003580 !important;
+}
+
 
 
 

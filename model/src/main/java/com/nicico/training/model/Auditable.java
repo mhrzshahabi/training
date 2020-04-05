@@ -1,7 +1,5 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.enums.EDeleted;
-import com.nicico.training.model.enums.EEnabled;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,10 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.util.Date;
 
 @Getter
@@ -30,10 +25,23 @@ public abstract class Auditable {
     @CreatedBy
     @Column(name = "c_created_by", nullable = false, updatable = false)
     protected String createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "e_enabled", insertable = false, updatable = false)
+    /////pEnabled and pDeleted is not enabled and deleted because conflict with "Student and PersonnelRegistered" entities
+    private ParameterValue pEnabled;
+
     @Column(name = "e_enabled")
-    EEnabled eEnabled;
+    Long eEnabled;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "e_deleted", insertable = false, updatable = false)
+    /////pEnabled and pDeleted is not enabled and deleted because conflict with "Student and PersonnelRegistered" entities
+    private ParameterValue pDeleted;
+
     @Column(name = "e_deleted")
-    EDeleted eDeleted;
+    Long eDeleted;
+
     @LastModifiedDate
     @Column(name = "d_last_modified_date")
     private Date lastModifiedDate;
@@ -43,5 +51,4 @@ public abstract class Auditable {
     @Version
     @Column(name = "n_version", nullable = false)
     private Integer version;
-
 }
