@@ -741,7 +741,6 @@ public class TclassService implements ITclassService {
             aClass.setEvaluationGrade(studentsGradeToTeacher);
             aClass.setEvaluationReactionGrade(getFERGrade(aClass.getId()));
         }
-
         return response;
     }
 
