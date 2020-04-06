@@ -10,8 +10,6 @@
 // <script>
 
     var postCode_NABOP = null;
-    var totalDuration_NABOP = [0, 0, 0];
-    var passedDuration_NABOP = [0, 0, 0];
     var passedStatusId_NABOP = "216";
     var priorities_NABOP;
     var wait_NABOP;
@@ -418,23 +416,23 @@
                     return;
                 refreshLG_NABOP(CourseDS_NABOP);
             }
-        <%--}, {--%>
-        <%--    isSeparator: true--%>
-        <%--}, {--%>
-        <%--    title: "<spring:message code="format.pdf"/>",--%>
-        <%--    click: function () {--%>
-        <%--        print_NABOP("pdf");--%>
-        <%--    }--%>
-        <%--}, {--%>
-        <%--    title: "<spring:message code="format.excel"/>",--%>
-        <%--    click: function () {--%>
-        <%--        print_NABOP("excel");--%>
-        <%--    }--%>
-        <%--}, {--%>
-        <%--    title: "<spring:message code="format.html"/>",--%>
-        <%--    click: function () {--%>
-        <%--        print_NABOP("html");--%>
-        <%--    }--%>
+        }, {
+            isSeparator: true
+        }, {
+            title: "<spring:message code="global.form.print.pdf"/>",
+            click: function () {
+                print_NABOP("pdf");
+            }
+        }, {
+            title: "<spring:message code="global.form.print.excel"/>",
+            click: function () {
+                print_NABOP("excel");
+            }
+        }, {
+            title: "<spring:message code="global.form.print.html"/>",
+            click: function () {
+                print_NABOP("html");
+            }
         }]
     });
 
@@ -509,7 +507,6 @@
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             if (total !== 0) {
-                totalDuration_NABOP[index] = total;
                 chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             }
             return "<spring:message code="duration.hour.sum"/>" + total;
@@ -522,16 +519,17 @@
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             if (passed !== 0) {
-                passedDuration_NABOP[index] = passed;
                 chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration = passed;
             }
             return "<spring:message code="duration.hour.sum.passed"/>" + passed;
         },
         function (records) {
-            if (!records.isEmpty() && totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] !== 0) {
+            if (!records.isEmpty() &&
+                chartData_NABOP.find({title:priorities_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)].title, type:"<spring:message code='total'/>"}).duration !== 0) {
+                let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
                 return "<spring:message code="duration.percent.passed"/>" +
-                    Math.round(passedDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] /
-                        totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] * 100);
+                    Math.round(chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration /
+                        chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration * 100);
             }
             return "<spring:message code="duration.percent.passed"/>" + 0;
         }
@@ -545,7 +543,6 @@
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             if (total !== 0) {
-                totalDuration_NABOP[index] = total;
                 chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             }
             return "<spring:message code="duration.hour.sum"/>" + total;
@@ -567,7 +564,6 @@
             {
                 name: "needsAssessmentPriorityId",
                 hidden: true,
-                // type: "IntegerItem",
                 filterOnKeypress: true,
                 editorType: "SelectItem",
                 displayField: "title",
@@ -580,13 +576,15 @@
                     {name: "title", width: "30%"}
                 ],
             },
-            {name: "competence.title", hidden: true},
+            {
+                name: "competence.title",
+                // hidden: true
+            },
             {
                 name: "competence.competenceTypeId",
-                hidden: true,
+                // hidden: true,
                 type: "SelectItem",
                 filterOnKeypress: true,
-                // editorType: "SelectItem",
                 displayField: "title",
                 valueField: "id",
                 optionDataSource: CompetenceTypeDS_NABOP,
@@ -599,7 +597,7 @@
             },
             {
                 name: "needsAssessmentDomainId",
-                hidden: true,
+                // hidden: true,
                 // type: "IntegerItem",
                 filterOnKeypress: true,
                 editorType: "SelectItem",
@@ -613,9 +611,14 @@
                     {name: "title", width: "30%"}
                 ],
             },
-            {name: "skill.code", hidden: true},
-            {name: "skill.titleFa", hidden: true},
-
+            {
+                name: "skill.code",
+                // hidden: true
+            },
+            {
+                name: "skill.titleFa",
+                // hidden: true
+            },
 
             {name: "skill.course.code"},
             {name: "skill.course.titleFa"},
@@ -653,19 +656,19 @@
             refreshLG_NABOP(CourseDS_NABOP);
         }
     });
-    <%--ToolStripButton_Print_NABOP = isc.ToolStripButtonPrint.create({--%>
-    <%--    title: "<spring:message code='print'/>",--%>
-    <%--    click: function () {--%>
-    <%--        print_NABOP("pdf");--%>
-    <%--    }--%>
-    <%--});--%>
+    ToolStripButton_Print_NABOP = isc.ToolStripButtonPrint.create({
+        title: "<spring:message code='print'/>",
+        click: function () {
+            print_NABOP("pdf");
+        }
+    });
 
     ToolStrip_Actions_NABOP = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
             [
-                // ToolStripButton_Print_NABOP,
+                ToolStripButton_Print_NABOP,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -723,7 +726,8 @@
     function PostCodeSearch_result_NABOP(resp) {
         wait_NABOP.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
-            setTitle_NABOP(JSON.parse(resp.httpResponseText));
+            selectedObject_NABOP = JSON.parse(resp.httpResponseText);
+            setTitle_NABOP();
             Window_Personnel_NABOP.close();
         } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
             createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
@@ -742,106 +746,6 @@
         selectedObject_NABOP = selected_Post;
         setTitle_NABOP();
         Window_Post_NABOP.close();
-    }
-
-    function setTitle_NABOP(post = null) {
-        chartData_NABOP.forEach(value1 => value1.duration=0);
-        // for (let i = 0; i < priorities_NABOP.length; i++) {
-        //     totalDuration_NABOP[i] = 0;
-        //     passedDuration_NABOP[i] = 0;
-        // }
-        switch (reportType_NABOP) {
-            case "0":
-                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + post.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
-                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
-                    getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") +
-                    " <spring:message code='in.post'/> " + getFormulaMessage(selectedPerson_NABOP.postTitle, 2, "red", "b");
-                DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
-                refreshLG_NABOP(CourseDS_NABOP);
-                break;
-            case "1":
-                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&objectType=" + Tabset_Object_NABOP.getSelectedTab().name;
-                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " +
-                    Tabset_Object_NABOP.getSelectedTab().title + " " +
-                    getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b");
-                DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
-                refreshLG_NABOP(CourseDS_NABOP);
-                break;
-            case "2":
-                if (selectedPerson_NABOP != null && selectedObject_NABOP != null) {
-                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
-                    refreshLG_NABOP(CourseDS_NABOP);
-                }
-                let personName = selectedPerson_NABOP != null ? getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
-                let postName = selectedObject_NABOP != null ? getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
-                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + "<spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + postName;
-                DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
-        }
-    }
-
-    function print_NABOP(type) {
-        if (selectedPerson_NABOP == null) {
-            createDialog("info", "<spring:message code="personnel.not.selected"/>");
-            return;
-        }
-        let records = CourseDS_NABOP.getCacheData();
-        if (records === undefined) {
-            createDialog("info", "<spring:message code='print.no.data.to.print'/>");
-            return;
-        }
-        let groupedRecords = [[], [], []];
-        for (let i = 0; i < records.length; i++) {
-            groupedRecords[getIndexById_NABOP(records[i].needsAssessmentPriorityId)].add({
-                "id": records[i].id,
-                "code": records[i].code,
-                "titleFa": records[i].titleFa,
-                "theoryDuration": records[i].theoryDuration,
-                "needsAssessmentPriorityId": records[i].needsAssessmentPriorityId,
-                "status": records[i].skill.course.scoresState
-            });
-        }
-        let personnel = {
-            "id": selectedPerson_NABOP.id,
-            "firstName": selectedPerson_NABOP.firstName,
-            "lastName": selectedPerson_NABOP.lastName,
-            "nationalCode": selectedPerson_NABOP.nationalCode,
-            "companyName": selectedPerson_NABOP.companyName,
-            "personnelNo": selectedPerson_NABOP.personnelNo,
-            "personnelNo2": selectedPerson_NABOP.personnelNo2,
-        };
-        let criteriaForm_course = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="web/personnel-needs-assessment-report-print/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "essentialRecords", type: "hidden"},
-                    {name: "improvingRecords", type: "hidden"},
-                    {name: "developmentalRecords", type: "hidden"},
-                    {name: "totalEssentialHours", type: "hidden"},
-                    {name: "passedEssentialHours", type: "hidden"},
-                    {name: "totalImprovingHours", type: "hidden"},
-                    {name: "passedImprovingHours", type: "hidden"},
-                    {name: "totalDevelopmentalHours", type: "hidden"},
-                    {name: "passedDevelopmentalHours", type: "hidden"},
-                    {name: "personnel", type: "hidden"},
-                    {name: "myToken", type: "hidden"}
-                ]
-        });
-        criteriaForm_course.setValue("essentialRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AZ")]));
-        criteriaForm_course.setValue("improvingRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AB")]));
-        criteriaForm_course.setValue("developmentalRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AT")]));
-        criteriaForm_course.setValue("totalEssentialHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AZ")]));
-        criteriaForm_course.setValue("passedEssentialHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AZ")]));
-        criteriaForm_course.setValue("totalImprovingHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AB")]));
-        criteriaForm_course.setValue("passedImprovingHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AB")]));
-        criteriaForm_course.setValue("totalDevelopmentalHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AT")]));
-        criteriaForm_course.setValue("passedDevelopmentalHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AT")]));
-        criteriaForm_course.setValue("personnel", JSON.stringify(personnel));
-        criteriaForm_course.setValue("myToken", "<%=accessToken%>");
-        criteriaForm_course.show();
-        criteriaForm_course.submitForm();
     }
 
     function getIndexById_NABOP(needsAssessmentPriorityId) {
@@ -928,24 +832,25 @@
             changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
             ReportTypeDF_NABOP.getItem("objectId").hide();
-            CoursesLG_NABOP.hideField("competence.title");
-            CoursesLG_NABOP.hideField("competence.competenceTypeId");
-            CoursesLG_NABOP.hideField("needsAssessmentDomainId");
-            CoursesLG_NABOP.hideField("skill.code");
-            CoursesLG_NABOP.hideField("skill.titleFa");
+            // CoursesLG_NABOP.hideField("competence.title");
+            // CoursesLG_NABOP.hideField("competence.competenceTypeId");
+            // CoursesLG_NABOP.hideField("needsAssessmentDomainId");
+            // CoursesLG_NABOP.hideField("skill.code");
+            // CoursesLG_NABOP.hideField("skill.titleFa");
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
+            Tabset_Object_NABOP.selectTab("Post");
         } else if (ReportTypeDF_NABOP.getValue("reportType") === "1") {
             reportType_NABOP = "1";
             ReportTypeDF_NABOP.getItem("personnelId").hide();
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.post/job/postGrade'/> " + postName;
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post/job/postGrade'/>");
-            CoursesLG_NABOP.showField("competence.title");
-            CoursesLG_NABOP.showField("competence.competenceTypeId");
-            CoursesLG_NABOP.showField("needsAssessmentDomainId");
-            CoursesLG_NABOP.showField("skill.code");
-            CoursesLG_NABOP.showField("skill.titleFa");
+            // CoursesLG_NABOP.showField("competence.title");
+            // CoursesLG_NABOP.showField("competence.competenceTypeId");
+            // CoursesLG_NABOP.showField("needsAssessmentDomainId");
+            // CoursesLG_NABOP.showField("skill.code");
+            // CoursesLG_NABOP.showField("skill.titleFa");
             CoursesLG_NABOP.hideField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = totalSummaryFunc_NABOP;
             Tabset_Object_NABOP.tabs.forEach(tab => Tabset_Object_NABOP.enableTab(tab));
@@ -955,20 +860,124 @@
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post'/>");
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + postName;
-            CoursesLG_NABOP.hideField("competence.title");
-            CoursesLG_NABOP.hideField("competence.competenceTypeId");
-            CoursesLG_NABOP.hideField("needsAssessmentDomainId");
-            CoursesLG_NABOP.hideField("skill.code");
-            CoursesLG_NABOP.hideField("skill.titleFa");
+            // CoursesLG_NABOP.hideField("competence.title");
+            // CoursesLG_NABOP.hideField("competence.competenceTypeId");
+            // CoursesLG_NABOP.hideField("needsAssessmentDomainId");
+            // CoursesLG_NABOP.hideField("skill.code");
+            // CoursesLG_NABOP.hideField("skill.titleFa");
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             for (let i = 1; i < Tabset_Object_NABOP.tabs.length; i++)
                 Tabset_Object_NABOP.disableTab(Tabset_Object_NABOP.tabs[i]);
+            Tabset_Object_NABOP.selectTab("Post");
         }
         DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
         CoursesLG_NABOP.setData([]);
         CourseDS_NABOP.fetchDataURL = null;
         createChart_NABOP();
+    }
+
+    function setTitle_NABOP() {
+        chartData_NABOP.forEach(value1 => value1.duration=0);
+        switch (reportType_NABOP) {
+            case "0":
+                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
+                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
+                    getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") +
+                    " <spring:message code='national.code'/> " + getFormulaMessage(selectedPerson_NABOP.nationalCode, 2, "red", "b") +
+                    " <spring:message code='in.post'/> " + getFormulaMessage(selectedPerson_NABOP.postTitle, 2, "red", "b") +
+                    " <spring:message code='post.code'/> " + getFormulaMessage(selectedPerson_NABOP.postCode, 2, "red", "b") +
+                    " <spring:message code='area'/> " + getFormulaMessage(selectedPerson_NABOP.ccpArea, 2, "red", "b") +
+                    " <spring:message code='affairs'/> " + getFormulaMessage(selectedPerson_NABOP.ccpAffairs, 2, "red", "b");
+                DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
+                refreshLG_NABOP(CourseDS_NABOP);
+                break;
+            case "1":
+                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&objectType=" + Tabset_Object_NABOP.getSelectedTab().name;
+                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " +
+                    Tabset_Object_NABOP.getSelectedTab().title + " " + getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b");
+                DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
+                refreshLG_NABOP(CourseDS_NABOP);
+                break;
+            case "2":
+                if (selectedPerson_NABOP != null && selectedObject_NABOP != null) {
+                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
+                    refreshLG_NABOP(CourseDS_NABOP);
+                }
+                let personName = selectedPerson_NABOP != null ? getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
+                let nationalCode = selectedPerson_NABOP != null ? " <spring:message code='national.code'/> " + getFormulaMessage(selectedPerson_NABOP.nationalCode, 2, "red", "b") : "";
+                let postName = selectedObject_NABOP != null ? " <spring:message code='in.post'/> " + getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
+                let postCode = selectedObject_NABOP != null ? " <spring:message code='post.code'/> " + getFormulaMessage(selectedObject_NABOP.code, 2, "red", "b") : "";
+                let area = selectedObject_NABOP != null ? " <spring:message code='area'/> " + getFormulaMessage(selectedObject_NABOP.area, 2, "red", "b") : "";
+                let affairs = selectedObject_NABOP != null ? " <spring:message code='affairs'/> " + getFormulaMessage(selectedObject_NABOP.affairs, 2, "red", "b") : "";
+                DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + "<spring:message code='Mrs/Mr'/> " + personName + nationalCode + postName + postCode + area + affairs;
+                DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
+        }
+    }
+
+    function print_NABOP(type) {
+        if (selectedPerson_NABOP == null && reportType_NABOP !== "1") {
+            createDialog("info", "<spring:message code="personnel.not.selected"/>");
+            return;
+        }
+        let records = CourseDS_NABOP.getCacheData();
+        if (records === undefined) {
+            createDialog("info", "<spring:message code='print.no.data.to.print'/>");
+            return;
+        }
+        let groupedRecords = [[], [], []];
+        for (let i = 0; i < records.length; i++) {
+            groupedRecords[getIndexById_NABOP(records[i].needsAssessmentPriorityId)].add(records[i]);
+        }
+
+        let params = {};
+        params.essentialTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.essentialPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.improvingTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.improvingPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.developmentalTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.developmentalPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.essentialPercent = (params.essentialTotal === "0" ? 0 : Math.round(params.essentialPassed / params.essentialTotal * 100)).toString();
+        params.improvingPercent = (params.improvingTotal === "0" ? 0 : Math.round(params.improvingPassed / params.improvingTotal * 100)).toString();
+        params.developmentalPercent = (params.developmentalTotal === "0" ? 0 : Math.round(params.developmentalPassed / params.developmentalTotal * 100)).toString();
+
+        if (reportType_NABOP === "0" || reportType_NABOP === "2") {
+            params.firstName = selectedPerson_NABOP.firstName;
+            params.lastName = selectedPerson_NABOP.lastName;
+            params.nationalCode = selectedPerson_NABOP.nationalCode;
+            params.personnelNo2 = selectedPerson_NABOP.personnelNo2;
+            params.code = selectedObject_NABOP.code;
+            params.titleFa = selectedObject_NABOP.titleFa;
+            params.area = selectedObject_NABOP.area;
+            params.assistance = selectedObject_NABOP.assistance;
+            params.affairs = selectedObject_NABOP.affairs;
+            params.unit = selectedObject_NABOP.unit;
+        }
+        else
+            params.objectType = "نیازسنجی " + Tabset_Object_NABOP.getSelectedTab().title + " " + selectedObject_NABOP.titleFa;
+
+        let criteriaForm_course = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="needsAssessment-reports/print/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "essentialRecords", type: "hidden"},
+                    {name: "improvingRecords", type: "hidden"},
+                    {name: "developmentalRecords", type: "hidden"},
+                    {name: "params", type: "hidden"},
+                    {name: "params", type: "hidden"},
+                    {name: "reportType", type: "hidden"},
+                ]
+        });
+        criteriaForm_course.setValue("essentialRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("improvingRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AB")]));
+        criteriaForm_course.setValue("developmentalRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AT")]));
+        criteriaForm_course.setValue("params", JSON.stringify(params));
+        criteriaForm_course.setValue("reportType", reportType_NABOP);
+        criteriaForm_course.show();
+        criteriaForm_course.submitForm();
     }
 
     //*************this function calls from personnelInformation page**************

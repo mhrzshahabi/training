@@ -63,102 +63,36 @@ public class ClassStudentRestController {
     @GetMapping(value = "/students-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.ClassStudentInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.ClassStudentInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/attendance-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.AttendanceInfo>> attendanceList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.AttendanceInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.AttendanceInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.AttendanceInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/classes-of-student/{nationalCode}")
     public ResponseEntity<ISC<ClassStudentDTO.CoursesOfStudent>> classesOfStudentList(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
         return search(iscRq, makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null), ClassStudentDTO.CoursesOfStudent.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = classStudentService.search(searchRq, ClassStudentDTO.CoursesOfStudent.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/scores-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ScoresInfo>> scoresList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.ScoresInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.ScoresInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/pre-test-score-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.PreTestScoreInfo>> pre_test_scoreList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.PreTestScoreInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.PreTestScoreInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.PreTestScoreInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/evaluationAnalysistLearning/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> evaluationAnalysistLearning(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.evaluationAnalysistLearning.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs = classStudentService.search(searchRq, ClassStudentDTO.evaluationAnalysistLearning.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
 

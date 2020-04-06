@@ -72,6 +72,23 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("PersonalInfoReport")
+    public static class Report{
+        private Long id;
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+        private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+        private ContactInfoDTO.Grid contactInfo;
+        private Integer version;
+        public String getName(){
+            return firstNameFa + " " + lastNameFa;
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PersonalInfoInfo")
     public static class Info extends PersonalInfoDTO {
         private Long id;

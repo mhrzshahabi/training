@@ -20,7 +20,7 @@ public interface IPostService {
     Page<Post> listByJobId(Long jobId, Pageable pageable);
 
     @Transactional(readOnly = true)
-    Post getByPostCode(String postCode);
+    PostDTO.Info getByPostCode(String postCode);
 
     SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq rq);
 

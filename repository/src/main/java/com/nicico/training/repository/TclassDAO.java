@@ -3,7 +3,9 @@ package com.nicico.training.repository;
 @Author:roya
 */
 
+import com.nicico.training.model.Course;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -49,7 +51,11 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             " WHERE " +
             "    s.national_code =:national_code ", nativeQuery = true)
     public List<?> findAllPersonnelClass(String national_code);
+    public List<?> findAllTclassByCourseId(Long id);
 
+    List<Tclass> findByCourseAndTeacher(Course course, Teacher teacher);
+    List<Tclass> findByCourseIdAndTeacherId(Long courseId, Long teacherId);
+    List<Tclass> findByTeacherId(Long teacherId);
     Tclass findTclassByIdEquals(Long classId);
 
 }
