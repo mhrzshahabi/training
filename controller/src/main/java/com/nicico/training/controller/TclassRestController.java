@@ -398,4 +398,48 @@ public class TclassRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/listByteacherID")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TclassDTO.TclassSpecRs> listByTeacherID(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 }

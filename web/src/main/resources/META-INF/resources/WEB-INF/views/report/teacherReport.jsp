@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    var dummy = null;
     //----------------------------------------------------Variables-----------------------------------------------------
     var nationalCodeCheck_JspTeacherReport = true;
     var isCriteriaCategoriesChanged = false;
@@ -884,6 +885,7 @@
             titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش اساتید با توجه به محدودیت های اعمال شده" +"</span>";
 
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
+            dummy = data_values;
             for(var i=0;i<data_values.criteria.size();i++){
                 if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
                     if(data_values.criteria[i].value == "true")
