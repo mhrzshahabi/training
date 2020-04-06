@@ -430,4 +430,20 @@ public class TclassDTO {
         private String courseTitle;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("AllStudentsGradeToTeacher")
+    public static class AllStudentsGradeToTeacher
+    {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private String term;
+        private String grade;
+    }
+
 }

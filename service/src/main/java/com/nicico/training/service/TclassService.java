@@ -381,6 +381,12 @@ public class TclassService implements ITclassService {
         return evaluationResult;
     }
 
+    public Double getStudentsGradeToTeacher(Set<ClassStudent> classStudentList){
+        this.classStudents = classStudentList;
+        this.calculateStudentsReactionEvaluationResult();
+        return this.studentsGradeToTeacher;
+    }
+
     public void calculateStudentsReactionEvaluationResult() {
         studentsGradeToTeacher = 0;
         studentsGradeToFacility = 0;

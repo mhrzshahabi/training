@@ -15,6 +15,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -38,7 +39,7 @@ import java.util.*;
 @RequestMapping(value = "/api/teacher")
 public class TeacherRestController {
 
-    private final ITeacherService teacherService;
+    private final TeacherService teacherService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
@@ -1098,6 +1099,29 @@ public class TeacherRestController {
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/all-students-grade-to-teacher")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> getAllStudentsGradeToTeacher(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                             @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "teacherId", required = true) Long teacherId,
+                                                             @RequestParam(value = "courseId", required = true) Long courseId) throws IOException {
+        List<TclassDTO.AllStudentsGradeToTeacher> list = teacherService.getAllStudentsGradeToTeacher(courseId, teacherId);
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specResponse.setData(list)
+                .setStartRow(startRow)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
 
         specRs.setResponse(specResponse);
 
