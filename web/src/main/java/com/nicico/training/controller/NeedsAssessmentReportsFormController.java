@@ -29,8 +29,6 @@ public class NeedsAssessmentReportsFormController {
     public void print(HttpServletResponse response,
                       @PathVariable String type,
                       @RequestParam(value = "reportType") String reportType,
-//                      @RequestParam(value = "person") String person,
-//                      @RequestParam(value = "object") String object,
                       @RequestParam(value = "essentialRecords") String essentialRecords,
                       @RequestParam(value = "improvingRecords") String improvingRecords,
                       @RequestParam(value = "developmentalRecords") String developmentalRecords,
@@ -51,8 +49,6 @@ public class NeedsAssessmentReportsFormController {
                 "\"essentialDS\": " + essentialRecords + "," +
                 "\"improvingDS\": " + improvingRecords + "," +
                 "\"developmentalDS\": " + developmentalRecords +
-//                "\"dsStudent\": " + person + "," +
-//                "\"dsObject\": " + object +
                 "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/personnelNeedsAssessmentReport" + reportType + ".jasper", params, jsonDataSource, response);

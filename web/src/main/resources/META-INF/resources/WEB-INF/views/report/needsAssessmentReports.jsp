@@ -10,8 +10,6 @@
 // <script>
 
     var postCode_NABOP = null;
-    var totalDuration_NABOP = [0, 0, 0];
-    var passedDuration_NABOP = [0, 0, 0];
     var passedStatusId_NABOP = "216";
     var priorities_NABOP;
     var wait_NABOP;
@@ -509,7 +507,6 @@
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             if (total !== 0) {
-                totalDuration_NABOP[index] = total;
                 chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             }
             return "<spring:message code="duration.hour.sum"/>" + total;
@@ -522,16 +519,17 @@
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             if (passed !== 0) {
-                passedDuration_NABOP[index] = passed;
                 chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration = passed;
             }
             return "<spring:message code="duration.hour.sum.passed"/>" + passed;
         },
         function (records) {
-            if (!records.isEmpty() && totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] !== 0) {
+            if (!records.isEmpty() &&
+                chartData_NABOP.find({title:priorities_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)].title, type:"<spring:message code='total'/>"}).duration !== 0) {
+                let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
                 return "<spring:message code="duration.percent.passed"/>" +
-                    Math.round(passedDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] /
-                        totalDuration_NABOP[getIndexById_NABOP(records[0].needsAssessmentPriorityId)] * 100);
+                    Math.round(chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration /
+                        chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration * 100);
             }
             return "<spring:message code="duration.percent.passed"/>" + 0;
         }
@@ -545,7 +543,6 @@
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             if (total !== 0) {
-                totalDuration_NABOP[index] = total;
                 chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             }
             return "<spring:message code="duration.hour.sum"/>" + total;
@@ -882,10 +879,6 @@
 
     function setTitle_NABOP() {
         chartData_NABOP.forEach(value1 => value1.duration=0);
-        // for (let i = 0; i < priorities_NABOP.length; i++) {
-        //     totalDuration_NABOP[i] = 0;
-        //     passedDuration_NABOP[i] = 0;
-        // }
         switch (reportType_NABOP) {
             case "0":
                 CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
@@ -923,7 +916,7 @@
     }
 
     function print_NABOP(type) {
-        if (selectedPerson_NABOP == null) {
+        if (selectedPerson_NABOP == null && reportType_NABOP !== "1") {
             createDialog("info", "<spring:message code="personnel.not.selected"/>");
             return;
         }
@@ -937,38 +930,18 @@
             groupedRecords[getIndexById_NABOP(records[i].needsAssessmentPriorityId)].add(records[i]);
         }
 
-        // let personnel = {
-        //     "id": selectedPerson_NABOP.id,
-        //     "firstName": selectedPerson_NABOP.firstName,
-        //     "lastName": selectedPerson_NABOP.lastName,
-        //     "nationalCode": selectedPerson_NABOP.nationalCode,
-        //     "companyName": selectedPerson_NABOP.companyName,
-        //     "personnelNo": selectedPerson_NABOP.personnelNo,
-        //     "personnelNo2": selectedPerson_NABOP.personnelNo2,
-        // };
-
-        <%--let params = {--%>
-        <%--    "objectType": Tabset_Object_NABOP.getSelectedTab().title,--%>
-        <%--    "essentialTotal": chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='total'/>"}).duration,--%>
-        <%--    "essentialPassed": chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='passed'/>"}).duration,--%>
-        <%--    "improvingTotal": chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='total'/>"}).duration,--%>
-        <%--    "improvingPassed": chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='passed'/>"}).duration,--%>
-        <%--    "developmentalTotal": chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='total'/>"}).duration,--%>
-        <%--    "developmentalPassed": chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='passed'/>"}).duration,--%>
-        <%--};--%>
         let params = {};
-        params.essentialTotal = chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='total'/>"}).duration;
-        params.essentialPassed = chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='passed'/>"}).duration;
-        params.improvingTotal = chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='total'/>"}).duration;
-        params.improvingPassed = chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='passed'/>"}).duration;
-        params.developmentalTotal = chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='total'/>"}).duration;
-        params.developmentalPassed = chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='passed'/>"}).duration;
-        params.essentialPercent = params.essentialTotal === 0 ? 0 : Math.round(params.essentialPassed / params.essentialTotal * 100);
-        params.improvingPercent = params.improvingTotal === 0 ? 0 : Math.round(params.improvingPassed / params.improvingTotal * 100);
-        params.developmentalPercent = params.developmentalTotal === 0 ? 0 : Math.round(params.developmentalPassed / params.developmentalTotal * 100);
-        params.objectType = Tabset_Object_NABOP.getSelectedTab().title;
+        params.essentialTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.essentialPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.improvingTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.improvingPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.developmentalTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.developmentalPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.essentialPercent = (params.essentialTotal === "0" ? 0 : Math.round(params.essentialPassed / params.essentialTotal * 100)).toString();
+        params.improvingPercent = (params.improvingTotal === "0" ? 0 : Math.round(params.improvingPassed / params.improvingTotal * 100)).toString();
+        params.developmentalPercent = (params.developmentalTotal === "0" ? 0 : Math.round(params.developmentalPassed / params.developmentalTotal * 100)).toString();
 
-        if (reportType_NABOP === "0" || reportType_NABOP === "1") {
+        if (reportType_NABOP === "0" || reportType_NABOP === "2") {
             params.firstName = selectedPerson_NABOP.firstName;
             params.lastName = selectedPerson_NABOP.lastName;
             params.nationalCode = selectedPerson_NABOP.nationalCode;
@@ -980,7 +953,8 @@
             params.affairs = selectedObject_NABOP.affairs;
             params.unit = selectedObject_NABOP.unit;
         }
-
+        else
+            params.objectType = "نیازسنجی " + Tabset_Object_NABOP.getSelectedTab().title + " " + selectedObject_NABOP.titleFa;
 
         let criteriaForm_course = isc.DynamicForm.create({
             method: "POST",
@@ -993,35 +967,13 @@
                     {name: "improvingRecords", type: "hidden"},
                     {name: "developmentalRecords", type: "hidden"},
                     {name: "params", type: "hidden"},
-
-                    // {name: "totalEssentialHours", type: "hidden"},
-                    // {name: "passedEssentialHours", type: "hidden"},
-                    // {name: "totalImprovingHours", type: "hidden"},
-                    // {name: "passedImprovingHours", type: "hidden"},
-                    // {name: "totalDevelopmentalHours", type: "hidden"},
-                    // {name: "passedDevelopmentalHours", type: "hidden"},
-
-                    // {name: "person", type: "hidden"},
-                    // {name: "object", type: "hidden"},
                     {name: "params", type: "hidden"},
                     {name: "reportType", type: "hidden"},
-
-                    // {name: "myToken", type: "hidden"}
                 ]
         });
         criteriaForm_course.setValue("essentialRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AZ")]));
         criteriaForm_course.setValue("improvingRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AB")]));
         criteriaForm_course.setValue("developmentalRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AT")]));
-
-        // criteriaForm_course.setValue("totalEssentialHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AZ")]));
-        // criteriaForm_course.setValue("passedEssentialHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AZ")]));
-        // criteriaForm_course.setValue("totalImprovingHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AB")]));
-        // criteriaForm_course.setValue("passedImprovingHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AB")]));
-        // criteriaForm_course.setValue("totalDevelopmentalHours", JSON.stringify(totalDuration_NABOP[getIndexByCode_NABOP("AT")]));
-        // criteriaForm_course.setValue("passedDevelopmentalHours", JSON.stringify(passedDuration_NABOP[getIndexByCode_NABOP("AT")]));
-
-        // criteriaForm_course.setValue("person", JSON.stringify(selectedPerson_NABOP));
-        // criteriaForm_course.setValue("object", JSON.stringify(selectedObject_NABOP));
         criteriaForm_course.setValue("params", JSON.stringify(params));
         criteriaForm_course.setValue("reportType", reportType_NABOP);
         criteriaForm_course.show();
