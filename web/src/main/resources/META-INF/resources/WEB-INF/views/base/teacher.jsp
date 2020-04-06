@@ -420,7 +420,7 @@
                     loadPage_AcademicBK(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'teachingHistory')
                     loadPage_TeachingHistory(teacherId);
-                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'internalTeachingHistory')
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "internalTeachingHistory")
                     loadPage_InternalTeachingHistory(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "teacherCertification")
                     loadPage_TeacherCertification(teacherId);
@@ -1349,6 +1349,7 @@
 
     function clearTabFilters() {
         ListGrid_JspAcademicBK.clearFilterValues();
+        ListGrid_JspInternalTeachingHistory.clearFilterValues();
         ListGrid_JspEmploymentHistory.clearFilterValues();
         ListGrid_JspTeachingHistory.clearFilterValues();
         ListGrid_JspTeacherCertification.clearFilterValues();
@@ -1362,6 +1363,7 @@
         ListGrid_JspPublication.filterByEditor();
         ListGrid_JspForeignLangKnowledge.filterByEditor();
         ListGrid_JspAttachment.filterByEditor();
+        ListGrid_JspInternalTeachingHistory.filterByEditor();
 
     }
 

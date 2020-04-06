@@ -37,47 +37,24 @@
             },
             {
                 name: "educationLevelId",
-                type: "IntegerItem",
-                title: "<spring:message code='education.level'/>",
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory
             },
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
-                optionDataSource: RestDataSource_Category_JspTeachingHistory,
-                valueField: "id",
-                displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
-                optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
-                valueField: "id",
-                displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
-            },
             {
                 name: "duration",
                 title: "<spring:message code='duration'/>",
-                filterOperator: "equals"
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
             },
             {
                 name: "endDate",
                 title: "<spring:message code='end.date'/>",
-                canSort: false
             }
         ],
         align: "center",
@@ -94,18 +71,18 @@
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
-    VLayout_Body_JspTeachingHistory = isc.TrVLayout.create({
+    VLayout_Body_JspInternalTeachingHistory = isc.TrVLayout.create({
         members: [
             ListGrid_JspInternalTeachingHistory
         ]
     });
 
     function loadPage_InternalTeachingHistory(id) {
+        alert('hi');
         if (teacherIdInternalTeachingHistory !== id) {
             teacherIdInternalTeachingHistory = id;
-            var criteria = "";
-            RestDataSource_JspInternalTeachingHistory.fetchDataURL = classUrl + "listByteacherID";
-            ListGrid_JspInternalTeachingHistory.fetchData(criteria);
+            RestDataSource_JspInternalTeachingHistory.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingHistory;
+            ListGrid_JspInternalTeachingHistory.fetchData();
         }
     }
 

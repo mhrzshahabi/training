@@ -399,14 +399,16 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/listByteacherID")
+    @GetMapping(value = "/listByteacherID/{teacherId}")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<TclassDTO.TclassSpecRs> listByTeacherID(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+    public ResponseEntity<TclassDTO.TclassTeachingHistorySpecRs> listByTeacherID(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
                                                        @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                        HttpServletResponse httpResponse,
+                                                        @PathVariable Long teacherId) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -428,10 +430,10 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = tclassService.searchByTeachingHistory(request,teacherId);
 
-        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
-        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        final TclassDTO.TeachingHistorySpecRs specResponse = new TclassDTO.TeachingHistorySpecRs();
+        final TclassDTO.TclassTeachingHistorySpecRs specRs = new TclassDTO.TclassTeachingHistorySpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())

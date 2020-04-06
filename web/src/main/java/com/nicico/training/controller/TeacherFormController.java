@@ -41,9 +41,7 @@ public class TeacherFormController {
     }
 
     @RequestMapping("/internalTeachingHistory-tab")
-    public String internalTeachingHistoryTab() {
-        return "teacherTabs/internalTeachingHistory";
-    }
+    public String internalTeachingHistoryTab() { return "teacherTabs/internalTeachingHistory"; }
 
     @RequestMapping("/foreignLangKnowledge-tab")
     public String foreignLangTab() {
