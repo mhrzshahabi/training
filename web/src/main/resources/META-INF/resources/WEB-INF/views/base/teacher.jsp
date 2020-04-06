@@ -361,6 +361,11 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teachingHistory-tab"})
             },
             {
+                ID: "internalTeachingHistory",
+                title: "سوابق تدریس در این مرکز",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/internalTeachingHistory-tab"})
+            },
+            {
                 ID: "teacherCertification",
                 title: "<spring:message code='teacherCertification'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teacherCertification-tab"})
@@ -415,6 +420,8 @@
                     loadPage_AcademicBK(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'teachingHistory')
                     loadPage_TeachingHistory(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "internalTeachingHistory")
+                    loadPage_InternalTeachingHistory(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "teacherCertification")
                     loadPage_TeacherCertification(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "foreignLangKnowledge")
@@ -1342,6 +1349,7 @@
 
     function clearTabFilters() {
         ListGrid_JspAcademicBK.clearFilterValues();
+        ListGrid_JspInternalTeachingHistory.clearFilterValues();
         ListGrid_JspEmploymentHistory.clearFilterValues();
         ListGrid_JspTeachingHistory.clearFilterValues();
         ListGrid_JspTeacherCertification.clearFilterValues();
@@ -1355,6 +1363,7 @@
         ListGrid_JspPublication.filterByEditor();
         ListGrid_JspForeignLangKnowledge.filterByEditor();
         ListGrid_JspAttachment.filterByEditor();
+        ListGrid_JspInternalTeachingHistory.filterByEditor();
 
     }
 

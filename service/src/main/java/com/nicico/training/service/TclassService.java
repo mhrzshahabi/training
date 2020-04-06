@@ -723,4 +723,31 @@ public class TclassService implements ITclassService {
 
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long tId) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+            list.add(makeNewCriteria("teacherId", tId, EOperator.equals, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    request.getCriteria().setCriteria(list);
+            } else
+                request.setCriteria(criteriaRq);
+
+         teacherId = tId;
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TeachingHistory.class));
+        for (TclassDTO.TeachingHistory aClass : response.getList()) {
+            Tclass tclass = getTClass(aClass.getId());
+            classStudents = tclass.getClassStudents();
+            calculateStudentsReactionEvaluationResult();
+            aClass.setEvaluationGrade(studentsGradeToTeacher);
+            aClass.setEvaluationReactionGrade(getFERGrade(aClass.getId()));
+        }
+        return response;
+    }
+
 }
