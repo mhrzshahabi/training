@@ -72,7 +72,7 @@ public class PostRestController {
     public ResponseEntity get(@PathVariable String postCode) {
         postCode = postCode.replace('.', '/');
         try {
-            return new ResponseEntity<>(modelMapper.map(postService.getByPostCode(postCode), PostDTO.TupleInfo.class), HttpStatus.OK);
+            return new ResponseEntity<>(postService.getByPostCode(postCode), HttpStatus.OK);
         } catch (TrainingException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

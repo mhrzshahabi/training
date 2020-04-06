@@ -1570,9 +1570,9 @@
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
                 colSpan: 3,
-                keyPressFilter: "[a-z|A-Z|0-9|' ']",
+                keyPressFilter: "[a-z|A-Z|0-9-|' '|'_']",
                 width: "*",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,]
             },
             {
                 name: "needText",

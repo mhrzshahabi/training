@@ -67,5 +67,14 @@ public interface ITclassService {
     public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code);
 
     @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeacherId(SearchDTO.SearchRq request, Long tId);
+
+    @Transactional(readOnly = true)
+    Double getClassReactionEvaluationGrade(Long classId, Long tId);
+
+    @Transactional(readOnly = true)
     List<TclassDTO.PersonnelClassInfo> PersonnelClass(Long id);
 }

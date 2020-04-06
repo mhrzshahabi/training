@@ -1028,6 +1028,27 @@
                     });
                 }
             }, 100)
+        },
+        getCellCSSText: function (record, rowNum, colNum){
+            if(this.getFieldName(colNum).startsWith("se")){
+                let key = this.getFieldName(colNum);
+                switch(record[key]) {
+                    case "1":
+                        return "font-weight:bold; color:#00cc00;";
+                        break;
+                    case "2":
+                        return "font-weight:bold; color:#0066ff;";
+                        break;
+                    case "3":
+                        return "font-weight:bold; color:#d64949;";
+                        break;
+                    case "4":
+                        return "font-weight:bold; color:#ff6600;";
+                        break;
+                    default:
+
+                }
+            }
         }
         // fields:[]
         // optionDataSource: DataSource_SessionInOneDate,

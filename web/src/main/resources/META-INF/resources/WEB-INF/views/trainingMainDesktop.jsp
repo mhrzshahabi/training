@@ -205,12 +205,12 @@
         NotAllowedInFileNameChar: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
-            expression: /^((?![/\\?%*:|"<>.]).)*$/,
+            expression: /^((?![\/\\?%*:|"<>.]).)*$/,
         },
         EmailValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.email.address"/>",
-            expression: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+            expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         },
         WebsiteValidate: {
             type: "regexp",
@@ -220,12 +220,13 @@
         MobileValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-            expression: /^([+]\d{2})?\d{10}$/,
+            expression:/^((\+98)|(0))[9\d{9}]{10}$/,
         },
         PhoneValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.phone.number"/>",
-            expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+            expression: /^(0\d{2})[\d{8}]{8}$/,
+                // |()|(\+\d{4}):can be add in order to not use any section's code or use +---- format for that.
         },
         PostalCodeValidate: {
             type: "custom",

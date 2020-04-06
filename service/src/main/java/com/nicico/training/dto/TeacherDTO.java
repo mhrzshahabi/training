@@ -3,6 +3,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -87,6 +88,11 @@ public class TeacherDTO {
         private PersonalInfoDTO.Report personality;
         private Boolean personnelStatus;
         Set<TeachingHistoryDTO.Info> teachingHistories;
+        private String numberOfCourses;
+        private String evaluationGrade;
+        private String lastCourse;
+        private Long lastCourseId;
+        private String lastCourseEvaluationGrade;
         private Integer version;
     }
 
@@ -177,8 +183,8 @@ public class TeacherDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<Info> data;
+    public static class SpecRs<T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -202,8 +208,8 @@ public class TeacherDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class FullNameSpecRs {
-        private List<TeacherFullNameTuple> data;
+    public static class FullNameSpecRs<T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -217,5 +223,18 @@ public class TeacherDTO {
     @ApiModel("TeacherFullNameSpecRs")
     public static class TeacherFullNameSpecRs {
         private FullNameSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("TeacherFullNameTupleWithFinalGrade")
+    public static class TeacherFullNameTupleWithFinalGrade {
+        private Long id;
+        private PersonalInfoDTO personality;
+        private String grade;
+
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
     }
 }

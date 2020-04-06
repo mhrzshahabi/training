@@ -173,6 +173,41 @@ public class TclassDTO {
         private Long courseId;
 //        private List<Long> studentSet;
     }
+//----------------------------------------------
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassTeachingHistory")
+    public static class TeachingHistory {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private Double evaluationGrade;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassTeachingHistorySpecRs")
+    public static class TclassTeachingHistorySpecRs {
+        private TeachingHistorySpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class TeachingHistorySpecRs {
+        private List<TclassDTO.TeachingHistory> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
 
     // ------------------------------
 
@@ -428,6 +463,22 @@ public class TclassDTO {
         private String ERunType;
         private Long courseId;
         private String courseTitle;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("AllStudentsGradeToTeacher")
+    public static class AllStudentsGradeToTeacher
+    {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private String term;
+        private String grade;
     }
 
 }

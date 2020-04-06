@@ -39,7 +39,7 @@
                     click: function () {
                         if (person_SP == null)
                             return;
-                        if (typeof call_needsAssessmentReports === "undefined")
+                        if (MainTS_SP.getTab("<spring:message code="needsAssessmentReport"/>") == null)
                             createTab_SP("<spring:message code="needsAssessmentReport"/>", "<spring:url value="/web/needsAssessment-reports"/>", "call_needsAssessmentReports('0',false,person_SP,false)");
                         else {
                             call_needsAssessmentReports('0',false,person_SP,false);
@@ -53,7 +53,7 @@
                     click: function () {
                         if (person_SP == null)
                             return;
-                        if (typeof call_needsAssessmentReports === "undefined")
+                        if (MainTS_SP.getTab("<spring:message code="needsAssessmentReport"/>") == null)
                             createTab_SP("<spring:message code="needsAssessmentReport"/>", "<spring:url value="/web/needsAssessment-reports"/>", "call_needsAssessmentReports('2',false,person_SP,false)");
                         else {
                             call_needsAssessmentReports('2',false,person_SP,false);

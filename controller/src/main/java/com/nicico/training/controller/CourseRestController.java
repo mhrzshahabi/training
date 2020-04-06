@@ -463,7 +463,7 @@ public class CourseRestController {
     @Loggable
     @GetMapping(value = "/get_teachers/{id}")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
-        List<TeacherDTO.TeacherFullNameTuple> infoList = new ArrayList<>();
+        List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> infoList = new ArrayList<>();
         if (id != 0) {
             infoList = courseService.getTeachers(id);
         }
