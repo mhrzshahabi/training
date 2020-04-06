@@ -717,4 +717,12 @@ public class TclassService implements ITclassService {
 
     }
 
+    @Transactional(readOnly = true)
+    @Override
+     public List<TclassDTO.PersonnelClassInfo> PersonnelClass(Long id) {
+
+        List<TclassDTO.PersonnelClassInfo> personnelClassInfo= (List<TclassDTO.PersonnelClassInfo>) tclassDAO.findAllTclassByCourseId(id);
+        return modelMapper.map(personnelClassInfo, new TypeToken<List<TclassDTO.PersonnelClassInfo>>() {
+        }.getType());
+    }
 }

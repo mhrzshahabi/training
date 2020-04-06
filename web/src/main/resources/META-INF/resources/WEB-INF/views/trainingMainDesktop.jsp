@@ -756,6 +756,13 @@
                 },
                 {isSeparator: true},
                 {
+                    title: "<spring:message code="report.calender.current.term"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");
+                    }
+                },
+                 {isSeparator: true},
+                {
                     title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
@@ -1259,7 +1266,6 @@
     const classStudent = rootUrl + "/classStudent/";
     const classAlarm = rootUrl + "/classAlarm/";
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
-    const unfinishedClasses = rootUrl + "/unfinishedClasses/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/"

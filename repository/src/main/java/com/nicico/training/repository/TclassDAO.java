@@ -49,5 +49,6 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             " WHERE " +
             "    s.national_code =:national_code ", nativeQuery = true)
     public List<?> findAllPersonnelClass(String national_code);
+    public List<?> findAllTclassByCourseId(Long id);
 
 }
