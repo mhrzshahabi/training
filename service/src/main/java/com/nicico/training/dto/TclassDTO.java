@@ -430,4 +430,15 @@ public class TclassDTO {
         private String courseTitle;
     }
 
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassDetailInfo")
+    public static class ClassDetailInfo extends Info {
+        private String classSessionTimes;
+        private String classDays;
+    }
+
 }

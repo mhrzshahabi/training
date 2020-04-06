@@ -1,8 +1,11 @@
 package com.nicico.training.iservice;
 
-import com.nicico.training.model.Course;
+import com.nicico.training.dto.CourseDTO;
+import com.nicico.training.dto.TclassDTO;
 
 public interface IPersonnelInformationService {
 
-    Course findCourseById(Long courseId);
+    CourseDTO.CourseDetailInfo findCourseById(Long courseId);
+
+    TclassDTO.ClassDetailInfo findClassById(Long classId);
 }

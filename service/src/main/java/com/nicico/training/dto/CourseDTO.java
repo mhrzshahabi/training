@@ -354,6 +354,8 @@ public class CourseDTO implements Serializable {
         private CategoryDTO.CategoryTitle category;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private String mainObjective;
+        private String goals;
+        private String perCourses;
 
     }
 }
