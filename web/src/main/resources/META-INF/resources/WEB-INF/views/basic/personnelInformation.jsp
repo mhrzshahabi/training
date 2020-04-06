@@ -129,7 +129,6 @@
             ]
         });
 
-
         var ListGrid_PersonnelTraining = isc.TrLG.create({
             width: "100%",
             height: "100%",
@@ -237,7 +236,6 @@
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
     {
-
         var DynamicForm_PersonnelInfo = isc.DynamicForm.create({
             numCols: 6,
             colWidths: ["1%", "3%", "1%", "3%", "1%", "3%"],
@@ -440,6 +438,272 @@
                     }
                 ]
         });
+
+        var DynamicForm_PersonnelInfo_CourseInfo = isc.DynamicForm.create({
+            numCols: 6,
+            colWidths: ["1%", "3%", "1%", "3%", "1%", "3%"],
+            cellPadding: 3,
+            fields:
+                [
+                    {
+                        name: "header_BasicInfo",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="basic.information"/>",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code="course.title"/> : ",
+                        canEdit: false,
+                    },
+                    {
+                        name: "code",
+                        title: "<spring:message code="course.code"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "theoryDuration",
+                        title: "<spring:message code="course_theoryDuration"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "<spring:message code="group"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "subCategory.titleFa",
+                        title: "<spring:message code="subcategory"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "erunType.titleFa",
+                        title: "<spring:message code="course_eruntype"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "elevelType.titleFa",
+                        title: "<spring:message code="cousre_elevelType"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "etheoType.titleFa",
+                        title: "<spring:message code="course_etheoType"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "etechnicalType.titleFa",
+                        title: "<spring:message code="course_etechnicalType"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "evaluation",
+                        title: "<spring:message code="evaluation.level"/> : ",
+                        valueMap: {
+                            "1": "واکنش",
+                            "2": "یادگیری",
+                            "3": "رفتاری",
+                            "4": "نتایج"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "behavioralLevel",
+                        title: "<spring:message code="behavioral.Level"/> : ",
+                        valueMap: {
+                            "1": "مشاهده",
+                            "2": "مصاحبه",
+                            "3": "کار پروژه ای"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "scoringMethod",
+                        title: "<spring:message code="scoring.Method"/> : ",
+                        valueMap: {
+                            "1": "ارزشی",
+                            "2": "نمره از صد",
+                            "3": "نمره از بیست",
+                            "4": "بدون نمره",
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "minTeacherDegree",
+                        title: "<spring:message code="course_minTeacherDegree"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "minTeacherExpYears",
+                        title: "<spring:message code="course_minTeacherExpYears"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "minTeacherEvalScore",
+                        title: "<spring:message code="course_minTeacherEvalScore"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "header_MainObjective",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="course_mainObjective"/>",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    <%--{--%>
+                    <%--    name: "mainObjective",--%>
+                    <%--    title: "<spring:message code="course_mainObjective"/>",--%>
+                    <%--    canEdit: false--%>
+                    <%--},--%>
+                    {
+                        name: "mainObjective",
+                        type: "TextAreaItem",
+                        colSpan: 3,
+                        rowSpan: 4,
+                        height: "*",
+                        title: "mainObjective",
+                        width: "100%",
+                        length: 5000,
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="boss"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="connective"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "employmentStatus",
+                        title: "<spring:message code="employment.status"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "ccpAssistant",
+                        title: "<spring:message code="area"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "ccpAffairs",
+                        title: "<spring:message code="unit"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "ccpSection",
+                        title: "<spring:message code="section"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "companyName",
+                        title: "<spring:message code="branch"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "postTitle",
+                        title: "<spring:message code="job"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "jobTitle",
+                        title: "<spring:message code="post"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "postGradeTitle",
+                        title: "<spring:message code="post.grade"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="job.group"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="business.class"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "personnelNo2",
+                        title: "<spring:message code="personnel.code.six.digit"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="post.group"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="person.basic"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "employmentTypeTitle",
+                        title: "<spring:message code="employment.type"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "employmentDate",
+                        title: "<spring:message code="employment.date"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "workPlaceTitle",
+                        title: "<spring:message code="geographical.location.of.service"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="agents"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "workTurnTitle",
+                        title: "<spring:message code="division.of.staff"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "notExists",
+                        title: "<spring:message code="military"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "header_ContactInfo",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="contact.information"/>",
+                        colSpan: 6,
+                        startRow: true,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "tel",
+                        title: "<spring:message code="telephone"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "mobile",
+                        title: "<spring:message code="cellPhone"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "email",
+                        title: "<spring:message code="email"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "address",
+                        title: "<spring:message code="address"/> : ",
+                        canEdit: false
+                    }
+                ]
+        });
     }
     // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>
 
@@ -479,15 +743,16 @@
             }
         });
 
-        var PersonnelInfo_ClassInfo_Tab =isc.TabSet.create({
+        var PersonnelInfo_ClassInfo_Tab = isc.TabSet.create({
             ID: "PersonnelInfo_ClassInfo_Tab",
             width: "100%",
             height: 400,
             tabBarPosition: "top",
-            tabs:[
+            tabs: [
                 {
                     id: "ClassInfo_Tab_Course",
-                    title: "<spring:message code="course"/> "
+                    title: "<spring:message code="course"/>",
+                    pane: DynamicForm_PersonnelInfo_CourseInfo
                 },
                 {
                     id: "ClassInfo_Tab_Class",
@@ -501,12 +766,12 @@
         });
 
         var window_class_Information = isc.Window.create({
-            title:"",
-            width:"60%",
-            minWidth:500,
+            title: "",
+            width: "60%",
+            minWidth: 500,
             height: 400,
             visibility: "hidden",
-            items:[PersonnelInfo_ClassInfo_Tab]
+            items: [PersonnelInfo_ClassInfo_Tab]
         });
     }
     // ---------------------------------------- Create - TabSet & Tab --------------------------------------->>
@@ -639,6 +904,38 @@
             if (colNum === 1) {
                 window_class_Information.setTitle(record.courseTitle);
                 window_class_Information.show();
+
+                set_PersonnelInfo_CourseInfo();
+            }
+        }
+
+        //***********************************
+
+        //*****get selected course information*****
+        function set_PersonnelInfo_CourseInfo() {
+
+            if (ListGrid_PersonnelTraining.getSelectedRecord() !== null)
+            {
+                let courseId = ListGrid_PersonnelTraining.getSelectedRecord().courseId;
+
+                if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Course") {
+                    if(courseId !== null)
+                    isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findCourseByCourseId/" + courseId, "GET", null, function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                            let currentCourse = JSON.parse(resp.data);
+
+                            // currentPersonnel.fullName =
+                            //     (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
+                            //     + " " +
+                            //     (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
+                            DynamicForm_PersonnelInfo_CourseInfo.clearValues();
+                            DynamicForm_PersonnelInfo_CourseInfo.editRecord(currentCourse);
+
+                            console.log(currentCourse);
+                        }
+                    }));
+                }
             }
         }
     }

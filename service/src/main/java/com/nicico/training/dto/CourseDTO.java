@@ -2,6 +2,7 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.Goal;
+import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -338,4 +340,20 @@ public class CourseDTO implements Serializable {
     }
 
     // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CourseDetailInfo")
+    public static class CourseDetailInfo extends CourseDTO {
+        private Long id;
+        private ERunType eRunType;
+        private ELevelType eLevelType;
+        private ETechnicalType eTechnicalType;
+        private ETheoType eTheoType;
+        private CategoryDTO.CategoryTitle category;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
+        private String mainObjective;
+
+    }
 }
