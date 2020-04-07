@@ -104,6 +104,25 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             })
         ]
     });
+    var ToolStrip_NeedsAssessmentTree_JspNeedAssessment = isc.ToolStrip.create({
+        members: [
+            isc.ToolStripButtonPrint.create({
+                click: function () {
+                    isc.Canvas.showPrintPreview(printContainer)                }
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                        }
+                    })
+                ]
+            })
+        ]
+    });
     var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
         contents:"",
         customEdges: ["R","L","T", "B"]});
@@ -177,7 +196,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ],
         showClippedValuesOnHover: true,
         dataSource: RestDataSourceNeedsAssessment,
-        gridComponents: [Label_Title_JspNeedsAssessment ,"header", "body"],
+        gridComponents: [ToolStrip_NeedsAssessmentTree_JspNeedAssessment, Label_Title_JspNeedsAssessment ,"header", "body"],
         groupStartOpen: "all",
         getCellCSSText: function (record, rowNum, colNum) {
 
@@ -858,6 +877,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         autoSize: false,
         items: [
             isc.TrHLayout.create({
+                ID:"printContainer",
                 members: [
                     isc.TabSet.create({
                         ID: "tabSetClass",

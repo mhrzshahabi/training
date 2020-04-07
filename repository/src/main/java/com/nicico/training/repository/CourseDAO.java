@@ -31,5 +31,7 @@ public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecification
     List<Course> findAllById(Long courseId);
 
     List<Course> findByCodeEquals(String code);
+
+    Course findCourseByIdEquals(Long courseId);
 }
 
