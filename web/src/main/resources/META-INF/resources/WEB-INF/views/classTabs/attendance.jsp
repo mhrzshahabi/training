@@ -397,9 +397,11 @@
                                         sessionInOneDate.length = 0;
                                         attendanceGrid.invalidateCache();
                                         for (let j = 0; j < data1[0].length; j++) {
-                                            attendanceDS.addData(data1[0][j]);
-                                            filterValues.add(data1[0][j].studentFamily);
-                                            filterValues1.add(data1[0][j].studentName);
+                                            if(data1[0][j].studentState.valueOf() == new String("ho").valueOf()){
+                                                attendanceDS.addData(data1[0][j]);
+                                                filterValues.add(data1[0][j].studentFamily);
+                                                filterValues1.add(data1[0][j].studentName);
+                                            }
                                         }
                                         causeOfAbsence = data1[1];
                                         attendanceGrid.fetchData();
@@ -1130,7 +1132,7 @@
             }, 100)
         },
         getCellCSSText: function (record, rowNum, colNum){
-            if(this.getFieldName(colNum).startsWith("se")){
+            if(this.getFieldName(colNum).startsWith("se") || (this.getFieldName(colNum).valueOf()) == new String("state").valueOf()){
                 let key = this.getFieldName(colNum);
                 switch(record[key]) {
                     case "1":

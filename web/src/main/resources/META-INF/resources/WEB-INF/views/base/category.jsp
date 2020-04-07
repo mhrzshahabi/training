@@ -709,6 +709,7 @@
         } else {
             method = "PUT";
             url = category_CategoryHomeUrl + "/" + record.id;
+            DynamicForm_Category.clearValues();
             DynamicForm_Category.getItem("code").setDisabled(true);
             DynamicForm_Category.editRecord(record);
             Window_Category.show();

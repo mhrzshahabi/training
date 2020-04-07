@@ -31,7 +31,7 @@
                     {name: "firstName"},
                     {name: "lastName"}
                 ],
-            fetchDataURL: unfinishedClasses + "list"
+            fetchDataURL: unfinishedClasses + "/list"
         });
 
         var  ListGrid_UCReport = isc.TrLG.create({
