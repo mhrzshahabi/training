@@ -31,10 +31,12 @@ public class CourseService implements ICourseService {
     private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
+    private final TclassDAO tclassDAO;
     private final JobDAO jobDAO;
     private final PostDAO postDAO;
     private final JobGroupDAO jobGroupDAO;
     private final CompetenceDAOOld competenceDAO;
+    private final TclassService tclassService;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
@@ -540,19 +542,33 @@ public class CourseService implements ICourseService {
         return "دانشی: " + round(a * 100 / (sumAll)) + "%     " + "نگرشی: " + round(c * 100 / (sumAll)) + "%    " + "مهارتی: " + round(b * 100 / (sumAll)) + "%";
     }
 
-
     @Transactional(readOnly = true)
     @Override
-    public List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId) {
+    public List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> getTeachers(Long courseId) {
         final Optional<Course> optionalCourse = courseDAO.findById(courseId);
         final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String minTeacherDegree = course.getMinTeacherDegree();
         List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(minTeacherDegree);
         EducationLevel educationLevel = byTitleFa.get(0);
         Long categoryId = course.getCategoryId();
-        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(categoryId, educationLevel.getCode());
-        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.TeacherFullNameTuple>>() {
-        }.getType());
+        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(categoryId, educationLevel.getCode(), false);
+        List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> sendingList = new ArrayList<>();
+        if(!teachers.isEmpty()) {
+            Comparator<Tclass> tclassComparator = Comparator.comparing(Tclass::getEndDate);
+            for (Teacher teacher : teachers) {
+                List<Tclass> tclassList = tclassDAO.findByCourseAndTeacher(course, teacher);
+                TeacherDTO.TeacherFullNameTupleWithFinalGrade teacherDTO = modelMapper.map(teacher, TeacherDTO.TeacherFullNameTupleWithFinalGrade.class);
+                Optional<Tclass> max = tclassList.stream().max(tclassComparator);
+                if (max.isPresent()) {
+                    Tclass tclass = max.get();
+                    teacherDTO.setGrade(String.valueOf(tclassService.getStudentsGradeToTeacher(tclass.getClassStudents())));
+                }
+                sendingList.add(teacherDTO);
+            }
+        }
+        return sendingList;
+//        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.TeacherFullNameTuple>>() {
+//        }.getType());
     }
 
 

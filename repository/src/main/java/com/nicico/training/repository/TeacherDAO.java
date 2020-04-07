@@ -28,7 +28,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
 
 //    List<Teacher> findByCategoriesAndPersonality_EducationLevelId(Set<Category> categories, Long educationLevelId);
 
-    List<Teacher> findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(Long id, Integer code);
+    List<Teacher> findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(Long id, Integer code, Boolean inBlackList);
 //    List<Teacher> findTeachersBy
 
 
