@@ -873,6 +873,8 @@
 
         function set_PersonnelInfo_Details() {
 
+            DynamicForm_PersonnelInfo.clearValues();
+
             if (PersonnelInfoListGrid_PersonnelList.getSelectedRecord() !== null) {
 
                 let personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
@@ -907,7 +909,6 @@
                                     + " - " +
                                     (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
 
-                                DynamicForm_PersonnelInfo.clearValues();
                                 DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
                             }
 
@@ -982,6 +983,9 @@
         //*****get selected course information*****
         function set_PersonnelInfo_CourseInfo() {
 
+            DynamicForm_PersonnelInfo_CourseInfo.clearValues();
+            DynamicForm_PersonnelInfo_ClassInfo.clearValues();
+
             if (ListGrid_PersonnelTraining.getSelectedRecord() !== null)
             {
                 let courseId = ListGrid_PersonnelTraining.getSelectedRecord().courseId;
@@ -993,7 +997,6 @@
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                             let currentCourse = JSON.parse(resp.data);
-                            DynamicForm_PersonnelInfo_CourseInfo.clearValues();
                             DynamicForm_PersonnelInfo_CourseInfo.editRecord(currentCourse);
                         }
                     }));
@@ -1004,7 +1007,6 @@
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                 let currentClass = JSON.parse(resp.data);
-                                DynamicForm_PersonnelInfo_ClassInfo.clearValues();
                                 DynamicForm_PersonnelInfo_ClassInfo.editRecord(currentClass);
                             }
                         }));
