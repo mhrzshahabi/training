@@ -444,4 +444,52 @@ public class TclassRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+
+    @Loggable
+    @GetMapping(value = "/specList-weeklyTrainingSchedule/{userNationalCode}")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TclassDTO.TclassTeachingHistorySpecRs> getWeeklyTrainingScheduleList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                                 @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                                 HttpServletResponse httpResponse,
+                                                                                 @PathVariable String userNationalCode) throws IOException {
+
+//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+//
+//        SearchDTO.CriteriaRq criteriaRq;
+//        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+//            criteria = "[" + criteria + "]";
+//            criteriaRq = new SearchDTO.CriteriaRq();
+//            criteriaRq.setOperator(EOperator.valueOf(operator))
+//                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+//                    }));
+
+//
+//            request.setCriteria(criteriaRq);
+//        }
+//
+//        if (StringUtils.isNotEmpty(sortBy)) {
+//            request.setSortBy(sortBy);
+//        }
+//        request.setStartIndex(startRow)
+//                .setCount(endRow - startRow);
+//
+//        SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = tclassService.searchByTeachingHistory(request,userId);
+//
+//        final TclassDTO.TeachingHistorySpecRs specResponse = new TclassDTO.TeachingHistorySpecRs();
+//        final TclassDTO.TclassTeachingHistorySpecRs specRs = new TclassDTO.TclassTeachingHistorySpecRs();
+//        specResponse.setData(response.getList())
+//                .setStartRow(startRow)
+//                .setEndRow(startRow + response.getList().size())
+//                .setTotalRows(response.getTotalCount().intValue());
+//
+//        specRs.setResponse(specResponse);
+
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+        return null;
+    }
+
 }
