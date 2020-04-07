@@ -786,6 +786,13 @@
                 },
                 {isSeparator: true},
                 {
+                    title: "<spring:message code="weekly.training.schedule"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
                     title: "<spring:message code="report.monthly.statistical"/>",
                     click:function(){
                         createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
