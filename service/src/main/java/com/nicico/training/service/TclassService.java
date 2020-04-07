@@ -50,18 +50,18 @@ public class TclassService implements ITclassService {
     private final IEvaluationService evaluationService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterService parameterService;
-    boolean FERPass = false;
-    boolean FETPass = false;
-    boolean FECRPass = false;
-    Set<ClassStudent> classStudents;
-    Long teacherId;
-    double studentsGradeToTeacher = 0.0;
-    double studentsGradeToGoals = 0.0;
-    double studentsGradeToFacility = 0.0;
-    double minScore_ER = 0.0;
-    double minScore_ET = 0.0;
-    double minScoreFECR = 0.0;
-    double trainingGradeToTeacher = 0.0;
+    private boolean FERPass = false;
+    private boolean FETPass = false;
+    private boolean FECRPass = false;
+    private Set<ClassStudent> classStudents;
+    private Long teacherId;
+    private double studentsGradeToTeacher = 0.0;
+    private double studentsGradeToGoals = 0.0;
+    private double studentsGradeToFacility = 0.0;
+    private double minScore_ER = 0.0;
+    private double minScore_ET = 0.0;
+    private double minScoreFECR = 0.0;
+    private double trainingGradeToTeacher = 0.0;
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
 
     @Transactional(readOnly = true)
@@ -119,7 +119,6 @@ public class TclassService implements ITclassService {
         Set<TrainingPlace> set = new HashSet<>(allById);
         final Tclass tclass = modelMapper.map(request, Tclass.class);
         tclass.setTrainingPlaceSet(set);
-//        TclassDTO.Info tclass = modelMapper.map(request, TclassDTO.Info.class);
         return save(tclass);
     }
 
@@ -132,7 +131,6 @@ public class TclassService implements ITclassService {
         List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
         Set<TrainingPlace> set = new HashSet<>(allById);
         Tclass updating = new Tclass();
-//        request.setTrainingPlaceSet(null);
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);
         updating.setTrainingPlaceSet(set);
@@ -238,39 +236,6 @@ public class TclassService implements ITclassService {
         return studentInfoSet;
     }
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<StudentDTO.Info> getOtherStudents(Long classID) {
-//        final Optional<Tclass> ssById = tclassDAO.findById(classID);
-//        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
-//
-//        List<Student> currentStudent = tclass.getStudentSet();
-//        List<Student> allStudent = studentDAO.findAll();
-//        List<Student> otherStudent = new ArrayList<>();
-//
-//        for (Student student : allStudent) {
-//            if (!currentStudent.contains(student))
-//                otherStudent.add(student);
-//        }
-//
-//        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-//        Optional.of(otherStudent)
-//                .ifPresent(students ->
-//                        students.forEach(student ->
-//                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
-//                        ));
-//        return studentInfoSet;
-//    }
-
-
-//    @Transactional
-//    @Override
-//    public void addStudent(Long studentId, Long classId) {
-//        Tclass tclass = tclassDAO.getOne(classId);
-//        Student student = studentDAO.getOne(studentId);
-//
-//        tclass.getStudentSet().add(student);
-//    }
 
 
     @Transactional
@@ -282,15 +247,6 @@ public class TclassService implements ITclassService {
         }
     }
 
-//    @Transactional
-//    @Override
-//    public void addStudents(StudentDTO.Delete request, Long classId) {
-//        Tclass tclass = tclassDAO.getOne(classId);
-//        List<Student> gAllById = studentDAO.findAllById(request.getIds());
-//        for (Student student : gAllById) {
-//            tclass.getStudentSet().add(student);
-//        }
-//    }
 
     @Transactional(readOnly = true)
     @Override
@@ -382,9 +338,9 @@ public class TclassService implements ITclassService {
     }
 
     public void calculateStudentsReactionEvaluationResult() {
-        studentsGradeToTeacher = 0;
-        studentsGradeToFacility = 0;
-        studentsGradeToGoals = 0;
+        double studentsGradeToTeacher_l = 0;
+        double studentsGradeToFacility_l = 0;
+        double studentsGradeToGoals_l = 0;
         for (ClassStudent classStudent : classStudents) {
             if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
                 Evaluation evaluation = evaluationService.getStudentEvaluationForClass(classStudent.getTclassId(), classStudent.getId());
@@ -416,30 +372,30 @@ public class TclassService implements ITclassService {
                                 facilityTotalWeight += weight;
                             }
                         }
-//                        else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("Content")) {//Goals
-//                            goalsTotalGrade += grade * weight;
-//                            goalsTotalWeight += weight;
-//                        }
                         else {//Goals
                             goalsTotalGrade += grade * weight;
                             goalsTotalWeight += weight;
                         }
                     }
                     if (teacherTotalWeight != 0)
-                        studentsGradeToTeacher += (teacherTotalGrade / teacherTotalWeight);
+                        studentsGradeToTeacher_l += (teacherTotalGrade / teacherTotalWeight);
                     if (facilityTotalWeight != 0)
-                        studentsGradeToFacility += (facilityTotalGrade / facilityTotalWeight);
+                        studentsGradeToFacility_l += (facilityTotalGrade / facilityTotalWeight);
                     if (goalsTotalWeight != 0)
-                        studentsGradeToGoals += (goalsTotalGrade / goalsTotalWeight);
+                        studentsGradeToGoals_l += (goalsTotalGrade / goalsTotalWeight);
                 }
             }
         }
         if (getNumberOfFilledReactionEvaluationForms() != 0)
-            studentsGradeToTeacher /= getNumberOfFilledReactionEvaluationForms();
+            studentsGradeToTeacher_l /= getNumberOfFilledReactionEvaluationForms();
         if (getNumberOfFilledReactionEvaluationForms() != 0)
-            studentsGradeToFacility /= getNumberOfFilledReactionEvaluationForms();
+            studentsGradeToFacility_l /= getNumberOfFilledReactionEvaluationForms();
         if (getNumberOfFilledReactionEvaluationForms() != 0)
-            studentsGradeToGoals /= getNumberOfFilledReactionEvaluationForms();
+            studentsGradeToGoals_l /= getNumberOfFilledReactionEvaluationForms();
+
+        studentsGradeToTeacher = studentsGradeToTeacher_l;
+        studentsGradeToFacility = studentsGradeToFacility_l;
+        studentsGradeToGoals = studentsGradeToGoals_l;
     }
 
     public Double getTeacherGradeToClass(Long classId) {
@@ -711,10 +667,6 @@ public class TclassService implements ITclassService {
         return (personnelClassInfo != null ? modelMapper.map(personnelClassInfo, new TypeToken<List<TclassDTO.PersonnelClassInfo>>() {
         }.getType()) : null);
 
-
-//        return modelMapper.map(tclassDAO.findAllPersonnelClass(national_code), new TypeToken<List<TclassDTO.Info>>() {
-//        }.getType());
-
     }
 
     @Transactional(readOnly = true)
@@ -739,9 +691,38 @@ public class TclassService implements ITclassService {
             classStudents = tclass.getClassStudents();
             calculateStudentsReactionEvaluationResult();
             aClass.setEvaluationGrade(studentsGradeToTeacher);
-            aClass.setEvaluationReactionGrade(getFERGrade(aClass.getId()));
         }
         return response;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeacherId(SearchDTO.SearchRq request, Long tId) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        list.add(makeNewCriteria("teacherId", tId, EOperator.equals, null));
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else
+                request.getCriteria().setCriteria(list);
+        } else
+            request.setCriteria(criteriaRq);
+
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TeachingHistory.class));
+
+        return response;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Double getClassReactionEvaluationGrade(Long classId, Long tId){
+        teacherId = tId;
+        Tclass tclass = getTClass(classId);
+        classStudents = tclass.getClassStudents();
+        calculateStudentsReactionEvaluationResult();
+        return getFERGrade(classId);
     }
 
 }

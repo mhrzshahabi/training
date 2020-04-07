@@ -90,6 +90,7 @@ public class TeacherDTO {
         private String numberOfCourses;
         private String evaluationGrade;
         private String lastCourse;
+        private Long lastCourseId;
         private String lastCourseEvaluationGrade;
         private Integer version;
     }

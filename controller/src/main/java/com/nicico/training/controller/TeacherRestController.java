@@ -356,17 +356,21 @@ public class TeacherRestController {
         for (TeacherDTO.Report datum : specResponse.getData()) {
             SearchDTO.SearchRq req = new SearchDTO.SearchRq();
             Long tId = datum.getId();
-            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(req,tId);
+            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeacherId(req,tId);
             datum.setNumberOfCourses(""+resp.getList().size());
             if(resp.getList() != null && resp.getList().size() > 0) {
                 String startDate = resp.getList().get(0).getStartDate();
                 for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
                     if (teachingHistory.getStartDate().compareTo(startDate) > 0 || teachingHistory.getStartDate().compareTo(startDate)==0) {
                         datum.setLastCourse(teachingHistory.getTitleClass());
-                        datum.setLastCourseEvaluationGrade(""+teachingHistory.getEvaluationReactionGrade());
+                        datum.setLastCourseId(teachingHistory.getId());
                     }
                 }
             }
+        }
+        for (TeacherDTO.Report datum : specResponse.getData()) {
+            if(datum.getLastCourse() != null)
+                datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(datum.getLastCourseId(),datum.getId()));
         }
 
         specRs.setResponse(specResponse);

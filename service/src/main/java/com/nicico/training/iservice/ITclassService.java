@@ -68,4 +68,10 @@ public interface ITclassService {
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeacherId(SearchDTO.SearchRq request, Long tId);
+
+    @Transactional(readOnly = true)
+    Double getClassReactionEvaluationGrade(Long classId, Long tId);
 }
