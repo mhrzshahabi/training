@@ -299,6 +299,8 @@ public class ClassSessionService implements IClassSession {
         return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.Info>>() {
         }.getType());
     }
+
+
     //*********************************
 
     @Override
@@ -456,6 +458,25 @@ public class ClassSessionService implements IClassSession {
     @Transactional(readOnly = true)
     public List<ClassSession> findBySessionDateBetween(String start, String end){
         return classSessionDAO.findBySessionDateBetween(start, end);
+    }
+
+    @Transactional
+    @Override
+    public SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else
+                request.getCriteria().setCriteria(list);
+        } else
+            request.setCriteria(criteriaRq);
+
+        SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> response = SearchUtil.search(classSessionDAO, request, tclass -> modelMapper.map(tclass, ClassSessionDTO.WeeklySchedule.class));
+
+        return response;
     }
 
 }

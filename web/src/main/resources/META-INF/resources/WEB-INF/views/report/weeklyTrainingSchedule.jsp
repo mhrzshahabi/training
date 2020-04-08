@@ -21,7 +21,7 @@
             {name: "evaluationGrade"},
             {name: "lastCourse"},
             {name: "lastCourseEvaluationGrade"}],
-        fetchDataURL: classUrl + "specList-weeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
+        fetchDataURL: sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_Result_JspWeeklyTrainingSchedule  = isc.TrLG.create({

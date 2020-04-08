@@ -86,6 +86,42 @@ public class ClassSessionDTO implements Serializable {
 
     //*********************************
 
+    //-------------------------------
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassSessionWeeklySchedule")
+    public static class WeeklySchedule {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private Double evaluationGrade;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ClassSessionWeeklyScheduleSpecRs")
+    public static class ClassSessionWeeklyScheduleSpecRs {
+        private WeeklyScheduleSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class WeeklyScheduleSpecRs {
+        private List<ClassSessionDTO.WeeklySchedule> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+
     @Getter
     @Setter
     @Accessors(chain = true)

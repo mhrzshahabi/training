@@ -208,7 +208,6 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
-
     // ------------------------------
 
     @Getter

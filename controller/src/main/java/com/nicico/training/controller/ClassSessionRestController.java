@@ -206,4 +206,50 @@ public class ClassSessionRestController {
         SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.searchWithCriteria(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/specListWeeklyTrainingSchedule/{userNationalCode}")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<ClassSessionDTO.ClassSessionWeeklyScheduleSpecRs> getWeeklyTrainingSchedule(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                                 @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                                 HttpServletResponse httpResponse,
+                                                                                 @PathVariable String userNationalCode) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> response = classSessionService.searchWeeklyTrainingSchedule(request,userNationalCode);
+
+        final ClassSessionDTO.WeeklyScheduleSpecRs specResponse = new ClassSessionDTO.WeeklyScheduleSpecRs();
+        final ClassSessionDTO.ClassSessionWeeklyScheduleSpecRs specRs = new ClassSessionDTO.ClassSessionWeeklyScheduleSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 }
