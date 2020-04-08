@@ -244,7 +244,7 @@ public class MainFormController {
         map.add("postCode",postCode);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        return restTemplate.exchange(restApiUrl + "/api/calender-current-term/print", HttpMethod.POST, entity, byte[].class);
+        return restTemplate.exchange(restApiUrl + "/api/calenderCurrentTerm/print", HttpMethod.POST, entity, byte[].class);
 
     }
 

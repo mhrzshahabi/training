@@ -6,7 +6,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.EqualCourse;
-import com.nicico.training.model.Student;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.CourseDAO;
 import lombok.RequiredArgsConstructor;
