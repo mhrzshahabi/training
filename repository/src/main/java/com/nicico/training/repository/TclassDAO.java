@@ -53,6 +53,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     public List<?> findAllPersonnelClass(String national_code);
     public List<?> findAllTclassByCourseId(Long id);
 
+    public List<Tclass> findTclassesByCourseId(Long id);
     List<Tclass> findByCourseAndTeacher(Course course, Teacher teacher);
     List<Tclass> findByCourseIdAndTeacherId(Long courseId, Long teacherId);
     List<Tclass> findByTeacherId(Long teacherId);

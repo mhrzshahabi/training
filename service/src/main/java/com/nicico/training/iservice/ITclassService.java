@@ -39,6 +39,9 @@ public interface ITclassService {
 
     SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request);
 
+    @Transactional(readOnly = true)
+    <T> SearchDTO.SearchRs<T> search1(SearchDTO.SearchRq request, Class<T> infoType);
+
     SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> evaluatedSearch(SearchDTO.SearchRq request);
 
     SearchDTO.SearchRs<TclassDTO.Info> searchById(SearchDTO.SearchRq request, Long classId);
@@ -76,5 +79,5 @@ public interface ITclassService {
     Double getClassReactionEvaluationGrade(Long classId, Long tId);
 
     @Transactional(readOnly = true)
-    List<TclassDTO.PersonnelClassInfo> PersonnelClass(Long id);
+    List<TclassDTO.Info> PersonnelClass(Long id);
 }
