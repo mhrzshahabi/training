@@ -82,6 +82,7 @@ public class TclassDTO {
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
 
+        private Long courseId;
         private InstituteDTO.InstituteInfoTuple institute;
         //        private Date createdDate;
         //        private String createdBy;
@@ -262,12 +263,24 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("CoursesOfStudent")
     public static class CoursesOfStudent {
+        private Long id;
         private CourseDTO.CourseInfoTupleLite course;
         private String code;
         private String classStatus;
         private String startDate;
         private String endDate;
         private TermDTO term;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("StudentClassList")
+    public static class StudentClassList {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private Long courseId;
     }
 
     //-------------------------------

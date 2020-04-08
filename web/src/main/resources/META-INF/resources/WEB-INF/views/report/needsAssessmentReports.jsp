@@ -725,7 +725,7 @@
 
     function PostCodeSearch_result_NABOP(resp) {
         wait_NABOP.close();
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             selectedObject_NABOP = JSON.parse(resp.httpResponseText);
             setTitle_NABOP();
             Window_Personnel_NABOP.close();

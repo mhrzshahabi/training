@@ -235,5 +235,12 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ScoresInfo student;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("StudentClassList - Info")
+    public static class StudentClassList {
+        private TclassDTO.StudentClassList tclass;
+    }
 
 }

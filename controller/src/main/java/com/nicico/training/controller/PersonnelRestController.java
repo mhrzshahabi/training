@@ -146,17 +146,15 @@ public class PersonnelRestController {
     @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity getOneByNationalCode(@PathVariable String nationalCode) {
-        SearchDTO.CriteriaRq criteria = makeNewCriteria(null,null, EOperator.and,new ArrayList<>());
-        criteria.getCriteria().add(makeNewCriteria("active",-1,EOperator.equals,null));
-        criteria.getCriteria().add(makeNewCriteria("nationalCode",nationalCode,EOperator.equals,null));
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("active", -1, EOperator.equals, null));
+        criteria.getCriteria().add(makeNewCriteria("nationalCode", nationalCode, EOperator.equals, null));
         List<PersonnelDTO.Info> personnelList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
-        if(personnelList.size()>0)
+        if (personnelList.size() > 0)
             return new ResponseEntity<>(personnelList.get(0), HttpStatus.OK);
-
         List<PersonnelRegisteredDTO.Info> personnelRegisteredList = personnelRegisteredService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
-        if(personnelRegisteredList.size()>0)
+        if (personnelRegisteredList.size() > 0)
             return new ResponseEntity<>(personnelRegisteredList.get(0), HttpStatus.OK);
-
-        return new ResponseEntity<>( messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
     }
 }
