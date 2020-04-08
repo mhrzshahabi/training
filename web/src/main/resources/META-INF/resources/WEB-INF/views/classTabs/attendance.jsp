@@ -5,7 +5,6 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-
 // <script>
 
     var classGridRecordInAttendanceJsp = null;

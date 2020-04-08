@@ -1,9 +1,14 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.CourseDTO;
+import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import com.nicico.training.utility.SpecListUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.data;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/export-to-excel")
@@ -35,6 +42,8 @@ public class ExportToExcelController {
     private final MakeExcelOutputUtil makeExcelOutputUtil;
     private final SpecListUtil specListUtil;
     private final ReportUtil reportUtil;
+    private final ObjectMapper objectMapper;
+    private final NeedsAssessmentService needsAssessmentService;
 
     @PostMapping(value = {"/download"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields, @RequestParam(value = "data") String data) {
@@ -140,6 +149,35 @@ public class ExportToExcelController {
         params.put(ConstantVARs.REPORT_TYPE,type);
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    @PostMapping(value = {"/print-criteria/{type}"})
+    public void printWithCriteria (HttpServletResponse response,
+                      @PathVariable String type,
+                      @RequestParam(value = "fileName") String fileName,
+                      @RequestParam(value = "CriteriaStr") String criteriaStr,
+                      @RequestParam(value = "params") String receiveParams
+                      ) throws Exception {
+        //-------------------------------------
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+        final SearchDTO.SearchRs<NeedsAssessmentDTO.Info> searchRs = needsAssessmentService.search(searchRq);
+        final Gson gson = new Gson();
+        final Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        params.put("todayDate", DateUtil.todayDate());
+        params.put(ConstantVARs.REPORT_TYPE,type);
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 }

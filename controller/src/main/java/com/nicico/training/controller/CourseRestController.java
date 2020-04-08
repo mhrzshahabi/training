@@ -384,7 +384,6 @@ public class CourseRestController {
         reportUtil.export("/reports/Course.jasper", params, response);
     }
 
-
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
@@ -412,7 +411,6 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/CourseByCriteria.jasper", params, jsonDataSource, response);
     }
-
 
     @Loggable
     @PostMapping(value = {"/GoalsAndSyllabus/{type}"})
