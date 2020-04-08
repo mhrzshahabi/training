@@ -77,4 +77,5 @@ public interface ITclassService {
 
     @Transactional(readOnly = true)
     List<TclassDTO.PersonnelClassInfo> PersonnelClass(Long id);
+
 }

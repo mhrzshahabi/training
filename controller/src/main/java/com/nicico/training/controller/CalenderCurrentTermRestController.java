@@ -1,16 +1,19 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.NeedsAssessmentReportsService;
 import com.nicico.training.service.ParameterService;
 import com.nicico.training.service.TclassService;
@@ -20,28 +23,93 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONArray;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/calender-current-term")
+@RequestMapping(value = "/api/calenderCurrentTerm")
 public class CalenderCurrentTermRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final ReportUtil reportUtil;
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
+    private final ClassAlarmService classAlarmService;
     private final TclassService tclassService;
     private final ParameterService parameterService;
+
+    @Loggable
+    @GetMapping(value = "/spec-list")
+
+    public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse, HttpServletRequest iscRq) throws IOException {
+
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+              SearchDTO.CriteriaRq criteriaRq0 = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+              SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("startDate", dateUtil.todayDate(), EOperator.lessOrEqual, new ArrayList<>());
+              SearchDTO.CriteriaRq criteriaRq2 = makeNewCriteria("endDate", dateUtil.todayDate(), EOperator.greaterThan, new ArrayList<>());
+              criteriaRq0.getCriteria().add(criteriaRq);
+              criteriaRq0.getCriteria().add(criteriaRq1);
+              criteriaRq0.getCriteria().add(criteriaRq2);
+
+            request.setCriteria(criteriaRq0);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
+                tclassDTO.setHasWarning("alarm");
+            else
+                tclassDTO.setHasWarning("");
+        }
+
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 
 
     @Loggable

@@ -498,7 +498,7 @@ var Weekdays = new Array("Sunday", "Monday", "Tuesday", "Wednesday",
 function leap_gregorian(year) {
     return ((year % 4) == 0) &&
         (!(((year % 100) == 0) && ((year % 400) != 0)));
-}r
+}
 
 //  GREGORIAN_TO_JD  --  Determine Julian day number from Gregorian calendar date
 

@@ -36,4 +36,6 @@ public interface IClassSession {
 
     List<ClassSessionDTO.Info> loadSessions(Long classId);
 
+    @Transactional
+    SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode);
 }

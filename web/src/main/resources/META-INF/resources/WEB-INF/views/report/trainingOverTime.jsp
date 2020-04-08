@@ -130,10 +130,7 @@
             {name: "personalNum", title: "<spring:message code='personnel.no'/>"},
             {name: "personalNum2", title: "<spring:message code='personnel.no.6.digits'/>", autoFitWidth:true},
             {name: "nationalCode", title: "<spring:message code='national.code'/>"},
-            {
-                name: "name",
-                title: "<spring:message code='student'/>",
-            },
+            {name: "name", title: "<spring:message code='student'/>",},
             {name: "ccpArea", title: "<spring:message code='area'/>"},
             {name: "classCode", title: "<spring:message code="class.code"/>"},
             {name: "className", title: "<spring:message code="class.title"/>"},
@@ -142,7 +139,7 @@
                 name: "time",
                 title: "<spring:message code="time"/>",
                 includeInRecordSummary:false,
-                summaryFunction:"sum",
+                // summaryFunction:"sum",
                 // type:"summary",
                 // recordSummaryFunction:"multiplier",
                 // summaryFunction:"sum",
@@ -155,7 +152,7 @@
                 // summaryFunction:"sum",
                 // format: "#.## ساعت",
                 formatCellValue (value, record, rowNum, colNum, grid){
-                    return (value + "دقیقه");
+                    return (parseInt(value,10)+" ساعت "+(((value)%1)*60).toFixed(0)+" دقیقه ");
                 }
             },
         ]
