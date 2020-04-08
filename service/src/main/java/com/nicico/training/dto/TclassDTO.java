@@ -491,4 +491,14 @@ public class TclassDTO {
         private String classDays;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassWeeklySchedule")
+    public static class WeeklySchedule {
+        private Long id;
+        private String code;
+        private CourseDTO.CourseInfoTuple course;
+    }
+
 }

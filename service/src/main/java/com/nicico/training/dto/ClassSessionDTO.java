@@ -93,11 +93,25 @@ public class ClassSessionDTO implements Serializable {
     @ApiModel("ClassSessionWeeklySchedule")
     public static class WeeklySchedule {
         private Long id;
-        private String code;
-        private String titleClass;
-        private String startDate;
-        private String endDate;
-        private Double evaluationGrade;
+        private TclassDTO.WeeklySchedule tclass;
+        private String sessionDate;
+        private String dayName;
+        private String sessionHour;
+        private Integer sessionState;
+        private String sessionStateFa;
+        private String sessionStartHour;
+        private String sessionEndHour;
+        public String getSessionHour() {
+            String result = "";
+            if(sessionStartHour != null) {
+                result += sessionStartHour;
+            }
+            if (sessionEndHour != null) {
+                result += " تا ";
+                result += sessionEndHour;
+            }
+                return result;
+        }
     }
 
     @Getter

@@ -10,17 +10,14 @@
     var RestDataSource_Class_JspWeeklyTrainingSchedule = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "teacherCode"},
-            {name: "personality.nationalCode"},
-            {name: "personnelCode"},
-            {name: "personality.firstNameFa"},
-            {name: "personality.educationMajor.titleFa"},
-            {name: "personnelStatus"},
-            {name: "mobile"},
-            {name: "numberOfCourses"},
-            {name: "evaluationGrade"},
-            {name: "lastCourse"},
-            {name: "lastCourseEvaluationGrade"}],
+            {name: "sessionDate"},
+            {name: "dayName"},
+            {name: "sessionHour"},
+            {name: "sessionStateFa"},
+            {name: "tClass.code"},
+            {name: "tClass.course.code"},
+            {name: "tClass.course.titleFa"},
+            ],
         fetchDataURL: sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
@@ -31,27 +28,27 @@
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
-                name: "teacherCode",
+                name: "tClass.code",
                 title: "کد کلاس"
             },
             {
-                name: "personality.nationalCode",
+                name: "tClass.course.code",
                 title: "کد دوره"
             },
             {
-                name: "personnelCode",
+                name: "tClass.course.titleFa",
                 title: "نام دوره"
             },
             {
-                name: "personality.name",
+                name: "sessionDate",
                 title: "تاریخ"
             },
             {
-                name: "personality.educationMajor.titleFa",
+                name: "dayName",
                 title: "روز"
             },
             {
-                name: "personnelStatus1",
+                name: "sessionStateFa",
                 title: "وضعیت برگزاری",
                 align: "center",
                 valueMap: {
@@ -60,7 +57,7 @@
                 }
             },
             {
-                name: "personality.contactInfo.mobile",
+                name: "sessionHour",
                 title: "ساعت"
             },
             {
