@@ -138,6 +138,108 @@
                 DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
             }
     });
+    var ToolStrip_Attendance_JspAttendance = isc.ToolStrip.create({
+        members: [
+            isc.ToolStripButton.create({
+                title: "تبدیل همه به 'حاضر'",
+                click: function () {
+                    for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
+                        for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
+                            if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                attendanceGrid.setEditValue(i, j, "1");
+                            }
+                        }
+                    }
+                }
+            }),
+            isc.ToolStripButton.create({
+                title: "تبدیل همه به 'حاضر و اضافه کار'",
+                click: function () {
+                    for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
+                        for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
+                            if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                attendanceGrid.setEditValue(i, j, "2");
+                            }
+                        }
+                    }
+                }
+            }),
+            isc.ToolStripButtonExcel.create({
+                // title: "خروجی اکسل",
+                click: function () {
+                    let fields = ListGrid_Attendance_AttendanceJSP.getFields();
+                    let sendFields = [];
+                    for (let i = 1; i < fields.length; i++) {
+                        let record = {};
+                        record.title = fields[i].title;
+                        record.name = fields[i].name;
+                        sendFields.push(record)
+                    }
+                    let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
+                    let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                    let sessionKeys = keys.filter(k => k.startsWith("se"));
+                    if(sessionKeys.indexOf("sessionDate") == -1) {
+                        for (let i = 0; i < allRows.length; i++) {
+                            for (let j = 0; j < sessionKeys.length; j++) {
+                                allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
+                            }
+                        }
+                    }
+                    else{
+                        for (let i = 0; i < allRows.length; i++) {
+                            allRows[i]["state"] = attendanceState[allRows[i]["state"]];
+                        }
+                    }
+                    exportToExcel(sendFields, allRows);
+                }
+            }),
+            isc.ToolStripButtonPrint.create({
+                // title: "خروجی اکسل",
+                click: function () {
+                    let params = {};
+                    params.code = classGridRecordInAttendanceJsp.code;
+                    params.titleClass = classGridRecordInAttendanceJsp.titleClass;
+                    params.startDate = classGridRecordInAttendanceJsp.startDate;
+                    params.teacher = classGridRecordInAttendanceJsp.teacher;
+                    params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
+                    params.date = DynamicForm_Attendance.getValue("sessionDate");
+                    let localData = ListGrid_Attendance_AttendanceJSP.data.localData.toArray();
+                    let data = [];
+                    if(DynamicForm_Attendance.getValue("filterType") == "1") {
+                        let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
+                        let sessionKeys = keys.filter(k => k.startsWith("se"));
+                        sessionKeys.sort();
+                        for (let k = 0; k < sessionKeys.length; k++) {
+                            params["se" + (k + 1).toString()] = ListGrid_Attendance_AttendanceJSP.getField(sessionKeys[k]).title;
+                        }
+                        for (let i = 0; i < localData.length; i++) {
+                            let obj = {};
+                            obj.fullName = localData[i].studentName + " " + localData[i].studentFamily;
+                            obj.nationalCode = localData[i].nationalCode;
+                            obj.personalNum = localData[i].personalNum;
+                            for (let j = 0; j < sessionKeys.length; j++) {
+                                obj["session" + (j + 1).toString()] = printAttendanceState[localData[i][sessionKeys[j]]]
+                            }
+                            data.push(obj);
+                        }
+                        printToJasper(data, params, "attendance.jasper");
+                    }
+                }
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                            loadPage_Attendance()
+                        }
+                    })
+                ]
+            })
+        ]
+    });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
         numCols: 8,
@@ -809,135 +911,133 @@
                     sessionDateData = data;
                 },
             },
-            // {
-            //     type: "SpacerItem"
-            // },
-            {
-                name: "presentAll",
-                title: "تبدیل همه به 'حاضر'",
-                type: "ButtonItem",
-                startRow:false,
-                endRow:false,
-                labelAsTitle: true,
-                click (form, item) {
-                        for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
-                            for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                if(attendanceGrid.getCellRecord(i).studentState != "kh") {
-                                    attendanceGrid.setEditValue(i, j, "1");
-                                }
-                            }
-                        }
-                }
-            },
-            {
-                name: "presentExtendAll",
-                title: "تبدیل همه به 'حاضر و اضافه کار'",
-                type: "ButtonItem",
-                startRow:false,
-                endRow:false,
-                labelAsTitle: true,
-                click (form, item) {
-                        for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
-                            for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                if(attendanceGrid.getCellRecord(i).studentState != "kh") {
-                                    attendanceGrid.setEditValue(i, j, "2");
-                                }
-                            }
-                        }
 
-                }
-            },
-            {
-                name: "printBtn",
-                ID: "printBtnAttendanceJsp",
-                // showTitle: false,
-                title: "خروجی اکسل",
+            <%--{--%>
+                <%--name: "presentAll",--%>
+                <%--title: "تبدیل همه به 'حاضر'",--%>
+                <%--type: "ButtonItem",--%>
+                <%--startRow:true,--%>
+                <%--endRow:false,--%>
+                <%--labelAsTitle: true,--%>
+                <%--click (form, item) {--%>
+                        <%--for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {--%>
+                            <%--for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {--%>
+                                <%--if(attendanceGrid.getCellRecord(i).studentState != "kh") {--%>
+                                    <%--attendanceGrid.setEditValue(i, j, "1");--%>
+                                <%--}--%>
+                            <%--}--%>
+                        <%--}--%>
+                <%--}--%>
+            <%--},--%>
+            <%--{--%>
+                <%--name: "presentExtendAll",--%>
+                <%--title: "تبدیل همه به 'حاضر و اضافه کار'",--%>
+                <%--type: "ButtonItem",--%>
+                <%--startRow:false,--%>
+                <%--endRow:false,--%>
+                <%--labelAsTitle: true,--%>
+                <%--click (form, item) {--%>
+                        <%--for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {--%>
+                            <%--for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {--%>
+                                <%--if(attendanceGrid.getCellRecord(i).studentState != "kh") {--%>
+                                    <%--attendanceGrid.setEditValue(i, j, "2");--%>
+                                <%--}--%>
+                            <%--}--%>
+                        <%--}--%>
+
+                <%--}--%>
+            <%--},--%>
+            <%--{--%>
+                <%--name: "printBtn",--%>
+                <%--ID: "printBtnAttendanceJsp",--%>
+                <%--// showTitle: false,--%>
+                <%--title: "خروجی اکسل",--%>
+                <%--&lt;%&ndash;prompt:"<spring:message code="refresh"/>",&ndash;%&gt;--%>
+                <%--startRow:false,--%>
+                <%--type: "ButtonItem",--%>
+                <%--// icon: "[SKIN]/actions/refresh.png",--%>
+                <%--endRow:false,--%>
+                <%--click () {--%>
+                    <%--let fields = ListGrid_Attendance_AttendanceJSP.getFields();--%>
+                    <%--let sendFields = [];--%>
+                    <%--for (let i = 1; i < fields.length; i++) {--%>
+                        <%--let record = {};--%>
+                        <%--record.title = fields[i].title;--%>
+                        <%--record.name = fields[i].name;--%>
+                        <%--sendFields.push(record)--%>
+                    <%--}--%>
+                    <%--let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();--%>
+                    <%--let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);--%>
+                    <%--let sessionKeys = keys.filter(k => k.startsWith("se"));--%>
+                    <%--if(sessionKeys.indexOf("sessionDate") == -1) {--%>
+                        <%--for (let i = 0; i < allRows.length; i++) {--%>
+                            <%--for (let j = 0; j < sessionKeys.length; j++) {--%>
+                                <%--allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--}--%>
+                    <%--else{--%>
+                        <%--for (let i = 0; i < allRows.length; i++) {--%>
+                            <%--allRows[i]["state"] = attendanceState[allRows[i]["state"]];--%>
+                        <%--}--%>
+                    <%--}--%>
+                    <%--exportToExcel(sendFields, allRows);--%>
+                <%--}--%>
+            <%--},--%>
+            <%--{--%>
+                <%--name: "printBtn1",--%>
+                <%--// showTitle: false,--%>
+                <%--title: "چاپ",--%>
+                <%--&lt;%&ndash;prompt:"<spring:message code="refresh"/>",&ndash;%&gt;--%>
+                <%--startRow:false,--%>
+                <%--type: "ButtonItem",--%>
+                <%--// icon: "[SKIN]/actions/refresh.png",--%>
+                <%--endRow:false,--%>
+                <%--click () {--%>
+                    <%--let params = {};--%>
+                    <%--params.code = classGridRecordInAttendanceJsp.code;--%>
+                    <%--params.titleClass = classGridRecordInAttendanceJsp.titleClass;--%>
+                    <%--params.startDate = classGridRecordInAttendanceJsp.startDate;--%>
+                    <%--params.teacher = classGridRecordInAttendanceJsp.teacher;--%>
+                    <%--params.institute = classGridRecordInAttendanceJsp.institute.titleFa;--%>
+                    <%--params.date = DynamicForm_Attendance.getValue("sessionDate");--%>
+                    <%--let localData = ListGrid_Attendance_AttendanceJSP.data.localData.toArray();--%>
+                    <%--let data = [];--%>
+                    <%--if(DynamicForm_Attendance.getValue("filterType") == "1") {--%>
+                        <%--let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);--%>
+                        <%--let sessionKeys = keys.filter(k => k.startsWith("se"));--%>
+                        <%--sessionKeys.sort();--%>
+                        <%--for (let k = 0; k < sessionKeys.length; k++) {--%>
+                            <%--params["se" + (k + 1).toString()] = ListGrid_Attendance_AttendanceJSP.getField(sessionKeys[k]).title;--%>
+                        <%--}--%>
+                        <%--for (let i = 0; i < localData.length; i++) {--%>
+                            <%--let obj = {};--%>
+                            <%--obj.fullName = localData[i].studentName + " " + localData[i].studentFamily;--%>
+                            <%--obj.nationalCode = localData[i].nationalCode;--%>
+                            <%--obj.personalNum = localData[i].personalNum;--%>
+                            <%--for (let j = 0; j < sessionKeys.length; j++) {--%>
+                                <%--obj["session" + (j + 1).toString()] = printAttendanceState[localData[i][sessionKeys[j]]]--%>
+                            <%--}--%>
+                            <%--data.push(obj);--%>
+                        <%--}--%>
+                        <%--printToJasper(data, params, "attendance.jasper");--%>
+                    <%--}--%>
+                <%--}--%>
+            <%--},--%>
+            <%--{--%>
+                <%--name: "refreshBtn",--%>
+                <%--ID: "refreshBtnAttendanceJsp",--%>
+                <%--// showTitle: false,--%>
+                <%--title: "",--%>
                 <%--prompt:"<spring:message code="refresh"/>",--%>
-                startRow:false,
-                type: "ButtonItem",
-                // icon: "[SKIN]/actions/refresh.png",
-                endRow:false,
-                click () {
-                    let fields = ListGrid_Attendance_AttendanceJSP.getFields();
-                    let sendFields = [];
-                    for (let i = 1; i < fields.length; i++) {
-                        let record = {};
-                        record.title = fields[i].title;
-                        record.name = fields[i].name;
-                        sendFields.push(record)
-                    }
-                    let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
-                    let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
-                    let sessionKeys = keys.filter(k => k.startsWith("se"));
-                    if(sessionKeys.indexOf("sessionDate") == -1) {
-                        for (let i = 0; i < allRows.length; i++) {
-                            for (let j = 0; j < sessionKeys.length; j++) {
-                                allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
-                            }
-                        }
-                    }
-                    else{
-                        for (let i = 0; i < allRows.length; i++) {
-                            allRows[i]["state"] = attendanceState[allRows[i]["state"]];
-                        }
-                    }
-                    exportToExcel(sendFields, allRows);
-                }
-            },
-            {
-                name: "printBtn1",
-                // showTitle: false,
-                title: "چاپ",
-                <%--prompt:"<spring:message code="refresh"/>",--%>
-                startRow:false,
-                type: "ButtonItem",
-                // icon: "[SKIN]/actions/refresh.png",
-                endRow:false,
-                click () {
-                    let params = {};
-                    params.code = classGridRecordInAttendanceJsp.code;
-                    params.titleClass = classGridRecordInAttendanceJsp.titleClass;
-                    params.startDate = classGridRecordInAttendanceJsp.startDate;
-                    params.teacher = classGridRecordInAttendanceJsp.teacher;
-                    params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
-                    params.date = DynamicForm_Attendance.getValue("sessionDate");
-                    let localData = ListGrid_Attendance_AttendanceJSP.data.localData.toArray();
-                    let data = [];
-                    if(DynamicForm_Attendance.getValue("filterType") == "1") {
-                        let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
-                        let sessionKeys = keys.filter(k => k.startsWith("se"));
-                        sessionKeys.sort();
-                        for (let k = 0; k < sessionKeys.length; k++) {
-                            params["se" + (k + 1).toString()] = ListGrid_Attendance_AttendanceJSP.getField(sessionKeys[k]).title;
-                        }
-                        for (let i = 0; i < localData.length; i++) {
-                            let obj = {};
-                            obj.fullName = localData[i].studentName + " " + localData[i].studentFamily;
-                            obj.nationalCode = localData[i].nationalCode;
-                            obj.personalNum = localData[i].personalNum;
-                            for (let j = 0; j < sessionKeys.length; j++) {
-                                obj["session" + (j + 1).toString()] = printAttendanceState[localData[i][sessionKeys[j]]]
-                            }
-                            data.push(obj);
-                        }
-                        printToJasper(data, params, "attendance.jasper");
-                    }
-                }
-            },
-            {
-                name: "refreshBtn",
-                ID: "refreshBtnAttendanceJsp",
-                // showTitle: false,
-                title: "",
-                prompt:"<spring:message code="refresh"/>",
-                startRow:false,
-                type: "ButtonItem",
-                icon: "[SKIN]/actions/refresh.png",
-                endRow:false,
-                click () {
-                    loadPage_Attendance()
-                }
-            },
+                <%--startRow:false,--%>
+                <%--type: "ButtonItem",--%>
+                <%--icon: "[SKIN]/actions/refresh.png",--%>
+                <%--endRow:false,--%>
+                <%--click () {--%>
+                    <%--loadPage_Attendance()--%>
+                <%--}--%>
+            <%--},--%>
         ],
     });
     var ListGrid_Attendance_AttendanceJSP = isc.TrLG.create({
@@ -958,7 +1058,7 @@
         editOnFocus: true,
         editByCell: true,
         showHeaderContextMenu:false,
-        gridComponents: [DynamicForm_Attendance, "header", "filterEditor", "body", isc.TrHLayoutButtons.create({
+        gridComponents: [DynamicForm_Attendance, ToolStrip_Attendance_JspAttendance, "header", "filterEditor", "body", isc.TrHLayoutButtons.create({
             members: [
                 isc.IButtonSave.create({
                     ID: "saveBtn",
