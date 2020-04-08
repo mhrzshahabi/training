@@ -10,18 +10,16 @@
     var RestDataSource_Class_JspWeeklyTrainingSchedule = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "teacherCode"},
-            {name: "personality.nationalCode"},
-            {name: "personnelCode"},
-            {name: "personality.firstNameFa"},
-            {name: "personality.educationMajor.titleFa"},
-            {name: "personnelStatus"},
-            {name: "mobile"},
-            {name: "numberOfCourses"},
-            {name: "evaluationGrade"},
-            {name: "lastCourse"},
-            {name: "lastCourseEvaluationGrade"}],
-        fetchDataURL: classUrl + "specList-weeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
+            {name: "sessionDate"},
+            {name: "dayName"},
+            {name: "sessionHour"},
+            {name: "sessionStartHour"},
+            {name: "sessionStateFa"},
+            {name: "tclass.code"},
+            {name: "tclass.course.code"},
+            {name: "tclass.course.titleFa"},
+            ],
+        fetchDataURL: sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_Result_JspWeeklyTrainingSchedule  = isc.TrLG.create({
@@ -31,27 +29,27 @@
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
-                name: "teacherCode",
+                name: "tclass.code",
                 title: "کد کلاس"
             },
             {
-                name: "personality.nationalCode",
+                name: "tclass.course.code",
                 title: "کد دوره"
             },
             {
-                name: "personnelCode",
+                name: "tclass.course.titleFa",
                 title: "نام دوره"
             },
             {
-                name: "personality.name",
+                name: "sessionDate",
                 title: "تاریخ"
             },
             {
-                name: "personality.educationMajor.titleFa",
+                name: "dayName",
                 title: "روز"
             },
             {
-                name: "personnelStatus1",
+                name: "sessionStateFa",
                 title: "وضعیت برگزاری",
                 align: "center",
                 valueMap: {
@@ -60,7 +58,7 @@
                 }
             },
             {
-                name: "personality.contactInfo.mobile",
+                name: "sessionHour",
                 title: "ساعت"
             },
             {
@@ -82,13 +80,22 @@
                     3: "غایب بدون مجوز",
                     4 : "اضافه کار"
                 }
+            },
+            {
+                name: "sessionStartHour",
+                hidden: true
             }
+        ],
+        // canMultiSort: true,
+        initialSort: [
+            {property: "sessionDate", direction: "ascending"},
+            {property: "sessionStartHour", direction: "ascending"}
         ],
         cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: true,
-        sortField: 1,
-        sortDirection: "descending",
+        // sortField: 1,
+        // sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
@@ -104,3 +111,4 @@
            ListGrid_Result_JspWeeklyTrainingSchedule
         ]
     });
+
