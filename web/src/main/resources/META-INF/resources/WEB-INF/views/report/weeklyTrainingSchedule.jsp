@@ -13,10 +13,11 @@
             {name: "sessionDate"},
             {name: "dayName"},
             {name: "sessionHour"},
+            {name: "sessionStartHour"},
             {name: "sessionStateFa"},
-            {name: "tClass.code"},
-            {name: "tClass.course.code"},
-            {name: "tClass.course.titleFa"},
+            {name: "tclass.code"},
+            {name: "tclass.course.code"},
+            {name: "tclass.course.titleFa"},
             ],
         fetchDataURL: sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
@@ -28,15 +29,15 @@
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
-                name: "tClass.code",
+                name: "tclass.code",
                 title: "کد کلاس"
             },
             {
-                name: "tClass.course.code",
+                name: "tclass.course.code",
                 title: "کد دوره"
             },
             {
-                name: "tClass.course.titleFa",
+                name: "tclass.course.titleFa",
                 title: "نام دوره"
             },
             {
@@ -79,13 +80,22 @@
                     3: "غایب بدون مجوز",
                     4 : "اضافه کار"
                 }
+            },
+            {
+                name: "sessionStartHour",
+                hidden: true
             }
+        ],
+        // canMultiSort: true,
+        initialSort: [
+            {property: "sessionDate", direction: "ascending"},
+            {property: "sessionStartHour", direction: "ascending"}
         ],
         cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: true,
-        sortField: 1,
-        sortDirection: "descending",
+        // sortField: 1,
+        // sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
@@ -101,3 +111,4 @@
            ListGrid_Result_JspWeeklyTrainingSchedule
         ]
     });
+
