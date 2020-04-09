@@ -7,12 +7,12 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-//<script>
+// <script>
 
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
- var RestDataSource_Course_CurrentTerm = isc.TrDS.create({
+    var RestDataSource_AllClass_CalenderCurrentCourse = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
@@ -34,10 +34,37 @@
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"}
         ],
+
+        fetchDataURL: calenderCurrentTerm + "speclist"
+    });
+
+    var RestDataSource_Course_CurrentTerm = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "group"},
+            {name: "titleClass"},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "code"},
+            {name: "term.titleFa"},
+            {name: "course.titleFa"},
+            {name: "course.code"},
+            {name: "course.id"},
+            {name: "teacherId"},
+            {name: "teacher"},
+            {name: "reason"},
+            {name: "classStatus"},
+            {name: "topology"},
+            {name: "trainingPlaceIds"},
+            {name: "instituteId"},
+            {name: "workflowEndingStatusCode"},
+            {name: "workflowEndingStatus"},
+            {name: "preCourseTest", type: "boolean"}
+        ],
         fetchDataURL: calenderCurrentTerm + "spec-list"
     });
 
-     var RestDataSource_Class_CurrentTerm = isc.TrDS.create({
+    var RestDataSource_Class_CurrentTerm = isc.TrDS.create({
         fields: [
             {name: "corseCode"},
             {name: "titleClass"},
@@ -46,11 +73,12 @@
             {name: "endDate"},
             {name: "hduration"},
             {name: "classStatus"},
+            {name: "statusRegister"},
+            {name: "scoresState"},
 
 
         ],
-     });
-
+    });
 
 
     //******************************
@@ -62,30 +90,51 @@
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                  //  ListGrid_Term.invalidateCache();
+                    //  ListGrid_Term.invalidateCache();
                 }
             }]
     });
-
-
     var ListGrid_Course_CalculatorCurrentTerm = isc.TrLG.create({
         dataSource: RestDataSource_Course_CurrentTerm,
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_CurrentTerm,
         autoFetchData: true,
-
-          fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code",title: "<spring:message code='class.code'/>",align: "center",filterOperator: "iContains",autoFitWidth: true},
-           // {name: "titleClass",title: "titleClass",align: "center",filterOperator: "iContains",autoFitWidth: true},
-            {name: "course.titleFa",title: "<spring:message code='course.title'/>",align: "center",filterOperator: "iContains",autoFitWidth: true,sortNormalizer: function (record) {return record.course.titleFa;}},
-            {name: "term.titleFa",title: "term",align: "center",filterOperator: "iContains",hidden: true},
-           // {name: "startDate",title: "<spring:message code='start.date'/>",align: "center",filterOperator: "iContains"},
-          //  {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
-           // {name: "reason", title: "<spring:message code='training.request'/>", align: "center",valueMap: {"1": "نیازسنجی","2": "درخواست واحد","3": "نیاز موردی"},},
-            {name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",valueMap: {"1": "برنامه ریزی","2": "در حال اجرا","3": "پایان یافته",},},
+        headerHeight: 65,
+        fields: [
+            {
+                name: "course.code",
+                title: "<spring:message code='course.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            // {name: "titleClass",title: "titleClass",align: "center",filterOperator: "iContains",autoFitWidth: true},
+            {
+                name: "course.titleFa",
+                title: "<spring:message code='course.title'/>",
+                align: "center",
+                filterOperator: "iContains",
+              //  autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
+            },
+            // {name: "startDate",title: "<spring:message code='start.date'/>",align: "center",filterOperator: "iContains"},
+            //  {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
+          //  {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
+            // {name: "reason", title: "<spring:message code='training.request'/>", align: "center",valueMap: {"1": "نیازسنجی","2": "درخواست واحد","3": "نیاز موردی"},},
+            <%--{--%>
+                <%--name: "classStatus",--%>
+                <%--title: "<spring:message code='class.status'/>",--%>
+                <%--align: "center",--%>
+                <%--valueMap: {"1": "برنامه ریزی", "2": "در حال اجرا", "3": "پایان یافته"}--%>
+            <%--},--%>
         ],
+        headerSpans: [
+            {
+                fields: ["course.code", "course.titleFa", "teacher", "classStatus"],
+                title: "دوره های ترم جاری"
+            }],
         recordDoubleClick: function () {
 
         },
@@ -97,29 +146,72 @@
         sortDirection: "descending",
 
     });
-        var criteria_CalculatorCurrentTerm = {
+    var criteria_CalculatorCurrentTerm = {
         _constructor: "AdvancedCriteria",
         operator: "and",
         criteria: [
-            {fieldName: "startDate", operator: "lessThanOrEqual",value:todayDate},
-            {fieldName: "endDate",operator:"greaterThan", value: todayDate}
+            {fieldName: "startDate", operator: "lessThanOrEqual", value: todayDate},
+            {fieldName: "endDate", operator: "greaterThan", value: todayDate}
         ]
     };
-    var ListGrid_CalculatorCurrentTerm1 = isc.TrLG.create({
-        dataSource: RestDataSource_Class_CurrentTerm,
-         allowAdvancedCriteria: true,
-        contextMenu: Menu_ListGrid_CurrentTerm,
-           fields: [
-            {name: "corseCode",title:"کد دوره",autoFitWidth: true},
-            {name: "titleClass",title:"عنوان کلاس",autoFitWidth: true},
-            {name: "code",title:"کد کلاس",autoFitWidth: true},
-            {name: "startDate",title:"تاریخ شروع",autoFitWidth: true},
-            {name: "endDate",title:"تاریخ پایان",autoFitWidth: true},
-            {name: "hduration",title:"مدن زمان(ساعت)",autoFitWidth: true},
-            {name: "classStatus",title:"وضعیت کلاس",autoFitWidth: true},
-        ],
-        recordDoubleClick: function () {
 
+    var ListGrid_ALLClass_CalculatorCurrentTerm1 = isc.TrLG.create({
+        dataSource: RestDataSource_AllClass_CalenderCurrentCourse,
+        autoFetchData:true,
+        headerHeight: 65,
+       // allowAdvancedCriteria: true,
+
+        contextMenu: Menu_ListGrid_CurrentTerm,
+        fields: [
+            {
+                name: "code",
+                title: "<spring:message code='class.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleClass",
+                title: "titleClass",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                hidden: true
+            },
+            {
+                name: "course.titleFa",
+                title: "<spring:message code='course.title'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
+            },
+             {
+                name: "startDate",
+                title: "<spring:message code='start.date'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
+
+            {
+                name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                valueMap: {
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                },
+            },
+        ],
+        headerSpans: [
+            {
+                fields: ["code", "course.titleFa","startDate","endDate",, "teacher","classStatus"],
+                title: "کلاس های ترم جاری"
+            }],
+        recordDoubleClick: function () {
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
@@ -127,42 +219,118 @@
         filterOnKeypress: true,
         sortField: 2,
         sortDirection: "descending",
-
     });
 
-
+    var ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1 = isc.TrLG.create({
+        dataSource: RestDataSource_Class_CurrentTerm,
+        allowAdvancedCriteria: true,
+        headerHeight: 65,
+        contextMenu: Menu_ListGrid_CurrentTerm,
+        fields: [
+            {name: "corseCode", title: "کد دوره", autoFitWidth: true},
+            {name: "titleClass", title: "عنوان کلاس", autoFitWidth: true},
+            {name: "code", title: "کد کلاس", autoFitWidth: true},
+            {name: "startDate", title: "تاریخ شروع", autoFitWidth: true},
+            {name: "endDate", title: "تاریخ پایان", autoFitWidth: true},
+            {name: "hduration", title: "مدن زمان(ساعت)", autoFitWidth: true},
+            {name: "classStatus", title: "وضعیت کلاس", autoFitWidth: true, valueMap: {
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                }},
+            {
+                name: "statusRegister",
+                title: "وضعیت فرد",
+                autoFitWidth: true,
+                valueMap: {"1": "ثبت نام شده", "0": "ثبت نام نشده"}
+            },
+            {name: "scoresState", title: "وضعیت قبولی", autoFitWidth: true},
+        ],
+        headerSpans: [
+            {
+                fields: ["corseCode", "titleClass","code","startDate","endDate","hduration","classStatus","statusRegister","scoresState"],
+                title: "کلاس های نیازسنجی شده"
+            }],
+        recordDoubleClick: function () {
+        },
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
+        sortField: 2,
+        sortDirection: "descending",
+    });
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
 
-      var selectedPerson=null
-   PersonnelDS_Calender_CurrentTerm = isc.TrDS.create({
+    var selectedPerson = null
+    PersonnelDS_Calender_CurrentTerm = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",autoFitWidth: true},
-             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "companyName",
+                title: "<spring:message code="company.name"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code="personnel.no"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo2",
+                title: "<spring:message code="personnel.no.6.digits"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postTitle",
+                title: "<spring:message code="post"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postCode",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
         ],
         fetchDataURL: personnelUrl + "/iscList"
     });
 
-
-  Menu_Calender_CurrentTerm = isc.Menu.create({
+    Menu_Calender_CurrentTerm = isc.Menu.create({
         data: [{
             title: "<spring:message code="refresh"/>", click: function () {
                 refreshLG(PersonnelsLG_Calender_CurrentTerm);
             }
         }]
     });
-   PersonnelsLG_Calender_CurrentTerm = isc.TrLG.create({
+    PersonnelsLG_Calender_CurrentTerm = isc.TrLG.create({
         dataSource: PersonnelDS_Calender_CurrentTerm,
-          contextMenu: Menu_Calender_CurrentTerm,
-        autoFetchData:true,
+        contextMenu: Menu_Calender_CurrentTerm,
+        autoFetchData: true,
         selectionType: "single",
         fields: [
             {name: "firstName"},
@@ -174,10 +342,9 @@
             {name: "postTitle"},
             {name: "postCode"},
         ],
-        rowDoubleClick:Select_Person
+        rowDoubleClick: Select_Person
 
     });
-
 
 
     Window_Calender_CurrentTerm = isc.Window.create({
@@ -190,35 +357,34 @@
         minWidth: 1024,
         items: [isc.TrVLayout.create({
             members: [
-                  PersonnelsLG_Calender_CurrentTerm,
-                ]
+                PersonnelsLG_Calender_CurrentTerm,
+            ]
         })]
     });
 
-     function Select_Person(record) {
+    function Select_Person(record) {
         record = (record == null) ? PersonnelsLG_Calender_CurrentTerm.getSelectedRecord() : record;
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-         if (record.postCode !== undefined) {
+        if (record.postCode !== undefined) {
 
-         var code = record.postCode.replace("/", ".");
-            selectedPerson=record
+            var code = record.postCode.replace("/", ".");
+            selectedPerson = record
             wait_NABOP = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + code, "GET", null, PostCodeSearch));
 
-        }
-         else {
+        } else {
             createDialog("info", "<spring:message code="personnel.without.postCode"/>");
         }
-        }
+    }
 
-         function PostCodeSearch(resp) {
+    function PostCodeSearch(resp) {
         wait_NABOP.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
             print_CurrentTerm(JSON.parse(resp.httpResponseText));
-           } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
+        } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
             createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
         } else {
             createDialog("info", "<spring:message code="msg.operation.error"/>");
@@ -232,15 +398,15 @@
 
         title: "<spring:message code="refresh"/>",
         click: function () {
-          //  ListGrid_CalculatorCurrentTerm.invalidateCache();
+            //  ListGrid_CalculatorCurrentTerm.invalidateCache();
         }
     });
 
 
     var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
-         title: "<spring:message code="print"/>",
+        title: "<spring:message code="print"/>",
         click: function () {
-       Window_Calender_CurrentTerm.show()
+            Window_Calender_CurrentTerm.show()
         }
     });
 
@@ -248,7 +414,7 @@
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [
-             ToolStripButton_Print,
+            ToolStripButton_Print,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -266,21 +432,37 @@
         width: "100%",
         members: [ToolStrip_Actions]
     });
-    var VLayout1=isc.VLayout.create({
-       width: "40%",
-       // height: "100%",
-        members: [ListGrid_CalculatorCurrentTerm1]
+
+    var VLayout_AllCourse_CalculatorCurrentTerm1 = isc.HLayout.create({
+        width: "100%",
+
+        members: [ListGrid_ALLClass_CalculatorCurrentTerm1]
     });
-     var VLayout2=isc.VLayout.create({
-        width: "20%",
+
+
+    var VLayout_Course_CalculatorCurrentTerm1 = isc.HLayout.create({
+        width: "100%",
+        members: [ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1]
+    })
+
+
+    var VLayout2 = isc.VLayout.create({
+        width: "55%",
+        // height: "100%",
+        members: [VLayout_AllCourse_CalculatorCurrentTerm1, VLayout_Course_CalculatorCurrentTerm1],
+
+    });
+
+    var VLayout1 = isc.VLayout.create({
+        width: "15%",
         //height: "100%",
-          members: [ListGrid_Course_CalculatorCurrentTerm]
+        members: [ListGrid_Course_CalculatorCurrentTerm]
     });
 
     var HLayout_Grid_CalculatorCurrentTerm = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        members: [VLayout2,VLayout1]
+        members: [VLayout1, VLayout2]
     });
 
     var VLayout_Body_Group = isc.VLayout.create({
@@ -296,25 +478,22 @@
     //function
     //************************************************************************************
     //===================================================================================
+    function print_CurrentTerm(post) {
+        Window_Calender_CurrentTerm.close();
+        //isc.RPCManager.sendRequest(TrDSRequest(calenderCurrentTerm + "print"+"?objectId=" + post.id +"&postTitle="+selectedPerson.postTitle +"&postCode="+selectedPerson.postCode +"&personnelNo=" + selectedPerson.personnelNo+"&personnelNo2="+selectedPerson.personnelNo2 +"&companyName="+selectedPerson.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson.nationalCode +"&firstName=" +selectedPerson.firstName + "&lastName="+selectedPerson.lastName,"POST", null, null));
 
-
-
-   function print_CurrentTerm(post) {
-   Window_Calender_CurrentTerm.close();
-          //isc.RPCManager.sendRequest(TrDSRequest(calenderCurrentTerm + "print"+"?objectId=" + post.id +"&postTitle="+selectedPerson.postTitle +"&postCode="+selectedPerson.postCode +"&personnelNo=" + selectedPerson.personnelNo+"&personnelNo2="+selectedPerson.personnelNo2 +"&companyName="+selectedPerson.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson.nationalCode +"&firstName=" +selectedPerson.firstName + "&lastName="+selectedPerson.lastName,"POST", null, null));
-
-            RestDataSource_Class_CurrentTerm.fetchDataURL = calenderCurrentTerm + "print"+"?objectId=" + post.id +"&postTitle="+selectedPerson.postTitle +"&postCode="+selectedPerson.postCode +"&personnelNo=" + selectedPerson.personnelNo+"&personnelNo2="+selectedPerson.personnelNo2 +"&companyName="+selectedPerson.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson.nationalCode +"&firstName=" +selectedPerson.firstName + "&lastName="+selectedPerson.lastName;
-            ListGrid_CalculatorCurrentTerm1.fetchData()
-            ListGrid_CalculatorCurrentTerm1.invalidateCache()
-         <%--                   actionURL: "<spring:url value="/web/calender_current_term"/>"+"?objectId=" + post.id +"&postTitle="+selectedPerson.postTitle +"&postCode="+selectedPerson.postCode +"&personnelNo=" + selectedPerson.personnelNo+"&personnelNo2="+selectedPerson.personnelNo2 +"&companyName="+selectedPerson.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson.nationalCode +"&firstName=" +selectedPerson.firstName + "&lastName="+selectedPerson.lastName,--%>
-         <%--                   httpMethod: "POST",--%>
-         <%--                   useSimpleHttp: true,--%>
-         <%--                   target: "_Blank",--%>
-         <%--                   contentType: "application/json; charset=utf-8",--%>
-         <%--                   httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-         <%--                   serverOutputAsString: false,--%>
-         <%--                   callback: function (resp) {--%>
-         <%--                   }--%>
-         <%--               });--%>
-           };
+        RestDataSource_Class_CurrentTerm.fetchDataURL = calenderCurrentTerm + "print" + "?objectId=" + post.id + "&postTitle=" + selectedPerson.postTitle + "&postCode=" + selectedPerson.postCode + "&personnelNo=" + selectedPerson.personnelNo + "&personnelNo2=" + selectedPerson.personnelNo2 + "&companyName=" + selectedPerson.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson.nationalCode + "&firstName=" + selectedPerson.firstName + "&lastName=" + selectedPerson.lastName;
+        ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.fetchData()
+        ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache()
+        <%--                   actionURL: "<spring:url value="/web/calender_current_term"/>"+"?objectId=" + post.id +"&postTitle="+selectedPerson.postTitle +"&postCode="+selectedPerson.postCode +"&personnelNo=" + selectedPerson.personnelNo+"&personnelNo2="+selectedPerson.personnelNo2 +"&companyName="+selectedPerson.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson.nationalCode +"&firstName=" +selectedPerson.firstName + "&lastName="+selectedPerson.lastName,--%>
+        <%--                   httpMethod: "POST",--%>
+        <%--                   useSimpleHttp: true,--%>
+        <%--                   target: "_Blank",--%>
+        <%--                   contentType: "application/json; charset=utf-8",--%>
+        <%--                   httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+        <%--                   serverOutputAsString: false,--%>
+        <%--                   callback: function (resp) {--%>
+        <%--                   }--%>
+        <%--               });--%>
+    };
 

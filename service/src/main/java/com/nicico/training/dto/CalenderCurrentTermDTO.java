@@ -2,14 +2,14 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,6 +22,7 @@ public class CalenderCurrentTermDTO implements Serializable {
     @ApiModel("Tclass")
     @AllArgsConstructor
     public static class tclass {
+        private Long id;
         private String corseCode;
         private String titleClass;
         private String code;
@@ -29,6 +30,9 @@ public class CalenderCurrentTermDTO implements Serializable {
         private String endDate;
         private Long hDuration;
         private String classStatus;
+        private String statusRegister;
+        private String scoresState;
+
 
     }
 
@@ -51,4 +55,16 @@ public class CalenderCurrentTermDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CalenderCurrentTermCourseInfo")
+    public static class CourseInfo extends TclassDTO {
+        private Long courseId;
+        private Long id;
+        private CourseDTO.CourseInfoTuple course;
+        private TermDTO term;
+    }
+
 }
