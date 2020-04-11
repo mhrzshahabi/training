@@ -10,6 +10,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.model.Attendance;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
 import com.nicico.training.repository.AttendanceDAO;
@@ -489,13 +490,20 @@ public class ClassSessionService implements IClassSession {
             } else
                 request.setCriteria(criteriaRq);
 
+        Long studentId = null;
+        List<ClassSession> sessions = null;
          SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp =  SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
         for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
             classSession.setStudentStatus("ثبت نام نشده");
             for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
-                if(attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode))
+                if(attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
+                    studentId = attendanceInfo.getStudent().getId();
                     classSession.setStudentStatus("ثبت نام شده");
+                }
             }
+            Attendance attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(),studentId);
+            classSession.setStudentPresentStatus(attendance.getState());
+            sessions.add(modelMapper.map(classSession,ClassSession.class));
         }
         return resp;
     }

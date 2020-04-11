@@ -23,4 +23,5 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
     List<Attendance> findBySessionInAndState(List<ClassSession> sessions, String state);
 
     List<Attendance> findBySessionInAndStudentId(List<ClassSession> sessions, Long studentId);
+
 }
