@@ -65,6 +65,15 @@ public class CalenderCurrentTermDTO implements Serializable {
         private Long id;
         private CourseDTO.CourseInfoTuple course;
         private TermDTO term;
+        @Getter(AccessLevel.NONE)
+        private TeacherDTO.TeacherFullNameTuple teacher;
+            public String getTeacher() {
+            if (teacher != null)
+                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
+        }
+
     }
 
 }
