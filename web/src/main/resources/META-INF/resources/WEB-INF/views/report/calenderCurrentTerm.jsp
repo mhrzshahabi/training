@@ -9,7 +9,10 @@
 
 // <script>
     var wait_Variable;
-    var flag=0;
+    var flag = 0;
+
+    var selectedPerson_CurrentTerm = null;
+
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
@@ -48,7 +51,7 @@
     });
 
     var RestDataSource_Class_CurrentTerm = isc.TrDS.create({
-        ID:"RestDataSource_Class_CurrentTerm",
+        ID: "RestDataSource_Class_CurrentTerm",
         fields: [
             {name: "corseCode"},
             {name: "titleClass"},
@@ -59,8 +62,6 @@
             {name: "classStatus"},
             {name: "statusRegister"},
             {name: "scoresState"},
-
-
         ],
     });
 
@@ -87,7 +88,7 @@
             {
                 name: "course.code",
                 title: "<spring:message code='course.code'/>",
-                width:90,
+                width: 90,
                 align: "center",
                 filterOperator: "iContains"
 
@@ -123,7 +124,7 @@
 
     var ListGrid_ALLClass_CalculatorCurrentTerm1 = isc.TrLG.create({
         dataSource: RestDataSource_AllClass_CalenderCurrentCourse,
-        autoFetchData:true,
+        autoFetchData: true,
         headerHeight: 65,
         contextMenu: Menu_ListGrid_CurrentTerm,
         fields: [
@@ -132,7 +133,7 @@
                 title: "<spring:message code='class.code'/>",
                 align: "center",
                 filterOperator: "iContains",
-               // autoFitWidth: true
+                // autoFitWidth: true
             },
 
             {
@@ -140,21 +141,31 @@
                 title: "<spring:message code='course.title'/>",
                 align: "center",
                 filterOperator: "iContains",
-               //autoFitWidth: true,
+                //autoFitWidth: true,
                 sortNormalizer: function (record) {
                     return record.course.titleFa;
                 }
             },
-             {
+            {
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
                 filterOperator: "iContains",
-              //   autoFitWidth: true,
+                //   autoFitWidth: true,
             },
-            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains", // autoFitWidth: true
-             },
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains",  autoFitWidth: true,},
+            {
+                name: "endDate",
+                title: "<spring:message code='end.date'/>",
+                align: "center",
+                filterOperator: "iContains", // autoFitWidth: true
+            },
+            {
+                name: "teacher",
+                title: "<spring:message code='teacher'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+            },
 
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -167,7 +178,7 @@
         ],
         headerSpans: [
             {
-                fields: ["code", "course.titleFa","startDate","endDate","teacher","classStatus"],
+                fields: ["code", "course.titleFa", "startDate", "endDate", "teacher", "classStatus"],
                 title: "کلاس های ترم جاری"
             }],
         recordDoubleClick: function () {
@@ -186,17 +197,19 @@
         headerHeight: 65,
         contextMenu: Menu_ListGrid_CurrentTerm,
         fields: [
-            {name: "corseCode", title: "کد دوره", autoFitWidth: true,  align: "center",},
-            {name: "titleClass", title: "عنوان کلاس", autoFitWidth: true,  align: "center",},
-            {name: "code", title: "کد کلاس", autoFitWidth: true,  align: "center",},
-            {name: "startDate", title: "تاریخ شروع",align: "center",},
+            {name: "corseCode", title: "کد دوره", autoFitWidth: true, align: "center",},
+            {name: "titleClass", title: "عنوان کلاس", autoFitWidth: true, align: "center",},
+            {name: "code", title: "کد کلاس", autoFitWidth: true, align: "center",},
+            {name: "startDate", title: "تاریخ شروع", align: "center",},
             {name: "endDate", title: "تاریخ پایان", align: "center",},
-            {name: "hduration", title: "مدن زمان(ساعت)", autoFitWidth: true,  align: "center",},
-            {name: "classStatus", title: "وضعیت کلاس", autoFitWidth: true, valueMap: {
+            {name: "hduration", title: "مدن زمان(ساعت)", autoFitWidth: true, align: "center",},
+            {
+                name: "classStatus", title: "وضعیت کلاس", autoFitWidth: true, valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                },  align: "center",},
+                }, align: "center",
+            },
             {
                 name: "statusRegister",
                 align: "center",
@@ -208,13 +221,12 @@
         ],
         headerSpans: [
             {
-                fields: ["corseCode", "titleClass","code","startDate","endDate","hduration","classStatus","statusRegister","scoresState"],
+                fields: ["corseCode", "titleClass", "code", "startDate", "endDate", "hduration", "classStatus", "statusRegister", "scoresState"],
                 title: "کلاس های نیازسنجی شده"
             }],
         recordDoubleClick: function () {
         },
-        dataArrived:function()
-        {
+        dataArrived: function () {
             wait_Variable.close()
         },
         showFilterEditor: false,
@@ -226,7 +238,6 @@
     //DynamicForm & Window
     //*************************************************************************************
 
-    var selectedPerson = null
     PersonnelDS_Calender_CurrentTerm = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -335,8 +346,8 @@
         if (record.postCode !== undefined) {
 
             var code = record.postCode.replace("/", ".");
-            selectedPerson = record
-            wait_Variable=createDialog("wait")
+            selectedPerson_CurrentTerm = record;
+            wait_Variable = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + code, "GET", null, PostCodeSearch));
 
         } else {
@@ -347,12 +358,12 @@
     function PostCodeSearch(resp) {
 
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
-             needAssessmentClass_CurrentTerm(JSON.parse(resp.httpResponseText));
+            needAssessmentClass_CurrentTerm(JSON.parse(resp.httpResponseText));
         } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
-            wait_Variable.close()
+            wait_Variable.close();
             createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
         } else {
-            wait_Variable.close()
+            wait_Variable.close();
             createDialog("info", "<spring:message code="msg.operation.error"/>");
         }
     }
@@ -365,18 +376,16 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
 
-                if(flag == 1) {
-                    wait_Variable=createDialog("wait")
-                    ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache();
-                    ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
-                    ListGrid_Course_CalculatorCurrentTerm.invalidateCache();
-                }
-                else
-                    {
+            if (flag === 1) {
+                wait_Variable = createDialog("wait");
+                ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache();
+                ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
+                ListGrid_Course_CalculatorCurrentTerm.invalidateCache();
+            } else {
 
-                        ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
-                        ListGrid_Course_CalculatorCurrentTerm.invalidateCache();
-                    }
+                ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
+                ListGrid_Course_CalculatorCurrentTerm.invalidateCache();
+            }
 
         }
     });
@@ -418,7 +427,7 @@
     var VLayout_Course_CalculatorCurrentTerm1 = isc.HLayout.create({
         width: "100%",
         members: [ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1]
-    })
+    });
 
 
     var VLayout2 = isc.VLayout.create({
@@ -455,11 +464,15 @@
     //===================================================================================
     function needAssessmentClass_CurrentTerm(post) {
         Window_Calender_CurrentTerm.close();
-         RestDataSource_Class_CurrentTerm.fetchDataURL = calenderCurrentTerm + "needassessmentClass" + "?objectId=" + post.id + "&postTitle=" + selectedPerson.postTitle + "&postCode=" + selectedPerson.postCode + "&personnelNo=" + selectedPerson.personnelNo + "&personnelNo2=" + selectedPerson.personnelNo2 + "&companyName=" + selectedPerson.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson.nationalCode + "&firstName=" + selectedPerson.firstName + "&lastName=" + selectedPerson.lastName;
-        flag=1,
-         ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.fetchData()
+        RestDataSource_Class_CurrentTerm.fetchDataURL = calenderCurrentTerm + "needassessmentClass" + "?objectId=" + post.id + "&postTitle=" + selectedPerson_CurrentTerm.postTitle + "&postCode=" + selectedPerson_CurrentTerm.postCode + "&personnelNo=" + selectedPerson_CurrentTerm.personnelNo + "&personnelNo2=" + selectedPerson_CurrentTerm.personnelNo2 + "&companyName=" + selectedPerson_CurrentTerm.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson_CurrentTerm.nationalCode + "&firstName=" + selectedPerson_CurrentTerm.firstName + "&lastName=" + selectedPerson_CurrentTerm.lastName;
+        flag = 1;
+        ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.fetchData();
         ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache()
+    }
 
+    function call_calenderCurrentTerm(selected_person) {
+        ToolStripButton_Print.hide();
+        Select_Person(selected_person);
+    }
 
-    };
-
+    //</script>
