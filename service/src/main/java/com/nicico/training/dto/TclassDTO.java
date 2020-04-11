@@ -512,6 +512,7 @@ public class TclassDTO {
         private Long id;
         private String code;
         private CourseDTO.CourseInfoTuple course;
+        private Set<ClassStudentDTO.WeeklySchedule> classStudents;
     }
 
 }

@@ -243,4 +243,17 @@ public class ClassStudentDTO implements Serializable {
         private TclassDTO.StudentClassList tclass;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - WeeklySchedule")
+    public static class WeeklySchedule {
+        private StudentDTO.AttendanceInfo student;
+        private String nationalCodeStudent;
+        public String getNationalCodeStudent() {
+            return student.getNationalCode();
+        }
+//        private Long presenceTypeId;
+    }
+
 }
