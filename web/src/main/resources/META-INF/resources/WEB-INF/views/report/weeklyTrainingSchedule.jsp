@@ -83,6 +83,7 @@
             },
             {
                 name: "sessionStartHour",
+                title: "تاریخ شروع",
                 hidden: true
             }
         ],
