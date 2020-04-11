@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.ClassSession;
@@ -466,7 +467,7 @@ public class ClassSessionService implements IClassSession {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode) {
-
+        userNationalCode = "3149573092";
         LocalDate inputDate = LocalDate.now();
         LocalDate prevSat = inputDate.with(TemporalAdjusters.previous(DayOfWeek.SATURDAY));
         LocalDate nextFri = inputDate.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
@@ -488,7 +489,15 @@ public class ClassSessionService implements IClassSession {
             } else
                 request.setCriteria(criteriaRq);
 
-        return SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
+         SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp =  SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
+        for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
+            classSession.setStudentStatus("ثبت نام نشده");
+            for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
+                if(attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode))
+                    classSession.setStudentStatus("ثبت نام شده");
+            }
+        }
+        return resp;
     }
 
     //--------------------------------------------- Calender -----------------------------------------------------------

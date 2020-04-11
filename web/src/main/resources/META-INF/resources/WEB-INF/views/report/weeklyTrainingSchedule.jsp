@@ -18,6 +18,8 @@
             {name: "tclass.code"},
             {name: "tclass.course.code"},
             {name: "tclass.course.titleFa"},
+            {name: "studentStatus"},
+            {name: "studentPresentStatus"}
             ],
         fetchDataURL: sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
@@ -26,6 +28,19 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Class_JspWeeklyTrainingSchedule,
+        initialSort: [
+            // {property: "studentStatus", direction:"ascending"},
+            {property: "sessionDate", direction: "ascending"},
+            {property: "sessionStartHour", direction: "ascending"}
+        ],
+        canAddFormulaFields: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
+        selectionType: "single",
+        canMultiSort: true,
+        autoFetchData: true,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
@@ -45,66 +60,49 @@
                 title: "تاریخ"
             },
             {
+                name: "sessionStartHour",
+                title: "ساعت شروع",
+                filterOperator: "iContains",
+                hidden: true},
+            {
                 name: "dayName",
                 title: "روز"
-            },
-            {
-                name: "sessionStateFa",
-                title: "وضعیت برگزاری",
-                align: "center",
-                valueMap: {
-                    true: "برگزار شده",
-                    false: "برگزار نشده"
-                }
             },
             {
                 name: "sessionHour",
                 title: "ساعت"
             },
             {
-                name: "personnelStatus2",
+                name: "sessionStateFa",
+                title: "وضعیت برگزاری",
+                align: "center",
+                valueMap: {
+                    "شروع نشده" : "شروع نشده",
+                    "در حال اجرا" : "در حال اجرا",
+                    "پایان" : "پایان"
+                }
+            },
+            {
+                name: "studentStatus",
                 title: "وضعیت شما",
                 align: "center",
                 valueMap: {
-                    true: "ثبت نام شده",
-                    false: "ثبت نام نشده"
+                    "ثبت نام شده" : "ثبت نام شده",
+                    "ثبت نام نشده": "ثبت نام نشده"
                 }
             },
             {
-                name: "personnelStatus3",
+                name: "studentPresentStatus",
                 title: "وضعیت حضور و غیاب شما",
                 align: "center",
                 valueMap: {
-                    1: "حاضر",
-                    2 : "غایب با مجوز",
-                    3: "غایب بدون مجوز",
-                    4 : "اضافه کار"
+                    "حاضر": "حاضر",
+                    "غایب با مجوز" : "غایب با مجوز",
+                    "غایب بدون مجوز": "غایب بدون مجوز",
+                    "اضافه کار" : "اضافه کار"
                 }
             },
-            {
-                name: "sessionStartHour",
-                title: "تاریخ شروع",
-                hidden: true
-            }
         ],
-        // canMultiSort: true,
-        initialSort: [
-            {property: "sessionDate", direction: "ascending"},
-            {property: "sessionStartHour", direction: "ascending"}
-        ],
-        cellHeight: 43,
-        filterOperator: "iContains",
-        filterOnKeypress: true,
-        // sortField: 1,
-        // sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
-        showFilterEditor: true,
-        allowFilterExpressions: true,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     var VLayout_Body_JspWeeklyTrainingSchedule = isc.TrVLayout.create({
