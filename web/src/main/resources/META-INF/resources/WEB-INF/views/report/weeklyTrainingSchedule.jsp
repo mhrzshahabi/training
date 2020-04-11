@@ -20,7 +20,7 @@
             {name: "studentStatus"},
             {name: "studentPresentStatus"}
             ],
-        fetchDataURL: sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
+        fetchDataURL: studentPortalUrl + "/sessionService/specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     ListGrid_Result_JspWeeklyTrainingSchedule  = isc.TrLG.create({
@@ -113,7 +113,7 @@
 
     function call_weeklyTrainingSchedule(selected_person) {
         userNationalCode_JspWeeklyTrainingSchedule = selected_person.nationalCode;
-        RestDataSource_Class_JspWeeklyTrainingSchedule.fetchDataURL = sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule;
+        RestDataSource_Class_JspWeeklyTrainingSchedule.fetchDataURL = studentPortalUrl + "/sessionService/specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule;
     }
 
     // </script>

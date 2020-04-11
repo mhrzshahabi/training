@@ -5,8 +5,10 @@
 // <script>
 
     const userNationalCode = '<%= SecurityUtil.getNationalCode()%>';
-    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/getOneByNationalCode/" + userNationalCode, "GET", null, userData_Result_SP));
-    isc.RPCManager.sendRequest(TrDSRequest(studentUrl + "getOneByNationalCode/" + userNationalCode, "GET", null, studentData_Result_SP));
+    isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/personnel/getOneByNationalCode", "GET", null, userData_Result_SP));
+    isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/student/getOneByNationalCode", "GET", null, studentData_Result_SP));
+    // isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/getOneByNationalCode/3149573092", "GET", null, userData_Result_SP));
+    // isc.RPCManager.sendRequest(TrDSRequest(studentUrl + "getOneByNationalCode/3149573092", "GET", null, studentData_Result_SP));
 
     var person_SP = null;
     var student_SP = null;
