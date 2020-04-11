@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_attendance")
+@Table(name = "tbl_attendance",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"f_student", "f_session"})})
 public class Attendance extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_seq")
