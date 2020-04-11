@@ -160,13 +160,13 @@ public class AttendanceService implements IAttendanceService {
             attendanceSaving.add(attendance);
         }
         for (Attendance attendance : attendanceSaving) {
-            Attendance saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
-            if (saved == null) {
+            List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
+            if (saved == null || saved.size()==0) {
                 attendanceDAO.save(attendance);
             } else {
-                saved.setState(attendance.getState());
-                saved.setDescription(attendance.getDescription());
-                attendanceDAO.save(saved);
+                saved.get(0).setState(attendance.getState());
+                saved.get(0).setDescription(attendance.getDescription());
+                attendanceDAO.save(saved.get(0));
             }
         }
     }
@@ -198,13 +198,13 @@ public class AttendanceService implements IAttendanceService {
             }
         }
         for (Attendance attendance : attendanceSaving) {
-            Attendance saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
-            if (saved == null) {
+            List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
+            if (saved == null || saved.size()==0) {
                 attendanceDAO.save(attendance);
             } else {
-                saved.setState(attendance.getState());
-                saved.setDescription(attendance.getDescription());
-                attendanceDAO.save(saved);
+                saved.get(0).setState(attendance.getState());
+                saved.get(0).setDescription(attendance.getDescription());
+                attendanceDAO.save(saved.get(0));
             }
         }
     }
