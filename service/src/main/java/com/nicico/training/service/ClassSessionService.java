@@ -7,8 +7,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.model.Attendance;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
 import com.nicico.training.repository.AttendanceDAO;
@@ -466,14 +468,11 @@ public class ClassSessionService implements IClassSession {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode) {
-
         LocalDate inputDate = LocalDate.now();
         LocalDate prevSat = inputDate.with(TemporalAdjusters.previous(DayOfWeek.SATURDAY));
         LocalDate nextFri = inputDate.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
-//        String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
-//        String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
-        String prevSaturday = "1398/12/01";
-        String nextFriday = "1398/12/29";
+        String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
+        String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
 
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
@@ -488,7 +487,24 @@ public class ClassSessionService implements IClassSession {
         } else
             request.setCriteria(criteriaRq);
 
-        return SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
+        Long studentId = null;
+         SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp =  SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
+         if(userNationalCode != null){
+
+            for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
+                classSession.setStudentStatus("ثبت نام نشده");
+                for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
+                    if (attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
+                        studentId = attendanceInfo.getStudent().getId();
+                        classSession.setStudentStatus("ثبت نام شده");
+                    }
+                }
+                List<Attendance> attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                if (attendance != null && attendance.size() != 0)
+                    classSession.setStudentPresentStatus(attendance.get(0).getState());
+            }
+        }
+        return resp;
     }
 
     //--------------------------------------------- Calender -----------------------------------------------------------

@@ -101,6 +101,8 @@ public class ClassSessionDTO implements Serializable {
         private String sessionStateFa;
         private String sessionStartHour;
         private String sessionEndHour;
+        private String studentStatus;
+        private String studentPresentStatus;
         public String getSessionHour() {
             String result = "";
             if(sessionStartHour != null) {
@@ -112,6 +114,12 @@ public class ClassSessionDTO implements Serializable {
             }
                 return result;
         }
+//        public String getStudentStatus(){
+//            return "ثبت نام شده";
+//        }
+//        public String getStudentPresentStatus(){
+//            return "حاضر";
+//        }
     }
 
     @Getter

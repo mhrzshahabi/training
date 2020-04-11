@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -40,10 +41,10 @@ public class ClassStudentService implements IClassStudentService {
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType) {
-        return SearchUtil.search(classStudentDAO, request, e -> mapper.map(e, infoType));
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(classStudentDAO, request, converter);
     }
 
     @Transactional
@@ -112,9 +113,7 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional
     @Override
     public List<Long> getScoreState(Long classId) {
-        final List<Long> classStudentList = classStudentDAO.getScoreState(classId);
-        return classStudentList;
-
+        return classStudentDAO.getScoreState(classId);
     }
 
     @Transactional

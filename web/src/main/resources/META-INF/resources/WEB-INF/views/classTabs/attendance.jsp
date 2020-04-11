@@ -1133,12 +1133,14 @@
         getCellCSSText: function (record, rowNum, colNum){
             if(this.getFieldName(colNum).startsWith("se") || (this.getFieldName(colNum).valueOf()) == new String("state").valueOf()){
                 let key = this.getFieldName(colNum);
+                if(record[key] != this.getEditedCell(rowNum,colNum))
+                    return "font-weight:bold; color:#0066ff;";
                 switch(record[key]) {
                     case "1":
                         return "font-weight:bold; color:#00cc00;";
                         break;
                     case "2":
-                        return "font-weight:bold; color:#0066ff;";
+                        return "font-weight:bold; color:#009e73;";
                         break;
                     case "3":
                         return "font-weight:bold; color:#d64949;";
@@ -1150,7 +1152,7 @@
 
                 }
             }
-        }
+        },
         // fields:[]
         // optionDataSource: DataSource_SessionInOneDate,
         // autoFetchData:true,
