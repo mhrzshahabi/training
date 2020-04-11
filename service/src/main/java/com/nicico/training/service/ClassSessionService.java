@@ -459,7 +459,7 @@ public class ClassSessionService implements IClassSession {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassSession> findBySessionDateBetween(String start, String end){
+    public List<ClassSession> findBySessionDateBetween(String start, String end) {
         return classSessionDAO.findBySessionDateBetween(start, end);
     }
 
@@ -477,16 +477,16 @@ public class ClassSessionService implements IClassSession {
 
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-            list.add(makeNewCriteria("sessionDate", prevSaturday, EOperator.greaterOrEqual, null));
-            list.add(makeNewCriteria("sessionDate", nextFriday, EOperator.lessOrEqual, null));
-            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
-            if (request.getCriteria() != null) {
-                if (request.getCriteria().getCriteria() != null)
-                    request.getCriteria().getCriteria().add(criteriaRq);
-                else
-                    request.getCriteria().setCriteria(list);
-            } else
-                request.setCriteria(criteriaRq);
+        list.add(makeNewCriteria("sessionDate", prevSaturday, EOperator.greaterOrEqual, null));
+        list.add(makeNewCriteria("sessionDate", nextFriday, EOperator.lessOrEqual, null));
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else
+                request.getCriteria().setCriteria(list);
+        } else
+            request.setCriteria(criteriaRq);
 
         return SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
     }
@@ -543,8 +543,8 @@ public class ClassSessionService implements IClassSession {
     }
 
     private static double getGregDayOfYear(double year, double month, double day) {
-        int greg_moneths_len[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31,
-                30, 31 };
+        int greg_moneths_len[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31,
+                30, 31};
         boolean leap = false;
         if (((year % 4) == 0) && (((year % 400) != 0)))
             leap = true;
@@ -556,5 +556,12 @@ public class ClassSessionService implements IClassSession {
         return sum + day - 2;
     }
     //--------------------------------------------- Calender -----------------------------------------------------------
+
+    //*********************************
+    @Transactional
+    public Long getClassIdBySessionId(Long sessionId) {
+        ClassSession classSession = classSessionDAO.getClassSessionById(sessionId);
+        return classSession.getClassId();
+    }
 
 }

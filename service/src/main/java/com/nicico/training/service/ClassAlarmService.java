@@ -4,6 +4,8 @@ package com.nicico.training.service;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
+import com.nicico.training.model.Alarm;
+import com.nicico.training.repository.AlarmDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +32,107 @@ public class ClassAlarmService implements IClassAlarm {
     @Autowired
     protected EntityManager entityManager;
     private final ModelMapper modelMapper;
+    private final AlarmDAO alarmDAO;
     private MessageSource messageSource;
+
+    //****************create class sum sessions times alarm*****************
+    @Transactional
+    public void alarmSumSessionsTimes(Long class_id) {
+        try {
+            String alarmScript = " SELECT " +
+                    "'مجموع ساعات جلسات' AS alarmTypeTitleFa, 'SumSessionsTimes' AS alarmTypeTitleEn, id AS classId, null AS sessionId, " +
+                    " null AS teacherId, null AS studentId, null AS instituteId, null AS trainingPlaceId, null AS reservationId, id AS targetRecordId, " +
+                    " 'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    " (CASE WHEN floor( (class_time - session_time) / 60) > 0 THEN concat(concat('مجموع ساعات جلسات ',floor( (class_time - session_time) / 60) ),' ساعت کمتر از مدت کلاس است') " +
+                    "  ELSE concat(concat('مجموع ساعات جلسات ',abs(floor( (class_time - session_time) / 60) ) ),' ساعت بیشتر از مدت کلاس است') END) AS alarm, " +
+                    " null AS detailRecordId, '1' AS sortField, null AS classIdConflict, null AS sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, " +
+                    " null AS reservationIdConflict " +
+                    " FROM " +
+                    " ( " +
+                    "   SELECT " +
+                    "       tbl_class.id, " +
+                    "       concat(concat(concat(concat('کلاس ',tbl_class.c_title_class),' با کد '),tbl_class.c_code),' : ') AS class_name, " +
+                    "       (CASE WHEN SUM(round(to_number(TO_DATE(tbl_session.c_session_end_hour,'HH24:MI') - TO_DATE(tbl_session.c_session_start_hour,'HH24:MI') ) * 24 * 60)) IS NOT NULL THEN " +
+                    "       SUM(round(to_number(TO_DATE(tbl_session.c_session_end_hour,'HH24:MI') - TO_DATE(tbl_session.c_session_start_hour,'HH24:MI') ) * 24 * 60)) ELSE 0 END) AS session_time, " +
+                    "       ( tbl_class.n_h_duration * 60 ) AS class_time " +
+                    "   FROM " +
+                    "       tbl_session " +
+                    "       RIGHT JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "   WHERE tbl_class.id = :class_id " +
+                    "   GROUP BY " +
+                    "       tbl_class.id, " +
+                    "       tbl_class.n_h_duration, " +
+                    "       tbl_class.c_code, " +
+                    "       tbl_class.c_title_class " +
+                    " ) " +
+                    " WHERE " +
+                    " floor(abs((class_time - session_time) / 60)) > 0 ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
+
+            List<ClassAlarmDTO.Create> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+
+                    Object[] alarm = (Object[]) alarms.get(i);
+
+                    alarmList.add(new ClassAlarmDTO.Create(
+                            (alarm[0] != null ? alarm[0].toString() : null),
+                            (alarm[1] != null ? alarm[1].toString() : null),
+                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
+                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
+                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
+                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
+                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
+                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
+                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
+                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
+                            (alarm[10] != null ? alarm[10].toString() : null),
+                            (alarm[11] != null ? alarm[11].toString() : null),
+                            (alarm[12] != null ? alarm[12].toString() : null),
+                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
+                            (alarm[14] != null ? alarm[14].toString() : null),
+                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
+                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
+                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
+                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
+                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
+                    ));
+
+                }
+
+                if (alarmList.size() > 0) {
+                    saveAlarms(alarmList);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("SumSessionsTimes", class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************save created alarms*****************
+    @Transactional
+    public void saveAlarms(List<ClassAlarmDTO.Create> alarmList) {
+
+        alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(alarmList.get(0).getAlarmTypeTitleEn(), alarmList.get(0).getClassId(), alarmList.get(0).getSessionId(), alarmList.get(0).getTeacherId(), alarmList.get(0).getStudentId(), alarmList.get(0).getInstituteId(), alarmList.get(0).getTrainingPlaceId(), alarmList.get(0).getReservationId(), alarmList.get(0).getClassIdConflict(), alarmList.get(0).getSessionIdConflict(), alarmList.get(0).getInstituteIdConflict(), alarmList.get(0).getTrainingPlaceIdConflict(), alarmList.get(0).getReservationIdConflict());
+
+        alarmDAO.saveAll(modelMapper.map(alarmList, new TypeToken<List<Alarm>>() {
+        }.getType()));
+    }
+    //*********************************
+
+
+    //****************delete all class alarms*****************
+    @Transactional
+    public void deleteAllClassAlarms(Long classId) {
+        alarmDAO.deleteAlarmsByClassId(classId);
+    }
+    //*********************************
 
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
@@ -992,7 +1095,7 @@ public class ClassAlarmService implements IClassAlarm {
                     .setParameter("todaydat", todayDate).getResultList();
 
             if (!Alarm.isEmpty())
-            endingClassAlarm.append(endingClassAlarm.length() > 0 ? " <br />و همچنین "+ Alarm.get(0) : Alarm.get(0));
+                endingClassAlarm.append(endingClassAlarm.length() > 0 ? " <br />و همچنین " + Alarm.get(0) : Alarm.get(0));
 
         } catch (Exception ex) {
             ex.printStackTrace();
