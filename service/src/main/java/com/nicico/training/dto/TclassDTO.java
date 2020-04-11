@@ -174,7 +174,8 @@ public class TclassDTO {
         private Long courseId;
 //        private List<Long> studentSet;
     }
-//----------------------------------------------
+
+    //----------------------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -398,7 +399,8 @@ public class TclassDTO {
         List<Double> studentsGrade = new ArrayList<>();
         List<Double> supervisorsGrade = new ArrayList<>();
         List<String> classStudentsName = new ArrayList<>();
-        public void setClassStudentsName(){
+
+        public void setClassStudentsName() {
             for (ClassStudentDTO.EvaluationInfo classStudent : classStudents) {
                 classStudentsName.add(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
             }
@@ -460,8 +462,7 @@ public class TclassDTO {
     @AllArgsConstructor
     @Accessors(chain = true)
     @ApiModel("PersonnelClassInfo")
-    public static class PersonnelClassInfo
-    {
+    public static class PersonnelClassInfo {
         private Long id;
         private String code;
         private String titleClass;
@@ -482,8 +483,7 @@ public class TclassDTO {
     @AllArgsConstructor
     @Accessors(chain = true)
     @ApiModel("AllStudentsGradeToTeacher")
-    public static class AllStudentsGradeToTeacher
-    {
+    public static class AllStudentsGradeToTeacher {
         private Long id;
         private String code;
         private String titleClass;

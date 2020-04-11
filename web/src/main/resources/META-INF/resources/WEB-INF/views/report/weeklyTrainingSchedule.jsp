@@ -1,13 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 // <script>
-    var userNationalCode_JspWeeklyTrainingSchedule = "<%= SecurityUtil.getNationalCode()%>";
+    let userNationalCode_JspWeeklyTrainingSchedule = "<%= SecurityUtil.getNationalCode()%>";
     //----------------------------------------------------Variables-----------------------------------------------------
-    var RestDataSource_Class_JspWeeklyTrainingSchedule = isc.TrDS.create({
+    RestDataSource_Class_JspWeeklyTrainingSchedule = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "sessionDate"},
@@ -24,7 +23,7 @@
         fetchDataURL: sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    var ListGrid_Result_JspWeeklyTrainingSchedule  = isc.TrLG.create({
+    ListGrid_Result_JspWeeklyTrainingSchedule  = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Class_JspWeeklyTrainingSchedule,
@@ -106,9 +105,15 @@
         ],
     });
 
-    var VLayout_Body_JspWeeklyTrainingSchedule = isc.TrVLayout.create({
+    VLayout_Body_JspWeeklyTrainingSchedule = isc.TrVLayout.create({
         members: [
            ListGrid_Result_JspWeeklyTrainingSchedule
         ]
     });
 
+    function call_weeklyTrainingSchedule(selected_person) {
+        userNationalCode_JspWeeklyTrainingSchedule = selected_person.nationalCode;
+        RestDataSource_Class_JspWeeklyTrainingSchedule.fetchDataURL = sessionServiceUrl + "specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule;
+    }
+
+    // </script>

@@ -1,16 +1,12 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
-import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TermDTO;
 import com.nicico.training.service.ClassStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +31,7 @@ public class ScoreRestController {
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
     private final ClassStudentService classStudentService;
+    private final ModelMapper modelMapper;
 
     @PostMapping(value = {"/printWithCriteria"})
     public void printWithCriteria(HttpServletResponse response, @RequestParam(value = "classId") String classId, @RequestParam(value = "CriteriaStr") String criteriaStr, @RequestParam(value = "class") String classRecord) throws Exception {
@@ -59,7 +56,7 @@ public class ScoreRestController {
             criteria.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteria);
 
-        final SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.ScoresInfo.class);
+        final SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ScoresInfo.class));
         Map<String, String> map1 = new HashMap<>();
         map1.put("1001", "ضعیف");
         map1.put("1002", "متوسط");
