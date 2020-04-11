@@ -6,7 +6,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.EqualCourse;
-import com.nicico.training.model.Student;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.CourseDAO;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +35,17 @@ public class ClassStudentReportService {
         }
         return null;
     }
+
+    @Transactional(readOnly = true)
+    public List<ClassStudent> searchClassRegisterOfStudentByNationalCode(String nationalCode) {
+        if (nationalCode != null) {
+            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            criteria.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
+            return classStudentDAO.findAll(NICICOSpecification.of(criteria));
+        }
+        return null;
+    }
+
 
     @Transactional(readOnly = true)
 //    @Override

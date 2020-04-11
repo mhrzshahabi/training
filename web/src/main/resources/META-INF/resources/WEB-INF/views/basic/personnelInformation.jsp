@@ -7,7 +7,7 @@
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
-        PersonnelInfoDS_PersonnelList = isc.TrDS.create({
+       var PersonnelInfoDS_PersonnelList = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {
@@ -86,8 +86,7 @@
             fetchDataURL: personnelUrl + "/iscList"
         });
 
-
-        PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
+       var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
             dataSource: PersonnelInfoDS_PersonnelList,
             selectionType: "single",
             autoFetchData: true,
@@ -111,7 +110,6 @@
                 set_PersonnelInfo_Details();
             }
         });
-
 
         var RestDataSource_PersonnelTraining = isc.TrDS.create({
             fields: [
@@ -230,6 +228,116 @@
             cellClick: function (record, rowNum, colNum) {
                 show_ClassInformation(record, rowNum, colNum);
             }
+        });
+
+        var RestDataSource_PersonnelInfo_class = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true},
+                {name: "titleClass"},
+                {name: "startDate"},
+                {name: "endDate"},
+                {name: "code"},
+                {name: "term.titleFa"},
+                {name: "course.titleFa"},
+                {name: "course.id"},
+                {name: "course.code"},
+                {name: "course.evaluation"},
+                {name: "institute.titleFa"},
+                {name: "studentCount"},
+                {name: "numberOfStudentEvaluation"},
+                {name: "classStatus"},
+                {name: "trainingPlaceIds"},
+                {name: "instituteId"},
+                {name: "workflowEndingStatusCode"},
+                {name: "workflowEndingStatus"}
+            ]
+        });
+
+        var ListGrid_PersonnelInfo_class = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_PersonnelInfo_class,
+            canAddFormulaFields: false,
+            autoFetchData: false,
+            showFilterEditor: true,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
+            filterOnKeypress: true,
+            sortField: 0,
+            fields: [
+                {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                {
+                    name: "code",
+                    title: "<spring:message code='class.code'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "titleClass",
+                    title: "titleClass",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    hidden: true
+                },
+                {
+                    name: "course.titleFa",
+                    title: "<spring:message code='course.title'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.course.titleFa;
+                    }
+                },
+                {
+                    name: "startDate",
+                    title: "<spring:message code='start.date'/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "endDate",
+                    title: "<spring:message code='end.date'/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "studentCount",
+                    title: "<spring:message code='student.count'/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "institute.titleFa",
+                    title: "<spring:message code='presenter'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                    valueMap: {
+                        "1": "برنامه ریزی",
+                        "2": "در حال اجرا",
+                        "3": "پایان یافته"
+                    }
+                },
+                {
+                    name: "workflowEndingStatusCode",
+                    title: "workflowCode",
+                    align: "center",
+                    filterOperator: "iContains",
+                    hidden: true
+                },
+                {
+                    name: "workflowEndingStatus",
+                    title: "<spring:message code="ending.class.status"/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                }
+            ]
         });
 
     }
@@ -821,12 +929,12 @@
                     id: "ClassInfo_Tab_Class",
                     title: "<spring:message code="class"/>",
                     pane: DynamicForm_PersonnelInfo_ClassInfo
+                },
+                {
+                    id: "ClassInfo_Tab_Records",
+                    title: "<spring:message code="course.records"/>",
+                    pane: ListGrid_PersonnelInfo_class
                 }
-                <%--,--%>
-                <%--{--%>
-                <%--    id: "ClassInfo_Tab_Records",--%>
-                <%--    title: "<spring:message code="course.records"/>"--%>
-                <%--}--%>
             ],
             tabSelected: function () {
                 set_PersonnelInfo_CourseInfo();
@@ -835,7 +943,7 @@
 
         var window_class_Information = isc.Window.create({
             title: "",
-            width: "60%",
+            width: "70%",
             minWidth: 500,
             height: 500,
             visibility: "hidden",
@@ -981,10 +1089,8 @@
         //***********************************
 
         //*****get selected course information*****
+        var courseId_Tab_Course,  courseId_Tab_Records, classId_Tab_Class;
         function set_PersonnelInfo_CourseInfo() {
-
-            DynamicForm_PersonnelInfo_CourseInfo.clearValues();
-            DynamicForm_PersonnelInfo_ClassInfo.clearValues();
 
             if (ListGrid_PersonnelTraining.getSelectedRecord() !== null)
             {
@@ -992,28 +1098,42 @@
                 let classId = ListGrid_PersonnelTraining.getSelectedRecord().id;
 
                 if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Course") {
-                    if(courseId !== null)
-                    isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findCourseByCourseId/" + courseId, "GET", null, function (resp) {
-                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
-                            let currentCourse = JSON.parse(resp.data);
-                            DynamicForm_PersonnelInfo_CourseInfo.editRecord(currentCourse);
-                        }
-                    }));
-                }
-                else if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Class") {
-                    if(classId !== null)
-                        isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findClassByClassId/" + classId, "GET", null, function (resp) {
+                    if(courseId !== null && courseId_Tab_Course !== courseId) {
+                        courseId_Tab_Course = courseId;
+                        DynamicForm_PersonnelInfo_CourseInfo.clearValues();
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findCourseByCourseId/" + courseId, "GET", null, function (resp) {
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
+                                let currentCourse = JSON.parse(resp.data);
+                                DynamicForm_PersonnelInfo_CourseInfo.editRecord(currentCourse);
+                            }
+                        }));
+                    }
+                }
+                else if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Class") {
+                    if(classId !== null && classId_Tab_Class !== classId) {
+                        classId_Tab_Class = classId;
+                        DynamicForm_PersonnelInfo_ClassInfo.clearValues();
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findClassByClassId/" + classId, "GET", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                 let currentClass = JSON.parse(resp.data);
                                 DynamicForm_PersonnelInfo_ClassInfo.editRecord(currentClass);
                             }
                         }));
+                    }
+                }
+                else if(PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Records"){
+                    if(courseId !== null && courseId_Tab_Records !== courseId)
+                    {
+                        courseId_Tab_Records = courseId;
+                        RestDataSource_PersonnelInfo_class.fetchDataURL = personnelInformationUrl + "/findClassByCourseId/" + courseId;
+                        ListGrid_PersonnelInfo_class.invalidateCache();
+                        ListGrid_PersonnelInfo_class.fetchData();
+                    }
                 }
             }
         }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 
-    // </script>  DynamicForm_PersonnelInfo_ClassInfo
+    // </script>

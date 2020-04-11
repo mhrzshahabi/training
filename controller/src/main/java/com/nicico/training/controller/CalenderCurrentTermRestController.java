@@ -5,18 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.NeedsAssessmentReportsDTO;
+import com.nicico.training.dto.CalenderCurrentTermDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.service.ClassAlarmService;
-import com.nicico.training.service.NeedsAssessmentReportsService;
-import com.nicico.training.service.ParameterService;
-import com.nicico.training.service.TclassService;
+import com.nicico.training.model.ClassStudent;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -26,6 +26,7 @@ import org.activiti.engine.impl.util.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,10 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -47,74 +46,50 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class CalenderCurrentTermRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
-    private final ReportUtil reportUtil;
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
     private final ClassAlarmService classAlarmService;
     private final TclassService tclassService;
     private final ParameterService parameterService;
-
-    @Loggable
-    @GetMapping(value = "/spec-list")
-
-    public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse, HttpServletRequest iscRq) throws IOException {
+    private final ClassStudentReportService classStudentReportService;
 
 
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        SearchDTO.CriteriaRq criteriaRq;
-        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-
-              SearchDTO.CriteriaRq criteriaRq0 = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-              SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("startDate", dateUtil.todayDate(), EOperator.lessOrEqual, new ArrayList<>());
-              SearchDTO.CriteriaRq criteriaRq2 = makeNewCriteria("endDate", dateUtil.todayDate(), EOperator.greaterThan, new ArrayList<>());
-              criteriaRq0.getCriteria().add(criteriaRq);
-              criteriaRq0.getCriteria().add(criteriaRq1);
-              criteriaRq0.getCriteria().add(criteriaRq2);
-
-            request.setCriteria(criteriaRq0);
-        }
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-
-        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
-
-        for (TclassDTO.Info tclassDTO : response.getList()) {
-            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
-                tclassDTO.setHasWarning("alarm");
-            else
-                tclassDTO.setHasWarning("");
-        }
-
-        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
-        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
-
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    private <T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Class<T> infoType) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+       startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("startDate", dateUtil.todayDate(), EOperator.lessOrEqual, new ArrayList<>());
+        SearchDTO.CriteriaRq criteriaRq2 = makeNewCriteria("endDate", dateUtil.todayDate(), EOperator.greaterThan, new ArrayList<>());
+        criteriaRq.getCriteria().add(criteria);
+        criteriaRq.getCriteria().add(criteriaRq1);
+        criteriaRq.getCriteria().add(criteriaRq2);
+        SearchDTO.SearchRs<CalenderCurrentTermDTO.CourseInfo>  x=new SearchDTO.SearchRs<>();
+        if (searchRq.getCriteria() != null)
+            criteriaRq.getCriteria().add(searchRq.getCriteria());
+        searchRq.setCriteria(criteriaRq);
+        x.setList((List<CalenderCurrentTermDTO.CourseInfo>) tclassService.search1(searchRq, infoType).getList());
+        x.setTotalCount(tclassService.search1(searchRq, infoType).getTotalCount());
+        SearchDTO.SearchRs<T> searchRs = (SearchDTO.SearchRs<T>) x;
+        return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
+       @Loggable
+    @GetMapping(value = "/spec-list")
+    public ResponseEntity<ISC<CalenderCurrentTermDTO.CourseInfo>> spectList(HttpServletRequest iscRq) throws IOException {
+        return search(iscRq, makeNewCriteria(null, null, EOperator.or, null),CalenderCurrentTermDTO.CourseInfo.class);
+    }
 
     @Loggable
-    @PostMapping(value = {"/print"})
-    public void print(HttpServletResponse response, @RequestParam(value = "objectId") String objectId, @RequestParam(value = "objectType") String objectType, @RequestParam(value = "personnelNo") String personnelNo, @RequestParam(value = "nationalCode") String nationalCode, @RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "companyName") String companyName, @RequestParam(value = "personnelNo2") String personnelNo2, @RequestParam(value = "postTitle") String postTitle, @RequestParam(value = "postCode") String postCode) throws Exception {
+    @GetMapping(value = "/speclist")
+    public ResponseEntity<ISC<TclassDTO.Info>> spectListAllClass(HttpServletRequest iscRq) throws IOException {
+        return search(iscRq, makeNewCriteria(null, null, EOperator.or, null),TclassDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Loggable
+    @GetMapping(value = {"/print"})
+    public  ResponseEntity<CalenderCurrentTermDTO.CalenderCurrentTermSpecRs> print(HttpServletResponse response, @RequestParam(value = "objectId") String objectId, @RequestParam(value = "objectType") String objectType, @RequestParam(value = "personnelNo") String personnelNo, @RequestParam(value = "nationalCode") String nationalCode, @RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "companyName") String companyName, @RequestParam(value = "personnelNo2") String personnelNo2, @RequestParam(value = "postTitle") String postTitle, @RequestParam(value = "postCode") String postCode) throws Exception {
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list;
         List<TclassDTO.PersonnelClassInfo> totalPersonnelClass;
         TotalResponse<ParameterValueDTO.Info> NeedsAssessmentPriorityParameter;
@@ -123,15 +98,62 @@ public class CalenderCurrentTermRestController {
         Map<String, String> NeedsAssessmentPriorityParameterMap = new HashMap<String, String>();//اولویت نیازسنجی
         Map<String, String> competenceTypeParameterMap = new HashMap<String, String>();//نوع شایستگی
         Map<String, String> NeedsAssessmentDomainParameterMap = new HashMap<String, String>();//حیطه نیازسنجی
-        //List<List<TclassDTO.PersonnelClassInfo>> y=null;
-        list = needsAssessmentReportsService.search(null, Long.parseLong(objectId), objectType, personnelNo);//دوره های نیازسنجی
-        //  totalPersonnelClass=tclassService.findAllPersonnelClass("2559979705");//کل کلاس های فرد
-        // Long count=list.getTotalCount();
-        // for (int i = 0; i <count ; i++) {
-        // (list.getList().get(i).getSkill().getCourse().getCode());
-        //  y.add(tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()));
-        // }
 
+        List<CalenderCurrentTermDTO.tclass> y = new ArrayList<>();//لیست کلاسهای فرد بر اساس دوره های ترم جاری
+        List<ClassStudent> classStudents=null;//لیست کلاس هایی که فرد ثبت نام شده
+        list = needsAssessmentReportsService.search(null, Long.parseLong(objectId), objectType, personnelNo);//دوره های نیازسنجی
+        // totalPersonnelClass=tclassService.findAllPersonnelClass("2559979705");//کل کلاس های فرد
+        Long count = list.getTotalCount();
+        for (int i = 0; i < count; i++) {
+            for (int j = 0; j < tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).size(); j++) {
+                Long x0= (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getId());
+                String x1 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getCourse().getCode());
+                String x2 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getTitleClass());
+                String x3 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getCode());
+                String x4 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getStartDate());
+                String x5 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getEndDate());
+                Long x6 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getHDuration());
+                String x7 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getClassStatus());
+                y.add(new CalenderCurrentTermDTO.tclass(x0,x1, x2, x3, x4, x5, x6, x7,null,null));
+
+            }
+        }
+       SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+       for(int i=0;i<=y.size();i++)
+       {
+
+       if(!((format.parse(y.get(i).getStartDate()).before(format.parse(dateUtil.todayDate())))  && (format.parse(y.get(i).getEndDate()).after(format.parse(dateUtil.todayDate())))))
+           {
+            y.remove(i);
+           }
+       }
+
+        classStudents=classStudentReportService.searchClassRegisterOfStudentByNationalCode(nationalCode);
+        for (int i=0;i<y.size();i++) {
+            for (ClassStudent x:classStudents)
+            {
+                if(y.get(i).getId().equals(x.getTclassId()))
+                {
+                    y.get(i).setStatusRegister("1");
+                    y.get(i).setScoresState(x.getScoresState());
+                }
+                else
+                    y.get(i).setStatusRegister("0");
+            }
+        }
+
+
+        final CalenderCurrentTermDTO.SpecRs specResponse = new CalenderCurrentTermDTO.SpecRs();
+        final CalenderCurrentTermDTO.CalenderCurrentTermSpecRs specRs = new CalenderCurrentTermDTO.CalenderCurrentTermSpecRs();
+
+
+        if (y != null) {
+            specResponse.setData(y)
+                    .setStartRow(0)
+                    .setEndRow(y.size())
+                    .setTotalRows(y.size());
+            specRs.setResponse(specResponse);
+        }
         NeedsAssessmentPriorityParameter = parameterService.getByCode("NeedsAssessmentPriority");
         for (int i = 0; i < NeedsAssessmentPriorityParameter.getResponse().getData().size(); i++) {
             NeedsAssessmentPriorityParameter.getResponse().getData().get(i).getTitle();
@@ -147,7 +169,7 @@ public class CalenderCurrentTermRestController {
             NeedsAssessmentDomainParameter.getResponse().getData().get(i).getTitle();
             NeedsAssessmentDomainParameterMap.put(String.valueOf(NeedsAssessmentDomainParameter.getResponse().getData().get(i).getId()), NeedsAssessmentDomainParameter.getResponse().getData().get(i).getTitle());
         }
-        Long count = list.getTotalCount();
+
         JSONArray jsonArray = new JSONArray();
         JSONParser parser = new JSONParser();
         for (int i = 0; i < count; i++) {
@@ -177,7 +199,7 @@ public class CalenderCurrentTermRestController {
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
-        reportUtil.export("/reports/CalenderCurrentTerm.jasper", params, jsonDataSource, response);
-
-    }
+      //  reportUtil.export("/reports/CalenderCurrentTerm.jasper", params, jsonDataSource, response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+      }
 }

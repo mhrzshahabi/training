@@ -11,8 +11,12 @@ import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.constraints.Max;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -83,6 +87,13 @@ public class PersonnelInformationService implements IPersonnelInformationService
 
 
         return classDetailInfo;
+    }
+
+    @Transactional
+    @Override
+    public List<TclassDTO.Info> findClassesByCourseId(Long courseId)
+    {
+        return  modelMapper.map(tclassDAO.findTclassesByCourseIdEquals(courseId), new TypeToken<List<TclassDTO.Info>>(){}.getType());
     }
 
 }

@@ -153,6 +153,11 @@ public class TclassService implements ITclassService {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
 
+      @Transactional(readOnly = true)
+    @Override
+    public <T> SearchDTO.SearchRs<T> search1(SearchDTO.SearchRq request, Class<T> infoType) {
+        return SearchUtil.search(tclassDAO, request, e -> modelMapper.map(e, infoType));
+    }
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> evaluatedSearch(SearchDTO.SearchRq request) {
@@ -733,10 +738,10 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-     public List<TclassDTO.PersonnelClassInfo> PersonnelClass(Long id) {
+     public List<TclassDTO.Info> PersonnelClass(Long id) {
 
-        List<TclassDTO.PersonnelClassInfo> personnelClassInfo= (List<TclassDTO.PersonnelClassInfo>) tclassDAO.findAllTclassByCourseId(id);
-        return modelMapper.map(personnelClassInfo, new TypeToken<List<TclassDTO.PersonnelClassInfo>>() {
+        List<Tclass> tclass= tclassDAO.findTclassesByCourseId(id);
+        return modelMapper.map(tclass, new TypeToken<List<TclassDTO.Info>>() {
         }.getType());
     }
 }

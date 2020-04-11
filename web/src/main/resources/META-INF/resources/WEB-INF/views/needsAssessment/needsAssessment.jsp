@@ -108,7 +108,20 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         members: [
             isc.ToolStripButtonPrint.create({
                 click: function () {
-                    isc.Canvas.showPrintPreview(printContainer)                }
+                    // isc.Canvas.showPrintPreview(printContainer)
+                    let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
+                    let advancedCriteria = {
+                        _constructor:"AdvancedCriteria",
+                        operator:"and",
+                        criteria:[
+                            { fieldName:"objectId", operator:"equals", value:rec.objectId },
+                            { fieldName:"objectType", operator:"equals", value:rec.objectType }
+                        ]
+                    };
+                    let params = {};
+                    params.title = priorityList[rec.objectType] + ": " + rec.objectName + "        " +(rec.objectCode ? "کد: " + rec.objectCode : "");
+                    printWithCriteria(advancedCriteria, params, "oneNeedsAssessment.jasper")
+                }
             }),
             isc.ToolStrip.create({
                 width: "100%",
@@ -676,7 +689,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     ListGrid_AllCompetence_JspNeedsAssessment
                 ]
             })]
-    })
+    });
     var Window_NeedsAssessment_JspNeedsAssessment = isc.Window.create({
         title: "<spring:message code="needs.assessment"/>",
         minWidth: 1024,
@@ -866,7 +879,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     }),
                 ]
             })]
-    })
+    });
     var Window_MoreInformation_JspNeedsAssessment = isc.Window.create({
         title: "<spring:message code="more.information"/>",
         // placement: "fillScreen",
@@ -944,7 +957,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
             this.Super("show", arguments)
         }
-    })
+    });
 
     isc.TrVLayout.create({
         members: [ListGrid_NeedsAssessment_JspNeedAssessment],
@@ -1130,6 +1143,27 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             DataSource_Skill_JspNeedsAssessment.updateData(record);
             item.grid.endEditing();
         }));
+    }
+
+    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
+        // var advancedCriteria = LG.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "fileName", type: "hidden"},
+                    {name: "params", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
     }
 
 

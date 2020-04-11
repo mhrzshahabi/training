@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.ClassStudentService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -75,6 +77,31 @@ public class ClassStudentRestController {
     @GetMapping(value = "/classes-of-student/{nationalCode}")
     public ResponseEntity<ISC<ClassStudentDTO.CoursesOfStudent>> classesOfStudentList(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
         return search(iscRq, makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null), ClassStudentDTO.CoursesOfStudent.class);
+    }
+
+    @Loggable
+    @GetMapping(value = "/class-list-of-student/{nationalCode}")
+    public ResponseEntity<ISC<TclassDTO.StudentClassList>> classesOfStudentJustClassList(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
+        if (searchRq.getCriteria() != null)
+            criteriaRq.getCriteria().add(searchRq.getCriteria());
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<ClassStudentDTO.StudentClassList> classStudentResult = classStudentService.search(searchRq, ClassStudentDTO.StudentClassList.class);
+        SearchDTO.SearchRs<TclassDTO.StudentClassList> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(classStudentResult.getList().stream().map(studentClassList -> studentClassList.getTclass()).collect(Collectors.toList()));
+        searchRs.setTotalCount(classStudentResult.getTotalCount());
+        return new ResponseEntity<ISC<TclassDTO.StudentClassList>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+
+
+//        ResponseEntity<ISC<ClassStudentDTO.StudentClassList>> response = search(iscRq, makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null), ClassStudentDTO.StudentClassList.class);
+
+
+
     }
 
     @Loggable
