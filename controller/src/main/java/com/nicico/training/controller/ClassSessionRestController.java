@@ -277,7 +277,9 @@ public class ClassSessionRestController {
 //    }
     @GetMapping(value = "/specListWeeklyTrainingSchedule/{userNationalCode}")
     public ResponseEntity<ISC<ClassSessionDTO.WeeklySchedule>> getWeeklyTrainingSchedule(HttpServletRequest iscRq, @PathVariable String userNationalCode) throws IOException {
-        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchRs = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);

@@ -292,16 +292,6 @@
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.enableTab(3);
         }
-
-        /////////////////////////TEMP////////////////////////
-        // fill_reaction_evaluation_result();
-        // evaluationAnalysist_learning();
-        // fill_behavioral_evaluation_result();
-        // Detail_Tab_Evaluation_Analysis.enableTab(0);
-        // Detail_Tab_Evaluation_Analysis.enableTab(1);
-        // Detail_Tab_Evaluation_Analysis.enableTab(2);
-        // Detail_Tab_Evaluation_Analysis.enableTab(3);
-        ////////////////////////TEMP///////////////////////
     }
 
     function load_reaction_evluation_analysis_data(record) {
