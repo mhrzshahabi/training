@@ -468,14 +468,11 @@ public class ClassSessionService implements IClassSession {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode) {
-        userNationalCode = "3149573092";
         LocalDate inputDate = LocalDate.now();
         LocalDate prevSat = inputDate.with(TemporalAdjusters.previous(DayOfWeek.SATURDAY));
         LocalDate nextFri = inputDate.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
-//        String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
-//        String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
-        String prevSaturday = "1398/12/01";
-        String nextFriday = "1398/12/29";
+        String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
+        String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
 
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
