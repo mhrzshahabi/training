@@ -620,12 +620,19 @@ public class TclassService implements ITclassService {
         Tclass tclass = getTClass(classId);
         TclassDTO.BehavioralEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.BehavioralEvaluationResult.class);
 
-        List<Double> studentsGrade = new ArrayList<Double>();
-        List<Double> supervisorsGrade = new ArrayList<Double>();
-        for (int i = 0; i < tclass.getClassStudents().size(); i++) {
-            studentsGrade.add(Double.parseDouble("20"));
-            supervisorsGrade.add(Double.parseDouble("30"));
+        Double[] studentsGrade = new Double[tclass.getClassStudents().size()];
+        Double[] supervisorsGrade = new Double[tclass.getClassStudents().size()];
+        String[] classStudentsName = new String[tclass.getClassStudents().size()];
+
+        int index = 0;
+        for (ClassStudent classStudent : tclass.getClassStudents()) {
+            Evaluation evaluation = evaluationService.getBehavioralEvaluationByStudent(classStudent.getId(),classId);
+            supervisorsGrade[index] = Double.parseDouble("50");
+            studentsGrade[index] = getEvaluationGrade(evaluation);
+            classStudentsName[index] = classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName();
+            index++;
         }
+
         evaluationResult.setClassPassedTime(3);
         evaluationResult.setNumberOfFilledFormsByStudents(20);
         evaluationResult.setNumberOfFilledFormsBySuperviosers(20);
@@ -637,9 +644,38 @@ public class TclassService implements ITclassService {
         evaluationResult.setFECBPass(true);
         evaluationResult.setStudentsGrade(studentsGrade);
         evaluationResult.setSupervisorsGrade(supervisorsGrade);
-        evaluationResult.setClassStudentsName();
+        evaluationResult.setClassStudentsName(classStudentsName);
 
         return evaluationResult;
+    }
+
+    Double getEvaluationGrade(Evaluation evaluation){
+        double result = 0.0;
+        if (evaluation != null) {
+            List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
+            double totalGrade = 0.0;
+            double totalWeight = 0.0;
+            for (EvaluationAnswer answer : answers) {
+                if (answer != null) {
+                    double weight = 1.0;
+                    double grade = 1.0;
+                    Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
+                    QuestionnaireQuestion questionnaireQuestion = null;
+                    if(question.isPresent())
+                        questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                    if (answer.getQuestionSource().getCode().equals("2") && questionnaireQuestion!=null) {
+                        weight = questionnaireQuestion.getWeight();
+                    }
+                    grade = Double.parseDouble(answer.getAnswer().getValue());
+                    totalGrade += grade * weight;
+                    totalWeight += weight;
+                }
+            }
+            if (totalWeight != 0)
+                result = totalGrade / totalWeight;
+        }
+
+        return result;
     }
     //----------------------------------------------- Behavioral Evaluation --------------------------------------------
 

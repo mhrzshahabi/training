@@ -172,6 +172,24 @@ public class EvaluationService implements IEvaluationService {
             return null;
     }
 
+    @Override
+    public Evaluation getBehavioralEvaluationByStudent(Long studentId, Long classId) {
+        Long evaluationLevelId = Long.parseLong(156+"");
+        Long questionnaireTypeId = Long.parseLong(139+"");
+        Long evaluatorTypeId = Long.parseLong(188+"");
+        Long evaluatorId = studentId;
+        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluatorTypeIdAndEvaluatorIdAndEvaluationLevelIdAndQuestionnaireTypeId
+                (classId,
+                evaluatorTypeId,
+                evaluatorId,
+                evaluationLevelId,
+                questionnaireTypeId);
+        if(evaluations.size() != 0)
+            return evaluations.get(0);
+        else
+            return null;
+    }
+
     //    @Override
     public EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId) {
         final Evaluation evaluation =evaluationDAO.findFirstByQuestionnaireTypeIdAndClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelId(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId);
