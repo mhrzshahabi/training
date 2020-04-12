@@ -121,4 +121,11 @@ public class ClassStudentService implements IClassStudentService {
         return classStudentDAO.findByTclassIdAndStudentId(classId, studentId);
 
     }
+
+    //*********************************
+    @Transactional
+    public Long getClassIdByClassStudentId(Long classStudentId) {
+        ClassStudent classSession = classStudentDAO.getClassStudentById(classStudentId);
+        return classSession.getTclassId();
+    }
 }

@@ -93,6 +93,7 @@ public class TclassRestController {
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 201) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
         }
         return infoResponseEntity;
     }
@@ -107,6 +108,7 @@ public class TclassRestController {
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
         }
 
         return infoResponseEntity;
@@ -117,11 +119,7 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            //*****delete class alarms*****
-            classAlarmService.deleteAllClassAlarms(id);
-
             tclassService.delete(id);
-
             return new ResponseEntity(HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(
