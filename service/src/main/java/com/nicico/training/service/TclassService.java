@@ -667,7 +667,9 @@ public class TclassService implements ITclassService {
         classDayPassedTime = getdifference(classDate,todayDate)%30;
         classPassedTime += "ماه: " + classMonthPassedTime + "، روز: " + classDayPassedTime;
 
-        Map<String,Object> result = getFEBGrade(studentsMeanGrade,supervisorsMeanGrade,(numberOfFilledFormsByStudents/index)*100);
+        double percentOfFilledFormsByStudents = ((double) numberOfFilledFormsByStudents / (double) index )*100;
+
+        Map<String,Object> result = getFEBGrade(studentsMeanGrade,supervisorsMeanGrade,percentOfFilledFormsByStudents);
         FEBGrade = (double) result.get("grade");
         FEBPass = (boolean) result.get("pass");
 
