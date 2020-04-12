@@ -174,7 +174,8 @@ public class TclassDTO {
         private Long courseId;
 //        private List<Long> studentSet;
     }
-//----------------------------------------------
+
+    //----------------------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -385,7 +386,7 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("BehavioralEvaluationResult")
     public static class BehavioralEvaluationResult {
-        double classPassedTime;
+        String classPassedTime;
         Integer numberOfFilledFormsBySuperviosers;
         Integer numberOfFilledFormsByStudents;
         double supervisorsMeanGrade;
@@ -395,14 +396,9 @@ public class TclassDTO {
         double FECBGrade;
         boolean FECBPass;
         private Set<ClassStudentDTO.EvaluationInfo> classStudents;
-        List<Double> studentsGrade = new ArrayList<>();
-        List<Double> supervisorsGrade = new ArrayList<>();
-        List<String> classStudentsName = new ArrayList<>();
-        public void setClassStudentsName(){
-            for (ClassStudentDTO.EvaluationInfo classStudent : classStudents) {
-                classStudentsName.add(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
-            }
-        }
+        Double[] studentsGrade;
+        Double[] supervisorsGrade;
+        String[] classStudentsName;
     }
 
     @Getter
@@ -460,8 +456,7 @@ public class TclassDTO {
     @AllArgsConstructor
     @Accessors(chain = true)
     @ApiModel("PersonnelClassInfo")
-    public static class PersonnelClassInfo
-    {
+    public static class PersonnelClassInfo {
         private Long id;
         private String code;
         private String titleClass;
@@ -482,8 +477,7 @@ public class TclassDTO {
     @AllArgsConstructor
     @Accessors(chain = true)
     @ApiModel("AllStudentsGradeToTeacher")
-    public static class AllStudentsGradeToTeacher
-    {
+    public static class AllStudentsGradeToTeacher {
         private Long id;
         private String code;
         private String titleClass;

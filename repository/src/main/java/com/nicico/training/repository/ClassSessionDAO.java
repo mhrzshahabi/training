@@ -29,4 +29,6 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     List<ClassSession> findBySessionDateBetween(String start, String end);
 
+    ClassSession getClassSessionById(Long sessionId);
+
 }

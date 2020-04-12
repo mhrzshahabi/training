@@ -74,6 +74,21 @@
             placement: "none",
             data: [
                 {
+                    title: "<spring:message code="weekly.training.schedule"/>",
+                    click:function(){
+                        createTab_SP(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
+                            // , "call_weeklyTrainingSchedule(person_SP)");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="report.calender.current.term"/>",
+                    click: function () {
+                        createTab_SP(this.title, "<spring:url value="web/calenderCurrentTerm"/>", "call_calenderCurrentTerm(person_SP)");
+                    }
+                },
+                {isSeparator: true},
+                {
                     title: "<spring:message code="unfinished.classes"/>",
                     click: function () {
                         createTab_SP(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
@@ -95,6 +110,7 @@
                         createTab_SP(this.title, "<spring:url value="/questionEvaluation/show-form"/>", "call_questionEvaluation(student_SP)");
                     }
                 },
+                {isSeparator: true},
             ]
         }),
     });
@@ -106,6 +122,7 @@
         showShadow: true,
         shadowDepth: 3,
         shadowColor: "#153560",
+        disabled: true,
         members: [
             basicInfoTSMB_SP,
             NAreportTSMB_SP,
@@ -232,6 +249,7 @@
             PersonnelNoLabel_SP.redraw();
             PostLabel_SP.redraw();
             AffairsLabel_SP.redraw();
+            MainToolStrip_SP.enable();
         } else {
             person_SP = null;
             createDialog("info", resp.httpResponseText);

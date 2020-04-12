@@ -50,17 +50,17 @@ public class TrainingOverTimeController {
         List<Attendance> attendances = attendanceService.findBySessionInAndState(sessions, "2");
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         List<Map<String, String>> list = new ArrayList<>();
-        Map<String,Map<String, String>> mapMap = new HashMap<>();
+        Map<String,Map<String, String>> filterMap = new HashMap<>();
         for (Attendance a : attendances) {
 //            ClassSessionDTO.Info session = classSessionService.get(a.getSessionId());
 //            Student student = studentService.getStudent(a.getStudentId());
 //            TclassDTO.Info tclassDTO = tclassService.get(session.getClassId());
             String key = a.getStudent().getNationalCode() + a.getSession().getSessionDate();
-            if(mapMap.containsKey(key)){
+            if(filterMap.containsKey(key)){
                 try {
                     Float time = (float)(sdf.parse(a.getSession().getSessionEndHour()).getTime() - sdf.parse(a.getSession().getSessionStartHour()).getTime())/3600000;
-                    Float totalTime = Float.parseFloat(mapMap.get(key).get("time")) + time;
-                    mapMap.get(key).put("time",String.format("%.2f",totalTime));
+                    Float totalTime = Float.parseFloat(filterMap.get(key).get("time")) + time;
+                    filterMap.get(key).put("time",String.format("%.2f",totalTime));
                 }catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -80,10 +80,10 @@ public class TrainingOverTimeController {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                mapMap.put(key,map);
+                filterMap.put(key,map);
             }
         }
-        Iterator it = mapMap.entrySet().iterator();
+        Iterator it = filterMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             list.add((Map<String, String>) pair.getValue());

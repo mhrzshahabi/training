@@ -120,46 +120,60 @@ public class ClassStudentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassStudent - AttendanceInfo")
-    public static class AttendanceInfo{
+    public static class AttendanceInfo {
 
         @Getter(AccessLevel.NONE)
         private StudentDTO.AttendanceInfo student;
 
         @Getter(AccessLevel.NONE)
         private Long studentId;
-        public Long getStudentId(){
+
+        public Long getStudentId() {
             return student.getId();
         }
+
         @Getter(AccessLevel.NONE)
         private String firstName;
-        public String getFirstName(){
+
+        public String getFirstName() {
             return student.getFirstName();
         }
+
         @Getter(AccessLevel.NONE)
         private String lastName;
-        public String getLastName(){
+
+        public String getLastName() {
             return student.getLastName();
         }
+
         @Getter(AccessLevel.NONE)
         private String nationalCode;
-        public String getNationalCode(){
+
+        public String getNationalCode() {
             return student.getNationalCode();
         }
+
         @Getter(AccessLevel.NONE)
         private String companyName;
-        public String getCompanyName(){
+
+        public String getCompanyName() {
             return student.getCompanyName();
         }
+
         @Getter(AccessLevel.NONE)
         private String personnelNo;
-        public String getPersonnelNo(){
+
+        public String getPersonnelNo() {
             return student.getPersonnelNo();
         }
+
         @Getter(AccessLevel.NONE)
         private String personnelNo2;
-        public String getPersonnelNo2(){
+
+        public String getPersonnelNo2() {
             return student.getPersonnelNo2();
         }
+
         private Long presenceTypeId;
         private Long id;
         private Integer evaluationStatusReaction;
@@ -193,7 +207,7 @@ public class ClassStudentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassStudent - EvaluationInfo")
-    public static class EvaluationInfo{
+    public static class EvaluationInfo {
         private Long id;
         private Integer evaluationStatusReaction;
         private Integer evaluationStatusLearning;
@@ -206,7 +220,7 @@ public class ClassStudentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassStudent - PreTestScoreInfo")
-    public static class PreTestScoreInfo{
+    public static class PreTestScoreInfo {
         private Long id;
         private Float preTestScore;
         private Float score;
@@ -217,17 +231,16 @@ public class ClassStudentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassStudent - PreTestScoreUpdate")
-    public static class PreTestScoreUpdate{
+    public static class PreTestScoreUpdate {
         private Long id;
         private Float preTestScore;
     }
 
     @Getter
     @Setter
-    @Accessors(chain=true)
+    @Accessors(chain = true)
     @ApiModel("ClassStudent - evaluationAnalysistLearning")
-    public static class evaluationAnalysistLearning
-    {
+    public static class evaluationAnalysistLearning {
         private Long id;
         private Float preTestScore;
         private Float score;

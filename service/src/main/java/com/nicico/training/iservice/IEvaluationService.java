@@ -27,4 +27,6 @@ public interface IEvaluationService {
     Evaluation getTeacherEvaluationForClass(Long teacherId,Long classId);
 
     Evaluation getTrainingEvaluationForTeacher(Long teacherId, Long classId, Long trainingId);
+
+    Evaluation getBehavioralEvaluationByStudent(Long studentId, Long classId);
 }

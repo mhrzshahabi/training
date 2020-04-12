@@ -983,6 +983,8 @@
     //*************this function calls from personnelInformation page**************
     function call_needsAssessmentReports(reportType, changeableReportType, selected_Person, changeablePerson, selectedObject, changeableObject, objectType) {
 
+        CourseDS_NABOP.invalidateCache();
+
         if (reportType != null)
             ReportTypeDF_NABOP.getItem("reportType").setValue(reportType);
         if (objectType != null)
