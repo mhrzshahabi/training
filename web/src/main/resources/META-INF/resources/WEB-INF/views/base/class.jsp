@@ -665,6 +665,9 @@
                     src: "<spring:url value="history.png"/>",
                     prompt: "سوابق تدریس در شرکت مس",
                     click(){
+                        if(DynamicForm_Class_JspClass.getValue("teacherId") == undefined){
+                            return;
+                        }
                         RestDataSource_StudentGradeToTeacher_JspClass.fetchDataURL = teacherUrl + "all-students-grade-to-teacher?teacherId=" + DynamicForm_Class_JspClass.getValue("teacherId") + "&courseId=" + DynamicForm_Class_JspClass.getValue("course.id");
                         Window_MoreInformation_JspClass.show();
                         ListGrid_AllStudentsGradeToTeacher_JspClass.invalidateCache();
