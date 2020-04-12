@@ -491,19 +491,21 @@ public class ClassSessionService implements IClassSession {
                 request.setCriteria(criteriaRq);
 
         Long studentId = null;
-        List<ClassSession> sessions = null;
          SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp =  SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
-        for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
-            classSession.setStudentStatus("ثبت نام نشده");
-            for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
-                if(attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
-                    studentId = attendanceInfo.getStudent().getId();
-                    classSession.setStudentStatus("ثبت نام شده");
+         if(userNationalCode != null){
+
+            for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
+                classSession.setStudentStatus("ثبت نام نشده");
+                for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
+                    if (attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
+                        studentId = attendanceInfo.getStudent().getId();
+                        classSession.setStudentStatus("ثبت نام شده");
+                    }
                 }
+                List<Attendance> attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                if (attendance != null && attendance.size() != 0)
+                    classSession.setStudentPresentStatus(attendance.get(0).getState());
             }
-            Attendance attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(),studentId);
-            classSession.setStudentPresentStatus(attendance.getState());
-            sessions.add(modelMapper.map(classSession,ClassSession.class));
         }
         return resp;
     }
