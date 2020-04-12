@@ -386,7 +386,7 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("BehavioralEvaluationResult")
     public static class BehavioralEvaluationResult {
-        double classPassedTime;
+        String classPassedTime;
         Integer numberOfFilledFormsBySuperviosers;
         Integer numberOfFilledFormsByStudents;
         double supervisorsMeanGrade;
