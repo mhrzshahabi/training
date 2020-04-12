@@ -48,6 +48,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public PersonnelRegisteredDTO.Info create(PersonnelRegisteredDTO.Create request) {
         final PersonnelRegistered personnelRegistered = modelMapper.map(request, PersonnelRegistered.class);
+        personnelRegistered.setActive(-1);
         return save(personnelRegistered);
     }
 

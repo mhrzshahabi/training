@@ -129,7 +129,7 @@
             basicInfoTSMB_SP,
             NAreportTSMB_SP,
             runTSMB_SP,
-            evaluationTSMB_SP
+            // evaluationTSMB_SP
         ]
     });
 
@@ -176,36 +176,31 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     AffairsLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     PostLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     PersonnelNoLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     NationalCodeLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     UserNameLabel_SP = isc.Label.create({
-        width: 200,
-        padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
@@ -243,9 +238,9 @@
             person_SP = (JSON.parse(resp.data));
             UserNameLabel_SP.contents = "<spring:message code="user"/>: " + person_SP.firstName + " " + person_SP.lastName;
             NationalCodeLabel_SP.contents = "<spring:message code='national.code'/>: " + person_SP.nationalCode;
-            PersonnelNoLabel_SP.contents = "<spring:message code='personal.ID'/>: " + person_SP.personnelNo;
-            PostLabel_SP.contents = "<spring:message code='post'/>: " + person_SP.postTitle;
-            AffairsLabel_SP.contents = "<spring:message code='affairs'/>: " + person_SP.ccpAffairs;
+            PersonnelNoLabel_SP.contents = "<spring:message code='personal.ID'/>: " + (person_SP.personnelNo !== undefined ? person_SP.personnelNo : "");
+            PostLabel_SP.contents = "<spring:message code='post'/>: " + (person_SP.postTitle !== undefined ? person_SP.postTitle : "");
+            AffairsLabel_SP.contents = "<spring:message code='affairs'/>: " + (person_SP.ccpAffairs !== undefined ? person_SP.ccpAffairs : "");
             UserNameLabel_SP.redraw();
             NationalCodeLabel_SP.redraw();
             PersonnelNoLabel_SP.redraw();
@@ -261,9 +256,10 @@
     function studentData_Result_SP(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             student_SP = (JSON.parse(resp.data));
+            MainToolStrip_SP.addMember(evaluationTSMB_SP);
         } else {
             student_SP = null;
-            createDialog("info", resp.httpResponseText);
+            // createDialog("info", resp.httpResponseText);
         }
     }
 

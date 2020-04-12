@@ -7,6 +7,7 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.model.Personnel;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface IPersonnelService {
 
@@ -33,4 +34,6 @@ public interface IPersonnelService {
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
     SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
+
+    <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter);
 }
