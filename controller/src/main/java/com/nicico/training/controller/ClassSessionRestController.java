@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class ClassSessionRestController {
 
 
     private final ClassSessionService classSessionService;
+    private final ClassAlarmService classAlarmService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
@@ -73,7 +75,13 @@ public class ClassSessionRestController {
     @PostMapping
     public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.ManualSession req, HttpServletResponse response) {
         ClassSessionDTO.ManualSession create = modelMapper.map(req, ClassSessionDTO.ManualSession.class);
-        return new ResponseEntity<>(classSessionService.create(create, response), HttpStatus.CREATED);
+        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.create(create, response), HttpStatus.CREATED);
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 201) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
+        }
+
+        return infoResponseEntity;
     }
 
     //*********************************
@@ -82,7 +90,12 @@ public class ClassSessionRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request, HttpServletResponse response) {
         ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
-        return new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
+        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 200) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
+        }
+        return infoResponseEntity;
     }
 
     //*********************************
@@ -90,7 +103,9 @@ public class ClassSessionRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, HttpServletResponse response) {
+        Long classId = classSessionService.getClassIdBySessionId(id);
         classSessionService.delete(id, response);
+        classAlarmService.alarmSumSessionsTimes(classId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -207,7 +222,7 @@ public class ClassSessionRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-//    @Loggable
+    //    @Loggable
 //    @GetMapping(value = "/specListWeeklyTrainingSchedule/{userNationalCode}")
 ////    @PreAuthorize("hasAuthority('r_tclass')")
 //    public ResponseEntity<ClassSessionDTO.ClassSessionWeeklyScheduleSpecRs> getWeeklyTrainingSchedule(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
