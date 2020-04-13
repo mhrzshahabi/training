@@ -19,33 +19,24 @@
     var RestDataSource_AllClass_CalenderCurrentCourse = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "group"},
             {name: "titleClass"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "code"},
-            {name: "term.titleFa"},
+            {name: "term.startDate"},
+            {name: "term.endDate"},
+            {name: "course.code"},
             {name: "course.titleFa"},
-            {name: "course.id"},
-            {name: "teacherId"},
             {name: "teacher"},
-            {name: "reason"},
-            {name: "classStatus"},
-            {name: "topology"},
-            {name: "trainingPlaceIds"},
-            {name: "instituteId"},
-            {name: "workflowEndingStatusCode"},
-            {name: "workflowEndingStatus"},
-            {name: "preCourseTest", type: "boolean"}
+
         ],
 
         fetchDataURL: calenderCurrentTerm + "speclist"
     });
 
-    var RestDataSource_Course_CurrentTerm = isc.TrDS.create({
+    var RestDataSource_AllCourses_CurrentTerm = isc.TrDS.create({
         fields: [
             {name: "course.titleFa"},
             {name: "course.code"},
+            {name: "course.evaluation"},
+
         ],
         fetchDataURL: calenderCurrentTerm + "spec-list"
     });
@@ -79,8 +70,8 @@
                 }
             }]
     });
-    var ListGrid_Course_CalculatorCurrentTerm = isc.TrLG.create({
-        dataSource: RestDataSource_Course_CurrentTerm,
+    var ListGrid_All_Courses_CalculatorCurrentTerm = isc.TrLG.create({
+        dataSource: RestDataSource_AllCourses_CurrentTerm,
         contextMenu: Menu_ListGrid_CurrentTerm,
         autoFetchData: true,
         headerHeight: 65,
@@ -102,18 +93,21 @@
                     return record.course.titleFa;
                 }
             },
-
+             {name: "course.evaluation",title:"نیازسنجی/غیر نیازسنجی"},
         ],
-        headerSpans: [
-            {
-                fields: ["course.code", "course.titleFa"],
-                title: "دوره های ترم جاری"
-            }],
-        recordDoubleClick: function () {
+        click: function (record, rowNum, colNum) {
+          
 
         },
+
+        headerSpans: [
+            {
+                fields: ["course.code", "course.titleFa","course.evaluation"],
+                title: "دوره های ترم جاری"
+            }],
+
+
         showFilterEditor: true,
-        allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
         sortField: 2,
@@ -129,7 +123,7 @@
         contextMenu: Menu_ListGrid_CurrentTerm,
         fields: [
             {
-                name: "code",
+                name: "course.code",
                 title: "<spring:message code='class.code'/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -147,14 +141,14 @@
                 }
             },
             {
-                name: "startDate",
+                name: "term.startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
                 filterOperator: "iContains",
                 //   autoFitWidth: true,
             },
             {
-                name: "endDate",
+                name: "term.endDate",
                 title: "<spring:message code='end.date'/>",
                 align: "center",
                 filterOperator: "iContains", // autoFitWidth: true
@@ -166,24 +160,13 @@
                 filterOperator: "iContains",
                 autoFitWidth: true,
             },
-
-            {
-                name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                }, // autoFitWidth: true,
-            },
-        ],
+          ],
         headerSpans: [
             {
-                fields: ["code", "course.titleFa", "startDate", "endDate", "teacher", "classStatus"],
+                fields: ["course.code", "course.titleFa", "term.startDate", "term.endDate", "teacher"],
                 title: "کلاس های ترم جاری"
             }],
-        recordDoubleClick: function () {
-        },
-        showFilterEditor: true,
+              showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
@@ -298,7 +281,7 @@
             title: "<spring:message code="refresh"/>", click: function () {
                 ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache();
                 ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
-                ListGrid_Course_CalculatorCurrentTerm.invalidateCache();
+                ListGrid_All_Courses_CalculatorCurrentTerm.invalidateCache();
             }
         }]
     });
@@ -380,11 +363,11 @@
                 wait_Variable = createDialog("wait");
                 ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache();
                 ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
-                ListGrid_Course_CalculatorCurrentTerm.invalidateCache();
+                ListGrid_All_Courses_CalculatorCurrentTerm.invalidateCache();
             } else {
 
                 ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
-                ListGrid_Course_CalculatorCurrentTerm.invalidateCache();
+                ListGrid_All_Courses_CalculatorCurrentTerm.invalidateCache();
             }
 
         }
@@ -440,7 +423,7 @@
     var VLayout1 = isc.VLayout.create({
         width: "18%",
         //height: "100%",
-        members: [ListGrid_Course_CalculatorCurrentTerm]
+        members: [ListGrid_All_Courses_CalculatorCurrentTerm]
     });
 
     var HLayout_Grid_CalculatorCurrentTerm = isc.HLayout.create({

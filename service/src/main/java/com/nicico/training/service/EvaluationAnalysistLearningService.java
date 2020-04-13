@@ -42,8 +42,15 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         List<ClassStudentDTO.evaluationAnalysistLearning> list;
         list = mapper.map(classStudents, new TypeToken<List<ClassStudentDTO.evaluationAnalysistLearning>>() {
         }.getType());
+
+
         if (scoringMethod.equals("1")) {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
+                if(score.getValence() != null && score.getPreTestScore() != null)
+                {
+                    ScoreEvaluation += map.get(score.getValence())- score.getPreTestScore();
+                    scoreEvaluationVariable++;
+                }
                 if (score.getPreTestScore() == null)
                 {
                     score.setPreTestScore((float) 0.0);
@@ -57,16 +64,18 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
                 }
                 sumValence += map.get(score.getValence());
                 sumPreScore += score.getPreTestScore();
-                ScoreEvaluation += map.get(score.getValence())- score.getPreTestScore();
+
             }
             ans[0] = Float.valueOf(df.format(sumValence / (list.size()-pastTestVariable)));
             ans[1] = Float.valueOf(df.format(sumPreScore / (list.size()-preTestVariable)));
             //ans[2] = Float.valueOf(list.size());
-            ans[3] =  Float.valueOf(df.format(ScoreEvaluation / list.size()));
+            ans[3] =  Float.valueOf(df.format(ScoreEvaluation / (list.size()-scoreEvaluationVariable)));
             pastTestVariable=0;
             preTestVariable=0;
             return ans;
         }
+
+
         if (scoringMethod.equals("2")) {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
@@ -139,12 +148,15 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-                if (score.getPreTestScore() == null)
+                if (score.getPreTestScore() == null) {
                     score.setPreTestScore((float) 0.0);
-                     sumPreScore += score.getPreTestScore();
+                    preTestVariable++;
+                }
+                sumPreScore += score.getPreTestScore();
             }
+
             ans[0] = (float)0.0;
-            ans[1] = Float.valueOf(df.format(sumPreScore / list.size()));
+            ans[1] = Float.valueOf(df.format(sumPreScore / (list.size()-preTestVariable)));
             ans[2] = Float.valueOf(list.size());
             ans[3] =  (float)0.0;
             return ans;
