@@ -159,6 +159,7 @@
         ID: "tabSetEvaluationAnalysis",
         tabBarPosition: "top",
         enabled: false,
+        showTabScroller: true,
         tabs: [
             {
                 ID: "TabPane_Reaction_Evaluation_Analysis",
@@ -233,14 +234,14 @@
 
     var Hlayout_Grid_Evaluation_Analysis = isc.HLayout.create({
         width: "100%",
-        height: "50%",
+        height: "45%",
         showResizeBar: true,
         members: [ListGrid_evaluationAnalysis_class]
     });
 
     var Hlayout_Tab_Evaluation_Analysis = isc.HLayout.create({
         width: "100%",
-        height: "49%",
+        height: "50%",
         members: [
             Detail_Tab_Evaluation_Analysis
         ]
