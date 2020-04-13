@@ -12,6 +12,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.repository.ClassStudentDAO;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,7 @@ public class ClassStudentRestController {
     private final ClassStudentService classStudentService;
     private final ClassStudentDAO classStudentDAO;
     private final ModelMapper modelMapper;
+    private final ClassAlarmService classAlarmService;
 
     private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
         int startRow = 0;
@@ -111,6 +113,7 @@ public class ClassStudentRestController {
     public ResponseEntity registerStudents(@RequestBody List<ClassStudentDTO.Create> request, @PathVariable Long classId) {
         try {
             classStudentService.registerStudents(request, classId);
+            classAlarmService.alarmClassCapacity(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -167,7 +170,9 @@ public class ClassStudentRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
+            Long classId = classStudentService.getClassIdByClassStudentId(id);
             classStudentService.delete(id);
+            classAlarmService.alarmClassCapacity(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(

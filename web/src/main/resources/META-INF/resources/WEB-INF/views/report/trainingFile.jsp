@@ -9,6 +9,7 @@
 // <script>
     
     var selectedPerson_TrainingFile = null;
+    var printUrl_TrainingFile = "<spring:url value="/web/print/class-student/"/>";
 
     var RestDataSource_Student_JspTrainingFile = isc.TrDS.create({
         fields: [
@@ -244,7 +245,8 @@
     function call_trainingFile(selected_person) {
         selectedPerson_TrainingFile = selected_person;
         DynamicForm_TrainingFile.hide();
-        RestDataSource_Course_JspTrainingFile.fetchDataURL = tclassStudentUrl + "/classes-of-student/" + selected_person.nationalCode;
+        RestDataSource_Course_JspTrainingFile.fetchDataURL = studentPortalUrl + "/class-student/classes-of-student/" + selectedPerson_TrainingFile.nationalCode;
+        printUrl_TrainingFile = "<spring:url value="/web/print/student-portal/"/>";
         ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
         ListGrid_TrainingFile_TrainingFileJSP.fetchData();
     }
@@ -264,7 +266,7 @@
         
         let CriteriaForm_TrainingFile = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/web/print/class-student/"/>" + type,
+            action: printUrl_TrainingFile + type,
             target: "_Blank",
             canSubmit: true,
             fields:

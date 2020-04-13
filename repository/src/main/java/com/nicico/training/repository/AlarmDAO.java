@@ -12,6 +12,8 @@ public interface AlarmDAO extends JpaRepository<Alarm, Long>, JpaSpecificationEx
 
     void deleteAlarmsByAlarmTypeTitleEnAndClassId(String alarmTypeTitleFa, Long classId);
 
+    void deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict(String alarmTypeTitleFa, Long classIdConflict);
+
     void deleteAlarmsByClassId(Long classId);
 
 }

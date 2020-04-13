@@ -77,7 +77,10 @@ public class NeedsAssessmentReportsService {
 //            }
 //        }
         if (personnelNo != null && !mustPass.isEmpty()) {
-            PersonnelDTO.Info student = personnelService.get(personnelNo);
+            PersonnelDTO.Info student = personnelService.getPOrRegisteredP(personnelNo, p -> modelMapper.map(p, PersonnelDTO.Info.class));
+            if (student == null) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
             Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
             Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
 
