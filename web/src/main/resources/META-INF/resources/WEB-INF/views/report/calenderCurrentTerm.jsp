@@ -96,17 +96,13 @@
              {name: "course.evaluation",title:"نیازسنجی/غیر نیازسنجی"},
         ],
         click: function (record, rowNum, colNum) {
-          
-
-        },
+              },
 
         headerSpans: [
             {
                 fields: ["course.code", "course.titleFa","course.evaluation"],
                 title: "دوره های ترم جاری"
             }],
-
-
         showFilterEditor: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
@@ -166,6 +162,10 @@
                 fields: ["course.code", "course.titleFa", "term.startDate", "term.endDate", "teacher"],
                 title: "کلاس های ترم جاری"
             }],
+        click:function()
+         {
+
+        },
               showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -176,7 +176,7 @@
 
     var ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1 = isc.TrLG.create({
         dataSource: RestDataSource_Class_CurrentTerm,
-
+        allowAdvancedCriteria: true,
         headerHeight: 65,
         contextMenu: Menu_ListGrid_CurrentTerm,
         fields: [

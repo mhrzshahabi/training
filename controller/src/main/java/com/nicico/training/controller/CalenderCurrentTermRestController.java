@@ -187,16 +187,18 @@ public class CalenderCurrentTermRestController {
             }
         }
        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-       for(int i=0;i<=y.size();i++)
-       {
 
-       if(!((format.parse(y.get(i).getStartDate()).before(format.parse(dateUtil.todayDate())))  && (format.parse(y.get(i).getEndDate()).after(format.parse(dateUtil.todayDate())))))
-           {
-            y.remove(i);
+      for(int z=0;z<y.size();z++) {
+          for (int i = 0; i < y.size(); i++) {
 
+              if (((format.parse(y.get(i).getStartDate()).before(format.parse(dateUtil.todayDate()))) && (format.parse(y.get(i).getEndDate()).after(format.parse(dateUtil.todayDate()))))) {
 
-           }
-       }
+              } else {
+
+                  y.remove(i);
+              }
+          }
+      }
 
         classStudents=classStudentReportService.searchClassRegisterOfStudentByNationalCode(nationalCode);
 

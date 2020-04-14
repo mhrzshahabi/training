@@ -708,6 +708,7 @@
             {
                 name: "supervisor",
                 colSpan: 3,
+                required:true,
                 title: "<spring:message code="supervisor"/>:",
                 type: "selectItem",
                 textAlign: "center",
@@ -719,6 +720,28 @@
                 }
 // textBoxStyle:"textItemLite"
             },
+
+            {
+                name: "planner",
+                colSpan: 3,
+                required:true,
+                wrapTitle: false,
+                title: "<spring:message code="planner"/>:",
+                type: "selectItem",
+                textAlign: "center",
+                valueMap: {
+                    1: "آقای دکتر سعیدی",
+                    2: "خانم شاکری",
+                    3: "خانم اسماعیلی",
+                    4: "خانم احمدی",
+                }
+// textBoxStyle:"textItemLite"
+            },
+
+
+
+
+
             {
                 name: "reason",
                 colSpan: 1,

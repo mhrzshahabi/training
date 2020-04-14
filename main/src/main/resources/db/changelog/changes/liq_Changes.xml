@@ -24,4 +24,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="heydaripoor (generated)" id="1586850128664-262">
+        <addColumn tableName="tbl_class">
+            <column name="f_planner" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -65,6 +65,9 @@ public class Tclass extends Auditable {
     @Column(name = "f_supervisor")
     private Long supervisor;
 
+    @Column(name = "f_planner")
+    private Long planner;
+
     @Column(name = "c_reason")
     private String reason;
 
