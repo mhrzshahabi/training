@@ -34,6 +34,13 @@ public class TeacherService implements ITeacherService {
     private final IPersonalInfoService personalInfoService;
     private final IAttachmentService attachmentService;
     private final TclassService tclassService;
+    private final ICategoryService categoryService;
+    private final ISubcategoryService subCategoryService;
+//    private final IEmploymentHistoryService employmentHistoryService;
+//    private final ITeachingHistoryService teachingHistoryService;
+//    private final ITeacherCertificationService teacherCertificationService;
+//    private final IPublicationService publicationService;
+//    private final IForeignLangKnowledgeService foreignLangService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -245,16 +252,6 @@ public class TeacherService implements ITeacherService {
     }
 
     //--------------------------Teacher Basic Evaluation ---------------------------------------------------------------
-
-    private final ICategoryService categoryService;
-    private final ISubcategoryService subCategoryService;
-    private final IEmploymentHistoryService employmentHistoryService;
-    private final ITeachingHistoryService teachingHistoryService;
-    private final ITeacherCertificationService teacherCertificationService;
-    private final IPublicationService publicationService;
-    private final IForeignLangKnowledgeService foreignLangService;
-
-
     @Override
     @Transactional(readOnly = true)
     public Map<String,Object> evaluateTeacher(Long teacherId, String catId, String subCatId){
@@ -284,6 +281,7 @@ public class TeacherService implements ITeacherService {
         Long SubCatId = null;
         Category category_selected = null;
         Subcategory subCategory_selected = null;
+        Teacher teacherInformation = getTeacher(teacherId);
         if(!catId.equalsIgnoreCase("undefined")) {
             CatId = Long.parseLong(catId);
             category_selected = modelMapper.map(categoryService.get(CatId),Category.class);
@@ -311,21 +309,19 @@ public class TeacherService implements ITeacherService {
         //table 1 - row 1
         table_1_license = (teacher_educationLevel-1)*5 + 10;
         //table 1 - row 2
-        SearchDTO.SearchRq searchRq_employmentHistories = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs_employmentHistories = employmentHistoryService.search(searchRq_employmentHistories,teacherId);
-        List<EmploymentHistoryDTO.Info> employmentHistories = searchRs_employmentHistories.getList();
+        Set<EmploymentHistory> employmentHistories = teacherInformation.getEmploymentHistories();
 
-        for (EmploymentHistoryDTO.Info employmentHistory : employmentHistories) {
+        for (EmploymentHistory employmentHistory : employmentHistories) {
             boolean cat_related = false;
             boolean subCat_related = false;
-            List<CategoryDTO.CategoryInfoTuple> employmentHistory_catrgories = employmentHistory.getCategories();
-            for (CategoryDTO.CategoryInfoTuple employmentHistory_catrgory : employmentHistory_catrgories) {
+            List<Category> employmentHistory_catrgories = employmentHistory.getCategories();
+            for (Category employmentHistory_catrgory : employmentHistory_catrgories) {
                 if(employmentHistory_catrgory.getId() == category_selected.getId())
                     cat_related = true;
             }
             if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
+                List<Subcategory> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
+                for (Subcategory employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
                     if(employmentHistory_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -348,21 +344,19 @@ public class TeacherService implements ITeacherService {
         Double table_1_work_double = ((teacher_educationLevel-1)*0.2 + 0.6)*table_1_work;
         table_1_work = table_1_work_double.floatValue();
         //table 1 - row 3 & 4
-        SearchDTO.SearchRq searchRq_teachingHistories = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<TeachingHistoryDTO.Info> searchRs_teachingHistories = teachingHistoryService.search(searchRq_teachingHistories,teacherId);
-        List<TeachingHistoryDTO.Info> teachingHistories = searchRs_teachingHistories.getList();
+        Set<TeachingHistory> teachingHistories = teacherInformation.getTeachingHistories();
 
-        for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
+        for (TeachingHistory teachingHistory : teachingHistories) {
             boolean cat_related = false;
             boolean subCat_related = false;
-            List<CategoryDTO.CategoryInfoTuple> teachingHistory_catrgories = teachingHistory.getCategories();
-            for (CategoryDTO.CategoryInfoTuple teachingHistory_catrgory : teachingHistory_catrgories) {
+            List<Category> teachingHistory_catrgories = teachingHistory.getCategories();
+            for (Category teachingHistory_catrgory : teachingHistory_catrgories) {
                 if(teachingHistory_catrgory.getId() == category_selected.getId())
                     cat_related = true;
             }
             if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
+                List<Subcategory> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
+                for (Subcategory teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
                     if(teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -393,21 +387,18 @@ public class TeacherService implements ITeacherService {
         Double table_1_related_training_double = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
         table_1_related_training = table_1_related_training_double.floatValue();
         //table 1 - row 5
-        SearchDTO.SearchRq searchRq_teacherCertifications = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<TeacherCertificationDTO.Info> searchRs_teacherCertifications = teacherCertificationService.search(searchRq_teacherCertifications,teacherId);
-        List<TeacherCertificationDTO.Info> teacherCertifications = searchRs_teacherCertifications.getList();
-
-        for (TeacherCertificationDTO.Info teacherCertification : teacherCertifications) {
+        Set<TeacherCertification> teacherCertifications = teacherInformation.getTeacherCertifications();
+        for (TeacherCertification teacherCertification : teacherCertifications) {
             boolean cat_related = false;
             boolean subCat_related = false;
-            List<CategoryDTO.CategoryInfoTuple> teacherCertification_catrgories = teacherCertification.getCategories();
-            for (CategoryDTO.CategoryInfoTuple teacherCertification_catrgory : teacherCertification_catrgories) {
+            List<Category> teacherCertification_catrgories = teacherCertification.getCategories();
+            for (Category teacherCertification_catrgory : teacherCertification_catrgories) {
                 if(teacherCertification_catrgory.getId() == category_selected.getId())
                     cat_related = true;
             }
             if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
+                List<Subcategory> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
+                for (Subcategory teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
                     if(teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -458,21 +449,19 @@ public class TeacherService implements ITeacherService {
         table_2_grade *= table_2_relation;
 
         //table 3
-        SearchDTO.SearchRq searchRq_publications = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<PublicationDTO.Info> searchRs_publications = publicationService.search(searchRq_publications,teacherId);
-        List<PublicationDTO.Info> publications= searchRs_publications.getList();
+        Set<Publication> publications= teacherInformation.getPublications();
 
-        for (PublicationDTO.Info publication : publications) {
+        for (Publication publication : publications) {
             boolean cat_related = false;
             boolean subCat_related = false;
-            List<CategoryDTO.CategoryInfoTuple> publication_catrgories = publication.getCategories();
-            for (CategoryDTO.CategoryInfoTuple publication_catrgory : publication_catrgories) {
+            List<Category> publication_catrgories = publication.getCategories();
+            for (Category publication_catrgory : publication_catrgories) {
                 if(publication_catrgory.getId() == category_selected.getId())
                     cat_related = true;
             }
             if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
+                List<Subcategory> publication_sub_catrgories = publication.getSubCategories();
+                for (Subcategory publication_sub_catrgory : publication_sub_catrgories) {
                     if(publication_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
@@ -507,11 +496,9 @@ public class TeacherService implements ITeacherService {
                 + table_3_count_translation * 2
                 + table_3_count_note;
         //table 4
-        SearchDTO.SearchRq searchRq_foreignLangKnowledges  = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> searchRs_foreignLangKnowledges  = foreignLangService.search(searchRq_foreignLangKnowledges ,teacherId);
-        List<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges = searchRs_foreignLangKnowledges.getList();
+        Set<ForeignLangKnowledge> foreignLangKnowledges = teacherInformation.getForeignLangKnowledges();
 
-        for (ForeignLangKnowledgeDTO.Info foreignLangKnowledge : foreignLangKnowledges) {
+        for (ForeignLangKnowledge foreignLangKnowledge : foreignLangKnowledges) {
             if(foreignLangKnowledge.getLangName().equalsIgnoreCase("انگلیسی") || foreignLangKnowledge.getLangName().equalsIgnoreCase("زبان انگلیسی")) {
                 if (foreignLangKnowledge.getLangLevelId() == 0)
                     table_4_grade = 3;
