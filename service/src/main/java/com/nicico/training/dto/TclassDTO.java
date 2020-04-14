@@ -42,6 +42,7 @@ public class TclassDTO {
     private Long hDuration;
     //    private Long dDuration;
     private Long supervisor;
+    private Long planner;
     private String reason;
     private String classStatus;
     private Date classStatusDate;
