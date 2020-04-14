@@ -384,7 +384,6 @@ public class CourseRestController {
         reportUtil.export("/reports/Course.jasper", params, response);
     }
 
-
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
@@ -412,7 +411,6 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/CourseByCriteria.jasper", params, jsonDataSource, response);
     }
-
 
     @Loggable
     @PostMapping(value = {"/GoalsAndSyllabus/{type}"})
@@ -463,7 +461,7 @@ public class CourseRestController {
     @Loggable
     @GetMapping(value = "/get_teachers/{id}")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
-        List<TeacherDTO.TeacherFullNameTuple> infoList = new ArrayList<>();
+        List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> infoList = new ArrayList<>();
         if (id != 0) {
             infoList = courseService.getTeachers(id);
         }

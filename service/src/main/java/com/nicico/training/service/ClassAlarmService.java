@@ -4,6 +4,8 @@ package com.nicico.training.service;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
+import com.nicico.training.model.Alarm;
+import com.nicico.training.repository.AlarmDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +32,478 @@ public class ClassAlarmService implements IClassAlarm {
     @Autowired
     protected EntityManager entityManager;
     private final ModelMapper modelMapper;
+    private final AlarmDAO alarmDAO;
     private MessageSource messageSource;
+
+    //****************create class sum sessions times alarm*****************
+    @Transactional
+    public void alarmSumSessionsTimes(Long class_id) {
+        try {
+            String alarmScript = " SELECT " +
+                    "'مجموع ساعات جلسات' AS alarmTypeTitleFa, 'SumSessionsTimes' AS alarmTypeTitleEn, id AS classId, null AS sessionId, " +
+                    " null AS teacherId, null AS studentId, null AS instituteId, null AS trainingPlaceId, null AS reservationId, id AS targetRecordId, " +
+                    " 'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    " (CASE WHEN floor( (class_time - session_time) / 60) > 0 THEN concat(concat('مجموع ساعات جلسات ',floor( (class_time - session_time) / 60) ),' ساعت کمتر از مدت کلاس است') " +
+                    "  ELSE concat(concat('مجموع ساعات جلسات ',abs(floor( (class_time - session_time) / 60) ) ),' ساعت بیشتر از مدت کلاس است') END) AS alarm, " +
+                    " null AS detailRecordId, '1' AS sortField, null AS classIdConflict, null AS sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, " +
+                    " null AS reservationIdConflict " +
+                    " FROM " +
+                    " ( " +
+                    "   SELECT " +
+                    "       tbl_class.id, " +
+                    "       concat(concat(concat(concat('کلاس ',tbl_class.c_title_class),' با کد '),tbl_class.c_code),' : ') AS class_name, " +
+                    "       (CASE WHEN SUM(round(to_number(TO_DATE(tbl_session.c_session_end_hour,'HH24:MI') - TO_DATE(tbl_session.c_session_start_hour,'HH24:MI') ) * 24 * 60)) IS NOT NULL THEN " +
+                    "       SUM(round(to_number(TO_DATE(tbl_session.c_session_end_hour,'HH24:MI') - TO_DATE(tbl_session.c_session_start_hour,'HH24:MI') ) * 24 * 60)) ELSE 0 END) AS session_time, " +
+                    "       ( tbl_class.n_h_duration * 60 ) AS class_time " +
+                    "   FROM " +
+                    "       tbl_session " +
+                    "       RIGHT JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "   WHERE tbl_class.id = :class_id " +
+                    "   GROUP BY " +
+                    "       tbl_class.id, " +
+                    "       tbl_class.n_h_duration, " +
+                    "       tbl_class.c_code, " +
+                    "       tbl_class.c_title_class " +
+                    " ) " +
+                    " WHERE " +
+                    " floor(abs((class_time - session_time) / 60)) > 0 ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
+
+            List<ClassAlarmDTO.Create> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+
+                    Object[] alarm = (Object[]) alarms.get(i);
+
+                    alarmList.add(new ClassAlarmDTO.Create(
+                            (alarm[0] != null ? alarm[0].toString() : null),
+                            (alarm[1] != null ? alarm[1].toString() : null),
+                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
+                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
+                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
+                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
+                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
+                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
+                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
+                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
+                            (alarm[10] != null ? alarm[10].toString() : null),
+                            (alarm[11] != null ? alarm[11].toString() : null),
+                            (alarm[12] != null ? alarm[12].toString() : null),
+                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
+                            (alarm[14] != null ? alarm[14].toString() : null),
+                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
+                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
+                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
+                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
+                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
+                    ));
+
+                }
+
+                if (alarmList.size() > 0) {
+                    saveAlarms(alarmList);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("SumSessionsTimes", class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************create class capacity alarm*****************
+    @Transactional
+    public void alarmClassCapacity(Long class_id) {
+        try {
+            String alarmScript = " SELECT alarmTypeTitleFa, 'ClassCapacity' AS alarmTypeTitleEn, classId, null AS sessionId,null AS teacherId, null AS studentId,  " +
+                    " null AS instituteId, null AS trainingPlaceId, null AS reservationId, targetRecordId, tabName, pageAddress, " +
+                    "('تعداد شرکت کنندگان کلاس از ' ||  CASE WHEN status = 'MAX' THEN 'حداکثر ظرفیت کلاس بیشتر' ELSE 'حداقل ظرفیت کلاس کمتر' END || ' است')  AS alarm, " +
+                    " null AS detailRecordId,  sortField, null AS classIdConflict, null AS sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, " +
+                    " null AS reservationIdConflict " +
+                    " FROM " +
+                    " (SELECT " +
+                    "    tbl_class.id AS classId, " +
+                    "    tbl_class.id AS targetrecordid, " +
+                    "    'classStudentsTab' AS tabname, " +
+                    "    '/tclass/show-form' AS pageaddress, " +
+                    "    'ظرفیت کلاس' AS alarmTypeTitleFa, " +
+                    "    '2' AS sortfield, " +
+                    "    CASE " +
+                    "        WHEN COUNT(tbl_class_student.student_id) > tbl_class.n_max_capacity THEN " +
+                    "            'MAX' " +
+                    "        WHEN COUNT(tbl_class_student.student_id) < tbl_class.n_min_capacity THEN " +
+                    "            'MIN' " +
+                    "    END AS status, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity, " +
+                    "    COUNT(tbl_class_student.student_id) AS studentcount " +
+                    " FROM " +
+                    "    tbl_class left " +
+                    "    JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id " +
+                    " WHERE " +
+                    "    tbl_class.id = :class_id " +
+                    " GROUP BY " +
+                    "    tbl_class.id, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity " +
+                    " HAVING ( COUNT(tbl_class_student.student_id) > tbl_class.n_max_capacity ) " +
+                    "       OR ( COUNT(tbl_class_student.student_id) < tbl_class.n_min_capacity )) ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
+
+            List<ClassAlarmDTO.Create> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+
+                    Object[] alarm = (Object[]) alarms.get(i);
+
+                    alarmList.add(new ClassAlarmDTO.Create(
+                            (alarm[0] != null ? alarm[0].toString() : null),
+                            (alarm[1] != null ? alarm[1].toString() : null),
+                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
+                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
+                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
+                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
+                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
+                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
+                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
+                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
+                            (alarm[10] != null ? alarm[10].toString() : null),
+                            (alarm[11] != null ? alarm[11].toString() : null),
+                            (alarm[12] != null ? alarm[12].toString() : null),
+                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
+                            (alarm[14] != null ? alarm[14].toString() : null),
+                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
+                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
+                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
+                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
+                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
+                    ));
+
+                }
+
+                if (alarmList.size() > 0) {
+                    saveAlarms(alarmList);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("ClassCapacity", class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************create teacher conflict alarm*****************
+    @Transactional
+    public void alarmTeacherConflict(Long class_id) {
+        try {
+            String alarmScript = " SELECT 'تداخل استاد' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
+                    " null AS trainingPlaceId, null AS reservationId, targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    "'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date ||' کلاس '|| c_title_class_current ||' با کد '|| c_code_current ||  ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
+                    " null AS detailRecordId, sortField, classIdConflict, sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    "    (SELECT " +
+                    "    tb1.id AS sessionId, " +
+                    "    tb1.f_class_id             AS classId, " +
+                    "    tb1.f_class_id             AS targetrecordid, " +
+                    "    tb1.c_day_name, " +
+                    "    tb1.c_session_date, " +
+                    "    tb1.c_session_end_hour, " +
+                    "    tb1.c_session_start_hour, " +
+                    "    tb2.id                     AS sessionIdConflict, " +
+                    "    tb2.f_class_id             AS classIdConflict, " +
+                    "    tb2.c_day_name             AS c_day_name1, " +
+                    "    tb2.c_session_date         AS c_session_date1, " +
+                    "    tb2.c_session_end_hour     AS c_session_end_hour1, " +
+                    "    tb2.c_session_start_hour   AS c_session_start_hour1, " +
+                    "    ( ( " +
+                    "        CASE " +
+                    "            WHEN tbl_personal_info.e_gender = 1 THEN " +
+                    "                'آقای' " +
+                    "            ELSE " +
+                    "                'خانم' " +
+                    "        END " +
+                    "    ) " +
+                    "      || ' ' " +
+                    "      || tbl_personal_info.c_first_name_fa " +
+                    "      || ' ' " +
+                    "      || tbl_personal_info.c_last_name_fa ) AS teachername, " +
+                    "    tbl_class.c_code, " +
+                    "    tbl_class.c_title_class, " +
+                    " ( '3' || ' تداخل استاد ' " +
+                    "      || tb1.c_session_date " +
+                    "      || '_' " +
+                    "      || tb1.c_session_end_hour " +
+                    "      || '_' " +
+                    "      || tb1.c_session_start_hour ) AS sortfield, " +
+                    "    tbl_class1.c_code          AS c_code_current, " +
+                    "    tbl_class1.c_title_class   AS c_title_class_current " +
+                    " FROM " +
+                    "    tbl_session tb1 " +
+                    "    INNER JOIN tbl_session tb2 ON tb2.f_teacher_id = tb1.f_teacher_id " +
+                    "    AND tb1.c_session_date = tb2.c_session_date " +
+                    "    INNER JOIN tbl_teacher ON tbl_teacher.id = tb1.f_teacher_id " +
+                    "    INNER JOIN tbl_personal_info ON tbl_personal_info.id = tbl_teacher.f_personality " +
+                    "    INNER JOIN tbl_class ON tbl_class.id = tb2.f_class_id " +
+                    "    INNER JOIN tbl_class tbl_class1 ON tb1.f_class_id = tbl_class1.id " +
+                    " WHERE " +
+                    " tbl_class1.c_status <> 3 AND " +
+                    " tbl_class.c_status <> 3 AND  " +
+                    " tbl_class1.f_term = :term_id AND " +
+                    " tbl_class.f_term = :term_id  AND  " +
+                    "    tb1.id <> tb2.id " +
+                    "    AND tb1.f_class_id = :class_id " +
+                    "    AND ( ( tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND tb1.c_session_start_hour < tb2.c_session_end_hour ) " +
+                    "          OR ( tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "               AND tb1.c_session_end_hour > tb2.c_session_start_hour ))) ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+
+            List<ClassAlarmDTO.Create> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+
+                    Object[] alarm = (Object[]) alarms.get(i);
+
+                    alarmList.add(new ClassAlarmDTO.Create(
+                            (alarm[0] != null ? alarm[0].toString() : null),
+                            (alarm[1] != null ? alarm[1].toString() : null),
+                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
+                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
+                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
+                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
+                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
+                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
+                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
+                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
+                            (alarm[10] != null ? alarm[10].toString() : null),
+                            (alarm[11] != null ? alarm[11].toString() : null),
+                            (alarm[12] != null ? alarm[12].toString() : null),
+                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
+                            (alarm[14] != null ? alarm[14].toString() : null),
+                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
+                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
+                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
+                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
+                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
+                    ));
+
+                }
+
+                if (alarmList.size() > 0) {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
+                    saveAlarms(alarmList);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************create student conflict alarm*****************
+    @Transactional
+    public void alarmStudentConflict(Long class_id) {
+        try {
+            String alarmScript = " SELECT  'تداخل فراگیر' AS alarmTypeTitleFa, 'StudentConflict' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId, " +
+                    " null AS instituteId, null AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    " ' جلسه ' " +
+                    " || tb1.c_session_start_hour " +
+                    "|| ' تا ' " +
+                    " || tb1.c_session_end_hour " +
+                    " || ' ' " +
+                    " || tb1.c_day_name " +
+                    " || ' ' " +
+                    " || tb1.c_session_date " +
+                    " || ' ' " +
+                    " || tb1.classname " +
+                    " || ' ' " +
+                    " || tb1.studentName " +
+                    " || ' با جلسه ' " +
+                    " || tb2.c_session_start_hour " +
+                    "|| ' تا ' " +
+                    " || tb2.c_session_end_hour " +
+                    " || ' ' " +
+                    " || tb2.c_day_name " +
+                    " || ' ' " +
+                    " || tb2.c_session_date " +
+                    " || ' ' " +
+                    " || tb2.classname " +
+                    " || ' تداخل دارد' AS alarm, " +
+                    " null AS detailRecordId, " +
+                    " ('4' || tb1.student_id || ' تداخل فراگیر ' || tb1.c_session_date || tb1.c_session_start_hour ) AS sortField, " +
+                    " tb2.f_class_id AS classIdConflict, tb2.id AS  sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " ( " +
+                    "        SELECT " +
+                    "        tbl_session.id, " +
+                    "        tbl_session.f_class_id, " +
+                    "        tbl_session.c_day_name, " +
+                    "        tbl_session.c_session_date, " +
+                    "        tbl_session.c_session_end_hour, " +
+                    "        tbl_session.c_session_start_hour, " +
+                    "        tbl_class_student.student_id, " +
+                    "        tbl_class_student.id AS classStudentId, " +
+                    "        tbl_student.first_name, " +
+                    "        tbl_student.last_name, " +
+                    "        tbl_student.national_code, " +
+                    "        tbl_student.personnel_no, " +
+                    "        ( " +
+                    "            CASE " +
+                    "                WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                ELSE ' خانم ' " +
+                    "            END " +
+                    "        || tbl_student.first_name " +
+                    "        || ' ' " +
+                    "        || tbl_student.last_name " +
+                    "        || ' با شماره پرسنلی ' " +
+                    "        || tbl_student.personnel_no ) AS studentName, " +
+                    "                ( ' کلاس ' " +
+                    "        || tbl_class.c_title_class " +
+                    "        || ' با کد ' " +
+                    "        || tbl_class.c_code ) AS classname " +
+                    "    FROM " +
+                    "        tbl_session " +
+                    "        INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "        INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "        INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "        WHERE tbl_class.f_term = :term_id AND tbl_class.c_status <> 3 " +
+                    " ) tb1 " +
+                    " INNER JOIN ( " +
+                    "    SELECT " +
+                    "        tbl_session.id, " +
+                    "        tbl_session.f_class_id, " +
+                    "        tbl_session.c_day_name, " +
+                    "        tbl_session.c_session_date, " +
+                    "        tbl_session.c_session_end_hour, " +
+                    "        tbl_session.c_session_start_hour, " +
+                    "        tbl_class_student.student_id, " +
+                    "        tbl_class_student.id AS classStudentId, " +
+                    "        tbl_student.first_name, " +
+                    "        tbl_student.last_name, " +
+                    "        tbl_student.national_code, " +
+                    "        tbl_student.personnel_no, " +
+                    "        ( " +
+                    "            CASE " +
+                    "                WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                ELSE ' خانم ' " +
+                    "            END " +
+                    "        || tbl_student.first_name " +
+                    "        || ' ' " +
+                    "        || tbl_student.last_name " +
+                    "        || ' با شماره پرسنلی ' " +
+                    "        || tbl_student.personnel_no ) AS studentName, " +
+                    "        ( ' کلاس ' " +
+                    "        || tbl_class.c_title_class " +
+                    "        || ' با کد ' " +
+                    "        || tbl_class.c_code ) AS classname         " +
+                    "    FROM " +
+                    "        tbl_session " +
+                    "        INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "        INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "        INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "        WHERE tbl_class.f_term = :term_id AND tbl_class.c_status <> 3 " +
+                    " ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
+                    "         AND tb2.national_code = tb1.national_code " +
+                    " WHERE " +
+                    " tb1.id <> tb2.id " +
+                    " AND   ( " +
+                    "    ( " +
+                    "        tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "        AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "    ) " +
+                    "    OR    ( " +
+                    "        tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "        AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "    ) " +
+                    " ) " +
+                    " AND tb1.f_class_id =:class_id ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+
+            List<ClassAlarmDTO.Create> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+
+                if (alarmList.size() > 0) {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
+                    saveAlarms(alarmList);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************convert object to dto*****************
+    private ClassAlarmDTO.Create convertObjectToDTO(Object[] alarm) {
+        return new ClassAlarmDTO.Create(
+                (alarm[0] != null ? alarm[0].toString() : null),
+                (alarm[1] != null ? alarm[1].toString() : null),
+                (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
+                (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
+                (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
+                (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
+                (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
+                (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
+                (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
+                (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
+                (alarm[10] != null ? alarm[10].toString() : null),
+                (alarm[11] != null ? alarm[11].toString() : null),
+                (alarm[12] != null ? alarm[12].toString() : null),
+                (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
+                (alarm[14] != null ? alarm[14].toString() : null),
+                (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
+                (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
+                (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
+                (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
+                (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
+        );
+    }
+    //*********************************
+
+    //****************save created alarms*****************
+    @Transactional
+    public void saveAlarms(List<ClassAlarmDTO.Create> alarmList) {
+
+        alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(alarmList.get(0).getAlarmTypeTitleEn(), alarmList.get(0).getClassId(), alarmList.get(0).getSessionId(), alarmList.get(0).getTeacherId(), alarmList.get(0).getStudentId(), alarmList.get(0).getInstituteId(), alarmList.get(0).getTrainingPlaceId(), alarmList.get(0).getReservationId(), alarmList.get(0).getClassIdConflict(), alarmList.get(0).getSessionIdConflict(), alarmList.get(0).getInstituteIdConflict(), alarmList.get(0).getTrainingPlaceIdConflict(), alarmList.get(0).getReservationIdConflict());
+
+        alarmDAO.saveAll(modelMapper.map(alarmList, new TypeToken<List<Alarm>>() {
+        }.getType()));
+    }
+    //*********************************
+
+
+    //****************delete all class alarms*****************
+    @Transactional
+    public void deleteAllClassAlarms(Long classId) {
+        alarmDAO.deleteAlarmsByClassId(classId);
+    }
+    //*********************************
 
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
@@ -992,7 +1466,7 @@ public class ClassAlarmService implements IClassAlarm {
                     .setParameter("todaydat", todayDate).getResultList();
 
             if (!Alarm.isEmpty())
-            endingClassAlarm.append(endingClassAlarm.length() > 0 ? " <br />و همچنین "+ Alarm.get(0) : Alarm.get(0));
+                endingClassAlarm.append(endingClassAlarm.length() > 0 ? " <br />و همچنین " + Alarm.get(0) : Alarm.get(0));
 
         } catch (Exception ex) {
             ex.printStackTrace();

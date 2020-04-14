@@ -39,6 +39,9 @@ public interface ITclassService {
 
     SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request);
 
+    @Transactional(readOnly = true)
+    <T> SearchDTO.SearchRs<T> search1(SearchDTO.SearchRq request, Class<T> infoType);
+
     SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> evaluatedSearch(SearchDTO.SearchRq request);
 
     SearchDTO.SearchRs<TclassDTO.Info> searchById(SearchDTO.SearchRq request, Long classId);
@@ -65,4 +68,18 @@ public interface ITclassService {
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 
     public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeacherId(SearchDTO.SearchRq request, Long tId);
+
+    @Transactional(readOnly = true)
+    Double getClassReactionEvaluationGrade(Long classId, Long tId);
+
+    @Transactional(readOnly = true)
+    List<TclassDTO.Info> PersonnelClass(Long id);
+
+
 }

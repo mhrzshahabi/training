@@ -2,4 +2,8 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
+    <changeSet author="Hamed (generated)" id="1586583554129-262">
+        <addUniqueConstraint columnNames="f_student, f_session" constraintName="UK7wn0yxv0uewxb6m0iqfakhu4e" tableName="tbl_attendance"/>
+    </changeSet>
+
 </databaseChangeLog>

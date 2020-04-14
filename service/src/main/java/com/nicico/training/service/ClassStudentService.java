@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -40,49 +41,11 @@ public class ClassStudentService implements IClassStudentService {
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType) {
-        return SearchUtil.search(classStudentDAO, request, e -> mapper.map(e, infoType));
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(classStudentDAO, request, converter);
     }
-
-//    @Transactional(readOnly = true)
-//    @Override
-//    public <T> SearchDTO.SearchRs<T> searchClassesOfStudent(SearchDTO.SearchRq request, String nationalCode, Class<T> infoType) {
-//        request = (request != null) ? request : new SearchDTO.SearchRq();
-//        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-//        if (nationalCode != null) {
-//            list.add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
-//            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
-//            if (request.getCriteria() != null) {
-//                if (request.getCriteria().getCriteria() != null)
-//                    request.getCriteria().getCriteria().add(criteriaRq);
-//                else
-//                    request.getCriteria().setCriteria(list);
-//            } else
-//                request.setCriteria(criteriaRq);
-//        }
-//        return SearchUtil.search(classStudentDAO, request, e -> mapper.map(e, infoType));
-//    }
-//
-//    @Transactional(readOnly = true)
-//    @Override
-//    public <T> SearchDTO.SearchRs<T> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<T> infoType) {
-//        request = (request != null) ? request : new SearchDTO.SearchRq();
-//        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-//        if (classId != null) {
-//            list.add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
-//            if (request.getCriteria() != null) {
-//                if (request.getCriteria().getCriteria() != null)
-//                    request.getCriteria().getCriteria().add(criteriaRq);
-//                else
-//                    request.getCriteria().setCriteria(list);
-//            } else
-//                request.setCriteria(criteriaRq);
-//        }
-//        return SearchUtil.search(classStudentDAO, request, e -> mapper.map(e, infoType));
-//    }
 
     @Transactional
     @Override
@@ -150,14 +113,19 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional
     @Override
     public List<Long> getScoreState(Long classId) {
-        final List<Long> classStudentList = classStudentDAO.getScoreState(classId);
-        return classStudentList;
-
+        return classStudentDAO.getScoreState(classId);
     }
 
     @Transactional
     public List<ClassStudent> findByClassIdAndStudentId(Long classId, Long studentId) {
         return classStudentDAO.findByTclassIdAndStudentId(classId, studentId);
 
+    }
+
+    //*********************************
+    @Transactional
+    public Long getClassIdByClassStudentId(Long classStudentId) {
+        ClassStudent classSession = classStudentDAO.getClassStudentById(classStudentId);
+        return classSession.getTclassId();
     }
 }

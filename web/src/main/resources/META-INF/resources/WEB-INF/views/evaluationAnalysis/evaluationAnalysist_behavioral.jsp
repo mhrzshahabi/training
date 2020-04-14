@@ -21,8 +21,7 @@
         showErrorText: false,
         styleName: "evaluation-form",
         numCols: 2,
-        margin: 10,
-        newPadding: 5,
+        margin: 2,
         canTabToIcons: false,
         fields: [
             {
@@ -47,8 +46,7 @@
                 name: "numberOfFilledFormsByStudents",
                 title:  "<spring:message code='number.of.students.answers'/>",
                 baseStyle: "evaluation-code",
-                canEdit: false,
-                hidden: true
+                canEdit: false
             }
         ]
     });
@@ -64,8 +62,7 @@
         valuesManager: vm_Behavioral_evaluation,
         styleName: "teacher-form",
         numCols: 2,
-        margin: 10,
-        newPadding: 5,
+        margin: 2,
         canTabToIcons: false,
         fields: [
             {
@@ -143,6 +140,7 @@
         top: 260,
         width: "300",
         height: "25",
+        margin: 2,
         title: "<spring:message code='print.behavioral.evaluation.analysis'/>",
         click: function () {
             var obj1 = vm_Behavioral_evaluation.getValues();
@@ -158,40 +156,19 @@
         }
     });
 
-    var Hlayout_Tab_BehavioralEvaluation_Evaluation_Analysis_Print = isc.HLayout.create({
-        width: "100%",
-        height: "49%",
-        align: "center",
-        members: [
-            IButton_Print_BehavioralEvaluation_Evaluation_Analysis
-        ]
-    });
-
     var Vlayout_DynamicForms_BehavioralEvaluation = isc.VLayout.create({
         defaultLayoutAlign: "center",
         members: [
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
             DynamicForm_Behavioral_EvaluationAnalysis_Header,
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
-            DynamicForm_Behavioral_EvaluationAnalysis_Footer
+            DynamicForm_Behavioral_EvaluationAnalysis_Footer,
+            IButton_Print_BehavioralEvaluation_Evaluation_Analysis
         ]
     });
 
     var VLayout_Body_evaluation_analysis_Behavioral = isc.VLayout.create({
         width: "50%",
         height: "100%",
-        members: [Vlayout_DynamicForms_BehavioralEvaluation,
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
-            Hlayout_Tab_BehavioralEvaluation_Evaluation_Analysis_Print]
+        members: [Vlayout_DynamicForms_BehavioralEvaluation]
     });
 
     var BehavioralEvaluationChart = isc.FacetChart.create({
@@ -211,20 +188,21 @@
         }],
         data: behavioral_chartData,
         valueProperty: "grade",
-        valueTitle: "تفاوت نمره ی فراگیر به خودش و نمره ی سرپرست به فراگیر",
+        valueTitle: "تفاوت نمره ی فراگیر و نمره ی سرپرست",
         title: "<spring:message code='class.behavioral.evaluation.analysis'/>",
     });
 
     var BehavioralEvaluationChartLayout = isc.VLayout.create({
         defaultLayoutAlign: "center",
         width: "50%",
-        height: "100%",
+        height: "500",
         members: [BehavioralEvaluationChart]
     });
 
     var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
         width: "100%",
         height: "100%",
+        overflow: "scroll",
         members: [
             VLayout_Body_evaluation_analysis_Behavioral,
             BehavioralEvaluationChartLayout

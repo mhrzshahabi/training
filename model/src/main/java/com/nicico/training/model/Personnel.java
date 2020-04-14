@@ -167,4 +167,3 @@ public class Personnel {
     @Column(name = "ccp_title")
     private String ccpTitle;
 }
-

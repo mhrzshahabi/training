@@ -87,14 +87,31 @@ public class TclassRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<TclassDTO.Info> create(@Validated @RequestBody TclassDTO.Create request) {
-        return new ResponseEntity<>(tclassService.create(request), HttpStatus.CREATED);
+
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tclassService.create(request), HttpStatus.CREATED);
+
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 201) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+        }
+        return infoResponseEntity;
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_tclass')")
     public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
-        return new ResponseEntity<>(tclassService.update(id, request), HttpStatus.OK);
+
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tclassService.update(id, request), HttpStatus.OK);
+
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 200) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+        }
+
+        return infoResponseEntity;
     }
 
     @Loggable
@@ -352,7 +369,7 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/reactionEvaluationResult/{classId}/{userId}")
     public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
-        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId,userId), HttpStatus.OK);
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId, userId), HttpStatus.OK);
     }
 
     @Loggable
@@ -397,5 +414,52 @@ public class TclassRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/listByteacherID/{teacherId}")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TclassDTO.TclassTeachingHistorySpecRs> listByTeacherID(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                                 @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                                 HttpServletResponse httpResponse,
+                                                                                 @PathVariable Long teacherId) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = tclassService.searchByTeachingHistory(request, teacherId);
+
+        final TclassDTO.TeachingHistorySpecRs specResponse = new TclassDTO.TeachingHistorySpecRs();
+        final TclassDTO.TclassTeachingHistorySpecRs specRs = new TclassDTO.TclassTeachingHistorySpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 
 }

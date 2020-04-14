@@ -19,4 +19,52 @@
         <addForeignKeyConstraint baseColumnNames="f_province_id" baseTableName="tbl_polis" constraintName="FKr88eacjbyrs3u0b0w6v7vxyyd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_province" validate="true"/>
     </changeSet>
 
+    <changeSet author="Hamed (generated)" id="1586515492669-259">
+        <addForeignKeyConstraint baseColumnNames="f_training_place_id_conflict" baseTableName="tbl_alarm" constraintName="FK2uy0xcffqcvg1p254378mx77n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_training_place" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-267">
+        <addForeignKeyConstraint baseColumnNames="f_training_place_id" baseTableName="tbl_alarm" constraintName="FK3ge4h3fyb4xslob6haxiayyxv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_training_place" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-271">
+        <addForeignKeyConstraint baseColumnNames="f_student_id" baseTableName="tbl_alarm" constraintName="FK4bb3x8fxbocfq6dmr9qn7j8e6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class_student" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-279">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_alarm" constraintName="FK5nno0uc5m1fs9lfv7bitns9u0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-286">
+        <addForeignKeyConstraint baseColumnNames="f_institute_id_conflict" baseTableName="tbl_alarm" constraintName="FK7ypgpf3pfp32al16anm7p3bbf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-304">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_alarm" constraintName="FKbi5yphah21q7prr3qrq60e67b" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-326">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_alarm" constraintName="FKeb6i33cue8ojjximxrnmlimhd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-328">
+        <addForeignKeyConstraint baseColumnNames="f_class_id_conflict" baseTableName="tbl_alarm" constraintName="FKegn5wpgv2c7ulksnhlpc4nhj6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-336">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_alarm" constraintName="FKgh2yygk6oaogw8q18b7exhduy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-377">
+        <addForeignKeyConstraint baseColumnNames="f_session_id" baseTableName="tbl_alarm" constraintName="FKoy5btrovyyf7mg4qspw3x2tpr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_session" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-387">
+        <addForeignKeyConstraint baseColumnNames="f_session_id_conflict" baseTableName="tbl_alarm" constraintName="FKqpvn4sdyiquaqe5d137jkxkmo" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_session" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-404">
+        <addForeignKeyConstraint baseColumnNames="f_institute_id" baseTableName="tbl_alarm" constraintName="FKthj48u0sxa3oqsxe7i5jx0n2d" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

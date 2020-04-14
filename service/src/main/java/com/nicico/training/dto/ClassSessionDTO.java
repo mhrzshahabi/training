@@ -86,6 +86,64 @@ public class ClassSessionDTO implements Serializable {
 
     //*********************************
 
+    //-------------------------------
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassSessionWeeklySchedule")
+    public static class WeeklySchedule {
+        private Long id;
+        private TclassDTO.WeeklySchedule tclass;
+        private String sessionDate;
+        private String dayName;
+        private String sessionHour;
+        private Integer sessionState;
+        private String sessionStateFa;
+        private String sessionStartHour;
+        private String sessionEndHour;
+        private String studentStatus;
+        private String studentPresentStatus;
+        public String getSessionHour() {
+            String result = "";
+            if(sessionStartHour != null) {
+                result += sessionStartHour;
+            }
+            if (sessionEndHour != null) {
+                result += " تا ";
+                result += sessionEndHour;
+            }
+                return result;
+        }
+//        public String getStudentStatus(){
+//            return "ثبت نام شده";
+//        }
+//        public String getStudentPresentStatus(){
+//            return "حاضر";
+//        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ClassSessionWeeklyScheduleSpecRs")
+    public static class ClassSessionWeeklyScheduleSpecRs {
+        private WeeklyScheduleSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class WeeklyScheduleSpecRs {
+        private List<ClassSessionDTO.WeeklySchedule> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+
     @Getter
     @Setter
     @Accessors(chain = true)

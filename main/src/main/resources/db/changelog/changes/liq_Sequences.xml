@@ -9,4 +9,9 @@
     <changeSet author="razmnoosh (generated)" id="1583827807386-242">
         <createSequence sequenceName="seq_polis_id"/>
     </changeSet>
+
+    <changeSet author="Hamed (generated)" id="1586515492669-248">
+        <createSequence sequenceName="seq_alarm_id"/>
+    </changeSet>
+
 </databaseChangeLog>

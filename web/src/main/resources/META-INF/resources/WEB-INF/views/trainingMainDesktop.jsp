@@ -86,6 +86,9 @@
     const evaluationUrl = rootUrl + "/evaluation";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
+    const personnelInformationUrl = rootUrl + "/personnelInformation";
+    const unfinishedClasses = rootUrl + "/unfinishedClasses";
+    const studentPortalUrl = rootUrl + "/student-portal";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -205,12 +208,12 @@
         NotAllowedInFileNameChar: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
-            expression: /^((?![/\\?%*:|"<>.]).)*$/,
+            expression: /^((?![\/\\?%*:|"<>.]).)*$/,
         },
         EmailValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.email.address"/>",
-            expression: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+            expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         },
         WebsiteValidate: {
             type: "regexp",
@@ -220,12 +223,13 @@
         MobileValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-            expression: /^([+]\d{2})?\d{10}$/,
+            expression:/^((\+98)|(0))[9\d{9}]{10}$/,
         },
         PhoneValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.phone.number"/>",
-            expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+            expression: /^(0\d{2})[\d{8}]{8}$/,
+                // |()|(\+\d{4}):can be add in order to not use any section's code or use +---- format for that.
         },
         PostalCodeValidate: {
             type: "custom",
@@ -756,6 +760,13 @@
                 },
                 {isSeparator: true},
                 {
+                    title: "<spring:message code="report.calender.current.term"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");
+                    }
+                },
+                 {isSeparator: true},
+                {
                     title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
@@ -773,6 +784,13 @@
                     title: "<spring:message code="teachers.report"/>",
                     click:function(){
                         createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="weekly.training.schedule"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
                     }
                 },
                 {isSeparator: true},
@@ -1233,6 +1251,7 @@
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
+    const calenderCurrentTerm=rootUrl+"/calenderCurrentTerm/";
     const classReportUrl = rootUrl + "/classReport/";
     const instituteUrl = rootUrl + "/institute/";
     const educationUrl = rootUrl + "/education/";
@@ -1259,7 +1278,6 @@
     const classStudent = rootUrl + "/classStudent/";
     const classAlarm = rootUrl + "/classAlarm/";
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
-    const unfinishedClasses = rootUrl + "/unfinishedClasses/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/"

@@ -51,4 +51,51 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="Hamed (generated)" id="1586515492669-249">
+        <createTable tableName="tbl_alarm">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_alarmPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_alarm" type="VARCHAR2(500 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_alarm_type_title_en" type="VARCHAR2(100 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_alarm_type_title_fa" type="VARCHAR2(100 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_class_id" type="NUMBER(19, 0)"/>
+            <column name="f_class_id_conflict" type="NUMBER(19, 0)"/>
+            <column name="n_detail_record_id" type="NUMBER(19, 0)"/>
+            <column name="f_institute_id" type="NUMBER(19, 0)"/>
+            <column name="f_institute_id_conflict" type="NUMBER(19, 0)"/>
+            <column name="c_page_address" type="VARCHAR2(200 CHAR)"/>
+            <column name="n_reservation_id" type="NUMBER(19, 0)"/>
+            <column name="n_reservation_id_conflict" type="NUMBER(19, 0)"/>
+            <column name="f_session_id" type="NUMBER(19, 0)"/>
+            <column name="f_session_id_conflict" type="NUMBER(19, 0)"/>
+            <column name="c_sort_field" type="VARCHAR2(50 CHAR)"/>
+            <column name="f_student_id" type="NUMBER(19, 0)"/>
+            <column name="c_tab_name" type="VARCHAR2(100 CHAR)"/>
+            <column name="n_target_record_id" type="NUMBER(19, 0)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+            <column name="f_training_place_id" type="NUMBER(19, 0)"/>
+            <column name="f_training_place_id_conflict" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

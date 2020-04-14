@@ -24,7 +24,8 @@
             {name: "fullNameFa"},
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
-            {name: "personality.nationalCode"}
+            {name: "personality.nationalCode"},
+            {name: "grade"}
         ],
         fetchDataURL: teacherUrl + "fullName-list"
     });
@@ -73,6 +74,18 @@
             {name: "preCourseTest", type: "boolean"}
         ],
         fetchDataURL: classUrl + "spec-list"
+    });
+    var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleClass"},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "code"},
+            {name: "term"},
+            {name: "grade"}
+        ],
+        fetchDataURL: teacherUrl + "all-students-grade-to-teacher"
     });
 
     var RestDataSource_Course_JspClass = isc.TrDS.create({
@@ -586,7 +599,7 @@
                 textAlign: "center",
                 type: "ComboBoxItem",
                 multiple: false,
-// pickListWidth: 230,
+                pickListWidth: 450,
 // changeOnKeypress: true,
                 displayField: "fullNameFa",
                 valueField: "id",
@@ -599,20 +612,69 @@
                         name: "personality.lastNameFa",
                         title: "<spring:message code='lastName'/>",
                         titleAlign: "center",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        // autoFitWidth:true
                     },
                     {
                         name: "personality.firstNameFa",
                         title: "<spring:message code='firstName'/>",
+                        // autoFitWidth:true,
                         titleAlign: "center", filterOperator: "iContains"
                     },
                     {
                         name: "personality.nationalCode",
                         title: "<spring:message code='national.code'/>",
                         titleAlign: "center",
+                        autoFitWidth:true,
                         filterOperator: "iContains"
-                    }
+                    },
+                    {
+                        name: "grade",
+                        title: "<spring:message code='students.to.teacher.grade'/>",
+                        titleAlign: "center",
+                        // autoFitWidth:true,
+                        filterOperator: "iContains",
+                        // canHover: true,
+                        // showHover: true,
+                        // showHoverComponents: true,
+                        <%--getCellHoverComponent : function (record, rowNum, colNum) {--%>
+                            <%--alert(1)--%>
+                            <%--if(record.grade != null) {--%>
+                                <%--RestDataSource_StudentGradeToTeacher_JspClass.fetchDataURL = teacherUrl + "all-students-grade-to-teacher?teacherId=" + record.id + "&courseId=" + DynamicForm_Class_JspClass.getValue("courseId");--%>
+                                <%--this.rowHoverComponent = isc.TrLG.create({--%>
+                                    <%--dataSource: RestDataSource_StudentGradeToTeacher_JspClass,--%>
+                                    <%--fields:[--%>
+                                        <%--{name: "titleClass", title: "<spring:message code="class.title"/>"},--%>
+                                        <%--{name: "startDate", title: "<spring:message code="start.date"/>"},--%>
+                                        <%--{name: "endDate", title: "<spring:message code="end.date"/>"},--%>
+                                        <%--{name: "code", title: "<spring:message code="class.code"/>"},--%>
+                                        <%--{name: "term.titleFa", title: "<spring:message code="term"/>"},--%>
+                                        <%--{name: "grade", title: "<spring:message code="students.to.teacher.grade"/>"}--%>
+                                    <%--],--%>
+                                    <%--width: 450--%>
+                                <%--});--%>
+                                <%--this.rowHoverComponent.fetchData();--%>
+                                <%--return this.rowHoverComponent;--%>
+                            <%--}--%>
+                            <%--return;--%>
+                        <%--}--%>
+                    },
                 ],
+                showIconsOnFocus:true,
+                icons: [{
+                    src: "<spring:url value="history.png"/>",
+                    prompt: "سوابق تدریس در شرکت مس",
+                    click(){
+                        if(DynamicForm_Class_JspClass.getValue("teacherId") == undefined){
+                            return;
+                        }
+                        RestDataSource_StudentGradeToTeacher_JspClass.fetchDataURL = teacherUrl + "all-students-grade-to-teacher?teacherId=" + DynamicForm_Class_JspClass.getValue("teacherId") + "&courseId=" + DynamicForm_Class_JspClass.getValue("course.id");
+                        Window_MoreInformation_JspClass.show();
+                        ListGrid_AllStudentsGradeToTeacher_JspClass.invalidateCache();
+                        ListGrid_AllStudentsGradeToTeacher_JspClass.fetchData();
+                    }
+                }],
+
                 filterFields: [
                     "personality.lastNameFa",
                     "personality.firstNameFa",
@@ -1521,6 +1583,38 @@
                 ]
             })]
     })
+
+    var Window_MoreInformation_JspClass = isc.Window.create({
+        title: "<spring:message code="more.information"/>",
+        width: "80%",
+        height: "60%",
+        keepInParentRect: true,
+        // isModal: false,
+        autoSize: false,
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    isc.TrLG.create({
+                        ID: "ListGrid_AllStudentsGradeToTeacher_JspClass",
+                        dataSource: RestDataSource_StudentGradeToTeacher_JspClass,
+                        selectionType: "single",
+                        filterOnKeypress: true,
+                        autoFetchData:true,
+                        fields:[
+                            {name: "titleClass", title: "<spring:message code="class.title"/>"},
+                            {name: "startDate", title: "<spring:message code="start.date"/>"},
+                            {name: "endDate", title: "<spring:message code="end.date"/>"},
+                            {name: "code", title: "<spring:message code="class.code"/>"},
+                            {name: "term", title: "<spring:message code="term"/>"},
+                            {name: "grade", title: "<spring:message code="students.to.teacher.grade"/>"}
+                        ],
+                        gridComponents: ["filterEditor", "header", "body"],
+                    }),
+                ]
+            })
+        ]
+    });
+
 
 
     //--------------------------------------------------------------------------------------------------------------------//

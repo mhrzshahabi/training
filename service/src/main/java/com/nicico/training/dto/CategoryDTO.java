@@ -120,4 +120,15 @@ public class CategoryDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @ApiModel("CategoryInfoTuple")
+    public static class CategoryTitle {
+        private Long id;
+        private String titleFa;
+        private String titleEn;
+    }
 }

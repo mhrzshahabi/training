@@ -22,8 +22,7 @@
         showErrorText: false,
         styleName: "evaluation-form",
         numCols: 2,
-        margin: 10,
-        newPadding: 5,
+        margin: 5,
         canTabToIcons: false,
         fields: [
             {
@@ -75,8 +74,7 @@
         valuesManager: vm_reaction_evaluation,
         styleName: "teacher-form",
         numCols: 2,
-        margin: 10,
-        newPadding: 5,
+        margin: 2,
         canTabToIcons: false,
         fields: [
             {
@@ -156,6 +154,7 @@
         top: 260,
         width: "300",
         height: "25",
+        margin: 2,
         title: "چاپ خلاصه نتیجه ارزیابی واکنشی",
         click: function () {
             var obj1 = vm_reaction_evaluation.getValues();
@@ -171,40 +170,13 @@
         }
     });
 
-    var Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print = isc.HLayout.create({
-        width: "100%",
-        height: "49%",
-        align: "center",
-        members: [
-            IButton_Print_ReactionEvaluation_Evaluation_Analysis
-        ]
-    });
-
-    var Vlayout_DynamicForms_ReactionEvaluation = isc.VLayout.create({
-        defaultLayoutAlign: "center",
-        members: [
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
-            DynamicForm_Reaction_EvaluationAnalysis_Header,
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
-            DynamicForm_Reaction_EvaluationAnalysis_Footer
-        ]
-    });
-
     var VLayout_Body_evaluation_analysis_reaction = isc.VLayout.create({
         width: "50%",
         height: "100%",
-        members: [Vlayout_DynamicForms_ReactionEvaluation ,
-            isc.LayoutSpacer.create({
-                height: 20,
-                width: "*",
-            }),
-            Hlayout_Tab_ReactionEvaluation_Evaluation_Analysis_Print]
+        defaultLayoutAlign: "center",
+        members: [ DynamicForm_Reaction_EvaluationAnalysis_Header,
+            DynamicForm_Reaction_EvaluationAnalysis_Footer,
+            IButton_Print_ReactionEvaluation_Evaluation_Analysis]
     });
 
     var ReactionEvaluationChart = isc.FacetChart.create({
@@ -249,13 +221,14 @@
     var ReactionEvaluationChartLayout =  isc.VLayout.create({
         defaultLayoutAlign: "center",
         width: "50%",
-        height: "100%",
+        height: "500",
         members: [chartSelector, ReactionEvaluationChart]
     });
 
     var Hlayout_ReactionEvaluationResult = isc.HLayout.create({
         width: "100%",
         height: "100%",
+        overflow: "scroll",
         members: [
             VLayout_Body_evaluation_analysis_reaction,
             ReactionEvaluationChartLayout

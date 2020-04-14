@@ -5,9 +5,13 @@
 // <script>
 
     const userNationalCode = '<%= SecurityUtil.getNationalCode()%>';
-    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/getOneByNationalCode/" + userNationalCode, "GET", null, userData_Result_SP));
+    isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/personnel/getOneByNationalCode", "GET", null, userData_Result_SP));
+    isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/student/getOneByNationalCode", "GET", null, studentData_Result_SP));
+    // isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/getOneByNationalCode/3149573092", "GET", null, userData_Result_SP));
+    // isc.RPCManager.sendRequest(TrDSRequest(studentUrl + "getOneByNationalCode/3149573092", "GET", null, studentData_Result_SP));
 
     var person_SP = null;
+    var student_SP = null;
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*Main Menu*/
@@ -39,7 +43,7 @@
                     click: function () {
                         if (person_SP == null)
                             return;
-                        if (typeof call_needsAssessmentReports === "undefined")
+                        if (MainTS_SP.getTab("<spring:message code="needsAssessmentReport"/>") == null)
                             createTab_SP("<spring:message code="needsAssessmentReport"/>", "<spring:url value="/web/needsAssessment-reports"/>", "call_needsAssessmentReports('0',false,person_SP,false)");
                         else {
                             call_needsAssessmentReports('0',false,person_SP,false);
@@ -53,12 +57,59 @@
                     click: function () {
                         if (person_SP == null)
                             return;
-                        if (typeof call_needsAssessmentReports === "undefined")
+                        if (MainTS_SP.getTab("<spring:message code="needsAssessmentReport"/>") == null)
                             createTab_SP("<spring:message code="needsAssessmentReport"/>", "<spring:url value="/web/needsAssessment-reports"/>", "call_needsAssessmentReports('2',false,person_SP,false)");
                         else {
                             call_needsAssessmentReports('2',false,person_SP,false);
                             MainTS_SP.selectTab("<spring:message code="needsAssessmentReport"/>");
                         }
+                    }
+                },
+                {isSeparator: true},
+            ]
+        }),
+    });
+
+    runTSMB_SP = isc.ToolStripMenuButton.create({
+        title: "<spring:message code='class'/>",
+        menu: isc.Menu.create({
+            placement: "none",
+            data: [
+                {
+                    title: "<spring:message code="weekly.training.schedule"/>",
+                    click:function(){
+                        createTab_SP(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
+                            // , "call_weeklyTrainingSchedule(person_SP)");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="report.calender.current.term"/>",
+                    click: function () {
+                        createTab_SP(this.title, "<spring:url value="web/calenderCurrentTerm"/>", "call_calenderCurrentTerm(person_SP)");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="unfinished.classes"/>",
+                    click: function () {
+                        createTab_SP(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+            ]
+        }),
+    });
+
+    evaluationTSMB_SP = isc.ToolStripMenuButton.create({
+        title: "<spring:message code="evaluation"/>",
+        menu: isc.Menu.create({
+            placement: "none",
+            data: [
+                {
+                    title: "ثبت نتایج",
+                    click: function () {
+                        createTab_SP(this.title, "<spring:url value="/questionEvaluation/show-form"/>", "call_questionEvaluation(student_SP)");
                     }
                 },
                 {isSeparator: true},
@@ -73,9 +124,12 @@
         showShadow: true,
         shadowDepth: 3,
         shadowColor: "#153560",
+        disabled: true,
         members: [
             basicInfoTSMB_SP,
             NAreportTSMB_SP,
+            runTSMB_SP,
+            // evaluationTSMB_SP
         ]
     });
 
@@ -122,36 +176,31 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     AffairsLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     PostLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     PersonnelNoLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     NationalCodeLabel_SP = isc.Label.create({
-        width: 200,
-        // padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
 
     UserNameLabel_SP = isc.Label.create({
-        width: 200,
-        padding: 10,
+        padding: 15,
         dynamicContents: true,
         styleName: "header-label-username"
     });
@@ -189,17 +238,28 @@
             person_SP = (JSON.parse(resp.data));
             UserNameLabel_SP.contents = "<spring:message code="user"/>: " + person_SP.firstName + " " + person_SP.lastName;
             NationalCodeLabel_SP.contents = "<spring:message code='national.code'/>: " + person_SP.nationalCode;
-            PersonnelNoLabel_SP.contents = "<spring:message code='personal.ID'/>: " + person_SP.personnelNo;
-            PostLabel_SP.contents = "<spring:message code='post'/>: " + person_SP.postTitle;
-            AffairsLabel_SP.contents = "<spring:message code='affairs'/>: " + person_SP.ccpAffairs;
+            PersonnelNoLabel_SP.contents = "<spring:message code='personal.ID'/>: " + (person_SP.personnelNo !== undefined ? person_SP.personnelNo : "");
+            PostLabel_SP.contents = "<spring:message code='post'/>: " + (person_SP.postTitle !== undefined ? person_SP.postTitle : "");
+            AffairsLabel_SP.contents = "<spring:message code='affairs'/>: " + (person_SP.ccpAffairs !== undefined ? person_SP.ccpAffairs : "");
             UserNameLabel_SP.redraw();
             NationalCodeLabel_SP.redraw();
             PersonnelNoLabel_SP.redraw();
             PostLabel_SP.redraw();
             AffairsLabel_SP.redraw();
+            MainToolStrip_SP.enable();
         } else {
             person_SP = null;
             createDialog("info", resp.httpResponseText);
+        }
+    }
+
+    function studentData_Result_SP(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            student_SP = (JSON.parse(resp.data));
+            MainToolStrip_SP.addMember(evaluationTSMB_SP);
+        } else {
+            student_SP = null;
+            // createDialog("info", resp.httpResponseText);
         }
     }
 

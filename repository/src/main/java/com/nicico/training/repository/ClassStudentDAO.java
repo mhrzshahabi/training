@@ -51,4 +51,6 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     List<ClassStudent> findByTclassId(Long classId);
     List<ClassStudent> findByTclassIdAndPreTestScoreIsNull(Long id);
 
+    ClassStudent getClassStudentById(Long classStudentId);
+
 }

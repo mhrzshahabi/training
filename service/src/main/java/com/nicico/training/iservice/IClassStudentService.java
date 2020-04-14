@@ -6,12 +6,13 @@ import com.nicico.training.model.ClassStudent;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public interface IClassStudentService {
 
     ClassStudent getClassStudent(Long id);
 
-    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType);
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
     void registerStudents(List<ClassStudentDTO.Create> request, Long classId);
 
@@ -23,9 +24,7 @@ public interface IClassStudentService {
 
     int setStudentFormIssuance(Map<String, Integer> formIssuance);
 
-
     void setTotalStudentWithOutScore(Long classId);
-
 
     List<Long> getScoreState(Long classId);
 }

@@ -10,11 +10,14 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.repository.ClassStudentDAO;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -44,8 +48,10 @@ public class ClassStudentRestController {
     private final ReportUtil reportUtil;
     private final ClassStudentService classStudentService;
     private final ClassStudentDAO classStudentDAO;
+    private final ModelMapper modelMapper;
+    private final ClassAlarmService classAlarmService;
 
-    private <T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Class<T> infoType) throws IOException {
+    private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
@@ -55,110 +61,50 @@ public class ClassStudentRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        SearchDTO.SearchRs<T> searchRs = classStudentService.search(searchRq, infoType);
-        return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        SearchDTO.SearchRs<T> searchRs = classStudentService.search(searchRq, converter);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/students-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.ClassStudentInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.ClassStudentInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
     }
 
     @Loggable
     @GetMapping(value = "/attendance-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.AttendanceInfo>> attendanceList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.AttendanceInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.AttendanceInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.AttendanceInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.AttendanceInfo.class));
     }
 
     @Loggable
     @GetMapping(value = "/classes-of-student/{nationalCode}")
     public ResponseEntity<ISC<ClassStudentDTO.CoursesOfStudent>> classesOfStudentList(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
-        return search(iscRq, makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null), ClassStudentDTO.CoursesOfStudent.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = classStudentService.search(searchRq, ClassStudentDTO.CoursesOfStudent.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return search(iscRq, makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));
+    }
+
+    @Loggable
+    @GetMapping(value = "/class-list-of-student/{nationalCode}")
+    public ResponseEntity<ISC<TclassDTO.StudentClassList>> classesOfStudentJustClassList(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
+        return search(iscRq, makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null), c -> (modelMapper.map(c, ClassStudentDTO.StudentClassList.class)).getTclass());
     }
 
     @Loggable
     @GetMapping(value = "/scores-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ScoresInfo>> scoresList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.ScoresInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.ScoresInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ScoresInfo.class));
     }
 
     @Loggable
     @GetMapping(value = "/pre-test-score-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.PreTestScoreInfo>> pre_test_scoreList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.PreTestScoreInfo.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.PreTestScoreInfo> searchRs = classStudentService.search(searchRq, ClassStudentDTO.PreTestScoreInfo.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.PreTestScoreInfo.class));
     }
 
     @Loggable
     @GetMapping(value = "/evaluationAnalysistLearning/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> evaluationAnalysistLearning(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), ClassStudentDTO.evaluationAnalysistLearning.class);
-//        int startRow = 0;
-//        if (iscRq.getParameter("_startRow") != null)
-//            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-//        criteriaRq.getCriteria().add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
-//        if (searchRq.getCriteria() != null)
-//            criteriaRq.getCriteria().add(searchRq.getCriteria());
-//        searchRq.setCriteria(criteriaRq);
-//        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs = classStudentService.search(searchRq, ClassStudentDTO.evaluationAnalysistLearning.class);
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.evaluationAnalysistLearning.class));
     }
 
 
@@ -167,7 +113,9 @@ public class ClassStudentRestController {
     public ResponseEntity registerStudents(@RequestBody List<ClassStudentDTO.Create> request, @PathVariable Long classId) {
         try {
             classStudentService.registerStudents(request, classId);
-            return new ResponseEntity(HttpStatus.OK);
+            classAlarmService.alarmClassCapacity(classId);
+            classAlarmService.alarmStudentConflict(classId);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -211,7 +159,7 @@ public class ClassStudentRestController {
     public ResponseEntity removeStudents(@RequestBody ClassStudentDTO.Delete request) {
         try {
             classStudentService.delete(request);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -223,8 +171,11 @@ public class ClassStudentRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
+            Long classId = classStudentService.getClassIdByClassStudentId(id);
             classStudentService.delete(id);
-            return new ResponseEntity(HttpStatus.OK);
+            classAlarmService.alarmClassCapacity(classId);
+            classAlarmService.alarmStudentConflict(classId);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -254,7 +205,7 @@ public class ClassStudentRestController {
             return null;
         }
         List<Long> evalList = (classStudentDAO.findEvaluationStudentInClass(studentId, classId));
-        return new ResponseEntity<Long>(evalList.get(0), HttpStatus.OK);
+        return new ResponseEntity<>(evalList.get(0), HttpStatus.OK);
 
     }
 
@@ -262,16 +213,16 @@ public class ClassStudentRestController {
     @PutMapping(value = "/setTotalStudentWithOutScore/{classId}")
     public ResponseEntity setTotalStudentWithOutScore(@PathVariable Long classId) {
         classStudentService.setTotalStudentWithOutScore(classId);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/getScoreState/{classId}")
     public ResponseEntity<List<Long>> getScoreState(@PathVariable Long classId) {
         if (classStudentService.getScoreState(classId).size() == 0)
-            return new ResponseEntity(classStudentService.getScoreState(classId), HttpStatus.OK);
+            return new ResponseEntity<>(classStudentService.getScoreState(classId), HttpStatus.OK);
         else
-            return new ResponseEntity(classStudentService.getScoreState(classId), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(classStudentService.getScoreState(classId), HttpStatus.NOT_ACCEPTABLE);
 
     }
 
@@ -298,7 +249,7 @@ public class ClassStudentRestController {
             criteriaRq.getCriteria().add(objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class));
         }
 
-        final SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = classStudentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq), ClassStudentDTO.CoursesOfStudent.class);
+        final SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = classStudentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq), c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

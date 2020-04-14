@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -80,4 +81,11 @@ public class ClassSession extends Auditable {
 
     @Column(name = "c_description")
     private String description;
+
+    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<Alarm> alarms;
+
+    @OneToMany(mappedBy = "sessionConflict", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<Alarm> alarmsConflict;
+
 }

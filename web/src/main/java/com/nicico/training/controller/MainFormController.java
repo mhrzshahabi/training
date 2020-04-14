@@ -6,10 +6,7 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +35,9 @@ public class MainFormController {
     public String showNeedsAssessmentReportsForm() {
         return "report/needsAssessmentReports";
     }
+
+    @RequestMapping("/calenderCurrentTerm")
+     public String showCalenderCurrentTerm(){return "report/calenderCurrentTerm";}
 
     @RequestMapping("/oaUser")
     public String showOaUserForm() {
@@ -210,6 +210,42 @@ public class MainFormController {
             default:
                 return null;
         }
+    }
+
+    @PostMapping("/calender_current_term")
+    public ResponseEntity<?> calenderCurrentTermReport(final HttpServletRequest request, @RequestParam Long objectId,
+                                                       @RequestParam String objectType,
+                                                       @RequestParam(required = false) String personnelNo, @RequestParam String nationalCode, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String companyName, @RequestParam String personnelNo2, @RequestParam String postTitle, @RequestParam String postCode)
+    {
+//       String token;
+//          String header_authorization = request.getHeader("Authorization");
+//          String[] splitted = header_authorization.split(" ");
+//                if (!"Bearer".equals(splitted[0])) {
+//                 token = splitted[0];
+//                }
+//                else
+//        token = splitted[1];
+        String token = request.getParameter("token");
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("objectId",String.valueOf(objectId));
+        map.add("objectType",objectType);
+        map.add("personnelNo",personnelNo);
+        map.add("nationalCode",nationalCode);
+        map.add("firstName",firstName);
+        map.add("lastName",lastName);
+        map.add("companyName",companyName);
+        map.add("personnelNo2",personnelNo2);
+        map.add("postTitle",postTitle);
+        map.add("postCode",postCode);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/calenderCurrentTerm/print", HttpMethod.POST, entity, byte[].class);
+
     }
 
 }

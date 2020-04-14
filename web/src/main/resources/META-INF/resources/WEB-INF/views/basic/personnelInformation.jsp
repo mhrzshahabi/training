@@ -7,7 +7,7 @@
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
-        PersonnelInfoDS_PersonnelList = isc.TrDS.create({
+       var PersonnelInfoDS_PersonnelList = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {
@@ -86,8 +86,7 @@
             fetchDataURL: personnelUrl + "/iscList"
         });
 
-
-        PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
+       var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
             dataSource: PersonnelInfoDS_PersonnelList,
             selectionType: "single",
             autoFetchData: true,
@@ -112,10 +111,10 @@
             }
         });
 
-
         var RestDataSource_PersonnelTraining = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
+                {name: "courseId"},
                 {name: "code"},
                 {name: "titleClass"},
                 {name: "hduration"},
@@ -128,7 +127,6 @@
                 {name: "erunType"}
             ]
         });
-
 
         var ListGrid_PersonnelTraining = isc.TrLG.create({
             width: "100%",
@@ -226,6 +224,119 @@
                     autoFitWidth: true
                 }
 
+            ],
+            cellClick: function (record, rowNum, colNum) {
+                show_ClassInformation(record, rowNum, colNum);
+            }
+        });
+
+        var RestDataSource_PersonnelInfo_class = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true},
+                {name: "titleClass"},
+                {name: "startDate"},
+                {name: "endDate"},
+                {name: "code"},
+                {name: "term.titleFa"},
+                {name: "course.titleFa"},
+                {name: "course.id"},
+                {name: "course.code"},
+                {name: "course.evaluation"},
+                {name: "institute.titleFa"},
+                {name: "studentCount"},
+                {name: "numberOfStudentEvaluation"},
+                {name: "classStatus"},
+                {name: "trainingPlaceIds"},
+                {name: "instituteId"},
+                {name: "workflowEndingStatusCode"},
+                {name: "workflowEndingStatus"}
+            ]
+        });
+
+        var ListGrid_PersonnelInfo_class = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_PersonnelInfo_class,
+            canAddFormulaFields: false,
+            autoFetchData: false,
+            showFilterEditor: true,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
+            filterOnKeypress: true,
+            sortField: 0,
+            fields: [
+                {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                {
+                    name: "code",
+                    title: "<spring:message code='class.code'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "titleClass",
+                    title: "titleClass",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    hidden: true
+                },
+                {
+                    name: "course.titleFa",
+                    title: "<spring:message code='course.title'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.course.titleFa;
+                    }
+                },
+                {
+                    name: "startDate",
+                    title: "<spring:message code='start.date'/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "endDate",
+                    title: "<spring:message code='end.date'/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "studentCount",
+                    title: "<spring:message code='student.count'/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "institute.titleFa",
+                    title: "<spring:message code='presenter'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                    valueMap: {
+                        "1": "برنامه ریزی",
+                        "2": "در حال اجرا",
+                        "3": "پایان یافته"
+                    }
+                },
+                {
+                    name: "workflowEndingStatusCode",
+                    title: "workflowCode",
+                    align: "center",
+                    filterOperator: "iContains",
+                    hidden: true
+                },
+                {
+                    name: "workflowEndingStatus",
+                    title: "<spring:message code="ending.class.status"/>",
+                    align: "center",
+                    filterOperator: "iContains"
+                }
             ]
         });
 
@@ -234,7 +345,6 @@
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
     {
-//*****create fields*****
         var DynamicForm_PersonnelInfo = isc.DynamicForm.create({
             numCols: 6,
             colWidths: ["1%", "3%", "1%", "3%", "1%", "3%"],
@@ -252,7 +362,7 @@
                     {
                         name: "fullName",
                         title: "<spring:message code="full.name"/> : ",
-                        canEdit: false,
+                        canEdit: false
                     },
                     {
                         name: "personnelNo",
@@ -437,6 +547,334 @@
                     }
                 ]
         });
+
+        var DynamicForm_PersonnelInfo_CourseInfo = isc.DynamicForm.create({
+            numCols: 6,
+            colWidths: ["1%", "1%", "1%", "1%", "1%", "1%"],
+            cellPadding: 3,
+            fields:
+                [
+                    {
+                        name: "header_BasicInfo",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="basic.information"/>",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code="course.title"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "code",
+                        title: "<spring:message code="course.code"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "theoryDuration",
+                        title: "<spring:message code="course_theoryDuration"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "<spring:message code="group"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "subCategory.titleFa",
+                        title: "<spring:message code="subcategory"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "erunType.titleFa",
+                        title: "<spring:message code="course_eruntype"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "elevelType.titleFa",
+                        title: "<spring:message code="cousre_elevelType"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "etheoType.titleFa",
+                        title: "<spring:message code="course_etheoType"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "etechnicalType.titleFa",
+                        title: "<spring:message code="course_etechnicalType"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "evaluation",
+                        title: "<spring:message code="evaluation.level"/> : ",
+                        valueMap: {
+                            "1": "واکنش",
+                            "2": "یادگیری",
+                            "3": "رفتاری",
+                            "4": "نتایج"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "behavioralLevel",
+                        title: "<spring:message code="behavioral.Level"/> : ",
+                        valueMap: {
+                            "1": "مشاهده",
+                            "2": "مصاحبه",
+                            "3": "کار پروژه ای"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "scoringMethod",
+                        title: "<spring:message code="scoring.Method"/> : ",
+                        valueMap: {
+                            "1": "ارزشی",
+                            "2": "نمره از صد",
+                            "3": "نمره از بیست",
+                            "4": "بدون نمره"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "minTeacherDegree",
+                        title: "<spring:message code="course_minTeacherDegree"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "minTeacherExpYears",
+                        title: "<spring:message code="course_minTeacherExpYears"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "minTeacherEvalScore",
+                        title: "<spring:message code="course_minTeacherEvalScore"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "header_MainObjective",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="course_mainObjective"/>",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "mainObjective",
+                        title: "",
+                        type: "TextAreaItem",
+                        startRow: true,
+                        colSpan: 5,
+                        rowSpan: 4,
+                        height: "*",
+                        width: "100%",
+                        length: 5000,
+                        canEdit: false
+                    },
+                    {
+                        name: "header_goals",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="course.goals"/>",
+                        colSpan: 6,
+                        startRow: true,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "goals",
+                        title: "",
+                        type: "TextAreaItem",
+                        startRow: true,
+                        colSpan: 5,
+                        rowSpan: 4,
+                        height: "*",
+                        width: "100%",
+                        length: 5000,
+                        canEdit: false
+                    },
+                    {
+                        name: "header_perCourses",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="prerequisites"/>",
+                        colSpan: 6,
+                        startRow: true,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "perCourses",
+                        title: "",
+                        type: "TextAreaItem",
+                        startRow: true,
+                        colSpan: 5,
+                        rowSpan: 4,
+                        height: "*",
+                        width: "100%",
+                        length: 5000,
+                        canEdit: false
+                    }
+                ]
+        });
+
+        var DynamicForm_PersonnelInfo_ClassInfo = isc.DynamicForm.create({
+            numCols: 6,
+            colWidths: ["1%", "1%", "1%", "1%", "1%", "1%"],
+            cellPadding: 3,
+            fields:
+                [
+                    {
+                        name: "header_BasicInfo",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="basic.information"/>",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "titleClass",
+                        title: "<spring:message code="class.title"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "code",
+                        title: "<spring:message code="class.code"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "hduration",
+                        title: "<spring:message code="duration"/> : ",
+                        canEdit: false,
+                        mapValueToDisplay: function(value){
+                            if (isNaN(value)) {
+                                return "";
+                            }
+                            return value + " ساعت ";
+                        }
+                    },
+                    {
+                        name: "minCapacity",
+                        title: "<spring:message code="minCapacity"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "maxCapacity",
+                        title: "<spring:message code="maxCapacity"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "teacher",
+                        title: "<spring:message code="teacher"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "supervisor",
+                        title: "<spring:message code="supervisor"/> : ",
+                        valueMap: {
+                            1: "آقای دکتر سعیدی",
+                            2: "خانم شاکری",
+                            3: "خانم اسماعیلی",
+                            4: "خانم احمدی",
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "institute.titleFa",
+                        title: "<spring:message code="institute"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "classStatus",
+                        title: "<spring:message code="class.status"/> : ",
+                        valueMap: {
+                            "1": "برنامه ریزی",
+                            "2": "در حال اجرا",
+                            "3": "پایان یافته",
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "teachingType",
+                        title: "<spring:message code="teaching.type"/> : ",
+                        valueMap: [
+                            "حضوری",
+                            "غیر حضوری",
+                            "مجازی",
+                            "عملی و کارگاهی"
+                        ],
+                        canEdit: false
+                    },
+                    {
+                        name: "topology",
+                        title: "<spring:message code="place.shape"/> : ",
+                        valueMap: {
+                            "1": "U شکل",
+                            "2": "عادی",
+                            "3": "مدور",
+                            "4": "سالن"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "scoringMethod",
+                        title: "<spring:message code="scoring.Method"/> : ",
+                        valueMap: {
+                            "1": "ارزشی",
+                            "2": "نمره از صد",
+                            "3": "نمره از بیست",
+                            "4": "بدون نمره"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "header_Time",
+                        type: "HeaderItem",
+                        defaultValue: "<spring:message code="class.meeting.time"/>",
+                        startRow: true,
+                        colSpan: 6,
+                        cellStyle: "lineField"
+                    },
+                    {
+                        name: "term.titleFa",
+                        title: "<spring:message code="term"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code="start.date"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code="end.date"/> : ",
+                        canEdit: false
+                    },
+                    {
+                        name: "teachingBrand",
+                        title: "<spring:message code="teaching.method"/> : ",
+                        valueMap: {
+                            1: "تمام وقت",
+                            2: "نیمه وقت",
+                            3: "پاره وقت"
+                        },
+                        canEdit: false
+                    },
+                    {
+                        name: "classSessionTimes",
+                        title: "<spring:message code="sessions.time"/> : ",
+                        startRow: true,
+                        colSpan: 3,
+                        canEdit: false
+                    },
+                    {
+                        name: "classDays",
+                        title: "<spring:message code="week.days"/> : ",
+                        startRow: true,
+                        colSpan: 3,
+                        canEdit: false
+                    }
+                ]
+        });
     }
     // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>
 
@@ -474,6 +912,42 @@
             tabSelected: function () {
                 set_PersonnelInfo_Details();
             }
+        });
+
+        var PersonnelInfo_ClassInfo_Tab = isc.TabSet.create({
+            ID: "PersonnelInfo_ClassInfo_Tab",
+            width: "100%",
+            height: 500,
+            tabBarPosition: "top",
+            tabs: [
+                {
+                    id: "ClassInfo_Tab_Course",
+                    title: "<spring:message code="course"/>",
+                    pane: DynamicForm_PersonnelInfo_CourseInfo
+                },
+                {
+                    id: "ClassInfo_Tab_Class",
+                    title: "<spring:message code="class"/>",
+                    pane: DynamicForm_PersonnelInfo_ClassInfo
+                },
+                {
+                    id: "ClassInfo_Tab_Records",
+                    title: "<spring:message code="course.records"/>",
+                    pane: ListGrid_PersonnelInfo_class
+                }
+            ],
+            tabSelected: function () {
+                set_PersonnelInfo_CourseInfo();
+            }
+        });
+
+        var window_class_Information = isc.Window.create({
+            title: "",
+            width: "70%",
+            minWidth: 500,
+            height: 500,
+            visibility: "hidden",
+            items: [PersonnelInfo_ClassInfo_Tab]
         });
     }
     // ---------------------------------------- Create - TabSet & Tab --------------------------------------->>
@@ -514,6 +988,7 @@
 
                 if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
                     if (personnelNo !== null && nationalCode_Info !== nationalCode) {
+                        DynamicForm_PersonnelInfo.clearValues();
                         nationalCode_Info = nationalCode;
                         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
 
@@ -541,7 +1016,6 @@
                                     + " - " +
                                     (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
 
-                                DynamicForm_PersonnelInfo.clearValues();
                                 DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
                             }
 
@@ -557,7 +1031,7 @@
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
                     if (nationalCode_Need !== nationalCode) {
                         nationalCode_Need = nationalCode;
-                        call_needsAssessmentReports("0",true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                        call_needsAssessmentReports("0", true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
                     }
                 }
             }
@@ -601,6 +1075,63 @@
         }
 
         //***********************************
+
+        function show_ClassInformation(record, rowNum, colNum) {
+            if (colNum === 1) {
+                window_class_Information.setTitle(record.courseTitle);
+                window_class_Information.show();
+
+                set_PersonnelInfo_CourseInfo();
+            }
+        }
+
+        //***********************************
+
+        //*****get selected course information*****
+        var courseId_Tab_Course,  courseId_Tab_Records, classId_Tab_Class;
+        function set_PersonnelInfo_CourseInfo() {
+
+            if (ListGrid_PersonnelTraining.getSelectedRecord() !== null)
+            {
+                let courseId = ListGrid_PersonnelTraining.getSelectedRecord().courseId;
+                let classId = ListGrid_PersonnelTraining.getSelectedRecord().id;
+
+                if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Course") {
+                    if(courseId !== null && courseId_Tab_Course !== courseId) {
+                        courseId_Tab_Course = courseId;
+                        DynamicForm_PersonnelInfo_CourseInfo.clearValues();
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findCourseByCourseId/" + courseId, "GET", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                                let currentCourse = JSON.parse(resp.data);
+                                DynamicForm_PersonnelInfo_CourseInfo.editRecord(currentCourse);
+                            }
+                        }));
+                    }
+                }
+                else if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Class") {
+                    if(classId !== null && classId_Tab_Class !== classId) {
+                        classId_Tab_Class = classId;
+                        DynamicForm_PersonnelInfo_ClassInfo.clearValues();
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findClassByClassId/" + classId, "GET", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                let currentClass = JSON.parse(resp.data);
+                                DynamicForm_PersonnelInfo_ClassInfo.editRecord(currentClass);
+                            }
+                        }));
+                    }
+                }
+                else if(PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Records"){
+                    if(courseId !== null && courseId_Tab_Records !== courseId)
+                    {
+                        courseId_Tab_Records = courseId;
+                        RestDataSource_PersonnelInfo_class.fetchDataURL = personnelInformationUrl + "/findClassByCourseId/" + courseId;
+                        ListGrid_PersonnelInfo_class.invalidateCache();
+                        ListGrid_PersonnelInfo_class.fetchData();
+                    }
+                }
+            }
+        }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

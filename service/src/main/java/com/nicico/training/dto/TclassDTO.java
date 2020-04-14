@@ -82,6 +82,7 @@ public class TclassDTO {
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
 
+        private Long courseId;
         private InstituteDTO.InstituteInfoTuple institute;
         //        private Date createdDate;
         //        private String createdBy;
@@ -174,6 +175,41 @@ public class TclassDTO {
 //        private List<Long> studentSet;
     }
 
+    //----------------------------------------------
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassTeachingHistory")
+    public static class TeachingHistory {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private Double evaluationGrade;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassTeachingHistorySpecRs")
+    public static class TclassTeachingHistorySpecRs {
+        private TeachingHistorySpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class TeachingHistorySpecRs {
+        private List<TclassDTO.TeachingHistory> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
     // ------------------------------
 
     @Getter
@@ -228,12 +264,24 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("CoursesOfStudent")
     public static class CoursesOfStudent {
+        private Long id;
         private CourseDTO.CourseInfoTupleLite course;
         private String code;
         private String classStatus;
         private String startDate;
         private String endDate;
         private TermDTO term;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("StudentClassList")
+    public static class StudentClassList {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private Long courseId;
     }
 
     //-------------------------------
@@ -338,7 +386,7 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("BehavioralEvaluationResult")
     public static class BehavioralEvaluationResult {
-        double classPassedTime;
+        String classPassedTime;
         Integer numberOfFilledFormsBySuperviosers;
         Integer numberOfFilledFormsByStudents;
         double supervisorsMeanGrade;
@@ -348,14 +396,9 @@ public class TclassDTO {
         double FECBGrade;
         boolean FECBPass;
         private Set<ClassStudentDTO.EvaluationInfo> classStudents;
-        List<Double> studentsGrade = new ArrayList<>();
-        List<Double> supervisorsGrade = new ArrayList<>();
-        List<String> classStudentsName = new ArrayList<>();
-        public void setClassStudentsName(){
-            for (ClassStudentDTO.EvaluationInfo classStudent : classStudents) {
-                classStudentsName.add(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
-            }
-        }
+        Double[] studentsGrade;
+        Double[] supervisorsGrade;
+        String[] classStudentsName;
     }
 
     @Getter
@@ -413,8 +456,7 @@ public class TclassDTO {
     @AllArgsConstructor
     @Accessors(chain = true)
     @ApiModel("PersonnelClassInfo")
-    public static class PersonnelClassInfo
-    {
+    public static class PersonnelClassInfo {
         private Long id;
         private String code;
         private String titleClass;
@@ -428,6 +470,43 @@ public class TclassDTO {
         private String ERunType;
         private Long courseId;
         private String courseTitle;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("AllStudentsGradeToTeacher")
+    public static class AllStudentsGradeToTeacher {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private String term;
+        private String grade;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassDetailInfo")
+    public static class ClassDetailInfo extends Info {
+        private String classSessionTimes;
+        private String classDays;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassWeeklySchedule")
+    public static class WeeklySchedule {
+        private Long id;
+        private String code;
+        private CourseDTO.CourseInfoTuple course;
+        private Set<ClassStudentDTO.WeeklySchedule> classStudents;
     }
 
 }
