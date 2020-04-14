@@ -60,7 +60,7 @@ public class CalenderCurrentTermDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("CalenderCurrentTermCourseInfo")
-    public static class CourseInfo extends TclassDTO {
+    public static class CourseInfo{
         private Long courseId;
         private Long id;
         private CourseDTO.CourseInfoTuple course;

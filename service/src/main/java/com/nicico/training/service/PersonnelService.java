@@ -12,7 +12,9 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.Personnel;
+import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 public class PersonnelService implements IPersonnelService {
 
     private final PersonnelDAO personnelDAO;
+    private final PersonnelRegisteredDAO personnelRegisteredDAO;
     private final ModelMapper modelMapper;
     private final PostDAO postDAO;
     private final TclassDAO tclassDAO;
@@ -213,6 +217,18 @@ public class PersonnelService implements IPersonnelService {
         values.forEach(value -> response.getList().add(new PersonnelDTO.FieldValue(value)));
         response.setTotalCount((long) response.getList().size());
         return response;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
+        Optional<Personnel> optPersonnel = personnelDAO.findById(personnelNo);
+        if (optPersonnel.isPresent())
+            return converter.apply(optPersonnel.get());
+        Optional<PersonnelRegistered> optPRegistered = personnelRegisteredDAO.findOneByPersonnelNo(personnelNo);
+        if (optPRegistered.isPresent())
+            return converter.apply(optPRegistered.get());
+        return null;
     }
 
 }

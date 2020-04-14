@@ -88,6 +88,7 @@
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
     const personnelInformationUrl = rootUrl + "/personnelInformation";
     const unfinishedClasses = rootUrl + "/unfinishedClasses";
+    const studentPortalUrl = rootUrl + "/student-portal";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";

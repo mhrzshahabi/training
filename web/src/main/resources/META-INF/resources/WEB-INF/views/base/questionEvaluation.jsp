@@ -541,7 +541,7 @@
 
     function call_questionEvaluation(selectedStudent) {
         DynamicForm_Questions_Title_JspQuestionEvaluation.getField("course").sortField = ["tclass.titleClass"];
-        RestDataSource_evaluation_class.fetchDataURL = tclassStudentUrl + "/class-list-of-student/" + selectedStudent.nationalCode;
+        RestDataSource_evaluation_class.fetchDataURL = studentPortalUrl + "/class-student/class-list-of-student/" + selectedStudent.nationalCode;
         DynamicForm_Questions_Title_JspQuestionEvaluation.getItem("evaluationType").setValue("SEFC");
         DynamicForm_Questions_Title_JspQuestionEvaluation.getItem("evaluationType").hide();
         showStudentWindow_JspQuestionEvaluation = false;

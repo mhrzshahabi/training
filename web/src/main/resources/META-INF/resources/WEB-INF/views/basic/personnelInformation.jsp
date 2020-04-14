@@ -981,8 +981,6 @@
 
         function set_PersonnelInfo_Details() {
 
-            DynamicForm_PersonnelInfo.clearValues();
-
             if (PersonnelInfoListGrid_PersonnelList.getSelectedRecord() !== null) {
 
                 let personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
@@ -990,6 +988,7 @@
 
                 if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
                     if (personnelNo !== null && nationalCode_Info !== nationalCode) {
+                        DynamicForm_PersonnelInfo.clearValues();
                         nationalCode_Info = nationalCode;
                         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
 

@@ -86,6 +86,35 @@ public class CalenderCurrentTermRestController {
        }
         }
 
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list;//لیست کل دوره های نیازسنجی پرسنل را می گیرد
+        list = needsAssessmentReportsService.search(null, Long.parseLong("3503"), "Post", "1733521182");
+
+
+       if(list.getList().size()>0)
+       {
+        for(int i=0;i<list.getList().size();i++)
+        {
+           for(int j=0;j<x.getList().size();j++)
+           {
+
+               if(list.getList().get(i).getSkill().getCourse().getCode().equals(x.getList().get(j).getCourse().getCode()))
+               {
+                   x.getList().get(j).getCourse().setEvaluation("نیازسنجی");
+               }
+               else if(!(x.getList().get(j).getCourse().getEvaluation().equals("نیازسنجی"))){
+                   x.getList().get(j).getCourse().setEvaluation("غیر نیازسنجی");
+               }
+
+
+           }
+        }
+        }
+       else {
+           for (int j = 0; j < x.getList().size(); j++) {
+               x.getList().get(j).getCourse().setEvaluation("غیر نیازسنجی");
+           }
+       }
+
 
          x.setTotalCount(tclassService.search1(searchRq, infoType).getTotalCount());
          SearchDTO.SearchRs<T> searchRs = (SearchDTO.SearchRs<T>) x;
