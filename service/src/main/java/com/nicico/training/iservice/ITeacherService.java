@@ -7,6 +7,7 @@ import com.nicico.training.model.Teacher;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITeacherService {
 
@@ -40,5 +41,8 @@ public interface ITeacherService {
     SearchDTO.SearchRs<TeacherDTO.Report> deepSearchReport(SearchDTO.SearchRq request);
 
     public SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList);
+
+    @Transactional(readOnly = true)
+    Map<String,Object> evaluateTeacher(Long id, String catId, String subCatId);
 
 }

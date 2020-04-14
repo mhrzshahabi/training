@@ -207,7 +207,7 @@ public class ClassAlarmService implements IClassAlarm {
             String alarmScript = " SELECT 'تداخل استاد' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
                     " null AS trainingPlaceId, null AS reservationId, targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
                     "'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date ||' کلاس '|| c_title_class_current ||' با کد '|| c_code_current ||  ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
-                    " null AS detailRecordId,  sortField, classIdConflict, sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " null AS detailRecordId, sortField, classIdConflict, sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
                     " FROM " +
                     "    (SELECT " +
                     "    tb1.id AS sessionId, " +
@@ -312,6 +312,177 @@ public class ClassAlarmService implements IClassAlarm {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    //*********************************
+
+    //****************create student conflict alarm*****************
+    @Transactional
+    public void alarmStudentConflict(Long class_id) {
+        try {
+            String alarmScript = " SELECT  'تداخل فراگیر' AS alarmTypeTitleFa, 'StudentConflict' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId, " +
+                    " null AS instituteId, null AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    " ' جلسه ' " +
+                    " || tb1.c_session_start_hour " +
+                    "|| ' تا ' " +
+                    " || tb1.c_session_end_hour " +
+                    " || ' ' " +
+                    " || tb1.c_day_name " +
+                    " || ' ' " +
+                    " || tb1.c_session_date " +
+                    " || ' ' " +
+                    " || tb1.classname " +
+                    " || ' ' " +
+                    " || tb1.studentName " +
+                    " || ' با جلسه ' " +
+                    " || tb2.c_session_start_hour " +
+                    "|| ' تا ' " +
+                    " || tb2.c_session_end_hour " +
+                    " || ' ' " +
+                    " || tb2.c_day_name " +
+                    " || ' ' " +
+                    " || tb2.c_session_date " +
+                    " || ' ' " +
+                    " || tb2.classname " +
+                    " || ' تداخل دارد' AS alarm, " +
+                    " null AS detailRecordId, " +
+                    " ('4' || tb1.student_id || ' تداخل فراگیر ' || tb1.c_session_date || tb1.c_session_start_hour ) AS sortField, " +
+                    " tb2.f_class_id AS classIdConflict, tb2.id AS  sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " ( " +
+                    "        SELECT " +
+                    "        tbl_session.id, " +
+                    "        tbl_session.f_class_id, " +
+                    "        tbl_session.c_day_name, " +
+                    "        tbl_session.c_session_date, " +
+                    "        tbl_session.c_session_end_hour, " +
+                    "        tbl_session.c_session_start_hour, " +
+                    "        tbl_class_student.student_id, " +
+                    "        tbl_class_student.id AS classStudentId, " +
+                    "        tbl_student.first_name, " +
+                    "        tbl_student.last_name, " +
+                    "        tbl_student.national_code, " +
+                    "        tbl_student.personnel_no, " +
+                    "        ( " +
+                    "            CASE " +
+                    "                WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                ELSE ' خانم ' " +
+                    "            END " +
+                    "        || tbl_student.first_name " +
+                    "        || ' ' " +
+                    "        || tbl_student.last_name " +
+                    "        || ' با شماره پرسنلی ' " +
+                    "        || tbl_student.personnel_no ) AS studentName, " +
+                    "                ( ' کلاس ' " +
+                    "        || tbl_class.c_title_class " +
+                    "        || ' با کد ' " +
+                    "        || tbl_class.c_code ) AS classname " +
+                    "    FROM " +
+                    "        tbl_session " +
+                    "        INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "        INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "        INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "        WHERE tbl_class.f_term = :term_id AND tbl_class.c_status <> 3 " +
+                    " ) tb1 " +
+                    " INNER JOIN ( " +
+                    "    SELECT " +
+                    "        tbl_session.id, " +
+                    "        tbl_session.f_class_id, " +
+                    "        tbl_session.c_day_name, " +
+                    "        tbl_session.c_session_date, " +
+                    "        tbl_session.c_session_end_hour, " +
+                    "        tbl_session.c_session_start_hour, " +
+                    "        tbl_class_student.student_id, " +
+                    "        tbl_class_student.id AS classStudentId, " +
+                    "        tbl_student.first_name, " +
+                    "        tbl_student.last_name, " +
+                    "        tbl_student.national_code, " +
+                    "        tbl_student.personnel_no, " +
+                    "        ( " +
+                    "            CASE " +
+                    "                WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                ELSE ' خانم ' " +
+                    "            END " +
+                    "        || tbl_student.first_name " +
+                    "        || ' ' " +
+                    "        || tbl_student.last_name " +
+                    "        || ' با شماره پرسنلی ' " +
+                    "        || tbl_student.personnel_no ) AS studentName, " +
+                    "        ( ' کلاس ' " +
+                    "        || tbl_class.c_title_class " +
+                    "        || ' با کد ' " +
+                    "        || tbl_class.c_code ) AS classname         " +
+                    "    FROM " +
+                    "        tbl_session " +
+                    "        INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "        INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "        INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "        WHERE tbl_class.f_term = :term_id AND tbl_class.c_status <> 3 " +
+                    " ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
+                    "         AND tb2.national_code = tb1.national_code " +
+                    " WHERE " +
+                    " tb1.id <> tb2.id " +
+                    " AND   ( " +
+                    "    ( " +
+                    "        tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "        AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "    ) " +
+                    "    OR    ( " +
+                    "        tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "        AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "    ) " +
+                    " ) " +
+                    " AND tb1.f_class_id =:class_id ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+
+            List<ClassAlarmDTO.Create> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+
+                if (alarmList.size() > 0) {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
+                    saveAlarms(alarmList);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************convert object to dto*****************
+    private ClassAlarmDTO.Create convertObjectToDTO(Object[] alarm) {
+        return new ClassAlarmDTO.Create(
+                (alarm[0] != null ? alarm[0].toString() : null),
+                (alarm[1] != null ? alarm[1].toString() : null),
+                (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
+                (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
+                (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
+                (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
+                (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
+                (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
+                (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
+                (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
+                (alarm[10] != null ? alarm[10].toString() : null),
+                (alarm[11] != null ? alarm[11].toString() : null),
+                (alarm[12] != null ? alarm[12].toString() : null),
+                (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
+                (alarm[14] != null ? alarm[14].toString() : null),
+                (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
+                (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
+                (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
+                (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
+                (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
+        );
     }
     //*********************************
 
