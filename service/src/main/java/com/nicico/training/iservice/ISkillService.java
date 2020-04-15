@@ -17,6 +17,8 @@ import java.util.List;
 public interface ISkillService {
     SkillDTO.Info get(Long id);
 
+    Skill getSkill(Long id);
+
     List<SkillDTO.Info> list();
 
     @Transactional
