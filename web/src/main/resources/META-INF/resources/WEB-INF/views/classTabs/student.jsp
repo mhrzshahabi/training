@@ -133,6 +133,7 @@
             {name: "student.ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
             {name: "student.ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
+
         fetchDataURL: tclassStudentUrl + "/students-iscList/"
     });
 
@@ -147,7 +148,8 @@
 
     StudentsLG_student = isc.TrLG.create({
         dataSource: StudentsDS_student,
-        selectionType: "single",
+       // selectionType: "single",
+        selectionType: "multiple",
         fields: [
             {name: "student.firstName"},
             {name: "student.lastName"},
@@ -658,10 +660,11 @@
     }
 
     function removeStudent_student() {
-
+        var studentIds=new Array();
         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-        var studentRecord = StudentsLG_student.getSelectedRecord();
-        if (studentRecord == null || studentRecord.id == null) {
+        var studentRecord = StudentsLG_student.getSelectedRecords();
+
+        if (studentRecord == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             var Dialog_Delete = isc.Dialog.create({
@@ -680,7 +683,14 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + studentRecord.id, "DELETE", null, class_remove_student_result));
+
+                        for(i=0;i<studentRecord.getLength();i++)
+                        {
+                            studentIds.add(studentRecord[i].id)
+                        }
+
+                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + studentIds, "DELETE", null, class_remove_student_result));
+                      //  isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + studentRecord.id, "DELETE", null, class_remove_student_result));
                     }
                 }
             });

@@ -30,10 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -166,21 +163,45 @@ public class ClassStudentRestController {
         }
     }
 
+//    @Loggable
+//    @DeleteMapping(value = "/{id}")
+////    @PreAuthorize("hasAuthority('d_tclass')")
+//    public ResponseEntity delete(@PathVariable Long id) {
+//        try {
+//            Long classId = classStudentService.getClassIdByClassStudentId(id);
+//            classStudentService.delete(id);
+//            classAlarmService.alarmClassCapacity(classId);
+//            classAlarmService.alarmStudentConflict(classId);
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (TrainingException | DataIntegrityViolationException e) {
+//            return new ResponseEntity<>(
+//                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+//        }
+//    }
+
+
     @Loggable
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{studentIds}")
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Set<Long> studentIds) {
         try {
-            Long classId = classStudentService.getClassIdByClassStudentId(id);
-            classStudentService.delete(id);
-            classAlarmService.alarmClassCapacity(classId);
-            classAlarmService.alarmStudentConflict(classId);
+           for(Long x:studentIds)
+           {
+               Long classId = classStudentService.getClassIdByClassStudentId(x);
+               classStudentService.delete(x);
+             //  classAlarmService.alarmClassCapacity(classId);
+              // classAlarmService.alarmStudentConflict(classId);
+           }
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+
+
+
 
 //    @Loggable
 //    @PutMapping(value = "/setStudentFormIssuance/{idClassStudent}/{reaction}")
