@@ -555,9 +555,4 @@ public class TeacherService implements ITeacherService {
         resultSet.put("table_4_grade",table_4_grade);
         return resultSet;
     }
-
-    @Override
-    public Float getTeacherevaluationGrade(Long teacherId, String catId, String subCatId){
-        return (Float) evaluateTeacher(teacherId,catId,subCatId).get("evaluationGrade");
-    }
 }
