@@ -45,5 +45,4 @@ public interface ITeacherService {
     @Transactional(readOnly = true)
     Map<String,Object> evaluateTeacher(Long id, String catId, String subCatId);
 
-    Float getTeacherevaluationGrade(Long teacherId, String catId, String subCatId);
 }
