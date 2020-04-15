@@ -709,7 +709,7 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
     public ResponseEntity<Float> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
-       Float evaluationGrade = teacherService.getTeacherevaluationGrade(id,catId,subCatId);
+       Float evaluationGrade = (Float) teacherService.evaluateTeacher(id,catId,subCatId).get("evaluationGrade");
        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
 
