@@ -114,6 +114,7 @@ public class ClassStudentRestController {
         try {
             classStudentService.registerStudents(request, classId);
             classAlarmService.alarmClassCapacity(classId);
+            classAlarmService.alarmStudentConflict(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -173,6 +174,7 @@ public class ClassStudentRestController {
             Long classId = classStudentService.getClassIdByClassStudentId(id);
             classStudentService.delete(id);
             classAlarmService.alarmClassCapacity(classId);
+            classAlarmService.alarmStudentConflict(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(

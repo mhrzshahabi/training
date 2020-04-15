@@ -82,6 +82,7 @@ public class ClassSessionRestController {
         if (infoResponseEntity.getStatusCodeValue() == 201) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
         }
 
         return infoResponseEntity;
@@ -98,6 +99,7 @@ public class ClassSessionRestController {
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
         }
         return infoResponseEntity;
     }
@@ -111,6 +113,7 @@ public class ClassSessionRestController {
         classSessionService.delete(id, response);
         classAlarmService.alarmSumSessionsTimes(classId);
         classAlarmService.alarmTeacherConflict(classId);
+        classAlarmService.alarmStudentConflict(classId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -122,6 +125,7 @@ public class ClassSessionRestController {
         //////if use this method you must use calulate alarms to here/ with alarmSumSessionsTimes method
         ////// classAlarmService.alarmSumSessionsTimes(classId);
         ////// classAlarmService.alarmTeacherConflict(classId);
+        ////// classAlarmService.alarmStudentConflict(classId);
         classSessionService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
