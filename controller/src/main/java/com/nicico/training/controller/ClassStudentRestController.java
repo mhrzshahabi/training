@@ -163,44 +163,28 @@ public class ClassStudentRestController {
         }
     }
 
-//    @Loggable
-//    @DeleteMapping(value = "/{id}")
-////    @PreAuthorize("hasAuthority('d_tclass')")
-//    public ResponseEntity delete(@PathVariable Long id) {
-//        try {
-//            Long classId = classStudentService.getClassIdByClassStudentId(id);
-//            classStudentService.delete(id);
-//            classAlarmService.alarmClassCapacity(classId);
-//            classAlarmService.alarmStudentConflict(classId);
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        } catch (TrainingException | DataIntegrityViolationException e) {
-//            return new ResponseEntity<>(
-//                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
-//        }
-//    }
-
-
     @Loggable
     @DeleteMapping(value = "/{studentIds}")
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Set<Long> studentIds) {
         try {
-           for(Long x:studentIds)
-           {
-               Long classId = classStudentService.getClassIdByClassStudentId(x);
-               classStudentService.delete(x);
-             //  classAlarmService.alarmClassCapacity(classId);
-              // classAlarmService.alarmStudentConflict(classId);
-           }
+            Long classId = null;
+            for (Long studentId : studentIds) {
+                classId = classStudentService.getClassIdByClassStudentId(studentId);
+                classStudentService.delete(studentId);
+            }
+
+            if (classId != null) {
+                classAlarmService.alarmClassCapacity(classId);
+                classAlarmService.alarmStudentConflict(classId);
+            }
+
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
-
-
-
 
 
 //    @Loggable

@@ -53,6 +53,7 @@ public class ClassSessionRestController {
         classSessionService.generateSessions(classId, autoSessionsRequirement, response);
         classAlarmService.alarmSumSessionsTimes(classId);
         classAlarmService.alarmTeacherConflict(classId);
+        classAlarmService.alarmTrainingPlaceConflict(classId);
     }
 
     //*********************************
@@ -83,6 +84,7 @@ public class ClassSessionRestController {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
         }
 
         return infoResponseEntity;
@@ -100,6 +102,7 @@ public class ClassSessionRestController {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
         }
         return infoResponseEntity;
     }
@@ -114,6 +117,7 @@ public class ClassSessionRestController {
         classAlarmService.alarmSumSessionsTimes(classId);
         classAlarmService.alarmTeacherConflict(classId);
         classAlarmService.alarmStudentConflict(classId);
+        classAlarmService.alarmTrainingPlaceConflict(classId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -126,6 +130,7 @@ public class ClassSessionRestController {
         ////// classAlarmService.alarmSumSessionsTimes(classId);
         ////// classAlarmService.alarmTeacherConflict(classId);
         ////// classAlarmService.alarmStudentConflict(classId);
+        ////// classAlarmService.alarmTrainingPlaceConflict(classId);
         classSessionService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
