@@ -93,4 +93,8 @@ public interface ISkillService {
     List<SkillDTO> listMainObjective(Long mainObjectiveId);
 
     List<Skill> skillList(Long courseId);
+
+
+    @Transactional(readOnly = true)
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType);
 }
