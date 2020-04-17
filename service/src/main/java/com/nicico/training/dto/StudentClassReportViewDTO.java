@@ -22,7 +22,7 @@ import java.util.List;
 public class StudentClassReportViewDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Long studentId;
+    private Long classStudentId;
 
     // ------------------------------
 
@@ -56,6 +56,7 @@ public class StudentClassReportViewDTO {
         private String termCode;
         private String termTitleFa;
         private String classStudentFailureReason;
+        private String classStudentScoresState;
         private Float classStudentScore;
         private String classStudentApplicantCompanyName;
         private String classStudentPresenceTypeId;
@@ -69,4 +70,28 @@ public class StudentClassReportViewDTO {
         private String courseTitle;
         private String categoryTitle;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("StudentClassReportSpecRs")
+    public static class StudentClassReportSpecRs {
+        private StudentClassReportViewDTO.SpecRs response;
+    }
+
+    // ---------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
 }

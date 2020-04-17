@@ -31,26 +31,21 @@
     });
     var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "tclass.code", title:"<spring:message code='class.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.course.code", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.course.titleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.term.titleFa", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.endDate", title:"<spring:message code='end.date'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentId", primaryKey: true, hidden: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='class.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentFirstName", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentLastName", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpUnit", title:"<spring:message code='end.date'/>", filterOperator: "iContains", autoFitWidth: true},
             {
-                name: "tclass.classStatus", filterOperator: "equals", autoFitWidth: true,
+                name: "courseCode", filterOperator: "equals", autoFitWidth: true,
                 title:"<spring:message code='class.status'/>",
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                },
             },
-            {name: "score", title:"<spring:message code='score'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "scoresState", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "student.postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "courseTitle", title:"<spring:message code='score'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScore", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScoresState", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true}
         ],
-        fetchDataURL: tclassStudentUrl + "classes-of-student/"
+        fetchDataURL: studentClassReportUrl
     });
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
         dataSource: RestDataSource_Student_JspTrainingFile,
@@ -94,12 +89,15 @@
     });
     var DynamicForm_TrainingFile = isc.DynamicForm.create({
         numCols: 7,
+        width: "100%",
         padding: 10,
+        margin:0,
+        // cellPadding: 10,
         titleAlign:"left",
         colWidths:[100,150,100,150,100,150,100],
         fields: [
             { defaultValue:"جستجو فرد", type:"section", sectionExpanded:true,
-                itemIds: ["studentPersonnelNo2","studentPersonnelNo","studentNationalCode","searchBtn","studentFirstName","studentLastName","clearBtn"], width:"100%"
+                itemIds: ["studentPersonnelNo2","studentPersonnelNo","studentNationalCode","searchBtn","studentFirstName","studentLastName","clearBtn"], width:1024
             },
             {
                 name: "studentPersonnelNo2",
@@ -207,22 +205,25 @@
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
         contextMenu: Menu_Courses_TrainingFileJSP,
         dataSource: RestDataSource_Course_JspTrainingFile,
         filterOnKeypress: true,
+
         gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
         fields:[
-            {name: "tclass.code"},
-            {name: "tclass.course.code"},
-            {name: "tclass.course.titleFa"},
-            {name: "tclass.term.titleFa"},
-            {name: "tclass.endDate"},
-            {name: "tclass.classStatus", hidden: true},
-            {name: "score"},
-            {name: "scoresState"},
-            {name: "student.postTitle", hidden: true},
+            {name: "classStudentId"},
+            {name: "studentPersonnelNo2"},
+            {name: "studentNationalCode"},
+            {name: "studentFirstName"},
+            {name: "studentLastName"},
+            {name: "studentCcpUnit"},
+            {name: "courseCode"},
+            {name: "courseTitle"},
+            {name: "classStudentScore"},
+            {name: "classStudentScoresState"},
         ]
-
     });
 
     var ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({
