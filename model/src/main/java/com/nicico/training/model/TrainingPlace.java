@@ -62,4 +62,7 @@ public class TrainingPlace extends Auditable {
 
     @Column(name = "c_description", length = 500)
     private String description;
+
+    @OneToMany(mappedBy = "trainingPlace", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<Alarm> alarms;
 }
