@@ -19,7 +19,7 @@ public class StudentClassReportView extends Auditable {
 
     ///////////////////////////////////////////////////student///////////////////////////////////////
     @Column(name = "studentid", precision = 10)
-    private long studentId;
+    private Long studentId;
 
     @Column(name = "student_personnel_no")
     private String studentPersonnelNo;
