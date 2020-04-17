@@ -102,7 +102,20 @@ public class TclassDTO {
         //        private List<Student> studentSet;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
-        private String hasWarning;
+
+        //*********************************
+        //******old code for alarms********
+//        private String hasWarning;
+        //******new code for alarms********
+//        private Set<Alarm> alarms;
+
+        public String getHasWarning() {
+//            if (alarms.size() > 0)
+                return "alarm";
+//            else
+//                return "";
+        }
+        //*********************************
 
         public String getTeacher() {
             if (teacher != null)
