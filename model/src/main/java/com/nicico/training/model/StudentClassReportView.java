@@ -94,7 +94,7 @@ public class StudentClassReportView extends Auditable {
     @Column(name = "term_code")
     private String termCode;
 
-    @Column(name = "term_title_fa",nullable = false)
+    @Column(name = "term_title_fa")
     private String termTitleFa;
 
     ///////////////////////////////////////////////////classStudent///////////////////////////////////////
