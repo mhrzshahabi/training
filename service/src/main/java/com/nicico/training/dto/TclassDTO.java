@@ -75,6 +75,7 @@ public class TclassDTO {
     private String acceptancelimit;
     private Integer startEvaluation;
     private Boolean preCourseTest;
+    private String hasWarning;
 
 
     @Getter
@@ -105,17 +106,8 @@ public class TclassDTO {
 
         //*********************************
         //******old code for alarms********
-//        private String hasWarning;
-        //******new code for alarms********
-//        private Set<Alarm> alarms;
+        // private String hasWarning;
 
-        public String getHasWarning() {
-//            if (alarms.size() > 0)
-                return "alarm";
-//            else
-//                return "";
-        }
-        //*********************************
 
         public String getTeacher() {
             if (teacher != null)
