@@ -61,13 +61,13 @@ public class StudentClassReportViewRestController {
     }
 
     @Loggable
-    @GetMapping("/iscList")
+    @GetMapping
     public ResponseEntity<ISC<StudentClassReportViewDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         return search(iscRq, c -> modelMapper.map(c, StudentClassReportViewDTO.Info.class));
     }
 
     @Loggable
-    @GetMapping
+    @GetMapping("/iscList")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<List<StudentClassReportViewDTO.Info>> list() {
         return new ResponseEntity<>(studentClassReportViewService.list(), HttpStatus.OK);

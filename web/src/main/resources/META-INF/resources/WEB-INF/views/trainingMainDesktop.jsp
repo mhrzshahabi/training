@@ -751,12 +751,12 @@
                         createTab(this.title, "<spring:url value="web/trainingFile/"/>");
                     }
                 },
-                <%--{--%>
-                    <%--title: "<spring:message code="personnel.courses"/>",--%>
-                    <%--click: function () {--%>
-                        <%--createTab(this.title, "<spring:url value="web/studentClassReport/"/>");--%>
-                    <%--}--%>
-                <%--},--%>
+                {
+                    title: "<spring:message code="personnel.courses"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
+                    }
+                },
                 {isSeparator: true},
                 {
                     title: "<spring:message code="reports.need.assessment"/>",

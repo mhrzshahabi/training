@@ -32,17 +32,17 @@
     var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
         fields: [
             {name: "classStudentId", primaryKey: true, hidden: true},
-            {name: "studentPersonnelNo2", title:"<spring:message code='class.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentNationalCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentFirstName", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentLastName", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpUnit", title:"<spring:message code='end.date'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "courseCode", filterOperator: "equals", autoFitWidth: true,
-                title:"<spring:message code='class.status'/>",
+                title:"<spring:message code='corse_code'/>",
             },
-            {name: "courseTitle", title:"<spring:message code='score'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentScore", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "studentComplexTitle",
                 title: "<spring:message code="complex"/>"
@@ -55,10 +55,20 @@
                 name: "studentCompanyName",
                 title: "<spring:message code="company"/>"
             },
-            {name: "classStudentScoresState", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: studentClassReportUrl
     });
+    var ScoresStateDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
+    });
+
     var CompanyDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
@@ -112,8 +122,8 @@
 
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
         dataSource: RestDataSource_Student_JspTrainingFile,
-        allowAdvancedCriteria:true,
-        canSelect:false,
+        allowAdvancedCriteria: true,
+        canSelect: false,
         selectionType: "single",
         allowFilterExpressions: true,
         fields: [
@@ -129,7 +139,7 @@
             {name: "studentCcpSection"},
             {name: "studentCcpUnit"}
         ],
-        autoFetchData:false,
+        autoFetchData: false,
         rowDoubleClick: function () {
             DynamicForm_TrainingFile.editRecord(this.getSelectedRecord());
             selectedPerson_TrainingFile = this.getSelectedRecord();
@@ -345,7 +355,7 @@
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
-        // autoFetchData: true,
+        autoFetchData: true,
         allowAdvancedCriteria: true,
         contextMenu: Menu_Courses_TrainingFileJSP,
         dataSource: RestDataSource_Course_JspTrainingFile,
@@ -359,9 +369,26 @@
             {name: "studentLastName"},
             {name: "studentCcpUnit"},
             {name: "courseCode"},
-            {name: "courseTitle"},
+            {name: "courseTitleFa"},
             {name: "classStudentScore"},
-            {name: "classStudentScoresState"},
+            {
+                name: "classStudentScoresState",
+                autoFetchDisplayMap: true,
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "title",
+                multiple: true,
+
+                optionDataSource: ScoresStateDS_SCRV,
+                addUnknownValues: false,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
         ]
     });
 
