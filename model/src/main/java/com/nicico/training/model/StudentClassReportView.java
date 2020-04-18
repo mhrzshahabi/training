@@ -1,6 +1,4 @@
-/*
-ghazanfari_f, 8/29/2019, 9:11 AM
-*/
+
 package com.nicico.training.model;
 
 import lombok.EqualsAndHashCode;
@@ -18,7 +16,7 @@ import javax.persistence.*;
 public class StudentClassReportView {
 
     ///////////////////////////////////////////////////student///////////////////////////////////////
-    @Column(name = "student_id", precision = 10)
+    @Column(name = "student_id")
     private long studentId;
 
     @Column(name = "student_personnel_no")
@@ -119,12 +117,12 @@ public class StudentClassReportView {
 
     ///////////////////////////////////////////////////class///////////////////////////////////////
     @Column(name = "class_id")
-    private long classid;
+    private long classId;
 
     @Column(name = "class_status")
     private String classStatus;
 
-    @Column(name = "class_code", nullable = false)
+    @Column(name = "class_code")
     private String classCode;
 
     @Column(name = "class_h_duration")
@@ -133,16 +131,16 @@ public class StudentClassReportView {
     @Column(name = "class_d_duration")
     private Long classDDuration;
 
-    @Column(name = "class_start_date", nullable = false)
+    @Column(name = "class_start_date")
     private String classStartDate;
 
-    @Column(name = "class_end_date", nullable = false)
+    @Column(name = "class_end_date")
     private String classEndDate;
 
     @Column(name = "class_title_class")
     private String classTitle;
 
-    @Column(name = "class_group", nullable = false)
+    @Column(name = "class_group")
     private Long classGroup;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
@@ -159,10 +157,10 @@ public class StudentClassReportView {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(name = "category_title_fa", nullable = false)
+    @Column(name = "category_title_fa")
     private String categoryTitleFa;
 
-    @Column(name = "category_code", length = 2, nullable = false, unique = true)
+    @Column(name = "category_code")
     private String categoryCode;
 
 }
