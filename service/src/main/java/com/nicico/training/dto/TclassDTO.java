@@ -75,6 +75,7 @@ public class TclassDTO {
     private String acceptancelimit;
     private Integer startEvaluation;
     private Boolean preCourseTest;
+    private String hasWarning;
 
 
     @Getter
@@ -102,7 +103,11 @@ public class TclassDTO {
         //        private List<Student> studentSet;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
-        private String hasWarning;
+
+        //*********************************
+        //******old code for alarms********
+        // private String hasWarning;
+
 
         public String getTeacher() {
             if (teacher != null)

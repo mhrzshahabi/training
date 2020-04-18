@@ -608,6 +608,33 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
 
     //*********************************
+    @Override
+    public List<ClassAlarmDTO> list(Long classId, HttpServletResponse response) throws IOException {
+
+        List<ClassAlarmDTO> classAlarmDTO = null;
+
+        try {
+            classAlarmDTO = modelMapper.map(alarmDAO.getAlarmsByClassIdOrClassIdConflictOrderBySortField(classId, classId), new TypeToken<List<ClassAlarmDTO>>() {
+            }.getType());
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
+        }
+
+        return (classAlarmDTO != null ? modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>() {
+        }.getType()) : null);
+    }
+    //*********************************
+
+    //*********************************
+    //******old code for alarms********
+    //*********************************
+    //*********************************
+    //*********************************
+    //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
 
     @Override
@@ -915,8 +942,8 @@ public class ClassAlarmService implements IClassAlarm {
 
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term */
-    @Override
-    public List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException {
+//    @Override
+    public List<ClassAlarmDTO> list_old(Long class_id, HttpServletResponse response) throws IOException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -1455,7 +1482,7 @@ public class ClassAlarmService implements IClassAlarm {
 
                 for (int i = 0; i < AlarmList.size(); i++) {
                     Object[] alarm = (Object[]) AlarmList.get(i);
-                    classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
+                   //Old// classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
 
                 }
             }

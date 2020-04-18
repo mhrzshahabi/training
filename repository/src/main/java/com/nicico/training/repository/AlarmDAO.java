@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AlarmDAO extends JpaRepository<Alarm, Long>, JpaSpecificationExecutor<Alarm> {
 
@@ -15,5 +17,7 @@ public interface AlarmDAO extends JpaRepository<Alarm, Long>, JpaSpecificationEx
     void deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict(String alarmTypeTitleFa, Long classIdConflict);
 
     void deleteAlarmsByClassId(Long classId);
+
+    List<Alarm> getAlarmsByClassIdOrClassIdConflictOrderBySortField(Long classId, Long classIdConflict);
 
 }
