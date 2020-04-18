@@ -180,7 +180,7 @@
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
                 name: "teacherCode",
-                title: "<spring:message code='code'/>",
+                title: "<spring:message code='national.code'/>",
                 align: "center"
             },
             {
