@@ -43,10 +43,73 @@
             },
             {name: "courseTitle", title:"<spring:message code='score'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStudentScore", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentScoresState", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true}
+            {
+                name: "studentComplexTitle",
+                title: "<spring:message code="complex"/>"
+            },
+            {
+                name: "studentCcpAffairs",
+                title: "<spring:message code="affairs"/>"
+            },
+            {
+                name: "studentCompanyName",
+                title: "<spring:message code="company"/>"
+            },
+            {name: "classStudentScoresState", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: studentClassReportUrl
     });
+    var CompanyDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
+    });
+    var AreaDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
+    });
+    var ComplexDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
+    });
+    var AssistantDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
+    });
+    var AffairsDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
+    });
+    var CourseDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code", title: "<spring:message code="corse_code"/>"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>"},
+            {name: "description"},
+        ],
+        fetchDataURL: courseUrl + "spec-list",
+    }); var UnitDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
+    });
+
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
         dataSource: RestDataSource_Student_JspTrainingFile,
         allowAdvancedCriteria:true,
@@ -88,20 +151,24 @@
         ]
     });
     var DynamicForm_TrainingFile = isc.DynamicForm.create({
-        numCols: 7,
-        width: "100%",
+        numCols: 10,
         padding: 10,
         margin:0,
         // cellPadding: 10,
         titleAlign:"left",
-        colWidths:[100,150,100,150,100,150,100],
+        wrapItemTitles: true,
+        colWidths:[50,150,50,150,50,150,50,150, 50, 150],
+        // sectionVisibilityMode: "mutex",
         fields: [
-            { defaultValue:"جستجو فرد", type:"section", sectionExpanded:true,
-                itemIds: ["studentPersonnelNo2","studentPersonnelNo","studentNationalCode","searchBtn","studentFirstName","studentLastName","clearBtn"], width:1024
-            },
+            // {
+            //     defaultValue:"جستجو فرد", type:"section", sectionExpanded:true,canTabToHeader:true,
+            //     itemIds: ["studentPersonnelNo2","studentPersonnelNo","studentNationalCode","searchBtn","studentFirstName","studentLastName","clearBtn"],
+            //     width:"80%"
+            // },
             {
                 name: "studentPersonnelNo2",
-                title:"<spring:message code="personnel.no.6.digits"/>",
+                title:"پرسنلی 6رقمی",
+                <%--title:"<spring:message code="personnel.no.6.digits"/>",--%>
                 textAlign: "center",
                 width: "*"
             },
@@ -116,6 +183,100 @@
                 title:"<spring:message code="national.code"/> ",
                 textAlign: "center",
                 width: "*"
+            },
+            {
+                name: "studentFirstName",
+                title:"<spring:message code="firstName"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            {
+                name: "studentLastName",
+                title:"<spring:message code="lastName"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            // {
+            //     type: "SpacerItem"
+            // },
+            // {
+            //     type: "SpacerItem"
+            // },
+            // {
+            //     defaultValue:"جستجو گروه", type:"section",canTabToHeader:true,
+            //     itemIds: ["classStudentScoresState","studentComplexTitle","studentCcpAffairs","studentCompanyName","courseTitle","termTitleFa"], width:"80%"
+            // },
+            {
+                name: "classStudentScoresState",
+                title: "<spring:message code="score.state"/>"
+            },
+            {
+                name: "studentComplexTitle",
+                title: "<spring:message code="complex"/>",
+                optionDataSource: ComplexDS_SCRV,
+                filterFields: ["value", "value"],
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+                valueField: "value",
+                displayField: "value",
+            },
+            {
+                name: "studentCcpAffairs",
+                title: "<spring:message code="affairs"/>",
+                optionDataSource: AffairsDS_SCRV,
+                filterFields: ["value", "value"],
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+                valueField: "value",
+                displayField: "value",
+            },
+            {
+                name: "studentCompanyName",
+                title: "<spring:message code="company"/>",
+                // filterFields: ["value", "value"],
+                pickListWidth: 300,
+                // type: "ComboBoxItem",
+                // textMatchStyle: "substring",
+                // pickListProperties: {
+                //     showFilterEditor: false,
+                //     showClippedValuesOnHover: true,
+                // },
+                valueField: "value",
+                displayField: "value",
+                optionDataSource: CompanyDS_SCRV
+            },
+            {
+                name: "courseTitle",
+                title: "<spring:message code="course"/>",
+                optionDataSource: CourseDS_SCRV,
+                valueField: "id",
+                displayField: "titleFa",
+                pickListFields: [
+                    {name: "code", autoFitWidth: true},
+                    {name: "titleFa"},
+                ],
+                filterFields: ["titleFa", "code"],
+                pickListWidth: 400,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+            },
+            {
+                name: "termTitleFa",
+                title: "<spring:message code="term"/>"
             },
             {
                 name: "searchBtn",
@@ -142,24 +303,6 @@
                 }
             },
             {
-                name: "studentFirstName",
-                title:"<spring:message code="firstName"/> ",
-                textAlign: "center",
-                width: "*"
-            },
-            {
-                name: "studentLastName",
-                title:"<spring:message code="lastName"/> ",
-                textAlign: "center",
-                width: "*"
-            },
-            {
-                type: "SpacerItem"
-            },
-            {
-                type: "SpacerItem"
-            },
-            {
                 name: "clearBtn",
                 title: "<spring:message code="clear"/>",
                 type: "ButtonItem",
@@ -170,9 +313,6 @@
                     form.clearValues();
                     ListGrid_TrainingFile_TrainingFileJSP.setData([]);
                 }
-            },
-            { defaultValue:"جستجو گروه", type:"section", sectionExpanded:true,
-                itemIds: [], width:"100%"
             },
         ],
         itemKeyPress: function(item, keyName) {
@@ -205,7 +345,7 @@
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
-        autoFetchData: true,
+        // autoFetchData: true,
         allowAdvancedCriteria: true,
         contextMenu: Menu_Courses_TrainingFileJSP,
         dataSource: RestDataSource_Course_JspTrainingFile,
@@ -213,7 +353,6 @@
 
         gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
         fields:[
-            {name: "classStudentId"},
             {name: "studentPersonnelNo2"},
             {name: "studentNationalCode"},
             {name: "studentFirstName"},
@@ -242,8 +381,9 @@
     var VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
+        // overflow: "scroll",
         members: [
-            ToolStrip_Actions_Training_File,
+            // ToolStrip_Actions_Training_File,
             ListGrid_TrainingFile_TrainingFileJSP
         ]
     });
