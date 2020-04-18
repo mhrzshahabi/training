@@ -49,9 +49,14 @@ public class SkillService implements ISkillService {
     @Transactional(readOnly = true)
     @Override
     public SkillDTO.Info get(Long id) {
+        return modelMapper.map(getSkill(id), SkillDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Skill getSkill(Long id) {
         final Optional<Skill> ssById = skillDAO.findById(id);
-        final Skill skill = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        return modelMapper.map(skill, SkillDTO.Info.class);
+        return ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
     }
 
     @Transactional

@@ -26,6 +26,11 @@ public class MainFormController {
         return "report/trainingFile";
     }
 
+    @RequestMapping("/studentClassReport")
+    public String showPersonalCoursesForm() {
+        return "report/studentClassReport";
+    }
+
     @RequestMapping("/trainingOverTime")
     public String showTrainingOverTime() {
         return "report/trainingOverTime";

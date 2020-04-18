@@ -509,5 +509,4 @@ public class TclassDTO {
         private CourseDTO.CourseInfoTuple course;
         private Set<ClassStudentDTO.WeeklySchedule> classStudents;
     }
-
 }
