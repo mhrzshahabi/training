@@ -67,8 +67,8 @@ public class StudentClassReportViewDTO {
         private String classTitle;
         private String classGroup;
         private String courseCode;
-        private String courseTitle;
-        private String categoryTitle;
+        private String courseTitleFa;
+        private String categoryTitleFa;
     }
 
     @Getter

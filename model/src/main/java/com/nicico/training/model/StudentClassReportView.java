@@ -15,10 +15,10 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"classStudentId"}, callSuper = false)
 @Table(name = "view_student_classstudent_class_term_course")
 @DiscriminatorValue("StudentClassReportView")
-public class StudentClassReportView extends Auditable {
+public class StudentClassReportView {
 
     ///////////////////////////////////////////////////student///////////////////////////////////////
-    @Column(name = "studentid", precision = 10)
+    @Column(name = "student_id", precision = 10)
     private long studentId;
 
     @Column(name = "student_personnel_no")
@@ -51,7 +51,7 @@ public class StudentClassReportView extends Auditable {
     @Column(name = "student_job_no")
     private String studentJobNo;
 
-    @Column(name = "student_gob_title")
+    @Column(name = "student_job_title")
     private String studentJobTitle;
 
     @Column(name = "student_company_name")
@@ -60,35 +60,35 @@ public class StudentClassReportView extends Auditable {
     @Column(name = "student_emp_no")
     private String studentPersonnelNo2;
 
-    @Column(name = "student_post_gtade_title")
+    @Column(name = "student_post_grade_title")
     private String studentPostGradeTitle;
 
     @Column(name = "student_post_grade_code")
     private String studentPostGradeCode;
 
-    @Column(name = "student_code")
+    @Column(name = "student_cpp_code")
     private String studentCcpCode;
 
-    @Column(name = "student_area")
+    @Column(name = "student_cpp_area")
     private String studentCcpArea;
 
-    @Column(name = "student_assistant")
+    @Column(name = "student_cpp_assistant")
     private String studentCcpAssistant;
 
-    @Column(name = "student_affairs")
+    @Column(name = "student_cpp_affairs")
     private String studentCcpAffairs;
 
-    @Column(name = "student_section")
+    @Column(name = "student_cpp_section")
     private String studentCcpSection;
 
-    @Column(name = "student_unit")
+    @Column(name = "student_cpp_unit")
     private String studentCcpUnit;
 
     @Column(name = "student_cpp_title")
     private String studentCcpTitle;
 
     ///////////////////////////////////////////////////term///////////////////////////////////////
-    @Column(name = "termid")
+    @Column(name = "term_id")
     private Long termId;
 
     @Column(name = "term_code")
@@ -99,26 +99,26 @@ public class StudentClassReportView extends Auditable {
 
     ///////////////////////////////////////////////////classStudent///////////////////////////////////////
     @Id
-    @Column(name = "classstudentid")
+    @Column(name = "class_student_id")
     private Long classStudentId;
 
-    @Column(name = "classstudent_scores_state")
+    @Column(name = "class_student_scores_state")
     private String classStudentScoresState;
 
-    @Column(name = "classstudent_failure_reason")
+    @Column(name = "class_student_failure_reason")
     private String classStudentFailureReason;
 
-    @Column(name = "classstudent_score")
+    @Column(name = "class_student_score")
     private Float classStudentScore;
 
-    @Column(name = "classstudent_applicant_company_name")
+    @Column(name = "class_student_applicant_company_name")
     private String classStudentApplicantCompanyName;
 
-    @Column(name = "classstudent_presence_type_id")
+    @Column(name = "class_student_presence_type_id")
     private Long classStudentPresenceTypeId;
 
     ///////////////////////////////////////////////////class///////////////////////////////////////
-    @Column(name = "classid")
+    @Column(name = "class_id")
     private long classid;
 
     @Column(name = "class_status")
@@ -139,28 +139,28 @@ public class StudentClassReportView extends Auditable {
     @Column(name = "class_end_date", nullable = false)
     private String classEndDate;
 
-    @Column(name = "class_title")
+    @Column(name = "class_title_class")
     private String classTitle;
 
     @Column(name = "class_group", nullable = false)
     private Long classGroup;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
-    @Column(name = "courseid")
+    @Column(name = "course_id")
     private Long courseid;
 
     @Column(name = "course_code")
     private String courseCode;
 
-    @Column(name = "course_title")
-    private String courseTitle;
+    @Column(name = "course_title_fa")
+    private String courseTitleFa;
 
     ///////////////////////////////////////////////////category///////////////////////////////////////
-    @Column(name = "categoryid")
+    @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(name = "category_title", nullable = false)
-    private String categoryTitle;
+    @Column(name = "category_title_fa", nullable = false)
+    private String categoryTitleFa;
 
     @Column(name = "category_code", length = 2, nullable = false, unique = true)
     private String categoryCode;
