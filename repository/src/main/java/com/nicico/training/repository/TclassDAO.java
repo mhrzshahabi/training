@@ -51,14 +51,23 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             " WHERE " +
             "    s.national_code =:national_code ", nativeQuery = true)
     public List<?> findAllPersonnelClass(String national_code);
+
     public List<?> findAllTclassByCourseId(Long id);
 
     public List<Tclass> findTclassesByCourseId(Long id);
+
     List<Tclass> findByCourseAndTeacher(Course course, Teacher teacher);
+
     List<Tclass> findByCourseIdAndTeacherId(Long courseId, Long teacherId);
+
     List<Tclass> findByTeacherId(Long teacherId);
+
     Tclass findTclassByIdEquals(Long classId);
 
     List<Tclass> findTclassesByCourseIdEquals(Long courseId);
+
+    @Modifying
+    @Query(value = "update tbl_class set C_HAS_WARNING = :hasWarning where ID = :classId", nativeQuery = true)
+    int updateClassHasWarning(Long classId, String hasWarning);
 
 }
