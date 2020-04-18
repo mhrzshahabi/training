@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Entity
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"classStudentId"}, callSuper = false)
 @Table(name = "view_student_classstudent_class_term_course")
 @DiscriminatorValue("StudentClassReportView")
-public class StudentClassReportView {
+public class StudentClassReportView implements Serializable {
 
     ///////////////////////////////////////////////////student///////////////////////////////////////
     @Column(name = "student_id")

@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Entity
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"personnelId", "courseId"}, callSuper = false)
 @Table(name = "view_personnel_course_not_passed_report")
 @DiscriminatorValue("PersonnelCourseNotPassedReportView")
-public class PersonnelCourseNotPassedReportView {
+public class PersonnelCourseNotPassedReportView implements Serializable {
 
     ///////////////////////////////////////////////////personnel///////////////////////////////////////
     @Id
