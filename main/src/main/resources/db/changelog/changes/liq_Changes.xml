@@ -30,4 +30,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="Hamed (generated)" id="1587145119588-263">
+        <addColumn tableName="tbl_class">
+            <column name="c_has_warning" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

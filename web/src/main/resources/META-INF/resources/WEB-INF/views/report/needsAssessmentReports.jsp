@@ -926,6 +926,7 @@
             return;
         }
         let groupedRecords = [[], [], []];
+
         for (let i = 0; i < records.length; i++) {
             groupedRecords[getIndexById_NABOP(records[i].needsAssessmentPriorityId)].add(records[i]);
         }
