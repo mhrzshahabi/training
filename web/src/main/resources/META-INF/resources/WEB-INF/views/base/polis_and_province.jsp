@@ -134,7 +134,56 @@
         width: "100%", height: "100%",
         fields: [
             {name: "id", hidden: true},
-            {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"},
+            {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100",
+                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']",
+            keyUp: function (c) {
+                var str = DynamicForm_Province.getValue("nameFa");
+                str = str.toLowerCase();
+                var newValue="";
+                let kayArray = [
+                    ['q', 'ض'],
+                    ['w', 'ص'],
+                    ['e', 'ث'],
+                    ['r', 'ق'],
+                    ['t', 'ف'],
+                    ['y', 'غ'],
+                    ['u', 'ع'],
+                    ['i', 'ه'],
+                    ['o', 'خ'],
+                    ['p', 'ح'],
+                    ['[', 'ج'],
+                    [']', 'چ'],
+                    ['a', 'ش'],
+                    ['s', 'س'],
+                    ['d', 'ی'],
+                    ['f', 'ب'],
+                    ['g', 'ل'],
+                    ['h', 'ا'],
+                    ['j', 'ت'],
+                    ['k', 'ن'],
+                    ['l', 'م'],
+                    [';', 'ک'],
+                    ["'", 'گ'],
+                    ['z', 'ظ'],
+                    ['x', 'ط'],
+                    ['c', 'ز'],
+                    ['v', 'ر'],
+                    ['b', 'ذ'],
+                    ['n', 'د'],
+                    ['m', 'پ'],
+                    [',', 'و'],
+                    ['?', '؟'],
+                ];
+                let mapping = new Map(kayArray);
+                var ch=mapping.get(str.charAt(str.length-1));
+                if(ch !== undefined)
+                    // newValue=newValue+ch;
+                    newValue = str.substr(0,str.length-2)+ch;
+                console.log(newValue);
+
+                DynamicForm_Province.getField("nameFa").setValue(str);
+                }
+            },
             {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[a-z|A-Z|0-9|' ']"},
         ]
     });

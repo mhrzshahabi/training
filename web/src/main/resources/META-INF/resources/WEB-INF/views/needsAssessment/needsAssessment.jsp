@@ -31,7 +31,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "needsAssessmentDomain.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "needsAssessmentPriority.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: needsAssessmentUrl + "/iscTree",
+        fetchDataURL: needsAssessmentUrl + "/iscList",
     });
     var ToolStrip_NeedsAssessment_JspNeedAssessment = isc.ToolStrip.create({
         members: [
@@ -994,6 +994,14 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             };
             ListGrid_MoreInformation_JspNeedAssessment.invalidateCache();
             ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
+
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "GET", null, function (resp) {
+                if (resp.httpResponseCode != 200) {
+                    return true;
+                }
+
+            }));
+
             this.Super("show", arguments)
         }
     });
@@ -1414,5 +1422,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
 
+    function tree(){
 
+    }
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
