@@ -95,15 +95,17 @@ public class NeedsAssessmentRestController {
         TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = (TotalResponse<NeedsAssessmentDTO.Tree>)(Object)needsAssessmentService.search(nicicoCriteria);
         treeTotalResponse.getResponse().setData(modelMapper.map(treeTotalResponse.getResponse().getData(),new TypeToken<List<NeedsAssessmentDTO.Tree>>() {}.getType()));
 
-        List<NeedsAssessmentDTO.Tree> generations =
-                findGenerations(treeTotalResponse.getResponse().getData());
 
-        Set<NeedsAssessmentDTO.Tree> treeSet = new HashSet<NeedsAssessmentDTO.Tree>();
+        findGenerations(treeTotalResponse.getResponse().getData());
 
-        int index = 1;
+        Set<NeedsAssessmentDTO.Tree> ancestors = new HashSet<NeedsAssessmentDTO.Tree>();
+
+        int index = -1;
         for(NeedsAssessmentDTO.Tree t : treeTotalResponse.getResponse().getData()){
-            index = findAncestors(treeSet,t,0,0,index);
+            index = findAncestors(ancestors,t,0,0,index);
         }
+
+        List<NeedsAssessmentDTO.Tree> generations = new ArrayList<>(ancestors);
 
         return new ResponseEntity<>(treeTotalResponse, HttpStatus.OK);
     }
@@ -111,11 +113,6 @@ public class NeedsAssessmentRestController {
     private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree){
         Set<NeedsAssessmentDTO.Tree> ancestors = new HashSet<>();
         for(NeedsAssessmentDTO.Tree node : tree){
-            /*NeedsAssessmentDTO.Tree ancestor = new NeedsAssessmentDTO.Tree();
-            ancestor.setCompetenceTypeTitle(node.getCompetence().getCompetenceType().getTitle());
-            ancestor.setCompetenceNameTitle(node.getCompetence().getTitle());
-            ancestor.setNeedsAssessmentDomainTitle(node.getNeedsAssessmentDomain().getTitle());
-            ancestor.setNeedsAssessmentPriorityTitle(node.getNeedsAssessmentPriority().getTitle());*/
             node.setCompetenceTypeTitle(node.getCompetence().getCompetenceType().getTitle());
             node.setCompetenceNameTitle(node.getCompetence().getTitle());
             node.setNeedsAssessmentDomainTitle(node.getNeedsAssessmentDomain().getTitle());
@@ -136,15 +133,10 @@ public class NeedsAssessmentRestController {
             father.setParentId(new Long(parent));
             NeedsAssessmentDTO.Tree node =  ancestors.stream().filter(n -> n.equvalentOf(father,property)).findFirst().orElse(null);
             if(node == null){
-//                node = new NeedsAssessmentDTO.Tree();
-//                node.setProperty(property,child.getProperty(property));
-//                node.setId(new Long(i));
-//                node.setParentId(new Long(parent));
-//                ancestors.add(node);
                 father.setId(new Long(i));
                 ancestors.add(father);
                 parent = i;
-                ++i;
+                --i;
             }else{
                 parent = node.getId().intValue();
             }
@@ -155,6 +147,4 @@ public class NeedsAssessmentRestController {
         }
         return i;
     }
-
-//    private List<NeedsAssessmentDTO.Tree> findParent(List<NeedsAssessmentDTO.Tree> generation)
 }
