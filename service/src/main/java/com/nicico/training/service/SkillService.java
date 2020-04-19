@@ -460,4 +460,11 @@ public class SkillService implements ISkillService {
     public List<Skill> skillList(Long courseId) {
         return skillDAO.findSkillsByCourseMainObjectiveId(courseId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType) {
+        return SearchUtil.search(skillDAO, request, e -> modelMapper.map(e, infoType));
+    }
+
 }
