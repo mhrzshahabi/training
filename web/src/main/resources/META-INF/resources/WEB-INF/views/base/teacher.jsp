@@ -935,9 +935,6 @@
         loadPage_AcademicBK(selectedRecordID);
         clearTabFilters();
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
-
-        //roya
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationLevelId")
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
         TabSet_Bottom_JspTeacher.show();
