@@ -801,12 +801,12 @@
                     }
                 },
                 {isSeparator: true},
-                {
-                    title: "<spring:message code="training.class.report"/>",
-                    click:function(){
-                        createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                <%--    title: "<spring:message code="training.class.report"/>",--%>
+                <%--    click:function(){--%>
+                <%--        createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");--%>
+                <%--    }--%>
+                <%--},--%>
                 {isSeparator: true},
                 {
                     title: "<spring:message code="report.monthly.statistical"/>",

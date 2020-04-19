@@ -202,7 +202,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                editorType: "ComboBoxItem",
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
@@ -212,7 +212,7 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                editorType: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
@@ -226,7 +226,7 @@
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
                 },
-                editorType: "SelectItem",
+                editorType: "ComboBoxItem",
                 displayField: "titleFa",
                 valueField: "titleFa",
                 filterOperator: "equals",
@@ -239,7 +239,7 @@
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
                 },
-                editorType: "SelectItem",
+                editorType: "ComboBoxItem",
                 displayField: "titleFa",
                 valueField: "titleFa",
                 filterOperator: "equals",
@@ -357,7 +357,7 @@
             },
             {
                 ID: "teachingHistory",
-                title: "<spring:message code='teachingHistory'/>",
+                title: "سوابق تدریس خارجی",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teachingHistory-tab"})
             },
             {
@@ -935,6 +935,9 @@
         loadPage_AcademicBK(selectedRecordID);
         clearTabFilters();
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+
+        //roya
+        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationLevelId")
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
         TabSet_Bottom_JspTeacher.show();
