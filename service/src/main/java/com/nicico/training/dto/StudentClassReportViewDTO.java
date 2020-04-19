@@ -7,6 +7,7 @@ package com.nicico.training.dto;/* com.nicico.training.dto
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -73,6 +74,19 @@ public class StudentClassReportViewDTO {
 
     @Getter
     @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("ComplexTitle")
+    public static class StatisticalReport {
+        private String scoreState;
+//        private String ccpAssistant;
+//        private String ccpAffairs;
+//        private String ccpSection;
+//        private String ccpUnit;
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("StudentClassReportSpecRs")
@@ -92,6 +106,15 @@ public class StudentClassReportViewDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("FieldValue")
+    public static class FieldValue {
+        private String value;
     }
 
 }
