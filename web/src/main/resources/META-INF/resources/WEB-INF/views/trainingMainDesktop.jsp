@@ -799,7 +799,7 @@
                         createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
                     }
                 },
-                {isSeparator: true},
+                // {isSeparator: true},
                 <%--{--%>
                 <%--    title: "<spring:message code="training.class.report"/>",--%>
                 <%--    click:function(){--%>

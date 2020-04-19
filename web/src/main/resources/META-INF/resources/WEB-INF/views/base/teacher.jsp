@@ -56,9 +56,19 @@
         fetchDataURL: educationLevelUrl + "iscList"
     });
 
+    var RestDataSource_Education_Level_ByID_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationLevelUrl + "spec-list-by-id"
+    });
+
     var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
         fetchDataURL: educationMajorUrl + "spec-list"
+    });
+
+    var RestDataSource_Education_Major_ByID_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationMajorUrl + "spec-list-by-id"
     });
 
     var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
