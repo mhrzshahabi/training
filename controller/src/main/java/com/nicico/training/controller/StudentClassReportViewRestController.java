@@ -15,6 +15,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.ICourseSCRV;
 import com.nicico.training.repository.StudentClassReportViewDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.StudentClassReportViewService;
@@ -69,6 +70,22 @@ public class StudentClassReportViewRestController {
     @GetMapping("/all-field-values")
     public ResponseEntity<ISC<StudentClassReportViewDTO.FieldValue>> findAllValuesOfOneFieldFromPersonnel(@RequestParam String fieldName) throws IOException {
         return new ResponseEntity<>(ISC.convertToIscRs(studentClassReportViewService.findAllValuesOfOneFieldFromPersonnel(fieldName), 0), HttpStatus.OK);
+    }
+
+    @GetMapping("/all-courses")
+    public ResponseEntity<StudentClassReportViewDTO.StudentClassReportSpecRs> findAllCourses() throws IOException {
+        List<CourseDTO.CourseInfoTupleLiteSCRV> list = studentClassReportViewService.findCourses();
+        final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
+        final StudentClassReportViewDTO.StudentClassReportSpecRs specRs = new StudentClassReportViewDTO.StudentClassReportSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @GetMapping("/{reportType}")
