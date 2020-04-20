@@ -183,7 +183,7 @@ public class CalenderCurrentTermRestController {
                 String x5 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getEndDate());
                 Long x6 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getHDuration());
                 String x7 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getClassStatus());
-                y.add(new CalenderCurrentTermDTO.tclass(x0,x1, x2, x3, x4, x5, x6, x7,"0",null));
+                y.add(new CalenderCurrentTermDTO.tclass(x0,x1, x2, x3, x4, x5, x6, x7,"0"));
 
             }
         }
@@ -208,7 +208,7 @@ public class CalenderCurrentTermRestController {
                for (ClassStudent x : classStudents) {
                    if (y.get(i).getId().equals(x.getTclassId())) {
                        y.get(i).setStatusRegister("1");
-                       y.get(i).setScoresState(x.getScoresState());
+                     //  y.get(i).setScoresState(x.getScoresState());
                    } else{}
                       // y.get(i).setStatusRegister("0");
                }

@@ -98,7 +98,6 @@
             ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:record.course.code})
         },
 
-
         headerSpans: [
             {
                 fields: ["course.code", "course.titleFa","course.evaluation"],
@@ -207,7 +206,7 @@
                 autoFitWidth: true,
                 valueMap: {"1": "ثبت نام شده", "0": "ثبت نام نشده"}
             },
-            {name: "scoresState", title: "وضعیت قبولی", autoFitWidth: true},
+
         ],
         headerSpans: [
             {
@@ -216,6 +215,11 @@
             }],
         recordDoubleClick: function () {
         },
+        getCellCSSText: function (record, rowNum, colNum) {
+            if (record.statusRegister =="1") {
+               return "background-color : #b7dee8";
+            }
+            },
         dataArrived: function () {
             wait_Variable.close()
         },
