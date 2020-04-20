@@ -207,7 +207,7 @@
                 autoFitWidth: true,
                 valueMap: {"1": "ثبت نام شده", "0": "ثبت نام نشده"}
             },
-            {name: "scoresState", title: "وضعیت قبولی", autoFitWidth: true},
+
         ],
         headerSpans: [
             {
