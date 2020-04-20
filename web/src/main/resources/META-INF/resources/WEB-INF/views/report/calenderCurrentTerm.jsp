@@ -52,7 +52,7 @@
             {name: "hduration"},
             {name: "classStatus"},
             {name: "statusRegister"},
-            {name: "scoresState"},
+            {name: "classState"},
         ],
     });
 
@@ -95,8 +95,14 @@
             },
              {name: "course.evaluation",title:"نیازسنجی/غیر نیازسنجی"},
         ],
-        click: function (record, rowNum, colNum) {
-              },
+        rowClick: function (record, rowNum, colNum) {
+
+        },
+        click:"ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:'CO9C4M05'})",
+       //  click:function (record) {
+       //      ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:record.course.code})
+       //  },
+
 
         headerSpans: [
             {
@@ -175,8 +181,14 @@
     });
 
     var ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1 = isc.TrLG.create({
+        ID: "ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1",
         dataSource: RestDataSource_Class_CurrentTerm,
-        allowAdvancedCriteria: true,
+        allowAdvancedCriteria: false,
+        alternateRecordStyles:true,
+        //filterLocalData:true,
+        //filterLocally:true,
+        sortField: 1, // sort by countryName
+        dataPageSize: 50,
         headerHeight: 65,
         contextMenu: Menu_ListGrid_CurrentTerm,
         fields: [
