@@ -61,12 +61,10 @@
     });
     var ScoresStateDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
         ],
         autoCacheAllData: true,
-        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=scoreState"
     });
 
     var CompanyDS_SCRV = isc.TrDS.create({
@@ -112,7 +110,8 @@
             {name: "description"},
         ],
         fetchDataURL: courseUrl + "spec-list",
-    }); var UnitDS_SCRV = isc.TrDS.create({
+    });
+    var UnitDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
@@ -192,7 +191,7 @@
                 name: "studentNationalCode",
                 title:"<spring:message code="national.code"/> ",
                 textAlign: "center",
-                width: "*"
+                width: "*",
             },
             {
                 name: "studentFirstName",
@@ -263,25 +262,25 @@
                 // },
                 valueField: "value",
                 displayField: "value",
-                optionDataSource: CompanyDS_SCRV
+                optionDataSource: CompanyDS_SCRV,
             },
             {
-                name: "courseTitle",
+                name: "courseCode",
                 title: "<spring:message code="course"/>",
                 optionDataSource: CourseDS_SCRV,
-                valueField: "id",
+                valueField: "code",
                 displayField: "titleFa",
-                pickListFields: [
+                comboBoxFields: [
                     {name: "code", autoFitWidth: true},
                     {name: "titleFa"},
                 ],
                 filterFields: ["titleFa", "code"],
-                pickListWidth: 400,
-                type: "ComboBoxItem",
+                type: "MultiComboBoxItem",
                 textMatchStyle: "substring",
-                pickListProperties: {
+                comboBoxProperties: {
                     showFilterEditor: false,
-                    showClippedValuesOnHover: true,
+                    pickListWidth: 400,
+                    // showClippedValuesOnHover: true,
                 },
             },
             {
@@ -325,6 +324,9 @@
                 }
             },
         ],
+        itemChanged (item, newValue){
+            ListGrid_TrainingFile_TrainingFileJSP.filterData(DynamicForm_TrainingFile.getValuesAsCriteria())
+        },
         itemKeyPress: function(item, keyName) {
             if(keyName == "Enter"){
                 searchBtnJspTrainingFile.click(DynamicForm_TrainingFile);
@@ -376,8 +378,8 @@
                 autoFetchDisplayMap: true,
                 filterOnKeypress: true,
                 editorType: "SelectItem",
-                displayField: "title",
-                valueField: "title",
+                displayField: "value",
+                valueField: "value",
                 multiple: true,
 
                 optionDataSource: ScoresStateDS_SCRV,
@@ -386,7 +388,7 @@
                     showFilterEditor: false
                 },
                 pickListFields: [
-                    {name: "title", width: "30%"}
+                    {name: "value", width: "30%"}
                 ],
             },
         ]
