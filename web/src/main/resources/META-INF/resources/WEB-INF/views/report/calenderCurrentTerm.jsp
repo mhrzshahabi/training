@@ -95,13 +95,9 @@
             },
              {name: "course.evaluation",title:"نیازسنجی/غیر نیازسنجی"},
         ],
-        rowClick: function (record, rowNum, colNum) {
-
+        cellClick:function (record) {
+            ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:record.course.code})
         },
-        click:"ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:'CO9C4M05'})",
-       //  click:function (record) {
-       //      ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:record.course.code})
-       //  },
 
 
         headerSpans: [
