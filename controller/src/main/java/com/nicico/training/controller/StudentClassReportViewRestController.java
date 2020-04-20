@@ -66,13 +66,27 @@ public class StudentClassReportViewRestController {
         return search(iscRq, c -> modelMapper.map(c, StudentClassReportViewDTO.Info.class));
     }
 
-    @Loggable
-    @GetMapping("/iscList")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<List<StudentClassReportViewDTO.Info>> list() {
-        return new ResponseEntity<>(studentClassReportViewService.list(), HttpStatus.OK);
+    @GetMapping("/all-field-values")
+    public ResponseEntity<ISC<StudentClassReportViewDTO.FieldValue>> findAllValuesOfOneFieldFromPersonnel(@RequestParam String fieldName) throws IOException {
+        return new ResponseEntity<>(ISC.convertToIscRs(studentClassReportViewService.findAllValuesOfOneFieldFromPersonnel(fieldName), 0), HttpStatus.OK);
     }
 
+    @GetMapping("/{reportType}")
+    public ResponseEntity<StudentClassReportViewDTO.StudentClassReportSpecRs> findAllStatisticalReport(@PathVariable String reportType) {
+        List<StudentClassReportViewDTO.Info> list = studentClassReportViewService.findAllStatisticalReportFilter(reportType);
+
+        final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
+        final StudentClassReportViewDTO.StudentClassReportSpecRs specRs = new StudentClassReportViewDTO.StudentClassReportSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping(value = "/list")
