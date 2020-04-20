@@ -47,6 +47,7 @@ public class CalenderCurrentTermRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
+    private final StudentClassReportViewService studentClassReportViewService;
     private final ClassAlarmService classAlarmService;
     private final TclassService tclassService;
     private final ParameterService parameterService;
@@ -227,7 +228,16 @@ public class CalenderCurrentTermRestController {
             }
         }
 
-
+//        List<StudentClassReportViewDTO.InfoTuple> infoList=studentClassReportViewService.listTuple();
+//        for (int i=0;i<infoList.size();i++) {
+//            for(int j=0;j<y.size();j++)
+//            {
+//                if((infoList.get(i).getCourseCode().equals(y.get(j))) && (infoList.get(i).getStudentNationalCode().equals(nationalCode)))
+//                {
+//                   y.get(j).setClassState(infoList.get(i).getClassStudentScoresState());
+//                }
+//            }
+//        }
         final CalenderCurrentTermDTO.SpecRs specResponse = new CalenderCurrentTermDTO.SpecRs();
         final CalenderCurrentTermDTO.CalenderCurrentTermSpecRs specRs = new CalenderCurrentTermDTO.CalenderCurrentTermSpecRs();
 

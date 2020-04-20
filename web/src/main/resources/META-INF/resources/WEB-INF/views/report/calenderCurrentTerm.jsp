@@ -52,7 +52,6 @@
             {name: "hduration"},
             {name: "classStatus"},
             {name: "statusRegister"},
-            {name: "classState"},
         ],
     });
 

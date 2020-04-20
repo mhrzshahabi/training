@@ -32,8 +32,6 @@ public class CalenderCurrentTermDTO implements Serializable {
         private String classStatus;
         private String statusRegister;
         private String scoresState;
-
-
     }
 
     @Getter

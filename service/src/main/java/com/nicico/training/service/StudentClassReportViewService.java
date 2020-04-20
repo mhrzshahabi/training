@@ -59,6 +59,13 @@ public class StudentClassReportViewService implements IStudentClassReportViewSer
     }
 
     @Transactional(readOnly = true)
+    public List<StudentClassReportViewDTO.InfoTuple> listTuple() {
+        final List<StudentClassReportView> gAll = studentClassReportViewDAO.findAll();
+        return modelMapper.map(gAll, new TypeToken<List<StudentClassReportViewDTO.InfoTuple>>() {
+        }.getType());
+    }
+
+    @Transactional(readOnly = true)
     public List<String> listScoreState() {
         final List<String> gAll = studentClassReportViewDAO.findAllScoreStateFromViewSCRV();
         return gAll;
