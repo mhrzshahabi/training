@@ -45,6 +45,7 @@ public class TermDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+        private String year;
     }
 
     @Getter

@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
-    var nationalCodeCheck_JspTClassReport = true;
 
     var isTeachingCategoriesChanged = false;
     var isMajorCategoriesChanged = false;
@@ -17,11 +17,6 @@
     var endDate1Check_JspTClassReport = true;
     var endDate2Check_JspTClassReport = true;
     var endDateCheck_Order_JspTClassReport = true;
-
-    var years = new Array();
-    years[0] = 1300;
-    for(var i=1;i<201;i++)
-        years[i] = years[i-1] + 1;
 
     var titr = isc.HTMLFlow.create({
         align: "center",
@@ -125,6 +120,24 @@
             {name: "titleFa"},
         ],
         fetchDataURL: courseUrl + "spec-list",
+    });
+
+    var RestDataSource_Term_JspTClassReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ],
+        fetchDataURL: termUrl + "spec-list"
+    });
+
+    var RestDataSource_Year_JspTClassReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "year"},
+        ],
+        fetchDataURL: termUrl + "yearList"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_Result_JspTClassReport = isc.TrLG.create({
@@ -511,13 +524,18 @@
                 canEdit: false
             },
             {
-                name: "year",
+                name: "workYear",
                 title: "سال کاری",
                 type: "comboBoxItem",
                 multiple: true,
-                valueMap: years,
-                defaultValue: year,
+                optionDataSource:RestDataSource_Year_JspTClassReport,
+                valueField: "id",
+                displayField: "year",
+                filterFields: ["year"],
+                filterLocally: true,
                 pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
                     gridComponents: [
                         isc.ToolStrip.create({
                             autoDraw:false,
@@ -529,13 +547,13 @@
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "انتخاب همه",
                                     click:function() {
-                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("year"),
+                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("workYear"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
                                             values = [];
 
                                         for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].valueField;
+                                            values[i] = cache[i].year;
                                         }
                                         item.setValue(values);
                                         item.pickList.hide();
@@ -546,7 +564,7 @@
                                     icon: "[SKIN]/actions/close.png",
                                     title: "حذف همه",
                                     click:function() {
-                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("year");
+                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("workYear");
                                         item.setValue([]);
                                         item.pickList.hide();
                                     }
@@ -556,6 +574,63 @@
                         "header","body"
                     ]
                 }
+            },
+            {
+                name: "term",
+                title: "ترم",
+                type: "comboBoxItem",
+                multiple: true,
+                optionDataSource:RestDataSource_Term_JspTClassReport,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                    gridComponents: [
+                        isc.ToolStrip.create({
+                            autoDraw:false,
+                            height:30,
+                            width: "100%",
+                            members: [
+                                isc.ToolStripButton.create({
+                                    width:"50%",
+                                    icon: "[SKIN]/actions/approve.png",
+                                    title: "انتخاب همه",
+                                    click:function() {
+                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("term"),
+                                            fullData = item.pickList.data,
+                                            cache = fullData.localData,
+                                            values = [];
+
+                                        for (var i = 0; i < cache.length; i++) {
+                                            values[i] = cache[i].titleFa;
+                                        }
+                                        item.setValue(values);
+                                        item.pickList.hide();
+                                    }
+                                }),
+                                isc.ToolStripButton.create({
+                                    width:"50%",
+                                    icon: "[SKIN]/actions/close.png",
+                                    title: "حذف همه",
+                                    click:function() {
+                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("term");
+                                        item.setValue([]);
+                                        item.pickList.hide();
+                                    }
+                                })
+                            ]
+                        }),
+                        "header","body"
+                    ]
+                }
+            },
+            {
+                name: "temp5",
+                title: "",
+                canEdit: false
             },
             {
                 name: "enableStatus",

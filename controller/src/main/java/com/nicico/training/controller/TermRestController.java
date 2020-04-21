@@ -13,6 +13,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TermDTO;
+import com.nicico.training.repository.TermDAO;
 import com.nicico.training.service.TermService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class TermRestController {
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
     private final ModelMapper modelMapper;
+    private final TermDAO termDAO;
 
 
     @Loggable
@@ -195,6 +197,16 @@ public class TermRestController {
     @GetMapping(value = {"/getCode/{code}"})
     public ResponseEntity<String> getCode(@PathVariable String code) {
         return new ResponseEntity<>(termService.LastCreatedCode(code), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/yearList")
+    public ResponseEntity<TotalResponse<TermDTO.Info>> yearList(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        TotalResponse<TermDTO.Info> specResponse = termService.search(nicicoCriteria);
+        for (TermDTO.Info datum : specResponse.getResponse().getData()) {
+            datum.setYear(datum.getStartDate().substring(0,4));
+        }
+        return new ResponseEntity<>(specResponse, HttpStatus.OK);
     }
 
 }

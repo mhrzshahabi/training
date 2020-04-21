@@ -15,6 +15,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,7 +118,6 @@ public class TermService implements ITermService {
     public TotalResponse<TermDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Info.class));
     }
-
 
 }
 

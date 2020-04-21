@@ -32,4 +32,5 @@ public interface ITermService {
 
     @Transactional
     TotalResponse<TermDTO.Info> search(NICICOCriteria request);
+
 }
