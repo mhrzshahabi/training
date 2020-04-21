@@ -967,11 +967,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                 title: "شناسنامه شغل",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
                             },
-                            {
+                            /*{
                                 ID: "classInfoTab",
                                 title: "درخت اطلاعات",
                                 pane: moreInfoTree
-                            },
+                            },*/
                         ],
                         tabSelected: function (tabNum, tabPane, ID, tab, name) {
 
@@ -995,12 +995,12 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             ListGrid_MoreInformation_JspNeedAssessment.invalidateCache();
             ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
 
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "GET", null, function (resp) {
+            /*isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "GET", null, function (resp) {
                 if (resp.httpResponseCode != 200) {
                     return true;
                 }
 
-            }));
+            }));*/
 
             this.Super("show", arguments)
         }

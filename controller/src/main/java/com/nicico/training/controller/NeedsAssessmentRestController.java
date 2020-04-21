@@ -107,6 +107,8 @@ public class NeedsAssessmentRestController {
 
         List<NeedsAssessmentDTO.Tree> generations = new ArrayList<>(ancestors);
 
+        treeTotalResponse.getResponse().setData(generations);
+
         return new ResponseEntity<>(treeTotalResponse, HttpStatus.OK);
     }
 

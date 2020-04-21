@@ -35,6 +35,7 @@
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
+    <script src="<spring:url value='/js/langConverter.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
