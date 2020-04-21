@@ -146,7 +146,7 @@ public class StudentClassReportView implements Serializable {
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
     @Column(name = "course_id")
-    private Long courseid;
+    private Long courseId;
 
     @Column(name = "course_code")
     private String courseCode;

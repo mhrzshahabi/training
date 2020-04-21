@@ -31,8 +31,6 @@ public class CalenderCurrentTermDTO implements Serializable {
         private Long hDuration;
         private String classStatus;
         private String statusRegister;
-        private String scoresState;
-
 
     }
 

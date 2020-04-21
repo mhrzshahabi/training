@@ -2,14 +2,10 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
-import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -55,6 +49,13 @@ public class StudentClassReportViewService implements IStudentClassReportViewSer
     public List<StudentClassReportViewDTO.Info> list() {
         final List<StudentClassReportView> gAll = studentClassReportViewDAO.findAll();
         return modelMapper.map(gAll, new TypeToken<List<StudentClassReportViewDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentClassReportViewDTO.InfoTuple> listTuple() {
+        final List<StudentClassReportView> gAll = studentClassReportViewDAO.findAll();
+        return modelMapper.map(gAll, new TypeToken<List<StudentClassReportViewDTO.InfoTuple>>() {
         }.getType());
     }
 
@@ -122,35 +123,41 @@ public class StudentClassReportViewService implements IStudentClassReportViewSer
     public SearchDTO.SearchRs<StudentClassReportViewDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName) {
         List<String> values = null;
         switch (fieldName) {
-//            case "companyName":
-//                values = studentClassReportViewDAO.findAllScoreStateFromViewSCRV();
-//                break;
+            case "company":
+                values = studentClassReportViewDAO.findAllCompanySCRV();
+                break;
             case "scoreState":
                 values = studentClassReportViewDAO.findAllScoreStateFromViewSCRV();
                 break;
-//            case "complexTitle":
-//                values = studentClassReportViewDAO.findAllComplexFromPersonnel();
-//                break;
-//            case "ccpAssistant":
-//                values = studentClassReportViewDAO.findAllAssistantFromPersonnel();
-//                break;
-//            case "ccpAffairs":
-//                values = studentClassReportViewDAO.findAllAffairsFromPersonnel();
-//                break;
-//            case "ccpSection":
-//                values = studentClassReportViewDAO.findAllSectionFromPersonnel();
-//                break;
-//            case "ccpUnit":
-//                values = studentClassReportViewDAO.findAllUnitFromPersonnel();
-//                break;
-//            case "ccpArea":
-//                values = studentClassReportViewDAO.findAllAreaFromPersonnel();
-//                break;
+            case "complex":
+                values = studentClassReportViewDAO.findAllComplexSCRV();
+                break;
+            case "assistant":
+                values = studentClassReportViewDAO.findAllAssistantSCRV();
+                break;
+            case "affairs":
+                values = studentClassReportViewDAO.findAllAffairsSCRV();
+                break;
+            case "section":
+                values = studentClassReportViewDAO.findAllSectionSCRV();
+                break;
+            case "unit":
+                values = studentClassReportViewDAO.findAllUnitSCRV();
+                break;
+            case "area":
+                values = studentClassReportViewDAO.findAllAreaSCRV();
+                break;
         }
         SearchDTO.SearchRs<StudentClassReportViewDTO.FieldValue> response = new SearchDTO.SearchRs<>();
         response.setList(new ArrayList<>());
         values.forEach(value -> response.getList().add(new StudentClassReportViewDTO.FieldValue(value)));
         response.setTotalCount((long) response.getList().size());
         return response;
+    }
+
+    public List<CourseDTO.CourseInfoTupleLiteSCRV> findCourses(){
+        List<ICourseSCRV> scrv = studentClassReportViewDAO.findAllCourseSCRV();
+        return modelMapper.map(scrv, new TypeToken<List<CourseDTO.CourseInfoTupleLiteSCRV>>() {
+        }.getType());
     }
 }

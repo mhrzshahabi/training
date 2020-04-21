@@ -88,6 +88,17 @@ public class StudentClassReportViewDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("StudentClassReportViewInfoTuple")
+    public static class InfoTuple extends StudentClassReportViewDTO {
+        private String studentPersonnelNo;
+        private String studentNationalCode;
+        private String classStudentScoresState;
+        private String courseCode;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("StudentClassReportSpecRs")
     public static class StudentClassReportSpecRs {
