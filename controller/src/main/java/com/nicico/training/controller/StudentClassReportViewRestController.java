@@ -74,7 +74,7 @@ public class StudentClassReportViewRestController {
 
     @GetMapping("/all-courses")
     public ResponseEntity<StudentClassReportViewDTO.StudentClassReportSpecRs> findAllCourses() throws IOException {
-        List<CourseDTO.CourseInfoTupleLiteSCRV> list = studentClassReportViewService.findCourses();
+        List<StudentClassReportViewDTO.CourseInfoSCRV> list = studentClassReportViewService.findCourses();
         final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
         final StudentClassReportViewDTO.StudentClassReportSpecRs specRs = new StudentClassReportViewDTO.StudentClassReportSpecRs();
 
