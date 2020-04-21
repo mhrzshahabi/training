@@ -6,6 +6,7 @@ import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
 import com.nicico.training.model.Alarm;
 import com.nicico.training.repository.AlarmDAO;
+import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -33,6 +34,7 @@ public class ClassAlarmService implements IClassAlarm {
     protected EntityManager entityManager;
     private final ModelMapper modelMapper;
     private final AlarmDAO alarmDAO;
+    private final TclassDAO tclassDAO;
     private MessageSource messageSource;
 
 //////  '' AS alarmTypeTitleFa, '' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId
@@ -75,43 +77,20 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
                 for (int i = 0; i < alarms.size(); i++) {
-
                     Object[] alarm = (Object[]) alarms.get(i);
-
-                    alarmList.add(new ClassAlarmDTO.Create(
-                            (alarm[0] != null ? alarm[0].toString() : null),
-                            (alarm[1] != null ? alarm[1].toString() : null),
-                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
-                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
-                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
-                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
-                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
-                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
-                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
-                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
-                            (alarm[10] != null ? alarm[10].toString() : null),
-                            (alarm[11] != null ? alarm[11].toString() : null),
-                            (alarm[12] != null ? alarm[12].toString() : null),
-                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
-                            (alarm[14] != null ? alarm[14].toString() : null),
-                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
-                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
-                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
-                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
-                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
-                    ));
-
+                    alarmList.add(convertObjectToDTO(alarm));
                 }
 
                 if (alarmList.size() > 0) {
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("SumSessionsTimes", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -160,43 +139,20 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
                 for (int i = 0; i < alarms.size(); i++) {
-
                     Object[] alarm = (Object[]) alarms.get(i);
-
-                    alarmList.add(new ClassAlarmDTO.Create(
-                            (alarm[0] != null ? alarm[0].toString() : null),
-                            (alarm[1] != null ? alarm[1].toString() : null),
-                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
-                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
-                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
-                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
-                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
-                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
-                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
-                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
-                            (alarm[10] != null ? alarm[10].toString() : null),
-                            (alarm[11] != null ? alarm[11].toString() : null),
-                            (alarm[12] != null ? alarm[12].toString() : null),
-                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
-                            (alarm[14] != null ? alarm[14].toString() : null),
-                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
-                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
-                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
-                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
-                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
-                    ));
-
+                    alarmList.add(convertObjectToDTO(alarm));
                 }
 
                 if (alarmList.size() > 0) {
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("ClassCapacity", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -272,46 +228,23 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
                 for (int i = 0; i < alarms.size(); i++) {
-
                     Object[] alarm = (Object[]) alarms.get(i);
-
-                    alarmList.add(new ClassAlarmDTO.Create(
-                            (alarm[0] != null ? alarm[0].toString() : null),
-                            (alarm[1] != null ? alarm[1].toString() : null),
-                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
-                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
-                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
-                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
-                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
-                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
-                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
-                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
-                            (alarm[10] != null ? alarm[10].toString() : null),
-                            (alarm[11] != null ? alarm[11].toString() : null),
-                            (alarm[12] != null ? alarm[12].toString() : null),
-                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
-                            (alarm[14] != null ? alarm[14].toString() : null),
-                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
-                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
-                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
-                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
-                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
-                    ));
-
+                    alarmList.add(convertObjectToDTO(alarm));
                 }
 
                 if (alarmList.size() > 0) {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -440,7 +373,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
@@ -452,10 +385,11 @@ public class ClassAlarmService implements IClassAlarm {
                 if (alarmList.size() > 0) {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -537,7 +471,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
@@ -549,10 +483,11 @@ public class ClassAlarmService implements IClassAlarm {
                 if (alarmList.size() > 0) {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TrainingPlaceConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TrainingPlaceConflict", class_id);
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TrainingPlaceConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TrainingPlaceConflict", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -562,8 +497,8 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
 
     //****************convert object to dto*****************
-    private ClassAlarmDTO.Create convertObjectToDTO(Object[] alarm) {
-        return new ClassAlarmDTO.Create(
+    private ClassAlarmDTO convertObjectToDTO(Object[] alarm) {
+        return new ClassAlarmDTO(
                 (alarm[0] != null ? alarm[0].toString() : null),
                 (alarm[1] != null ? alarm[1].toString() : null),
                 (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
@@ -590,12 +525,24 @@ public class ClassAlarmService implements IClassAlarm {
 
     //****************save created alarms*****************
     @Transactional
-    public void saveAlarms(List<ClassAlarmDTO.Create> alarmList) {
+    public void saveAlarms(List<ClassAlarmDTO> alarmList, Long class_id) {
 
         alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(alarmList.get(0).getAlarmTypeTitleEn(), alarmList.get(0).getClassId(), alarmList.get(0).getSessionId(), alarmList.get(0).getTeacherId(), alarmList.get(0).getStudentId(), alarmList.get(0).getInstituteId(), alarmList.get(0).getTrainingPlaceId(), alarmList.get(0).getReservationId(), alarmList.get(0).getClassIdConflict(), alarmList.get(0).getSessionIdConflict(), alarmList.get(0).getInstituteIdConflict(), alarmList.get(0).getTrainingPlaceIdConflict(), alarmList.get(0).getReservationIdConflict());
 
         alarmDAO.saveAll(modelMapper.map(alarmList, new TypeToken<List<Alarm>>() {
         }.getType()));
+
+        setClassHasWarningStatus(class_id);
+    }
+    //*********************************
+
+    //****************save created alarms*****************
+    public void setClassHasWarningStatus(Long class_id) {
+        if (alarmDAO.existsAlarmsByClassIdOrClassIdConflict(class_id, class_id)) {
+            tclassDAO.updateClassHasWarning(class_id, "alarm");
+        } else {
+            tclassDAO.updateClassHasWarning(class_id, "");
+        }
     }
     //*********************************
 
@@ -1482,7 +1429,7 @@ public class ClassAlarmService implements IClassAlarm {
 
                 for (int i = 0; i < AlarmList.size(); i++) {
                     Object[] alarm = (Object[]) AlarmList.get(i);
-                   //Old// classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
+                    //Old// classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
 
                 }
             }

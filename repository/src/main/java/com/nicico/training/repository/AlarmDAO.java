@@ -20,4 +20,6 @@ public interface AlarmDAO extends JpaRepository<Alarm, Long>, JpaSpecificationEx
 
     List<Alarm> getAlarmsByClassIdOrClassIdConflictOrderBySortField(Long classId, Long classIdConflict);
 
+    boolean existsAlarmsByClassIdOrClassIdConflict(Long classId, Long classIdConflict);
+
 }

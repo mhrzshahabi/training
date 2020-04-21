@@ -170,12 +170,12 @@ public class TclassRestController {
 
         //*********************************
         //******old code for alarms********
-//        for (TclassDTO.Info tclassDTO : response.getList()) {
-//            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
-//                tclassDTO.setHasWarning("alarm");
-//            else
-//                tclassDTO.setHasWarning("");
-//        }
+////        for (TclassDTO.Info tclassDTO : response.getList()) {
+////            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
+////                tclassDTO.setHasWarning("alarm");
+////           else
+////              tclassDTO.setHasWarning("");
+////        }
         //*********************************
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
