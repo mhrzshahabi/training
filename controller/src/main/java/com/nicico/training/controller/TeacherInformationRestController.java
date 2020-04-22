@@ -1,20 +1,15 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.service.ClassAlarmService;
-import com.nicico.training.service.ClassStudentService;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -37,9 +29,10 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping("/api/teacherInformation")
 public class TeacherInformationRestController {
     private final TclassService tclassService;
+    private final TclassDAO tclassDAO;
     private final ModelMapper modelMapper;
 
-    private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
+    private <T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria,Class<T> infoClass) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
@@ -49,15 +42,30 @@ public class TeacherInformationRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        SearchDTO.SearchRs<T> searchRs = (SearchDTO.SearchRs<T>) tclassService.search(searchRq);
+        JpaSpecificationExecutor<T> repository = null;
+        SearchDTO.SearchRs<T> searchRs = tclassService.search1(searchRq,infoClass);
+        List<TclassDTO.teacherInfo> listTotal=new ArrayList(searchRs.getList());
+        List<TclassDTO.teacherInfoCustom> list1=new ArrayList<>();
+        TclassDTO.teacherInfoCustom x=new TclassDTO.teacherInfoCustom();
 
+             for(int i=0;i<listTotal.size();i++)
+               {
+                   x.setFirstName(listTotal.get(i).getTeacher().getPersonality().getFirstNameFa());
+                   x.setLastName(listTotal.get(i).getTeacher().getPersonality().getLastNameFa());
+                   x.setNationalCode(listTotal.get(i).getTeacher().getPersonality().getNationalCode());
+                        if (!list1.contains(x))
+                        {
+                            list1.add(x);
+                        }
+               }
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/teacher-information-iscList/{courseCode}")
-    public ResponseEntity<ISC<TeacherDTO.TeacherFullNameTuple>> scoresList(HttpServletRequest iscRq, @PathVariable String courseCode) throws IOException {
-        return search(iscRq, makeNewCriteria("course.code", courseCode, EOperator.equals, null), c -> modelMapper.map(c,TeacherDTO.TeacherFullNameTuple.class));
+    public ResponseEntity<ISC<TclassDTO.teacherInfo>> scoresList(HttpServletRequest iscRq, @PathVariable String courseCode) throws IOException {
+        return search(iscRq, makeNewCriteria("course.code", courseCode, EOperator.equals, null),TclassDTO.teacherInfo.class);
     }
+    //, c -> modelMapper.map(c,TeacherDTO.Info.class)
 
 }

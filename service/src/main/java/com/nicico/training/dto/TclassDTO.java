@@ -166,6 +166,38 @@ public class TclassDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("list")
+    @AllArgsConstructor
+    public static class list {
+        private String firstname;
+        private String lastName;
+        private String nationalCode;
+        private String phone;
+
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherInfo")
+    public static class teacherInfo{
+        private TeacherDTO.TeacherInformation teacher;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("teacherInfoCustom")
+    public static class teacherInfoCustom{
+        private String firstName;
+        private String lastName;
+        private String nationalCode;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("TclassScore")
     public static class ScoreInfo {
         private String scoringMethod;
