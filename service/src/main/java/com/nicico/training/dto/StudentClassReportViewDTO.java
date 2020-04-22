@@ -128,4 +128,14 @@ public class StudentClassReportViewDTO {
         private String value;
     }
 
+
+    @Getter
+    @Setter
+    @ApiModel("CourseInfoSCRV")
+    public static class CourseInfoSCRV {
+        private Long courseId;
+        private String courseCode;
+        private String courseTitleFa;
+    }
+
 }

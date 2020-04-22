@@ -82,6 +82,7 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
+    const teacherInformation =rootUrl +"/teacherInformation"
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
@@ -756,6 +757,12 @@
                     title: "<spring:message code="personnel.courses"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="personnel.courses.not.passed"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
                     }
                 },
                 {isSeparator: true},
