@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
     var isCriteriaCategoriesChanged_JspTClassReport = false;
     var startDate1Check_JspTClassReport = true;
@@ -73,14 +74,12 @@
             {name: "code"},
             {name: "startDate"},
             {name: "endDate"}
-        ],
-        fetchDataURL: termUrl + "spec-list"
+        ]
     });
 
     var RestDataSource_Year_JspTClassReport = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "year"},
+            {name: "year", primaryKey: true},
         ],
         fetchDataURL: termUrl + "yearList"
     });
@@ -487,7 +486,7 @@
                 type: "comboBoxItem",
                 multiple: true,
                 optionDataSource:RestDataSource_Year_JspTClassReport,
-                valueField: "id",
+                valueField: "year",
                 displayField: "year",
                 filterFields: ["year"],
                 filterLocally: true,
@@ -531,6 +530,19 @@
                         }),
                         "header","body"
                     ]
+                },
+                changed: function(form, item, value){
+                    if(value != null && value != undefined && value.size()==1){
+                        dummy=value;
+                        RestDataSource_Term_JspTClassReport.fetchDataURL =  termUrl + "listByYear/" + value[0];
+                        DynamicForm_CriteriaForm_JspTClassReport.getField("term").optionDataSource = RestDataSource_Term_JspTClassReport;
+                        DynamicForm_CriteriaForm_JspTClassReport.getField("term").fetchData();
+                        DynamicForm_CriteriaForm_JspTClassReport.getField("term").enable();
+                    }
+                    else{
+                        form.getField("term").disabled = true;
+                        form.getField("term").clearValue();
+                    }
                 }
             },
             {
@@ -538,14 +550,11 @@
                 title: "ترم",
                 type: "comboBoxItem",
                 multiple: true,
-                optionDataSource:RestDataSource_Term_JspTClassReport,
+                disabled: true,
                 valueField: "id",
                 displayField: "titleFa",
-                filterFields: ["titleFa"],
                 filterLocally: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
                     gridComponents: [
                         isc.ToolStrip.create({
                             autoDraw:false,

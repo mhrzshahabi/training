@@ -2,7 +2,9 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TermDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,4 +37,7 @@ public interface ITermService {
 
     @Transactional
     TotalResponse<TermDTO.Year> ySearch(NICICOCriteria request);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TermDTO.Info> searchByYear(SearchDTO.SearchRq request, String year);
 }
