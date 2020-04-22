@@ -35,6 +35,7 @@
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
+    <script src="<spring:url value='/js/langConverter.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
@@ -751,12 +752,18 @@
                         createTab(this.title, "<spring:url value="web/trainingFile/"/>");
                     }
                 },
-                <%--{--%>
-                    <%--title: "<spring:message code="personnel.courses"/>",--%>
-                    <%--click: function () {--%>
-                        <%--createTab(this.title, "<spring:url value="web/studentClassReport/"/>");--%>
-                    <%--}--%>
-                <%--},--%>
+                {
+                    title: "<spring:message code="personnel.courses"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="personnel.courses.not.passed"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
+                    }
+                },
                 {isSeparator: true},
                 {
                     title: "<spring:message code="reports.need.assessment"/>",
@@ -799,13 +806,13 @@
                         createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
                     }
                 },
-                // {isSeparator: true},
-                <%--{--%>
-                <%--    title: "<spring:message code="training.class.report"/>",--%>
-                <%--    click:function(){--%>
-                <%--        createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");--%>
-                <%--    }--%>
-                <%--},--%>
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="training.class.report"/>",
+                    click:function(){
+                        createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
+                    }
+                },
                 {isSeparator: true},
                 {
                     title: "<spring:message code="report.monthly.statistical"/>",

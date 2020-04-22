@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -634,22 +637,11 @@ public class InstituteRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-
-//    @Loggable
-//    @PostMapping(value = "/add-teacher-list/{instituteId}")
-//    public ResponseEntity<Boolean> addTeachers(@Validated @RequestBody TeacherDTO.TeacherIdList request, @PathVariable Long instituteId) {
-//        boolean flag=false;
-//        HttpStatus httpStatus=HttpStatus.OK;
-//
-//        try {
-//            instituteService.addTeachers(request.getIds(), instituteId);
-//            flag=true;
-//        } catch (Exception e) {
-//            httpStatus=HttpStatus.NO_CONTENT;
-//            flag=false;
-//        }
-//        return new ResponseEntity<>(flag,httpStatus);
-//    }
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<TotalResponse<InstituteDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        return new ResponseEntity<>(instituteService.search(nicicoCriteria), HttpStatus.OK);
+    }
 
 
 }

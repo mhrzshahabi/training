@@ -273,6 +273,9 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
+            if(record.classStatus == "3")
+            {TabSet_Class.enableTab("classScoresTab")}
+            else{TabSet_Class.disableTab("classScoresTab");}
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         doubleClick: function () {
@@ -2323,8 +2326,11 @@
                     break;
                 }
                 case "classScoresTab": {
+
                     if (typeof loadPage_Scores !== "undefined")
+                    {
                         loadPage_Scores();
+                    }
                     break;
                 }
                 case "classAttendanceTab": {

@@ -47,6 +47,7 @@ public class CalenderCurrentTermRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
+    private final StudentClassReportViewService studentClassReportViewService;
     private final ClassAlarmService classAlarmService;
     private final TclassService tclassService;
     private final ParameterService parameterService;
@@ -182,7 +183,7 @@ public class CalenderCurrentTermRestController {
                 String x5 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getEndDate());
                 Long x6 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getHDuration());
                 String x7 = (tclassService.PersonnelClass(list.getList().get(i).getSkill().getCourse().getId()).get(j).getClassStatus());
-                y.add(new CalenderCurrentTermDTO.tclass(x0,x1, x2, x3, x4, x5, x6, x7,"0",null));
+                y.add(new CalenderCurrentTermDTO.tclass(x0,x1, x2, x3, x4, x5, x6, x7,"0"));
 
             }
         }
@@ -207,7 +208,7 @@ public class CalenderCurrentTermRestController {
                for (ClassStudent x : classStudents) {
                    if (y.get(i).getId().equals(x.getTclassId())) {
                        y.get(i).setStatusRegister("1");
-                       y.get(i).setScoresState(x.getScoresState());
+                     //  y.get(i).setScoresState(x.getScoresState());
                    } else{}
                       // y.get(i).setStatusRegister("0");
                }
@@ -227,7 +228,16 @@ public class CalenderCurrentTermRestController {
             }
         }
 
-
+//        List<StudentClassReportViewDTO.InfoTuple> infoList=studentClassReportViewService.listTuple();
+//        for (int i=0;i<infoList.size();i++) {
+//            for(int j=0;j<y.size();j++)
+//            {
+//                if((infoList.get(i).getCourseCode().equals(y.get(j))) && (infoList.get(i).getStudentNationalCode().equals(nationalCode)))
+//                {
+//                   y.get(j).setClassState(infoList.get(i).getClassStudentScoresState());
+//                }
+//            }
+//        }
         final CalenderCurrentTermDTO.SpecRs specResponse = new CalenderCurrentTermDTO.SpecRs();
         final CalenderCurrentTermDTO.CalenderCurrentTermSpecRs specRs = new CalenderCurrentTermDTO.CalenderCurrentTermSpecRs();
 

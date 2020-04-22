@@ -18,5 +18,4 @@ public interface TermDAO extends JpaRepository<Term, Long>, JpaSpecificationExec
     List<String> findConflictWithoutThisTerm(@Param("sData") String sData, @Param("eData") String eData, @Param("id") Long id);
 
     List<Term> findByCodeStartingWith(String code);
-
 }

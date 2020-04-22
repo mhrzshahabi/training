@@ -19,6 +19,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     var skillData = [];
     var competenceData = [];
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
+        // autoCacheAllData:true,
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -669,6 +670,39 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     });
 
     //--------------------------------------------------------------------
+    var moreInfoTree = isc.TreeGrid.create({
+        ID: "employeeTree",
+        data: isc.Tree.create({
+            modelType: "parent",
+            nameProperty: "Name",
+            idField: "EmployeeId",
+            parentIdField: "ReportsTo",
+            data:
+                [
+                    {EmployeeId:"4", ReportsTo:"1", Name:"Charles Madigen"},
+                    {EmployeeId:"188", ReportsTo:"4", Name:"Rogine Leger"},
+                    {EmployeeId:"189", ReportsTo:"4", Name:"Gene Porter"},
+                    {EmployeeId:"265", ReportsTo:"189", Name:"Olivier Doucet",job:"assistant",address:"some where"},
+                    {EmployeeId:"264", ReportsTo:"189", Name:"Cheryl Pearson",job:"assistant",address:"some where"}
+                ]
+        }),
+        fields: [
+            {name: "Name"},
+            {name: "job"},
+            {name: "address"},
+        ],
+
+        // customize appearance
+        width: 500,
+        height: 400,
+        nodeIcon:"icons/16/person.png",
+        folderIcon:"icons/16/person.png",
+        showOpenIcons:false,
+        showDropIcons:false,
+        showSelectedIcons:true,
+        closedIconSuffix:""
+    });
+    //--------------------------------------------------------------------
 
     var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
         // width: "25%",
@@ -933,6 +967,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                 title: "شناسنامه شغل",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
                             },
+                            /*{
+                                ID: "classInfoTab",
+                                title: "درخت اطلاعات",
+                                pane: moreInfoTree
+                            },*/
                         ],
                         tabSelected: function (tabNum, tabPane, ID, tab, name) {
 
@@ -955,6 +994,14 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             };
             ListGrid_MoreInformation_JspNeedAssessment.invalidateCache();
             ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
+
+            /*isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "GET", null, function (resp) {
+                if (resp.httpResponseCode != 200) {
+                    return true;
+                }
+
+            }));*/
+
             this.Super("show", arguments)
         }
     });
@@ -1375,5 +1422,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
 
+    function tree(){
 
+    }
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
