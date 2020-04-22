@@ -200,10 +200,10 @@ public class TermRestController {
     }
 
     @GetMapping(value = "/yearList")
-    public ResponseEntity<TotalResponse<TermDTO.Info>> yearList(@RequestParam MultiValueMap<String, String> criteria) {
+    public ResponseEntity<TotalResponse<TermDTO.Year>> yearList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        TotalResponse<TermDTO.Info> specResponse = termService.search(nicicoCriteria);
-        for (TermDTO.Info datum : specResponse.getResponse().getData()) {
+        TotalResponse<TermDTO.Year> specResponse = termService.ySearch(nicicoCriteria);
+        for (TermDTO.Year datum : specResponse.getResponse().getData()) {
             datum.setYear(datum.getStartDate().substring(0,4));
         }
         return new ResponseEntity<>(specResponse, HttpStatus.OK);
