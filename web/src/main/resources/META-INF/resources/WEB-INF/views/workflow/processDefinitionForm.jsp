@@ -282,7 +282,7 @@
             {name: "key", title: "<spring:message code="key"/>", width: "30%"},
             {name: "description", title: "<spring:message code="description"/>", width: "30%"},
             {name: "version", title: "<spring:message code="version"/>", width: "10%"},
-            {name: "id", title: "id", type: "text", width: "30%"}
+            {name: "id", title: "id", type: "text", width: "30%", hidden: true}
 
         ],
         sortField: "deploymentId",
