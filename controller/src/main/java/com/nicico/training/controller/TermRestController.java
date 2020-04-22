@@ -13,6 +13,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TermDTO;
+import com.nicico.training.iservice.ITermService;
 import com.nicico.training.repository.TermDAO;
 import com.nicico.training.service.TermService;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +41,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/term")
 public class TermRestController {
-    private final TermService termService;
+    private final ITermService termService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
     private final ModelMapper modelMapper;
-    private final TermDAO termDAO;
-
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -203,10 +202,28 @@ public class TermRestController {
     public ResponseEntity<TotalResponse<TermDTO.Year>> yearList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         TotalResponse<TermDTO.Year> specResponse = termService.ySearch(nicicoCriteria);
-        for (TermDTO.Year datum : specResponse.getResponse().getData()) {
-            datum.setYear(datum.getStartDate().substring(0,4));
-        }
         return new ResponseEntity<>(specResponse, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/listByYear/{year}")
+    public ResponseEntity<TermDTO.TermSpecRs> listByYear(@PathVariable String year) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.SearchRs<TermDTO.Info> response = termService.searchByYear(request,year);
+
+        final TermDTO.SpecRs specResponse = new TermDTO.SpecRs();
+        final TermDTO.TermSpecRs specRs = new TermDTO.TermSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(0)
+                .setEndRow(0 + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }
