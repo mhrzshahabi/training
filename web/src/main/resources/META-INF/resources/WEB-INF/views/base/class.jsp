@@ -255,7 +255,7 @@
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         // styleName: 'expandList-tapBar',
         // cellHeight: 43,
-        autoFetchData: true,
+        // autoFetchData: true,here
         // alternateRecordStyles: true,
         // canExpandRecords: true,
         // canExpandMultipleRecords: false,
@@ -1935,6 +1935,78 @@
         }
     });
 
+    var RestDataSource_Term_Filter = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ],
+        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55",
+        autoFetchData: true
+    });
+
+    var DynamicForm_Term_Filter = isc.DynamicForm.create({
+        width: "450",
+        height: "100%",
+        validateOnExit: true,
+        wrapItemTitles: true,
+        numCols: 2,
+        colWidths: ["10%", "90%"],
+        align: "center",
+        titleAlign: "left",
+        border: "1px solid red",
+        fields: [
+            {
+                name: "termFilter",
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_Filter,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                colSpan: 2,
+                autoFetchData: true,
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ],
+                click: function (form, item) {
+                    // item.fetchData();
+                },
+                changed: function (form, item, value) {
+
+
+                    // var criteriaEdit = '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},';
+                    // var criteria = '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},';
+
+                    ListGrid_Class_JspClass.invalidateCache();
+                    ListGrid_Class_JspClass.fetchData();
+                }
+            },
+
+        ],
+    });
+
+
+
+
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -1944,6 +2016,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
+            DynamicForm_Term_Filter,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

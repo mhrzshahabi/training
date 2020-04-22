@@ -99,7 +99,7 @@ public class TclassDTO {
         private String lastModifiedBy;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
-        private TermDTO term;
+        private TermDTO.TermDTOTuple term;
         //        private List<Student> studentSet;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
