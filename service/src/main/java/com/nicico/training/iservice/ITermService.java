@@ -33,4 +33,6 @@ public interface ITermService {
     @Transactional
     TotalResponse<TermDTO.Info> search(NICICOCriteria request);
 
+    @Transactional
+    TotalResponse<TermDTO.Year> ySearch(NICICOCriteria request);
 }

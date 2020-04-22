@@ -3,9 +3,12 @@ package com.nicico.training.iservice;
 @Author:roya
 */
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -56,4 +59,7 @@ public interface IInstituteService {
     List<EquipmentDTO.Info> getUnAttachedEquipments(Long instituteId, Pageable pageable);
 
     Integer getUnAttachedEquipmentsCount(Long instituteId);
+
+    @Transactional
+    TotalResponse<InstituteDTO.Info> search(NICICOCriteria request);
 }
