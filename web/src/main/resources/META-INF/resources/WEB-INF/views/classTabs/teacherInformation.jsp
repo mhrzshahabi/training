@@ -31,7 +31,7 @@
     //************************************************************************************
     var RestDataSource_teacherInformation = isc.TrDS.create({
         fields: [
-         //   {name: "teacher.personality.firstNameFa"},
+            {name: "teacher.personality.firstNameFa"},
           //  {name: "teacher.personality.firstNameFa"},
         ]
     });
