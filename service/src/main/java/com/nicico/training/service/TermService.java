@@ -119,6 +119,13 @@ public class TermService implements ITermService {
         return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Info.class));
     }
 
+    @Transactional
+    @Override
+    public TotalResponse<TermDTO.Year> ySearch(NICICOCriteria request) {
+        return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Year.class));
+    }
+
+
 }
 
 

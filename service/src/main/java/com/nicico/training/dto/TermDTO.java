@@ -45,7 +45,6 @@ public class TermDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private String year;
     }
 
     @Getter
@@ -99,6 +98,42 @@ public class TermDTO implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
         private List<TermDTO.Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Year")
+    public static class Year{
+        private Long id;
+        private Date createdDate;
+        private String createdBy;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
+        private String startDate;
+        private String year;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("YearSpecRs")
+    public static class YearSpecRs {
+        private TermDTO.YSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class YSpecRs {
+        private List<TermDTO.Year> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
