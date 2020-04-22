@@ -522,7 +522,8 @@
                 textAlign: "center",
                 required: true,
                 title: "<spring:message code='class.title'/>:",
-                wrapTitle: true
+                wrapTitle: true,
+                changed: convertEn2Fa
             },
             {
                 name: "teachingType",

@@ -145,7 +145,7 @@ public class ExportToExcelController {
         HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
 //        final Map<String, Object> params = new HashMap<>();
         data = "{" + "\"content\": " + data + "}";
-        params.put("todayDate", DateUtil.todayDate());
+        params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE,type);
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

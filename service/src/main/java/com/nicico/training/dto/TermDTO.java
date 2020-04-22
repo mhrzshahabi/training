@@ -110,11 +110,6 @@ public class TermDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Year")
     public static class Year{
-        private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
         private String startDate;
         private String year;
     }
