@@ -1277,7 +1277,7 @@
                 title: "8-10",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+               // defaultValue: true
             },
             {
                 name: "second",
@@ -1285,7 +1285,7 @@
                 title: "10-12",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "third",
@@ -1293,7 +1293,7 @@
                 title: "14-16",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+             //   defaultValue: true
             },
             {
                 name: "fourth",
@@ -1301,7 +1301,8 @@
                 title: "12-14",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                disabled: true
+                //disabled: true
+                defaultValue: true
             },
             {
                 name: "fifth",
@@ -1309,7 +1310,8 @@
                 title: "16-18",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                disabled: true
+                defaultValue: true
+               // disabled: true
             },
 
             {
@@ -2013,7 +2015,13 @@
                 ID: "classPreCourseTestQuestionsTab",
                 title: "<spring:message code='class.preCourseTestQuestion'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
+            },
+            {
+                ID: "teacherInformationTab",
+                title: "<spring:message code='teacher.information'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
             }
+
 
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -2341,6 +2349,11 @@
                 case "classAlarmsTab": {
                     if (typeof loadPage_alarm !== "undefined")
                         loadPage_alarm();
+                    break;
+                }
+                case "teacherInformationTab": {
+                    if (typeof  loadPage_teacherInformation !== "undefined")
+                        loadPage_teacherInformation();
                     break;
                 }
                 case "classPreCourseTestQuestionsTab": {
