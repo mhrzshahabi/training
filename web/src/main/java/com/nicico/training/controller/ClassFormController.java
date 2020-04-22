@@ -113,4 +113,9 @@ public class ClassFormController {
     public String preCourseQuestionsTab() {
         return "classTabs/preCourseTestQuestions";
     }
+
+    @RequestMapping("/teacher-information-tab")
+    public String techerInformationTab() {
+        return "classTabs/teacherInformation";
+    }
 }
