@@ -305,15 +305,6 @@ public class CourseDTO implements Serializable {
 
     @Getter
     @Setter
-    @ApiModel("CourseInfoTupleLiteSCRV")
-    public static class CourseInfoTupleLiteSCRV {
-//        private Long courseId;
-        private String courseCode;
-        private String courseTitleFa;
-    }
-
-    @Getter
-    @Setter
     @ApiModel("NeedsAssessmentReportInfo")
     public static class NeedsAssessmentReportInfo {
         private Long id;

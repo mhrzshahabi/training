@@ -147,6 +147,9 @@ public class StudentClassReportViewService implements IStudentClassReportViewSer
             case "area":
                 values = studentClassReportViewDAO.findAllAreaSCRV();
                 break;
+            case "termCode":
+                values = studentClassReportViewDAO.findAllTermCodeSCRV();
+                break;
         }
         SearchDTO.SearchRs<StudentClassReportViewDTO.FieldValue> response = new SearchDTO.SearchRs<>();
         response.setList(new ArrayList<>());
@@ -155,9 +158,9 @@ public class StudentClassReportViewService implements IStudentClassReportViewSer
         return response;
     }
 
-    public List<CourseDTO.CourseInfoTupleLiteSCRV> findCourses(){
-        List<ICourseSCRV> scrv = studentClassReportViewDAO.findAllCourseSCRV();
-        return modelMapper.map(scrv, new TypeToken<List<CourseDTO.CourseInfoTupleLiteSCRV>>() {
+    public List<StudentClassReportViewDTO.CourseInfoSCRV> findCourses(){
+        List<ICourseSCRV> scrv = studentClassReportViewDAO.findDistinctByCourseIdIsNotNull();
+        return modelMapper.map(scrv, new TypeToken<List<StudentClassReportViewDTO.CourseInfoSCRV>>() {
         }.getType());
     }
 }

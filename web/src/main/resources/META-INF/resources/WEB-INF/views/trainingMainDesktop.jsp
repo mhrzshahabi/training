@@ -35,6 +35,7 @@
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
+    <script src="<spring:url value='/js/langConverter.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
@@ -755,6 +756,12 @@
                     title: "<spring:message code="personnel.courses"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="personnel.courses.not.passed"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
                     }
                 },
                 {isSeparator: true},
