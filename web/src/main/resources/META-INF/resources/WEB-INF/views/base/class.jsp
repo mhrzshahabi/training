@@ -72,8 +72,7 @@
             {name: "workflowEndingStatusCode"},
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"}
-        ],
-        fetchDataURL: classUrl + "spec-list"
+        ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
         fields: [
@@ -255,7 +254,7 @@
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         // styleName: 'expandList-tapBar',
         // cellHeight: 43,
-        // autoFetchData: true,here
+        autoFetchData: false,
         // alternateRecordStyles: true,
         // canExpandRecords: true,
         // canExpandMultipleRecords: false,
@@ -1950,13 +1949,11 @@
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
         width: "450",
         height: "100%",
-        validateOnExit: true,
         wrapItemTitles: true,
         numCols: 2,
         colWidths: ["10%", "90%"],
         align: "center",
         titleAlign: "left",
-        border: "1px solid red",
         fields: [
             {
                 name: "termFilter",
@@ -1969,8 +1966,8 @@
                 filterFields: ["code"],
                 sortField: ["code"],
                 sortDirection: "descending",
-                colSpan: 2,
-                autoFetchData: true,
+                defaultToFirstOption: true,
+                useClientFiltering: true,
                 pickListFields: [
                     {
                         name: "code",
@@ -1988,24 +1985,18 @@
                         filterOperator: "iContains"
                     }
                 ],
-                click: function (form, item) {
-                    // item.fetchData();
-                },
                 changed: function (form, item, value) {
-
-
-                    // var criteriaEdit = '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},';
-                    // var criteria = '{"fieldName":"classId","operator":"equals","value":'+ListGrid_evaluation_class.getSelectedRecord().id+'},';
-
-                    ListGrid_Class_JspClass.invalidateCache();
-                    ListGrid_Class_JspClass.fetchData();
+                    load_classes_by_term(value);
+                },
+                dataArrived:function (startRow, endRow, data) {
+                    if(data.allRows[0].id !== undefined)
+                    {
+                        load_classes_by_term(data.allRows[0].id);
+                    }
                 }
-            },
-
-        ],
+            }
+        ]
     });
-
-
 
 
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
@@ -2681,3 +2672,20 @@
 
         }));
     }
+
+    ////*****load classes by term*****
+    function load_classes_by_term(value) {
+        if(value !== undefined) {
+            var criteria = '{"fieldName":"term.id","operator":"equals","value":' + value + '}';
+            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+            ListGrid_Class_JspClass.invalidateCache();
+            ListGrid_Class_JspClass.fetchData();
+        }
+        else
+        {
+            createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
+        }
+    }
+    ////******************************
+
+    //</script>
