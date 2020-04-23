@@ -208,7 +208,7 @@ public class TermRestController {
 
     @Loggable
     @GetMapping(value = "/listByYear/{year}")
-    public ResponseEntity<TermDTO.TermSpecRs> list(@PathVariable String year) throws IOException {
+    public ResponseEntity<TermDTO.TermSpecRs> listByYear(@PathVariable String year) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
