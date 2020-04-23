@@ -74,24 +74,7 @@ public class StudentClassReportViewRestController {
 
     @GetMapping("/all-courses")
     public ResponseEntity<StudentClassReportViewDTO.StudentClassReportSpecRs> findAllCourses() throws IOException {
-        List<CourseDTO.CourseInfoTupleLiteSCRV> list = studentClassReportViewService.findCourses();
-        final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
-        final StudentClassReportViewDTO.StudentClassReportSpecRs specRs = new StudentClassReportViewDTO.StudentClassReportSpecRs();
-
-        if (list != null) {
-            specResponse.setData(list)
-                    .setStartRow(0)
-                    .setEndRow(list.size())
-                    .setTotalRows(list.size());
-            specRs.setResponse(specResponse);
-        }
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-    @GetMapping("/{reportType}")
-    public ResponseEntity<StudentClassReportViewDTO.StudentClassReportSpecRs> findAllStatisticalReport(@PathVariable String reportType) {
-        List<StudentClassReportViewDTO.Info> list = studentClassReportViewService.findAllStatisticalReportFilter(reportType);
-
+        List<StudentClassReportViewDTO.CourseInfoSCRV> list = studentClassReportViewService.findCourses();
         final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
         final StudentClassReportViewDTO.StudentClassReportSpecRs specRs = new StudentClassReportViewDTO.StudentClassReportSpecRs();
 

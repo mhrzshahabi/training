@@ -296,6 +296,9 @@
                 // layoutStyle: "horizontal",
                 comboBoxProperties: {
                     pickListWidth: 400,
+                    // useClientFiltering: true,
+                    filterLocally: true
+
                 },
             },
             {
@@ -354,9 +357,9 @@
         {name: "courseTitleFa"},
     ];
     DynamicForm_TrainingFile.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.textMatchStyle="substring";
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListProperties= {
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.filterFields = ["courseTitleFa", "courseCode"];
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.textMatchStyle = "substring";
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListProperties = {
         showFilterEditor: false,
         pickListWidth: 400,
         showClippedValuesOnHover: true,

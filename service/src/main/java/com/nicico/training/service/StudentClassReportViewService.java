@@ -59,66 +59,6 @@ public class StudentClassReportViewService implements IStudentClassReportViewSer
         }.getType());
     }
 
-    @Transactional(readOnly = true)
-    public List<String> listScoreState() {
-        final List<String> gAll = studentClassReportViewDAO.findAllScoreStateFromViewSCRV();
-        return gAll;
-    }
-
-    @Transactional
-    public List<StudentClassReportViewDTO.Info> findAllStatisticalReportFilter(String reportType) {
-
-        String scoreState = null, assistant = null, affairs = null, section = null, unit = null;
-        List<String> allReportFilter = null;
-
-        switch (reportType) {
-            case "scoreState":
-                allReportFilter = studentClassReportViewDAO.findAllScoreStateFromViewSCRV();
-                break;
-//            case "assistant":
-//                allReportFilter = personnelDAO.findAllAssistantFromPersonnel();
-//                break;
-//            case "affairs":
-//                allReportFilter = personnelDAO.findAllAffairsFromPersonnel();
-//                break;
-//            case "section":
-//                allReportFilter = personnelDAO.findAllSectionFromPersonnel();
-//                break;
-//            case "unit":
-//                allReportFilter = personnelDAO.findAllUnitFromPersonnel();
-//                break;
-        }
-
-        List<StudentClassReportViewDTO.StatisticalReport> listComplex = new ArrayList<>();
-        listComplex.add(new StudentClassReportViewDTO.StatisticalReport("همه"));
-
-        for (String filter : allReportFilter) {
-
-            switch (reportType) {
-                case "scoreState":
-                    scoreState = filter;
-                    break;
-//                case "assistant":
-//                    assistant = filter;
-//                    break;
-//                case "affairs":
-//                    affairs = filter;
-//                    break;
-//                case "section":
-//                    section = filter;
-//                    break;
-//                case "unit":
-//                    unit = filter;
-//                    break;
-            }
-
-            listComplex.add(new StudentClassReportViewDTO.StatisticalReport(scoreState));
-        }
-
-        return modelMapper.map(listComplex, new TypeToken<List<StudentClassReportViewDTO.Info>>() {
-        }.getType());
-    }
-
     @Transactional
     public SearchDTO.SearchRs<StudentClassReportViewDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName) {
         List<String> values = null;
@@ -155,9 +95,9 @@ public class StudentClassReportViewService implements IStudentClassReportViewSer
         return response;
     }
 
-    public List<CourseDTO.CourseInfoTupleLiteSCRV> findCourses(){
-        List<ICourseSCRV> scrv = studentClassReportViewDAO.findAllCourseSCRV();
-        return modelMapper.map(scrv, new TypeToken<List<CourseDTO.CourseInfoTupleLiteSCRV>>() {
+    public List<StudentClassReportViewDTO.CourseInfoSCRV> findCourses(){
+        List<ICourseSCRV> scrv = studentClassReportViewDAO.findDistinctByCourseIdIsNotNull();
+        return modelMapper.map(scrv, new TypeToken<List<StudentClassReportViewDTO.CourseInfoSCRV>>() {
         }.getType());
     }
 }
