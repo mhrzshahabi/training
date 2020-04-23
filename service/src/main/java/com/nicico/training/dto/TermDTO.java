@@ -105,5 +105,36 @@ public class TermDTO implements Serializable {
     }
 
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Year")
+    public static class Year{
+        private String startDate;
+        private String year;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("YearSpecRs")
+    public static class YearSpecRs {
+        private TermDTO.YSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class YSpecRs {
+        private List<TermDTO.Year> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+
 }
 

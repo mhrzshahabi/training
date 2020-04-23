@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+
 // <script>
     var provinceMethod = "GET";
     var waitDialog;
@@ -134,8 +135,17 @@
         width: "100%", height: "100%",
         fields: [
             {name: "id", hidden: true},
-            {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"},
-            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[a-z|A-Z|0-9|' ']"},
+            {name: "nameFa",cssClass:"test" , title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100",
+                //keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']",
+            changed: convertEn2Fa
+            },
+
+            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100",
+                // keyPressFilter: "[a-z|A-Z|0-9|' ']"
+                changed: convertFa2En
+
+            },
+
         ]
     });
 
@@ -163,8 +173,14 @@
         fields: [
             {name: "id", hidden: true},
             {name: "province.id", dataPath: "provinceId", hidden: true,},
-            {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"},
-            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100", keyPressFilter: "[a-z|A-Z|0-9|' ']"},
+            {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100",
+                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
+                changed: convertEn2Fa
+            },
+            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100",
+                // keyPressFilter: "[a-z|A-Z|0-9|' ']"
+                changed: convertFa2En
+            },
         ]
     });
 
@@ -427,5 +443,9 @@
             }
         }
     }
+
+            setTimeout(function(){$("#isc_5G").keyup(function(){
+                console.log($(this).val());
+            })},3000);
 
     //</script>

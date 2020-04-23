@@ -31,6 +31,11 @@ public class MainFormController {
         return "report/studentClassReport";
     }
 
+    @RequestMapping("/personnelCourseNotPassed")
+    public String showPersonalCoursesNotPassedForm() {
+        return "report/personnelCourseNotPassed";
+    }
+
     @RequestMapping("/trainingOverTime")
     public String showTrainingOverTime() {
         return "report/trainingOverTime";

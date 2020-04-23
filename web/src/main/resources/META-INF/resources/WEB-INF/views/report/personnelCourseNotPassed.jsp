@@ -404,32 +404,24 @@
 
     var Menu_Courses_TrainingFileJSP = isc.Menu.create({
         data: [
-            {
-                title: "<spring:message code="global.form.print.pdf"/>",
-                click: function () {
-                    let params = {};
-                    params.complex = "مجتمع: " + (DynamicForm_TrainingFile.getValue("studentComplexTitle")?DynamicForm_TrainingFile.getValue("studentComplexTitle").toString():"-");
-                    params.company = "شرکت: " + (DynamicForm_TrainingFile.getValue("studentCompanyName")?DynamicForm_TrainingFile.getValue("studentCompanyName").toString():"-");
-                    params.area = "حوزه: " + (DynamicForm_TrainingFile.getValue("studentCcpArea")?DynamicForm_TrainingFile.getValue("studentCcpArea").toString():"-");
-                    params.assistant = "معاونت: " + (DynamicForm_TrainingFile.getValue("studentCcpAssistant")?DynamicForm_TrainingFile.getValue("studentCcpAssistant").toString():"-");
-                    params.section = "مرکز هزينه: " + (DynamicForm_TrainingFile.getValue("studentCcpSection")?DynamicForm_TrainingFile.getValue("studentCcpSection").toString():"-");
-                    params.unit = "نام واحد: " + (DynamicForm_TrainingFile.getValue("studentCcpUnit")?DynamicForm_TrainingFile.getValue("studentCcpUnit").toString():"-");
-                    params.affairs = "امور: " + (DynamicForm_TrainingFile.getValue("studentCcpAffairs")?DynamicForm_TrainingFile.getValue("studentCcpAffairs").toString():"-");
-                    params.term = "کد ترم: " + (DynamicForm_TrainingFile.getValue("termCode")?DynamicForm_TrainingFile.getValue("termCode").toString():"-");
-                    printToJasper(ListGrid_TrainingFile_TrainingFileJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
-                }
-            },
+            <%--{--%>
+                <%--title: "<spring:message code="global.form.print.pdf"/>",--%>
+                <%--click: function () {--%>
+                    <%--print_Training_File();--%>
+                <%--}--%>
+            <%--}, --%>
             {
                 title: "<spring:message code="global.form.print.excel"/>",
                 click: function () {
                     console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
                     exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
+                    // print_Training_File("excel");
                 }
             },
             <%--{--%>
                 <%--title: "<spring:message code="global.form.print.html"/>",--%>
                 <%--click: function () {--%>
-                    <%--printToJasper(ListGrid_TrainingFile_TrainingFileJSP.getData().localData.toArray(), params, "personnelCourses.jasper", "HTML");--%>
+                    <%--print_Training_File("html");--%>
                 <%--}--%>
             <%--}--%>
         ]

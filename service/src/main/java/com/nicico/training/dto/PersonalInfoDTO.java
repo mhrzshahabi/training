@@ -54,6 +54,18 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("PersonalInfoCustom")
+    public static class PersonalInfoCustom{
+
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PersonalInfoGrid")
     public static class Grid{
         private Long id;
@@ -85,6 +97,8 @@ public class PersonalInfoDTO {
             return firstNameFa + " " + lastNameFa;
         }
     }
+
+
 
     @Getter
     @Setter

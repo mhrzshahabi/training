@@ -35,6 +35,7 @@
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
+    <script src="<spring:url value='/js/langConverter.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
@@ -81,6 +82,7 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
+    const teacherInformation =rootUrl +"/teacherInformation"
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
@@ -755,6 +757,12 @@
                     title: "<spring:message code="personnel.courses"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="personnel.courses.not.passed"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
                     }
                 },
                 {isSeparator: true},

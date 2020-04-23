@@ -48,6 +48,15 @@ public class TeacherDTO {
         private Integer version;
     }
 
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherInformation")
+    public static class TeacherInformation{
+        private PersonalInfoDTO.PersonalInfoCustom personality;
+    }
+
     @Getter
     @Setter
     @Accessors(chain = true)
