@@ -146,6 +146,8 @@
 	<parameter name="affairs" class="java.lang.String"/>
 	<parameter name="term" class="java.lang.String"/>
 	<parameter name="today" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.lang.String"/>
+	<parameter name="toDate" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -154,18 +156,18 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="166" splitType="Stretch">
+		<band height="177" splitType="Stretch">
 			<staticText>
 				<reportElement x="99" y="4" width="350" height="20" uuid="5f206d2b-4d4f-4333-97c5-abedd5e10fe0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
+					<font fontName="B Nazanin" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروي انساني]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="178" y="28" width="200" height="20" uuid="4a348648-d2de-4840-8ee6-615d6cfbbc62"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
+					<font fontName="B Nazanin" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[فرم دروس گذرانده پرسنل]]></text>
 			</staticText>
@@ -235,6 +237,20 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{term}]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="70" y="140" width="120" height="20" uuid="0d4cfed0-cac0-4226-ba45-df1124c2e4a5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="6" y="140" width="64" height="20" uuid="12205275-21e7-4ed0-a3a3-4ff5c31cfea2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -258,7 +274,7 @@
 							<staticText>
 								<reportElement x="0" y="0" width="30" height="30" uuid="f74257e2-217d-438b-8d7d-db9b395ee0fd"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin" size="11"/>
+									<font fontName="B Nazanin" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[وضعيت]]></text>
 							</staticText>
@@ -280,7 +296,7 @@
 							<staticText>
 								<reportElement x="0" y="0" width="30" height="30" uuid="fb5caf8e-35e2-4cd5-96fd-815b57eecf07"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin" size="11"/>
+									<font fontName="B Nazanin" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[نمره]]></text>
 							</staticText>
@@ -305,7 +321,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="100" height="30" uuid="386d50f4-53d1-48ca-8cc4-3fdf3d67e3cf"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
 										<text><![CDATA[دوره]]></text>
 									</staticText>
@@ -327,9 +343,9 @@
 									<staticText>
 										<reportElement x="0" y="0" width="40" height="30" uuid="053efd90-06b6-4b6d-830d-1b28f8c638a1"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
-										<text><![CDATA[کد]]></text>
+										<text><![CDATA[کد دوره]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
@@ -350,7 +366,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="100" height="30" uuid="908ecb50-a3e5-4134-b0f1-b6a9a6943f9a"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
 										<text><![CDATA[واحد]]></text>
 									</staticText>
@@ -373,7 +389,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="70" height="30" uuid="0125764a-935d-4344-a579-62df36c7f139"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
 										<text><![CDATA[نام خانوادگي]]></text>
 									</staticText>
@@ -396,7 +412,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="50" height="30" uuid="b1f556c5-2fc8-41f8-903b-4db6d2e8f401"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
 										<text><![CDATA[نام]]></text>
 									</staticText>
@@ -420,7 +436,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="60" height="30" uuid="a5c9ed13-9b53-4785-8ae4-172fc47e6361"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
 										<text><![CDATA[کد ملی]]></text>
 									</staticText>
@@ -443,7 +459,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="50" height="30" uuid="27661c39-4cf0-4c67-a654-d921a4f44464"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="9"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
 										<text><![CDATA[پرسنلي 6 رقمي]]></text>
 									</staticText>
@@ -465,7 +481,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="23" height="30" uuid="acd061c3-17c0-4966-82af-b8da0e93b3ca"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="B Nazanin" size="8" isBold="true"/>
 										</textElement>
 										<text><![CDATA[ردیف]]></text>
 									</staticText>

@@ -321,7 +321,7 @@
                 },
             },
             {
-                name: "termCode",
+                name: "termTitleFa",
                 title: "<spring:message code="term"/>",
                 // filterFields: ["value", "value"],
                 // pickListWidth: 100,
@@ -332,7 +332,7 @@
                     showClippedValuesOnHover: true,
                 },
                 multiple: true,
-                valueField: "code",
+                valueField: "titleFa",
                 displayField: "titleFa",
                 initialSort: [
                     {property: "titleFa", direction: "descending", primarySort: true}
@@ -513,7 +513,9 @@
                     params.section = "مرکز هزينه: " + (DynamicForm_TrainingFile.getValue("studentCcpSection")?DynamicForm_TrainingFile.getValue("studentCcpSection").toString():"-");
                     params.unit = "نام واحد: " + (DynamicForm_TrainingFile.getValue("studentCcpUnit")?DynamicForm_TrainingFile.getValue("studentCcpUnit").toString():"-");
                     params.affairs = "امور: " + (DynamicForm_TrainingFile.getValue("studentCcpAffairs")?DynamicForm_TrainingFile.getValue("studentCcpAffairs").toString():"-");
-                    params.term = "کد ترم: " + (DynamicForm_TrainingFile.getValue("termCode")?DynamicForm_TrainingFile.getValue("termCode").toString():"-");
+                    params.term = "کد ترم: " + (DynamicForm_TrainingFile.getValue("termTitleFa")?DynamicForm_TrainingFile.getValue("termTitleFa").toString():"-");
+                    params.fromDate = "تاریخ شروع کلاس: از: " + (DynamicForm_TrainingFile.getValue("fromDate")?DynamicForm_TrainingFile.getValue("fromDate"):"-");
+                    params.toDate = "تا: " + (DynamicForm_TrainingFile.getValue("toDate")?DynamicForm_TrainingFile.getValue("toDate"):"-");
                     printToJasper(ListGrid_TrainingFile_TrainingFileJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
                 }
             },
