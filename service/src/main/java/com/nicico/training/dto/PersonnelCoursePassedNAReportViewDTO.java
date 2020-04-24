@@ -19,8 +19,12 @@ public class PersonnelCoursePassedNAReportViewDTO {
         private Long courseId;
         private String courseCode;
         private String courseTitleFa;
-        Integer totalPersonnelCount = 0;
-        Integer notPassedPersonnelCount = 0;
+        Integer totalEssentialPersonnelCount = 0;
+        Integer notPassedEssentialPersonnelCount = 0;
+        Integer totalImprovingPersonnelCount = 0;
+        Integer notPassedImprovingPersonnelCount = 0;
+        Integer totalDevelopmentalPersonnelCount = 0;
+        Integer notPassedDevelopmentalPersonnelCount = 0;
     }
 
     @Getter
