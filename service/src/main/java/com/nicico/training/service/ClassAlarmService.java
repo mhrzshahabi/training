@@ -496,6 +496,77 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
+    //****************class check list conflict alarm*****************
+    @Transactional
+    public void alarmCheckListConflict(Long class_id) {
+        ////disabled , because in update check list run into error
+//        try {
+//            String alarmScript = " SELECT DISTINCT " +
+//                    "'عدم تکمیل چک لیست' AS alarmTypeTitleFa, " +
+//                    " 'CheckListConflict' AS alarmTypeTitleEn, tbchecklist.class_id  AS classId, null AS sessionId, null AS teacherId,  " +
+//                    " null AS studentId, null AS instituteId, null AS trainingPlaceId, null AS reservationId,  tbchecklist.class_id AS targetrecordid, " +
+//                    " 'classCheckListTab' AS tabname, '/tclass/show-form' AS pageaddress, " +
+//                    "'در چک لیست \"' || tbchecklist.c_title_fa || '\" بخش \"' || tbchecklist.c_group || '\" آیتم \"' || tbchecklist.c_title_fa1 || '\" تعیین تکلیف نشده است (انتخاب یا درج توضیحات)' AS alarm,     " +
+//                    " null AS detailrecordid, ( '6' || tbchecklist.id || '-' || tbchecklist.iditem ) AS sortfield, null AS classIdConflict,  " +
+//                    " null AS  sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+//                    " FROM " +
+//                    " ( " +
+//                    "    SELECT " +
+//                    "        tbl_check_list.id, " +
+//                    "        tbl_check_list.c_title_fa, " +
+//                    "        tbl_check_list_item.id AS iditem, " +
+//                    "        tbl_check_list_item.c_group, " +
+//                    "        tbl_check_list_item.c_title_fa AS c_title_fa1, " +
+//                    "        tbl_check_list_item.b_is_deleted, " +
+//                    "        tbl_class.id AS class_id " +
+//                    "    FROM " +
+//                    "        tbl_check_list " +
+//                    "        INNER JOIN tbl_check_list_item ON tbl_check_list.id = tbl_check_list_item.f_check_list_id, " +
+//                    "        tbl_class " +
+//                    "    WHERE " +
+//                    "        (CASE WHEN :class_id = 0 THEN 1 WHEN tbl_class.id = :class_id THEN 1 END) IS NOT NULL AND " +
+//                    "         tbl_check_list_item.b_is_deleted IS NULL " +
+//                    " ) tbchecklist " +
+//                    " LEFT JOIN tbl_class_check_list ON tbchecklist.iditem = tbl_class_check_list.f_check_list_item_id " +
+//                    "                                  AND tbchecklist.class_id = tbl_class_check_list.f_tclass_id " +
+//                    " INNER JOIN tbl_class ON tbl_class.id = tbchecklist.class_id " +
+//                    " WHERE " +
+//                    " tbl_class.c_status <> 3 AND " +
+//                    " tbl_class_check_list.c_description IS NULL " +
+//                    " AND   ( " +
+//                    "    tbl_class_check_list.b_enabled IS NULL " +
+//                    "    OR    tbl_class_check_list.b_enabled = 0 " +
+//                    " ) ";
+//
+//            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
+//
+//            List<ClassAlarmDTO> alarmList = null;
+//            if (alarms != null) {
+//                alarmList = new ArrayList<>(alarms.size());
+//
+//                for (int i = 0; i < alarms.size(); i++) {
+//                    Object[] alarm = (Object[]) alarms.get(i);
+//                    alarmList.add(convertObjectToDTO(alarm));
+//                }
+//
+//                ////because is to long , I disabled this part
+//                ////if (class_id == 0L) {
+//                ////    alarmDAO.deleteAlarmsByAlarmTypeTitleEn("CheckListConflict");
+//                ////}
+//
+//                if (alarmList.size() > 0) {
+//                    saveAlarms(alarmList, class_id);
+//                } else {
+//                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("CheckListConflict", class_id);
+//                    setClassHasWarningStatus(class_id);
+//                }
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+    }
+    //*********************************
+
     //****************convert object to dto*****************
     private ClassAlarmDTO convertObjectToDTO(Object[] alarm) {
         return new ClassAlarmDTO(
@@ -538,10 +609,16 @@ public class ClassAlarmService implements IClassAlarm {
 
     //****************save created alarms*****************
     public void setClassHasWarningStatus(Long class_id) {
-        if (alarmDAO.existsAlarmsByClassIdOrClassIdConflict(class_id, class_id)) {
-            tclassDAO.updateClassHasWarning(class_id, "alarm");
+        if (class_id == 0L) {
+            //*****this method check all not ended class and set alarm status for them*****
+            tclassDAO.updateAllClassHasWarning();
+            //*****************************************************************************
         } else {
-            tclassDAO.updateClassHasWarning(class_id, "");
+            if (alarmDAO.existsAlarmsByClassIdOrClassIdConflict(class_id, class_id)) {
+                tclassDAO.updateClassHasWarning(class_id, "alarm");
+            } else {
+                tclassDAO.updateClassHasWarning(class_id, "");
+            }
         }
     }
     //*********************************
