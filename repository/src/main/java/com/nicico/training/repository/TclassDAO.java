@@ -81,4 +81,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             " where tbl_class.c_status <> 3 ", nativeQuery = true)
     int updateAllClassHasWarning();
 
+    @Query(value = "select max(f_term) from tbl_class where id = :classId", nativeQuery = true)
+    Long getTermIdByClassId(Long classId);
+
 }

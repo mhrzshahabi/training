@@ -165,6 +165,9 @@ public class ClassAlarmService implements IClassAlarm {
     @Transactional
     public void alarmTeacherConflict(Long class_id) {
         try {
+
+            Long term_id = tclassDAO.getTermIdByClassId(class_id);
+
             String alarmScript = " SELECT 'تداخل استاد' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
                     " null AS trainingPlaceId, null AS reservationId, targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
                     "'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date ||' کلاس '|| c_title_class_current ||' با کد '|| c_code_current ||  ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
@@ -226,7 +229,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "          OR ( tb1.c_session_end_hour <= tb2.c_session_end_hour " +
                     "               AND tb1.c_session_end_hour > tb2.c_session_start_hour ))) ";
 
-            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", term_id).getResultList();
 
             List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
@@ -257,6 +260,9 @@ public class ClassAlarmService implements IClassAlarm {
     @Transactional
     public void alarmStudentConflict(Long class_id) {
         try {
+
+            Long term_id = tclassDAO.getTermIdByClassId(class_id);
+
             String alarmScript = " SELECT  'تداخل فراگیر' AS alarmTypeTitleFa, 'StudentConflict' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId, " +
                     " null AS instituteId, null AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
                     " ' جلسه ' " +
@@ -371,7 +377,7 @@ public class ClassAlarmService implements IClassAlarm {
                     " ) " +
                     " AND tb1.f_class_id =:class_id ";
 
-            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", term_id).getResultList();
 
             List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
@@ -402,6 +408,9 @@ public class ClassAlarmService implements IClassAlarm {
     @Transactional
     public void alarmTrainingPlaceConflict(Long class_id) {
         try {
+
+            Long term_id = tclassDAO.getTermIdByClassId(class_id);
+
             String alarmScript = " SELECT " +
                     "        'تداخل محل برگزاری' AS alarmTypeTitleFa, 'TrainingPlaceConflict' AS alarmTypeTitleEn, " +
                     "        tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, null AS studentId,  " +
@@ -469,7 +478,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour) " +
                     "        ) ";
 
-            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", term_id).getResultList();
 
             List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
@@ -501,6 +510,8 @@ public class ClassAlarmService implements IClassAlarm {
     public void alarmCheckListConflict(Long class_id) {
         ////disabled , because in update check list run into error
 //        try {
+        ////****Point : if class_id is zero, it check, checklist conflict alarms for all classes****
+
 //            String alarmScript = " SELECT DISTINCT " +
 //                    "'عدم تکمیل چک لیست' AS alarmTypeTitleFa, " +
 //                    " 'CheckListConflict' AS alarmTypeTitleEn, tbchecklist.class_id  AS classId, null AS sessionId, null AS teacherId,  " +
@@ -1595,7 +1606,8 @@ public class ClassAlarmService implements IClassAlarm {
                     AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
             }
 
-            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+           ////old code **> endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
 
 
             //*****score alarm*****
