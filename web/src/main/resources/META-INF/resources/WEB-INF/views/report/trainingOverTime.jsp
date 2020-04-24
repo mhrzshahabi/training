@@ -19,7 +19,7 @@
                 titleColSpan: 1,
 // type:"staticText",
                 title: "<spring:message code='start.date'/>",
-                ID: "startDate_jspClass",
+                ID: "startDate_jspTrainingOverTime",
                 required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
@@ -28,7 +28,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_jspClass', this, 'ymd', '/');
+                        displayDatePicker('startDate_jspTrainingOverTime', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
@@ -48,7 +48,7 @@
                 name: "endDate",
                 titleColSpan: 1,
                 title: "<spring:message code='end.date'/>",
-                ID: "endDate_jspClass",
+                ID: "endDate_jspTrainingOverTime",
                 type: 'text', required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
@@ -57,7 +57,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_jspClass', this, 'ymd', '/');
+                        displayDatePicker('endDate_jspTrainingOverTime', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
