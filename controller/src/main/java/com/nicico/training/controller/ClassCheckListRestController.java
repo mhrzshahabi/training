@@ -10,6 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassCheckListDTO;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassCheckListService;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class ClassCheckListRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final ClassAlarmService classAlarmService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -141,7 +143,14 @@ public class ClassCheckListRestController {
     @Loggable
     @PostMapping(value = "/edit")
     public ResponseEntity<ClassCheckListDTO.Info> updateDescription(@RequestParam MultiValueMap<String, String> body) throws IOException {
-        return new ResponseEntity(classCheckListService.updateDescriptionCheck(body), HttpStatus.OK);
+        ResponseEntity<ClassCheckListDTO.Info> infoResponseEntity = new ResponseEntity(classCheckListService.updateDescriptionCheck(body), HttpStatus.OK);
+
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 200) {
+            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getTclassId());
+        }
+
+        return infoResponseEntity;
     }
 
 

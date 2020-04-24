@@ -182,6 +182,11 @@ public class MainFormController {
         return "portal/studentPortal";
     }
 
+    @RequestMapping("/personnel-course-NA-report")
+    public String showPersonnelCourseNAReportForm() {
+        return "report/personnelCourseNAReport";
+    }
+
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
     public ResponseEntity<?> printPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("myToken");

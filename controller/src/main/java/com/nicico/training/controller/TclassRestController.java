@@ -94,6 +94,7 @@ public class TclassRestController {
         if (infoResponseEntity.getStatusCodeValue() == 201) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
         }
         return infoResponseEntity;
     }

@@ -72,8 +72,7 @@
             {name: "workflowEndingStatusCode"},
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"}
-        ],
-        fetchDataURL: classUrl + "spec-list"
+        ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
         fields: [
@@ -255,7 +254,7 @@
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         // styleName: 'expandList-tapBar',
         // cellHeight: 43,
-        autoFetchData: true,
+        autoFetchData: false,
         // alternateRecordStyles: true,
         // canExpandRecords: true,
         // canExpandMultipleRecords: false,
@@ -1936,6 +1935,70 @@
         }
     });
 
+    var RestDataSource_Term_Filter = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ],
+        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55",
+        autoFetchData: true
+    });
+
+    var DynamicForm_Term_Filter = isc.DynamicForm.create({
+        width: "450",
+        height: "100%",
+        wrapItemTitles: true,
+        numCols: 2,
+        colWidths: ["10%", "90%"],
+        align: "center",
+        titleAlign: "left",
+        fields: [
+            {
+                name: "termFilter",
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_Filter,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                defaultToFirstOption: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_classes_by_term(value);
+                },
+                dataArrived:function (startRow, endRow, data) {
+                    if(data.allRows[0].id !== undefined)
+                    {
+                        load_classes_by_term(data.allRows[0].id);
+                    }
+                }
+            }
+        ]
+    });
+
+
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -1945,6 +2008,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
+            DynamicForm_Term_Filter,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -2608,3 +2672,20 @@
 
         }));
     }
+
+    ////*****load classes by term*****
+    function load_classes_by_term(value) {
+        if(value !== undefined) {
+            var criteria = '{"fieldName":"term.id","operator":"equals","value":' + value + '}';
+            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+            ListGrid_Class_JspClass.invalidateCache();
+            ListGrid_Class_JspClass.fetchData();
+        }
+        else
+        {
+            createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
+        }
+    }
+    ////******************************
+
+    //</script>
