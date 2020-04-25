@@ -32,6 +32,7 @@ public class PersonnelCoursePassedNAReportViewDTO {
     @Accessors(chain = true)
     @ApiModel("NotPassedPersonnel")
     public static class NotPassedPersonnel {
+        private Long priorityId;
         private long personnelId;
         private String personnelPersonnelNo;
         private String personnelFirstName;

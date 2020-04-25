@@ -1304,7 +1304,7 @@
                 titleOrientation: "top",
                 labelAsTitle: true,
                 //disabled: true
-                defaultValue: true
+               // defaultValue: true
             },
             {
                 name: "fifth",
@@ -1312,7 +1312,7 @@
                 title: "16-18",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+               // defaultValue: true
                // disabled: true
             },
 
@@ -1326,7 +1326,7 @@
                 title: "شنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "sunday",
@@ -1334,7 +1334,7 @@
                 title: "یکشنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "monday",
@@ -1342,7 +1342,7 @@
                 title: "دوشنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "tuesday",
@@ -1351,7 +1351,7 @@
                 titleOrientation: "top",
                 labelAsTitle: true,
                 endRow: true,
-                defaultValue: true
+             //   defaultValue: true
             },
             {
                 name: "wednesday",
@@ -1359,7 +1359,7 @@
                 title: "چهارشنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+             //   defaultValue: true
             },
             {name: "thursday", type: "checkbox", title: "پنجشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "friday", type: "checkbox", title: "جمعه", titleOrientation: "top", labelAsTitle: true},
