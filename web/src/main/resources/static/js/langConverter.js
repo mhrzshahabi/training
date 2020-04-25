@@ -24,38 +24,38 @@ var mapFa2En={
     return Object.keys(object).find(key => object[key] === value);
 }*/
 
-function convertEn2Fa(_1,_2,_3) {
+function convertEn2Fa(_1,_2,_3,blackList) {
     let len = 0;
     len=_3.length - 1;
 
     let tmpStr=_3.substring(0,len);
 
-    if(mapEn2Fa[_3.charAt(len)]!=undefined) {
+    if(mapEn2Fa[_3.charAt(len)]!= undefined && !blackList.includes(mapEn2Fa[_3.charAt(len)]) && !blackList.includes(mapEn2Fa[_3.charAt(len)]) != undefined) {
         tmpStr += mapEn2Fa[_3.charAt(len)];
-        _2.setHint("برای تجربه بهتر لطفا زبان کیبورد خود را به فارسی تغییر دهید!");
+        // _2.setHint("برای تجربه بهتر لطفا زبان کیبورد خود را به فارسی تغییر دهید!");
     }
-    else if(mapFa2En[_3.charAt(len)]!=undefined) {
+    else if(mapFa2En[_3.charAt(len)]!= undefined && !blackList.includes(_3.charAt(len)) && !blackList.includes(_3.charAt(len)) != undefined) {
         tmpStr += _3.charAt(len);
         _2.setHint("");
-    }else
-        _2.setHint("لطفا زبان کیبورد خود را به فارسی تغییر دهید!");
+    }else{}
+        // _2.setHint("لطفا زبان کیبورد خود را به فارسی تغییر دهید!");
     _2.setValue(tmpStr);
 }
 
-function convertFa2En(_1,_2,_3) {
+function convertFa2En(_1,_2,_3,blackList) {
     let len = 0;
     len=_3.length - 1;
 
     let tmpStr=_3.substring(0,len);
 
-    if(mapFa2En[_3.charAt(len)]!=undefined) {
+    if(mapFa2En[_3.charAt(len)]!=undefined && !blackList.includes(mapFa2En[_3.charAt(len)]) && !blackList.includes(mapFa2En[_3.charAt(len)]) != undefined) {
         tmpStr += mapFa2En[_3.charAt(len)];
-        _2.setHint("برای تجربه بهتر لطفا زبان کیبورد خود را به انگلیسی تغییر دهید!");
+        // _2.setHint("برای تجربه بهتر لطفا زبان کیبورد خود را به انگلیسی تغییر دهید!");
     }
-    else if(mapEn2Fa[_3.charAt(len)]!=undefined) {
+    else if(mapEn2Fa[_3.charAt(len)]!=undefined && !blackList.includes(_3.charAt(len)) && !blackList.includes(_3.charAt(len)) != undefined) {
         tmpStr += _3.charAt(len);
-        _2.setHint("");
-    }else
-        _2.setHint("لطفا زبان کیبورد خود را به انگلیسی تغییر دهید!");
+        // _2.setHint("");
+    }else{}
+        // _2.setHint("لطفا زبان کیبورد خود را به انگلیسی تغییر دهید!");
     _2.setValue(tmpStr);
 }

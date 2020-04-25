@@ -42,23 +42,26 @@ public class TeacherInformationRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        JpaSpecificationExecutor<T> repository = null;
         SearchDTO.SearchRs<T> searchRs = tclassService.search1(searchRq,infoClass);
-        List<TclassDTO.teacherInfo> listTotal=new ArrayList(searchRs.getList());
-        List<TclassDTO.teacherInfoCustom> list1=new ArrayList<>();
-        TclassDTO.teacherInfoCustom x=new TclassDTO.teacherInfoCustom();
 
-             for(int i=0;i<listTotal.size();i++)
-               {
-                   x.setFirstName(listTotal.get(i).getTeacher().getPersonality().getFirstNameFa());
-                   x.setLastName(listTotal.get(i).getTeacher().getPersonality().getLastNameFa());
-                   x.setNationalCode(listTotal.get(i).getTeacher().getPersonality().getNationalCode());
-                        if (!list1.contains(x))
-                        {
-                            list1.add(x);
-                        }
-               }
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        List<TclassDTO.teacherInfo> listTotal = new ArrayList(searchRs.getList());
+
+        List<TclassDTO.teacherInfo> newList = new ArrayList<>();
+        SearchDTO.SearchRs<TclassDTO.teacherInfo>  newList1=new SearchDTO.SearchRs<>();
+        List<String> nationalCodeList = new ArrayList<>();
+
+
+        for (int i = 0; i < listTotal.size(); i++) {
+            if (!nationalCodeList.contains(listTotal.get(i).getTeacher().getPersonality().getNationalCode())) {
+                nationalCodeList.add(listTotal.get(i).getTeacher().getPersonality().getNationalCode());
+                newList.add(listTotal.get(i));
+            }
+        }
+    newList1.setList(newList);
+        newList1.setTotalCount(tclassService.search1(searchRq,infoClass).getTotalCount());
+        SearchDTO.SearchRs<T> searchRs1 = (SearchDTO.SearchRs<T>) newList1;
+
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs1, startRow), HttpStatus.OK);
     }
 
     @Loggable
