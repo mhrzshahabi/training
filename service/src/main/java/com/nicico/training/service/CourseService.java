@@ -37,6 +37,7 @@ public class CourseService implements ICourseService {
     private final JobGroupDAO jobGroupDAO;
     private final CompetenceDAOOld competenceDAO;
     private final TclassService tclassService;
+    private final TeacherService teacherService;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
@@ -550,12 +551,16 @@ public class CourseService implements ICourseService {
         String minTeacherDegree = course.getMinTeacherDegree();
         List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(minTeacherDegree);
         EducationLevel educationLevel = byTitleFa.get(0);
-        Long categoryId = course.getCategoryId();
-        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(categoryId, educationLevel.getCode(), false);
+//        Long categoryId = course.getCategoryId();
+        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(course.getCategoryId(), educationLevel.getCode(), false);
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> sendingList = new ArrayList<>();
         if(!teachers.isEmpty()) {
             Comparator<Tclass> tclassComparator = Comparator.comparing(Tclass::getEndDate);
             for (Teacher teacher : teachers) {
+                Map<String, Object> map = teacherService.evaluateTeacher(teacher.getId(), course.getCategoryId().toString(), course.getSubCategoryId().toString());
+                if(map.get("pass_status").equals("رد")){
+                    continue;
+                }
                 List<Tclass> tclassList = tclassDAO.findByCourseAndTeacher(course, teacher);
                 TeacherDTO.TeacherFullNameTupleWithFinalGrade teacherDTO = modelMapper.map(teacher, TeacherDTO.TeacherFullNameTupleWithFinalGrade.class);
                 Optional<Tclass> max = tclassList.stream().max(tclassComparator);

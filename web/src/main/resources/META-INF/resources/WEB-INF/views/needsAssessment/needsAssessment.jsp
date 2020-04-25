@@ -1192,26 +1192,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         }));
     }
 
-    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
-        // var advancedCriteria = LG.getCriteria();
-        var criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "fileName", type: "hidden"},
-                    {name: "params", type: "hidden"}
-                ]
-        });
-        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        criteriaForm.setValue("fileName", fileName);
-        criteriaForm.setValue("params", JSON.stringify(params));
-        criteriaForm.show();
-        criteriaForm.submitForm();
-    }
+
 
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------

@@ -424,7 +424,7 @@
         titleAlign: "left",
         numCols: 10,
         itemHoverWidth: "20%",
-        colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%", "7%", "12%"],
+        colWidths: ["5%", "18%", "5%", "11%", "5%", "5%", "6%", "8%", "7%", "8%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
@@ -522,6 +522,7 @@
                 required: true,
                 title: "<spring:message code='class.title'/>:",
                 wrapTitle: true,
+                showHint: false,
                 changed: convertEn2Fa
             },
             {
@@ -723,10 +724,9 @@
                 }
 // textBoxStyle:"textItemLite"
             },
-
             {
                 name: "planner",
-                colSpan: 3,
+                colSpan: 1,
                 required:true,
                 wrapTitle: false,
                 title: "<spring:message code="planner"/>:",
@@ -740,11 +740,6 @@
                 }
 // textBoxStyle:"textItemLite"
             },
-
-
-
-
-
             {
                 name: "reason",
                 colSpan: 1,
@@ -760,9 +755,20 @@
 // textBoxStyle: "textItemLite"
             },
             {
+                name: "group",
+                title: "<spring:message code="group"/>:",
+                // required: true,
+                colSpan: 1,
+                readOnlyHover: "به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
+                canEdit: false,
+                textAlign: "center",
+                // type: "staticText",
+                // textBoxStyle: "textItemLite"
+            },
+            {
                 name: "organizerId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
 // width:"250",
-                colSpan: 3,
+                colSpan: 1,
                 pickListWidth: 500,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
@@ -787,49 +793,11 @@
                 }
             },
             {
-                ID: "classTypeStatus",
-                name: "classStatus",
-                colSpan: 1,
-                rowSpan: 1,
-                title: "<spring:message code="class.status"/>:",
-                wrapTitle: true,
-                type: "radioGroup",
-                vertical: false,
-                fillHorizontalSpace: true,
-                defaultValue: "1",
-// endRow:true,
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                },
-                change: function (form, item, value, oldValue) {
-
-
-                    if (classMethod.localeCompare("PUT") === 0 && value === "3")
-                        checkEndingClass(oldValue);
-                    else if (classMethod.localeCompare("POST") === 0 && value === "3")
-                        return false;
-
-                }
-            },
-            {
-                name: "group",
-                title: "<spring:message code="group"/>:",
-                // required: true,
-                colSpan: 1,
-                readOnlyHover: "به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
-                canEdit: false,
-                textAlign: "center",
-                // type: "staticText",
-                // textBoxStyle: "textItemLite"
-            },
-            {
                 name: "instituteId",
                 editorType: "TrComboAutoRefresh",
                 title: "<spring:message code="training.place"/>:",
 // width:"250",
-                colSpan: 4,
+                colSpan: 1,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
 // addUnknownValues:false,
@@ -862,7 +830,7 @@
                 autoFetchData: false,
                 multiple: true,
                 pickListWidth: 250,
-                colSpan: 1,
+                colSpan: 2,
                 showTitle: false,
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
                 displayField: "titleFa",
@@ -890,6 +858,7 @@
 // return {category:category};
                 }
             },
+
             {
                 name: "scoringMethod",
                 colSpan: 1,
@@ -961,18 +930,32 @@
                 textAlign: "center",
                 required: true,
             },
+
             {
-                name: "acceptancelimit_a",
-                colSpan: 2,
-                required: true,
-                hidden: true,
-                textAlign: "center",
-                title: "حد نمره قبولی",
+                ID: "classTypeStatus",
+                name: "classStatus",
+                colSpan: 1,
+                rowSpan: 1,
+                title: "<spring:message code="class.status"/>:",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+// endRow:true,
                 valueMap: {
-                    "1001": "ضعیف",
-                    "1002": "متوسط",
-                    "1003": "خوب",
-                    "1004": "خيلي خوب",
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                },
+                change: function (form, item, value, oldValue) {
+
+
+                    if (classMethod.localeCompare("PUT") === 0 && value === "3")
+                        checkEndingClass(oldValue);
+                    else if (classMethod.localeCompare("POST") === 0 && value === "3")
+                        return false;
+
                 }
             },
             {
@@ -993,6 +976,20 @@
                     "10": "10",
                     "11": "11",
                     "12": "12"
+                }
+            },
+            {
+                name: "acceptancelimit_a",
+                colSpan: 2,
+                required: true,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap: {
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
                 }
             },
             {
