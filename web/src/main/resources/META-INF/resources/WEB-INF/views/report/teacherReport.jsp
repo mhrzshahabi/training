@@ -883,6 +883,12 @@
 
             titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش اساتید با توجه به محدودیت های اعمال شده" +"</span>";
 
+            titr.redraw();
+            personalInfo.redraw();
+            teacherInfo.redraw();
+            evalInfo.redraw();
+            teachingInfo.redraw();
+
             var data_values = DynamicForm_CriteriaForm_JspTeacherReport.getValuesAsAdvancedCriteria();
             for(var i=0;i<data_values.criteria.size();i++){
                 if(data_values.criteria[i].fieldName == "enableStatus" || data_values.criteria[i].fieldName == "personnelStatus"){
@@ -895,6 +901,7 @@
                     data_values.criteria[i].operator = "equals";
                 }
 
+            ListGrid_Result_JspTeacherReport.invalidateCache();
             ListGrid_Result_JspTeacherReport.fetchData(data_values);
             Window_Result_JspTeacherReport.show();
         }

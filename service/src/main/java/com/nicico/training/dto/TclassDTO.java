@@ -27,9 +27,6 @@ import java.util.*;
 @Accessors(chain = true)
 public class TclassDTO {
 
-    //    @ApiModelProperty(required = true)
-    //    private Long courseId;
-
     private Long minCapacity;
     private Long maxCapacity;
     @ApiModelProperty(required = true)
@@ -40,7 +37,6 @@ public class TclassDTO {
     private String titleClass;
     private String teachingType;//روش آموزش
     private Long hDuration;
-    //    private Long dDuration;
     private Long supervisor;
     private Long planner;
     private String reason;
@@ -86,28 +82,16 @@ public class TclassDTO {
 
         private Long courseId;
         private InstituteDTO.InstituteInfoTuple institute;
-        //        private Date createdDate;
-        //        private String createdBy;
-        //        @Getter(AccessLevel.NONE)
-        //        private Date lastModifiedDate;
-        //        public String getLastModifiedDate(){
-        //            if(lastModifiedDate == null){
-        //                return createdDate.toString();
-        //            }
-        //            return lastModifiedDate.toString();
-        //        }
         private String lastModifiedBy;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
         private TermDTO.TermDTOTuple term;
-        //        private List<Student> studentSet;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
 
         //*********************************
         //******old code for alarms********
         // private String hasWarning;
-
 
         public String getTeacher() {
             if (teacher != null)
@@ -210,7 +194,6 @@ public class TclassDTO {
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
         private Long courseId;
-//        private List<Long> studentSet;
     }
 
     //----------------------------------------------
@@ -373,23 +356,6 @@ public class TclassDTO {
             }
             return studentEvaluations;
         }
-
-        //        public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
-//            if (studentId == -1) {
-//                return classStudents;
-//            } else {
-//
-//                Set<ClassStudentDTO.AttendanceInfo> findStudent = new HashSet<>();
-//                for (ClassStudentDTO.AttendanceInfo student : classStudents) {
-//                    if (student.getStudentId().equals(studentId)) {
-//                        findStudent.add(student);
-//                        break;
-//                    }
-//                }
-//
-//                return findStudent;
-//            }
-//        }
     }
 
     @Getter
@@ -545,5 +511,60 @@ public class TclassDTO {
         private String code;
         private CourseDTO.CourseInfoTuple course;
         private Set<ClassStudentDTO.WeeklySchedule> classStudents;
+    }
+
+    //------------------------ training class report -------------------------------------------------------------------
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassReport")
+    public static class TClassReport {
+        private Long id;
+        private String code;
+        private CourseDTO.CourseInfoTuple course;
+        private TeacherDTO.TeacherFullNameTuple teacher;
+        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+        private Integer studentsCount;
+        private Long hDuration;
+        private String startDate;
+        private String endDate;
+        private String classStatus;
+        public String getTeacher() {
+            if (teacher != null)
+                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
+        }
+        public Integer getStudentsCount() {
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
+        }
+        public String getYear(){
+            return startDate.substring(0,4);
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassReportSpecRs")
+    public static class TclassReportSpecRs {
+        private ReportSpecRs response;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ReportSpecRs {
+        private List<TclassDTO.TClassReport> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

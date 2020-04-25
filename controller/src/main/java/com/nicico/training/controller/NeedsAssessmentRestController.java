@@ -142,6 +142,7 @@ public class NeedsAssessmentRestController {
             }else{
                 parent = node.getId().intValue();
             }
+            child.setProperty(property,"");
             i = findAncestors(ancestors,child,++no,parent,i);
         }else {
             child.setParentId(new Long(parent));

@@ -18,6 +18,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     };
     var skillData = [];
     var competenceData = [];
+
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
         // autoCacheAllData:true,
         fields: [
@@ -670,38 +671,38 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     });
 
     //--------------------------------------------------------------------
-    var moreInfoTree = isc.TreeGrid.create({
-        ID: "employeeTree",
-        data: isc.Tree.create({
-            modelType: "parent",
-            nameProperty: "Name",
-            idField: "EmployeeId",
-            parentIdField: "ReportsTo",
-            data:
-                [
-                    {EmployeeId:"4", ReportsTo:"1", Name:"Charles Madigen"},
-                    {EmployeeId:"188", ReportsTo:"4", Name:"Rogine Leger"},
-                    {EmployeeId:"189", ReportsTo:"4", Name:"Gene Porter"},
-                    {EmployeeId:"265", ReportsTo:"189", Name:"Olivier Doucet",job:"assistant",address:"some where"},
-                    {EmployeeId:"264", ReportsTo:"189", Name:"Cheryl Pearson",job:"assistant",address:"some where"}
-                ]
-        }),
-        fields: [
-            {name: "Name"},
-            {name: "job"},
-            {name: "address"},
-        ],
 
+    var moreInfoTree = isc.TreeGrid.create({
+        ID: "needesAssessmentTree",
+        data:[],
+        fields: [
+            {name: "competenceTypeTitle", title: "<spring:message code="type"/>"},
+            {name: "needsAssessmentDomainTitle", title: "<spring:message code="domain"/>"},
+            {name: "needsAssessmentPriorityTitle", title: "<spring:message code="priority"/>"},
+            {name: "competenceNameTitle",title: "<spring:message code="competence.title"/>"},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>",width:"40%"},
+
+        ],
         // customize appearance
-        width: 500,
-        height: 400,
-        nodeIcon:"icons/16/person.png",
-        folderIcon:"icons/16/person.png",
+        width: "100%",
+        height: "90%",
+        autoDraw: true,
         showOpenIcons:false,
         showDropIcons:false,
         showSelectedIcons:true,
-        closedIconSuffix:""
+        closedIconSuffix:"",
+        showConnectors: true,
+        baseStyle: "noBorderCell",
+        dataProperties:{
+        dataArrived:function (parentNode) {
+            this.openAll();
+        },
+        changed:function () {
+            console.log("open");
+        },
+    }
     });
+
     //--------------------------------------------------------------------
 
     var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
@@ -924,7 +925,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         autoSize: false,
         items: [
             isc.TrHLayout.create({
-                ID:"printContainer",
+                ID: "printContainer",
                 members: [
                     isc.TabSet.create({
                         ID: "tabSetClass",
@@ -967,11 +968,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                 title: "شناسنامه شغل",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
                             },
-                            /*{
+                            {
                                 ID: "classInfoTab",
                                 title: "درخت اطلاعات",
                                 pane: moreInfoTree
-                            },*/
+                            },
                         ],
                         tabSelected: function (tabNum, tabPane, ID, tab, name) {
 
@@ -980,27 +981,40 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 ]
             })
         ],
-        show(){
+        show() {
             let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
             Label_Title_JspNeedsAssessment.setContents(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
             // this.setTitle(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
             let advancedCriteria = {
-                _constructor:"AdvancedCriteria",
-                operator:"and",
-                criteria:[
-                    { fieldName:"objectId", operator:"equals", value:rec.objectId },
-                    { fieldName:"objectType", operator:"equals", value:rec.objectType }
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {fieldName: "objectId", operator: "equals", value: rec.objectId},
+                    {fieldName: "objectType", operator: "equals", value: rec.objectType}
                 ]
             };
+            let criteria = '{"fieldName":"objectId","operator":"equals","value":"' + rec.objectId + '"},' +
+                '{"fieldName":"objectType","operator":"equals","value":"' + rec.objectType + '"}';
+
             ListGrid_MoreInformation_JspNeedAssessment.invalidateCache();
             ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
 
-            /*isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "GET", null, function (resp) {
+            var url = needsAssessmentUrl + "/iscTree?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+            isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
                 if (resp.httpResponseCode != 200) {
-                    return true;
-                }
+                    return flase;
+                } else {
+                    var Treedata = isc.Tree.create({
+                        modelType: "parent",
+                        nameProperty: "Name",
+                        idField: "id",
+                        parentIdField: "parentId",
+                        data: JSON.parse(resp.data).response.data
+                    });
 
-            }));*/
+                    moreInfoTree.setData(Treedata);
+                }
+            }));
 
             this.Super("show", arguments)
         }
