@@ -31,8 +31,11 @@
     //************************************************************************************
     var RestDataSource_teacherInformation = isc.TrDS.create({
         fields: [
-            {name: "teacher.personality.firstNameFa"},
-          //  {name: "teacher.personality.firstNameFa"},
+
+           {name: "teacher.personality.firstNameFa"},
+           // {name: "teacher.lastName"},
+           // {name: "teacher.nationalCode"},
+           //  {name: "teacher.phone"},
         ]
     });
 
@@ -41,7 +44,12 @@
         contextMenu: Menu_ListGrid_teacherInformation,
         autoFetchData: true,
         fields: [
-            {name: "teacher.personality.firstNameFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"}
+
+            {name: "teacher.personality.firstNameFa", title: "<spring:message code="firstName"/>", align: "center", filterOperator: "iContains"},
+            <%--{name: "teacher.lastName", title: "<spring:message code="lastName"/>", align: "center", filterOperator: "iContains"},--%>
+            <%--{name: "teacher.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},--%>
+            <%--{name: "teacher.phone", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains"},--%>
+
             ],
         recordDoubleClick: function () {
          

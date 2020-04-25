@@ -9,6 +9,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CheckListItemDTO;
 import com.nicico.training.service.CheckListItemService;
+import com.nicico.training.service.ClassAlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,7 @@ public class CheckListItemRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final ClassAlarmService classAlarmService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -47,7 +49,14 @@ public class CheckListItemRestController {
     @PostMapping
     public ResponseEntity<CheckListItemDTO.Info> create(@RequestBody CheckListItemDTO.Create req) {
         CheckListItemDTO.Create create = (new ModelMapper()).map(req, CheckListItemDTO.Create.class);
-        return new ResponseEntity<>(checkListItemService.create(create), HttpStatus.CREATED);
+        ResponseEntity<CheckListItemDTO.Info> infoResponseEntity = new ResponseEntity<>(checkListItemService.create(create), HttpStatus.CREATED);
+
+        //*****check alarms*****
+        ////because is to long , I disabled this part, if you want to use this part you must use for update and delete to
+        ////if (infoResponseEntity.getStatusCodeValue() == 201) {
+        ////    classAlarmService.alarmCheckListConflict(0L);
+        ////}
+        return infoResponseEntity;
     }
 
     @Loggable

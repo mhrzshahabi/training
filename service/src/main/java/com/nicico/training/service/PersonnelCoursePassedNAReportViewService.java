@@ -39,8 +39,12 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
             PersonnelCoursePassedNAReportViewDTO.Grid course = new PersonnelCoursePassedNAReportViewDTO.Grid()
                     .setCourseId(courseId).setCourseCode(personnelCourse.get(0).getCourseCode())
                     .setCourseTitleFa(personnelCourse.get(0).getCourseTitleFa())
-                    .setTotalPersonnelCount(personnelCourse.size())
-                    .setNotPassedPersonnelCount((int) personnelCourse.stream().filter(pc -> !pc.getIsPassed()).count());
+                    .setTotalEssentialPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 111L).count())
+                    .setNotPassedEssentialPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 111L && !pc.getIsPassed()).count())
+                    .setTotalImprovingPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 112L).count())
+                    .setNotPassedImprovingPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 112L && !pc.getIsPassed()).count())
+                    .setTotalDevelopmentalPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 113L).count())
+                    .setNotPassedDevelopmentalPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 113L && !pc.getIsPassed()).count());
             result.add(course);
         });
         SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchRs = new SearchDTO.SearchRs<>();

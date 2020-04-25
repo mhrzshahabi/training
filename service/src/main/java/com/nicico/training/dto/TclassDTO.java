@@ -99,7 +99,7 @@ public class TclassDTO {
         private String lastModifiedBy;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
-        private TermDTO term;
+        private TermDTO.TermDTOTuple term;
         //        private List<Student> studentSet;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
@@ -162,6 +162,38 @@ public class TclassDTO {
     }
 
     // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("list")
+    @AllArgsConstructor
+    public static class list {
+        private String firstname;
+        private String lastName;
+        private String nationalCode;
+        private String phone;
+
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherInfo")
+    public static class teacherInfo{
+        private TeacherDTO.TeacherInformation teacher;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("teacherInfoCustom")
+    public static class teacherInfoCustom{
+        private String firstName;
+        private String lastName;
+        private String nationalCode;
+    }
 
     @Getter
     @Setter
