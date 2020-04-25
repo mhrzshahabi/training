@@ -1623,7 +1623,9 @@
                 // keyPressFilter: "[a-z|A-Z|0-9-|' '|'_']",
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,],
-                changed: convertFa2En,
+                changed: function (_1,_2,_3) {
+                    convertFa2En(_1,_2,_3,[]);
+                },
             },
             {
                 name: "needText",
