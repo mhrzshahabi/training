@@ -82,4 +82,6 @@ public interface ITclassService {
     List<TclassDTO.Info> PersonnelClass(Long id);
 
 
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.TClassReport> reportSearch(SearchDTO.SearchRq request);
 }

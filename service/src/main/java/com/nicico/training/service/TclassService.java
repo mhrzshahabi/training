@@ -1082,4 +1082,12 @@ public class TclassService implements ITclassService {
         return modelMapper.map(tclass, new TypeToken<List<TclassDTO.Info>>() {
         }.getType());
     }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.TClassReport> reportSearch(SearchDTO.SearchRq request) {
+        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TClassReport.class));
+    }
+
 }

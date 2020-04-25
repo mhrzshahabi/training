@@ -9,6 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PersonnelCoursePassedNAReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.StudentDAO;
@@ -26,13 +27,16 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -284,27 +288,6 @@ public class TclassRestController {
         return new ResponseEntity<>(tclassService.search(request), HttpStatus.OK);
     }
 
-
-//    @Loggable
-//    @GetMapping(value = "/otherStudent")
-////    @PreAuthorize("hasAuthority('r_tclass')")
-//    public ResponseEntity<StudentDTO.StudentSpecRs> getOtherStudents(@RequestParam("classID") String classID) {
-//        Long classId = Long.parseLong(classID);
-//
-//        List<StudentDTO.Info> studentList = tclassService.getOtherStudents(classId);
-//
-//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-//        specResponse.setData(studentList)
-//                .setStartRow(0)
-//                .setEndRow(studentList.size())
-//                .setTotalRows(studentList.size());
-//
-//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
@@ -337,10 +320,6 @@ public class TclassRestController {
     public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId, @PathVariable Long termId) {
         return new ResponseEntity<>(tclassService.getEndGroup(courseId, termId), HttpStatus.OK);
     }
-
-/////////////////////
-    //////////////////////////
-    ////////////////////////////
 
     @Loggable
     @PostMapping(value = "/checkStudentInClass/{nationalCode}/{classId}")
@@ -463,6 +442,90 @@ public class TclassRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/list-training-report")
+    public ResponseEntity<TclassDTO.TclassReportSpecRs> reportList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                     @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                                     @RequestParam(value = "id", required = false) Long id,
+                                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<TclassDTO.TClassReport> response = tclassService.reportSearch(request);
+
+        final TclassDTO.ReportSpecRs specResponse = new TclassDTO.ReportSpecRs();
+        final TclassDTO.TclassReportSpecRs specRs = new TclassDTO.TclassReportSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+
+    }
+
+    private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                 @RequestParam(value = "id", required = false) Long id,
+                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        return request;
     }
 
 
