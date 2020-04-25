@@ -135,6 +135,14 @@ public class TermDTO implements Serializable {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TermDTOTuple")
+    public static class TermDTOTuple extends TermDTO {
+        private Long id;
+    }
+
 
 }
 
