@@ -42,6 +42,16 @@
         fetchDataURL: skillUrl + "/spec-list",
     });
 
+    var RestDataSource_teacherInformation_Course = isc.TrDS.create({
+        fields: [
+
+            {name: "teacher.personality.firstNameFa"},
+            {name: "teacher.personality.lastNameFa"},
+            {name: "teacher.personality.nationalCode"},
+
+        ]
+    });
+
     var RestDataSource_Skill_ThisCourse_JspCourse = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -298,6 +308,9 @@
                 RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
                 ListGrid_Post_JspCourse.fetchData();
                 ListGrid_Post_JspCourse.invalidateCache();
+
+
+
                 // for (let i = 0; i < trainingTabSet.tabs.length; i++) {
                 //     if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                 //         trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -526,6 +539,30 @@
         showResizeBar: false,
 
     });
+
+    var ListGrid_teacherInformation_Course = isc.TrLG.create({
+        dataSource: RestDataSource_teacherInformation_Course,
+       // autoFetchData: true,
+        fields: [
+
+            {name: "teacher.personality.firstNameFa", title: "<spring:message code="firstName"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.lastNameFa", title: "<spring:message code="lastName"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
+        ],
+        recordDoubleClick: function () {
+
+
+        },
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
+        sortField: 0,
+        sortDirection: "descending",
+
+    });
+
+
     var ListGrid_SkillGroup = isc.TrLG.create({
         dataSource: RestDataSource_SkillGroup,
         fields: [
@@ -2500,6 +2537,11 @@
                 title: "گروه مهارت",
                 pane: ListGrid_SkillGroup
             },
+            {
+                ID:"teacherInformationCourse",
+                title: "<spring:message code='teacher.information'/>",
+                pane: ListGrid_teacherInformation_Course
+            }
             <%-- {--%>
             <%-- title: "<spring:message code="course.evaluation"/>",--%>
             <%-- ID:"courseEvaluationTAB",--%>
@@ -3015,13 +3057,20 @@
 
     function refreshSelectedTab_Course(tab) {
 
-        //  courseRecord = ListGrid_Course.getSelectedRecord();
+       var courseRecord = ListGrid_Course.getSelectedRecord();
 
         //  if (!(courseRecord == undefined || courseRecord == null)) {
         switch (tab.ID) {
+
             case "courseEvaluationTAB": {
                 if (typeof loadPage_course_evaluation !== "undefined")
                     loadPage_course_evaluation();
+                break;
+            }
+            case "teacherInformationCourse":{
+                RestDataSource_teacherInformation_Course.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/"+courseRecord.code;
+                ListGrid_teacherInformation_Course.fetchData()
+                ListGrid_teacherInformation_Course.invalidateCache()
                 break;
             }
         }
