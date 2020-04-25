@@ -119,15 +119,14 @@
     //function
     //************************************************************************************
             function  loadPage_teacherInformation() {
-               // classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-
-                RestDataSource_teacherInformation.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/CO9C4M24";
+                classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                if (!(classRecord == undefined || classRecord == null)) {
+                RestDataSource_teacherInformation.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/"+classRecord.code.split('-')[0];
                 ListGrid_teacherInformation.invalidateCache()
                 ListGrid_teacherInformation.fetchData()
-
-
                 }
-            // } else {
-            // ListGrid_Class_Student.setData([]);
-            // }
+                else {
+                ListGrid_teacherInformation.setData([]);
+                }
+                }
 
