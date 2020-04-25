@@ -33,9 +33,9 @@
         fields: [
 
            {name: "teacher.personality.firstNameFa"},
-           // {name: "teacher.lastName"},
-           // {name: "teacher.nationalCode"},
-           //  {name: "teacher.phone"},
+           {name: "teacher.personality.lastNameFa"},
+           {name: "teacher.personality.nationalCode"},
+
         ]
     });
 
@@ -46,11 +46,9 @@
         fields: [
 
             {name: "teacher.personality.firstNameFa", title: "<spring:message code="firstName"/>", align: "center", filterOperator: "iContains"},
-            <%--{name: "teacher.lastName", title: "<spring:message code="lastName"/>", align: "center", filterOperator: "iContains"},--%>
-            <%--{name: "teacher.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},--%>
-            <%--{name: "teacher.phone", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains"},--%>
-
-            ],
+            {name: "teacher.personality.lastNameFa", title: "<spring:message code="lastName"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
+              ],
         recordDoubleClick: function () {
          
 
@@ -123,7 +121,7 @@
             function  loadPage_teacherInformation() {
                // classRecord = ListGrid_Class_JspClass.getSelectedRecord();
 
-                RestDataSource_teacherInformation.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/CO1C1M05";
+                RestDataSource_teacherInformation.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/CO9C4M24";
                 ListGrid_teacherInformation.invalidateCache()
                 ListGrid_teacherInformation.fetchData()
 
