@@ -234,7 +234,7 @@
                         isc.IButton.create({
                             title: "تایید",
                             click: function () {
-                            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id +"?reason=" +blackListForm.getField('reason').getValue(), "GET", null,blackListCloseForm));
+                            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id +"?reason=" +(typeof (blackListForm.getField('reason').getValue())=='undefined'? '' :blackListForm.getField('reason').getValue() ), "GET", null,blackListCloseForm));
 
                             }
                         }),
