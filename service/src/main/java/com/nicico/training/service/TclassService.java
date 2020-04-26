@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
@@ -21,6 +22,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -278,6 +280,17 @@ public class TclassService implements ITclassService {
         criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
+    }
+
+
+    public boolean compareTodayDate(Long id){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        Tclass tclass = getTClass(id);
+        String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+        String startingDate = tclass.getStartDate();
+
+        return todayDate.compareTo(startingDate) > 0 ? true : false;
     }
 
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------

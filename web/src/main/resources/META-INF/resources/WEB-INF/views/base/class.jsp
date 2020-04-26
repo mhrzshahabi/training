@@ -954,7 +954,9 @@
 
                     if (classMethod.localeCompare("PUT") === 0 && value === "3")
                         checkEndingClass(oldValue);
-                    else if (classMethod.localeCompare("POST") === 0 && value === "3")
+                    else if(classMethod.localeCompare("PUT") === 0 && value === "2")
+                        hasClassStarted(oldValue);
+                    else if (classMethod.localeCompare("POST") === 0 && (value === "3" || value ==="2"))
                         return false;
 
                 }
@@ -2512,6 +2514,19 @@
             }));
     }
 
+    function hasClassStarted(oldValue){
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        if (record !== null)
+
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasClassStarted/" + record.id, "GET", null, function (resp) {
+
+                if (resp.data !== "") {
+                    if(resp.data == "false")
+                        classTypeStatus.setValue(oldValue);
+                }
+
+            }));
+    }
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendEndingClassToWorkflow() {
 

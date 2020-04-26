@@ -344,6 +344,12 @@ public class TclassRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/hasClassStarted/{classId}")
+    public boolean hasClassStarted(@PathVariable Long classId) throws IOException {
+        return tClassService.compareTodayDate(classId);
+    }
+
+    @Loggable
     @GetMapping(value = "/getWorkflowEndingStatusCode/{classId}")
     public Integer getWorkflowEndingStatusCode(@PathVariable Long classId) {
         return tclassService.getWorkflowEndingStatusCode(classId);
