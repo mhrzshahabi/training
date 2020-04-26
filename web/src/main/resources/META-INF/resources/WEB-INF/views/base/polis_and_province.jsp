@@ -137,13 +137,22 @@
             {name: "id", hidden: true},
             {name: "nameFa",cssClass:"test" , title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100",
                 //keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']",
-            changed: convertEn2Fa
+            changed: function (_1,_2,_3) {
+            var blackList = ["+","-"];
+                convertEn2Fa(_1,_2,_3,blackList);
+            }
             },
 
-            {name: "nameEn", title: "<spring:message code="global.titleEn"/>", required: false, validateOnExit: true, type: 'text', length: "100",
+            {name: "nameEn", title: "<spring:message code="global.titleEn"/>",
+                required: false,
+                validateOnExit: true,
+                type: 'text',
+                length: "100",
                 // keyPressFilter: "[a-z|A-Z|0-9|' ']"
-                changed: convertFa2En
-
+                changed: function (_1, _2, _3) {
+                var blackList = [];
+                    convertFa2En(_1, _2, _3,blackList);
+                }
             },
 
         ]
@@ -151,18 +160,34 @@
 
     var Window_Province = isc.Window.create({
         ID: "ProvinceWin",
-        width: "300", align: "center", border: "1px solid gray", closeClick: function () {this.Super("closeClick", arguments);},
+        width: "300", align: "center", border: "1px solid gray", closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
         items: [
             isc.TrVLayout.create({
-            members: [
-                DynamicForm_Province,
-                isc.TrHLayoutButtons.create({
-                    layoutMargin: 5, showEdges: false, edgeImage: "", width: "100%", padding: 10,
-                    members: [
-                        isc.IButtonSave.create({top: 260, click: function () {saveProvince();}}),
-                        isc.IButtonCancel.create({prompt: "", width: 100, orientation: "vertical", click: function () {DynamicForm_Province.clearValues();Window_Province.close();}})
-                    ]})
-            ]})
+                members: [
+                    DynamicForm_Province,
+                    isc.TrHLayoutButtons.create({
+                        layoutMargin: 5, showEdges: false, edgeImage: "", width: "100%", padding: 10,
+                        members: [
+                            isc.IButtonSave.create({
+                                top: 260, click: function () {
+                                    saveProvince();
+                                }
+                            }),
+                            isc.IButtonCancel.create({
+                                prompt: "",
+                                width: 100,
+                                orientation: "vertical",
+                                click: function () {
+                                    DynamicForm_Province.clearValues();
+                                    Window_Province.close();
+                                }
+                            })
+                        ]
+                    })
+                ]
+            })
         ]
     });
 
@@ -173,7 +198,9 @@
         fields: [
             {name: "id", hidden: true},
             {name: "province.id", dataPath: "provinceId", hidden: true,},
-            {name: "nameFa", title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100",
+            {
+                name: "nameFa",
+                title: "<spring:message code="global.titleFa"/>", required: true, validateOnExit: true, type: 'text', length: "100",
                 // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
                 changed: convertEn2Fa
             },

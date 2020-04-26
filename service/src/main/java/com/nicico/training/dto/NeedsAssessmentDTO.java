@@ -7,6 +7,7 @@ package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -76,7 +77,6 @@ public class NeedsAssessmentDTO implements Serializable {
         private String competenceNameTitle;
         private String needsAssessmentDomainTitle;
         private String needsAssessmentPriorityTitle;
-        //        private E object;
 
         public boolean equvalentOf(NeedsAssessmentDTO.Tree dto,String property){
             if(this.getParentId().equals(dto.getParentId()) && this.getProperty(property).equals(dto.getProperty(property)))

@@ -93,6 +93,7 @@
     const studentPortalUrl = rootUrl + "/student-portal";
     const studentClassReportUrl = rootUrl + "/student-class-report-view";
     const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
+    const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1264,6 +1265,26 @@
                 ]
         });
         criteriaForm.setValue("data", JSON.stringify(data));
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
+    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
+        // var advancedCriteria = LG.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "fileName", type: "hidden"},
+                    {name: "params", type: "hidden"},
+                ]
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.setValue("fileName", fileName);
         criteriaForm.setValue("params", JSON.stringify(params));
         criteriaForm.show();

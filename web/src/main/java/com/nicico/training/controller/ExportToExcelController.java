@@ -8,7 +8,9 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.StudentClassReportViewDTO;
 import com.nicico.training.service.NeedsAssessmentService;
+import com.nicico.training.service.StudentClassReportViewService;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import com.nicico.training.utility.SpecListUtil;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ public class ExportToExcelController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
+    private final StudentClassReportViewService studentClassReportViewService;
 
     @PostMapping(value = {"/download"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields, @RequestParam(value = "data") String data) {
@@ -168,14 +171,24 @@ public class ExportToExcelController {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
-        final SearchDTO.SearchRs<NeedsAssessmentDTO.Info> searchRs = needsAssessmentService.search(searchRq);
+        List list = null;
+        switch (fileName){
+            case "oneNeedsAssessment.jasper":
+                final SearchDTO.SearchRs<NeedsAssessmentDTO.Info> searchNAS = needsAssessmentService.search(searchRq);
+                list = searchNAS.getList();
+                break;
+            case "personnelCourses.jasper":
+                SearchDTO.SearchRs<StudentClassReportViewDTO.Info> searchSCRVS = studentClassReportViewService.search(searchRq);
+                list = searchSCRVS.getList();
+                break;
+        }
         final Gson gson = new Gson();
         final Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
         final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
 
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-        params.put("todayDate", DateUtil.todayDate());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
+        params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE,type);
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);

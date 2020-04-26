@@ -115,14 +115,14 @@
     });
 
     var DynamicForm_TrainingFile = isc.DynamicForm.create({
-        numCols: 10,
+        numCols: 11,
         padding: 10,
         readOnlyDisplay: "readOnly",
         margin:0,
         // cellPadding: 10,
         titleAlign:"left",
         wrapItemTitles: true,
-        colWidths:[50,150,50,150,50,150,50,150, 50, 150],
+        colWidths:[50,150,50,150,50,150,50,150, 50, 100, 50],
         // sectionVisibilityMode: "mutex",
         fields: [
             // {
@@ -157,6 +157,7 @@
             },
             {
                 name: "studentLastName",
+                colSpan: 2,
                 title:"<spring:message code="lastName"/> ",
                 textAlign: "center",
                 width: "*"
@@ -244,6 +245,7 @@
                     showClippedValuesOnHover: true,
                 },
                 multiple: true,
+                colSpan: 2,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_SCRV,
@@ -331,6 +333,7 @@
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
+                colSpan: 2,
                 multiple: true,
                 valueField: "titleFa",
                 displayField: "titleFa",
@@ -418,59 +421,51 @@
                     }
                 }
             },
-            <%--{--%>
-                <%--name: "searchBtn",--%>
-                <%--ID: "searchBtnJspTrainingFile",--%>
-                <%--title: "<spring:message code="search"/>",--%>
-                <%--type: "ButtonItem",--%>
-                <%--width:"*",--%>
-                <%--startRow:false,--%>
-                <%--endRow:false,--%>
-                <%--click (form) {--%>
-                    <%--var advancedCriteriaStudentJspTrainingFile = {--%>
-                        <%--_constructor: "AdvancedCriteria",--%>
-                        <%--operator: "and",--%>
-                        <%--criteria: []--%>
-                    <%--};--%>
-                    <%--var items = form.getItems();--%>
-                    <%--for (let i = 0; i < items.length; i++) {--%>
-                        <%--if(items[i].getValue() != undefined){--%>
-                            <%--advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})--%>
-                        <%--}--%>
-                    <%--}--%>
-                    <%--ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);--%>
-                    <%--Window_StudentSearch_JspTrainingFile.show();--%>
-                <%--}--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "clearBtn",--%>
-                <%--title: "<spring:message code="clear"/>",--%>
-                <%--type: "ButtonItem",--%>
-                <%--width:"*",--%>
-                <%--startRow:false,--%>
-                <%--endRow:false,--%>
-                <%--click (form, item) {--%>
-                    <%--form.clearValues();--%>
-                    <%--ListGrid_TrainingFile_TrainingFileJSP.setData([]);--%>
-                <%--}--%>
-            <%--},--%>
+            {type: "SpacerItem"},
+            {
+                name: "searchBtn",
+                ID: "searchBtnJspTrainingFile",
+                title: "<spring:message code="report"/>",
+                type: "ButtonItem",
+                colSpan: 1,
+                width:"*",
+                startRow:false,
+                endRow:false,
+                click (form) {
+                    let criteria = form.getValuesAsAdvancedCriteria();
+                    // console.log(criteria);
+
+                    if(criteria == null || Object.keys(criteria).length === 0) {
+                        ListGrid_TrainingFile_TrainingFileJSP.setData([])
+                    }
+                    else{
+                        // delete criteria.fromDate;
+                        // delete criteria.toDate;
+                        // criteria.classEndDate = DynamicForm_TrainingFile.getValue("fromDate");
+
+                        ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
+                        RestDataSource_Course_JspTrainingFile.implicitCriteria = criteria;
+                        ListGrid_TrainingFile_TrainingFileJSP.fetchData(criteria)
+                    }
+                }
+            },
+            // {type:"SpacerItem"},
+            {
+                name: "clearBtn",
+                title: "<spring:message code="clear"/>",
+                type: "ButtonItem",
+                width:"*",
+                colSpan: 2,
+                startRow:false,
+                endRow:false,
+                click (form, item) {
+                    form.clearValues();
+                    ListGrid_TrainingFile_TrainingFileJSP.setData([]);
+                }
+            },
         ],
         itemChanged (item, newValue){
-            let criteria = DynamicForm_TrainingFile.getValuesAsCriteria()
-            console.log(criteria);
-
-            if(Object.keys(criteria).length === 0) {
-                ListGrid_TrainingFile_TrainingFileJSP.setData([])
-            }
-            else{
-                // delete criteria.fromDate;
-                // delete criteria.toDate;
-                // criteria.classEndDate = DynamicForm_TrainingFile.getValue("fromDate");
-
-                ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-                RestDataSource_Course_JspTrainingFile.implicitCriteria = criteria;
-                ListGrid_TrainingFile_TrainingFileJSP.fetchData(criteria)
-            }
+            ListGrid_TrainingFile_TrainingFileJSP.setData([]);
         },
         // itemKeyPress: function(item, keyName) {
         //     if(keyName == "Enter"){
@@ -516,13 +511,14 @@
                     params.term = "کد ترم: " + (DynamicForm_TrainingFile.getValue("termTitleFa")?DynamicForm_TrainingFile.getValue("termTitleFa").toString():"-");
                     params.fromDate = "تاریخ شروع کلاس: از: " + (DynamicForm_TrainingFile.getValue("fromDate")?DynamicForm_TrainingFile.getValue("fromDate"):"-");
                     params.toDate = "تا: " + (DynamicForm_TrainingFile.getValue("toDate")?DynamicForm_TrainingFile.getValue("toDate"):"-");
-                    printToJasper(ListGrid_TrainingFile_TrainingFileJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
+                    printWithCriteria(DynamicForm_TrainingFile.getValuesAsAdvancedCriteria(), params, "personnelCourses.jasper");
+                    // printToJasper(ListGrid_TrainingFile_TrainingFileJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
                 }
             },
             {
                 title: "<spring:message code="global.form.print.excel"/>",
                 click: function () {
-                    console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
+                    // console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
                     exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
                 }
             },
@@ -576,7 +572,7 @@
     var VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        overflow: "scroll",
+        overflow: "visible",
         members: [
             // ToolStrip_Actions_Training_File,
             ListGrid_TrainingFile_TrainingFileJSP
