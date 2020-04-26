@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
-    var data_values = null;
     //----------------------------------------------------Variables-----------------------------------------------------
     var isCriteriaCategoriesChanged_JspTClassReport = false;
     var startDate1Check_JspTClassReport = true;
@@ -12,6 +11,8 @@
     var endDate1Check_JspTClassReport = true;
     var endDate2Check_JspTClassReport = true;
     var endDateCheck_Order_JspTClassReport = true;
+
+    var data_values = null;
 
     var courseInfo_print = "";
     var classTimeInfo_print = "";
@@ -299,15 +300,37 @@
                 name: "hDurationStart",
                 title: "مدت کلاس: از",
                 keyPressFilter: "[0-9.]",
+                length: 4,
                 showHintInField: true,
-                hint: "ساعت"
+                hint: "ساعت",
+                editorExit: function (form, item, value) {
+                   var endDuratiorn = form.getValue("hDurationEnd");
+                   if (endDuratiorn != undefined && parseFloat(endDuratiorn) < parseFloat(value)) {
+                        form.clearFieldErrors("hDurationStart", true);
+                        form.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                    } else {
+                        form.clearFieldErrors("hDurationStart", true);
+                        form.clearFieldErrors("hDurationEnd", true);
+                    }
+                }
             },
             {
                 name: "hDurationEnd",
                 title: "تا",
+                length: 4,
                 keyPressFilter: "[0-9.]",
                 showHintInField: true,
-                hint: "ساعت"
+                hint: "ساعت",
+                editorExit: function (form, item, value) {
+                    var startDuratiorn = form.getValue("hDurationStart");
+                    if (startDuratiorn != undefined && parseFloat(startDuratiorn) > parseFloat(value)) {
+                        form.clearFieldErrors("hDurationEnd", true);
+                        form.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                    } else {
+                        form.clearFieldErrors("hDurationStart", true);
+                        form.clearFieldErrors("hDurationEnd", true);
+                    }
+                }
             },
             {
                 name: "temp1",
@@ -672,6 +695,8 @@
                 displayField: "fullNameFa",
                 filterFields: ["fullNameFa", "personality.nationalCode"],
                 filterLocally: true,
+                pickListFields: [{name: "fullNameFa", title: "نام و نام خانوادگی"},
+                                {name: "personality.nationalCode", title: "کد ملی"}],
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains"
