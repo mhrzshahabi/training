@@ -90,21 +90,26 @@
     PersonnelDS_PCNP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",},
-            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: personnelUrl + "/iscList"
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: -1}]
+        },
     });
 
     FilterDF_PCNP = isc.DynamicForm.create({
@@ -116,106 +121,135 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelPersonnelNo2",
-                title: "پرسنلی 6رقمی",
-                <%--title:"<spring:message code="personnel.no.6.digits"/>",--%>
-                textAlign: "center",
-                optionDataSource: PersonnelDS_PCNP,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "personnelNo2",
-                displayField: "personnelNo2",
-                endRow: false,
-                // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 150,
-                    pickListFields: [{name: "personnelNo2"}],
-                    filterFields: ["personnelNo2", "personnelNo2"],
-                    textMatchStyle: "substring",
-                },
-            },
-            {
                 name: "personnelPersonnelNo",
-                title: "<spring:message code="personnel.no"/> ",
+                title:"انتخاب پرسنل",
+                operator: "inSet",
                 textAlign: "center",
                 optionDataSource: PersonnelDS_PCNP,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
                 valueField: "personnelNo",
                 displayField: "personnelNo",
-                endRow: false,
+                endRow: true,
+                colSpan: 10,
                 // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
+                layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
-                    pickListWidth: 150,
-                    pickListFields: [{name: "personnelNo"}],
-                    filterFields: ["personnelNo", "personnelNo"],
+                    pickListWidth: 550,
+                    pickListFields: [
+                        {name: "personnelNo2"},
+                        {name: "firstName"},
+                        {name: "lastName"},
+                        {name: "nationalCode"},
+                        {name: "personnelNo"}
+                    ],
+                    filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                    pickListProperties: {sortField: "personnelNo"},
                     textMatchStyle: "substring",
                 },
             },
-            {
-                name: "personnelNationalCode",
-                title: "<spring:message code="national.code"/> ",
-                textAlign: "center",
-                optionDataSource: PersonnelDS_PCNP,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "nationalCode",
-                displayField: "nationalCode",
-                endRow: false,
-                // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 150,
-                    pickListFields: [{name: "nationalCode"}],
-                    filterFields: ["nationalCode", "nationalCode"],
-                    textMatchStyle: "substring",
-                },
-            },
-            {
-                name: "personnelFirstName",
-                title: "<spring:message code="firstName"/> ",
-                textAlign: "center",
-                optionDataSource: PersonnelDS_PCNP,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "firstName",
-                displayField: "firstName",
-                endRow: false,
-                // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 150,
-                    pickListFields: [{name: "firstName"}],
-                    filterFields: ["firstName", "firstName"],
-                    textMatchStyle: "substring",
-                },
-            },
-            {
-                name: "personnelLastName",
-                title: "<spring:message code="lastName"/> ",
-                textAlign: "center",
-                optionDataSource: PersonnelDS_PCNP,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "lastName",
-                displayField: "lastName",
-                endRow: false,
-                // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 150,
-                    pickListFields: [{name: "lastName"}],
-                    filterFields: ["lastName", "lastName"],
-                    textMatchStyle: "substring",
-                },
-            },
+            <%--{--%>
+            <%--    name: "personnelPersonnelNo2",--%>
+            <%--    title: "پرسنلی 6رقمی",--%>
+            <%--    &lt;%&ndash;title:"<spring:message code="personnel.no.6.digits"/>",&ndash;%&gt;--%>
+            <%--    textAlign: "center",--%>
+            <%--    optionDataSource: PersonnelDS_PCNP,--%>
+            <%--    autoFetchData: false,--%>
+            <%--    type: "MultiComboBoxItem",--%>
+            <%--    valueField: "personnelNo2",--%>
+            <%--    displayField: "personnelNo2",--%>
+            <%--    endRow: false,--%>
+            <%--    // comboBoxWidth: 200,--%>
+            <%--    // layoutStyle: "horizontal",--%>
+            <%--    comboBoxProperties: {--%>
+            <%--        hint: "",--%>
+            <%--        pickListWidth: 150,--%>
+            <%--        pickListFields: [{name: "personnelNo2"}],--%>
+            <%--        filterFields: ["personnelNo2", "personnelNo2"],--%>
+            <%--        textMatchStyle: "substring",--%>
+            <%--    },--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelPersonnelNo",--%>
+            <%--    title: "<spring:message code="personnel.no"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--    optionDataSource: PersonnelDS_PCNP,--%>
+            <%--    autoFetchData: false,--%>
+            <%--    type: "MultiComboBoxItem",--%>
+            <%--    valueField: "personnelNo",--%>
+            <%--    displayField: "personnelNo",--%>
+            <%--    endRow: false,--%>
+            <%--    // comboBoxWidth: 200,--%>
+            <%--    // layoutStyle: "horizontal",--%>
+            <%--    comboBoxProperties: {--%>
+            <%--        hint: "",--%>
+            <%--        pickListWidth: 150,--%>
+            <%--        pickListFields: [{name: "personnelNo"}],--%>
+            <%--        filterFields: ["personnelNo", "personnelNo"],--%>
+            <%--        textMatchStyle: "substring",--%>
+            <%--    },--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelNationalCode",--%>
+            <%--    title: "<spring:message code="national.code"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--    optionDataSource: PersonnelDS_PCNP,--%>
+            <%--    autoFetchData: false,--%>
+            <%--    type: "MultiComboBoxItem",--%>
+            <%--    valueField: "nationalCode",--%>
+            <%--    displayField: "nationalCode",--%>
+            <%--    endRow: false,--%>
+            <%--    // comboBoxWidth: 200,--%>
+            <%--    // layoutStyle: "horizontal",--%>
+            <%--    comboBoxProperties: {--%>
+            <%--        hint: "",--%>
+            <%--        pickListWidth: 150,--%>
+            <%--        pickListFields: [{name: "nationalCode"}],--%>
+            <%--        filterFields: ["nationalCode", "nationalCode"],--%>
+            <%--        textMatchStyle: "substring",--%>
+            <%--    },--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelFirstName",--%>
+            <%--    title: "<spring:message code="firstName"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--    optionDataSource: PersonnelDS_PCNP,--%>
+            <%--    autoFetchData: false,--%>
+            <%--    type: "MultiComboBoxItem",--%>
+            <%--    valueField: "firstName",--%>
+            <%--    displayField: "firstName",--%>
+            <%--    endRow: false,--%>
+            <%--    // comboBoxWidth: 200,--%>
+            <%--    // layoutStyle: "horizontal",--%>
+            <%--    comboBoxProperties: {--%>
+            <%--        hint: "",--%>
+            <%--        pickListWidth: 150,--%>
+            <%--        pickListFields: [{name: "firstName"}],--%>
+            <%--        filterFields: ["firstName", "firstName"],--%>
+            <%--        textMatchStyle: "substring",--%>
+            <%--    },--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelLastName",--%>
+            <%--    title: "<spring:message code="lastName"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--    optionDataSource: PersonnelDS_PCNP,--%>
+            <%--    autoFetchData: false,--%>
+            <%--    type: "MultiComboBoxItem",--%>
+            <%--    valueField: "lastName",--%>
+            <%--    displayField: "lastName",--%>
+            <%--    endRow: false,--%>
+            <%--    // comboBoxWidth: 200,--%>
+            <%--    // layoutStyle: "horizontal",--%>
+            <%--    comboBoxProperties: {--%>
+            <%--        hint: "",--%>
+            <%--        pickListWidth: 150,--%>
+            <%--        pickListFields: [{name: "lastName"}],--%>
+            <%--        filterFields: ["lastName", "lastName"],--%>
+            <%--        textMatchStyle: "substring",--%>
+            <%--    },--%>
+            <%--},--%>
             {
                 name: "personnelComplexTitle",
                 title: "<spring:message code="complex"/>",
@@ -344,6 +378,7 @@
             {
                 name: "courseId",
                 title: "<spring:message code="course"/>",
+                operator: "inSet",
                 optionDataSource: CourseDS_PCNP,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
@@ -365,6 +400,7 @@
             {
                 name: "categoryId",
                 title: "<spring:message code="category"/>",
+                operator: "inSet",
                 optionDataSource: CategoryDS_PCNP,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
@@ -395,8 +431,8 @@
                     if (Object.keys(FilterDF_PCNP.getValuesAsCriteria()).length === 0) {
                         createDialog("info", "فیلتری انتخاب نشده است.");
                     } else {
+                        PersonnelCourseLG_PCNP.implicitCriteria = FilterDF_PCNP.getValuesAsAdvancedCriteria();
                         PersonnelCourseLG_PCNP.invalidateCache();
-                        PersonnelCourseDS_PCNP.implicitCriteria = FilterDF_PCNP.getValuesAsAdvancedCriteria();
                         PersonnelCourseLG_PCNP.fetchData();
                     }
                 }

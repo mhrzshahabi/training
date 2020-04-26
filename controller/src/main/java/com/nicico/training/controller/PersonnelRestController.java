@@ -16,8 +16,6 @@ import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.model.Personnel;
 
-import com.nicico.training.repository.PersonnelDAO;
-import com.nicico.training.repository.PostDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +45,6 @@ public class PersonnelRestController {
     private final MessageSource messageSource;
     private final PersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
-    private final PersonnelDAO personnelDAO;
-    private final PostDAO postDAO;
 
     @GetMapping("list")
     public ResponseEntity<List<PersonnelDTO.Info>> list() {
@@ -66,9 +61,7 @@ public class PersonnelRestController {
     @GetMapping(value = "/byPostCode/{postId}")
     public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByPostCode(@PathVariable Long postId) {
 
-
-        List<PersonnelDTO.Info> list = new ArrayList<>();
-        list = personnelService.getByPostCode(postId);
+        List<PersonnelDTO.Info> list = personnelService.getByPostCode(postId);
 
         final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
         final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
@@ -89,9 +82,7 @@ public class PersonnelRestController {
     @GetMapping(value = "/byJobNo/{jobNo}")
     public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByJobNo(@PathVariable String jobNo) {
 
-
-        List<PersonnelDTO.Info> list = new ArrayList<>();
-        list = personnelService.getByJobNo(jobNo);
+        List<PersonnelDTO.Info> list = personnelService.getByJobNo(jobNo);
 
         final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
         final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
@@ -138,7 +129,7 @@ public class PersonnelRestController {
     }
 
     @GetMapping("/all-field-values")
-    public ResponseEntity<ISC<PersonnelDTO.FieldValue>> findAllValuesOfOneFieldFromPersonnel(@RequestParam String fieldName) throws IOException {
+    public ResponseEntity<ISC<PersonnelDTO.FieldValue>> findAllValuesOfOneFieldFromPersonnel(@RequestParam String fieldName) {
         return new ResponseEntity<>(ISC.convertToIscRs(personnelService.findAllValuesOfOneFieldFromPersonnel(fieldName), 0), HttpStatus.OK);
     }
 
