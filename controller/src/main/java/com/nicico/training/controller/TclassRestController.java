@@ -444,52 +444,6 @@ public class TclassRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-
-    @Loggable
-    @GetMapping(value = "/list-training-report")
-    public ResponseEntity<TclassDTO.TclassReportSpecRs> reportList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                                     @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                                     @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                     @RequestParam(value = "operator", required = false) String operator,
-                                                                     @RequestParam(value = "criteria", required = false) String criteria,
-                                                                     @RequestParam(value = "id", required = false) Long id,
-                                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
-
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        SearchDTO.CriteriaRq criteriaRq;
-        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-
-
-            request.setCriteria(criteriaRq);
-        }
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-
-        SearchDTO.SearchRs<TclassDTO.TClassReport> response = tclassService.reportSearch(request);
-
-        final TclassDTO.ReportSpecRs specResponse = new TclassDTO.ReportSpecRs();
-        final TclassDTO.TclassReportSpecRs specRs = new TclassDTO.TclassReportSpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
-
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-
-    }
-
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                  @RequestParam(value = "_constructor", required = false) String constructor,
@@ -528,5 +482,84 @@ public class TclassRestController {
         return request;
     }
 
+
+    @Loggable
+    @GetMapping(value = "/list-training-report")
+    public ResponseEntity<TclassDTO.TclassReportSpecRs> reportList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                   @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "id", required = false) Long id,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<TclassDTO.TClassReport> response = tclassService.reportSearch(request);
+
+        final TclassDTO.ReportSpecRs specResponse = new TclassDTO.ReportSpecRs();
+        final TclassDTO.TclassReportSpecRs specRs = new TclassDTO.TclassReportSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @PostMapping(value = {"/reportPrint/{type}"})
+    public void reportPrint(HttpServletResponse response,
+                            @PathVariable String type,
+                            @RequestParam String CriteriaStr,
+                            @RequestParam String courseInfo,
+                            @RequestParam String classTimeInfo,
+                            @RequestParam String executionInfo,
+                            @RequestParam String evaluationInfo
+                            ) throws Exception {
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (CriteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(CriteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+        final SearchDTO.SearchRs<TclassDTO.TClassReport>  searchRs = tclassService.reportSearch(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", DateUtil.todayDate());
+        params.put("courseInfo",courseInfo);
+        params.put("classTimeInfo",classTimeInfo);
+        params.put("executionInfo",executionInfo);
+        params.put("evaluationInfo",evaluationInfo);
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/TClassReportPrint.jasper", params, jsonDataSource, response);
+    }
 
 }
