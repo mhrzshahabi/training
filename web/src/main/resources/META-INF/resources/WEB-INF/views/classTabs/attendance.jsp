@@ -1137,16 +1137,16 @@
                     return "font-weight:bold; color:#0066ff;";
                 switch(record[key]) {
                     case "1":
-                        return "font-weight:bold; color:#00cc00;";
+                        return "font-weight:bold; color:#199435;";
                         break;
                     case "2":
-                        return "font-weight:bold; color:#009e73;";
+                        return "font-weight:bold; color:#199435;";
                         break;
                     case "3":
-                        return "font-weight:bold; color:#d64949;";
+                        return "font-weight:bold; color:#FF0000;";
                         break;
                     case "4":
-                        return "font-weight:bold; color:#ff6600;";
+                        return "font-weight:bold; color:#FF0000;";
                         break;
                     default:
 

@@ -25,10 +25,10 @@ var mapFa2En={
 }*/
 
 function convertEn2Fa(_1,_2,_3,blackList) {
-    let len = 0;
+    var len = 0;
     len=_3.length - 1;
 
-    let tmpStr=_3.substring(0,len);
+    var tmpStr=_3.substring(0,len);
 
     if(mapEn2Fa[_3.charAt(len)]!= undefined && !blackList.includes(mapEn2Fa[_3.charAt(len)]) && !blackList.includes(mapEn2Fa[_3.charAt(len)]) != undefined) {
         tmpStr += mapEn2Fa[_3.charAt(len)];
@@ -43,10 +43,10 @@ function convertEn2Fa(_1,_2,_3,blackList) {
 }
 
 function convertFa2En(_1,_2,_3,blackList) {
-    let len = 0;
+    var len = 0;
     len=_3.length - 1;
 
-    let tmpStr=_3.substring(0,len);
+    var tmpStr=_3.substring(0,len);
 
     if(mapFa2En[_3.charAt(len)]!=undefined && !blackList.includes(mapFa2En[_3.charAt(len)]) && !blackList.includes(mapFa2En[_3.charAt(len)]) != undefined) {
         tmpStr += mapFa2En[_3.charAt(len)];
