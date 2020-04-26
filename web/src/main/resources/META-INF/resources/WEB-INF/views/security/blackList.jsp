@@ -11,7 +11,8 @@
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
             {name: "enableStatus"},
-            {name: "inBlackList"}
+            {name: "inBlackList"},
+            {name: "blackListDescription"}
         ],
         fetchDataURL: teacherUrl + "full-spec-list"
     });
@@ -47,9 +48,13 @@
                 canFilter: false
             },
             {
+                name:"blackListDescription",canEdit: false, hidden: true,class:"blackListDescription"
+            },
+            {
                 name: "teacherCode",
                 title: "<spring:message code='code'/>",
-                align: "center"
+                align: "center", showHover:true,
+                hoverHTML:customhoverHtml
             },
             {
                 name: "personality.firstNameFa",
@@ -57,7 +62,8 @@
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.firstNameFa;
-                }
+                }, showHover:true,
+                hoverHTML:customhoverHtml
             },
             {
                 name: "personality.lastNameFa",
@@ -65,7 +71,8 @@
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.lastNameFa;
-                }
+                }, showHover:true,
+                hoverHTML:customhoverHtml
             },
             {
                 name: "enableStatus",
@@ -74,6 +81,7 @@
                 type: "boolean"
             }
         ],
+        hoverWidth:300,
         autoFetchData: true,
         rowDoubleClick: function () {
             ListGrid_blackList_edit();
@@ -160,7 +168,77 @@
                 }
             });
         }
+    //////////////////////////////////////////////////////////////////////////
+       var Windows_BlackList_Description=isc.Window.create({
+            ID: "blackListWindow",
+            title: "علت افزودن به لیست سیاه",
+            autoSize: true,
+            width: 400,
+            // height:200,
+            items: [
+                isc.DynamicForm.create({
+                    ID: "blackListForm",
+                    numCols: 1,
+                    padding: 10,
+                    fields: [
+                        {
+                            name: "reason",
+                            width: "100%",
+                            // showTitle: false,
+                            titleOrientation: "top",
+                            title: "لطفاً علت افزودن به لیست سیاه  را در کادر زیر وارد کنید:",
+                            suppressBrowserClearIcon:true,
+                            icons: [
+                            //     {
+                            //     name: "view",
+                            //     src: "[SKIN]actions/view.png",
+                            //     hspace: 5,
+                            //     inline: true,
+                            //     baseStyle: "roundedTextItemIcon",
+                            //     showRTL: true,
+                            //     tabIndex: -1,
+                            //     click: function (form, item, icon) {
+                            //
+                            //     }
+                            // }
+                             {
+                                name: "clear",
+                                src: "[SKIN]actions/close.png",
+                                width: 10,
+                                height: 10,
+                                inline: true,
+                                prompt: "پاک کردن",
+                                click : function (form, item, icon) {
+                                    item.clearValue();
+                                    item.focusInItem();
+                                }
+                            }],
+                            iconWidth: 16,
+                            iconHeight: 16
+                        }
+                    ]
+                }),
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        isc.IButton.create({
+                            title: "تایید",
+                            click: function () {
+                            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id +"?reason=" +blackListForm.getField('reason').getValue(), "GET", null,blackListCloseForm));
 
+                            }
+                        }),
+                        isc.IButton.create({
+                            title: "لغو",
+                            click: function () {
+
+                                Windows_BlackList_Description.close();
+                            }
+                        }),
+                    ]
+                })
+            ]
+        });
+        /////////////////////////////////////////////////////////////////////
         if (!record.inBlackList) {
             var Dialog_Add_Ask = createDialog("ask", "<spring:message code='msg.add.black.list'/>",
                 "<spring:message code='global.warning'/>");
@@ -168,13 +246,31 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id, "GET", null, null));
+                        //////////////////////////////////////////////////////////////////////////////////
+                         Windows_BlackList_Description.show()
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                      //  isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id, "GET", null, null));
                         setTimeout(function () {
-                            ListGrid_blackList_refresh();
+                           // ListGrid_blackList_refresh();
                         }, 300);
                     }
                 }
             });
         }
 
+    }
+
+    function blackListCloseForm(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            blackListWindow.close();
+            ListGrid_blackList_refresh();
+        }
+    }
+
+    function customhoverHtml(record){
+        var tmpdata=record.blackListDescription;
+        if(tmpdata!="undefined")
+            return record.blackListDescription;
+        else
+            return "";
     }
