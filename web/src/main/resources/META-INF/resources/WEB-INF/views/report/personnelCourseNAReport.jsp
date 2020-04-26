@@ -3,9 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-    
-    var selectedPerson_TrainingFile = null;
-    var printUrl_TrainingFile = "<spring:url value="/web/print/class-student/"/>";
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*personnel form*/
@@ -240,6 +237,8 @@
                 },
                 valueField: "value",
                 displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
             },
             {
                 name: "personnelCompanyName",
@@ -256,6 +255,8 @@
                 autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
             },
             {
                 name: "personnelCcpArea",
@@ -272,6 +273,8 @@
                 autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
             },
             {
                 name: "personnelCcpAssistant",
@@ -288,6 +291,8 @@
                 autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
             },
             {
                 name: "personnelCcpSection",
@@ -304,6 +309,8 @@
                 autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
             },
             {
                 name: "personnelCcpUnit",
@@ -320,6 +327,8 @@
                 autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
             },
             {
                 name: "personnelCcpAffairs",
@@ -335,6 +344,8 @@
                 },
                 valueField: "value",
                 displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
             },
             {
                 name: "courseId",
@@ -379,31 +390,6 @@
         ],
     });
 
-    <%--Menu_Courses_PCNR = isc.Menu.create({--%>
-    <%--    data: [--%>
-    <%--        &lt;%&ndash;{&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;title: "<spring:message code="global.form.print.pdf"/>",&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;click: function () {&ndash;%&gt;--%>
-    <%--                &lt;%&ndash;print_Training_File();&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;}&ndash;%&gt;--%>
-    <%--        &lt;%&ndash;}, &ndash;%&gt;--%>
-    <%--        {--%>
-    <%--            title: "<spring:message code="global.form.print.excel"/>",--%>
-    <%--            click: function () {--%>
-    <%--                console.log(CourseLG_PCNR.getFields().subList(1,10));--%>
-    <%--                exportToExcel(CourseLG_PCNR.getFields().subList(1,10) ,CourseLG_PCNR.getData().localData)--%>
-    <%--                // print_Training_File("excel");--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        &lt;%&ndash;{&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;title: "<spring:message code="global.form.print.html"/>",&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;click: function () {&ndash;%&gt;--%>
-    <%--                &lt;%&ndash;print_Training_File("html");&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;}&ndash;%&gt;--%>
-    <%--        &lt;%&ndash;}&ndash;%&gt;--%>
-    <%--    ]--%>
-    <%--});--%>
-
     CourseLG_PCNR = isc.TrLG.create({
         dynamicTitle: true,
         autoFetchData: false,
@@ -412,8 +398,6 @@
         dataSource: NACourseDS_PCNR,
         filterOnKeypress: true,
         showFilterEditor: false,
-        alignLayout: "center",
-        align: "center",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         useClientFiltering: true,
@@ -466,26 +450,10 @@
         }
     });
 
-    <%--var ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({--%>
-    <%--    &lt;%&ndash;title: "<spring:message code='print'/>",&ndash;%&gt;--%>
-    <%--    click: function () {--%>
-    <%--        print_Training_File();--%>
-    <%--    }--%>
-    <%--});--%>
-
-    // var ToolStrip_Actions_Training_File = isc.ToolStrip.create({
-    //     width: "100%",
-    //     membersMargin: 5,
-    //     members: [ToolStripButton_Training_File]
-    // });
-
     VLayout_Body_PCNR = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [
-            // ToolStrip_Actions_Training_File,
-            CourseLG_PCNR
-        ]
+        members: [CourseLG_PCNR]
     });
 
  //</script>

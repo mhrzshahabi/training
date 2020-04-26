@@ -87,10 +87,10 @@ public class CourseRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req) {
+    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req,HttpServletResponse response) {
         CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
 //        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDTO.Info courseInfo = courseService.create(request);
+        CourseDTO.Info courseInfo = courseService.create(request,response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else

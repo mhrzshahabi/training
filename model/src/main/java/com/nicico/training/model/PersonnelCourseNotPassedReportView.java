@@ -1,6 +1,7 @@
 
 package com.nicico.training.model;
 
+import com.nicico.training.model.compositeKey.PersonnelCourseKey;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
@@ -16,9 +17,12 @@ import java.io.Serializable;
 @DiscriminatorValue("PersonnelCourseNotPassedReportView")
 public class PersonnelCourseNotPassedReportView implements Serializable {
 
+    @EmbeddedId
+    private PersonnelCourseKey id;
+
     ///////////////////////////////////////////////////personnel///////////////////////////////////////
-    @Id
-    @Column(name = "personnel_id")
+
+    @Column(name = "personnel_id", insertable = false, updatable = false)
     private long personnelId;
 
     @Column(name = "personnel_personnel_no")
@@ -85,8 +89,8 @@ public class PersonnelCourseNotPassedReportView implements Serializable {
     private String personnelCcpTitle;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
-    @Id
-    @Column(name = "course_id")
+
+    @Column(name = "course_id", insertable = false, updatable = false)
     private Long courseId;
 
     @Column(name = "course_code")
@@ -95,14 +99,7 @@ public class PersonnelCourseNotPassedReportView implements Serializable {
     @Column(name = "course_title_fa")
     private String courseTitleFa;
 
-    ///////////////////////////////////////////////////category///////////////////////////////////////
     @Column(name = "category_id")
     private Long categoryId;
-
-    @Column(name = "category_title_fa")
-    private String categoryTitleFa;
-
-    @Column(name = "category_code")
-    private String categoryCode;
 
 }
