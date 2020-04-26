@@ -181,7 +181,7 @@ public class TeacherService implements ITeacherService {
         if (request.getCriteria() != null) {
             if (request.getCriteria().getCriteria() != null)
                 request.getCriteria().getCriteria().add(criteriaRq);
-          else {
+            else {
                 criteriaRqList.add(criteriaRq);
                 request.getCriteria().setCriteria(criteriaRqList);
             }
@@ -228,14 +228,18 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    public void changeBlackListStatus(Boolean inBlackList, Long id) {
+    public void changeBlackListStatus(String reason, Boolean inBlackList, Long id) {
         Teacher teacher = getTeacher(id);
         teacher.setInBlackList(!inBlackList);
+        if (teacher.isInBlackList())
+            teacher.setBlackListDescription((reason == null) ? "" : reason);
+        else
+            teacher.setBlackListDescription("");
         teacherDAO.saveAndFlush(teacher);
     }
 
     @Transactional(readOnly = true)
-    public List<TclassDTO.AllStudentsGradeToTeacher> getAllStudentsGradeToTeacher(Long courseId, Long teacherId){
+    public List<TclassDTO.AllStudentsGradeToTeacher> getAllStudentsGradeToTeacher(Long courseId, Long teacherId) {
         List<Tclass> tclassList = tclassDAO.findByTeacherId(teacherId);
         List<TclassDTO.AllStudentsGradeToTeacher> sendingList = new ArrayList<>();
         for (Tclass tclass : tclassList) {
@@ -250,8 +254,8 @@ public class TeacherService implements ITeacherService {
     //--------------------------Teacher Basic Evaluation ---------------------------------------------------------------
     @Override
     @Transactional(readOnly = true)
-    public Map<String,Object> evaluateTeacher(Long teacherId, String catId, String subCatId){
-        Map<String,Object> resultSet = new HashMap<>();
+    public Map<String, Object> evaluateTeacher(Long teacherId, String catId, String subCatId) {
+        Map<String, Object> resultSet = new HashMap<>();
         float evaluationGrade = 0;
         boolean pass = false;
         String pass_status = "";
@@ -277,36 +281,36 @@ public class TeacherService implements ITeacherService {
         Long SubCatId = null;
         Category category_selected = null;
         Subcategory subCategory_selected = null;
-        if(!catId.equalsIgnoreCase("undefined")) {
+        if (!catId.equalsIgnoreCase("undefined")) {
             CatId = Long.parseLong(catId);
-            category_selected = modelMapper.map(categoryService.get(CatId),Category.class);
+            category_selected = modelMapper.map(categoryService.get(CatId), Category.class);
         }
-        if(!subCatId.equalsIgnoreCase("undefined")) {
+        if (!subCatId.equalsIgnoreCase("undefined")) {
             SubCatId = Long.parseLong(subCatId);
             subCategory_selected = modelMapper.map(subCategoryService.get(SubCatId), Subcategory.class);
         }
         TeacherDTO.Info teacherDTO = get(teacherId);
-        Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
+        Teacher teacher = modelMapper.map(teacherDTO, Teacher.class);
         int teacher_educationLevel = 0;
 
-        if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
+        if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
             teacher_educationLevel = 1;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق دیپلم"))
+        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق دیپلم"))
             teacher_educationLevel = 2;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("لیسانس"))
+        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("لیسانس"))
             teacher_educationLevel = 3;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق لیسانس"))
+        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق لیسانس"))
             teacher_educationLevel = 4;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دکتری"))
+        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دکتری"))
             teacher_educationLevel = 5;
 
         //table 1
         //table 1 - row 1
-        table_1_license = (teacher_educationLevel-1)*5 + 10;
+        table_1_license = (teacher_educationLevel - 1) * 5 + 10;
         //table 1 - row 2
         List<EmploymentHistoryDTO.Info> employmentHistories = teacherHelpService.getEmploymentHistories(teacherId);
 
-        if(employmentHistories != null) {
+        if (employmentHistories != null) {
             for (EmploymentHistoryDTO.Info employmentHistory : employmentHistories) {
                 boolean cat_related = false;
                 boolean subCat_related = false;
@@ -336,9 +340,9 @@ public class TeacherService implements ITeacherService {
                 }
             }
         }
-        if(table_1_work > 10)
+        if (table_1_work > 10)
             table_1_work = 10;
-        Double table_1_work_double = ((teacher_educationLevel-1)*0.2 + 0.6)*table_1_work;
+        Double table_1_work_double = ((teacher_educationLevel - 1) * 0.2 + 0.6) * table_1_work;
         table_1_work = table_1_work_double.floatValue();
         //table 1 - row 3 & 4
         List<TeachingHistoryDTO.Info> teachingHistories = teacherHelpService.getTeachingHistories(teacherId);
@@ -348,40 +352,39 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> teachingHistory_catrgories = teachingHistory.getCategories();
             for (CategoryDTO.CategoryInfoTuple teachingHistory_catrgory : teachingHistory_catrgories) {
-                if(teachingHistory_catrgory.getId() == category_selected.getId())
+                if (teachingHistory_catrgory.getId() == category_selected.getId())
                     cat_related = true;
             }
-            if(cat_related == true) {
+            if (cat_related == true) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
-                    if(teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
             }
-            if(cat_related && subCat_related){
-                if(teachingHistory.getDuration() != null) {
+            if (cat_related && subCat_related) {
+                if (teachingHistory.getDuration() != null) {
                     table_1_related_training += teachingHistory.getDuration();
                     table_1_related_training_hours += teachingHistory.getDuration();
                 }
-            }
-            else{
-                if(teachingHistory.getDuration() != null) {
+            } else {
+                if (teachingHistory.getDuration() != null) {
                     table_1_unRelated_training += teachingHistory.getDuration();
                     table_1_unRelated_training_hours += teachingHistory.getDuration();
                 }
             }
 
         }
-        if(table_1_unRelated_training > 1000)
+        if (table_1_unRelated_training > 1000)
             table_1_unRelated_training = 1000;
-        if(table_1_related_training > 1000)
+        if (table_1_related_training > 1000)
             table_1_related_training = 1000;
         table_1_related_training /= 100;
         table_1_unRelated_training /= 100;
 
-        Double table_1_unRelated_training_double = ((teacher_educationLevel-1)*0.1 + 0.4)*table_1_unRelated_training;
+        Double table_1_unRelated_training_double = ((teacher_educationLevel - 1) * 0.1 + 0.4) * table_1_unRelated_training;
         table_1_unRelated_training = table_1_unRelated_training_double.floatValue();
-        Double table_1_related_training_double = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
+        Double table_1_related_training_double = ((teacher_educationLevel - 1) * 0.5 + 2) * table_1_related_training;
         table_1_related_training = table_1_related_training_double.floatValue();
         //table 1 - row 5
         List<TeacherCertificationDTO.Info> teacherCertifications = teacherHelpService.getTeacherCertifications(teacherId);
@@ -391,26 +394,26 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> teacherCertification_catrgories = teacherCertification.getCategories();
             for (CategoryDTO.CategoryInfoTuple teacherCertification_catrgory : teacherCertification_catrgories) {
-                if(teacherCertification_catrgory.getId() == category_selected.getId())
+                if (teacherCertification_catrgory.getId() == category_selected.getId())
                     cat_related = true;
             }
-            if(cat_related == true) {
+            if (cat_related == true) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
-                    if(teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
             }
-            if(cat_related && subCat_related){
-                if(teacherCertification.getDuration() != null)
+            if (cat_related && subCat_related) {
+                if (teacherCertification.getDuration() != null)
                     table_1_courses += teacherCertification.getDuration();
             }
         }
-        if(table_1_courses > 1000)
+        if (table_1_courses > 1000)
             table_1_courses = 1000;
-        table_1_courses  /= 100;
+        table_1_courses /= 100;
 
-        if(teacher_educationLevel != 1) {
+        if (teacher_educationLevel != 1) {
             Double table_1_courses_double = ((teacher_educationLevel - 1) * 0.1 + 1.2) * table_1_courses;
             table_1_courses = table_1_courses_double.floatValue();
         }
@@ -425,7 +428,7 @@ public class TeacherService implements ITeacherService {
         int table_2_relation = 0;
         Category teacherMajorCategory = teacher.getMajorCategory();
         Subcategory teacherMajorSubCategory = teacher.getMajorSubCategory();
-        if(teacherMajorCategory != null) {
+        if (teacherMajorCategory != null) {
             if (category_selected.getId() == teacherMajorCategory.getId()) {
                 table_2_relation += 1;
                 if (subCategory_selected != null && teacherMajorSubCategory != null)
@@ -433,59 +436,59 @@ public class TeacherService implements ITeacherService {
                         table_2_relation += 1;
             }
         }
-        if(teacher_educationLevel == 1)
+        if (teacher_educationLevel == 1)
             table_2_grade = (float) 2.5;
-        else if(teacher_educationLevel == 2)
+        else if (teacher_educationLevel == 2)
             table_2_grade = 6;
-        else if(teacher_educationLevel == 3)
+        else if (teacher_educationLevel == 3)
             table_2_grade = 8;
-        else if(teacher_educationLevel == 4)
+        else if (teacher_educationLevel == 4)
             table_2_grade = 9;
-        else if(teacher_educationLevel == 5)
+        else if (teacher_educationLevel == 5)
             table_2_grade = 10;
 
         table_2_grade *= table_2_relation;
 
         //table 3
-        List<PublicationDTO.Info> publications= teacherHelpService.getPublications(teacherId);
+        List<PublicationDTO.Info> publications = teacherHelpService.getPublications(teacherId);
 
         for (PublicationDTO.Info publication : publications) {
             boolean cat_related = false;
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> publication_catrgories = publication.getCategories();
             for (CategoryDTO.CategoryInfoTuple publication_catrgory : publication_catrgories) {
-                if(publication_catrgory.getId() == category_selected.getId())
+                if (publication_catrgory.getId() == category_selected.getId())
                     cat_related = true;
             }
-            if(cat_related == true) {
+            if (cat_related == true) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
-                    if(publication_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (publication_sub_catrgory.getId() == subCategory_selected.getId())
                         subCat_related = true;
                 }
             }
-            if(cat_related && subCat_related){
-                if(publication.getPublicationSubjectTypeId() == 0)
+            if (cat_related && subCat_related) {
+                if (publication.getPublicationSubjectTypeId() == 0)
                     table_3_count_book += 1;
-                if(publication.getPublicationSubjectTypeId() == 1)
+                if (publication.getPublicationSubjectTypeId() == 1)
                     table_3_count_project += 1;
-                if(publication.getPublicationSubjectTypeId() == 2)
+                if (publication.getPublicationSubjectTypeId() == 2)
                     table_3_count_article += 1;
-                if(publication.getPublicationSubjectTypeId() == 3)
+                if (publication.getPublicationSubjectTypeId() == 3)
                     table_3_count_translation += 1;
-                if(publication.getPublicationSubjectTypeId() == 4)
+                if (publication.getPublicationSubjectTypeId() == 4)
                     table_3_count_note += 1;
             }
         }
-        if(table_3_count_book > 10)
+        if (table_3_count_book > 10)
             table_3_count_book = 10;
-        if(table_3_count_project > 10)
+        if (table_3_count_project > 10)
             table_3_count_project = 10;
-        if(table_3_count_article > 10)
+        if (table_3_count_article > 10)
             table_3_count_article = 10;
-        if(table_3_count_note > 10)
+        if (table_3_count_note > 10)
             table_3_count_note = 10;
-        if(table_3_count_translation > 10)
+        if (table_3_count_translation > 10)
             table_3_count_translation = 10;
 
         table_3_grade = table_3_count_book * 7
@@ -497,7 +500,7 @@ public class TeacherService implements ITeacherService {
         List<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges = teacherHelpService.getForeignLangKnowledges(teacherId);
 
         for (ForeignLangKnowledgeDTO.Info foreignLangKnowledge : foreignLangKnowledges) {
-            if(foreignLangKnowledge.getLangName().equalsIgnoreCase("انگلیسی") || foreignLangKnowledge.getLangName().equalsIgnoreCase("زبان انگلیسی")) {
+            if (foreignLangKnowledge.getLangName().equalsIgnoreCase("انگلیسی") || foreignLangKnowledge.getLangName().equalsIgnoreCase("زبان انگلیسی")) {
                 if (foreignLangKnowledge.getLangLevelId() == 0)
                     table_4_grade = 3;
                 else if (foreignLangKnowledge.getLangLevelId() == 1)
@@ -507,52 +510,48 @@ public class TeacherService implements ITeacherService {
             }
         }
         //total grade
-        evaluationGrade = table_1_grade+table_2_grade+table_3_grade+table_4_grade;
-        if(teacher_educationLevel == 1) {
+        evaluationGrade = table_1_grade + table_2_grade + table_3_grade + table_4_grade;
+        if (teacher_educationLevel == 1) {
             if (evaluationGrade >= 25)
                 pass = true;
-        }
-        else if(teacher_educationLevel == 2) {
+        } else if (teacher_educationLevel == 2) {
             if (evaluationGrade >= 40)
                 pass = true;
-        }
-        else if(teacher_educationLevel == 3) {
+        } else if (teacher_educationLevel == 3) {
             if (evaluationGrade >= 55)
                 pass = true;
-        }
-        else if(teacher_educationLevel == 4) {
+        } else if (teacher_educationLevel == 4) {
             if (evaluationGrade >= 60)
                 pass = true;
-        }
-        else if(teacher_educationLevel == 5) {
+        } else if (teacher_educationLevel == 5) {
             if (evaluationGrade >= 75)
                 pass = true;
         }
 
-        if(pass)
+        if (pass)
             pass_status = "قبول";
-        if(!pass)
+        if (!pass)
             pass_status = "رد";
 
-        resultSet.put("evaluationGrade",evaluationGrade);
-        resultSet.put("pass_status",pass_status);
-        resultSet.put("table_1_grade",table_1_grade);
-        resultSet.put("table_1_license",table_1_license);
-        resultSet.put("table_1_work",table_1_work);
-        resultSet.put("table_1_related_training",table_1_related_training);
-        resultSet.put("table_1_unRelated_training",table_1_unRelated_training);
-        resultSet.put("table_1_courses",table_1_courses);
-        resultSet.put("table_1_years",table_1_years);
-        resultSet.put("table_1_related_training_hours",table_1_related_training_hours);
-        resultSet.put("table_1_unRelated_training_hours",table_1_unRelated_training_hours);
-        resultSet.put("table_2_grade",table_2_grade);
-        resultSet.put("table_3_grade",table_3_grade);
-        resultSet.put("table_3_count_book",table_3_count_book);
-        resultSet.put("table_3_count_project",table_3_count_project);
-        resultSet.put("table_3_count_article",table_3_count_article);
-        resultSet.put("table_3_count_translation",table_3_count_translation);
-        resultSet.put("table_3_count_note",table_3_count_note);
-        resultSet.put("table_4_grade",table_4_grade);
+        resultSet.put("evaluationGrade", evaluationGrade);
+        resultSet.put("pass_status", pass_status);
+        resultSet.put("table_1_grade", table_1_grade);
+        resultSet.put("table_1_license", table_1_license);
+        resultSet.put("table_1_work", table_1_work);
+        resultSet.put("table_1_related_training", table_1_related_training);
+        resultSet.put("table_1_unRelated_training", table_1_unRelated_training);
+        resultSet.put("table_1_courses", table_1_courses);
+        resultSet.put("table_1_years", table_1_years);
+        resultSet.put("table_1_related_training_hours", table_1_related_training_hours);
+        resultSet.put("table_1_unRelated_training_hours", table_1_unRelated_training_hours);
+        resultSet.put("table_2_grade", table_2_grade);
+        resultSet.put("table_3_grade", table_3_grade);
+        resultSet.put("table_3_count_book", table_3_count_book);
+        resultSet.put("table_3_count_project", table_3_count_project);
+        resultSet.put("table_3_count_article", table_3_count_article);
+        resultSet.put("table_3_count_translation", table_3_count_translation);
+        resultSet.put("table_3_count_note", table_3_count_note);
+        resultSet.put("table_4_grade", table_4_grade);
         return resultSet;
     }
 }

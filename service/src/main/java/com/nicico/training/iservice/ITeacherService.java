@@ -34,13 +34,13 @@ public interface ITeacherService {
 
     SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request);
 
-    public void changeBlackListStatus(Boolean inBlackList, Long id);
-
     SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request);
 
     SearchDTO.SearchRs<TeacherDTO.Report> deepSearchReport(SearchDTO.SearchRq request);
 
     public SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList);
+
+    void changeBlackListStatus(String reason, Boolean inBlackList, Long id);
 
     @Transactional(readOnly = true)
     Map<String,Object> evaluateTeacher(Long id, String catId, String subCatId);
