@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
-    var data_values = null;
     //----------------------------------------------------Variables-----------------------------------------------------
     var isCriteriaCategoriesChanged_JspTClassReport = false;
     var startDate1Check_JspTClassReport = true;
@@ -12,6 +11,8 @@
     var endDate1Check_JspTClassReport = true;
     var endDate2Check_JspTClassReport = true;
     var endDateCheck_Order_JspTClassReport = true;
+
+    var data_values = null;
 
     var courseInfo_print = "";
     var classTimeInfo_print = "";
@@ -299,15 +300,37 @@
                 name: "hDurationStart",
                 title: "مدت کلاس: از",
                 keyPressFilter: "[0-9.]",
+                length: 4,
                 showHintInField: true,
-                hint: "ساعت"
+                hint: "ساعت",
+                editorExit: function (form, item, value) {
+                   var endDuratiorn = form.getValue("hDurationEnd");
+                   if (endDuratiorn != undefined && parseFloat(endDuratiorn) < parseFloat(value)) {
+                        form.clearFieldErrors("hDurationStart", true);
+                        form.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                    } else {
+                        form.clearFieldErrors("hDurationStart", true);
+                        form.clearFieldErrors("hDurationEnd", true);
+                    }
+                }
             },
             {
                 name: "hDurationEnd",
                 title: "تا",
+                length: 4,
                 keyPressFilter: "[0-9.]",
                 showHintInField: true,
-                hint: "ساعت"
+                hint: "ساعت",
+                editorExit: function (form, item, value) {
+                    var startDuratiorn = form.getValue("hDurationStart");
+                    if (startDuratiorn != undefined && parseFloat(startDuratiorn) > parseFloat(value)) {
+                        form.clearFieldErrors("hDurationEnd", true);
+                        form.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                    } else {
+                        form.clearFieldErrors("hDurationStart", true);
+                        form.clearFieldErrors("hDurationEnd", true);
+                    }
+                }
             },
             {
                 name: "temp1",
@@ -672,6 +695,8 @@
                 displayField: "fullNameFa",
                 filterFields: ["fullNameFa", "personality.nationalCode"],
                 filterLocally: true,
+                pickListFields: [{name: "fullNameFa", title: "نام و نام خانوادگی"},
+                                {name: "personality.nationalCode", title: "کد ملی"}],
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains"
@@ -681,7 +706,8 @@
                 name: "teacherPayingStatus",
                 title: "وضعیت هزینه ی استاد",
                 type: "comboBoxItem",
-                defaultValue: "3",
+                // defaultValue: "3",
+                hidden: true,
                 valueMap: {
                     "1": "پرداخت شده",
                     "2": "پرداخت نشده",
@@ -691,6 +717,7 @@
             {
                 name: "temp6",
                 title: "",
+                hidden: true,
                 canEdit: false
             },
             {
@@ -716,7 +743,8 @@
                 name: "courseStatus",
                 title: "نوع دوره",
                 type: "comboBoxItem",
-                defaultValue: "3",
+                // defaultValue: "3",
+                hidden: true,
                 filterOperator: "equals",
                 valueMap: {
                     "1": "وابسته به نیازسنجی مشاغل",
@@ -741,6 +769,7 @@
             },
             {
                 name: "reactionEvaluation",
+                hidden: true,
                 title: "نمره ارزیابی واکنشی کلاس",
                 type: "checkbox",
                 changed: function (form, item, value) {
@@ -758,6 +787,7 @@
             {
                 name: "reactionEvaluationOperator",
                 title: "",
+                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -771,6 +801,7 @@
                 name: "reactionEvaluationGrade",
                 title: "",
                 disabled: true,
+                hidden: true,
                 hint: "نمره ی ارزیابی واکنشی مد نظر را وارد کنید",
                 showHintInField: true,
                 length: 3,
@@ -780,6 +811,7 @@
                 name: "learningEvaluation",
                 title: "نمره ارزیابی یادگیری کلاس",
                 type: "checkbox",
+                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("learningEvaluationOperator").disabled = false;
@@ -795,6 +827,7 @@
             {
                 name: "learningEvaluationOperator",
                 title: "",
+                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -807,6 +840,7 @@
             {
                 name: "learningEvaluationGrade",
                 title: "",
+                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی یادگیری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -817,6 +851,7 @@
                 name: "behavioralEvaluation",
                 title: "نمره ارزیابی رفتاری کلاس",
                 type: "checkbox",
+                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("behavioralEvaluationOperator").disabled = false;
@@ -832,6 +867,7 @@
             {
                 name: "behavioralEvaluationOperator",
                 title: "",
+                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -844,6 +880,7 @@
             {
                 name: "behavioralEvaluationGrade",
                 title: "",
+                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی رفتاری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -854,6 +891,7 @@
                 name: "evaluation",
                 title: "نمره اثربخشی کلاس",
                 type: "checkbox",
+                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("evaluationOperator").disabled = false;
@@ -869,6 +907,7 @@
             {
                 name: "evaluationOperator",
                 title: "",
+                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -881,16 +920,14 @@
             {
                 name: "evaluationGrade",
                 title: "",
+                hidden: true,
                 disabled: true,
                 hint: "نمره ی اثربخشی مد نظر را وارد کنید",
                 showHintInField: true,
                 length: 3,
                 keyPressFilter: "[0-9]"
             }
-        ],
-        itemChanged: function (item, newValue) {
-
-        }
+        ]
     });
 
     var initialLayoutStyle = "vertical";

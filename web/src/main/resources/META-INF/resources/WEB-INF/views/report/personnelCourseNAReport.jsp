@@ -116,14 +116,14 @@
     NACourseDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "courseId", primaryKey: true, hidden: true},
-            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "totalEssentialPersonnelCount", title: "تعداد کل ضروری", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedEssentialPersonnelCount", title:"تعداد افراد نگذرانده در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
-            {name: "totalImprovingPersonnelCount", title: "تعداد کل بهبود", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedImprovingPersonnelCount", title:"تعداد افراد نگذرانده در اولویت بهبود", filterOperator: "equals", autoFitWidth: true},
-            {name: "totalDevelopmentalPersonnelCount", title: "تعداد کل توسعه ای", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedDevelopmentalPersonnelCount", title:"تعداد افراد نگذرانده در اولویت توسعه ای", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "totalEssentialPersonnelCount", title: "تعداد کل پرسنل در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
+            {name: "notPassedEssentialPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
+            {name: "totalImprovingPersonnelCount", title: "تعداد کل پرسنل در اولویت کل بهبود", filterOperator: "equals", autoFitWidth: true},
+            {name: "notPassedImprovingPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت بهبود", filterOperator: "equals", autoFitWidth: true},
+            {name: "totalDevelopmentalPersonnelCount", title: "تعداد کل پرسنل در اولویت توسعه ای", filterOperator: "equals", autoFitWidth: true},
+            {name: "notPassedDevelopmentalPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت توسعه ای", filterOperator: "equals", autoFitWidth: true},
         ],
         fetchDataURL: personnelCourseNAReportUrl
     });
@@ -188,6 +188,31 @@
         fetchDataURL: courseUrl + "spec-list",
     });
 
+    PersonnelDS_PCNR = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: -1}]
+        },
+    });
+
     FilterDF_PCNR = isc.DynamicForm.create({
         border: "1px solid black",
         numCols: 10,
@@ -197,31 +222,60 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelPersonnelNo2",
-                title:"پرسنلی 6رقمی",
-                <%--title:"<spring:message code="personnel.no.6.digits"/>",--%>
-                textAlign: "center",
-            },
-            {
                 name: "personnelPersonnelNo",
-                title:"<spring:message code="personnel.no"/> ",
+                title:"انتخاب پرسنل",
+                operator: "inSet",
                 textAlign: "center",
+                optionDataSource: PersonnelDS_PCNR,
+                autoFetchData: false,
+                type: "MultiComboBoxItem",
+                valueField: "personnelNo",
+                displayField: "personnelNo",
+                endRow: true,
+                colSpan: 10,
+                // comboBoxWidth: 200,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    pickListWidth: 550,
+                    pickListFields: [
+                        {name: "personnelNo2"},
+                        {name: "firstName"},
+                        {name: "lastName"},
+                        {name: "nationalCode"},
+                        {name: "personnelNo"}
+                    ],
+                    filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                    pickListProperties: {sortField: "personnelNo"},
+                    textMatchStyle: "substring",
+                },
             },
-            {
-                name: "personnelNationalCode",
-                title:"<spring:message code="national.code"/> ",
-                textAlign: "center",
-            },
-            {
-                name: "personnelFirstName",
-                title:"<spring:message code="firstName"/> ",
-                textAlign: "center",
-            },
-            {
-                name: "personnelLastName",
-                title:"<spring:message code="lastName"/> ",
-                textAlign: "center",
-            },
+            <%--{--%>
+            <%--    name: "personnelPersonnelNo2",--%>
+            <%--    title:"پرسنلی 6رقمی",--%>
+            <%--    &lt;%&ndash;title:"<spring:message code="personnel.no.6.digits"/>",&ndash;%&gt;--%>
+            <%--    textAlign: "center",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelPersonnelNo",--%>
+            <%--    title:"<spring:message code="personnel.no"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelNationalCode",--%>
+            <%--    title:"<spring:message code="national.code"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelFirstName",--%>
+            <%--    title:"<spring:message code="firstName"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "personnelLastName",--%>
+            <%--    title:"<spring:message code="lastName"/> ",--%>
+            <%--    textAlign: "center",--%>
+            <%--},--%>
             {
                 name: "personnelComplexTitle",
                 title: "<spring:message code="complex"/>",
@@ -350,6 +404,7 @@
             {
                 name: "courseId",
                 title: "<spring:message code="course"/>",
+                operator: "inSet",
                 optionDataSource: CourseDS_PCNR,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
@@ -381,8 +436,8 @@
                     if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length === 0) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
+                        CourseLG_PCNR.implicitCriteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         CourseLG_PCNR.invalidateCache();
-                        NACourseDS_PCNR.implicitCriteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         CourseLG_PCNR.fetchData();
                     }
                 }
@@ -413,7 +468,7 @@
             {name: "notPassedDevelopmentalPersonnelCount", canFilter: false},
             {
                 name: "totalNotPassed",
-                title: "جمع کل نگذرانده",
+                title: "جمع کل پرسنل نگذرانده",
                 filterOperator: "equals",
                 autoFitWidth: true,
                 canFilter: false,
@@ -435,12 +490,12 @@
                     title: "مشاهده لیست پرسنل",
                     click: function () {
                         Window_Personnel_PCNR.show();
-                        PersonnelsLG_PCNR.invalidateCache();
-                        PersonnelDS_PCNR.implicitCriteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
-                        PersonnelDS_PCNR.implicitCriteria.criteria.addAll([
+                        PersonnelsLG_PCNR.implicitCriteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
+                        PersonnelsLG_PCNR.implicitCriteria.criteria.addAll([
                             {fieldName: "isPassed" ,operator: "equals", value: false},
                             {fieldName: "courseId", operator: "equals", value: record.courseId}
                         ]);
+                        PersonnelsLG_PCNR.invalidateCache();
                         PersonnelsLG_PCNR.fetchData();
                     }
                 });
