@@ -47,14 +47,12 @@
                 hidden: true,
                 canFilter: false
             },
-            {
-                name:"blackListDescription",canEdit: false, hidden: true,class:"blackListDescription"
-            },
+
             {
                 name: "teacherCode",
                 title: "<spring:message code='code'/>",
                 align: "center", showHover:true,
-                hoverHTML:customhoverHtml
+
             },
             {
                 name: "personality.firstNameFa",
@@ -63,7 +61,7 @@
                 sortNormalizer: function (record) {
                     return record.personality.firstNameFa;
                 }, showHover:true,
-                hoverHTML:customhoverHtml
+
             },
             {
                 name: "personality.lastNameFa",
@@ -71,8 +69,24 @@
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.lastNameFa;
-                }, showHover:true,
-                hoverHTML:customhoverHtml
+                },
+
+            },
+            {
+                name: "blackListDescription", canEdit: false, title: "<spring:message code='black.List.Description'/>",
+                align: "center",
+                formatCellValue: function (value, record, rowNum, colNum) {
+
+                    console.log(typeof record.blackListDescription);
+                    console.log(record.inBlackList === true);
+
+                    if ((typeof record.blackListDescription == 'undefined'|| record.blackListDescription == "undefined" || record.blackListDescription == undefined)&& record.inBlackList === true) {
+                        return "بدون توضیحات"
+                    }
+                    else if (record.inBlackList === true) {
+                        return value
+                    }
+                }
             },
             {
                 name: "enableStatus",
@@ -81,7 +95,7 @@
                 type: "boolean"
             }
         ],
-        hoverWidth:300,
+
         autoFetchData: true,
         rowDoubleClick: function () {
             ListGrid_blackList_edit();
@@ -246,10 +260,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        //////////////////////////////////////////////////////////////////////////////////
-                         Windows_BlackList_Description.show()
-                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                      //  isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id, "GET", null, null));
+                        Windows_BlackList_Description.show()
                         setTimeout(function () {
                            // ListGrid_blackList_refresh();
                         }, 300);
@@ -267,10 +278,4 @@
         }
     }
 
-    function customhoverHtml(record){
-        var tmpdata=record.blackListDescription;
-        if(tmpdata!="undefined")
-            return record.blackListDescription;
-        else
-            return "";
-    }
+
