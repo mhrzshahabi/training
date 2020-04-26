@@ -159,6 +159,7 @@
             {
                 name: "personality.fatherName",
                 title: "<spring:message code='father.name'/>",
+                required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
@@ -314,7 +315,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 required: true,
-                optionDataSource: RestDataSource_Education_Level_JspTeacher,
+                optionDataSource: RestDataSource_Education_Level_ByID_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -341,8 +342,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher,
-                autoFetchData: true,
+                optionDataSource: RestDataSource_Education_Major_ByID_JspTeacher,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,

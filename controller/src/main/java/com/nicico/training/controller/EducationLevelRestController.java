@@ -148,6 +148,55 @@ public class EducationLevelRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/spec-list-by-id")
+//    @PreAuthorize("hasAuthority('r_educationMajor')")
+    public ResponseEntity<EducationLevelDTO.EducationLevelSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                       @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "id", required = false) Long id,
+                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException{
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<EducationLevelDTO.Info> response = educationLevelService.search(request);
+        final EducationLevelDTO.SpecRs specResponse = new EducationLevelDTO.SpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        final EducationLevelDTO.EducationLevelSpecRs specRs = new EducationLevelDTO.EducationLevelSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_educationLevel')")
     public ResponseEntity<SearchDTO.SearchRs<EducationLevelDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {

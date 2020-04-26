@@ -32,6 +32,9 @@ public class Teacher extends Auditable {
     @Column(name = "b_in_black_list")
     private boolean inBlackList;
 
+    @Column(name = "c_black_list_description")
+    private String blackListDescription;
+
     @Column(name = "b_personnel")
     private Boolean personnelStatus;
 

@@ -3,7 +3,9 @@ package com.nicico.training.service;
 @Author:roya
 */
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -376,5 +378,12 @@ public class InstituteService implements IInstituteService {
         final Institute saved = instituteDAO.saveAndFlush(institute);
         return modelMapper.map(saved, InstituteDTO.Info.class);
     }
+
+    @Transactional
+    @Override
+    public TotalResponse<InstituteDTO.Info> search(NICICOCriteria request) {
+        return SearchUtil.search(instituteDAO, request, term -> modelMapper.map(term, InstituteDTO.Info.class));
+    }
+
 
 }

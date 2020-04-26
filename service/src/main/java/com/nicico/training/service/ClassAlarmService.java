@@ -6,6 +6,7 @@ import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
 import com.nicico.training.model.Alarm;
 import com.nicico.training.repository.AlarmDAO;
+import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -33,9 +34,15 @@ public class ClassAlarmService implements IClassAlarm {
     protected EntityManager entityManager;
     private final ModelMapper modelMapper;
     private final AlarmDAO alarmDAO;
+    private final TclassDAO tclassDAO;
     private MessageSource messageSource;
 
-    //****************create class sum sessions times alarm*****************
+//////  '' AS alarmTypeTitleFa, '' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId
+//////  null AS instituteId, null AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetRecordId,'' AS tabName, '' AS pageAddress,
+//////  '' AS alarm,  null AS detailRecordId, '' AS sortField,  tb2.f_class_id AS classIdConflict, tb2.id AS  sessionIdConflict,
+//////  null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict
+
+    //****************class sum sessions times alarm*****************
     @Transactional
     public void alarmSumSessionsTimes(Long class_id) {
         try {
@@ -70,43 +77,20 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
                 for (int i = 0; i < alarms.size(); i++) {
-
                     Object[] alarm = (Object[]) alarms.get(i);
-
-                    alarmList.add(new ClassAlarmDTO.Create(
-                            (alarm[0] != null ? alarm[0].toString() : null),
-                            (alarm[1] != null ? alarm[1].toString() : null),
-                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
-                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
-                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
-                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
-                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
-                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
-                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
-                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
-                            (alarm[10] != null ? alarm[10].toString() : null),
-                            (alarm[11] != null ? alarm[11].toString() : null),
-                            (alarm[12] != null ? alarm[12].toString() : null),
-                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
-                            (alarm[14] != null ? alarm[14].toString() : null),
-                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
-                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
-                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
-                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
-                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
-                    ));
-
+                    alarmList.add(convertObjectToDTO(alarm));
                 }
 
                 if (alarmList.size() > 0) {
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("SumSessionsTimes", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -115,7 +99,7 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
-    //****************create class capacity alarm*****************
+    //****************class capacity alarm*****************
     @Transactional
     public void alarmClassCapacity(Long class_id) {
         try {
@@ -155,43 +139,20 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
                 for (int i = 0; i < alarms.size(); i++) {
-
                     Object[] alarm = (Object[]) alarms.get(i);
-
-                    alarmList.add(new ClassAlarmDTO.Create(
-                            (alarm[0] != null ? alarm[0].toString() : null),
-                            (alarm[1] != null ? alarm[1].toString() : null),
-                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
-                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
-                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
-                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
-                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
-                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
-                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
-                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
-                            (alarm[10] != null ? alarm[10].toString() : null),
-                            (alarm[11] != null ? alarm[11].toString() : null),
-                            (alarm[12] != null ? alarm[12].toString() : null),
-                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
-                            (alarm[14] != null ? alarm[14].toString() : null),
-                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
-                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
-                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
-                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
-                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
-                    ));
-
+                    alarmList.add(convertObjectToDTO(alarm));
                 }
 
                 if (alarmList.size() > 0) {
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("ClassCapacity", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -200,10 +161,13 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
-    //****************create teacher conflict alarm*****************
+    //****************class teacher conflict alarm*****************
     @Transactional
     public void alarmTeacherConflict(Long class_id) {
         try {
+
+            Long term_id = tclassDAO.getTermIdByClassId(class_id);
+
             String alarmScript = " SELECT 'تداخل استاد' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
                     " null AS trainingPlaceId, null AS reservationId, targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
                     "'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date ||' کلاس '|| c_title_class_current ||' با کد '|| c_code_current ||  ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
@@ -265,48 +229,25 @@ public class ClassAlarmService implements IClassAlarm {
                     "          OR ( tb1.c_session_end_hour <= tb2.c_session_end_hour " +
                     "               AND tb1.c_session_end_hour > tb2.c_session_start_hour ))) ";
 
-            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", term_id).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
                 for (int i = 0; i < alarms.size(); i++) {
-
                     Object[] alarm = (Object[]) alarms.get(i);
-
-                    alarmList.add(new ClassAlarmDTO.Create(
-                            (alarm[0] != null ? alarm[0].toString() : null),
-                            (alarm[1] != null ? alarm[1].toString() : null),
-                            (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
-                            (alarm[3] != null ? Long.parseLong(alarm[3].toString()) : null),
-                            (alarm[4] != null ? Long.parseLong(alarm[4].toString()) : null),
-                            (alarm[5] != null ? Long.parseLong(alarm[5].toString()) : null),
-                            (alarm[6] != null ? Long.parseLong(alarm[6].toString()) : null),
-                            (alarm[7] != null ? Long.parseLong(alarm[7].toString()) : null),
-                            (alarm[8] != null ? Long.parseLong(alarm[8].toString()) : null),
-                            (alarm[9] != null ? Long.parseLong(alarm[9].toString()) : null),
-                            (alarm[10] != null ? alarm[10].toString() : null),
-                            (alarm[11] != null ? alarm[11].toString() : null),
-                            (alarm[12] != null ? alarm[12].toString() : null),
-                            (alarm[13] != null ? Long.parseLong(alarm[13].toString()) : null),
-                            (alarm[14] != null ? alarm[14].toString() : null),
-                            (alarm[15] != null ? Long.parseLong(alarm[15].toString()) : null),
-                            (alarm[16] != null ? Long.parseLong(alarm[16].toString()) : null),
-                            (alarm[17] != null ? Long.parseLong(alarm[17].toString()) : null),
-                            (alarm[18] != null ? Long.parseLong(alarm[18].toString()) : null),
-                            (alarm[19] != null ? Long.parseLong(alarm[19].toString()) : null)
-                    ));
-
+                    alarmList.add(convertObjectToDTO(alarm));
                 }
 
                 if (alarmList.size() > 0) {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -315,10 +256,13 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
-    //****************create student conflict alarm*****************
+    //****************class student conflict alarm*****************
     @Transactional
     public void alarmStudentConflict(Long class_id) {
         try {
+
+            Long term_id = tclassDAO.getTermIdByClassId(class_id);
+
             String alarmScript = " SELECT  'تداخل فراگیر' AS alarmTypeTitleFa, 'StudentConflict' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId, " +
                     " null AS instituteId, null AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
                     " ' جلسه ' " +
@@ -433,9 +377,9 @@ public class ClassAlarmService implements IClassAlarm {
                     " ) " +
                     " AND tb1.f_class_id =:class_id ";
 
-            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", 52).getResultList();
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", term_id).getResultList();
 
-            List<ClassAlarmDTO.Create> alarmList = null;
+            List<ClassAlarmDTO> alarmList = null;
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
 
@@ -447,10 +391,11 @@ public class ClassAlarmService implements IClassAlarm {
                 if (alarmList.size() > 0) {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
-                    saveAlarms(alarmList);
+                    saveAlarms(alarmList, class_id);
                 } else {
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
                     alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
+                    setClassHasWarningStatus(class_id);
                 }
             }
         } catch (Exception ex) {
@@ -459,9 +404,239 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
+    //****************class training place conflict alarm*****************
+    @Transactional
+    public void alarmTrainingPlaceConflict(Long class_id) {
+        try {
+
+            Long term_id = tclassDAO.getTermIdByClassId(class_id);
+
+            String alarmScript = " SELECT " +
+                    "        'تداخل محل برگزاری' AS alarmTypeTitleFa, 'TrainingPlaceConflict' AS alarmTypeTitleEn, " +
+                    "        tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, null AS studentId,  " +
+                    "        tb1.f_institute_id  AS instituteId, tb1.f_training_place_id AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetrecordid, " +
+                    "        'classSessionsTab' AS tabname, '/tclass/show-form' AS pageaddress, " +
+                    "        'محل برگزاری ' || tb1.c_title_fa1 || ' موسسه ' || tb1.c_title_fa || '؛' || ' کلاس '|| tb1.c_title_class " +
+                    "        || ' کد '  || tb1.c_code || ' روز ' || tb1.c_day_name || ' ' || tb1.c_session_date || ' از ' " +
+                    "        || tb1.c_session_start_hour || ' تا ' || tb1.c_session_end_hour || ' با کلاس '|| tb2.c_title_class " +
+                    "        || ' کد ' || tb2.c_code || ' تداخل دارد' AS alarm, null AS detailrecordid, " +
+                    "        ('5' ||  tb1.f_institute_id || tb1.f_training_place_id || tb1.c_session_date || tb1.c_session_start_hour || tb1.c_session_end_hour ) AS sortfield, " +
+                    "        tb2.f_class_id AS classIdConflict, tb2.id AS sessionIdConflict, tb2.f_institute_id  AS instituteIdConflict, tb2.f_training_place_id AS trainingPlaceIdConflict, " +
+                    "        null AS reservationIdConflict " +
+                    "    FROM " +
+                    "        ( " +
+                    "            SELECT " +
+                    "                tbl_session.id, " +
+                    "                tbl_session.f_class_id, " +
+                    "                tbl_session.c_day_name, " +
+                    "                tbl_session.c_session_date, " +
+                    "                tbl_session.c_session_end_hour, " +
+                    "                tbl_session.c_session_start_hour, " +
+                    "                tbl_session.f_institute_id, " +
+                    "                tbl_institute.c_title_fa, " +
+                    "                tbl_session.f_training_place_id, " +
+                    "                tbl_training_place.c_title_fa AS c_title_fa1, " +
+                    "                tbl_class.c_code, " +
+                    "                tbl_class.c_title_class " +
+                    "            FROM " +
+                    "                tbl_session " +
+                    "                INNER JOIN tbl_institute ON tbl_institute.id = tbl_session.f_institute_id " +
+                    "                INNER JOIN tbl_training_place ON tbl_training_place.id = tbl_session.f_training_place_id " +
+                    "                INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "            WHERE tbl_class.f_term = :term_id AND tbl_class.c_status <> 3 " +
+                    "        ) tb1 " +
+                    "        INNER JOIN ( " +
+                    "            SELECT " +
+                    "                tbl_session.id, " +
+                    "                tbl_session.f_class_id, " +
+                    "                tbl_session.c_day_name, " +
+                    "                tbl_session.c_session_date, " +
+                    "                tbl_session.c_session_end_hour, " +
+                    "                tbl_session.c_session_start_hour, " +
+                    "                tbl_session.f_institute_id, " +
+                    "                tbl_institute.c_title_fa, " +
+                    "                tbl_session.f_training_place_id, " +
+                    "                tbl_training_place.c_title_fa AS c_title_fa1, " +
+                    "                tbl_class.c_code, " +
+                    "                tbl_class.c_title_class " +
+                    "            FROM " +
+                    "                tbl_session " +
+                    "                INNER JOIN tbl_institute ON tbl_institute.id = tbl_session.f_institute_id " +
+                    "                INNER JOIN tbl_training_place ON tbl_training_place.id = tbl_session.f_training_place_id " +
+                    "                INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "           WHERE tbl_class.f_term = :term_id AND tbl_class.c_status <> 3 " +
+                    "        ) tb2 ON tb1.c_session_date = tb2.c_session_date " +
+                    "                 AND tb1.f_institute_id = tb2.f_institute_id " +
+                    "                 AND tb1.f_training_place_id = tb2.f_training_place_id " +
+                    "    WHERE " +
+                    "        tb1.f_class_id = :class_id AND " +
+                    "        tb1.id <> tb2.id " +
+                    "        AND   ( " +
+                    "            (tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour) " +
+                    "            OR    (tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour) " +
+                    "        ) ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("term_id", term_id).getResultList();
+
+            List<ClassAlarmDTO> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+
+                if (alarmList.size() > 0) {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TrainingPlaceConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TrainingPlaceConflict", class_id);
+                    saveAlarms(alarmList, class_id);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TrainingPlaceConflict", class_id);
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TrainingPlaceConflict", class_id);
+                    setClassHasWarningStatus(class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************class check list conflict alarm*****************
+    @Transactional
+    public void alarmCheckListConflict(Long class_id) {
+        ////disabled , because in update check list run into error
+//        try {
+        ////****Point : if class_id is zero, it check, checklist conflict alarms for all classes****
+
+//            String alarmScript = " SELECT DISTINCT " +
+//                    "'عدم تکمیل چک لیست' AS alarmTypeTitleFa, " +
+//                    " 'CheckListConflict' AS alarmTypeTitleEn, tbchecklist.class_id  AS classId, null AS sessionId, null AS teacherId,  " +
+//                    " null AS studentId, null AS instituteId, null AS trainingPlaceId, null AS reservationId,  tbchecklist.class_id AS targetrecordid, " +
+//                    " 'classCheckListTab' AS tabname, '/tclass/show-form' AS pageaddress, " +
+//                    "'در چک لیست \"' || tbchecklist.c_title_fa || '\" بخش \"' || tbchecklist.c_group || '\" آیتم \"' || tbchecklist.c_title_fa1 || '\" تعیین تکلیف نشده است (انتخاب یا درج توضیحات)' AS alarm,     " +
+//                    " null AS detailrecordid, ( '6' || tbchecklist.id || '-' || tbchecklist.iditem ) AS sortfield, null AS classIdConflict,  " +
+//                    " null AS  sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+//                    " FROM " +
+//                    " ( " +
+//                    "    SELECT " +
+//                    "        tbl_check_list.id, " +
+//                    "        tbl_check_list.c_title_fa, " +
+//                    "        tbl_check_list_item.id AS iditem, " +
+//                    "        tbl_check_list_item.c_group, " +
+//                    "        tbl_check_list_item.c_title_fa AS c_title_fa1, " +
+//                    "        tbl_check_list_item.b_is_deleted, " +
+//                    "        tbl_class.id AS class_id " +
+//                    "    FROM " +
+//                    "        tbl_check_list " +
+//                    "        INNER JOIN tbl_check_list_item ON tbl_check_list.id = tbl_check_list_item.f_check_list_id, " +
+//                    "        tbl_class " +
+//                    "    WHERE " +
+//                    "        (CASE WHEN :class_id = 0 THEN 1 WHEN tbl_class.id = :class_id THEN 1 END) IS NOT NULL AND " +
+//                    "         tbl_check_list_item.b_is_deleted IS NULL " +
+//                    " ) tbchecklist " +
+//                    " LEFT JOIN tbl_class_check_list ON tbchecklist.iditem = tbl_class_check_list.f_check_list_item_id " +
+//                    "                                  AND tbchecklist.class_id = tbl_class_check_list.f_tclass_id " +
+//                    " INNER JOIN tbl_class ON tbl_class.id = tbchecklist.class_id " +
+//                    " WHERE " +
+//                    " tbl_class.c_status <> 3 AND " +
+//                    " tbl_class_check_list.c_description IS NULL " +
+//                    " AND   ( " +
+//                    "    tbl_class_check_list.b_enabled IS NULL " +
+//                    "    OR    tbl_class_check_list.b_enabled = 0 " +
+//                    " ) ";
+//
+//            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
+//
+//            List<ClassAlarmDTO> alarmList = null;
+//            if (alarms != null) {
+//                alarmList = new ArrayList<>(alarms.size());
+//
+//                for (int i = 0; i < alarms.size(); i++) {
+//                    Object[] alarm = (Object[]) alarms.get(i);
+//                    alarmList.add(convertObjectToDTO(alarm));
+//                }
+//
+//                ////because is to long , I disabled this part
+//                ////if (class_id == 0L) {
+//                ////    alarmDAO.deleteAlarmsByAlarmTypeTitleEn("CheckListConflict");
+//                ////}
+//
+//                if (alarmList.size() > 0) {
+//                    saveAlarms(alarmList, class_id);
+//                } else {
+//                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("CheckListConflict", class_id);
+//                    setClassHasWarningStatus(class_id);
+//                }
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+    }
+    //*********************************
+
+    //****************class attendance alarm*****************
+    @Transactional
+    public List<ClassAlarmDTO> alarmAttendance(Long class_id) {
+
+        List<ClassAlarmDTO> alarmList = null;
+
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+
+            String alarmScript = "  SELECT DISTINCT " +
+                    " alarmTypeTitleFa, 'Attendance' AS alarmTypeTitleEn, classId, null AS sessionId, null AS teacherId, null AS studentId," +
+                    " null AS instituteId, null AS trainingPlaceId, null AS reservationId, targetRecordId, tabName, pageAddress," +
+                    " alarm, null AS detailRecordId,  sortField,  null AS classIdConflict, null AS  sessionIdConflict," +
+                    " null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict" +
+                    " FROM " +
+                    " ( " +
+                    " SELECT" +
+                    "    tbl_session.f_class_id AS classId," +
+                    "    tbl_session.f_class_id AS targetRecordId," +
+                    "   'classAttendanceTab' AS tabName," +
+                    "   '/tclass/show-form' AS pageAddress," +
+                    "   'حضور و غیاب' as alarmTypeTitleFa, " +
+                    "('حضور و غیاب ' || 'جلسه ' ||  tbl_session.c_session_start_hour || ' تا ' || tbl_session.c_session_end_hour || ' ' || tbl_session.c_day_name || ' تاریخ ' || tbl_session.c_session_date || ' تکمیل نشده است') as alarm, " +
+                    "   tbl_session.id AS detailRecordId," +
+                    "   ('7' || tbl_session.c_session_date || tbl_session.c_session_start_hour) AS sortField " +
+                    " FROM " +
+                    "   tbl_class_student" +
+                    "   INNER JOIN tbl_session ON tbl_class_student.class_id = tbl_session.f_class_id" +
+                    "   LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session" +
+                    " WHERE " +
+                    "   tbl_session.f_class_id = :class_id " +
+                    "   AND tbl_session.c_session_date <:todaydat" +
+                    "   AND (tbl_attendance.c_state IS NULL OR tbl_attendance.c_state = 0)" +
+                    " ) ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("todaydat", todayDate).getResultList();
+
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return alarmList;
+    }
+    //*********************************
+
     //****************convert object to dto*****************
-    private ClassAlarmDTO.Create convertObjectToDTO(Object[] alarm) {
-        return new ClassAlarmDTO.Create(
+    private ClassAlarmDTO convertObjectToDTO(Object[] alarm) {
+        return new ClassAlarmDTO(
                 (alarm[0] != null ? alarm[0].toString() : null),
                 (alarm[1] != null ? alarm[1].toString() : null),
                 (alarm[2] != null ? Long.parseLong(alarm[2].toString()) : null),
@@ -488,12 +663,33 @@ public class ClassAlarmService implements IClassAlarm {
 
     //****************save created alarms*****************
     @Transactional
-    public void saveAlarms(List<ClassAlarmDTO.Create> alarmList) {
+    public void saveAlarms(List<ClassAlarmDTO> alarmList, Long class_id) {
 
         alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(alarmList.get(0).getAlarmTypeTitleEn(), alarmList.get(0).getClassId(), alarmList.get(0).getSessionId(), alarmList.get(0).getTeacherId(), alarmList.get(0).getStudentId(), alarmList.get(0).getInstituteId(), alarmList.get(0).getTrainingPlaceId(), alarmList.get(0).getReservationId(), alarmList.get(0).getClassIdConflict(), alarmList.get(0).getSessionIdConflict(), alarmList.get(0).getInstituteIdConflict(), alarmList.get(0).getTrainingPlaceIdConflict(), alarmList.get(0).getReservationIdConflict());
 
         alarmDAO.saveAll(modelMapper.map(alarmList, new TypeToken<List<Alarm>>() {
         }.getType()));
+
+        setClassHasWarningStatus(class_id);
+    }
+    //*********************************
+
+    //****************save created alarms*****************
+    public void setClassHasWarningStatus(Long class_id) {
+
+        //*****this method check all not ended class and set alarm status for them*****
+        tclassDAO.updateAllClassHasWarning();
+//        if (class_id == 0L) {
+//            //*****this method check all not ended class and set alarm status for them*****
+//            tclassDAO.updateAllClassHasWarning();
+//            //*****************************************************************************
+//        } else {
+//            if (alarmDAO.existsAlarmsByClassIdOrClassIdConflict(class_id, class_id)) {
+//                tclassDAO.updateClassHasWarning(class_id, "alarm");
+//            } else {
+//                tclassDAO.updateClassHasWarning(class_id, "");
+//            }
+//        }
     }
     //*********************************
 
@@ -505,6 +701,44 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
+    //*********************************
+    @Override
+    public List<ClassAlarmDTO> list(Long classId, HttpServletResponse response) throws IOException {
+
+        List<ClassAlarmDTO> allClassAlarmDTO = null;
+
+        try {
+
+
+            List<ClassAlarmDTO> classAlarmDTO = modelMapper.map(alarmDAO.getAlarmsByClassIdOrClassIdConflictOrderBySortField(classId, classId), new TypeToken<List<ClassAlarmDTO>>() {
+            }.getType());
+
+            allClassAlarmDTO = new ArrayList<>(classAlarmDTO);
+
+            //*****add online attendance to existing offline alarms*****
+            List<ClassAlarmDTO> attendance = alarmAttendance(classId);
+            if (attendance != null && attendance.size() > 0) {
+                allClassAlarmDTO.addAll(attendance);
+            }
+            //**********************************************************
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
+        }
+
+        return allClassAlarmDTO;
+    }
+    //*********************************
+
+    //*********************************
+    //******old code for alarms********
+    //*********************************
+    //*********************************
+    //*********************************
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
 
@@ -813,8 +1047,8 @@ public class ClassAlarmService implements IClassAlarm {
 
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term */
-    @Override
-    public List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException {
+//    @Override
+    public List<ClassAlarmDTO> list_old(Long class_id, HttpServletResponse response) throws IOException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -1353,7 +1587,7 @@ public class ClassAlarmService implements IClassAlarm {
 
                 for (int i = 0; i < AlarmList.size(); i++) {
                     Object[] alarm = (Object[]) AlarmList.get(i);
-                    classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
+                    //Old// classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
 
                 }
             }
@@ -1442,7 +1676,8 @@ public class ClassAlarmService implements IClassAlarm {
                     AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
             }
 
-            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+            ////old code **> endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
 
 
             //*****score alarm*****

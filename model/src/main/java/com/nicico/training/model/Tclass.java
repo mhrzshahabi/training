@@ -65,6 +65,9 @@ public class Tclass extends Auditable {
     @Column(name = "f_supervisor")
     private Long supervisor;
 
+    @Column(name = "f_planner")
+    private Long planner;
+
     @Column(name = "c_reason")
     private String reason;
 
@@ -173,15 +176,8 @@ public class Tclass extends Auditable {
         return ids;
     }
 
-    @Transient
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
+    @Column(name = "c_has_warning")
     private String hasWarning;
-
-    @Transient
-    public String getHasWarning() {
-        return "";
-    }
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Alarm> alarms;

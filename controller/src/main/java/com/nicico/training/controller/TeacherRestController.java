@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -709,7 +710,7 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
     public ResponseEntity<Float> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
-       Float evaluationGrade = teacherService.getTeacherevaluationGrade(id,catId,subCatId);
+       Float evaluationGrade = (Float) teacherService.evaluateTeacher(id,catId,subCatId).get("evaluationGrade");
        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
 
@@ -832,8 +833,9 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/blackList/{inBlackList}/{id}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
-        teacherService.changeBlackListStatus(inBlackList,id);
+    public void changeBlackListStatus(HttpServletRequest req, @PathVariable Boolean inBlackList, @PathVariable Long id) {
+        String reason=req.getParameter("reason");
+        teacherService.changeBlackListStatus(reason,inBlackList,id);
     }
 
 }

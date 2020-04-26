@@ -12,9 +12,13 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,10 +41,12 @@ public class CourseService implements ICourseService {
     private final JobGroupDAO jobGroupDAO;
     private final CompetenceDAOOld competenceDAO;
     private final TclassService tclassService;
+    private final TeacherService teacherService;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
     private final EnumsConverter.ETheoTypeConverter eTheoTypeConverter = new EnumsConverter.ETheoTypeConverter();
+    private final MessageSource messageSource;
 
 
     @Transactional(readOnly = true)
@@ -148,10 +154,19 @@ public class CourseService implements ICourseService {
         return listOut;
     }
 
-
     @Transactional
     @Override
-    public CourseDTO.Info create(CourseDTO.Create request) {
+    public CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response) {
+        if(courseDAO.existsByTitleFa(request.getTitleFa()))
+        {
+
+            try {
+                response.sendError(406,null);
+                return null;
+            } catch (IOException e) {
+
+            }
+        }
         Course course = modelMapper.map(request, Course.class);
         if (courseDAO.findByCodeEquals(course.getCode()).isEmpty()) {
 //        if (true) {
@@ -550,12 +565,16 @@ public class CourseService implements ICourseService {
         String minTeacherDegree = course.getMinTeacherDegree();
         List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(minTeacherDegree);
         EducationLevel educationLevel = byTitleFa.get(0);
-        Long categoryId = course.getCategoryId();
-        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(categoryId, educationLevel.getCode(), false);
+//        Long categoryId = course.getCategoryId();
+        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(course.getCategoryId(), educationLevel.getCode(), false);
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> sendingList = new ArrayList<>();
         if(!teachers.isEmpty()) {
             Comparator<Tclass> tclassComparator = Comparator.comparing(Tclass::getEndDate);
             for (Teacher teacher : teachers) {
+                Map<String, Object> map = teacherService.evaluateTeacher(teacher.getId(), course.getCategoryId().toString(), course.getSubCategoryId().toString());
+                if(map.get("pass_status").equals("رد")){
+                    continue;
+                }
                 List<Tclass> tclassList = tclassDAO.findByCourseAndTeacher(course, teacher);
                 TeacherDTO.TeacherFullNameTupleWithFinalGrade teacherDTO = modelMapper.map(teacher, TeacherDTO.TeacherFullNameTupleWithFinalGrade.class);
                 Optional<Tclass> max = tclassList.stream().max(tclassComparator);

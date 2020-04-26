@@ -26,6 +26,16 @@ public class MainFormController {
         return "report/trainingFile";
     }
 
+    @RequestMapping("/studentClassReport")
+    public String showPersonalCoursesForm() {
+        return "report/studentClassReport";
+    }
+
+    @RequestMapping("/personnelCourseNotPassed")
+    public String showPersonalCoursesNotPassedForm() {
+        return "report/personnelCourseNotPassed";
+    }
+
     @RequestMapping("/trainingOverTime")
     public String showTrainingOverTime() {
         return "report/trainingOverTime";
@@ -170,6 +180,11 @@ public class MainFormController {
     @RequestMapping("/student-portal")
     public String showStudentPortalForm() {
         return "portal/studentPortal";
+    }
+
+    @RequestMapping("/personnel-course-NA-report")
+    public String showPersonnelCourseNAReportForm() {
+        return "report/personnelCourseNAReport";
     }
 
     @PostMapping("/personnel-needs-assessment-report-print/{type}")

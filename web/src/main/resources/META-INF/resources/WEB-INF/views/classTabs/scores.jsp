@@ -139,7 +139,7 @@
 
 //------
         canSelectCells: true,
-// sortField: 0,
+         sortField: 0,
         dataSource: RestDataSource_ClassStudent,
         fields: [
 
@@ -311,9 +311,10 @@
                                     ListGrid_Cell_score_Update(record, newValue, 4);
                                 } else {
 
-                                    createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
-                                    ListGrid_Cell_score_Update(record, null, 2);
-                                    ListGrid_Class_Student.invalidateCache();
+                                   // createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
+                                    ListGrid_Cell_score_Update(record,newValue, 2);
+                                    ListGrid_Class_Student.refreshFields();
+                                   // ListGrid_Class_Student.invalidateCache();
 
                                 }
 
@@ -336,7 +337,7 @@
                        return true
                     }
                 },// end editor Exit
-
+                sortField: 0,
 
             },
 

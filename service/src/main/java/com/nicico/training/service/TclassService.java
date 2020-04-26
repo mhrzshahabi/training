@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
@@ -20,6 +21,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -128,11 +131,12 @@ public class TclassService implements ITclassService {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
 
-      @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     @Override
     public <T> SearchDTO.SearchRs<T> search1(SearchDTO.SearchRq request, Class<T> infoType) {
         return SearchUtil.search(tclassDAO, request, e -> modelMapper.map(e, infoType));
     }
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> evaluatedSearch(SearchDTO.SearchRq request) {
@@ -217,7 +221,6 @@ public class TclassService implements ITclassService {
     }
 
 
-
     @Transactional
     @Override
     public void delete(TclassDTO.Delete request) {
@@ -279,6 +282,17 @@ public class TclassService implements ITclassService {
         return criteriaRq;
     }
 
+
+    public boolean compareTodayDate(Long id){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        Tclass tclass = getTClass(id);
+        String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+        String startingDate = tclass.getStartDate();
+
+        return todayDate.compareTo(startingDate) > 0 ? true : false;
+    }
+
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     @Override
     @Transactional
@@ -311,17 +325,17 @@ public class TclassService implements ITclassService {
         teacherId = tclass.getTeacherId();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ReactionEvaluationResult.class);
 
-        Map<String,Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
         studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
         studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
-        studentsGradeToFacility = (Double)  reactionEvaluationResult.get("studentsGradeToFacility");
+        studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
         percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
-        teacherGradeToClass = getTeacherGradeToClass(classId,teacherId);
-        trainingGradeToTeacher = getTrainingGradeToTeacher(classId, trainingId,teacherId);
+        teacherGradeToClass = getTeacherGradeToClass(classId, teacherId);
+        trainingGradeToTeacher = getTrainingGradeToTeacher(classId, trainingId, teacherId);
         studentCount = getStudentCount(classStudents);
 
 
-        Map<String,Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
                 studentsGradeToGoals,
                 studentsGradeToFacility,
                 percenetOfFilledReactionEvaluationForms,
@@ -333,15 +347,15 @@ public class TclassService implements ITclassService {
         minQus_ER = (double) FERGradeResult.get("minQus_ER");
         minScore_ER = (double) FERGradeResult.get("minScore_ER");
 
-        Map<String,Object> FETGradeResult= getFETGrade(studentsGradeToTeacher,
-                                                        trainingGradeToTeacher,
-                                                        percenetOfFilledReactionEvaluationForms);
+        Map<String, Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,
+                trainingGradeToTeacher,
+                percenetOfFilledReactionEvaluationForms);
         FETGrade = (double) FETGradeResult.get("FETGrade");
         FETPass = (boolean) FETGradeResult.get("FETPass");
         minScore_ET = (double) FETGradeResult.get("minScore_ET");
         minQus_ET = (double) FETGradeResult.get("minQus_ET");
 
-        Map<String,Object> FECRResult = getFECRGrade(FERGrade);
+        Map<String, Object> FECRResult = getFECRGrade(FERGrade);
 
         FECRGrade = (double) FECRResult.get("FECRGrade");
         FECRPass = (boolean) FECRResult.get("FECRPass");
@@ -373,16 +387,16 @@ public class TclassService implements ITclassService {
         return evaluationResult;
     }
 
-    public Double getStudentsGradeToTeacher(Set<ClassStudent> classStudentList){
-        Map<String,Double> result = calculateStudentsReactionEvaluationResult(classStudentList);
+    public Double getStudentsGradeToTeacher(Set<ClassStudent> classStudentList) {
+        Map<String, Double> result = calculateStudentsReactionEvaluationResult(classStudentList);
         return result.get("studentsGradeToTeacher");
     }
 
-    public Map<String,Double> calculateStudentsReactionEvaluationResult(Set<ClassStudent> classStudents) {
+    public Map<String, Double> calculateStudentsReactionEvaluationResult(Set<ClassStudent> classStudents) {
         double studentsGradeToTeacher_l = 0;
         double studentsGradeToFacility_l = 0;
         double studentsGradeToGoals_l = 0;
-        Map<String,Double> result = new HashMap<>();
+        Map<String, Double> result = new HashMap<>();
         for (ClassStudent classStudent : classStudents) {
             if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
                 Evaluation evaluation = evaluationService.getStudentEvaluationForClass(classStudent.getTclassId(), classStudent.getId());
@@ -413,8 +427,7 @@ public class TclassService implements ITclassService {
                                 facilityTotalGrade += grade * weight;
                                 facilityTotalWeight += weight;
                             }
-                        }
-                        else {//Goals
+                        } else {//Goals
                             goalsTotalGrade += grade * weight;
                             goalsTotalWeight += weight;
                         }
@@ -435,13 +448,13 @@ public class TclassService implements ITclassService {
         if (getNumberOfFilledReactionEvaluationForms(classStudents) != 0)
             studentsGradeToGoals_l /= getNumberOfFilledReactionEvaluationForms(classStudents);
 
-        result.put("studentsGradeToTeacher",studentsGradeToTeacher_l);
-        result.put("studentsGradeToFacility",studentsGradeToFacility_l);
-        result.put("studentsGradeToGoals",studentsGradeToGoals_l);
+        result.put("studentsGradeToTeacher", studentsGradeToTeacher_l);
+        result.put("studentsGradeToFacility", studentsGradeToFacility_l);
+        result.put("studentsGradeToGoals", studentsGradeToGoals_l);
         return result;
     }
 
-    public Double getTeacherGradeToClass(Long classId,Long teacherId) {
+    public Double getTeacherGradeToClass(Long classId, Long teacherId) {
         double result = 0.0;
         Evaluation evaluation = evaluationService.getTeacherEvaluationForClass(teacherId, classId);
         if (evaluation != null) {
@@ -454,8 +467,8 @@ public class TclassService implements ITclassService {
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                     QuestionnaireQuestion questionnaireQuestion = null;
-                    if(question.isPresent())
-                       questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                    if (question.isPresent())
+                        questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                     if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
                         weight = questionnaireQuestion.getWeight();
                     }
@@ -483,7 +496,7 @@ public class TclassService implements ITclassService {
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                     QuestionnaireQuestion questionnaireQuestion = null;
-                    if(question.isPresent())
+                    if (question.isPresent())
                         questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                     if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
                         weight = questionnaireQuestion.getWeight();
@@ -499,12 +512,12 @@ public class TclassService implements ITclassService {
         return result;
     }
 
-    public Map<String,Object> getFERGrade(double studentsGradeToTeacher,
-                                          double studentsGradeToGoals,
-                                          double studentsGradeToFacility,
-                                          double percenetOfFilledReactionEvaluationForms,
-                                          double teacherGradeToClass) {
-        Map<String,Object> result = new HashMap<>();
+    public Map<String, Object> getFERGrade(double studentsGradeToTeacher,
+                                           double studentsGradeToGoals,
+                                           double studentsGradeToFacility,
+                                           double percenetOfFilledReactionEvaluationForms,
+                                           double teacherGradeToClass) {
+        Map<String, Object> result = new HashMap<>();
         boolean FERPass = false;
         double FERGrade = 0.0;
 
@@ -538,16 +551,16 @@ public class TclassService implements ITclassService {
 
         result.put("FERGrade", FERGrade);
         result.put("FERPass", FERPass);
-        result.put("minQus_ER",minQus_ER);
-        result.put("minScore_ER",minScore_ER);
+        result.put("minQus_ER", minQus_ER);
+        result.put("minScore_ER", minScore_ER);
 
         return result;
     }
 
-    public Map<String,Object> getFETGrade(double studentsGradeToTeacher,
-                                          double trainingGradeToTeacher,
-                                          double percenetOfFilledReactionEvaluationForms) {
-        Map<String,Object> result = new HashMap<>();
+    public Map<String, Object> getFETGrade(double studentsGradeToTeacher,
+                                           double trainingGradeToTeacher,
+                                           double percenetOfFilledReactionEvaluationForms) {
+        Map<String, Object> result = new HashMap<>();
         boolean FETPass = false;
         double FETGrade = 0.0;
 
@@ -574,14 +587,14 @@ public class TclassService implements ITclassService {
 
         result.put("FETGrade", FETGrade);
         result.put("FETPass", FETPass);
-        result.put("minScore_ET",minScore_ET);
-        result.put("minQus_ET",minQus_ET);
+        result.put("minScore_ET", minScore_ET);
+        result.put("minQus_ET", minQus_ET);
 
         return result;
     }
 
-    public Map<String,Object> getFECRGrade(double FERGrade) {
-        Map<String,Object> result = new HashMap<>();
+    public Map<String, Object> getFECRGrade(double FERGrade) {
+        Map<String, Object> result = new HashMap<>();
         boolean FECRPass = false;
         double FECRGrade = 0.0;
 
@@ -601,7 +614,7 @@ public class TclassService implements ITclassService {
 
         result.put("FECRGrade", FECRGrade);
         result.put("FECRPass", FECRPass);
-        result.put("minScoreFECR",minScoreFECR);
+        result.put("minScoreFECR", minScoreFECR);
 
         return result;
     }
@@ -708,12 +721,12 @@ public class TclassService implements ITclassService {
 
         int index = 0;
         for (ClassStudent classStudent : tclass.getClassStudents()) {
-            Evaluation evaluation = evaluationService.getBehavioralEvaluationByStudent(classStudent.getId(),classId);
+            Evaluation evaluation = evaluationService.getBehavioralEvaluationByStudent(classStudent.getId(), classId);
             supervisorsGrade[index] = Double.parseDouble("50");
             studentsGrade[index] = getEvaluationGrade(evaluation);
             classStudentsName[index] = classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName();
             index++;
-            if(evaluation != null)
+            if (evaluation != null)
                 numberOfFilledFormsByStudents++;
         }
 
@@ -727,25 +740,25 @@ public class TclassService implements ITclassService {
             supervisorsMeanGrade += aDouble;
         }
 
-        if(numberOfFilledFormsByStudents != 0)
+        if (numberOfFilledFormsByStudents != 0)
             studentsMeanGrade = studentsMeanGrade / numberOfFilledFormsByStudents;
-        if(numberOfFilledFormsBySuperviosers != 0)
+        if (numberOfFilledFormsBySuperviosers != 0)
             supervisorsMeanGrade = supervisorsMeanGrade / numberOfFilledFormsBySuperviosers;
 
         Date todayDate = new Date();
-        Calendar calendar = getGregorianCalendar(Integer.parseInt(tclass.getEndDate().substring(0,4)),Integer.parseInt(tclass.getEndDate().substring(5,7)),Integer.parseInt(tclass.getEndDate().substring(8,10)));
+        Calendar calendar = getGregorianCalendar(Integer.parseInt(tclass.getEndDate().substring(0, 4)), Integer.parseInt(tclass.getEndDate().substring(5, 7)), Integer.parseInt(tclass.getEndDate().substring(8, 10)));
         Date classDate = calendar.getTime();
-        classMonthPassedTime = getdifference(classDate,todayDate)/30;
-        classDayPassedTime = getdifference(classDate,todayDate)%30;
+        classMonthPassedTime = getdifference(classDate, todayDate) / 30;
+        classDayPassedTime = getdifference(classDate, todayDate) % 30;
         classPassedTime += "ماه: " + classMonthPassedTime + "، روز: " + classDayPassedTime;
 
-        double percentOfFilledFormsByStudents = ((double) numberOfFilledFormsByStudents / (double) index )*100;
+        double percentOfFilledFormsByStudents = ((double) numberOfFilledFormsByStudents / (double) index) * 100;
 
-        Map<String,Object> febresult = getFEBGrade(studentsMeanGrade,supervisorsMeanGrade,percentOfFilledFormsByStudents);
+        Map<String, Object> febresult = getFEBGrade(studentsMeanGrade, supervisorsMeanGrade, percentOfFilledFormsByStudents);
         FEBGrade = (double) febresult.get("grade");
         FEBPass = (boolean) febresult.get("pass");
 
-        Map<String,Object> fecbResult = getFECBGrade(FEBGrade,classId,teacherId,classStudents,tclass.getScoringMethod());
+        Map<String, Object> fecbResult = getFECBGrade(FEBGrade, classId, teacherId, classStudents, tclass.getScoringMethod());
         FECBGrade = (double) fecbResult.get("grade");
         FECBPass = (boolean) fecbResult.get("pass");
 
@@ -765,11 +778,11 @@ public class TclassService implements ITclassService {
         return evaluationResult;
     }
 
-    public static int j_days_in_month[] = { 31, 31, 31, 31, 31, 31, 30, 30, 30,
-            30, 30, 29 };
+    public static int j_days_in_month[] = {31, 31, 31, 31, 31, 31, 30, 30, 30,
+            30, 30, 29};
 
-    public static int g_days_in_month[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30,
-            31, 30, 31 };
+    public static int g_days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30,
+            31, 30, 31};
 
     private static int parsBooleanToInt(Boolean sample) {
         if (sample)
@@ -819,8 +832,7 @@ public class TclassService implements ITclassService {
         g_day_no = g_day_no % 146097;
 
         leap = true;
-        if (g_day_no >= 36525) /* 36525 = 365*100 + 100/4 */
-        {
+        if (g_day_no >= 36525) /* 36525 = 365*100 + 100/4 */ {
             g_day_no--;
             gy += 100 * (g_day_no / 36524); /* 36524 = 365*100 + 100/4 - 100/100 */
             g_day_no = g_day_no % 36524;
@@ -849,11 +861,11 @@ public class TclassService implements ITclassService {
         gm = i + 1;
         gd = (int) (g_day_no + 1);
 
-        GregorianCalendar gregorian = new  GregorianCalendar(gy, gm - 1, gd);
+        GregorianCalendar gregorian = new GregorianCalendar(gy, gm - 1, gd);
         return gregorian;
     }
 
-    Double getEvaluationGrade(Evaluation evaluation){
+    Double getEvaluationGrade(Evaluation evaluation) {
         double result = 0.0;
         if (evaluation != null) {
             List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
@@ -865,9 +877,9 @@ public class TclassService implements ITclassService {
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                     QuestionnaireQuestion questionnaireQuestion = null;
-                    if(question.isPresent())
+                    if (question.isPresent())
                         questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                    if (answer.getQuestionSource().getCode().equals("2") && questionnaireQuestion!=null) {
+                    if (answer.getQuestionSource().getCode().equals("2") && questionnaireQuestion != null) {
                         weight = questionnaireQuestion.getWeight();
                     }
                     grade = Double.parseDouble(answer.getAnswer().getValue());
@@ -882,10 +894,10 @@ public class TclassService implements ITclassService {
         return result;
     }
 
-    public Map<String,Object> getFEBGrade(double studentsMeanGrade, double supervisorsMeanGrade, double percentOfFilledFormsByStudents) {
+    public Map<String, Object> getFEBGrade(double studentsMeanGrade, double supervisorsMeanGrade, double percentOfFilledFormsByStudents) {
         double grade = 0.0;
         boolean pass = false;
-        Map<String,Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
 
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEB");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
@@ -908,35 +920,35 @@ public class TclassService implements ITclassService {
         if (grade >= minScore_EB && percentOfFilledFormsByStudents >= minQus_EB)
             pass = true;
 
-        result.put("grade",grade);
-        result.put("pass",pass);
+        result.put("grade", grade);
+        result.put("pass", pass);
         return result;
     }
 
 
-    public Map<String,Object> getFECBGrade(double FEBGrade_l, Long classId, Long teacherId, Set<ClassStudent> classStudents, String scoringMethod) {
+    public Map<String, Object> getFECBGrade(double FEBGrade_l, Long classId, Long teacherId, Set<ClassStudent> classStudents, String scoringMethod) {
         double grade = 0.0;
         boolean pass = false;
-        Map<String,Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         double FEBGrade = FEBGrade_l;
         double FERGrade = 0.0;
         double FELGrade = 0.0;
 
         calculateStudentsReactionEvaluationResult(classStudents);
-        Map<String,Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
         double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
         double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
-        double studentsGradeToFacility = (Double)  reactionEvaluationResult.get("studentsGradeToFacility");
+        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
         double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
-        double teacherGradeToClass = getTeacherGradeToClass(classId,teacherId);
-        Map<String,Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+        double teacherGradeToClass = getTeacherGradeToClass(classId, teacherId);
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
                 studentsGradeToGoals,
                 studentsGradeToFacility,
                 percenetOfFilledReactionEvaluationForms,
                 teacherGradeToClass);
         FERGrade = (double) FERGradeResult.get("FERGrade");
 
-        FELGrade = Math.abs(evaluationAnalysistLearningService.getStudents(classId,scoringMethod)[3]);
+        FELGrade = Math.abs(evaluationAnalysistLearningService.getStudents(classId, scoringMethod)[3]);
 
         TotalResponse<ParameterValueDTO.Info> parameters1 = parameterService.getByCode("FEC_B");
         List<ParameterValueDTO.Info> parameterValues1 = parameters1.getResponse().getData();
@@ -954,18 +966,18 @@ public class TclassService implements ITclassService {
 
         TotalResponse<ParameterValueDTO.Info> parameters2 = parameterService.getByCode("FEC_R");
         List<ParameterValueDTO.Info> parameterValues2 = parameters2.getResponse().getData();
-       double minScoreFECR = 0.0;
+        double minScoreFECR = 0.0;
         for (ParameterValueDTO.Info parameterValue : parameterValues2) {
             if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
                 minScoreFECR = Double.parseDouble(parameterValue.getValue());
         }
-        grade = FECBZ1*FERGrade + FECBZ2*FELGrade + FECBZ3*FEBGrade;
+        grade = FECBZ1 * FERGrade + FECBZ2 * FELGrade + FECBZ3 * FEBGrade;
         grade /= 100;
         if (grade >= minScoreFECR)
             pass = true;
 
-        result.put("grade",grade);
-        result.put("pass",pass);
+        result.put("grade", grade);
+        result.put("pass", pass);
         return result;
     }
 
@@ -987,19 +999,19 @@ public class TclassService implements ITclassService {
             for (int i = 0; i < personnelClassInfoList.size(); i++) {
                 Object[] classInfo = (Object[]) personnelClassInfoList.get(i);
                 personnelClassInfo.add(new TclassDTO.PersonnelClassInfo(
-                        Long.parseLong(classInfo[0].toString()),
-                        classInfo[1].toString(),
-                        classInfo[2].toString(),
-                        Long.parseLong(classInfo[3].toString()),
-                        classInfo[4].toString(),
-                        classInfo[5].toString(),
-                        Long.parseLong(classInfo[6].toString()),
-                        classInfo[7].toString(),
-                        Long.parseLong(classInfo[8].toString()),
-                        classInfo[9].toString(),
-                        classInfo[10].toString(),
-                        Long.parseLong(classInfo[11].toString()),
-                        classInfo[12].toString()));
+                        (classInfo[0] != null ? Long.parseLong(classInfo[0].toString()) : null),
+                        (classInfo[1] != null ? classInfo[1].toString() : null),
+                        (classInfo[2] != null ? classInfo[2].toString() : null),
+                        (classInfo[3] != null ? Long.parseLong(classInfo[3].toString()) : null),
+                        (classInfo[4] != null ? classInfo[4].toString() : null),
+                        (classInfo[5] != null ? classInfo[5].toString() : null),
+                        (classInfo[6] != null ? Long.parseLong(classInfo[6].toString()) : null),
+                        (classInfo[7] != null ? classInfo[7].toString() : null),
+                        (classInfo[8] != null ? Long.parseLong(classInfo[8].toString()) : null),
+                        (classInfo[9] != null ? classInfo[9].toString() : null),
+                        (classInfo[10] != null ? classInfo[10].toString() : null),
+                        (classInfo[11] != null ? Long.parseLong(classInfo[11].toString()) : null),
+                        (classInfo[12] != null ? classInfo[12].toString() : null)));
             }
         }
 
@@ -1013,21 +1025,21 @@ public class TclassService implements ITclassService {
     public SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-            list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
-            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
-            if (request.getCriteria() != null) {
-                if (request.getCriteria().getCriteria() != null)
-                    request.getCriteria().getCriteria().add(criteriaRq);
-                else
-                    request.getCriteria().setCriteria(list);
-            } else
-                request.setCriteria(criteriaRq);
+        list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else
+                request.getCriteria().setCriteria(list);
+        } else
+            request.setCriteria(criteriaRq);
 
         SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TeachingHistory.class));
         for (TclassDTO.TeachingHistory aClass : response.getList()) {
             Tclass tclass = getTClass(aClass.getId());
             Set<ClassStudent> classStudents = tclass.getClassStudents();
-            Map<String,Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+            Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
             double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
             aClass.setEvaluationGrade(studentsGradeToTeacher);
         }
@@ -1056,18 +1068,18 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public Double getClassReactionEvaluationGrade(Long classId, Long teacherId){
+    public Double getClassReactionEvaluationGrade(Long classId, Long teacherId) {
         Tclass tclass = getTClass(classId);
         Set<ClassStudent> classStudents = tclass.getClassStudents();
         calculateStudentsReactionEvaluationResult(classStudents);
 
-        Map<String,Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
         double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
         double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
-        double studentsGradeToFacility = (Double)  reactionEvaluationResult.get("studentsGradeToFacility");
+        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
         double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
-        double teacherGradeToClass = getTeacherGradeToClass(classId,teacherId);
-        Map<String,Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+        double teacherGradeToClass = getTeacherGradeToClass(classId, teacherId);
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
                 studentsGradeToGoals,
                 studentsGradeToFacility,
                 percenetOfFilledReactionEvaluationForms,
@@ -1077,10 +1089,18 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-     public List<TclassDTO.Info> PersonnelClass(Long id) {
+    public List<TclassDTO.Info> PersonnelClass(Long id) {
 
-        List<Tclass> tclass= tclassDAO.findTclassesByCourseId(id);
+        List<Tclass> tclass = tclassDAO.findTclassesByCourseId(id);
         return modelMapper.map(tclass, new TypeToken<List<TclassDTO.Info>>() {
         }.getType());
     }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.TClassReport> reportSearch(SearchDTO.SearchRq request) {
+        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TClassReport.class));
+    }
+
 }

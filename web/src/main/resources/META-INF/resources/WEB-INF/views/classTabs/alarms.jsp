@@ -17,11 +17,26 @@
         var RestDataSource_alarm = isc.TrDS.create({
             fields:
                 [
+                    {name: "classId", hidden: true},
+                    {name: "sessionId", hidden: true},
+                    {name: "teacherId", hidden: true},
+                    {name: "studentId", hidden: true},
+                    {name: "instituteId", hidden: true},
+                    {name: "trainingPlaceId", hidden: true},
+                    {name: "reservationId", hidden: true},
                     {name: "targetRecordId", autoFitWidth: true},
+                    {name: "alarmTypeTitleFa", width: 140},
+                    {name: "alarmTypeTitleEn", hidden: true},
                     {name: "tabName", autoFitWidth: true},
                     {name: "pageAddress", autoFitWidth: true},
-                    {name: "alarmType", width: 140},
-                    {name: "alarm"}
+                    {name: "alarm"},
+                    {name: "detailRecordId", hidden: true},
+                    {name: "sortField", hidden: true},
+                    {name: "classIdConflict", hidden: true},
+                    {name: "sessionIdConflict", hidden: true},
+                    {name: "instituteIdConflict", hidden: true},
+                    {name: "trainingPlaceIdConflict", hidden: true},
+                    {name: "reservationIdConflict", hidden: true}
                 ]
         });
 
@@ -63,7 +78,7 @@
                     hidden: true
                 },
                 {
-                    name: "alarmType",
+                    name: "alarmTypeTitleFa",
                     title: "<spring:message code="alarm.type"/>",
                     align: "center",
                     filterOperator: "iContains"

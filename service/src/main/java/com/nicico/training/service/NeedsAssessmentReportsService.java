@@ -6,8 +6,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class NeedsAssessmentReportsService {
     private final IPersonnelService personnelService;
     private final ParameterValueService parameterValueService;
     private final ICourseService courseService;
+    private final ISkillService skillService;
 
     @Transactional(readOnly = true)
 //    @Override
@@ -107,6 +110,70 @@ public class NeedsAssessmentReportsService {
         return withoutDuplicate;
     }
 
+    //    @Transactional(readOnly = true)
+//    @Override
+    private MultiValueMap getNAPostsGByPriority(List<NeedsAssessment> needsAssessments) {
+        MultiValueMap postCodes = new MultiValueMap();
+        needsAssessments.forEach(needsAssessment -> {
+            switch (needsAssessment.getObjectType()) {
+                case "Post":
+                    try {
+                        if (!postCodes.containsValue(((Post) needsAssessment.getObject())))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), ((Post) needsAssessment.getObject()));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        return;
+                    }
+                    break;
+                case "PostGroup":
+                    ((PostGroup) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                    });
+                    break;
+                case "Job":
+                    ((Job) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                    });
+                    break;
+                case "JobGroup":
+                    ((JobGroup) needsAssessment.getObject()).getJobSet().forEach(job -> job.getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                    }));
+                    break;
+                case "PostGrade":
+                    ((PostGrade) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                    });
+                    break;
+                case "PostGradeGroup":
+                    ((PostGradeGroup) needsAssessment.getObject()).getPostGradeSet().forEach(postGrade -> postGrade.getPostSet().forEach(post -> {
+                        if (!postCodes.containsValue(post))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                    }));
+                    break;
+            }
+        });
+        return postCodes;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<PostDTO.Info> getSkillNAPostList(SearchDTO.SearchRq request, Long skillId) {
+        Skill skill = skillService.getSkill(skillId);
+        List<NeedsAssessment> needsAssessments = new ArrayList<>();
+        needsAssessments.addAll(skill.getNeedsAssessments());
+        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) postsGByPriority.values().size());
+        searchRs.setList(modelMapper.map(postsGByPriority.values(), new TypeToken<List<PostDTO.Info>>() {
+        }.getType()));
+        return searchRs;
+    }
+
     @Transactional(readOnly = true)
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
@@ -122,55 +189,15 @@ public class NeedsAssessmentReportsService {
         Comparator<NeedsAssessment> comparator = Comparator.comparing(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType()));
         comparator = comparator.thenComparing(NeedsAssessment::getNeedsAssessmentPriorityId);
         needsAssessments.sort(comparator);
-        MultiValueMap postCodes = new MultiValueMap();
-        needsAssessments.forEach(needsAssessment -> {
-            switch (needsAssessment.getObjectType()) {
-                case "Post":
-                    try {
-                        if (!postCodes.containsValue(((Post) needsAssessment.getObject()).getCode()))
-                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), ((Post) needsAssessment.getObject()).getCode());
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        return;
-                    }
-                    break;
-                case "PostGroup":
-                    ((PostGroup) needsAssessment.getObject()).getPostSet().forEach(post -> {
-                        if (!postCodes.containsValue(post.getCode()))
-                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
-                    });
-                    break;
-                case "Job":
-                    ((Job) needsAssessment.getObject()).getPostSet().forEach(post -> {
-                        if (!postCodes.containsValue(post.getCode()))
-                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
-                    });
-                    break;
-                case "JobGroup":
-                    ((JobGroup) needsAssessment.getObject()).getJobSet().forEach(job -> job.getPostSet().forEach(post -> {
-                        if (!postCodes.containsValue(post.getCode()))
-                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
-                    }));
-                    break;
-                case "PostGrade":
-                    ((PostGrade) needsAssessment.getObject()).getPostSet().forEach(post -> {
-                        if (!postCodes.containsValue(post.getCode()))
-                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
-                    });
-                    break;
-                case "PostGradeGroup":
-                    ((PostGradeGroup) needsAssessment.getObject()).getPostGradeSet().forEach(postGrade -> postGrade.getPostSet().forEach(post -> {
-                        if (!postCodes.containsValue(post.getCode()))
-                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post.getCode());
-                    }));
-                    break;
-            }
-        });
-        postCodes.forEach((priority, pCodes) -> {
+        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
+        postsGByPriority.forEach((priority, postList) -> {
             SearchDTO.CriteriaRq personnelCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             if (request.getCriteria() != null)
                 personnelCriteria.getCriteria().add(request.getCriteria());
-            personnelCriteria.getCriteria().add(makeNewCriteria("postCode", pCodes, EOperator.inSet, null));
+            for (int i = 0; i < ((List<Post>) postList).size(); i += 900) {
+                int endIndex = i + 900 >= ((List<Post>) postList).size() ? ((List<Post>) postList).size() - 1 : i + 900;
+                personnelCriteria.getCriteria().add(makeNewCriteria("postCode", ((List<Post>) postList).subList(i, endIndex).stream().map(Post::getCode).collect(Collectors.toList()), EOperator.inSet, null));
+            }
             List<PersonnelDTO.Info> personnelInfoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(personnelCriteria).setDistinct(true)).getList();
             NeedsAssessmentReportsDTO.CourseNAS courseNAS = result.stream().filter(courseNAS1 -> courseNAS1.getNeedsAssessmentPriorityId().equals((Long) priority)).findFirst().orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             courseNAS.setTotalPersonnelCount(personnelInfoList.size());

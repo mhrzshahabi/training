@@ -52,7 +52,6 @@
             {name: "hduration"},
             {name: "classStatus"},
             {name: "statusRegister"},
-            {name: "scoresState"},
         ],
     });
 
@@ -95,9 +94,8 @@
             },
              {name: "course.evaluation",title:"نیازسنجی/غیر نیازسنجی"},
         ],
-        click: function (record, rowNum, colNum) {
-          
-
+        cellClick:function (record) {
+            ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:record.course.code})
         },
 
         headerSpans: [
@@ -105,8 +103,6 @@
                 fields: ["course.code", "course.titleFa","course.evaluation"],
                 title: "دوره های ترم جاری"
             }],
-
-
         showFilterEditor: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
@@ -166,6 +162,10 @@
                 fields: ["course.code", "course.titleFa", "term.startDate", "term.endDate", "teacher"],
                 title: "کلاس های ترم جاری"
             }],
+        click:function()
+         {
+
+        },
               showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -175,8 +175,14 @@
     });
 
     var ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1 = isc.TrLG.create({
+        ID: "ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1",
         dataSource: RestDataSource_Class_CurrentTerm,
-
+        allowAdvancedCriteria: false,
+        alternateRecordStyles:true,
+        //filterLocalData:true,
+        //filterLocally:true,
+        sortField: 1, // sort by countryName
+        dataPageSize: 50,
         headerHeight: 65,
         contextMenu: Menu_ListGrid_CurrentTerm,
         fields: [
@@ -200,7 +206,7 @@
                 autoFitWidth: true,
                 valueMap: {"1": "ثبت نام شده", "0": "ثبت نام نشده"}
             },
-            {name: "scoresState", title: "وضعیت قبولی", autoFitWidth: true},
+
         ],
         headerSpans: [
             {
@@ -209,6 +215,11 @@
             }],
         recordDoubleClick: function () {
         },
+        getCellCSSText: function (record, rowNum, colNum) {
+            if (record.statusRegister =="1") {
+               return "background-color : #b7dee8";
+            }
+            },
         dataArrived: function () {
             wait_Variable.close()
         },

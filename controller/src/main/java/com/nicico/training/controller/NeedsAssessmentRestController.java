@@ -16,13 +16,13 @@ import com.nicico.training.service.NeedsAssessmentReportsService;
 import com.nicico.training.service.NeedsAssessmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -87,4 +87,67 @@ public class NeedsAssessmentRestController {
         }
     }
 
+    @Loggable
+    @GetMapping("/iscTree")
+    public ResponseEntity<TotalResponse<NeedsAssessmentDTO.Tree>> iscTree(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+
+        TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = (TotalResponse<NeedsAssessmentDTO.Tree>)(Object)needsAssessmentService.search(nicicoCriteria);
+        treeTotalResponse.getResponse().setData(modelMapper.map(treeTotalResponse.getResponse().getData(),new TypeToken<List<NeedsAssessmentDTO.Tree>>() {}.getType()));
+
+
+        findGenerations(treeTotalResponse.getResponse().getData());
+
+        Set<NeedsAssessmentDTO.Tree> ancestors = new HashSet<NeedsAssessmentDTO.Tree>();
+
+        int index = -1;
+        for(NeedsAssessmentDTO.Tree t : treeTotalResponse.getResponse().getData()){
+            index = findAncestors(ancestors,t,0,0,index);
+        }
+
+        List<NeedsAssessmentDTO.Tree> generations = new ArrayList<>(ancestors);
+
+        treeTotalResponse.getResponse().setData(generations);
+
+        return new ResponseEntity<>(treeTotalResponse, HttpStatus.OK);
+    }
+
+    private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree){
+        Set<NeedsAssessmentDTO.Tree> ancestors = new HashSet<>();
+        for(NeedsAssessmentDTO.Tree node : tree){
+            node.setCompetenceTypeTitle(node.getCompetence().getCompetenceType().getTitle());
+            node.setCompetenceNameTitle(node.getCompetence().getTitle());
+            node.setNeedsAssessmentDomainTitle(node.getNeedsAssessmentDomain().getTitle());
+            node.setNeedsAssessmentPriorityTitle(node.getNeedsAssessmentPriority().getTitle());
+            ancestors.add(node);
+        }
+        return new ArrayList<NeedsAssessmentDTO.Tree>(ancestors);
+    }
+
+    private int findAncestors(Set<NeedsAssessmentDTO.Tree> ancestors,NeedsAssessmentDTO.Tree child, int no, int parent, int index){
+        String[] keys = {"competenceTypeTitle", "needsAssessmentDomainTitle", "needsAssessmentPriorityTitle", "competenceNameTitle"};
+        int i = index;
+        if(keys.length > no)
+        {
+            String property = keys[no];
+            NeedsAssessmentDTO.Tree father = new NeedsAssessmentDTO.Tree();
+            father.setProperty(property,child.getProperty(property));
+            father.setParentId(new Long(parent));
+            NeedsAssessmentDTO.Tree node =  ancestors.stream().filter(n -> n.equvalentOf(father,property)).findFirst().orElse(null);
+            if(node == null){
+                father.setId(new Long(i));
+                ancestors.add(father);
+                parent = i;
+                --i;
+            }else{
+                parent = node.getId().intValue();
+            }
+            child.setProperty(property,"");
+            i = findAncestors(ancestors,child,++no,parent,i);
+        }else {
+            child.setParentId(new Long(parent));
+            ancestors.add(child);
+        }
+        return i;
+    }
 }

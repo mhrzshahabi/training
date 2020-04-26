@@ -223,12 +223,7 @@ public class PersonnelService implements IPersonnelService {
     @Override
     public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
         Optional<Personnel> optPersonnel = personnelDAO.findById(personnelNo);
-        if (optPersonnel.isPresent())
-            return converter.apply(optPersonnel.get());
-        Optional<PersonnelRegistered> optPRegistered = personnelRegisteredDAO.findOneByPersonnelNo(personnelNo);
-        if (optPRegistered.isPresent())
-            return converter.apply(optPRegistered.get());
-        return null;
+        return optPersonnel.map(converter).orElse(personnelRegisteredDAO.findOneByPersonnelNo(personnelNo).map(converter).orElse(null));
     }
 
 }

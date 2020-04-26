@@ -26,6 +26,7 @@ public class TeacherDTO {
     private String personnelCode;
     private Boolean enableStatus;
     private Boolean inBlackList;
+    private String blackListDescription;
     private Boolean personnelStatus;
     private String economicalCode;
     private String economicalRecordNumber;
@@ -46,6 +47,15 @@ public class TeacherDTO {
         private CategoryDTO.CategoryInfoTuple majorCategory;
         private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
         private Integer version;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherInformation")
+    public static class TeacherInformation{
+        private PersonalInfoDTO.PersonalInfoCustom personality;
     }
 
     @Getter

@@ -7,12 +7,15 @@ package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Getter
@@ -62,6 +65,63 @@ public class NeedsAssessmentDTO implements Serializable {
         private String mainWorkflowStatus;
         private Integer mainWorkflowStatusCode;
 //        private E object;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentDTO - Tree")
+    public static class Tree extends Info {
+        private Long parentId;
+        private String competenceTypeTitle;
+        private String competenceNameTitle;
+        private String needsAssessmentDomainTitle;
+        private String needsAssessmentPriorityTitle;
+
+        public boolean equvalentOf(NeedsAssessmentDTO.Tree dto,String property){
+            if(this.getParentId().equals(dto.getParentId()) && this.getProperty(property).equals(dto.getProperty(property)))
+                return true;
+            else
+                return false;
+        }
+
+        public void setProperty(String property, String value){
+            try {
+                Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
+                field.set(this,value);
+            } catch (Exception e) {
+                System.out.println("failed");
+            }
+        }
+
+        public String getProperty(String property){
+            String result = null;
+            try {
+//                result = (String)PropertyUtils.getProperty(this,property);
+                Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
+                result = field.get(this).toString();
+            } catch (Exception e) {
+                System.out.println("failed");
+            }
+            return result == null ? "" : result;
+        }
+
+        @Override
+        public int hashCode(){
+            return new HashCodeBuilder(17,31).
+                    append(competenceNameTitle).
+                    append(competenceTypeTitle).
+                    append(needsAssessmentDomainTitle).
+                    append(needsAssessmentPriorityTitle).
+                    toHashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj){
+            if(!(obj instanceof NeedsAssessmentDTO))
+                return false;
+            return (this.getId().equals(((NeedsAssessmentDTO.Tree)obj).getId()));
+        }
     }
 
     @Getter

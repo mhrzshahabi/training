@@ -18,7 +18,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     };
     var skillData = [];
     var competenceData = [];
+
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
+        // autoCacheAllData:true,
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -670,6 +672,37 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     //--------------------------------------------------------------------
 
+    var moreInfoTree = isc.TreeGrid.create({
+        ID: "needesAssessmentTree",
+        data:[],
+        fields: [
+            {name: "competenceTypeTitle", title: "<spring:message code="type"/>"},
+            {name: "needsAssessmentDomainTitle", title: "<spring:message code="domain"/>"},
+            {name: "needsAssessmentPriorityTitle", title: "<spring:message code="priority"/>"},
+            {name: "competenceNameTitle",title: "<spring:message code="competence.title"/>"},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>",width:"40%"},
+
+        ],
+        width: "100%",
+        height: "80%",
+        autoDraw: false,
+        showOpenIcons:false,
+        showDropIcons:false,
+        showSelectedIcons:false,
+        showConnectors: true,
+        baseStyle: "noBorderCell",
+        dataProperties:{
+        dataArrived:function (parentNode) {
+            this.openAll();
+        },
+        changed:function () {
+            console.log("open");
+        },
+    }
+    });
+
+    //--------------------------------------------------------------------
+
     var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
         // width: "25%",
         // wrap: true,
@@ -890,7 +923,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         autoSize: false,
         items: [
             isc.TrHLayout.create({
-                ID:"printContainer",
+                ID: "printContainer",
                 members: [
                     isc.TabSet.create({
                         ID: "tabSetClass",
@@ -933,6 +966,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                 title: "شناسنامه شغل",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
                             },
+                            {
+                                ID: "classInfoTab",
+                                title: "درخت اطلاعات",
+                                pane: moreInfoTree
+                            },
                         ],
                         tabSelected: function (tabNum, tabPane, ID, tab, name) {
 
@@ -941,20 +979,41 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 ]
             })
         ],
-        show(){
+        show() {
             let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
             Label_Title_JspNeedsAssessment.setContents(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
             // this.setTitle(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
             let advancedCriteria = {
-                _constructor:"AdvancedCriteria",
-                operator:"and",
-                criteria:[
-                    { fieldName:"objectId", operator:"equals", value:rec.objectId },
-                    { fieldName:"objectType", operator:"equals", value:rec.objectType }
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {fieldName: "objectId", operator: "equals", value: rec.objectId},
+                    {fieldName: "objectType", operator: "equals", value: rec.objectType}
                 ]
             };
+            let criteria = '{"fieldName":"objectId","operator":"equals","value":"' + rec.objectId + '"},' +
+                '{"fieldName":"objectType","operator":"equals","value":"' + rec.objectType + '"}';
+
             ListGrid_MoreInformation_JspNeedAssessment.invalidateCache();
             ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
+
+            var url = needsAssessmentUrl + "/iscTree?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+            isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+                if (resp.httpResponseCode != 200) {
+                    return flase;
+                } else {
+                    var Treedata = isc.Tree.create({
+                        modelType: "parent",
+                        nameProperty: "Name",
+                        idField: "id",
+                        parentIdField: "parentId",
+                        data: JSON.parse(resp.data).response.data
+                    });
+                    moreInfoTree.setData(Treedata);
+                    moreInfoTree.getData().openAll();
+                }
+            }));
+
             this.Super("show", arguments)
         }
     });
@@ -1145,26 +1204,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         }));
     }
 
-    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
-        // var advancedCriteria = LG.getCriteria();
-        var criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "fileName", type: "hidden"},
-                    {name: "params", type: "hidden"}
-                ]
-        });
-        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        criteriaForm.setValue("fileName", fileName);
-        criteriaForm.setValue("params", JSON.stringify(params));
-        criteriaForm.show();
-        criteriaForm.submitForm();
-    }
+
 
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
@@ -1375,5 +1415,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
 
+    function tree(){
 
+    }
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

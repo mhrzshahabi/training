@@ -56,9 +56,19 @@
         fetchDataURL: educationLevelUrl + "iscList"
     });
 
+    var RestDataSource_Education_Level_ByID_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationLevelUrl + "spec-list-by-id"
+    });
+
     var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
         fetchDataURL: educationMajorUrl + "spec-list"
+    });
+
+    var RestDataSource_Education_Major_ByID_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationMajorUrl + "spec-list-by-id"
     });
 
     var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
@@ -180,7 +190,7 @@
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
                 name: "teacherCode",
-                title: "<spring:message code='code'/>",
+                title: "<spring:message code='national.code'/>",
                 align: "center"
             },
             {
@@ -202,7 +212,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                editorType: "ComboBoxItem",
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
@@ -212,7 +222,7 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                editorType: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
@@ -226,7 +236,7 @@
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
                 },
-                editorType: "SelectItem",
+                editorType: "ComboBoxItem",
                 displayField: "titleFa",
                 valueField: "titleFa",
                 filterOperator: "equals",
@@ -239,7 +249,7 @@
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
                 },
-                editorType: "SelectItem",
+                editorType: "ComboBoxItem",
                 displayField: "titleFa",
                 valueField: "titleFa",
                 filterOperator: "equals",
@@ -357,7 +367,7 @@
             },
             {
                 ID: "teachingHistory",
-                title: "<spring:message code='teachingHistory'/>",
+                title: "سوابق تدریس خارجی",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teachingHistory-tab"})
             },
             {

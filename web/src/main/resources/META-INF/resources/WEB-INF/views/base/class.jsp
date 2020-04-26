@@ -72,8 +72,7 @@
             {name: "workflowEndingStatusCode"},
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"}
-        ],
-        fetchDataURL: classUrl + "spec-list"
+        ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
         fields: [
@@ -255,7 +254,7 @@
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         // styleName: 'expandList-tapBar',
         // cellHeight: 43,
-        autoFetchData: true,
+        autoFetchData: false,
         // alternateRecordStyles: true,
         // canExpandRecords: true,
         // canExpandMultipleRecords: false,
@@ -273,6 +272,9 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
+            if(record.classStatus == "3")
+            {TabSet_Class.enableTab("classScoresTab")}
+            else{TabSet_Class.disableTab("classScoresTab");}
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         doubleClick: function () {
@@ -422,7 +424,7 @@
         titleAlign: "left",
         numCols: 10,
         itemHoverWidth: "20%",
-        colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%", "7%", "12%"],
+        colWidths: ["5%", "18%", "5%", "11%", "5%", "5%", "6%", "8%", "7%", "8%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
@@ -519,7 +521,10 @@
                 textAlign: "center",
                 required: true,
                 title: "<spring:message code='class.title'/>:",
-                wrapTitle: true
+                wrapTitle: true,
+                changed: function(_1,_2,_3){
+                    convertEn2Fa(_1,_2,_3,[]);
+                }
             },
             {
                 name: "teachingType",
@@ -708,7 +713,24 @@
             {
                 name: "supervisor",
                 colSpan: 3,
+                required:true,
                 title: "<spring:message code="supervisor"/>:",
+                type: "selectItem",
+                textAlign: "center",
+                valueMap: {
+                    1: "آقای دکتر سعیدی",
+                    2: "خانم شاکری",
+                    3: "خانم اسماعیلی",
+                    4: "خانم احمدی",
+                }
+// textBoxStyle:"textItemLite"
+            },
+            {
+                name: "planner",
+                colSpan: 1,
+                required:true,
+                wrapTitle: false,
+                title: "<spring:message code="planner"/>:",
                 type: "selectItem",
                 textAlign: "center",
                 valueMap: {
@@ -734,9 +756,20 @@
 // textBoxStyle: "textItemLite"
             },
             {
+                name: "group",
+                title: "<spring:message code="group"/>:",
+                // required: true,
+                colSpan: 1,
+                readOnlyHover: "به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
+                canEdit: false,
+                textAlign: "center",
+                // type: "staticText",
+                // textBoxStyle: "textItemLite"
+            },
+            {
                 name: "organizerId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
 // width:"250",
-                colSpan: 3,
+                colSpan: 1,
                 pickListWidth: 500,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
@@ -761,49 +794,11 @@
                 }
             },
             {
-                ID: "classTypeStatus",
-                name: "classStatus",
-                colSpan: 1,
-                rowSpan: 1,
-                title: "<spring:message code="class.status"/>:",
-                wrapTitle: true,
-                type: "radioGroup",
-                vertical: false,
-                fillHorizontalSpace: true,
-                defaultValue: "1",
-// endRow:true,
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                },
-                change: function (form, item, value, oldValue) {
-
-
-                    if (classMethod.localeCompare("PUT") === 0 && value === "3")
-                        checkEndingClass(oldValue);
-                    else if (classMethod.localeCompare("POST") === 0 && value === "3")
-                        return false;
-
-                }
-            },
-            {
-                name: "group",
-                title: "<spring:message code="group"/>:",
-                // required: true,
-                colSpan: 1,
-                readOnlyHover: "به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
-                canEdit: false,
-                textAlign: "center",
-                // type: "staticText",
-                // textBoxStyle: "textItemLite"
-            },
-            {
                 name: "instituteId",
                 editorType: "TrComboAutoRefresh",
                 title: "<spring:message code="training.place"/>:",
 // width:"250",
-                colSpan: 4,
+                colSpan: 1,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
 // addUnknownValues:false,
@@ -836,7 +831,7 @@
                 autoFetchData: false,
                 multiple: true,
                 pickListWidth: 250,
-                colSpan: 1,
+                colSpan: 2,
                 showTitle: false,
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
                 displayField: "titleFa",
@@ -864,6 +859,7 @@
 // return {category:category};
                 }
             },
+
             {
                 name: "scoringMethod",
                 colSpan: 1,
@@ -935,18 +931,34 @@
                 textAlign: "center",
                 required: true,
             },
+
             {
-                name: "acceptancelimit_a",
-                colSpan: 2,
-                required: true,
-                hidden: true,
-                textAlign: "center",
-                title: "حد نمره قبولی",
+                ID: "classTypeStatus",
+                name: "classStatus",
+                colSpan: 1,
+                rowSpan: 1,
+                title: "<spring:message code="class.status"/>:",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+// endRow:true,
                 valueMap: {
-                    "1001": "ضعیف",
-                    "1002": "متوسط",
-                    "1003": "خوب",
-                    "1004": "خيلي خوب",
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                },
+                change: function (form, item, value, oldValue) {
+
+
+                    if (classMethod.localeCompare("PUT") === 0 && value === "3")
+                        checkEndingClass(oldValue);
+                    else if(classMethod.localeCompare("PUT") === 0 && value === "2")
+                        hasClassStarted(oldValue);
+                    else if (classMethod.localeCompare("POST") === 0 && (value === "3" || value ==="2"))
+                        return false;
+
                 }
             },
             {
@@ -967,6 +979,20 @@
                     "10": "10",
                     "11": "11",
                     "12": "12"
+                }
+            },
+            {
+                name: "acceptancelimit_a",
+                colSpan: 2,
+                required: true,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap: {
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
                 }
             },
             {
@@ -1251,7 +1277,7 @@
                 title: "8-10",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+               // defaultValue: true
             },
             {
                 name: "second",
@@ -1259,7 +1285,7 @@
                 title: "10-12",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "third",
@@ -1267,7 +1293,7 @@
                 title: "14-16",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+             //   defaultValue: true
             },
             {
                 name: "fourth",
@@ -1275,7 +1301,8 @@
                 title: "12-14",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                disabled: true
+                //disabled: true
+               // defaultValue: true
             },
             {
                 name: "fifth",
@@ -1283,7 +1310,8 @@
                 title: "16-18",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                disabled: true
+               // defaultValue: true
+               // disabled: true
             },
 
             {
@@ -1296,7 +1324,7 @@
                 title: "شنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "sunday",
@@ -1304,7 +1332,7 @@
                 title: "یکشنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "monday",
@@ -1312,7 +1340,7 @@
                 title: "دوشنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+              //  defaultValue: true
             },
             {
                 name: "tuesday",
@@ -1321,7 +1349,7 @@
                 titleOrientation: "top",
                 labelAsTitle: true,
                 endRow: true,
-                defaultValue: true
+             //   defaultValue: true
             },
             {
                 name: "wednesday",
@@ -1329,7 +1357,7 @@
                 title: "چهارشنبه",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                defaultValue: true
+             //   defaultValue: true
             },
             {name: "thursday", type: "checkbox", title: "پنجشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "friday", type: "checkbox", title: "جمعه", titleOrientation: "top", labelAsTitle: true},
@@ -1907,6 +1935,70 @@
         }
     });
 
+    var RestDataSource_Term_Filter = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ],
+        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55",
+        autoFetchData: true
+    });
+
+    var DynamicForm_Term_Filter = isc.DynamicForm.create({
+        width: "450",
+        height: "100%",
+        wrapItemTitles: true,
+        numCols: 2,
+        colWidths: ["10%", "90%"],
+        align: "center",
+        titleAlign: "left",
+        fields: [
+            {
+                name: "termFilter",
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_Filter,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                defaultToFirstOption: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_classes_by_term(value);
+                },
+                dataArrived:function (startRow, endRow, data) {
+                    if(data.allRows[0].id !== undefined)
+                    {
+                        load_classes_by_term(data.allRows[0].id);
+                    }
+                }
+            }
+        ]
+    });
+
+
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -1916,6 +2008,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
+            DynamicForm_Term_Filter,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1987,7 +2080,13 @@
                 ID: "classPreCourseTestQuestionsTab",
                 title: "<spring:message code='class.preCourseTestQuestion'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
+            },
+            {
+                ID: "teacherInformationTab",
+                title: "<spring:message code='teacher.information'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
             }
+
 
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -2300,8 +2399,11 @@
                     break;
                 }
                 case "classScoresTab": {
+
                     if (typeof loadPage_Scores !== "undefined")
+                    {
                         loadPage_Scores();
+                    }
                     break;
                 }
                 case "classAttendanceTab": {
@@ -2312,6 +2414,11 @@
                 case "classAlarmsTab": {
                     if (typeof loadPage_alarm !== "undefined")
                         loadPage_alarm();
+                    break;
+                }
+                case "teacherInformationTab": {
+                    if (typeof  loadPage_teacherInformation !== "undefined")
+                        loadPage_teacherInformation();
                     break;
                 }
                 case "classPreCourseTestQuestionsTab": {
@@ -2407,6 +2514,19 @@
             }));
     }
 
+    function hasClassStarted(oldValue){
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        if (record !== null)
+
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasClassStarted/" + record.id, "GET", null, function (resp) {
+
+                if (resp.data !== "") {
+                    if(resp.data == "false")
+                        classTypeStatus.setValue(oldValue);
+                }
+
+            }));
+    }
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendEndingClassToWorkflow() {
 
@@ -2565,3 +2685,20 @@
 
         }));
     }
+
+    ////*****load classes by term*****
+    function load_classes_by_term(value) {
+        if(value !== undefined) {
+            var criteria = '{"fieldName":"term.id","operator":"equals","value":' + value + '}';
+            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+            ListGrid_Class_JspClass.invalidateCache();
+            ListGrid_Class_JspClass.fetchData();
+        }
+        else
+        {
+            createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
+        }
+    }
+    ////******************************
+
+    //</script>
