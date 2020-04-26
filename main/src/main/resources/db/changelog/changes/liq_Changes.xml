@@ -36,4 +36,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="heydaripoor (generated)" id="1587887550047-265">
+        <addColumn tableName="tbl_teacher">
+            <column name="c_black_list_description" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
