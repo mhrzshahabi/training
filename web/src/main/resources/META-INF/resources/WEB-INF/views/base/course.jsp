@@ -1746,6 +1746,7 @@
                     // data2["workflowStatusCode"] = "0";
 
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
+                        console.log(resp)
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             TabSet_Goal_JspCourse.enable();
@@ -1760,7 +1761,7 @@
                             }, 3000);
 
                         } else if (resp.httpResponseCode === 406) {
-                            var myDialog = createDialog("info", "قبلاً دوره\u200cای با این کد ذخیره شده است.",
+                            var myDialog = createDialog("info", "قبلاً دوره\u200cای با این نام ذخیره شده است.",
                                 "<spring:message code="message"/>");
                             myDialog.addProperties({
                                 buttonClick: function () {
