@@ -77,9 +77,6 @@
                 align: "center",
                 formatCellValue: function (value, record, rowNum, colNum) {
 
-                    console.log(typeof record.blackListDescription);
-                    console.log(record.inBlackList === true);
-
                     if ((typeof record.blackListDescription == 'undefined'|| record.blackListDescription == "undefined" || record.blackListDescription == undefined)&& record.inBlackList === true) {
                         return "بدون توضیحات"
                     }
