@@ -12,9 +12,13 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,6 +46,7 @@ public class CourseService implements ICourseService {
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
     private final EnumsConverter.ETheoTypeConverter eTheoTypeConverter = new EnumsConverter.ETheoTypeConverter();
+    private final MessageSource messageSource;
 
 
     @Transactional(readOnly = true)
@@ -149,10 +154,19 @@ public class CourseService implements ICourseService {
         return listOut;
     }
 
-
     @Transactional
     @Override
-    public CourseDTO.Info create(CourseDTO.Create request) {
+    public CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response) {
+        if(courseDAO.existsByTitleFa(request.getTitleFa()))
+        {
+
+            try {
+                response.sendError(406,null);
+                return null;
+            } catch (IOException e) {
+
+            }
+        }
         Course course = modelMapper.map(request, Course.class);
         if (courseDAO.findByCodeEquals(course.getCode()).isEmpty()) {
 //        if (true) {
