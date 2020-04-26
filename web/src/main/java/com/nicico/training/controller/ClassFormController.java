@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -9,10 +10,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Controller
@@ -117,5 +120,41 @@ public class ClassFormController {
     @RequestMapping("/teacher-information-tab")
     public String techerInformationTab() {
         return "classTabs/teacherInformation";
+    }
+
+    @PostMapping("/reportPrint/{type}")
+    public ResponseEntity<?> reportPrint(final HttpServletRequest request, @PathVariable String type) {
+        String token = request.getParameter("token");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        JSONObject dataParams = new JSONObject(request.getParameter("data"));
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap();
+        params.add("courseInfo",dataParams.get("courseInfo").toString());
+        params.add("classTimeInfo",dataParams.get("classTimeInfo").toString());
+        params.add("executionInfo",dataParams.get("executionInfo").toString());;
+        params.add("evaluationInfo",dataParams.get("evaluationInfo").toString());
+        params.add("CriteriaStr", request.getParameter("CriteriaStr").toString());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        switch (type) {
+            case "pdf":
+                return restTemplate.exchange(restApiUrl + "/api/tclass/reportPrint/PDF", HttpMethod.POST, entity, byte[].class);
+            case "excel":
+                return restTemplate.exchange(restApiUrl + "/api/tclass/reportPrint/EXCEL", HttpMethod.POST, entity, byte[].class);
+            case "html":
+                return restTemplate.exchange(restApiUrl + "/api/tclass/reportPrint/HTML", HttpMethod.POST, entity, byte[].class);
+            default:
+                return null;
+        }
     }
 }

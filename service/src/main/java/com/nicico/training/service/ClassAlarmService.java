@@ -578,6 +578,62 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
+    //****************class attendance alarm*****************
+    @Transactional
+    public List<ClassAlarmDTO> alarmAttendance(Long class_id) {
+
+        List<ClassAlarmDTO> alarmList = null;
+
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+
+            String alarmScript = "  SELECT DISTINCT " +
+                    " alarmTypeTitleFa, 'Attendance' AS alarmTypeTitleEn, classId, null AS sessionId, null AS teacherId, null AS studentId," +
+                    " null AS instituteId, null AS trainingPlaceId, null AS reservationId, targetRecordId, tabName, pageAddress," +
+                    " alarm, null AS detailRecordId,  sortField,  null AS classIdConflict, null AS  sessionIdConflict," +
+                    " null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict" +
+                    " FROM " +
+                    " ( " +
+                    " SELECT" +
+                    "    tbl_session.f_class_id AS classId," +
+                    "    tbl_session.f_class_id AS targetRecordId," +
+                    "   'classAttendanceTab' AS tabName," +
+                    "   '/tclass/show-form' AS pageAddress," +
+                    "   'حضور و غیاب' as alarmTypeTitleFa, " +
+                    "('حضور و غیاب ' || 'جلسه ' ||  tbl_session.c_session_start_hour || ' تا ' || tbl_session.c_session_end_hour || ' ' || tbl_session.c_day_name || ' تاریخ ' || tbl_session.c_session_date || ' تکمیل نشده است') as alarm, " +
+                    "   tbl_session.id AS detailRecordId," +
+                    "   ('7' || tbl_session.c_session_date || tbl_session.c_session_start_hour) AS sortField " +
+                    " FROM " +
+                    "   tbl_class_student" +
+                    "   INNER JOIN tbl_session ON tbl_class_student.class_id = tbl_session.f_class_id" +
+                    "   LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session" +
+                    " WHERE " +
+                    "   tbl_session.f_class_id = :class_id " +
+                    "   AND tbl_session.c_session_date <:todaydat" +
+                    "   AND (tbl_attendance.c_state IS NULL OR tbl_attendance.c_state = 0)" +
+                    " ) ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("todaydat", todayDate).getResultList();
+
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return alarmList;
+    }
+    //*********************************
+
     //****************convert object to dto*****************
     private ClassAlarmDTO convertObjectToDTO(Object[] alarm) {
         return new ClassAlarmDTO(
@@ -620,17 +676,20 @@ public class ClassAlarmService implements IClassAlarm {
 
     //****************save created alarms*****************
     public void setClassHasWarningStatus(Long class_id) {
-        if (class_id == 0L) {
-            //*****this method check all not ended class and set alarm status for them*****
-            tclassDAO.updateAllClassHasWarning();
-            //*****************************************************************************
-        } else {
-            if (alarmDAO.existsAlarmsByClassIdOrClassIdConflict(class_id, class_id)) {
-                tclassDAO.updateClassHasWarning(class_id, "alarm");
-            } else {
-                tclassDAO.updateClassHasWarning(class_id, "");
-            }
-        }
+
+        //*****this method check all not ended class and set alarm status for them*****
+        tclassDAO.updateAllClassHasWarning();
+//        if (class_id == 0L) {
+//            //*****this method check all not ended class and set alarm status for them*****
+//            tclassDAO.updateAllClassHasWarning();
+//            //*****************************************************************************
+//        } else {
+//            if (alarmDAO.existsAlarmsByClassIdOrClassIdConflict(class_id, class_id)) {
+//                tclassDAO.updateClassHasWarning(class_id, "alarm");
+//            } else {
+//                tclassDAO.updateClassHasWarning(class_id, "");
+//            }
+//        }
     }
     //*********************************
 
@@ -646,11 +705,23 @@ public class ClassAlarmService implements IClassAlarm {
     @Override
     public List<ClassAlarmDTO> list(Long classId, HttpServletResponse response) throws IOException {
 
-        List<ClassAlarmDTO> classAlarmDTO = null;
+        List<ClassAlarmDTO> allClassAlarmDTO = null;
 
         try {
-            classAlarmDTO = modelMapper.map(alarmDAO.getAlarmsByClassIdOrClassIdConflictOrderBySortField(classId, classId), new TypeToken<List<ClassAlarmDTO>>() {
+
+
+            List<ClassAlarmDTO> classAlarmDTO = modelMapper.map(alarmDAO.getAlarmsByClassIdOrClassIdConflictOrderBySortField(classId, classId), new TypeToken<List<ClassAlarmDTO>>() {
             }.getType());
+
+            allClassAlarmDTO = new ArrayList<>(classAlarmDTO);
+
+            //*****add online attendance to existing offline alarms*****
+            List<ClassAlarmDTO> attendance = alarmAttendance(classId);
+            if (attendance != null && attendance.size() > 0) {
+                allClassAlarmDTO.addAll(attendance);
+            }
+            //**********************************************************
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -659,8 +730,7 @@ public class ClassAlarmService implements IClassAlarm {
             response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
         }
 
-        return (classAlarmDTO != null ? modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>() {
-        }.getType()) : null);
+        return allClassAlarmDTO;
     }
     //*********************************
 
@@ -1606,7 +1676,7 @@ public class ClassAlarmService implements IClassAlarm {
                     AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
             }
 
-           ////old code **> endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+            ////old code **> endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
             endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
 
 
