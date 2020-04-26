@@ -683,14 +683,12 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "skill.titleFa", title: "<spring:message code="skill"/>",width:"40%"},
 
         ],
-        // customize appearance
         width: "100%",
-        height: "90%",
-        autoDraw: true,
+        height: "80%",
+        autoDraw: false,
         showOpenIcons:false,
         showDropIcons:false,
-        showSelectedIcons:true,
-        closedIconSuffix:"",
+        showSelectedIcons:false,
         showConnectors: true,
         baseStyle: "noBorderCell",
         dataProperties:{
@@ -1011,8 +1009,8 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         parentIdField: "parentId",
                         data: JSON.parse(resp.data).response.data
                     });
-
                     moreInfoTree.setData(Treedata);
+                    moreInfoTree.getData().openAll();
                 }
             }));
 
