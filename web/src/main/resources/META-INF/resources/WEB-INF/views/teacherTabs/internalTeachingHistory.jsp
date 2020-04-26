@@ -78,13 +78,23 @@
         ]
     });
 
+    function ListGrid_InternalTeachingHistory_refresh() {
+        ListGrid_JspInternalTeachingHistory.invalidateCache();
+        ListGrid_JspInternalTeachingHistory.filterByEditor();
+    }
+
+
     function loadPage_InternalTeachingHistory(id) {
         if (teacherIdInternalTeachingHistory !== id) {
             teacherIdInternalTeachingHistory = id;
             RestDataSource_JspInternalTeachingHistory.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingHistory;
             ListGrid_JspInternalTeachingHistory.fetchData();
+            ListGrid_InternalTeachingHistory_refresh();
         }
     }
 
+    function clear_InternalTeachingHistory() {
+        ListGrid_JspInternalTeachingHistory.clear();
+    }
 
     //</script>
