@@ -696,7 +696,7 @@
                 filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isTeachingCategoriesChanged) {
@@ -718,7 +718,7 @@
             {
                 name: "temp6",
                 title: "تدریس داشته است.",
-                canEdit: false,
+                canEdit: false
             },
         ],
         itemChanged: function (item, newValue) {
@@ -766,6 +766,13 @@
                     return;
                 }
             }
+
+
+            // titr.contents = "";
+            // personalInfo.contents = "";
+            // teacherInfo.contents = "";
+            // evalInfo.contents = "";
+            // teachingInfo.contents = "";
 
             if(DynamicForm_CriteriaForm_JspTeacherReport.getValue("personality.nationalCode") != undefined){
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "کد ملی: " +"</span>" ;
