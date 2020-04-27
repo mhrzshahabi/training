@@ -14,7 +14,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Subselect("select * from view_student_classstudent_class_term_course")
 public class StudentClassReportView implements Serializable {
