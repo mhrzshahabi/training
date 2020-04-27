@@ -2,19 +2,22 @@
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.PersonnelCourseKey;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Immutable
-@EqualsAndHashCode(of = {"personnelId", "courseId"}, callSuper = false)
-@Table(name = "view_personnel_course_not_passed_report")
-@DiscriminatorValue("PersonnelCourseNotPassedReportView")
+@Subselect("select * from view_personnel_course_not_passed_report")
 public class PersonnelCourseNotPassedReportView implements Serializable {
 
     @EmbeddedId
