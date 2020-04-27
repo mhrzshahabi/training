@@ -468,13 +468,13 @@
                         createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
                     }
                 },
-                {isSeparator: true},
+                /*{isSeparator: true},
                 {
                     title: "<spring:message code="polisAndprovince"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/polis_and_province/show-form"/>");
                     }
-                },
+                },*/
                 <%--{--%>
                 <%--    title: "<spring:message code="department"/>",--%>
                 <%--    click: function () {--%>
