@@ -425,7 +425,7 @@
             {
                 name: "searchBtn",
                 ID: "searchBtnJspTrainingFile",
-                title: "<spring:message code="report"/>",
+                title: "<spring:message code="reporting"/>",
                 type: "ButtonItem",
                 colSpan: 1,
                 width:"*",

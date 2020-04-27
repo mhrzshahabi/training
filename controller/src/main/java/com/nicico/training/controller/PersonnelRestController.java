@@ -141,10 +141,10 @@ public class PersonnelRestController {
         criteria.getCriteria().add(makeNewCriteria("active", -1, EOperator.equals, null));
         criteria.getCriteria().add(makeNewCriteria("nationalCode", nationalCode, EOperator.equals, null));
         List<PersonnelDTO.Info> personnelList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
-        if (personnelList.size() > 0)
+        if (!personnelList.isEmpty())
             return new ResponseEntity<>(personnelList.get(0), HttpStatus.OK);
         List<PersonnelRegisteredDTO.Info> personnelRegisteredList = personnelRegisteredService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
-        if (personnelRegisteredList.size() > 0)
+        if (!personnelRegisteredList.isEmpty())
             return new ResponseEntity<>(personnelRegisteredList.get(0), HttpStatus.OK);
         return new ResponseEntity<>(messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
     }

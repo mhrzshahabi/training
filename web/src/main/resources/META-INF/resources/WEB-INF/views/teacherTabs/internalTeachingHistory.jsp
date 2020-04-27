@@ -31,30 +31,36 @@
             {
                 name: "code",
                 title: "کد کلاس",
+                filterOperator: "iContains"
             },
             {
                 name: "titleClass",
                 title: "نام کلاس",
+                filterOperator: "iContains"
             },
             {
                 name: "startDate",
                 title: "تاریخ شروع",
+                filterOperator: "iContains"
             },
             {
                 name: "endDate",
                 title: "تاریخ خاتمه",
+                filterOperator: "iContains"
+
             },
             {
                 name: "evaluationGrade",
                 title: "نمره ارزیابی فراگیران به استاد",
+                canFilter: false
             }
         ],
         filterEditorSubmit: function () {
             ListGrid_JspInternalTeachingHistory.invalidateCache();
         },
         align: "center",
-        filterOperator: "iContains",
         filterOnKeypress: false,
+        filterLocally: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -72,13 +78,23 @@
         ]
     });
 
+    function ListGrid_InternalTeachingHistory_refresh() {
+        ListGrid_JspInternalTeachingHistory.invalidateCache();
+        ListGrid_JspInternalTeachingHistory.filterByEditor();
+    }
+
+
     function loadPage_InternalTeachingHistory(id) {
         if (teacherIdInternalTeachingHistory !== id) {
             teacherIdInternalTeachingHistory = id;
             RestDataSource_JspInternalTeachingHistory.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingHistory;
             ListGrid_JspInternalTeachingHistory.fetchData();
+            ListGrid_InternalTeachingHistory_refresh();
         }
     }
 
+    function clear_InternalTeachingHistory() {
+        ListGrid_JspInternalTeachingHistory.clear();
+    }
 
     //</script>

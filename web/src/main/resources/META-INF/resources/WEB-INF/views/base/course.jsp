@@ -291,26 +291,7 @@
             ListGrid_Course_Edit()
         },
         selectionChanged: function (record, state) {
-            if(state) {
-                courseRecord = record;
-                RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
-                ListGrid_CourseSyllabus.fetchData();
-                ListGrid_CourseSyllabus.invalidateCache();
-                RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseRecord.id;
-                ListGrid_CourseSkill.fetchData();
-                ListGrid_CourseSkill.invalidateCache();
-                RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseRecord.id;
-                ListGrid_CourseJob.fetchData();
-                ListGrid_CourseJob.invalidateCache();
-                RestDataSource_SkillGroup.fetchDataURL = courseUrl + "skill-group/" + courseRecord.id;
-                ListGrid_SkillGroup.fetchData();
-                ListGrid_SkillGroup.invalidateCache();
-                RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
-                ListGrid_Post_JspCourse.fetchData();
-                ListGrid_Post_JspCourse.invalidateCache();
-
-
-
+            if (state) {
                 // for (let i = 0; i < trainingTabSet.tabs.length; i++) {
                 //     if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                 //         trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -542,12 +523,27 @@
 
     var ListGrid_teacherInformation_Course = isc.TrLG.create({
         dataSource: RestDataSource_teacherInformation_Course,
-       // autoFetchData: true,
+        // autoFetchData: true,
         fields: [
 
-            {name: "teacher.personality.firstNameFa", title: "<spring:message code="firstName"/>", align: "center", filterOperator: "iContains"},
-            {name: "teacher.personality.lastNameFa", title: "<spring:message code="lastName"/>", align: "center", filterOperator: "iContains"},
-            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
+            {
+                name: "teacher.personality.firstNameFa",
+                title: "<spring:message code="firstName"/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "teacher.personality.lastNameFa",
+                title: "<spring:message code="lastName"/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "teacher.personality.nationalCode",
+                title: "<spring:message code="national.code"/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
         ],
         recordDoubleClick: function () {
 
@@ -687,7 +683,7 @@
             })]
     })
 
-     var Window_AddSkill = isc.Window.create({
+    var Window_AddSkill = isc.Window.create({
         title: "<spring:message code="relate/delete.relation.skill.course"/>",
         width: "90%",
         height: "70%",
@@ -738,27 +734,31 @@
                             align: "center",
                             height: 30,
                             showEdges: true
-                        }),isc.ToolStrip.create({
+                        }), isc.ToolStrip.create({
                             width: "100%",
                             border: '0px',
                             members: [
-                               isc.ToolStripButton.create({width:250,title:"لیست مهارت های همین دوره",
-                                    click:function () {
+                                isc.ToolStripButton.create({
+                                    width: 250, title: "لیست مهارت های همین دوره",
+                                    click: function () {
                                         var cat = DynamicForm_course_GroupTab.getField("categoryId").getValue()
-                                        RestDataSource_Skill_JspCourse.fetchDataURL=skillUrl + "/skillthisCourse"+"?categoryId=" +cat
+                                        RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/skillthisCourse" + "?categoryId=" + cat
                                         ListGrid_AllSkill_JspCourse.fetchData()
                                         ListGrid_AllSkill_JspCourse.invalidateCache()
-                                    }}),  isc.ToolStrip.create({
+                                    }
+                                }), isc.ToolStrip.create({
                                     width: "100%",
                                     align: "left",
                                     border: '0px',
                                     members: [
-                                        isc.ToolStripButton.create({width:200,title:"لیست تمام مهارت ها",
-                                            click:function () {
-                                                RestDataSource_Skill_JspCourse.fetchDataURL=skillUrl + "/spec-list",
+                                        isc.ToolStripButton.create({
+                                            width: 200, title: "لیست تمام مهارت ها",
+                                            click: function () {
+                                                RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/spec-list",
                                                     ListGrid_AllSkill_JspCourse.fetchData()
                                                 ListGrid_AllSkill_JspCourse.invalidateCache()
-                                            }})
+                                            }
+                                        })
                                     ]
                                 })]
                         }), "filterEditor", "header", "body"],
@@ -1219,20 +1219,20 @@
                 colSpan: 3,
                 name: "titleFa",
                 title: "<spring:message code="course_fa_name"/>",
-                editorType:"ComboBoxItem",
-                optionDataSource:RestDataSource_course,
-                 addUnknownValues:true,
+                editorType: "ComboBoxItem",
+                optionDataSource: RestDataSource_course,
+                addUnknownValues: true,
                 // valueField:"id",
-                 filterFields:["titleFa", "code"],
-                 pickListWidth:300,
-              //  displayField:["titleFa","code"],
+                filterFields: ["titleFa", "code"],
+                pickListWidth: 300,
+                //  displayField:["titleFa","code"],
                 pickListProperties: {
-                    showFilterEditor:false,
-                     },
-                 pickListFields:[
+                    showFilterEditor: false,
+                },
+                pickListFields: [
 
-                    {name:"titleFa",title:"<spring:message code="title"/>"},
-                    {name:"code",title:"<spring:message code="code"/>"}
+                    {name: "titleFa", title: "<spring:message code="title"/>"},
+                    {name: "code", title: "<spring:message code="code"/>"}
                 ],
                 // length: "250",
                 required: true,
@@ -1254,7 +1254,7 @@
                         formPreCourse.reset();
                     }
 
-                  },
+                },
 
 
             },
@@ -1307,7 +1307,7 @@
                 vertical: false,
                 endRow: true,
                 fillHorizontalSpace: true,
-                  defaultValue: "1",
+                defaultValue: "1",
                 valueMap: {
                     "1": "مشاهده",
                     "2": "مصاحبه",
@@ -1660,8 +1660,8 @@
                 // keyPressFilter: "[a-z|A-Z|0-9-|' '|'_']",
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,],
-                changed: function (_1,_2,_3) {
-                    convertFa2En(_1,_2,_3,[]);
+                changed: function (_1, _2, _3) {
+                    convertFa2En(_1, _2, _3, []);
                 },
             },
             {
@@ -1840,8 +1840,8 @@
             //icon: "<spring:url value="remove.png"/>",
             // orientation: "vertical",
             click: function () {
-                RestDataSource_Skill_JspCourse.fetchDataURL=skillUrl + "/spec-list",
-                Window_course.closeClick();
+                RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/spec-list",
+                    Window_course.closeClick();
                 ListGrid_Course_refresh();
             }
         })]
@@ -2503,17 +2503,17 @@
         tabBarPosition: "top",
         tabs: [
             {
-                // id: "TabPane_Goal_Syllabus",
+                ID: "tabGoal",
                 title: "<spring:message code="course_syllabus_goal"/>",
                 pane: ListGrid_CourseSyllabus
             },
             {
-                // id: "TabPane_Job",
+                ID: "tabJobJspCourse",
                 title: "<spring:message code="job"/>",
                 pane: ListGrid_CourseJob
             },
             {
-                // id: "TabPane_Post",
+                ID: "tabPostJspCourse",
                 title: "<spring:message code="post"/>",
                 pane: isc.TrLG.create({
                     ID: "ListGrid_Post_JspCourse",
@@ -2525,23 +2525,23 @@
                             {name: "code", title: "کد", align: "center"}
                         ],
                         ID: "RestData_Post_JspCourse",
-                        fetchDataURL:courseUrl + "post/" + courseRecord.id,
+                        fetchDataURL: courseUrl + "post/" + courseRecord.id,
                     }),
                 })
             },
             {
-                // id: "TabPane_Skill",
+                ID: "tabSkillJspCourse",
                 title: "<spring:message code="skill"/>",
                 pane: ListGrid_CourseSkill
 
             },
             {
-                // id: "TabPane_Competence",
+                ID: "tabSkillGroupJspCourse",
                 title: "گروه مهارت",
                 pane: ListGrid_SkillGroup
             },
             {
-                ID:"teacherInformationCourse",
+                ID: "teacherInformationCourse",
                 title: "<spring:message code='teacher.information'/>",
                 pane: ListGrid_teacherInformation_Course
             }
@@ -2564,7 +2564,7 @@
 
         members: [Detail_Tab_Course]
     });
-    var VLayout_Body_Course = isc.VLayout.create({
+    const VLayout_Body_Course = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [HLayout_Actions_Course, HLayout_Grid_Course, HLayout_Tab_Course]
@@ -2742,7 +2742,7 @@
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(sRecord);
-            DynamicForm_course_GroupTab.setValue("subCategory.id",courseRecord.subCategoryId);
+            DynamicForm_course_GroupTab.setValue("subCategory.id", courseRecord.subCategoryId);
 //======================================================
 //             if (courseRecord.hasGoal && DynamicForm_course_MainTab.getValue("evaluation") != null) {
 //                 Window_course.show();
@@ -2880,7 +2880,7 @@
                 }
             }
             let sum = da + ma + ne;
-            if(sum == 0){
+            if (sum == 0) {
                 sum = 1;
             }
             lblCourse.getField("domainCourse").setValue("دانشی: " + getFormulaMessage(Math.round(da * 100 / sum) + "%", 2, "brown") + "، مهارتی: " + getFormulaMessage(Math.round(ma * 100 / sum) + "%", 2, "green") + "، نگرشی: " + getFormulaMessage(Math.round(ne * 100 / sum) + "%", 2, "blue"));
@@ -2972,15 +2972,14 @@
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
             ListGrid_Course_refresh()
 
-        } else  if (resp.httpResponseCode === 404) {
+        } else if (resp.httpResponseCode === 404) {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
-        } else
-        {
+        } else {
             isc.say("<spring:message code='msg.send.to.workflow.problem'/>");
         }
     }
 
-    var course_workflowParameters = null;
+    let course_workflowParameters = null;
 
     function selectWorkflowRecord() {
 
@@ -3060,22 +3059,47 @@
 
     function refreshSelectedTab_Course(tab) {
 
-       var courseRecord = ListGrid_Course.getSelectedRecord();
-
-        //  if (!(courseRecord == undefined || courseRecord == null)) {
-        switch (tab.ID) {
-
-            case "courseEvaluationTAB": {
-                if (typeof loadPage_course_evaluation !== "undefined")
-                    loadPage_course_evaluation();
-                break;
+        const courseRecord = ListGrid_Course.getSelectedRecord();
+        setTimeout(()=> {
+            switch (tab.ID) {
+                case "courseEvaluationTAB":
+                    if (typeof loadPage_course_evaluation !== "undefined")
+                        loadPage_course_evaluation();
+                    break;
+                case "teacherInformationCourse":
+                    RestDataSource_teacherInformation_Course.fetchDataURL = teacherInformation + "/teacher-information-iscList" + "/" + courseRecord.code;
+                    ListGrid_teacherInformation_Course.fetchData();
+                    ListGrid_teacherInformation_Course.invalidateCache();
+                    break;
+                case "tabGoal":
+                    RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
+                    ListGrid_CourseSyllabus.fetchData();
+                    ListGrid_CourseSyllabus.invalidateCache();
+                    break;
+                case "tabJobJspCourse":
+                    RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseRecord.id;
+                    ListGrid_CourseJob.fetchData();
+                    ListGrid_CourseJob.invalidateCache();
+                    break;
+                case "tabPostJspCourse":
+                    RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
+                    ListGrid_Post_JspCourse.fetchData();
+                    ListGrid_Post_JspCourse.invalidateCache();
+                    break;
+                case "tabSkillJspCourse":
+                    RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseRecord.id;
+                    ListGrid_CourseSkill.fetchData();
+                    ListGrid_CourseSkill.invalidateCache();
+                    break;
+                case "tabSkillGroupJspCourse":
+                    RestDataSource_SkillGroup.fetchDataURL = courseUrl + "skill-group/" + courseRecord.id;
+                    ListGrid_SkillGroup.fetchData();
+                    ListGrid_SkillGroup.invalidateCache();
+                    break;
             }
-            case "teacherInformationCourse":{
-                RestDataSource_teacherInformation_Course.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/"+courseRecord.code;
-                ListGrid_teacherInformation_Course.fetchData()
-                ListGrid_teacherInformation_Course.invalidateCache()
-                break;
-            }
-        }
-        //}
+        },0);
     }
+
+
+
+// </script>
