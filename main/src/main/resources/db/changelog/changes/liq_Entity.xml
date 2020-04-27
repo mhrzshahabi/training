@@ -2,10 +2,10 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="razmnoosh (generated)" id="1583726092724-242">
-        <createTable tableName="tbl_province">
+    <changeSet author="rastegari_h (generated)" id="1587985889507-72">
+        <createTable tableName="tbl_Class_Check_List">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_provincePK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_Class_Check_ListPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -13,23 +13,49 @@
             <column name="d_created_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
             <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
             <column name="d_last_modified_date" type="TIMESTAMP"/>
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
+            <column name="f_check_list_item_id" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_enabled" type="NUMBER(1, 0)"/>
+            <column name="f_tclass_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-73">
+        <createTable tableName="tbl_ac_data_source">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_ac_data_sourcePK"/>
+            </column>
+            <column name="c_ds_display_field" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_fetch_data_url" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_name" type="VARCHAR2(200 CHAR)"/>
+            <column name="c_ds_pick_list_fields" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_pick_list_width" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_primary_key" type="VARCHAR2(200 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_ds_value_field" type="VARCHAR2(200 CHAR)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-
-    <changeSet author="razmnoosh (generated)" id="1583827807386-243">
-        <createTable tableName="tbl_polis">
+    <changeSet author="rastegari_h (generated)" id="1587985889507-74">
+        <createTable tableName="tbl_academic_bk">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_polisPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_academic_bkPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -37,21 +63,78 @@
             <column name="d_created_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
             <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
             <column name="d_last_modified_date" type="TIMESTAMP"/>
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_province_id" type="NUMBER(19, 0)"/>
+            <column name="c_academic_grade" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_collage_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_duration" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_education_level" type="NUMBER(19, 0)"/>
+            <column name="f_education_major" type="NUMBER(19, 0)"/>
+            <column name="f_education_orienation" type="NUMBER(19, 0)"/>
+            <column name="f_teacher" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-
-    <changeSet author="Hamed (generated)" id="1586515492669-249">
+    <changeSet author="rastegari_h (generated)" id="1587985889507-75">
+        <createTable tableName="tbl_account_info">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_account_infoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_account_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank_branch" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank_branch_code" type="NUMBER(19, 0)"/>
+            <column name="c_cart_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_shaba_number" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-76">
+        <createTable tableName="tbl_address">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_addressPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_city" type="NUMBER(19, 0)"/>
+            <column name="n_fax" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_other_country" type="NUMBER(1, 0)"/>
+            <column name="n_phone" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_postal_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_state" type="NUMBER(19, 0)"/>
+            <column name="c_website" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-77">
         <createTable tableName="tbl_alarm">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_alarmPK"/>
@@ -97,918 +180,2426 @@
             <column name="f_training_place_id_conflict" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NA_REPORT-001">
-        <createView viewName="VIEW_PERSONNEL_COURSE_NA_REPORT" replaceIfExists="true">
-            <![CDATA[
- with Result as (
-    SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                    tbl_personnel.ccp_affairs           AS personnel_cpp_affairs,
-                    tbl_personnel.ccp_area              AS personnel_cpp_area,
-                    tbl_personnel.ccp_assistant         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    tbl_personnel.ccp_section           AS personnel_cpp_section,
-                    tbl_personnel.ccp_title             AS personnel_cpp_title,
-                    tbl_personnel.ccp_unit              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    tbl_personnel.complex_title         AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id
-        AND tbl_needs_assessment.c_object_type = 'Post'
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = -1
-    UNION
-    SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                    tbl_personnel.ccp_affairs           AS personnel_cpp_affairs,
-                    tbl_personnel.ccp_area              AS personnel_cpp_area,
-                    tbl_personnel.ccp_assistant         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    tbl_personnel.ccp_section           AS personnel_cpp_section,
-                    tbl_personnel.ccp_title             AS personnel_cpp_title,
-                    tbl_personnel.ccp_unit              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    tbl_personnel.complex_title         AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_post_group ON tbl_needs_assessment.f_object = tbl_post_group.id
-        AND tbl_needs_assessment.c_object_type = 'PostGroup'
-             INNER JOIN tbl_post_postgroup ON tbl_post_group.id = tbl_post_postgroup.f_postgroup_id
-             INNER JOIN tbl_post ON tbl_post_postgroup.f_post_id = tbl_post.id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = -1
-    UNION
-    SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                    tbl_personnel.ccp_affairs           AS personnel_cpp_affairs,
-                    tbl_personnel.ccp_area              AS personnel_cpp_area,
-                    tbl_personnel.ccp_assistant         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    tbl_personnel.ccp_section           AS personnel_cpp_section,
-                    tbl_personnel.ccp_title             AS personnel_cpp_title,
-                    tbl_personnel.ccp_unit              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    tbl_personnel.complex_title         AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_job ON tbl_needs_assessment.f_object = tbl_job.id
-        AND tbl_needs_assessment.c_object_type = 'Job'
-             INNER JOIN tbl_post ON tbl_job.id = tbl_post.f_job_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = -1
-    UNION
-    SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                    tbl_personnel.ccp_affairs           AS personnel_cpp_affairs,
-                    tbl_personnel.ccp_area              AS personnel_cpp_area,
-                    tbl_personnel.ccp_assistant         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    tbl_personnel.ccp_section           AS personnel_cpp_section,
-                    tbl_personnel.ccp_title             AS personnel_cpp_title,
-                    tbl_personnel.ccp_unit              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    tbl_personnel.complex_title         AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_job_group ON tbl_needs_assessment.f_object = tbl_job_group.id
-        AND tbl_needs_assessment.c_object_type = 'JobGroup'
-             INNER JOIN tbl_job_jobgroup ON tbl_job_group.id = tbl_job_jobgroup.f_jobgroup_id
-             INNER JOIN tbl_job ON tbl_job_jobgroup.f_job_id = tbl_job.id
-             INNER JOIN tbl_post ON tbl_job.id = tbl_post.f_job_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = -1
-    UNION
-    SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                    tbl_personnel.ccp_affairs           AS personnel_cpp_affairs,
-                    tbl_personnel.ccp_area              AS personnel_cpp_area,
-                    tbl_personnel.ccp_assistant         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    tbl_personnel.ccp_section           AS personnel_cpp_section,
-                    tbl_personnel.ccp_title             AS personnel_cpp_title,
-                    tbl_personnel.ccp_unit              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    tbl_personnel.complex_title         AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_post_grade ON tbl_needs_assessment.f_object = tbl_post_grade.id
-        AND tbl_needs_assessment.c_object_type = 'PostGrade'
-             INNER JOIN tbl_post ON tbl_post_grade.id = tbl_post.f_post_grade_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = -1
-    UNION
-    SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                    tbl_personnel.ccp_affairs           AS personnel_cpp_affairs,
-                    tbl_personnel.ccp_area              AS personnel_cpp_area,
-                    tbl_personnel.ccp_assistant         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    tbl_personnel.ccp_section           AS personnel_cpp_section,
-                    tbl_personnel.ccp_title             AS personnel_cpp_title,
-                    tbl_personnel.ccp_unit              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    tbl_personnel.complex_title         AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_post_grade_group ON tbl_needs_assessment.f_object = tbl_post_grade_group.id
-        AND tbl_needs_assessment.c_object_type = 'PostGradeGroup'
-             INNER JOIN tbl_post_grade_post_grade_group
-                        ON tbl_post_grade_group.id = tbl_post_grade_post_grade_group.f_post_grade_group_id
-             INNER JOIN tbl_post_grade ON tbl_post_grade_post_grade_group.f_post_grade_id = tbl_post_grade.id
-             INNER JOIN tbl_post ON tbl_post_grade.id = tbl_post.f_post_grade_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = -1
-)
-
-select MIN(na_priority_id) AS na_priority_id,
-       course_id,
-       course_code,
-       course_title_fa,
-       personnel_personnel_no,
-       personnel_cpp_affairs,
-       personnel_cpp_area,
-       personnel_cpp_assistant,
-       personnel_cpp_code,
-       personnel_cpp_section,
-       personnel_cpp_title,
-       personnel_cpp_unit,
-       personnel_company_name,
-       personnel_complex_title,
-       personnel_education_level_title,
-       personnel_first_name,
-       personnel_id,
-       personnel_job_no,
-       personnel_job_title,
-       personnel_last_name,
-       personnel_national_code,
-       personnel_emp_no,
-       personnel_post_code,
-       personnel_post_grade_code,
-       personnel_post_grade_title,
-       personnel_post_title
-from Result r
-GROUP BY
-    course_id,
-    course_code,
-    course_title_fa,
-    personnel_personnel_no,
-    personnel_cpp_affairs,
-    personnel_cpp_area,
-    personnel_cpp_assistant,
-    personnel_cpp_code,
-    personnel_cpp_section,
-    personnel_cpp_title,
-    personnel_cpp_unit,
-    personnel_company_name,
-    personnel_complex_title,
-    personnel_education_level_title,
-    personnel_first_name,
-    personnel_id,
-    personnel_job_no,
-    personnel_job_title,
-    personnel_last_name,
-    personnel_national_code,
-    personnel_emp_no,
-    personnel_post_code,
-    personnel_post_grade_code,
-    personnel_post_grade_title,
-    personnel_post_title
-			]]>
-        </createView>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-78">
+        <createTable tableName="tbl_attachment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_attachmentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_file_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_file_type_id" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_object_type" type="VARCHAR2(30 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_object_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_NA_REPORT-002">
-        <createView viewName="VIEW_NA_REPORT" replaceIfExists="true">
-            <![CDATA[
-    WITH result AS (
-    SELECT
-        1 AS priority,
-        tbl_needs_assessment.id               AS na_id,
-        na_priority.id                        AS na_priority_id,
-        na_priority.c_title                   AS na_priority,
-        na_domain.id                          AS na_domain_id,
-        na_domain.c_title                     AS na_domain,
-        tbl_competence.id                     AS competence_id,
-        tbl_competence.c_title                AS competence_title,
-        com_type.id                           AS competence_type_id,
-        com_type.c_title                      AS competence_type,
-        tbl_skill.id                          AS skill_id,
-        tbl_skill.c_code                      AS skill_code,
-        tbl_skill.c_title_fa                  AS skill_title_fa,
-        tbl_course.id                         AS course_id,
-        tbl_course.c_code                     AS course_code,
-        tbl_course.c_title_fa                 AS course_title_fa,
-        tbl_post.id                           AS post_id,
-        tbl_post.c_affairs                    AS post_affairs,
-        tbl_post.c_area                       AS post_area,
-        tbl_post.c_assistance                 AS post_assistance,
-        tbl_post.c_code                       AS post_code,
-        tbl_post.c_cost_center_code           AS post_cost_center_code,
-        tbl_post.c_cost_center_title_fa       AS post_cost_center_title,
-        tbl_post.c_section                    AS post_section,
-        tbl_post.c_title_fa                   AS post_title_fa,
-        tbl_post.c_unit                       AS post_unit,
-        tbl_personnel.personnel_no            AS personnel_personnel_no,
-        tbl_personnel.active                  AS personnel_active,
-        tbl_personnel.ccp_affairs             AS personnel_cpp_affairs,
-        tbl_personnel.ccp_area                AS personnel_cpp_area,
-        tbl_personnel.ccp_assistant           AS personnel_cpp_assistant,
-        tbl_personnel.ccp_code                AS personnel_cpp_code,
-        tbl_personnel.ccp_section             AS personnel_cpp_section,
-        tbl_personnel.ccp_title               AS personnel_cpp_title,
-        tbl_personnel.ccp_unit                AS personnel_cpp_unit,
-        tbl_personnel.company_name            AS personnel_company_name,
-        tbl_personnel.complex_title           AS personnel_complex_title,
-        tbl_personnel.education_level_title   AS personnel_education_level_title,
-        tbl_personnel.first_name              AS personnel_first_name,
-        tbl_personnel.id                      AS personnel_id,
-        tbl_personnel.job_no                  AS personnel_job_no,
-        tbl_personnel.job_title               AS personnel_job_title,
-        tbl_personnel.last_name               AS personnel_last_name,
-        tbl_personnel.national_code           AS personnel_national_code,
-        tbl_personnel.emp_no                  AS personnel_emp_no,
-        tbl_personnel.post_code               AS personnel_post_code,
-        tbl_personnel.post_grade_code         AS personnel_post_grade_code,
-        tbl_personnel.post_grade_title        AS personnel_post_grade_title,
-        tbl_personnel.post_title              AS personnel_post_title,
-        NULL AS post_group_title_fa,
-        NULL AS post_group_id,
-        NULL AS job_id,
-        NULL AS job_code,
-        NULL AS job_title_fa,
-        NULL AS job_group_id,
-        NULL AS job_group_title_fa,
-        NULL AS post_grade_id,
-        NULL AS post_grade_code,
-        NULL AS post_grade_title_fa,
-        NULL AS post_grade_group_id,
-        NULL AS post_grade_group_title_fa
-    FROM
-        tbl_needs_assessment
-        INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-        INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-        INNER JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id
-                               AND tbl_needs_assessment.c_object_type = 'Post'
-        INNER JOIN tbl_competence ON tbl_needs_assessment.f_competence = tbl_competence.id
-        INNER JOIN tbl_parameter_value   na_priority ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority
-        .id
-        INNER JOIN tbl_parameter_value   na_domain ON tbl_needs_assessment.f_parameter_value_needs_assessment_domain = na_domain.id
-        LEFT JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code
-        INNER JOIN tbl_parameter_value   com_type ON tbl_competence.f_parameter_value = com_type.id
-    UNION
-    SELECT
-        2 AS priority,
-        tbl_needs_assessment.id               AS na_id,
-        na_priority.id                        AS na_priority_id,
-        na_priority.c_title                   AS na_priority,
-        na_domain.id                          AS na_domain_id,
-        na_domain.c_title                     AS na_domain,
-        tbl_competence.id                     AS competence_id,
-        tbl_competence.c_title                AS competence_title,
-        com_type.id                           AS competence_type_id,
-        com_type.c_title                      AS competence_type,
-        tbl_skill.id                          AS skill_id,
-        tbl_skill.c_code                      AS skill_code,
-        tbl_skill.c_title_fa                  AS skill_title_fa,
-        tbl_course.id                         AS course_id,
-        tbl_course.c_code                     AS course_code,
-        tbl_course.c_title_fa                 AS course_title_fa,
-        tbl_post.id                           AS post_id,
-        tbl_post.c_affairs                    AS post_affairs,
-        tbl_post.c_area                       AS post_area,
-        tbl_post.c_assistance                 AS post_assistance,
-        tbl_post.c_code                       AS post_code,
-        tbl_post.c_cost_center_code           AS post_cost_center_code,
-        tbl_post.c_cost_center_title_fa       AS post_cost_center_title,
-        tbl_post.c_section                    AS post_section,
-        tbl_post.c_title_fa                   AS post_title_fa,
-        tbl_post.c_unit                       AS post_unit,
-        tbl_personnel.personnel_no            AS personnel_personnel_no,
-        tbl_personnel.active                  AS personnel_active,
-        tbl_personnel.ccp_affairs             AS personnel_cpp_affairs,
-        tbl_personnel.ccp_area                AS personnel_cpp_area,
-        tbl_personnel.ccp_assistant           AS personnel_cpp_assistant,
-        tbl_personnel.ccp_code                AS personnel_cpp_code,
-        tbl_personnel.ccp_section             AS personnel_cpp_section,
-        tbl_personnel.ccp_title               AS personnel_cpp_title,
-        tbl_personnel.ccp_unit                AS personnel_cpp_unit,
-        tbl_personnel.company_name            AS personnel_company_name,
-        tbl_personnel.complex_title           AS personnel_complex_title,
-        tbl_personnel.education_level_title   AS personnel_education_level_title,
-        tbl_personnel.first_name              AS personnel_first_name,
-        tbl_personnel.id                      AS personnel_id,
-        tbl_personnel.job_no                  AS personnel_job_no,
-        tbl_personnel.job_title               AS personnel_job_title,
-        tbl_personnel.last_name               AS personnel_last_name,
-        tbl_personnel.national_code           AS personnel_national_code,
-        tbl_personnel.emp_no                  AS personnel_emp_no,
-        tbl_personnel.post_code               AS personnel_post_code,
-        tbl_personnel.post_grade_code         AS personnel_post_grade_code,
-        tbl_personnel.post_grade_title        AS personnel_post_grade_title,
-        tbl_personnel.post_title              AS personnel_post_title,
-        tbl_post_group.c_title_fa             AS post_group_title_fa,
-        tbl_post_group.id                     AS post_group_id,
-        NULL AS job_id,
-        NULL AS job_code,
-        NULL AS job_title_fa,
-        NULL AS job_group_id,
-        NULL AS job_group_title_fa,
-        NULL AS post_grade_id,
-        NULL AS post_grade_code,
-        NULL AS post_grade_title_fa,
-        NULL AS post_grade_group_id,
-        NULL AS post_grade_group_title_fa
-    FROM
-        tbl_needs_assessment
-        INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-        INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-        INNER JOIN tbl_competence ON tbl_needs_assessment.f_competence = tbl_competence.id
-        INNER JOIN tbl_parameter_value   na_priority ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority
-        .id
-        INNER JOIN tbl_parameter_value   na_domain ON tbl_needs_assessment.f_parameter_value_needs_assessment_domain = na_domain.id
-        INNER JOIN tbl_parameter_value   com_type ON tbl_competence.f_parameter_value = com_type.id
-        INNER JOIN tbl_post_group ON tbl_needs_assessment.f_object = tbl_post_group.id
-                                     AND tbl_needs_assessment.c_object_type = 'PostGroup'
-        LEFT JOIN tbl_post_postgroup ON tbl_post_group.id = tbl_post_postgroup.f_postgroup_id
-        INNER JOIN tbl_post ON tbl_post_postgroup.f_post_id = tbl_post.id
-        LEFT JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code
-    UNION
-    SELECT
-        3 AS priority,
-        tbl_needs_assessment.id               AS na_id,
-        na_priority.id                        AS na_priority_id,
-        na_priority.c_title                   AS na_priority,
-        na_domain.id                          AS na_domain_id,
-        na_domain.c_title                     AS na_domain,
-        tbl_competence.id                     AS competence_id,
-        tbl_competence.c_title                AS competence_title,
-        com_type.id                           AS competence_type_id,
-        com_type.c_title                      AS competence_type,
-        tbl_skill.id                          AS skill_id,
-        tbl_skill.c_code                      AS skill_code,
-        tbl_skill.c_title_fa                  AS skill_title_fa,
-        tbl_course.id                         AS course_id,
-        tbl_course.c_code                     AS course_code,
-        tbl_course.c_title_fa                 AS course_title_fa,
-        tbl_post.id                           AS post_id,
-        tbl_post.c_affairs                    AS post_affairs,
-        tbl_post.c_area                       AS post_area,
-        tbl_post.c_assistance                 AS post_assistance,
-        tbl_post.c_code                       AS post_code,
-        tbl_post.c_cost_center_code           AS post_cost_center_code,
-        tbl_post.c_cost_center_title_fa       AS post_cost_center_title,
-        tbl_post.c_section                    AS post_section,
-        tbl_post.c_title_fa                   AS post_title_fa,
-        tbl_post.c_unit                       AS post_unit,
-        tbl_personnel.personnel_no            AS personnel_personnel_no,
-        tbl_personnel.active                  AS personnel_active,
-        tbl_personnel.ccp_affairs             AS personnel_cpp_affairs,
-        tbl_personnel.ccp_area                AS personnel_cpp_area,
-        tbl_personnel.ccp_assistant           AS personnel_cpp_assistant,
-        tbl_personnel.ccp_code                AS personnel_cpp_code,
-        tbl_personnel.ccp_section             AS personnel_cpp_section,
-        tbl_personnel.ccp_title               AS personnel_cpp_title,
-        tbl_personnel.ccp_unit                AS personnel_cpp_unit,
-        tbl_personnel.company_name            AS personnel_company_name,
-        tbl_personnel.complex_title           AS personnel_complex_title,
-        tbl_personnel.education_level_title   AS personnel_education_level_title,
-        tbl_personnel.first_name              AS personnel_first_name,
-        tbl_personnel.id                      AS personnel_id,
-        tbl_personnel.job_no                  AS personnel_job_no,
-        tbl_personnel.job_title               AS personnel_job_title,
-        tbl_personnel.last_name               AS personnel_last_name,
-        tbl_personnel.national_code           AS personnel_national_code,
-        tbl_personnel.emp_no                  AS personnel_emp_no,
-        tbl_personnel.post_code               AS personnel_post_code,
-        tbl_personnel.post_grade_code         AS personnel_post_grade_code,
-        tbl_personnel.post_grade_title        AS personnel_post_grade_title,
-        tbl_personnel.post_title              AS personnel_post_title,
-        NULL AS post_group_title_fa,
-        NULL AS post_group_id,
-        tbl_job.id                            AS job_id,
-        tbl_job.c_code                        AS job_code,
-        tbl_job.c_title_fa                    AS job_title_fa,
-        NULL AS job_group_id,
-        NULL AS job_group_title_fa,
-        NULL AS post_grade_id,
-        NULL AS post_grade_code,
-        NULL AS post_grade_title_fa,
-        NULL AS post_grade_group_id,
-        NULL AS post_grade_group_title_fa
-    FROM
-        tbl_needs_assessment
-        INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-        INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-        INNER JOIN tbl_competence ON tbl_needs_assessment.f_competence = tbl_competence.id
-        INNER JOIN tbl_parameter_value   na_priority ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority
-        .id
-        INNER JOIN tbl_parameter_value   na_domain ON tbl_needs_assessment.f_parameter_value_needs_assessment_domain = na_domain.id
-        INNER JOIN tbl_parameter_value   com_type ON tbl_competence.f_parameter_value = com_type.id
-        INNER JOIN tbl_job ON tbl_needs_assessment.f_object = tbl_job.id
-                              AND tbl_needs_assessment.c_object_type = 'Job'
-        LEFT JOIN tbl_post ON tbl_job.id = tbl_post.f_job_id
-        LEFT JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code
-    UNION
-    SELECT
-        4 AS priority,
-        tbl_needs_assessment.id               AS na_id,
-        na_priority.id                        AS na_priority_id,
-        na_priority.c_title                   AS na_priority,
-        na_domain.id                          AS na_domain_id,
-        na_domain.c_title                     AS na_domain,
-        tbl_competence.id                     AS competence_id,
-        tbl_competence.c_title                AS competence_title,
-        com_type.id                           AS competence_type_id,
-        com_type.c_title                      AS competence_type,
-        tbl_skill.id                          AS skill_id,
-        tbl_skill.c_code                      AS skill_code,
-        tbl_skill.c_title_fa                  AS skill_title_fa,
-        tbl_course.id                         AS course_id,
-        tbl_course.c_code                     AS course_code,
-        tbl_course.c_title_fa                 AS course_title_fa,
-        tbl_post.id                           AS post_id,
-        tbl_post.c_affairs                    AS post_affairs,
-        tbl_post.c_area                       AS post_area,
-        tbl_post.c_assistance                 AS post_assistance,
-        tbl_post.c_code                       AS post_code,
-        tbl_post.c_cost_center_code           AS post_cost_center_code,
-        tbl_post.c_cost_center_title_fa       AS post_cost_center_title,
-        tbl_post.c_section                    AS post_section,
-        tbl_post.c_title_fa                   AS post_title_fa,
-        tbl_post.c_unit                       AS post_unit,
-        tbl_personnel.personnel_no            AS personnel_personnel_no,
-        tbl_personnel.active                  AS personnel_active,
-        tbl_personnel.ccp_affairs             AS personnel_cpp_affairs,
-        tbl_personnel.ccp_area                AS personnel_cpp_area,
-        tbl_personnel.ccp_assistant           AS personnel_cpp_assistant,
-        tbl_personnel.ccp_code                AS personnel_cpp_code,
-        tbl_personnel.ccp_section             AS personnel_cpp_section,
-        tbl_personnel.ccp_title               AS personnel_cpp_title,
-        tbl_personnel.ccp_unit                AS personnel_cpp_unit,
-        tbl_personnel.company_name            AS personnel_company_name,
-        tbl_personnel.complex_title           AS personnel_complex_title,
-        tbl_personnel.education_level_title   AS personnel_education_level_title,
-        tbl_personnel.first_name              AS personnel_first_name,
-        tbl_personnel.id                      AS personnel_id,
-        tbl_personnel.job_no                  AS personnel_job_no,
-        tbl_personnel.job_title               AS personnel_job_title,
-        tbl_personnel.last_name               AS personnel_last_name,
-        tbl_personnel.national_code           AS personnel_national_code,
-        tbl_personnel.emp_no                  AS personnel_emp_no,
-        tbl_personnel.post_code               AS personnel_post_code,
-        tbl_personnel.post_grade_code         AS personnel_post_grade_code,
-        tbl_personnel.post_grade_title        AS personnel_post_grade_title,
-        tbl_personnel.post_title              AS personnel_post_title,
-        NULL AS post_group_title_fa,
-        NULL AS post_group_id,
-        tbl_job.id                            AS job_id,
-        tbl_job.c_code                        AS job_code,
-        tbl_job.c_title_fa                    AS job_title_fa,
-        tbl_job_group.id                      AS job_group_id,
-        tbl_job_group.c_title_fa              AS job_group_title_fa,
-        NULL AS post_grade_id,
-        NULL AS post_grade_code,
-        NULL AS post_grade_title_fa,
-        NULL AS post_grade_group_id,
-        NULL AS post_grade_group_title_fa
-    FROM
-        tbl_needs_assessment
-        INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-        INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-        INNER JOIN tbl_competence ON tbl_needs_assessment.f_competence = tbl_competence.id
-        INNER JOIN tbl_parameter_value   na_priority ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority
-        .id
-        INNER JOIN tbl_parameter_value   na_domain ON tbl_needs_assessment.f_parameter_value_needs_assessment_domain = na_domain.id
-        INNER JOIN tbl_parameter_value   com_type ON tbl_competence.f_parameter_value = com_type.id
-        INNER JOIN tbl_job_group ON tbl_needs_assessment.f_object = tbl_job_group.id
-                                    AND tbl_needs_assessment.c_object_type = 'JobGroup'
-        LEFT JOIN tbl_job_jobgroup ON tbl_job_group.id = tbl_job_jobgroup.f_jobgroup_id
-        INNER JOIN tbl_job ON tbl_job_jobgroup.f_job_id = tbl_job.id
-        LEFT JOIN tbl_post ON tbl_job.id = tbl_post.f_job_id
-        LEFT JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code
-    UNION
-    SELECT
-        5 AS priority,
-        tbl_needs_assessment.id               AS na_id,
-        na_priority.id                        AS na_priority_id,
-        na_priority.c_title                   AS na_priority,
-        na_domain.id                          AS na_domain_id,
-        na_domain.c_title                     AS na_domain,
-        tbl_competence.id                     AS competence_id,
-        tbl_competence.c_title                AS competence_title,
-        com_type.id                           AS competence_type_id,
-        com_type.c_title                      AS competence_type,
-        tbl_skill.id                          AS skill_id,
-        tbl_skill.c_code                      AS skill_code,
-        tbl_skill.c_title_fa                  AS skill_title_fa,
-        tbl_course.id                         AS course_id,
-        tbl_course.c_code                     AS course_code,
-        tbl_course.c_title_fa                 AS course_title_fa,
-        tbl_post.id                           AS post_id,
-        tbl_post.c_affairs                    AS post_affairs,
-        tbl_post.c_area                       AS post_area,
-        tbl_post.c_assistance                 AS post_assistance,
-        tbl_post.c_code                       AS post_code,
-        tbl_post.c_cost_center_code           AS post_cost_center_code,
-        tbl_post.c_cost_center_title_fa       AS post_cost_center_title,
-        tbl_post.c_section                    AS post_section,
-        tbl_post.c_title_fa                   AS post_title_fa,
-        tbl_post.c_unit                       AS post_unit,
-        tbl_personnel.personnel_no            AS personnel_personnel_no,
-        tbl_personnel.active                  AS personnel_active,
-        tbl_personnel.ccp_affairs             AS personnel_cpp_affairs,
-        tbl_personnel.ccp_area                AS personnel_cpp_area,
-        tbl_personnel.ccp_assistant           AS personnel_cpp_assistant,
-        tbl_personnel.ccp_code                AS personnel_cpp_code,
-        tbl_personnel.ccp_section             AS personnel_cpp_section,
-        tbl_personnel.ccp_title               AS personnel_cpp_title,
-        tbl_personnel.ccp_unit                AS personnel_cpp_unit,
-        tbl_personnel.company_name            AS personnel_company_name,
-        tbl_personnel.complex_title           AS personnel_complex_title,
-        tbl_personnel.education_level_title   AS personnel_education_level_title,
-        tbl_personnel.first_name              AS personnel_first_name,
-        tbl_personnel.id                      AS personnel_id,
-        tbl_personnel.job_no                  AS personnel_job_no,
-        tbl_personnel.job_title               AS personnel_job_title,
-        tbl_personnel.last_name               AS personnel_last_name,
-        tbl_personnel.national_code           AS personnel_national_code,
-        tbl_personnel.emp_no                  AS personnel_emp_no,
-        tbl_personnel.post_code               AS personnel_post_code,
-        tbl_personnel.post_grade_code         AS personnel_post_grade_code,
-        tbl_personnel.post_grade_title        AS personnel_post_grade_title,
-        tbl_personnel.post_title              AS personnel_post_title,
-        NULL AS post_group_title_fa,
-        NULL AS post_group_id,
-        NULL AS job_id,
-        NULL AS job_code,
-        NULL AS job_title_fa,
-        NULL AS job_group_id,
-        NULL AS job_group_title_fa,
-        tbl_post_grade.id                     AS post_grade_id,
-        tbl_post_grade.c_code                 AS post_grade_code,
-        tbl_post_grade.c_title_fa             AS post_grade_title_fa,
-        NULL AS post_grade_group_id,
-        NULL AS post_grade_group_title_fa
-    FROM
-        tbl_needs_assessment
-        INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-        INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-        INNER JOIN tbl_competence ON tbl_needs_assessment.f_competence = tbl_competence.id
-        INNER JOIN tbl_parameter_value   na_priority ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority
-        .id
-        INNER JOIN tbl_parameter_value   na_domain ON tbl_needs_assessment.f_parameter_value_needs_assessment_domain = na_domain.id
-        INNER JOIN tbl_parameter_value   com_type ON tbl_competence.f_parameter_value = com_type.id
-        INNER JOIN tbl_post_grade ON tbl_needs_assessment.f_object = tbl_post_grade.id
-                                     AND tbl_needs_assessment.c_object_type = 'PostGrade'
-        LEFT JOIN tbl_post ON tbl_post_grade.id = tbl_post.f_post_grade_id
-        LEFT JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code
-    UNION
-    SELECT
-        6 AS priority,
-        tbl_needs_assessment.id               AS na_id,
-        na_priority.id                        AS na_priority_id,
-        na_priority.c_title                   AS na_priority,
-        na_domain.id                          AS na_domain_id,
-        na_domain.c_title                     AS na_domain,
-        tbl_competence.id                     AS competence_id,
-        tbl_competence.c_title                AS competence_title,
-        com_type.id                           AS competence_type_id,
-        com_type.c_title                      AS competence_type,
-        tbl_skill.id                          AS skill_id,
-        tbl_skill.c_code                      AS skill_code,
-        tbl_skill.c_title_fa                  AS skill_title_fa,
-        tbl_course.id                         AS course_id,
-        tbl_course.c_code                     AS course_code,
-        tbl_course.c_title_fa                 AS course_title_fa,
-        tbl_post.id                           AS post_id,
-        tbl_post.c_affairs                    AS post_affairs,
-        tbl_post.c_area                       AS post_area,
-        tbl_post.c_assistance                 AS post_assistance,
-        tbl_post.c_code                       AS post_code,
-        tbl_post.c_cost_center_code           AS post_cost_center_code,
-        tbl_post.c_cost_center_title_fa       AS post_cost_center_title,
-        tbl_post.c_section                    AS post_section,
-        tbl_post.c_title_fa                   AS post_title_fa,
-        tbl_post.c_unit                       AS post_unit,
-        tbl_personnel.personnel_no            AS personnel_personnel_no,
-        tbl_personnel.active                  AS personnel_active,
-        tbl_personnel.ccp_affairs             AS personnel_cpp_affairs,
-        tbl_personnel.ccp_area                AS personnel_cpp_area,
-        tbl_personnel.ccp_assistant           AS personnel_cpp_assistant,
-        tbl_personnel.ccp_code                AS personnel_cpp_code,
-        tbl_personnel.ccp_section             AS personnel_cpp_section,
-        tbl_personnel.ccp_title               AS personnel_cpp_title,
-        tbl_personnel.ccp_unit                AS personnel_cpp_unit,
-        tbl_personnel.company_name            AS personnel_company_name,
-        tbl_personnel.complex_title           AS personnel_complex_title,
-        tbl_personnel.education_level_title   AS personnel_education_level_title,
-        tbl_personnel.first_name              AS personnel_first_name,
-        tbl_personnel.id                      AS personnel_id,
-        tbl_personnel.job_no                  AS personnel_job_no,
-        tbl_personnel.job_title               AS personnel_job_title,
-        tbl_personnel.last_name               AS personnel_last_name,
-        tbl_personnel.national_code           AS personnel_national_code,
-        tbl_personnel.emp_no                  AS personnel_emp_no,
-        tbl_personnel.post_code               AS personnel_post_code,
-        tbl_personnel.post_grade_code         AS personnel_post_grade_code,
-        tbl_personnel.post_grade_title        AS personnel_post_grade_title,
-        tbl_personnel.post_title              AS personnel_post_title,
-        NULL AS post_group_title_fa,
-        NULL AS post_group_id,
-        NULL AS job_id,
-        NULL AS job_code,
-        NULL AS job_title_fa,
-        NULL AS job_group_id,
-        NULL AS job_group_title_fa,
-        tbl_post_grade.id                     AS post_grade_id,
-        tbl_post_grade.c_code                 AS post_grade_code,
-        tbl_post_grade.c_title_fa             AS post_grade_title_fa,
-        tbl_post_grade_group.id               AS post_grade_group_id,
-        tbl_post_grade_group.c_title_fa       AS post_grade_group_title_fa
-    FROM
-        tbl_needs_assessment
-        INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-        INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-        INNER JOIN tbl_competence ON tbl_needs_assessment.f_competence = tbl_competence.id
-        INNER JOIN tbl_parameter_value   na_priority ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority
-        .id
-        INNER JOIN tbl_parameter_value   na_domain ON tbl_needs_assessment.f_parameter_value_needs_assessment_domain = na_domain.id
-        INNER JOIN tbl_parameter_value   com_type ON tbl_competence.f_parameter_value = com_type.id
-        INNER JOIN tbl_post_grade_group ON tbl_needs_assessment.f_object = tbl_post_grade_group.id
-                                           AND tbl_needs_assessment.c_object_type = 'PostGradeGroup'
-        LEFT JOIN tbl_post_grade_post_grade_group ON tbl_post_grade_group.id = tbl_post_grade_post_grade_group.f_post_grade_group_id
-        INNER JOIN tbl_post_grade ON tbl_post_grade_post_grade_group.f_post_grade_id = tbl_post_grade.id
-        LEFT JOIN tbl_post ON tbl_post_grade.id = tbl_post.f_post_grade_id
-        LEFT JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code
-    ORDER BY
-        na_priority_id
-)
-SELECT
-    "PRIORITY","NA_ID","NA_PRIORITY_ID","NA_PRIORITY","NA_DOMAIN_ID","NA_DOMAIN","COMPETENCE_ID","COMPETENCE_TITLE","COMPETENCE_TYPE_ID","COMPETENCE_TYPE","SKILL_ID","SKILL_CODE","SKILL_TITLE_FA","COURSE_ID","COURSE_CODE","COURSE_TITLE_FA","POST_ID","POST_AFFAIRS","POST_AREA","POST_ASSISTANCE","POST_CODE","POST_COST_CENTER_CODE","POST_COST_CENTER_TITLE","POST_SECTION","POST_TITLE_FA","POST_UNIT","PERSONNEL_PERSONNEL_NO","PERSONNEL_ACTIVE","PERSONNEL_CPP_AFFAIRS","PERSONNEL_CPP_AREA","PERSONNEL_CPP_ASSISTANT","PERSONNEL_CPP_CODE","PERSONNEL_CPP_SECTION","PERSONNEL_CPP_TITLE","PERSONNEL_CPP_UNIT","PERSONNEL_COMPANY_NAME","PERSONNEL_COMPLEX_TITLE","PERSONNEL_EDUCATION_LEVEL_TITLE","PERSONNEL_FIRST_NAME","PERSONNEL_ID","PERSONNEL_JOB_NO","PERSONNEL_JOB_TITLE","PERSONNEL_LAST_NAME","PERSONNEL_NATIONAL_CODE","PERSONNEL_EMP_NO","PERSONNEL_POST_CODE","PERSONNEL_POST_GRADE_CODE","PERSONNEL_POST_GRADE_TITLE","PERSONNEL_POST_TITLE","POST_GROUP_TITLE_FA","POST_GROUP_ID","JOB_ID","JOB_CODE","JOB_TITLE_FA","JOB_GROUP_ID","JOB_GROUP_TITLE_FA","POST_GRADE_ID","POST_GRADE_CODE","POST_GRADE_TITLE_FA","POST_GRADE_GROUP_ID","POST_GRADE_GROUP_TITLE_FA"
-FROM
-    result r
-WHERE
-    r.priority = (
-        SELECT
-            MIN(r1.priority)
-        FROM
-            result r1
-        WHERE
-            r.skill_id = r1.skill_id
-            AND r.post_id = r1.post_id
-    )
-			]]>
-        </createView>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-79">
+        <createTable tableName="tbl_attendance">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_attendancePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_session" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_state" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_student" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE-003">
-        <createView viewName="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE" replaceIfExists="true">
-            <![CDATA[
-SELECT
-    tbl_student.id                             AS student_id,
-    tbl_student.active                         AS student_active,
-    tbl_student.ccp_affairs                    AS student_cpp_affairs,
-    tbl_student.ccp_area                       AS student_cpp_area,
-    tbl_student.ccp_assistant                  AS student_cpp_assistant,
-    tbl_student.ccp_code                       AS student_cpp_code,
-    tbl_student.ccp_section                    AS student_cpp_section,
-    tbl_student.ccp_title                      AS student_cpp_title,
-    tbl_student.ccp_unit                       AS student_cpp_unit,
-    tbl_student.company_name                   AS student_company_name,
-    tbl_student.complex_title                  AS student_complex_title,
-    tbl_student.education_level_title          AS student_education_level_title,
-    tbl_student.first_name                     AS student_first_name,
-    tbl_student.job_no                         AS student_job_no,
-    tbl_student.job_title                      AS student_job_title,
-    tbl_student.last_name                      AS student_last_name,
-    tbl_student.national_code                  AS student_national_code,
-    tbl_student.personnel_no                   AS student_personnel_no,
-    tbl_student.emp_no                         AS student_emp_no,
-    tbl_student.post_code                      AS student_post_code,
-    tbl_student.post_grade_code                AS student_post_grade_code,
-    tbl_student.post_grade_title               AS student_post_grade_title,
-    tbl_student.post_title                     AS student_post_title,
-    tbl_term.c_code                            AS term_code,
-    tbl_term.c_title_fa                        AS term_title_fa,
-    tbl_term.id                                AS term_id,
-    tbl_class_student.id                       AS class_student_id,
-    tbl_class_student.applicant_company_name   AS class_student_applicant_company_name,
-    tbl_class_student.failure_reason           AS class_student_failure_reason,
-    tbl_class_student.presence_type_id         AS class_student_presence_type_id,
-    tbl_class_student.score                    AS class_student_score,
-    tbl_class_student.scores_state             AS class_student_scores_state,
-    tbl_class.id                               AS class_id,
-    tbl_class.c_status                         AS class_status,
-    tbl_class.c_code                           AS class_code,
-    tbl_class.n_d_duration                     AS class_d_duration,
-    tbl_class.c_end_date                       AS class_end_date,
-    tbl_class.n_h_duration                     AS class_h_duration,
-    tbl_class.c_start_date                     AS class_start_date,
-    tbl_class.c_title_class                    AS class_title_class,
-    tbl_class.n_group                          AS class_group,
-    tbl_course.id                              AS course_id,
-    tbl_course.c_code                          AS course_code,
-    tbl_course.c_title_fa                      AS course_title_fa,
-    tbl_category.c_title_fa                    AS category_title_fa,
-    tbl_category.c_code                        AS category_code,
-    tbl_category.id                            AS category_id
-FROM
-    tbl_student
-    INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
-    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
-    INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
-    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
-    INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
-			]]>
-        </createView>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-80">
+        <createTable tableName="tbl_bank">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_bankPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_bank_type" type="NUMBER(10, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT-003">
-        <createView viewName="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT" replaceIfExists="true">
-            <![CDATA[
-SELECT
-    crs.id                      AS course_id,
-    crs.c_code                  AS course_code,
-    crs.c_title_fa              AS course_title_fa,
-    crs.category_id             AS category_id,
-    prs.personnel_no            AS personnel_personnel_no,
-    prs.first_name              AS personnel_first_name,
-    prs.last_name               AS personnel_last_name,
-    prs.national_code           AS personnel_national_code,
-    prs.ccp_affairs             AS personnel_cpp_affairs,
-    prs.ccp_area                AS personnel_cpp_area,
-    prs.ccp_assistant           AS personnel_cpp_assistant,
-    prs.ccp_code                AS personnel_cpp_code,
-    prs.ccp_section             AS personnel_cpp_section,
-    prs.ccp_title               AS personnel_cpp_title,
-    prs.ccp_unit                AS personnel_cpp_unit,
-    prs.company_name            AS personnel_company_name,
-    prs.complex_title           AS personnel_complex_title,
-    prs.education_level_title   AS personnel_education_level_title,
-    prs.id                      AS personnel_id,
-    prs.job_no                  AS personnel_job_no,
-    prs.job_title               AS personnel_job_title,
-    prs.emp_no                  AS personnel_emp_no,
-    prs.post_code               AS personnel_post_code,
-    prs.post_grade_code         AS personnel_post_grade_code,
-    prs.post_grade_title        AS personnel_post_grade_title,
-    prs.post_title              AS personnel_post_title
-FROM
-    tbl_personnel   prs
-    INNER JOIN tbl_course      crs ON prs.active = - 1
-WHERE
-    NOT EXISTS (
-        SELECT
-            v.student_personnel_no,
-            v.course_id
-        FROM
-            view_student_classstudent_class_term_course v
-        WHERE
-            prs.personnel_no = v.student_personnel_no
-            AND crs.id = v.course_id
-            AND ( v.class_student_scores_state LIKE '%قبول%'
-                  OR v.class_student_scores_state IS NULL )
-    )
-			]]>
-        </createView>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-81">
+        <createTable tableName="tbl_bank_branch">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_bank_branchPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_address" type="NUMBER(19, 0)"/>
+            <column name="f_bank" type="NUMBER(10, 0)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT-003">
-    <createView viewName="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT" replaceIfExists="true">
-            <![CDATA[
-SELECT
-    na."NA_PRIORITY_ID",na."COURSE_ID",na."COURSE_CODE",na."COURSE_TITLE_FA",na."PERSONNEL_PERSONNEL_NO",na."PERSONNEL_CPP_AFFAIRS",na."PERSONNEL_CPP_AREA",na."PERSONNEL_CPP_ASSISTANT",na."PERSONNEL_CPP_CODE",na."PERSONNEL_CPP_SECTION",na."PERSONNEL_CPP_TITLE",na."PERSONNEL_CPP_UNIT",na."PERSONNEL_COMPANY_NAME",na."PERSONNEL_COMPLEX_TITLE",na."PERSONNEL_EDUCATION_LEVEL_TITLE",na."PERSONNEL_FIRST_NAME",na."PERSONNEL_ID",na."PERSONNEL_JOB_NO",na."PERSONNEL_JOB_TITLE",na."PERSONNEL_LAST_NAME",na."PERSONNEL_NATIONAL_CODE",na."PERSONNEL_EMP_NO",na."PERSONNEL_POST_CODE",na."PERSONNEL_POST_GRADE_CODE",na."PERSONNEL_POST_GRADE_TITLE",na."PERSONNEL_POST_TITLE",
-    CASE
-        WHEN passed.class_student_scores_state LIKE '%قبول%' THEN
-            1
-        ELSE
-            0
-    END AS is_passed
-FROM
-    view_personnel_course_na_report               na
-    LEFT JOIN view_student_classstudent_class_term_course   passed ON na.personnel_national_code = passed.student_national_code
-                                                                    AND na.course_id = passed.course_id
-                                                                    AND passed.class_student_scores_state LIKE '%قبول%'
-ORDER BY
-    na.course_id
-			]]>
-        </createView>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-82">
+        <createTable tableName="tbl_category">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_categoryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(2 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_desc" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
-
-
-
-
+    <changeSet author="rastegari_h (generated)" id="1587985889507-83">
+        <createTable tableName="tbl_check_list">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_check_listPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-84">
+        <createTable tableName="tbl_check_list_item">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_check_list_itemPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_check_list_id" type="NUMBER(19, 0)"/>
+            <column name="c_group" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_is_deleted" type="NUMBER(1, 0)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-85">
+        <createTable tableName="tbl_city">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_cityPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_state" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-86">
+        <createTable tableName="tbl_class">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_classPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_acceptance_limit" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_status_date" type="TIMESTAMP"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_course" type="NUMBER(19, 0)"/>
+            <column name="n_d_duration" type="NUMBER(19, 0)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_fifth" type="NUMBER(1, 0)"/>
+            <column name="b_first" type="NUMBER(1, 0)"/>
+            <column name="b_fourth" type="NUMBER(1, 0)"/>
+            <column name="b_friday" type="NUMBER(1, 0)"/>
+            <column name="n_group" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_h_duration" type="NUMBER(19, 0)"/>
+            <column name="c_has_warning" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_institute" type="NUMBER(19, 0)"/>
+            <column name="n_max_capacity" type="NUMBER(19, 0)"/>
+            <column name="n_min_capacity" type="NUMBER(19, 0)"/>
+            <column name="b_monday" type="NUMBER(1, 0)"/>
+            <column name="f_institute_organizer" type="NUMBER(19, 0)"/>
+            <column name="f_planner" type="NUMBER(19, 0)"/>
+            <column name="pre_course_test" type="NUMBER(1, 0)"/>
+            <column name="c_reason" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_saturday" type="NUMBER(1, 0)"/>
+            <column name="c_scoring_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_second" type="NUMBER(1, 0)"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_evaluation" type="NUMBER(10, 0)"/>
+            <column name="b_sunday" type="NUMBER(1, 0)"/>
+            <column name="f_supervisor" type="NUMBER(19, 0)"/>
+            <column name="f_teacher" type="NUMBER(19, 0)"/>
+            <column name="c_teaching_brand" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_teaching_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_term" type="NUMBER(19, 0)"/>
+            <column name="b_third" type="NUMBER(1, 0)"/>
+            <column name="b_thursday" type="NUMBER(1, 0)"/>
+            <column name="c_title_class" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_topology" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_tuesday" type="NUMBER(1, 0)"/>
+            <column name="b_wednesday" type="NUMBER(1, 0)"/>
+            <column name="c_workflow_ending_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_workflow_ending_status_code" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-87">
+        <createTable tableName="tbl_class_pre_course_test_question">
+            <column name="f_class_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="c_pre_course_test_question" type="VARCHAR2(1000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_order" type="NUMBER(10, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-88">
+        <createTable tableName="tbl_class_student">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_class_studentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applicant_company_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="evaluation_status_behavior" type="NUMBER(10, 0)"/>
+            <column name="evaluation_status_learning" type="NUMBER(10, 0)"/>
+            <column name="evaluation_status_reaction" type="NUMBER(10, 0)"/>
+            <column name="evaluation_status_results" type="NUMBER(10, 0)"/>
+            <column name="failure_reason" type="VARCHAR2(255 CHAR)"/>
+            <column name="pre_test_score" type="FLOAT"/>
+            <column name="presence_type_id" type="NUMBER(19, 0)"/>
+            <column name="score" type="FLOAT"/>
+            <column name="scores_state" type="VARCHAR2(255 CHAR)"/>
+            <column name="student_id" type="NUMBER(19, 0)"/>
+            <column name="class_id" type="NUMBER(19, 0)"/>
+            <column name="c_valence" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-89">
+        <createTable tableName="tbl_class_training_place">
+            <column name="f_class_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_training_place_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-90">
+        <createTable tableName="tbl_committee">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_committeePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category_id" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="subcategory_id" type="NUMBER(19, 0)"/>
+            <column name="c_tasks" type="VARCHAR2(400 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-91">
+        <createTable tableName="tbl_committee_personal_info">
+            <column name="f_committee_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_personal_info_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-92">
+        <createTable tableName="tbl_company">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_companyPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_account_info_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_address_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_company_id" type="VARCHAR2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_economical_id" type="VARCHAR2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_email" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_personal_info_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_register_id" type="VARCHAR2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_domain" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-93">
+        <createTable tableName="tbl_competence">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_competencePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_parameter_value" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-94">
+        <createTable tableName="tbl_competence_new">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_competence_newPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_competence_input_type" type="NUMBER(10, 0)"/>
+            <column name="e_technical_type" type="NUMBER(10, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-95">
+        <createTable tableName="tbl_competence_skill_group">
+            <column name="f_skill_group_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_competence_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-96">
+        <createTable tableName="tbl_contact_info">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_contact_infoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_email" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_home_address" type="NUMBER(19, 0)"/>
+            <column name="c_mobile" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_personal_web_site" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_work_address" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-97">
+        <createTable tableName="tbl_country">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_countryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_abbrev" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-98">
+        <createTable tableName="tbl_course">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_coursePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_acceptance_limit" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_behavioral_level" type="VARCHAR2(255 CHAR)"/>
+            <column name="category_id" type="NUMBER(19, 0)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_level_type" type="NUMBER(10, 0)"/>
+            <column name="e_run_type" type="NUMBER(10, 0)"/>
+            <column name="e_technical_type" type="NUMBER(10, 0)"/>
+            <column name="e_theo_type" type="NUMBER(10, 0)"/>
+            <column name="c_equal_course" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_evaluation" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_has_goal" type="NUMBER(1, 0)"/>
+            <column name="n_has_skill" type="NUMBER(1, 0)"/>
+            <column name="n_min_teacher_degree" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_min_teacher_eval_score" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_min_teacher_exp_years" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_need_text" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_pre_course" type="VARCHAR2(255 CHAR)"/>
+            <column name="scoring_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="start_evaluation" type="NUMBER(10, 0)"/>
+            <column name="subcategory_id" type="NUMBER(19, 0)"/>
+            <column name="n_theory_duration" type="FLOAT"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_workflow_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_workflow_status_code" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-99">
+        <createTable tableName="tbl_course_goal">
+            <column name="f_course_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_goal_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-100">
+        <createTable tableName="tbl_department">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_departmentPK"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="dep_deactive" type="VARCHAR2(255 CHAR)"/>
+            <column name="dep_parent_id" type="NUMBER(19, 0)"/>
+            <column name="dep_departmentname" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_tree_version" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-101">
+        <createTable tableName="tbl_education_level">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_education_levelPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_code" type="NUMBER(10, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-102">
+        <createTable tableName="tbl_education_major">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_education_majorPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-103">
+        <createTable tableName="tbl_education_orientation">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_education_orientationPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_education_level" type="NUMBER(19, 0)"/>
+            <column name="f_education_major" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-104">
+        <createTable tableName="tbl_employment_history">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_employment_historyPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-105">
+        <createTable tableName="tbl_employment_history_category">
+            <column name="f_employment_history" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-106">
+        <createTable tableName="tbl_employment_history_subcategory">
+            <column name="f_employment_history" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-107">
+        <createTable tableName="tbl_equal_and_course">
+            <column name="f_equal_course_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="list_equal_and_course" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-108">
+        <createTable tableName="tbl_equal_course">
+            <column name="equal_course_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_equal_coursePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-109">
+        <createTable tableName="tbl_equipment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_equipmentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(10 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-110">
+        <createTable tableName="tbl_evaluation">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluationPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_class_id" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_evaluated_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluated_type_id" type="NUMBER(19, 0)"/>
+            <column name="b_evaluation_full" type="NUMBER(1, 0)"/>
+            <column name="f_evaluation_level_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluator_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluator_type_id" type="NUMBER(19, 0)"/>
+            <column name="f_questionnaire_type_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-111">
+        <createTable tableName="tbl_evaluation_answer">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_answerPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_answer_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluation_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluation_question_id" type="NUMBER(19, 0)"/>
+            <column name="f_question_source_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-112">
+        <createTable tableName="tbl_evaluation_index">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_indexPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-113">
+        <createTable tableName="tbl_evaluation_question">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_questionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_domain_id" type="NUMBER(19, 0)"/>
+            <column name="c_question" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-114">
+        <createTable tableName="tbl_evaluation_question_evaluation_index">
+            <column name="f_evaluation_question" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_evaluation_index" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-115">
+        <createTable tableName="tbl_foreign_lang_knowledge">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_foreign_lang_knowledgePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_duration" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_institute_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_level" type="NUMBER(10, 0)"/>
+            <column name="c_lang_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-116">
+        <createTable tableName="tbl_goal">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_goalPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(500 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-117">
+        <createTable tableName="tbl_holiday">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_holidayPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_holiday" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-118">
+        <createTable tableName="tbl_institute">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_institutePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_city" type="NUMBER(19, 0)"/>
+            <column name="e_institute_type" type="NUMBER(10, 0)"/>
+            <column name="e_license_type" type="NUMBER(10, 0)"/>
+            <column name="c_email" type="VARCHAR2(50 CHAR)"/>
+            <column name="n_emp_associate_number" type="NUMBER(10, 0)"/>
+            <column name="n_emp_diploma_number" type="NUMBER(10, 0)"/>
+            <column name="n_emp_licentiate_number" type="NUMBER(10, 0)"/>
+            <column name="n_emp_master_number" type="NUMBER(10, 0)"/>
+            <column name="n_emp_phd_number" type="NUMBER(10, 0)"/>
+            <column name="c_fax" type="VARCHAR2(50 CHAR)"/>
+            <column name="f_manager" type="NUMBER(19, 0)"/>
+            <column name="c_mobile" type="VARCHAR2(50 CHAR)"/>
+            <column name="f_institute_parent" type="NUMBER(19, 0)"/>
+            <column name="c_phone" type="VARCHAR2(50 CHAR)"/>
+            <column name="c_post_code" type="VARCHAR2(12 CHAR)"/>
+            <column name="c_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_state" type="NUMBER(19, 0)"/>
+            <column name="n_teacher_associate_number" type="NUMBER(10, 0)"/>
+            <column name="n_teacher_diploma_number" type="NUMBER(10, 0)"/>
+            <column name="n_teacher_licentiate_number" type="NUMBER(10, 0)"/>
+            <column name="n_teacher_master_number" type="NUMBER(10, 0)"/>
+            <column name="n_teacher_phd_number" type="NUMBER(10, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_website" type="VARCHAR2(50 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-119">
+        <createTable tableName="tbl_institute_account">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_institute_accountPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_account_number" type="VARCHAR2(20 CHAR)"/>
+            <column name="c_account_owner_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank_branch" type="NUMBER(19, 0)"/>
+            <column name="c_bank" type="NUMBER(19, 0)"/>
+            <column name="c_cart_number" type="VARCHAR2(20 CHAR)"/>
+            <column name="c_description" type="NUMBER(19, 0)"/>
+            <column name="c_institute" type="NUMBER(19, 0)"/>
+            <column name="n_is_enable" type="NUMBER(10, 0)"/>
+            <column name="c_shaba_number" type="VARCHAR2(100 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-120">
+        <createTable tableName="tbl_institute_equipment">
+            <column name="f_institute" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_equipment" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-121">
+        <createTable tableName="tbl_institute_teacher">
+            <column name="f_institute" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-122">
+        <createTable tableName="tbl_job">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_jobPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-123">
+        <createTable tableName="tbl_job_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_job_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-124">
+        <createTable tableName="tbl_job_jobgroup">
+            <column name="f_jobgroup_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_job_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-125">
+        <createTable tableName="tbl_need_assessment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_need_assessmentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_competence_id" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_domain_type" type="NUMBER(10, 0)"/>
+            <column name="e_need_assessment_priority" type="NUMBER(10, 0)"/>
+            <column name="f_post_id" type="NUMBER(19, 0)"/>
+            <column name="f_skill_group_id" type="NUMBER(19, 0)"/>
+            <column name="f_skill_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-126">
+        <createTable tableName="tbl_need_assessment_skill_based">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_skill_basedPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_need_assessment_priority" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_object_type" type="VARCHAR2(30 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_object_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_skill_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-127">
+        <createTable tableName="tbl_need_assessment_skill_post">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_skill_postPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_need_assessment_priority" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_post_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_skill_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-128">
+        <createTable tableName="tbl_needs_assessment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_needs_assessmentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_competence" type="NUMBER(19, 0)"/>
+            <column name="c_main_workflow_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_main_workflow_status_code" type="NUMBER(10, 0)"/>
+            <column name="f_parameter_value_needs_assessment_domain" type="NUMBER(19, 0)"/>
+            <column name="f_parameter_value_needs_assessment_priority" type="NUMBER(19, 0)"/>
+            <column name="c_object_type" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_object" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_object_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_object_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_skill" type="NUMBER(19, 0)"/>
+            <column name="c_workflow_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_workflow_status_code" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-129">
+        <createTable tableName="tbl_operational_unit">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_operational_unitPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_operational_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_unitcode" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-130">
+        <createTable tableName="tbl_parameter">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_parameterPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_type" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-131">
+        <createTable tableName="tbl_parameter_value">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_parameter_valuePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_parameter_id" type="NUMBER(19, 0)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_value" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-132">
+        <createTable tableName="tbl_permission">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_permissionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_attribute_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_attribute_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_entity_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_work_group" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-133">
+        <createTable tableName="tbl_permission_attribute_values">
+            <column name="f_permission" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_values" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-134">
+        <createTable tableName="tbl_personal_info">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personal_infoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_account_info" type="NUMBER(19, 0)"/>
+            <column name="c_birth_certificate" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_certificate_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_contact_info" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="f_edu_level" type="NUMBER(19, 0)"/>
+            <column name="f_edu_major" type="NUMBER(19, 0)"/>
+            <column name="f_edu_orientation" type="NUMBER(19, 0)"/>
+            <column name="c_father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_first_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_first_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_gender" type="NUMBER(10, 0)"/>
+            <column name="c_job_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_last_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_last_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_married" type="NUMBER(10, 0)"/>
+            <column name="e_military" type="NUMBER(10, 0)"/>
+            <column name="c_national_code" type="VARCHAR2(10 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_nationality" type="VARCHAR2(255 CHAR)"/>
+            <column name="p_photo" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_religion" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-135">
+        <createTable tableName="tbl_personnel">
+            <column name="personnel_no" type="VARCHAR2(255 CHAR)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
+            </column>
+            <column name="active" type="NUMBER(10, 0)"/>
+            <column name="age" type="NUMBER(10, 0)"/>
+            <column name="birth_certificate_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_place" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_assistant" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_section" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="complex_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="deleted" type="NUMBER(10, 0)"/>
+            <column name="department_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="department_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_level_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_license_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_field_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_id" type="NUMBER(10, 0)"/>
+            <column name="employment_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="first_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="gender_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="id" type="NUMBER(19, 0)"/>
+            <column name="insurance_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="last_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="marital_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="military_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_days" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_months" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_place_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_turn_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_years" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-136">
+        <createTable tableName="tbl_personnel_registered">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personnel_registeredPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="active" type="NUMBER(10, 0)"/>
+            <column name="address" type="VARCHAR2(255 CHAR)"/>
+            <column name="age" type="NUMBER(10, 0)"/>
+            <column name="birth_certificate_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_place" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_assistant" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_section" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="complex_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="deleted" type="NUMBER(10, 0)"/>
+            <column name="department_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="department_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_level_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_license_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_field_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="email" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_id" type="NUMBER(10, 0)"/>
+            <column name="employment_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="fax" type="VARCHAR2(255 CHAR)"/>
+            <column name="first_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="gender_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="insurance_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="last_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="marital_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="military_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="mobile" type="VARCHAR2(255 CHAR)"/>
+            <column name="national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="nationality_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="personnel_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="phone" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="religion_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_days" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_months" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_place_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_turn_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_years" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-137">
+        <createTable tableName="tbl_polis">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_polisPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_province_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-138">
+        <createTable tableName="tbl_post">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_postPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assistance" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_cost_center_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_cost_center_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_section" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_job_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_post_grade_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-139">
+        <createTable tableName="tbl_post_grade">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_post_gradePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-140">
+        <createTable tableName="tbl_post_grade_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_post_grade_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-141">
+        <createTable tableName="tbl_post_grade_post_grade_group">
+            <column name="f_post_grade_group_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_post_grade_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-142">
+        <createTable tableName="tbl_post_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_post_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-143">
+        <createTable tableName="tbl_post_postgroup">
+            <column name="f_postgroup_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_post_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-144">
+        <createTable tableName="tbl_pre_course">
+            <column name="f_pre_course_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_course_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-145">
+        <createTable tableName="tbl_province">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_provincePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-146">
+        <createTable tableName="tbl_publication">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_publicationPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_publication_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_publication_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_subject_type" type="NUMBER(10, 0)"/>
+            <column name="c_publisher" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_subject_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-147">
+        <createTable tableName="tbl_publication_category">
+            <column name="f_publication" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-148">
+        <createTable tableName="tbl_publication_subcategory">
+            <column name="f_publication" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-149">
+        <createTable tableName="tbl_questionnaire">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_questionnairePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_parameter_value" type="NUMBER(19, 0)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-150">
+        <createTable tableName="tbl_questionnaire_question">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_questionnaire_questionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_evaluation_question" type="NUMBER(19, 0)"/>
+            <column name="n_order" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_questionnaire" type="NUMBER(19, 0)"/>
+            <column name="f_weight" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-151">
+        <createTable tableName="tbl_session">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sessionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_session_type_id" type="NUMBER(10, 0)"/>
+            <column name="f_class_id" type="NUMBER(19, 0)"/>
+            <column name="c_day_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_day_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_institute_id" type="NUMBER(19, 0)"/>
+            <column name="c_session_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_end_hour" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_start_hour" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_state" type="NUMBER(10, 0)"/>
+            <column name="c_session_state_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+            <column name="f_training_place_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-152">
+        <createTable tableName="tbl_skill">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skillPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)"/>
+            <column name="c_code" type="VARCHAR2(10 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_course" type="NUMBER(19, 0)"/>
+            <column name="f_main_objective_course" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="f_skill_level" type="NUMBER(19, 0)"/>
+            <column name="f_sub_category" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-153">
+        <createTable tableName="tbl_skill_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-154">
+        <createTable tableName="tbl_skill_level">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_levelPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-155">
+        <createTable tableName="tbl_skill_skillgroup">
+            <column name="f_skillgroup_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_skill_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-156">
+        <createTable tableName="tbl_skill_type">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_typePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_desc" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-157">
+        <createTable tableName="tbl_state">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_statePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_name" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-158">
+        <createTable tableName="tbl_student">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_studentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="NUMBER(10, 0)"/>
+            <column name="age" type="NUMBER(10, 0)"/>
+            <column name="birth_certificate_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_place" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_assistant" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_section" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="complex_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="deleted" type="NUMBER(10, 0)"/>
+            <column name="department_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="department_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_level_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_license_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_field_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_id" type="NUMBER(10, 0)"/>
+            <column name="employment_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="first_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="gender_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="insurance_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="last_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="marital_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="military_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="personnel_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_days" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_months" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_place_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_turn_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_years" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-159">
+        <createTable tableName="tbl_sub_category">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sub_categoryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category_id" type="NUMBER(19, 0)"/>
+            <column name="c_code" type="VARCHAR2(7 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-160">
+        <createTable tableName="tbl_syllabus">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_syllabusPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_domain_type" type="NUMBER(10, 0)"/>
+            <column name="f_goal" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_practical_duration" type="FLOAT"/>
+            <column name="n_theoretical_duration" type="FLOAT"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(700 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-161">
+        <createTable tableName="tbl_task">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_taskPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_attach_photo" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_task_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_En" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-162">
+        <createTable tableName="tbl_teacher">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_teacherPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_black_list_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_economical_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_economical_record_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_enabled" type="NUMBER(1, 0)"/>
+            <column name="b_in_black_list" type="NUMBER(1, 0)"/>
+            <column name="f_major_category" type="NUMBER(19, 0)"/>
+            <column name="f_major_sub_category" type="NUMBER(19, 0)"/>
+            <column name="c_other_activities" type="VARCHAR2(500 CHAR)"/>
+            <column name="f_personality" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_personnel_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_personnel" type="NUMBER(1, 0)"/>
+            <column name="c_teacher_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-163">
+        <createTable tableName="tbl_teacher_category">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-164">
+        <createTable tableName="tbl_teacher_certification">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_teacher_certificationPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_company_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_course_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_duration" type="NUMBER(10, 0)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-165">
+        <createTable tableName="tbl_teacher_certification_category">
+            <column name="f_teacher_certification" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-166">
+        <createTable tableName="tbl_teacher_certification_subcategory">
+            <column name="f_teacher_certification" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-167">
+        <createTable tableName="tbl_teacher_subcategory">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-168">
+        <createTable tableName="tbl_teaching_history">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_teaching_historyPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_course_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_duration" type="NUMBER(10, 0)"/>
+            <column name="f_education_level_id" type="NUMBER(19, 0)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-169">
+        <createTable tableName="tbl_teaching_history_category">
+            <column name="f_teaching_history" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-170">
+        <createTable tableName="tbl_teaching_history_subcategory">
+            <column name="f_teaching_history" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-171">
+        <createTable tableName="tbl_term">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_termPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_enddate" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_startdate" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-172">
+        <createTable tableName="tbl_training_place">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_training_placePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_capacity" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="e_arrangement_type" type="NUMBER(10, 0)"/>
+            <column name="e_place_type" type="NUMBER(10, 0)"/>
+            <column name="f_institute" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-173">
+        <createTable tableName="tbl_training_place_equipment">
+            <column name="f_training_place_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_equipment_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-174">
+        <createTable tableName="tbl_user">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_userPK"/>
+            </column>
+            <column name="c_lname" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_name" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-175">
+        <createTable tableName="tbl_work_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_work_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-176">
+        <createTable tableName="tbl_work_group_user_ids">
+            <column name="f_work_group" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_ids" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

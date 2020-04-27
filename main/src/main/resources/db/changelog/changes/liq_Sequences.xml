@@ -2,16 +2,218 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="razmnoosh (generated)" id="1583726092724-241">
-        <createSequence sequenceName="seq_province_id"/>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-1">
+        <createSequence sequenceName="seq_Check_List_Item_id"/>
     </changeSet>
-
-    <changeSet author="razmnoosh (generated)" id="1583827807386-242">
+    <changeSet author="rastegari_h (generated)" id="1587985889507-2">
+        <createSequence sequenceName="seq_Check_List_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-3">
+        <createSequence sequenceName="seq_Class_Check_List_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-4">
+        <createSequence sequenceName="seq_Company_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-5">
+        <createSequence sequenceName="seq_Course_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-6">
+        <createSequence sequenceName="seq_Equipment_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-7">
+        <createSequence sequenceName="seq_Task_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-8">
+        <createSequence sequenceName="seq_Term_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-9">
+        <createSequence sequenceName="seq_User_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-10">
+        <createSequence sequenceName="seq_academic_bk_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-11">
+        <createSequence sequenceName="seq_account_info_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-12">
+        <createSequence sequenceName="seq_address_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-13">
+        <createSequence sequenceName="seq_alarm_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-14">
+        <createSequence sequenceName="seq_attachment_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-15">
+        <createSequence sequenceName="seq_attendance_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-16">
+        <createSequence sequenceName="seq_bank_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-17">
+        <createSequence sequenceName="seq_category_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-18">
+        <createSequence sequenceName="seq_city_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-19">
+        <createSequence sequenceName="seq_class_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-20">
+        <createSequence sequenceName="seq_class_sessions_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-21">
+        <createSequence sequenceName="seq_class_student_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-22">
+        <createSequence sequenceName="seq_committee_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-23">
+        <createSequence sequenceName="seq_competence_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-24">
+        <createSequence sequenceName="seq_contact_info_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-25">
+        <createSequence sequenceName="seq_country_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-26">
+        <createSequence sequenceName="seq_department_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-27">
+        <createSequence sequenceName="seq_education_level_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-28">
+        <createSequence sequenceName="seq_education_major_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-29">
+        <createSequence sequenceName="seq_education_orientation_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-30">
+        <createSequence sequenceName="seq_employment_history_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-31">
+        <createSequence sequenceName="seq_equal_course_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-32">
+        <createSequence sequenceName="seq_evaluation_answer_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-33">
+        <createSequence sequenceName="seq_evaluation_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-34">
+        <createSequence sequenceName="seq_evaluation_index_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-35">
+        <createSequence sequenceName="seq_evaluation_question_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-36">
+        <createSequence sequenceName="seq_foreign_lang_knowledge_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-37">
+        <createSequence sequenceName="seq_goal_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-38">
+        <createSequence sequenceName="seq_holiday_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-39">
+        <createSequence sequenceName="seq_institute_account_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-40">
+        <createSequence sequenceName="seq_institute_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-41">
+        <createSequence sequenceName="seq_job_group_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-42">
+        <createSequence sequenceName="seq_need_assessment_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-43">
+        <createSequence sequenceName="seq_need_assessment_skill_based_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-44">
+        <createSequence sequenceName="seq_need_assessment_skill_post_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-45">
+        <createSequence sequenceName="seq_needs_assessment_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-46">
+        <createSequence sequenceName="seq_operational_unit_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-47">
+        <createSequence sequenceName="seq_parameter_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-48">
+        <createSequence sequenceName="seq_parameter_value_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-49">
+        <createSequence sequenceName="seq_permission_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-50">
+        <createSequence sequenceName="seq_personal_info_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-51">
+        <createSequence sequenceName="seq_personnel_registered_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-52">
         <createSequence sequenceName="seq_polis_id"/>
     </changeSet>
-
-    <changeSet author="Hamed (generated)" id="1586515492669-248">
-        <createSequence sequenceName="seq_alarm_id"/>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-53">
+        <createSequence sequenceName="seq_post_grade_group_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-54">
+        <createSequence sequenceName="seq_post_group_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-55">
+        <createSequence sequenceName="seq_province_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-56">
+        <createSequence sequenceName="seq_publication_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-57">
+        <createSequence sequenceName="seq_questionnaire_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-58">
+        <createSequence sequenceName="seq_questionnaire_question_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-59">
+        <createSequence sequenceName="seq_skill_group_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-60">
+        <createSequence sequenceName="seq_skill_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-61">
+        <createSequence sequenceName="seq_skill_level_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-62">
+        <createSequence sequenceName="seq_skill_type_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-63">
+        <createSequence sequenceName="seq_state_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-64">
+        <createSequence sequenceName="seq_student_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-65">
+        <createSequence sequenceName="seq_subcategory_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-66">
+        <createSequence sequenceName="seq_syllabus_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-67">
+        <createSequence sequenceName="seq_teacher_certification_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-68">
+        <createSequence sequenceName="seq_teacher_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-69">
+        <createSequence sequenceName="seq_teaching_history_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-70">
+        <createSequence sequenceName="seq_training_place_id"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1587985889507-71">
+        <createSequence sequenceName="seq_work_group_id"/>
     </changeSet>
 
 </databaseChangeLog>

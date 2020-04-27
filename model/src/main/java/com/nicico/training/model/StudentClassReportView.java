@@ -1,19 +1,21 @@
 
 package com.nicico.training.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
 @Entity
-@Immutable
-@EqualsAndHashCode(of = {"classStudentId"}, callSuper = false)
-@Table(name = "view_student_classstudent_class_term_course")
-@DiscriminatorValue("StudentClassReportView")
+@Subselect("select * from view_student_classstudent_class_term_course")
 public class StudentClassReportView implements Serializable {
 
     ///////////////////////////////////////////////////student///////////////////////////////////////

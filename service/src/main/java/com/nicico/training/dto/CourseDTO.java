@@ -144,7 +144,17 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+    }
 
+    @Getter
+    @Setter
+    @ApiModel("CourseClassReport")
+    public static class CourseClassReport {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private Long categoryId;
+        private Long subCategoryId;
     }
 
     // ------------------------------

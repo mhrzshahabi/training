@@ -500,8 +500,6 @@ public class TclassRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-
-
             request.setCriteria(criteriaRq);
         }
 
