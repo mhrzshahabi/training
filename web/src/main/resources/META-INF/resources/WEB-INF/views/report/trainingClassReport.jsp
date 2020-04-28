@@ -1133,12 +1133,6 @@
             else if (data_values.criteria[i].fieldName == "courseFilterOperator") {
                 removedObjects.add(data_values.criteria[i]);
             }
-            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "courseStatus") {
-                removedObjects.add(data_values.criteria[i]);
-            }
             else if (data_values.criteria[i].fieldName == "reactionEvaluation") {
                 removedObjects.add(data_values.criteria[i]);
             }
@@ -1151,12 +1145,13 @@
             else if (data_values.criteria[i].fieldName == "evaluation") {
                 removedObjects.add(data_values.criteria[i]);
             }
-            else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
+            //-----------------------------------TEMP----------------------------
+            // else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
             else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
                 removedObjects.add(data_values.criteria[i]);
             }
@@ -1173,6 +1168,10 @@
                 removedObjects.add(data_values.criteria[i]);
             }
             else if (data_values.criteria[i].fieldName == "evaluationGrade") {
+                removedObjects.add(data_values.criteria[i]);
+            }
+            //-----------------------------------TEMP----------------------------
+            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
                 removedObjects.add(data_values.criteria[i]);
             }
         }

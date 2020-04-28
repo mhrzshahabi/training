@@ -522,6 +522,7 @@ public class TclassDTO {
         private String code;
         private CourseDTO.CourseClassReport course;
         private TeacherDTO.TeacherFullNameTuple teacher;
+        private Long teacherId;
         private Set<ClassStudentDTO.AttendanceInfo> classStudents;
         private Integer studentsCount;
         private Long hDuration;

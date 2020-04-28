@@ -35,5 +35,9 @@ public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecification
     Course findCourseByIdEquals(Long courseId);
 
     boolean existsByTitleFa(String titleFa);
+
+    @Modifying
+    @Query(value = "select distinct Course_ID from VIEW_NA_REPORT where COURSE_ID = :courseId", nativeQuery = true)
+    List<Long> getCourseNeedAssessmentStatus(Long courseId);
 }
 
