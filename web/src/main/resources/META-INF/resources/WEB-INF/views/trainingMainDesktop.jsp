@@ -1257,7 +1257,6 @@
             showPrompt: false,
             useSimpleHttp: true,
             serverOutputAsString: false,
-            // httpHeaders: EvaluationConfigs.httpHeaders,
             contentType: "application/json; charset=utf-8",
             actionURL: "${contextPath}/isomorphic/locales/frameworkMessages_fa.properties",
             callback: function (RpcResponse_o) {
