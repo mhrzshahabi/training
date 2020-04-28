@@ -1647,8 +1647,6 @@
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
-
-    // isc.RPCManager.sendRequest(TrDSRequest(rootUrl + "/personnel-course-na-report", "GET", null, null));
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>
