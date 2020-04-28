@@ -134,7 +134,7 @@
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
-    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
+    isc.ComboBoxItem.addProperties({addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     isc.defineClass("TrVLayout", VLayout);
@@ -1648,7 +1648,7 @@
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
-
+    // isc.RPCManager.sendRequest(TrDSRequest(rootUrl + "/personnel-course-na-report", "GET", null, null));
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>
