@@ -134,7 +134,7 @@
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
-    isc.ComboBoxItem.addProperties({addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
+    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     isc.defineClass("TrVLayout", VLayout);
@@ -1251,6 +1251,21 @@
         downloadForm.submitForm();
     }
 
+    function loadFrameworkMessageFa() {
+        isc.RPCManager.sendRequest({
+            httpMethod: "GET",
+            showPrompt: false,
+            useSimpleHttp: true,
+            serverOutputAsString: false,
+            // httpHeaders: EvaluationConfigs.httpHeaders,
+            contentType: "application/json; charset=utf-8",
+            actionURL: "${contextPath}/isomorphic/locales/frameworkMessages_fa.properties",
+            callback: function (RpcResponse_o) {
+                eval(RpcResponse_o.data);
+            }
+        });
+    }
+
     function printToJasper(data, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -1647,6 +1662,8 @@
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
+
+    loadFrameworkMessageFa();
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>
