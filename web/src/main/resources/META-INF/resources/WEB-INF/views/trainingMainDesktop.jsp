@@ -1251,6 +1251,20 @@
         downloadForm.submitForm();
     }
 
+    function loadFrameworkMessageFa() {
+        isc.RPCManager.sendRequest({
+            httpMethod: "GET",
+            showPrompt: false,
+            useSimpleHttp: true,
+            serverOutputAsString: false,
+            contentType: "application/json; charset=utf-8",
+            actionURL: "${contextPath}/isomorphic/locales/frameworkMessages_fa.properties",
+            callback: function (RpcResponse_o) {
+                eval(RpcResponse_o.data);
+            }
+        });
+    }
+
     function printToJasper(data, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -1648,7 +1662,7 @@
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
-
+    loadFrameworkMessageFa();
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>

@@ -4,16 +4,15 @@
 
 // <script>
 
-    var DynamicForm_Permission;
     var entityList_Permission = [
-        "com.nicico.training.model.Post",
-        "com.nicico.training.model.Job",
-        "com.nicico.training.model.PostGrade",
-        "com.nicico.training.model.Skill",
-        "com.nicico.training.model.PostGroup",
-        "com.nicico.training.model.JobGroup",
-        "com.nicico.training.model.PostGradeGroup",
-        "com.nicico.training.model.SkillGroup"
+        // "Post",
+        "Job",
+        "PostGrade",
+        // "Skill",
+        "PostGroup",
+        "JobGroup",
+        "PostGradeGroup",
+        "SkillGroup"
     ];
     var isFormDataListArrived = false;
     var formDataList_Permission;
@@ -661,7 +660,7 @@
     function Windows_Permissions_Set_Values(permission) {
         if (TabSet_Permission.getTab(permission.entityName) != null) {
             let DF = TabSet_Permission.getTab(permission.entityName).pane;
-            DF.setValue(permission.entityName + "_" + permission.attributeName + "_" + permission.attributeType + "_Permission",
+            DF.setValue(permission.entityName + "__" + permission.attributeName + "__" + permission.attributeType + "__Permission",
                 permission.attributeValues);
         }
     }
@@ -713,20 +712,69 @@
             numCols: 8
         });
         for (let i = 0; i < item.columnDataList.length; i++) {
+            let colValues = [];
+            for (let j = 0; j < item.columnDataList[i].attributeValues.length; j++) {
+                colValues.add({"value": item.columnDataList[i].attributeValues[j]});
+            }
+            let fName = item.entityName + "__" + item.columnDataList[i].attributeName + "__" + item.columnDataList[i].attributeType + "__Permission";
             DF.addField({
-                ID: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
-                name: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
+                ID: fName,
+                name: fName,
                 title: setTitle(item.columnDataList[i].attributeName),
-                valueMap: item.columnDataList[i].attributeValues,
+                optionDataSource: isc.DataSource.create({
+                    clientOnly: true,
+                    fields: [{name: "value", primaryKey: true}],
+                    testData: colValues,
+                }),
                 type: "MultiComboBoxItem",
+                comboBoxWidth: 200,
                 textAlign: "center",
                 multiple: true,
                 colSpan: 8,
                 titleOrientation: "top",
                 addUnknownValues: false,
-                pickListProperties: {
-                    showFilterEditor: false
-                },
+
+                valueField: "value",
+                displayField: "value",
+                useClientFiltering: true,
+                comboBoxProperties: {
+                    hint: "",
+                    pickListFields: [{name: "value"}],
+                    filterFields: ["value"],
+                    textMatchStyle: "substring",
+                    pickListProperties: {
+                        gridComponents: [
+                            isc.ToolStrip.create({
+                                autoDraw:false,
+                                height:30,
+                                width: "100%",
+                                members: [
+                                    isc.ToolStripButton.create({
+                                        width:"50%",
+                                        icon: "[SKIN]/actions/approve.png",
+                                        title: "<spring:message code='select.all'/>",
+                                        click:function() {
+                                            let fItem = DF.getField(fName);
+                                            fItem.setValue(item.columnDataList[i].attributeValues);
+                                            fItem.comboBox.pickList.hide();
+                                        }
+                                    }),
+                                    isc.ToolStripButton.create({
+                                        width:"50%",
+                                        icon: "[SKIN]/actions/close.png",
+                                        title: "<spring:message code='deselect.all'/>",
+                                        click:function() {
+                                            let fItem = DF.getField(fName);
+                                            fItem.setValue([]);
+                                            fItem.comboBox.pickList.hide();
+                                        }
+                                    })
+                                ]
+                            }),
+                            "header","body"
+                        ]
+                    }
+                }
             })
         }
         return DF;
@@ -742,14 +790,14 @@
                 if (
                     fields[i].getValue() != null ||
                     (record.permissions.filter(
-                        p => p.entityName === ((fields[i].getID()).split('_'))[0] &&
-                            p.attributeName === ((fields[i].getID()).split('_'))[1])).length > 0
+                        p => p.entityName === ((fields[i].getID()).split('__'))[0] &&
+                            p.attributeName === ((fields[i].getID()).split('__'))[1])).length > 0
                 ) {
                     toUpdate.add({
-                        "entityName": ((fields[i].getID()).split('_'))[0],
-                        "attributeName": ((fields[i].getID()).split('_'))[1],
+                        "entityName": ((fields[i].getID()).split('__'))[0],
+                        "attributeName": ((fields[i].getID()).split('__'))[1],
                         "attributeValues": fields[i].getValue(),
-                        "attributeType": ((fields[i].getID()).split('_'))[2]
+                        "attributeType": ((fields[i].getID()).split('__'))[2]
                     });
                 }
             }
@@ -777,6 +825,7 @@
 
     function setTitle(name) {
         switch (name) {
+
             case "com.nicico.training.model.Job":
                 return "<spring:message code="job"/>";
             case "com.nicico.training.model.Post":
@@ -793,6 +842,24 @@
                 return "<spring:message code="post.grade.group"/>";
             case "com.nicico.training.model.SkillGroup":
                 return "<spring:message code="skill.group"/>";
+
+            case "Job":
+                return "<spring:message code="job"/>";
+            case "Post":
+                return "<spring:message code="post"/>";
+            case "PostGrade":
+                return "<spring:message code="post.grade"/>";
+            case "Skill":
+                return "<spring:message code="skill"/>";
+            case "PostGroup":
+                return "<spring:message code="post.group"/>";
+            case "JobGroup":
+                return "<spring:message code="job.group"/>";
+            case "PostGradeGroup":
+                return "<spring:message code="post.grade.group"/>";
+            case "SkillGroup":
+                return "<spring:message code="skill.group"/>";
+
             case "code":
                 return "<spring:message code="code"/>";
             case "titleFa":
@@ -816,7 +883,7 @@
             case "costCenterTitleFa":
                 return "<spring:message code="cost.center.title"/>";
             default:
-                return name.split('.').last();
+                return name.split('_').last();
         }
     }
 

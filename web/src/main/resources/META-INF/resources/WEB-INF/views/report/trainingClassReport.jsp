@@ -706,19 +706,12 @@
                 name: "teacherPayingStatus",
                 title: "وضعیت هزینه ی استاد",
                 type: "comboBoxItem",
-                // defaultValue: "3",
-                hidden: true,
+                defaultValue: "3",
                 valueMap: {
                     "1": "پرداخت شده",
                     "2": "پرداخت نشده",
                     "3": "همه"
                 }
-            },
-            {
-                name: "temp6",
-                title: "",
-                hidden: true,
-                canEdit: false
             },
             {
                 name: "instituteId",
@@ -743,8 +736,7 @@
                 name: "courseStatus",
                 title: "نوع دوره",
                 type: "comboBoxItem",
-                // defaultValue: "3",
-                hidden: true,
+                defaultValue: "3",
                 filterOperator: "equals",
                 valueMap: {
                     "1": "وابسته به نیازسنجی مشاغل",
@@ -768,8 +760,12 @@
                 }
             },
             {
+                name: "temp6",
+                title: "",
+                canEdit: false
+            },
+            {
                 name: "reactionEvaluation",
-                hidden: true,
                 title: "نمره ارزیابی واکنشی کلاس",
                 type: "checkbox",
                 changed: function (form, item, value) {
@@ -787,7 +783,6 @@
             {
                 name: "reactionEvaluationOperator",
                 title: "",
-                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -801,7 +796,6 @@
                 name: "reactionEvaluationGrade",
                 title: "",
                 disabled: true,
-                hidden: true,
                 hint: "نمره ی ارزیابی واکنشی مد نظر را وارد کنید",
                 showHintInField: true,
                 length: 3,
@@ -811,7 +805,6 @@
                 name: "learningEvaluation",
                 title: "نمره ارزیابی یادگیری کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("learningEvaluationOperator").disabled = false;
@@ -827,7 +820,6 @@
             {
                 name: "learningEvaluationOperator",
                 title: "",
-                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -840,7 +832,6 @@
             {
                 name: "learningEvaluationGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی یادگیری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -851,7 +842,6 @@
                 name: "behavioralEvaluation",
                 title: "نمره ارزیابی رفتاری کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("behavioralEvaluationOperator").disabled = false;
@@ -867,7 +857,6 @@
             {
                 name: "behavioralEvaluationOperator",
                 title: "",
-                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -880,7 +869,6 @@
             {
                 name: "behavioralEvaluationGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی رفتاری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -891,7 +879,6 @@
                 name: "evaluation",
                 title: "نمره اثربخشی کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("evaluationOperator").disabled = false;
@@ -907,7 +894,6 @@
             {
                 name: "evaluationOperator",
                 title: "",
-                hidden: true,
                 type: "comboBoxItem",
                 valueMap: {
                     "1": "کمتر از",
@@ -920,7 +906,6 @@
             {
                 name: "evaluationGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی اثربخشی مد نظر را وارد کنید",
                 showHintInField: true,
@@ -1148,12 +1133,6 @@
             else if (data_values.criteria[i].fieldName == "courseFilterOperator") {
                 removedObjects.add(data_values.criteria[i]);
             }
-            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "courseStatus") {
-                removedObjects.add(data_values.criteria[i]);
-            }
             else if (data_values.criteria[i].fieldName == "reactionEvaluation") {
                 removedObjects.add(data_values.criteria[i]);
             }
@@ -1166,12 +1145,13 @@
             else if (data_values.criteria[i].fieldName == "evaluation") {
                 removedObjects.add(data_values.criteria[i]);
             }
-            else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
+            //-----------------------------------TEMP----------------------------
+            // else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
             else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
                 removedObjects.add(data_values.criteria[i]);
             }
@@ -1188,6 +1168,10 @@
                 removedObjects.add(data_values.criteria[i]);
             }
             else if (data_values.criteria[i].fieldName == "evaluationGrade") {
+                removedObjects.add(data_values.criteria[i]);
+            }
+            //-----------------------------------TEMP----------------------------
+            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
                 removedObjects.add(data_values.criteria[i]);
             }
         }
