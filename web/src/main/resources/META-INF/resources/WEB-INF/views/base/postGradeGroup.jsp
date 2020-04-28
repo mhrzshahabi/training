@@ -458,9 +458,9 @@
 
     var VLayout_Body_Post_Grade_Group_Jsp = isc.TrVLayout.create({
         members: [
-            HLayout_Actions_Post_Grade_Group_Jsp
-            , HLayout_Grid_Post_Grade_Group_Jsp
-            , HLayout_Tab_Post_Grade_Group
+            HLayout_Actions_Post_Grade_Group_Jsp,
+            HLayout_Grid_Post_Grade_Group_Jsp,
+            HLayout_Tab_Post_Grade_Group
         ]
 
     });
