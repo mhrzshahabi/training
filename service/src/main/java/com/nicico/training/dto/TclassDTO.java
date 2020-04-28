@@ -203,11 +203,10 @@ public class TclassDTO {
     @ApiModel("TclassTeachingHistory")
     public static class TeachingHistory {
         private Long id;
-        private String code;
-        private String titleClass;
         private String startDate;
         private String endDate;
         private Double evaluationGrade;
+        private CourseDTO.CourseClassReport course;
     }
 
     @Getter

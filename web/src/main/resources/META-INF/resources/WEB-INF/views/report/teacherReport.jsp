@@ -127,8 +127,7 @@
                 valueMap: {
                     true: "<spring:message code='company.staff'/>",
                     false: "<spring:message code='external.teacher'/>"
-                },
-
+                }
             },
             {
                 name: "personality.contactInfo.mobile",
@@ -184,7 +183,7 @@
                     teachingInfo,
                     ListGrid_Result_JspTeacherReport
                     ]
-            }),
+            })
         ]
     });
     //----------------------------------------------------Criteria Form-------------------------------------------------
@@ -305,7 +304,7 @@
                 filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCriteriaCategoriesChanged) {
@@ -459,6 +458,7 @@
                 editorType: "ComboBoxItem",
                 defaultValue: null,
                 changeOnKeypress: true,
+                prompt: "در صورت انتخاب گروه زیرگروه هم باید انتخاب شود",
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Category_Evaluation_JspTeacherReport,
@@ -475,15 +475,18 @@
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                changed: function () {
+                changed: function (form,item,value) {
                     isEvaluationCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory");
-                    if (this.getValue() == null || this.getValue() == undefined) {
-                        subCategoryField.clearValue();
-                        subCategoryField.disable();
-                        return;
+
+                    if (value == null || value == undefined) {
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").disable();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").clearValue();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").clearValue();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();
+                    } else{
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").enable();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").enable();
                     }
-                    subCategoryField.enable();
                 }
             },
             {
@@ -630,20 +633,6 @@
                     DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                 }
             }
-            if(item.name == "evaluationSubCategory" || item.name=="evaluationGrade"){
-                if(newValue != undefined)
-                    item.clearErrors();
-            }
-            if(item.name == "evaluationCategory"){
-                DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationSubCategory").clearValue();
-                if(newValue == undefined){
-                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationSubCategory").clearErrors();
-                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationGrade").clearErrors();
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();
-                }
-                if(newValue != undefined)
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").enable();
-            }
         }
     });
 
@@ -654,18 +643,6 @@
         click: function () {
             if (DynamicForm_CriteriaForm_JspTeacherReport.hasErrors())
                 return;
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined)
-            {
-                if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() == undefined ||
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() == undefined)
-                {
-                    if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() == undefined)
-                        DynamicForm_CriteriaForm_JspTeacherReport.addFieldErrors("evaluationSubCategory", "فیلد اجباری است", true);
-                    if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() == undefined)
-                        DynamicForm_CriteriaForm_JspTeacherReport.addFieldErrors("evaluationGrade", "فیلد اجباری است", true);
-                    return;
-                }
-            }
 
             titr.contents = "";
             personalInfo.contents = "";
@@ -748,17 +725,18 @@
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories").getDisplayValue()+ "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined){
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined &&
+                DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() != undefined &&
+                DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() != undefined){
+
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی استاد در گروه: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue()+ "</span>";
-            }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() != undefined){
+
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "و زیرگروه: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getDisplayValue()+ "</span>";
-            }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() != undefined){
+
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مساوی: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                     DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
