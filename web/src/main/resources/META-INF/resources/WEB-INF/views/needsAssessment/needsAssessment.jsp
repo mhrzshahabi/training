@@ -893,7 +893,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             var wating = createDialog("wait");
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
-                                editNeedsAssessmentRecord(record.id, "Post");
+                                c(record.id, "Post");
                                 Label_PlusData_JspNeedsAssessment.setContents(
                                     "عنوان پست: " + record.titleFa
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
@@ -1144,6 +1144,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 DataSource_Competence_JspNeedsAssessment.addData(competence);
             }
             ListGrid_Competence_JspNeedsAssessment.fetchData();
+            ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
             NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId);
             NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", objectType);
             fetchDataDomainsGrid();
