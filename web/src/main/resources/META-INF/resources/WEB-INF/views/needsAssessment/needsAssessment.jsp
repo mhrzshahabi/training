@@ -18,7 +18,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     };
     var skillData = [];
     var competenceData = [];
-
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
         // autoCacheAllData:true,
         fields: [
@@ -52,6 +51,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
                         }
                         NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
+                            ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="global.waiting"/>";
                             editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                             NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
                             NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
@@ -671,7 +671,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     });
 
     //--------------------------------------------------------------------
-
     var moreInfoTree = isc.TreeGrid.create({
         ID: "needesAssessmentTree",
         data:[],
@@ -700,7 +699,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         },
     }
     });
-
     //--------------------------------------------------------------------
 
     var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
