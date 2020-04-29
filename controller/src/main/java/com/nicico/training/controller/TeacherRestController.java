@@ -277,13 +277,6 @@ public class TeacherRestController {
         }
         SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
-        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
-        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
-
         List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
 
         List<Integer> teaching_cats = null;
@@ -300,8 +293,8 @@ public class TeacherRestController {
         if(evaluationGrade != null)
            min_evalGrade = Float.parseFloat(evaluationGrade.toString());
 
-        if(evaluationGrade!=null) {
-            for (TeacherDTO.Report datum : specResponse.getData()) {
+        if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
+            for (TeacherDTO.Report datum : response.getList()) {
                 if (evaluationGrade != null) {
                     ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
                     Float teacher_evalGrade = t.getBody();
@@ -311,39 +304,47 @@ public class TeacherRestController {
                 }
             }
         }
+
         for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            specResponse.getData().remove(listRemovedObject);
+            response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
         if(teachingCategories!=null || teachingSubCategories!=null) {
-            for (TeacherDTO.Report datum : specResponse.getData()) {
+            for (TeacherDTO.Report datum : response.getList()) {
                 boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
                 if (relatedTeachingHistory == false)
                     listRemovedObjects.add(datum);
             }
         }
         for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            specResponse.getData().remove(listRemovedObject);
+            response.getList().remove(listRemovedObject);
 
-        for (TeacherDTO.Report datum : specResponse.getData()) {
+        for (TeacherDTO.Report datum : response.getList()) {
             SearchDTO.SearchRq req = new SearchDTO.SearchRq();
             Long tId = datum.getId();
-            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeacherId(req,tId);
+            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(req, tId);
             datum.setNumberOfCourses(""+resp.getList().size());
             if(resp.getList() != null && resp.getList().size() > 0) {
                 String startDate = resp.getList().get(0).getStartDate();
                 for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
                     if (teachingHistory.getStartDate().compareTo(startDate) > 0 || teachingHistory.getStartDate().compareTo(startDate)==0) {
-                        datum.setLastCourse(teachingHistory.getTitleClass());
+                        datum.setLastCourse(teachingHistory.getCourse().getTitleFa());
                         datum.setLastCourseId(teachingHistory.getId());
                     }
                 }
             }
         }
-        for (TeacherDTO.Report datum : specResponse.getData()) {
+        for (TeacherDTO.Report datum : response.getList()) {
             if(datum.getLastCourse() != null)
                 datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(datum.getLastCourseId(),datum.getId()));
         }
+
+        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
+        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getList().size());
 
         specRs.setResponse(specResponse);
 
@@ -352,22 +353,24 @@ public class TeacherRestController {
 
     public Boolean getRelatedTeachingHistory(TeacherDTO.Report teacher, List<Integer> related_cats, List<Integer> related_subCats){
         Boolean relation = false;
-        List<TeachingHistoryDTO.Info> teachingHistories = modelMapper.map(teacher.getTeachingHistories(),List.class);
 
-        if(teachingHistories != null) {
-            for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(request, teacher.getId());
+
+        if(resp != null && resp.getList()!= null ) {
+            for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
                 boolean thisTeachingHistoryRelation = true;
-                List<Long> teacher_cats = teachingHistory.getCategoriesIds();
-                List<Long> teacher_subCats = teachingHistory.getSubCategoriesIds();
-                if (teacher_cats != null && related_cats != null) {
+                Long teacher_cat = teachingHistory.getCourse().getCategoryId();
+                Long teacher_subCat = teachingHistory.getCourse().getSubCategoryId();
+                if (teacher_cat != null && related_cats != null) {
                     for (Integer related_cat : related_cats) {
-                        if (!teacher_cats.contains(Long.parseLong("" + related_cat)))
+                        if (teacher_cat != Long.parseLong("" + related_cat))
                             thisTeachingHistoryRelation = false;
                     }
                 }
-                if (teacher_subCats != null && related_subCats != null) {
+                if (teacher_subCat != null && related_subCats != null) {
                     for (Integer related_subCat : related_subCats) {
-                        if (!teacher_subCats.contains(Long.parseLong("" + related_subCat)))
+                        if (teacher_subCat != Long.parseLong("" + related_subCat))
                             thisTeachingHistoryRelation = false;
                     }
                 }
@@ -378,7 +381,6 @@ public class TeacherRestController {
 
         if(related_cats == null && related_subCats == null)
             relation = true;
-
 
         return relation;
     }

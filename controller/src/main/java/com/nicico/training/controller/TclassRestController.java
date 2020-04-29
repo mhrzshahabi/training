@@ -12,6 +12,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelCoursePassedNAReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
@@ -50,28 +51,7 @@ public class TclassRestController {
     private final ObjectMapper objectMapper;
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
-
-
-//    @Loggable
-//    @GetMapping(value = "/student/{classId}")
-////    @PreAuthorize("hasAuthority('r_tclass')")
-//    public ResponseEntity<StudentDTO.StudentSpecRs> getStudentsByClassID(@PathVariable String classID) {
-//        Long classId = Long.parseLong(classID);
-//
-//        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
-//
-//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-//        specResponse.setData(studentList)
-//                .setStartRow(0)
-//                .setEndRow(studentList.size())
-//                .setTotalRows(studentList.size());
-//
-//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
+    private final CourseDAO courseDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -509,14 +489,71 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
+
+        List<Object> removedObjects = new ArrayList<>();
+        Object courseStatus = null;
+        Object reactionEvaluationOperator = null;
+        Object reactionEvaluationGrade = null;
+        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+            if(criterion.getFieldName().equalsIgnoreCase("courseStatus")){
+                courseStatus = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("reactionEvaluationOperator")){
+                reactionEvaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("reactionEvaluationGrade")){
+                reactionEvaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+        }
+
+        for (Object removedObject : removedObjects) {
+            request.getCriteria().getCriteria().remove(removedObject);
+        }
+
         SearchDTO.SearchRs<TclassDTO.TClassReport> response = tclassService.reportSearch(request);
+
+        List<TclassDTO.TClassReport> listRemovedObjects = new ArrayList<>();
+        if(courseStatus!=null && !courseStatus.equals("3")) {
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                    List<Long> courseNeedAssessmentStatus = courseDAO.getCourseNeedAssessmentStatus(datum.getCourse().getId());
+                    if(courseStatus.equals("1") && courseNeedAssessmentStatus.size()==0)
+                        listRemovedObjects.add(datum);
+                     if(courseStatus.equals("2") && courseNeedAssessmentStatus.size()!=0)
+                        listRemovedObjects.add(datum);
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if(reactionEvaluationOperator != null && reactionEvaluationGrade != null) {
+            double grade = Double.parseDouble(reactionEvaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classReactionGrade = tclassService.getClassReactionEvaluationGrade(datum.getId(),datum.getTeacherId());
+                if(reactionEvaluationOperator.equals("1")){
+                    if(classReactionGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if(reactionEvaluationOperator.equals("2")){
+                    if(classReactionGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
 
         final TclassDTO.ReportSpecRs specResponse = new TclassDTO.ReportSpecRs();
         final TclassDTO.TclassReportSpecRs specRs = new TclassDTO.TclassReportSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
+                .setTotalRows(response.getList().size());
 
         specRs.setResponse(specResponse);
 

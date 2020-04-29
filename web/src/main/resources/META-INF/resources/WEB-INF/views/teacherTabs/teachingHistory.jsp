@@ -231,7 +231,7 @@
                     click: function (form) {
                         if (!(form.getValue("startDate"))) {
                             dialogTeacher = isc.MyOkDialog.create({
-                                message: "ابتدا تاریخ شروع را انتخاب کنید",
+                                message: "ابتدا تاریخ شروع را انتخاب کنید"
                             });
                             dialogTeacher.addProperties({
                                 buttonClick: function () {
