@@ -86,6 +86,22 @@ public class TclassRestController {
     }
 
     @Loggable
+    @PostMapping("/safeCreate")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<TclassDTO.Info> safeCreate(@Validated @RequestBody TclassDTO.Create request,HttpServletResponse response) {
+
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request,response), HttpStatus.CREATED);
+
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 201) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+        }
+        return infoResponseEntity;
+    }
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_tclass')")
     public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
