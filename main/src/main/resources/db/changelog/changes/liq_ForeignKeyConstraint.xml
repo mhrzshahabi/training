@@ -958,4 +958,9 @@
         <addForeignKeyConstraint baseColumnNames="f_contract_file_id" baseTableName="tbl_class_contract" constraintName="FK13i1xkimggr6bxaxexjk2bt4j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_attachment" validate="true"/>
     </changeSet>
 
+    <changeSet author="heydaripoor (generated)" id="1588155671540-260">
+        <dropForeignKeyConstraint baseTableName="tbl_company" constraintName="FKpurh1o4x7syfmr0agf8e8kkjl"/>
+        <addForeignKeyConstraint baseColumnNames="f_address_id" baseTableName="tbl_company" constraintName="FKpurh1o4x7syfmr0agf8e8kkjl" referencedColumnNames="id" referencedTableName="tbl_address"/>
+    </changeSet>
+
 </databaseChangeLog>

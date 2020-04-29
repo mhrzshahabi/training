@@ -98,8 +98,14 @@
     <changeSet author="rastegari_h (generated)" id="1587985889507-211">
         <addUniqueConstraint columnNames="f_evaluation_question, f_questionnaire" constraintName="UKq95pxvc8f8y9uh4ph44hoal45" tableName="tbl_questionnaire_question"/>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588143353458-414">
-        <addUniqueConstraint columnNames="c_contract_number" constraintName="UC_TBL_CLASS_CONTRACTC_CONTRACT_NUMBER_COL" tableName="tbl_class_contract"/>
+    <changeSet author="heydaripoor (generated)" id="1588136355333-377">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
     </changeSet>
 
+
+
+
+    <changeSet author="heydaripoor (generated)" id="1588155671540-377">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_address_id" tableName="tbl_company"/>
+    </changeSet>
 </databaseChangeLog>
