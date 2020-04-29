@@ -1,3 +1,5 @@
+package com.nicico.training.model;
+
 import com.nicico.training.model.compositeKey.NASkillKey;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -23,7 +25,7 @@ public class NAReportView implements Serializable {
 
     ////////////////////////////////////////////////////NA/////////////////////////////////////////////
 
-    @Column(name = "na_id")
+    @Column(name = "na_id", insertable = false, updatable = false)
     private Long NAId;
 
     @Column(name = "na_priority_id")
@@ -46,7 +48,7 @@ public class NAReportView implements Serializable {
 
     ////////////////////////////////////////////////////skill/////////////////////////////////////////////
 
-    @Column(name = "skill_id")
+    @Column(name = "skill_id", insertable = false, updatable = false)
     private Long skillId;
 
     @Column(name = "skill_code")

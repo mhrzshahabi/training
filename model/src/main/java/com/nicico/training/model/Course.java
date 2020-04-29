@@ -58,14 +58,14 @@ public class Course extends Auditable {
     @Column(name = "c_behavioral_level")
     private String behavioralLevel;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
 
     @Column(name = "category_id")
     private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
     private Subcategory subCategory;
 
