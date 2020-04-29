@@ -2602,4 +2602,64 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="haeri_am (generated)" id="1587785695819-263">
+        <createTable tableName="tbl_profile_ahk">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_profile_ahkPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_family" type="VARCHAR2(500 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_name" type="VARCHAR2(500 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_phone_number" type="VARCHAR2(500 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="haeri_am (generated)" id="1587882446592-264">
+        <createTable tableName="tbl_sender_mail_ahk_v2">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sender_mail_ahk_v2PK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_content" type="VARCHAR2(500 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_profile_ahk_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title" type="VARCHAR2(100 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

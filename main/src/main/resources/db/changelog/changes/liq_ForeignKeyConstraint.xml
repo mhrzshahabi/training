@@ -918,4 +918,8 @@
         <addForeignKeyConstraint baseColumnNames="dep_parent_id" baseTableName="tbl_department" constraintName="fk_department2Department" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
     </changeSet>
 
+    <changeSet author="haeri_am (generated)" id="1587882446592-407">
+        <addForeignKeyConstraint baseColumnNames="f_profile_ahk_id" baseTableName="tbl_sender_mail_ahk_v2" constraintName="FKrmarlo01n7dvqe0xyaght4rv9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_profile_ahk" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

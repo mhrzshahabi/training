@@ -216,4 +216,8 @@
         <createSequence sequenceName="seq_work_group_id"/>
     </changeSet>
 
+    <changeSet author="haeri_am (generated)" id="1587785695819-262">
+        <createSequence sequenceName="seq_profile_ahk__id"/>
+    </changeSet>
+
 </databaseChangeLog>
