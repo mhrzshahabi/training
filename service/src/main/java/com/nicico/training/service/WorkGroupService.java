@@ -126,12 +126,12 @@ public class WorkGroupService implements IWorkGroupService {
         List<PermissionDTO.PermissionFormData> permissionFormData = new ArrayList<>();
         for (String entity : entityList) {
             try {
-                entityType = Class.forName(entity);
+                entityType = Class.forName("com.nicico.training.model." + entity);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             assert entityType != null;
-            tableName = ((Table) entityType.getAnnotation(Table.class)).name().toUpperCase();
+            tableName = entityType.getAnnotation(Table.class).name().toUpperCase();
             fieldNameList = Arrays.asList(entityType.getDeclaredFields());
             columnListQuery = "SELECT column_name, c.comments " +
                     "FROM user_col_comments c JOIN user_tab_cols k " +
@@ -156,14 +156,14 @@ public class WorkGroupService implements IWorkGroupService {
                         continue;
                     Permission attributeData = new Permission();
                     attributeData.setAttributeName(field.getName());
-                    attributeData.setAttributeType(field.getType().getName());
+                    attributeData.setAttributeType(field.getType().getName().replace(".", "_"));
                     valuesQuery = "SELECT DISTINCT " + columnName + " FROM " + tableName + " ORDER BY " + columnName;
                     attributeData.setAttributeValues(entityManager.createNativeQuery(valuesQuery).getResultList());
                     attributeData.setEntityName(entityType.getName());
                     columnDataList.add(modelMapper.map(attributeData, PermissionDTO.Info.class));
                 }
             }
-            permissionFormData.add(new PermissionDTO.PermissionFormData(entityType.getName(), columnDataList));
+            permissionFormData.add(new PermissionDTO.PermissionFormData(entityType.getSimpleName(), columnDataList));
         }
         return permissionFormData;
     }
@@ -206,7 +206,7 @@ public class WorkGroupService implements IWorkGroupService {
 
     private void permissionToCriteria(SearchDTO.CriteriaRq criteriaRqs, Permission permission, EOperator operator) {
         try {
-            Class<?> attributeType = Class.forName(permission.getAttributeType());
+            Class<?> attributeType = Class.forName(permission.getAttributeType().replace("_", "."));
             List values = new ArrayList();
             for (String value : permission.getAttributeValues()) {
                 values.add(attributeType.cast(value));

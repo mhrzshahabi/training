@@ -277,13 +277,6 @@ public class TeacherRestController {
         }
         SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
-        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
-        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
-
         List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
 
         List<Integer> teaching_cats = null;
@@ -301,7 +294,7 @@ public class TeacherRestController {
            min_evalGrade = Float.parseFloat(evaluationGrade.toString());
 
         if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
-            for (TeacherDTO.Report datum : specResponse.getData()) {
+            for (TeacherDTO.Report datum : response.getList()) {
                 if (evaluationGrade != null) {
                     ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
                     Float teacher_evalGrade = t.getBody();
@@ -313,20 +306,20 @@ public class TeacherRestController {
         }
 
         for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            specResponse.getData().remove(listRemovedObject);
+            response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
         if(teachingCategories!=null || teachingSubCategories!=null) {
-            for (TeacherDTO.Report datum : specResponse.getData()) {
+            for (TeacherDTO.Report datum : response.getList()) {
                 boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
                 if (relatedTeachingHistory == false)
                     listRemovedObjects.add(datum);
             }
         }
         for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            specResponse.getData().remove(listRemovedObject);
+            response.getList().remove(listRemovedObject);
 
-        for (TeacherDTO.Report datum : specResponse.getData()) {
+        for (TeacherDTO.Report datum : response.getList()) {
             SearchDTO.SearchRq req = new SearchDTO.SearchRq();
             Long tId = datum.getId();
             SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(req, tId);
@@ -341,10 +334,17 @@ public class TeacherRestController {
                 }
             }
         }
-        for (TeacherDTO.Report datum : specResponse.getData()) {
+        for (TeacherDTO.Report datum : response.getList()) {
             if(datum.getLastCourse() != null)
                 datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(datum.getLastCourseId(),datum.getId()));
         }
+
+        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
+        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getList().size());
 
         specRs.setResponse(specResponse);
 
