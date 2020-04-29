@@ -954,5 +954,8 @@
     <changeSet author="poursalehi_mos (generated)" id="1588143353458-426">
         <addForeignKeyConstraint baseColumnNames="f_category_id" baseTableName="tbl_class_contract" constraintName="FKspj2t139ryt6tcdqqdth102qe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588153689653-426">
+        <addForeignKeyConstraint baseColumnNames="f_contract_file_id" baseTableName="tbl_class_contract" constraintName="FK13i1xkimggr6bxaxexjk2bt4j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_attachment" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

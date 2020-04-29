@@ -74,4 +74,12 @@ public class ClassContract extends Auditable {
 
     @Column(name = "f_second_party_person_id")
     private Long secondPartyPersonId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_contract_file_id", nullable = false, insertable = false, updatable = false)
+    private Attachment<ClassContract> contractFile;
+
+    @Column(name = "f_contract_file_id", nullable = false)
+    private Long contractFileId;
+
 }

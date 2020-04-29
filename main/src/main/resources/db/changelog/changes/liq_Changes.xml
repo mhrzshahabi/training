@@ -15,5 +15,12 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588153689653-425">
+        <addColumn tableName="tbl_class_contract">
+            <column name="f_contract_file_id" type="number(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
