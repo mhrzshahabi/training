@@ -526,7 +526,7 @@
                 title: "<spring:message code='class.title'/>:",
                 wrapTitle: true,
                 changed: function(_1,_2,_3){
-                    convertEn2Fa(_1,_2,_3,[]);
+                    convertEn2Fa(_1,_2,_3,["+","*","/"]);
                 }
             },
             {
