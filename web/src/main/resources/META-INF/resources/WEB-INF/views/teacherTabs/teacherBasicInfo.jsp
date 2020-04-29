@@ -2,7 +2,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 // <script>
-
+    var hasTeacherCategoriesChanged = false;
+    var hasTeacherMajorCategoryChanged = false;
     //----------------------------------------------------Rest Data Source----------------------------------------------
     var RestDataSource_Category_Evaluation_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -10,6 +11,16 @@
     });
 
     var RestDataSource_SubCategory_Evaluation_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    var RestDataSource_Categories_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategories_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
@@ -22,6 +33,7 @@
         width: "130px",
         border: "1px solid orange",
         scrollbarSize: 0,
+        prompt: "سایز عکس باید کوچکتر از 30 مگا بایت باشد<br/>اندازه ی عکس باید بین 100*100 تا 500*500 پیکسل باشد",
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
 
@@ -340,24 +352,21 @@
                 editorType: "ComboBoxItem",
                 width: "*",
                 changeOnKeypress: true,
+                autoFetchData: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Education_Major_ByID_JspTeacher,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
+                filterFields: ["titleFa","titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
@@ -395,17 +404,16 @@
                 type: "selectItem",
                 textAlign: "center",
                 required: true,
-                optionDataSource: RestDataSource_Category_JspTeacher,
+                optionDataSource: RestDataSource_Categories_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: false
                 },
                 changed: function () {
-                    isTeacherCategoriesChanged = true;
+                    hasTeacherCategoriesChanged = true;
                     var subCategoryField = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
@@ -433,23 +441,22 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
-                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                optionDataSource: RestDataSource_SubCategories_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: false
                 },
                 focus: function () {
-                    if (isTeacherCategoriesChanged) {
-                        isTeacherCategoriesChanged = false;
+                    if (hasTeacherCategoriesChanged) {
+                        hasTeacherCategoriesChanged = false;
                         var ids = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
-                        if (ids === []) {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                        if (ids == []) {
+                            RestDataSource_SubCategories_JspTeacher.implicitCriteria = null;
                         } else {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                            RestDataSource_SubCategories_JspTeacher.implicitCriteria = {
                                 _constructor: "AdvancedCriteria",
                                 operator: "and",
                                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
@@ -511,20 +518,30 @@
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
-                filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
+                filterFields: ["titleFa","titleFa"],
+                generateExactMatchCriteria: true,
                 pickListFields: [
                     {
                         name: "titleFa",
                         width: "70%",
                         filterOperator: "iContains"
                     }
-                ]
+                ],
+                changed: function (form,item,value) {
+                    hasTeacherMajorCategoryChanged = true;
+                    DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").clearValue();
+                    if (value == null || value == undefined) {
+                        DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").disable();
+                    } else{
+                        DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").enable();
+                    }
+                }
             },
             {
                 name: "majorSubCategoryId",
@@ -532,6 +549,7 @@
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
+                disabled: true,
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -540,20 +558,36 @@
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
+                filterFields: ["titleFa","titleFa"],
+                sortField: ["id"],
+                generateExactMatchCriteria: true,
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
-                ]
+                ],
+                focus: function () {
+                    if (hasTeacherMajorCategoryChanged) {
+                        hasTeacherMajorCategoryChanged = false;
+                        var id = DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue();
+                        if (id == null || id == undefined) {
+                            RestDataSource_SubCategory_Evaluation_JspTeacher.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_Evaluation_JspTeacher.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: id}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
             },
 
         ],

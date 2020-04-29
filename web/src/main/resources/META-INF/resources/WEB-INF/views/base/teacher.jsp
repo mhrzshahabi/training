@@ -43,7 +43,7 @@
 
     var RestDataSource_Category_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: categoryUrl + "spec-list"
+        fetchDataURL: categoryUrl + "iscList"
     });
 
     var RestDataSource_SubCategory_JspTeacher = isc.TrDS.create({
@@ -63,7 +63,8 @@
 
     var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
-        fetchDataURL: educationMajorUrl + "spec-list"
+        autoCacheAllData: true,
+        fetchDataURL: educationMajorUrl + "iscList",
     });
 
     var RestDataSource_Education_Major_ByID_JspTeacher = isc.TrDS.create({
@@ -217,7 +218,22 @@
                 valueField: "id",
                 displayField: "titleFa",
                 filterOnKeypress: true,
-                multiple: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspTeacher,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategories",
@@ -227,33 +243,69 @@
                 valueField: "id",
                 displayField: "titleFa",
                 filterOnKeypress: true,
-                multiple: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
-                sortNormalizer: function (record) {
-                    return record.personality.educationLevel.titleFa;
+                filterOnKeypress: true,
+                filterEditorType: "ComboBoxItem",
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Education_Level_JspTeacher,
+                    displayField: "titleFa",
+                    valueField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
                 },
-                editorType: "ComboBoxItem",
-                displayField: "titleFa",
-                valueField: "titleFa",
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_Education_Level_JspTeacher
             },
             {
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                sortNormalizer: function (record) {
-                    return record.personality.educationLevel.titleFa;
+                filterOnKeypress: true,
+                filterEditorType: "ComboBoxItem",
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Education_Major_JspTeacher,
+                    displayField: "titleFa",
+                    valueField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
                 },
-                editorType: "ComboBoxItem",
-                displayField: "titleFa",
-                valueField: "titleFa",
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher
+
             },
             {
                 name: "personality.contactInfo.mobile",
@@ -335,7 +387,6 @@
         ]
     });
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
-        // tabBarPosition: "top",
         showResizeBar: true,
         titleEditorTopOffset: 2,
         width: "100%",
@@ -454,8 +505,8 @@
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
-                TabSet_Bottom_JspTeacher,
-                HLayOut_TeacherSaveOrExit_JspTeacher
+                HLayOut_TeacherSaveOrExit_JspTeacher,
+                TabSet_Bottom_JspTeacher
             ]
         })]
     });
@@ -832,13 +883,19 @@
         DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.cityId").setOptionDataSource(null);
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.cityId").setOptionDataSource(null);
 
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationLevelId").fetchData();
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationMajorId").fetchData();
-        DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.stateId").fetchData();
-        DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId").fetchData();
-
         teacherMethod = "PUT";
         vm.editRecord(selected_record);
+
+        if(DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != null && DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != undefined){
+            var catId = DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue();
+            DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").enable();
+            RestDataSource_SubCategory_Evaluation_JspTeacher.implicitCriteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "categoryId", operator: "inSet", value: catId}]
+            };
+            DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").fetchData();
+        }
 
         var eduMajorValue = selected_record.personality.educationMajorId;
         var eduOrientationValue = selected_record.personality.educationOrientationId;
@@ -1046,8 +1103,7 @@
     function teacher_delete_result(resp) {
         teacherWait.close();
         if (resp.httpResponseCode === 200 && resp.httpResponseText == "ok") {
-            var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -1069,8 +1125,7 @@
             } else {
                 responseID = JSON.parse(resp.data).id;
                 // gridState = "[{id:" + responseID + "}]";
-                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                    "<spring:message code="msg.command.done"/>");
+                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
                 // setTimeout(function () {
                 //     OK.close();
                 //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
@@ -1092,8 +1147,7 @@
             responseID = JSON.parse(resp.data).id;
             vm.setValue("id", responseID);
             // gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
             addAttach(JSON.parse(resp.data).personality.id);
             showAttach(JSON.parse(resp.data).personality.id);
             selectedRecordID = responseID;
@@ -1120,8 +1174,7 @@
             } else {
                 responseID = JSON.parse(resp.data).id;
                 // gridState = "[{id:" + responseID + "}]";
-                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                    "<spring:message code="msg.command.done"/>");
+                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
