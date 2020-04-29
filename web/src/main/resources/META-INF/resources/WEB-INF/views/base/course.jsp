@@ -292,6 +292,7 @@
         },
         selectionChanged: function (record, state) {
             if (state) {
+                courseRecord = record;
                 // for (let i = 0; i < trainingTabSet.tabs.length; i++) {
                 //     if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                 //         trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -2691,7 +2692,8 @@
         equalCourse.length = 0;
         preCourseGrid.invalidateCache();
         equalCourseGrid.invalidateCache();
-        var sRecord = courseRecord;
+        const sRecord = courseRecord;
+
         if (sRecord == null || sRecord.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -2926,7 +2928,7 @@
 
     function sendCourseToWorkflow(courseMainObjective) {
 
-        var sRecord = ListGrid_Course.getSelectedRecord();
+        const sRecord = ListGrid_Course.getSelectedRecord();
 
         if (sRecord === null || sRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
@@ -3102,4 +3104,5 @@
 
 
 
-// </script>
+    // </script>
+
