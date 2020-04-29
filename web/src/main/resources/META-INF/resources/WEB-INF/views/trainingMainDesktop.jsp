@@ -94,6 +94,7 @@
     const studentClassReportUrl = rootUrl + "/student-class-report-view";
     const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
+    const classContractUrl = rootUrl + "/class-contract";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -638,6 +639,13 @@
                     title: "<spring:message code="institute"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "قرارداد آموزشی",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/class-contract"/>");
                     }
                 },
             ]

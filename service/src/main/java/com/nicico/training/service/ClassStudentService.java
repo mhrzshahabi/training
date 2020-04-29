@@ -41,7 +41,7 @@ public class ClassStudentService implements IClassStudentService {
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
         return SearchUtil.search(classStudentDAO, request, converter);

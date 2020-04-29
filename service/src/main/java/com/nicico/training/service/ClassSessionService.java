@@ -57,7 +57,7 @@ public class ClassSessionService implements IClassSession {
     }
 
     //*********************************
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<ClassSessionDTO.Info> list() {
         List<ClassSession> classSessionList = classSessionDAO.findAll();
