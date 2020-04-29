@@ -98,5 +98,7 @@
     <changeSet author="rastegari_h (generated)" id="1587985889507-211">
         <addUniqueConstraint columnNames="f_evaluation_question, f_questionnaire" constraintName="UKq95pxvc8f8y9uh4ph44hoal45" tableName="tbl_questionnaire_question"/>
     </changeSet>
-
+    <changeSet author="heydaripoor (generated)" id="1588136355333-377">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
+    </changeSet>
 </databaseChangeLog>
