@@ -115,7 +115,7 @@
             {name: "manager.firstNameFa"},
             {name: "manager.lastNameFa"}
         ],
-        fetchDataURL: instituteUrl + "iscList",
+        fetchDataURL: instituteUrl + "iscList"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var Menu_ListGrid_JspTClassReport= isc.Menu.create({
@@ -255,7 +255,7 @@
             })
         ]
     });
-    //----------------------------------------------------Criteria Form-------------------------------------------------
+    //----------------------------------------------------Criteria Form------------------------------------------------
     var DynamicForm_CriteriaForm_JspTClassReport = isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
@@ -268,6 +268,7 @@
                 name: "course.code",
                 title: "کد دوره",
                 hint: "کدهای دوره را با ; از یکدیگر جدا کنید",
+                prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -690,6 +691,7 @@
                 title: "استاد",
                 type: "comboBoxItem",
                 filterOperator: "equals",
+                allowEmptyValue: true,
                 optionDataSource: RestDataSource_Teacher_JspTClassReport,
                 valueField: "id",
                 displayField: "fullNameFa",
@@ -714,10 +716,11 @@
                 }
             },
             {
-                name: "instituteId",
+                name: "organizerId",
                 title: "برگزار کننده",
                 type: "comboBoxItem",
                 filterOperator: "equals",
+                allowEmptyValue: true,
                 optionDataSource: RestDataSource_Institute_JspTClassReport,
                 valueField: "id",
                 displayField: "titleFa",
@@ -1152,24 +1155,24 @@
             // else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
             //     removedObjects.add(data_values.criteria[i]);
             // }
-            else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "learningEvaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "behavioralEvaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "behavioralEvaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "evaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "evaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
+            // else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "learningEvaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "evaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "evaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
             //-----------------------------------TEMP----------------------------
             else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
                 removedObjects.add(data_values.criteria[i]);
@@ -1353,14 +1356,14 @@
             executionInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue();
             executionInfo_print  += ", ";
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("instituteId").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getValue() != undefined) {
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "برگزار کننده: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("instituteId").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             executionInfo_print +=  "برگزار کننده: " ;
-            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("instituteId").getDisplayValue() ;
+            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() ;
             executionInfo_print +=  ", " ;
         }
 
