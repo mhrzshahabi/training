@@ -16,6 +16,7 @@ import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
+import com.nicico.training.service.EvaluationAnalysistLearningService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,7 @@ public class TclassRestController {
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
     private final CourseDAO courseDAO;
+    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -494,6 +496,13 @@ public class TclassRestController {
         Object courseStatus = null;
         Object reactionEvaluationOperator = null;
         Object reactionEvaluationGrade = null;
+        Object behavioralEvaluationOperator = null;
+        Object behavioralEvaluationGrade = null;
+        Object learningEvaluationOperator = null;
+        Object learningEvaluationGrade = null;
+        Object evaluationOperator = null;
+        Object evaluationGrade = null;
+
         for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
             if(criterion.getFieldName().equalsIgnoreCase("courseStatus")){
                 courseStatus = criterion.getValue().get(0);
@@ -505,6 +514,30 @@ public class TclassRestController {
             }
             if(criterion.getFieldName().equalsIgnoreCase("reactionEvaluationGrade")){
                 reactionEvaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationOperator")){
+                behavioralEvaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationGrade")){
+                behavioralEvaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("learningEvaluationOperator")){
+                learningEvaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("learningEvaluationGrade")){
+                learningEvaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationOperator")){
+                evaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
+                evaluationGrade = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
         }
@@ -539,6 +572,60 @@ public class TclassRestController {
                 }
                 if(reactionEvaluationOperator.equals("2")){
                     if(classReactionGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if(behavioralEvaluationOperator != null && behavioralEvaluationGrade != null) {
+            double grade = Double.parseDouble(behavioralEvaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classBehavioralGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFEBGrade();
+                if(behavioralEvaluationOperator.equals("1")){
+                    if(classBehavioralGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if(behavioralEvaluationOperator.equals("2")){
+                    if(classBehavioralGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if(learningEvaluationOperator != null && learningEvaluationGrade != null) {
+            double grade = Double.parseDouble(learningEvaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
+                if(learningEvaluationOperator.equals("1")){
+                    if(classLearningGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if(learningEvaluationOperator.equals("2")){
+                    if(classLearningGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if(evaluationOperator != null && evaluationGrade != null) {
+            double grade = Double.parseDouble(evaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classEvaluationGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFECBGrade();
+                if(evaluationOperator.equals("1")){
+                    if(classEvaluationGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if(evaluationOperator.equals("2")){
+                    if(classEvaluationGrade <= grade)
                         listRemovedObjects.add(datum);
                 }
             }
