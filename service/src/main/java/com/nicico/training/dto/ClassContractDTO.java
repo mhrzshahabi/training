@@ -34,10 +34,12 @@ public class ClassContractDTO {
 
     private Long secondPartyPersonId;
 
+    private Long contractFileId;
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CityInfo")
+    @ApiModel("Info")
     public static class Info extends ClassContractDTO {
         @NotEmpty
         @ApiModelProperty(required = true)

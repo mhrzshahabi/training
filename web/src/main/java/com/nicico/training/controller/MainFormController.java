@@ -119,6 +119,11 @@ public class MainFormController {
         return "report/monthlyStatisticalReport";
     }
 
+    @RequestMapping("class-contract")
+    public String showClassContractForm() {
+        return "run/class-contract";
+    }
+
     @PostMapping("/print/{entityUrl}/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String entityUrl, @PathVariable String type) {
         String token = request.getParameter("myToken");

@@ -54,28 +54,28 @@ public class ClassContract extends Auditable {
     @Column(name = "f_accountable_id", nullable = false)
     private String accountableId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_first_party_company_id", nullable = false, insertable = false, updatable = false)
     private Company firstPartyCompany;
 
     @Column(name = "f_first_party_company_id", nullable = false)
     private Long firstPartyCompanyId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_second_party_company_id", insertable = false, updatable = false)
     private Company secondPartyCompany;
 
     @Column(name = "f_second_party_company_id")
     private Long secondPartyCompanyId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_second_party_person_id", insertable = false, updatable = false)
     private PersonalInfo secondPartyPerson;
 
     @Column(name = "f_second_party_person_id")
     private Long secondPartyPersonId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "f_contract_file_id", nullable = false, insertable = false, updatable = false)
     private Attachment<ClassContract> contractFile;
 
