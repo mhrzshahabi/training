@@ -1263,9 +1263,9 @@
                 name: "evaluation",
                 title: "<spring:message code="evaluation.level"/>",
                 colSpan: 1,
-                editorType: "ComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
-                type: "select",
+                // type: "select",
                 endRow: false,
                 //     defaultValue: "1",
                 valueMap: {
@@ -1273,6 +1273,9 @@
                     "2": "یادگیری",
                     "3": "رفتاری",
                     "4": "نتایج",
+                },
+                pickListProperties:{
+                    showFilterEditor: false
                 },
                 change: function (form, item, value, oldValue) {
                     if (value === "3") {
@@ -1296,6 +1299,9 @@
                 required: false,
                 textAlign: "center",
                 hint: "&nbsp;ماه",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 valueMap: {
                     1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "11", 12: "12"
                 }
@@ -1326,6 +1332,9 @@
                     "2": "نمره از صد",
                     "3": "نمره از بیست",
                     "4": "بدون نمره",
+                },
+                pickListProperties:{
+                    showFilterEditor: false
                 },
                 change: function (form, item, value) {
 
@@ -1514,6 +1523,9 @@
                 valueField: "id",
                 optionDataSource: RestDataSource_category,
                 filterFields: ["titleFa"],
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 sortField: ["id"],
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("subCategory.id").enable();
@@ -1543,6 +1555,9 @@
                 optionDataSource: RestDataSourceSubCategory,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                 }
@@ -1562,6 +1577,9 @@
                 sortField: ["id"],
                 // height: "30",
                 width: "*",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     switch (value) {
@@ -1602,6 +1620,9 @@
                 textMatchStyle: "startsWith",
                 // titleOrientation: "top",
                 generateExactMatchCriteria: true,
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     switch (value) {
@@ -1632,6 +1653,9 @@
                 // height: "30",
                 width: "*",
                 // titleOrientation: "top",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                 },
@@ -1650,6 +1674,9 @@
                 // titleOrientation: "top",
                 width: "*",
                 // height: "30",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 changed: function (form, item, value) {
                     ChangeEtechnicalType = true;
                 },
@@ -2329,7 +2356,7 @@
                 width: "96%",
                 height: "74%",
                 borderRadius: "6px",
-                validateOnExit: true,
+                validateOnChange: true,
                 textAlign: "right",
                 // margin:20,
                 fields: [
@@ -2357,7 +2384,7 @@
                         name: "minTeacherExpYears",
                         colSpan: 2,
                         title: "<spring:message code="course_minTeacherExpYears"/>" + ":",
-                        prompt: "لطفا یک عدد بین 1 تا 15 وارد کنید",
+                        prompt: "لطفا یک عدد بین 1 تا 50 وارد کنید",
                         // shouldSaveValue: true,
                         textAlign: "center",
                         required: true,
@@ -2371,7 +2398,7 @@
                         mask: "##",
                         useMask: true,
                         keyPressFilter: "[0-9]",
-                        requiredMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
+                        requiredMessage: "لطفا یک عدد بین 1 تا 50 وارد کنید",
                     },
                     {
                         name: "minTeacherEvalScore",

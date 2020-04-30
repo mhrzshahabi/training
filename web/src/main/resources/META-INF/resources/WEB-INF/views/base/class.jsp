@@ -2095,7 +2095,7 @@
         }
     });
 
-    var HLayout_Tab_Class = isc.HLayout.create({
+    let HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
         height: "39%",
         members: [TabSet_Class]
