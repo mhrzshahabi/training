@@ -2971,13 +2971,13 @@
 
     function startProcess_callback(resp) {
         if (resp.httpResponseCode === 200) {
-            isc.say("<spring:message code='course.set.on.workflow.engine'/>");
+            simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
             ListGrid_Course_refresh()
 
         } else if (resp.httpResponseCode === 404) {
-            isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
+            simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
         } else {
-            isc.say("<spring:message code='msg.send.to.workflow.problem'/>");
+            simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
         }
     }
 

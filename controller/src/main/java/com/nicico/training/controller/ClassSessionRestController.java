@@ -10,6 +10,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.Tclass;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ public class ClassSessionRestController {
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final TclassDAO tclassDAO;
 
     //*********************************
 
@@ -200,8 +203,11 @@ public class ClassSessionRestController {
 
 //////        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
 
+        Tclass tclass = tclassDAO.findTclassByIdEquals(Long.parseLong(classId));
+        String sessionTitle = tclass.getCode() + "لیست جلسات کلاس '" + tclass.getTitleClass() + "' با کد ";
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
+        params.put("sessionTitle", sessionTitle);
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(infos) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

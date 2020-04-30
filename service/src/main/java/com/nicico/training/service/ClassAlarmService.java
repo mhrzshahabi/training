@@ -6,6 +6,7 @@ import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
 import com.nicico.training.model.Alarm;
 import com.nicico.training.repository.AlarmDAO;
+import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -35,6 +36,7 @@ public class ClassAlarmService implements IClassAlarm {
     private final ModelMapper modelMapper;
     private final AlarmDAO alarmDAO;
     private final TclassDAO tclassDAO;
+    private final ClassStudentDAO classStudentDAO;
     private MessageSource messageSource;
 
 //////  '' AS alarmTypeTitleFa, '' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId
@@ -1608,7 +1610,7 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
     @Override
-    public String checkAlarmsForEndingClass(Long class_id, HttpServletResponse response) throws IOException {
+    public String checkAlarmsForEndingClass(Long class_id, String endDate, HttpServletResponse response) throws IOException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -1677,7 +1679,13 @@ public class ClassAlarmService implements IClassAlarm {
             }
 
             ////old code **> endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
-            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
+            if (endDate.replaceAll("-", "/").compareTo(todayDate) > 0)
+                endingClassAlarm.append("تاریخ پایان کلاس " + endDate.replaceAll("-", "/") + " می باشد.<br />");
+
+            if (classStudentDAO.countClassStudentsByTclassId(class_id) == 0)
+                endingClassAlarm.append("در کلاس هیچ فراگیری وجود ندارد.<br />");
+
+                endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
 
 
             //*****score alarm*****
