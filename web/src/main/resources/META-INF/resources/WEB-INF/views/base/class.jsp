@@ -429,6 +429,7 @@
         valuesManager: "VM_JspClass",
         fields: [
             {name: "id", hidden: true},
+            {name:"course.theoryDuration", hidden:true},
             {
                 name: "course.id", editorType: "ComboBoxItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
@@ -470,6 +471,8 @@
                         form.getItem("teacherId").fetchData();
                     }
                     form.setValue("hduration", item.getSelectedRecord().theoryDuration);
+                    form.setValue("course.theoryDuration", item.getSelectedRecord().theoryDuration);
+                    form.clearFieldErrors("hduration", true);
                     if (item.getSelectedRecord().evaluation === "1") {
                         form.setValue("preCourseTest", false);
                         form.getItem("preCourseTest").hide();
@@ -523,7 +526,7 @@
                 title: "<spring:message code='class.title'/>:",
                 wrapTitle: true,
                 changed: function(_1,_2,_3){
-                    convertEn2Fa(_1,_2,_3,[]);
+                    convertEn2Fa(_1,_2,_3,["+","*","/"]);
                 }
             },
             {
@@ -572,11 +575,39 @@
                 required: true,
                 showHintInField: true,
                 keyPressFilter: "[0-9.]",
-                mapValueToDisplay: function(value){
-                    if (isNaN(value)) {
+/*                mapValueToDisplay: function(value){
+                    if (value == undefined) {
                         return "";
                     }
                     return value + " ساعت ";
+                },*/
+                click: function (form, item) {
+                    if (form.getValue("course.id")) {
+                        return true;
+                    } else {
+                        dialogDuration = isc.MyOkDialog.create({
+                            message: "ابتدا دوره را انتخاب کنید",
+                        });
+                        dialogDuration.addProperties({
+                            buttonClick: function () {
+                                this.close();
+                            }
+                        });
+
+                    }
+                },
+                editorExit: function (form, item, value) {
+                var courseDuration = 0;
+                    var valueDuration = 0;
+                    if(value != undefined && form.getValue("course.theoryDuration") != undefined){
+                        courseDuration = parseInt(form.getValue("course.theoryDuration"));
+                        valueDuration = parseInt(value);
+                        if(courseDuration >= valueDuration){
+                            form.clearFieldErrors("hduration", true);
+                        }else {
+                            form.addFieldErrors("hduration", "<spring:message code='msg.class.greater.duration'/>", true);
+                        }
+                    }
                 }
             },
             {
@@ -1397,6 +1428,14 @@
                     return;
                 }
             }
+            /*else if(DynamicForm_Class_JspClass.getValue("autoValid")){
+            if(Number(DynamicForm_Class_JspClass.getValue("hduration"))>=Number(DynamicForm_Class_JspClass.getValue("course.theoryDuration"))){
+                    isc.MyOkDialog.create({
+                        message: "مدت زمان کلاس از دوره باید کمتر باشد.",
+                    });
+                    return;
+                }
+            }*/
             // if (VM_JspClass.hasErrors()) {
             //     return;
             // }
@@ -1416,6 +1455,9 @@
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                 classSaveUrl += classRecord.id;
+            } else if (classMethod.localeCompare("POST") === 0)
+            {
+                classSaveUrl += "safeCreate";
             }
             isc.RPCManager.sendRequest({
                 actionURL: classSaveUrl,
@@ -2470,6 +2512,7 @@
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                     let result = JSON.parse(resp.data).response.data;
                     DynamicForm_Class_JspClass.setValue("dDuration", result.length);
+                    console.log("dayDuration");
                 }
             }
         });

@@ -529,6 +529,7 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private String classStatus;
+        private String scoringMethod;
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();

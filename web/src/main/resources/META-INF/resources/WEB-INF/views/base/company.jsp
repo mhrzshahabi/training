@@ -691,6 +691,7 @@
         DynamicForm_Address_Company.setValue("address.webSite", data.webSite);
         DynamicForm_Address_Company.setValue("address.stateId", data.stateId);
         DynamicForm_Address_Company.setValue("address.cityId", data.cityId);
+        createDialog("info", "اطلاعات این آدرس از قبل وجود دارد");
     }
 
     // </script>

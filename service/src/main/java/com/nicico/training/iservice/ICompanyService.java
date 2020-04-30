@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.model.Company;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface ICompanyService {

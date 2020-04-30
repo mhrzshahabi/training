@@ -120,9 +120,9 @@ public class TeacherRestController {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null)
+        if (request.get("categories") != null && !((List)request.get("categories")).isEmpty())
             categories = setCats(request);
-        if (request.get("subCategories") != null)
+        if (request.get("subCategories") != null && !((List)request.get("subCategories")).isEmpty())
             subCategories = setSubCats(request);
 
         TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);

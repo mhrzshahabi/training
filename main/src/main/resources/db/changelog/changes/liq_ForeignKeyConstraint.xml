@@ -918,4 +918,49 @@
         <addForeignKeyConstraint baseColumnNames="dep_parent_id" baseTableName="tbl_department" constraintName="fk_department2Department" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
     </changeSet>
 
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-415">
+        <addForeignKeyConstraint baseColumnNames="f_second_party_company_id" baseTableName="tbl_class_contract" constraintName="FK3634y3awqmj068ho3afxlfwmg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_company" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-416">
+        <addForeignKeyConstraint baseColumnNames="f_class_contract_id" baseTableName="tbl_class_contract_cost" constraintName="FKed78q0240odja1ls7vfwecaqg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-417">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_class_contract" constraintName="FKf24go1006syey03lhkuxpjsdr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-418">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_class_contract_cost" constraintName="FKg5dsxxyif3hraew7d9brfax4s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-419">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_class_contract_cost" constraintName="FKi56yi2emn5gbjbe59r7bly5b2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588146999887-424">
+        <addForeignKeyConstraint baseColumnNames="f_accountable_id" baseTableName="tbl_class_contract" constraintName="FKihwfaifcmcci1efmafvm6iwj8" deferrable="false" initiallyDeferred="false" referencedColumnNames="personnel_no" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-421">
+        <addForeignKeyConstraint baseColumnNames="f_second_party_person_id" baseTableName="tbl_class_contract" constraintName="FKlkn5a72ip48x1ixupv7ern2n0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personal_info" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-422">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_class_contract" constraintName="FKmlgkvohmt1npupyrrbboqm7fc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-423">
+        <addForeignKeyConstraint baseColumnNames="f_subcategory_id" baseTableName="tbl_class_contract" constraintName="FKr0193jecn87u54r47nkmpl44d" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-424">
+        <addForeignKeyConstraint baseColumnNames="f_first_party_company_id" baseTableName="tbl_class_contract" constraintName="FKrigeckfv1cu92khyg7ot8u9wn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_company" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-425">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_class_contract_cost" constraintName="FKslnpi8lgbj998tdwk62j05tu8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-426">
+        <addForeignKeyConstraint baseColumnNames="f_category_id" baseTableName="tbl_class_contract" constraintName="FKspj2t139ryt6tcdqqdth102qe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588153689653-426">
+        <addForeignKeyConstraint baseColumnNames="f_contract_file_id" baseTableName="tbl_class_contract" constraintName="FK13i1xkimggr6bxaxexjk2bt4j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_attachment" validate="true"/>
+    </changeSet>
+
+    <changeSet author="heydaripoor (generated)" id="1588155671540-260">
+        <dropForeignKeyConstraint baseTableName="tbl_company" constraintName="FKpurh1o4x7syfmr0agf8e8kkjl"/>
+        <addForeignKeyConstraint baseColumnNames="f_address_id" baseTableName="tbl_company" constraintName="FKpurh1o4x7syfmr0agf8e8kkjl" referencedColumnNames="id" referencedTableName="tbl_address"/>
+    </changeSet>
+
 </databaseChangeLog>

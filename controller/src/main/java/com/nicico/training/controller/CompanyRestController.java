@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class CompanyRestController {
     public ResponseEntity create(@RequestBody CompanyDTO.Create request) {
 
         try {
-            return new ResponseEntity<>(companyService.create(request), HttpStatus.CREATED);
+            return new ResponseEntity<>( companyService.create(request), HttpStatus.CREATED);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
