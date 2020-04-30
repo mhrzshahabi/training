@@ -204,7 +204,7 @@
     PersonnelsLG_CNAR = isc.TrLG.create({
         dataSource: PersonnelDS_CNAR,
         contextMenu: Menu_Personnel_CNAR,
-        selectionType: "single",
+        selectionType: "none",
         allowAdvancedCriteria: true,
         fields: [
             {name: "firstName"},

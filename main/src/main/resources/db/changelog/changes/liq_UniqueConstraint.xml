@@ -101,4 +101,11 @@
     <changeSet author="heydaripoor (generated)" id="1588136355333-377">
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
     </changeSet>
+
+
+
+
+    <changeSet author="heydaripoor (generated)" id="1588155671540-377">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_address_id" tableName="tbl_company"/>
+    </changeSet>
 </databaseChangeLog>

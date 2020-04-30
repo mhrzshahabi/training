@@ -52,10 +52,10 @@ public class Company extends Auditable {
     @Column(name = "f_personal_info_id")
     private Long managerId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "f_address_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_address_id",insertable = false, updatable = false)
     private Address address;
-    @Column(name = "f_address_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "f_address_id")
     private Long addressId;
 }
 

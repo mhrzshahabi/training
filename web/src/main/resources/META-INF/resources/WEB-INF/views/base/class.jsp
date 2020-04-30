@@ -1428,6 +1428,14 @@
                     return;
                 }
             }
+            /*else if(DynamicForm_Class_JspClass.getValue("autoValid")){
+            if(Number(DynamicForm_Class_JspClass.getValue("hduration"))>=Number(DynamicForm_Class_JspClass.getValue("course.theoryDuration"))){
+                    isc.MyOkDialog.create({
+                        message: "مدت زمان کلاس از دوره باید کمتر باشد.",
+                    });
+                    return;
+                }
+            }*/
             // if (VM_JspClass.hasErrors()) {
             //     return;
             // }
@@ -1447,6 +1455,9 @@
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                 classSaveUrl += classRecord.id;
+            } else if (classMethod.localeCompare("POST") === 0)
+            {
+                classSaveUrl += "safeCreate";
             }
             isc.RPCManager.sendRequest({
                 actionURL: classSaveUrl,
@@ -2126,7 +2137,7 @@
         }
     });
 
-    var HLayout_Tab_Class = isc.HLayout.create({
+    let HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
         height: "39%",
         members: [TabSet_Class]

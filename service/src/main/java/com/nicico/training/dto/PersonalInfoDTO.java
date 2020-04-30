@@ -54,6 +54,19 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("contractInfo")
+    public static class contractInfo extends PersonalInfoDTO {
+        private Long id;
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+        private ContactInfoDTO.Info contactInfo;
+        private AccountInfoDTO.Info accountInfo;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PersonalInfoCustom")
     public static class PersonalInfoCustom{
 
