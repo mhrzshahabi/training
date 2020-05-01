@@ -68,14 +68,18 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public CompanyDTO.Info update(Long id, CompanyDTO.Update request) {
-        Company currentCompany =companyDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Company currentCompany = companyDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         Company company = new Company();
-         modelMapper.map(currentCompany,company);
-         modelMapper.map(request,company);
-        updateManager(request, currentCompany.getManagerId(),company);
-        updateAccountInfo(request, currentCompany.getAccountInfoId(),company);
+        modelMapper.map(currentCompany, company);
+        modelMapper.map(request, company);
         try {
-            updateAddress(request, currentCompany.getAddressId(),company);
+            updateManager(request, currentCompany.getManagerId(), company);
+        } catch (Exception ex) {
+            throw new TrainingException(TrainingException.ErrorType.RecordAlreadyExists);
+        }
+        updateAccountInfo(request, currentCompany.getAccountInfoId(), company);
+        try {
+            updateAddress(request, currentCompany.getAddressId(), company);
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -85,71 +89,31 @@ public class CompanyService implements ICompanyService {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
     }
+
     @Transactional
-    public void updateManager(CompanyDTO.Update request, Long id,Company company) {
+    public void updateManager(CompanyDTO.Update request, Long id, Company company) throws Exception {
         PersonalInfo personalInfo = personalInfoDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        if(request.getManager().getId().equals(id))
-        {
-            modelMapper.map(request.getManager(),personalInfo);
-            personalInfoDAO.saveAndFlush(personalInfo);
-        }
-       else{
-          // PersonalInfo personalInfo1=personalInfoDAO.findByNationalCode(request.getManager().getNationalCode()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            PersonalInfo personalInfo1 = personalInfoDAO.findById(request.getManager().getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            if(personalInfo1 != null)
-             {
+        modelMapper.map(request.getManager(), personalInfo);
+        personalInfoDAO.saveAndFlush(personalInfo);
+  }
 
-                 modelMapper.map(request.getManager(),personalInfo1);
-                 personalInfoDAO.saveAndFlush(personalInfo1);
-                 company.setManagerId(personalInfo1.getId());
-                 company.setManager(personalInfo1);
-
-             }
-            else
-            {
-                PersonalInfoDTO.Info PersonalInfoDTOInfo = personalInfoService.create(modelMapper.map(request.getManager(), PersonalInfoDTO.Create.class));
-                PersonalInfo personalInfo2 = personalInfoDAO.findById(PersonalInfoDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                company.setManagerId(personalInfo2.getId());
-                company.setManager(personalInfo2);
-
-            }
-       }
-        PersonalInfo personalInfo1 = new PersonalInfo();
-        modelMapper.map(personalInfo, personalInfo1);
-        modelMapper.map(request.getManager(), personalInfo1);
-        personalInfoDAO.saveAndFlush(personalInfo1);
-        company.setManager(personalInfo1);
-        company.setManagerId(personalInfo1.getId());
-
-    }
     @Transactional
-    public void updateAddress(CompanyDTO.Update request, Long id,Company company) throws Exception {
-
+    public void updateAddress(CompanyDTO.Update request, Long id, Company company) throws Exception {
         Address address = addressDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        if(address.getPostalCode().equals(request.getAddress().getPostalCode()))
-        {
-          modelMapper.map(request.getAddress(),address);
-          addressDAO.saveAndFlush(address);
+        if (address.getPostalCode().equals(request.getAddress().getPostalCode())) {
+            modelMapper.map(request.getAddress(), address);
+            addressDAO.saveAndFlush(address);
 
-        } else {
-            Optional<Address> address1 = addressDAO.findByPostalCode(request.getAddress().getPostalCode());
-            if (address1.isPresent()) {
-               throw new Exception();
-            } else {
-                AddressDTO.Info AddressDTOInfo = addressService.create(modelMapper.map(request.getAddress(), AddressDTO.Create.class));
-                Address address2 = addressDAO.findById(AddressDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                company.setAddress(address2);
-                company.setAddressId(address2.getId());
-            }
         }
-    }
+       }
+
     @Transactional
-    public void updateAccountInfo(CompanyDTO.Update request, Long id,Company company) {
+    public void updateAccountInfo(CompanyDTO.Update request, Long id, Company company) {
         AccountInfo accountInfo = accountInfoDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         modelMapper.map(request.getAccountInfo(), accountInfo);
         accountInfoDAO.saveAndFlush(accountInfo);
-       // company.setAccountInfo(accountInfo);
-       // company.setAccountInfoId(accountInfo.getId());
+        // company.setAccountInfo(accountInfo);
+        // company.setAccountInfoId(accountInfo.getId());
     }
 
     @Transactional
@@ -182,7 +146,7 @@ public class CompanyService implements ICompanyService {
         try {
             setAddress(request, company);
         } catch (Exception e) {
-          throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
         setManager(request, company);
         setAccountInfo(request, company);
@@ -190,28 +154,33 @@ public class CompanyService implements ICompanyService {
     }
 
     public void setAddress(CompanyDTO.Create request, Company company) throws Exception {
-        if (request.getAddress() != null && request.getAddress().getPostalCode() != null) {
-            Address address = addressService.getByPostalCode(request.getAddress().getPostalCode());
-            if (address != null) {
+        Optional<Address> address1 = addressDAO.findByPostalCode(request.getAddress().getPostalCode());
+        if (address1.isPresent()) {
+            List<Company> companyList = companyDAO.findByAddressId(address1.get().getId());
+            if (companyList.size() > 0) {
                 throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
-//                request.setAddressId(address.getId());
-//                request.getAddress().setId(address.getId());
-//                modelMapper.map(request.getAddress(), address);
-//                company.setAddressId(address.getId());
-//                company.setAddress(address);
-//                request.setAddress(modelMapper.map(address, AddressDTO.CompanyAddress.class));
-            } else if (address == null) {
-                AddressDTO.Info AddressDTOInfo = addressService.create(modelMapper.map(request.getAddress(), AddressDTO.Create.class));
-                Address address2 = addressDAO.findById(AddressDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                company.setAddress(address2);
-                company.setAddressId(address2.getId());
+            } else {
+                Address address = addressDAO.findByPostalCode(request.getAddress().getPostalCode()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                 if (address != null) {
+                    company.setAddressId(address.getId());
+                    company.setAddress(address);
+                } else {
+                    AddressDTO.Info AddressDTOInfo = addressService.create(modelMapper.map(request.getAddress(), AddressDTO.Create.class));
+                    Address address2 = addressDAO.findById(AddressDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                    company.setAddressId(address2.getId());
+                    company.setAddress(address2);
+                }
             }
-        } else if (request.getAddress() != null && request.getAddress().getPostalCode() == null) {
+
+
+        }else
+        {
             AddressDTO.Info AddressDTOInfo = addressService.create(modelMapper.map(request.getAddress(), AddressDTO.Create.class));
-            Address address = addressDAO.findById(AddressDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            company.setAddressId(address.getId());
-            company.setAddress(address);
+            Address address2 = addressDAO.findById(AddressDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            company.setAddressId(address2.getId());
+            company.setAddress(address2);
         }
+
 
     }
 

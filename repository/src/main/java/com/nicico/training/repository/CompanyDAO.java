@@ -14,10 +14,5 @@ import java.util.List;
 @Repository
 public interface CompanyDAO extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
     List<Company> findByManagerId(Long managerId);
-
-
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE tbl_company c SET c.f_personal_info_id = :personalId  WHERE c.id = :companyId",nativeQuery = true)
-    int updatepersonalId(@Param("companyId") Long companyId, @Param("personalId") Long  personalId);
+    List<Company> findByAddressId(long addressId);
 }

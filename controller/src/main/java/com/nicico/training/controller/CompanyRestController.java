@@ -58,8 +58,11 @@ public class CompanyRestController {
 
         try {
             return new ResponseEntity<>(companyService.update(id, request), HttpStatus.OK);
-        } catch (TrainingException ex) {
+        } catch (TrainingException e) {
+            if (e.getHttpStatusCode().equals(409))
             return new ResponseEntity<>(TrainingException.ErrorType.DuplicateRecord.getHttpStatusCode(), HttpStatus.CONFLICT);
+            else
+             return new ResponseEntity<>(TrainingException.ErrorType.RecordAlreadyExists.getHttpStatusCode(),HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

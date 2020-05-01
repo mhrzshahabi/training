@@ -228,7 +228,7 @@
             {
                 name: "manager.nationalCode",
                 required: "true",
-                title: "<spring:message code='national.code'/>",
+                                title: "<spring:message code='national.code'/>",
                 keyPressFilter: "[0-9]",
                 textAlign: "left",
                 length: "10",
@@ -299,7 +299,7 @@
                 changed: function (form, item, value) {
                     if (value == null || !this.validate())
                         return;
-                   // fillAddressFields(value);
+                    fillAddressFields(value);
                 }
             },
             {
@@ -605,6 +605,8 @@
         co.clearErrors(true);
         company_method = "POST";
         Window_Company.setTitle("<spring:message code="company.create"/>");
+        DynamicForm_ManagerInfo_Company.getItem("manager.nationalCode").setDisabled(false);
+        DynamicForm_Address_Company.getItem("address.postalCode").setDisabled(false);
         Window_Company.show();
     }
 
@@ -620,6 +622,8 @@
             if (record.address !== undefined && record.address.stateId !== undefined)
                 RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + record.address.stateId;
             co.editRecord(record);
+            DynamicForm_ManagerInfo_Company.getItem("manager.nationalCode").setDisabled(true);
+            DynamicForm_Address_Company.getItem("address.postalCode").setDisabled(true);
             Window_Company.setTitle("<spring:message code="company.edit"/>");
             Window_Company.show();
         }
@@ -656,6 +660,11 @@
         } else if(resp.httpResponseCode == 409)
         {
             createDialog("info", "کد پستی قبلا ثبت شده",
+                "<spring:message code="message"/>");
+        }
+        else if(resp.httpResponseCode == 406)
+        {
+            createDialog("info", "اطلاعات مدیر تغییر کرده",
                 "<spring:message code="message"/>");
         }
         else {
@@ -697,7 +706,7 @@
         DynamicForm_Address_Company.setValue("address.webSite", data.webSite);
         DynamicForm_Address_Company.setValue("address.stateId", data.stateId);
         DynamicForm_Address_Company.setValue("address.cityId", data.cityId);
-        createDialog("info", "اطلاعات این آدرس از قبل وجود دارد");
+        // createDialog("info", "اطلاعات این آدرس از قبل وجود دارد");
     }
 
     // </script>
