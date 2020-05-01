@@ -299,7 +299,7 @@
                 changed: function (form, item, value) {
                     if (value == null || !this.validate())
                         return;
-                    fillAddressFields(value);
+                   // fillAddressFields(value);
                 }
             },
             {
@@ -644,6 +644,7 @@
     }
 
     function show_CompanyActionResult(resp) {
+               alert(resp.httpResponseCode)
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
@@ -652,7 +653,12 @@
             }, 2000);
             Refresh_Company();
             Window_Company.close();
-        } else {
+        } else if(resp.httpResponseCode == 409)
+        {
+            createDialog("info", "کد پستی قبلا ثبت شده",
+                "<spring:message code="message"/>");
+        }
+        else {
             createDialog("info", "<spring:message code="msg.operation.error"/>",
                 "<spring:message code="message"/>");
         }

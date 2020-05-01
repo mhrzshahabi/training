@@ -48,7 +48,7 @@ public class CompanyRestController {
         try {
             return new ResponseEntity<>( companyService.create(request), HttpStatus.CREATED);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(TrainingException.ErrorType.DuplicateRecord.getHttpStatusCode(), HttpStatus.CONFLICT);
         }
     }
 
@@ -59,7 +59,7 @@ public class CompanyRestController {
         try {
             return new ResponseEntity<>(companyService.update(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(TrainingException.ErrorType.DuplicateRecord.getHttpStatusCode(), HttpStatus.CONFLICT);
         }
     }
 
