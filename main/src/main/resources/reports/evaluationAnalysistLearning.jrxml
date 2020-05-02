@@ -182,7 +182,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[استاد :]]></text>
+				<text><![CDATA[مدرس :]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="637" y="46" width="100" height="30" uuid="12c253f5-3813-4ba1-a2f2-1605312ebb77"/>
