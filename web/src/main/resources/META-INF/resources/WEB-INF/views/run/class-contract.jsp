@@ -45,15 +45,15 @@
             {name: "categoryId", title: "گروه", filterOperator: "iContains", autoFitWidth: true},
             {name: "subCategoryId", title: "زیر گروه", filterOperator: "iContains", autoFitWidth: true},
             {name: "isSigned", title: "امضا شده", filterOperator: "iContains", autoFitWidth: true},
+            {name: "accountable", title: "امضا کننده", filterOperator: "iContains", autoFitWidth: true},
 
 
 
 
-            // {name: "date", title: "تاریخ", filterOperator: "iContains", autoFitWidth: true},
-            // {name: "contractNumber", title: "شماره", filterOperator: "iContains", autoFitWidth: true},
-            // {name: "date", title: "تاریخ", filterOperator: "iContains", autoFitWidth: true},
-            // {name: "contractNumber", title: "شماره", filterOperator: "iContains", autoFitWidth: true},
-            // {name: "date", title: "تاریخ", filterOperator: "iContains", autoFitWidth: true},
+            {name: "secondPartyCompany.titleFa", title: "نام موسسه آموزشی", filterOperator: "iContains", autoFitWidth: true},
+            {name: "secondPartyCompany", title: "تاریخ", filterOperator: "iContains", autoFitWidth: true},
+            {name: "contractNumber", title: "شماره", filterOperator: "iContains", autoFitWidth: true},
+            {name: "date", title: "تاریخ", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: classContractUrl + "/iscList"
     });

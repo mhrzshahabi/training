@@ -725,7 +725,6 @@
                         ListGrid_Institute_InstituteList_Select();
                     },
                 }],
-// canEdit: false,
                 click: function (form, item, icon) {
                     ListGrid_Institute_InstituteList_Select();
                 },
@@ -842,7 +841,21 @@
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-            }
+            },
+            {
+                name: "instituteId",
+                title: "<spring:message code="company.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                keyPressFilter: "[0-9]"
+            },
+            {
+                name: "economicalId",
+                title: "<spring:message code="company.economical.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                keyPressFilter: "[0-9]"
+            },
         ]
 
     });

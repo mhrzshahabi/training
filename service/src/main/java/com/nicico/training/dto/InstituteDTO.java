@@ -68,6 +68,8 @@ public class InstituteDTO {
     private Integer empNumAssociate;
     private Integer teacherNumDiploma;
     private Integer empNumDiploma;
+    private String instituteId;
+    private String economicalId;
 
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -85,6 +87,32 @@ public class InstituteDTO {
     @ApiModel("InstituteInfo")
     public static class Info extends InstituteDTO {
         private Long id;
+        private String titleFa;
+        //        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
+//        private Set<EquipmentDTO.Info> equipmentSet;
+//        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
+//        private Set<InstituteAccountDTO.Info> instituteAccountSet;
+        private PersonalInfoDTO.Info manager;
+        private InstituteDTO.Info parentInstitute;
+        private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
+        private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
+        private CityDTO.Info city;
+        private StateDTO.Info state;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ContractInfo")
+    public static class ContractInfo extends InstituteDTO {
+        private Long id;
+        private Long stateId;
+        private Long cityId;
+        private String phone;
+        private String mobile;
+        private String restAddress;
+
+
         //        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
 //        private Set<EquipmentDTO.Info> equipmentSet;
 //        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
