@@ -570,17 +570,16 @@
                 colSpan: 2,
                 formatOnBlur: true,
                 title: "<spring:message code='duration'/>:",
-                hint: "<spring:message code='hour'/>",
-                textAlign: "center",
+                textAlign: "Right",
+                type:"StaticTextItem",
                 required: true,
-                showHintInField: true,
                 keyPressFilter: "[0-9.]",
-/*                mapValueToDisplay: function(value){
-                    if (value == undefined) {
-                        return "";
-                    }
-                    return value + " ساعت ";
-                },*/
+                mapValueToDisplay : function(value){
+                    if(!isNaN(value)){
+                        return value + " ساعت ";
+                    }else
+                        return"";
+                },
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
                         return true;
@@ -608,23 +607,6 @@
                             form.addFieldErrors("hduration", "<spring:message code='msg.class.greater.duration'/>", true);
                         }
                     }
-                }
-            },
-            {
-                name: "dDuration",
-                showTitle: false,
-                canEdit: false,
-                hint: "روز",
-                textAlign: "center",
-                showHintInField: true,
-                mapValueToDisplay: function (value) {
-                    if (isNaN(value)) {
-                        if (value) {
-                            return value;
-                        }
-                        return "";
-                    }
-                    return value + " روز ";
                 }
             },
             {
@@ -1446,7 +1428,10 @@
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                classSaveUrl += classRecord.id;
+                classSaveUrl += "safeUpdate/" + classRecord.id;
+            } else if (classMethod.localeCompare("POST") === 0)
+            {
+                classSaveUrl += "safeCreate";
             }
             isc.RPCManager.sendRequest({
                 actionURL: classSaveUrl,
@@ -1469,7 +1454,7 @@
                         ListGrid_Class_refresh();
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", 3000, "say");
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                         setTimeout(function () {
                             ListGrid_Class_JspClass.setSelectedState(gridState);
                             ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
@@ -2126,7 +2111,7 @@
         }
     });
 
-    var HLayout_Tab_Class = isc.HLayout.create({
+    let HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
         height: "39%",
         members: [TabSet_Class]
@@ -2189,7 +2174,7 @@
                 }
                 //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
-                getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
+                // getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
                 if (record.course.evaluation === "1") {
                     DynamicForm_Class_JspClass.setValue("preCourseTest", false);
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
@@ -2301,7 +2286,7 @@
             }
 
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+                "<spring:message code="message"/>");
             setTimeout(function () {
                 var responseID = JSON.parse(resp.data).id;
                 var gridState = "[{id:" + responseID + "}]";
@@ -2526,7 +2511,7 @@
         let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record !== null)
 
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id, "GET", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id + "/" + record.endDate.replaceAll("/", "-"), "GET", null, function (resp) {
 
                 if (resp.data !== "") {
                     TabSet_Class.selectTab("classAlarmsTab");

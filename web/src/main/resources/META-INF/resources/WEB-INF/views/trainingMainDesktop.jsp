@@ -35,6 +35,7 @@
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
+    <script src="<spring:url value='/js/langConverter.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
@@ -81,6 +82,7 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
+    const teacherInformation =rootUrl +"/teacherInformation"
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
@@ -90,6 +92,9 @@
     const unfinishedClasses = rootUrl + "/unfinishedClasses";
     const studentPortalUrl = rootUrl + "/student-portal";
     const studentClassReportUrl = rootUrl + "/student-class-report-view";
+    const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
+    const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
+    const classContractUrl = rootUrl + "/class-contract";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -464,20 +469,13 @@
                         createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
                     }
                 },
-                {isSeparator: true},
+                /*{isSeparator: true},
                 {
                     title: "<spring:message code="polisAndprovince"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/polis_and_province/show-form"/>");
                     }
-                },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="profileAHKTitleMenu"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/profileahk/show-form"/>");
-                    }
-                },
+                },*/
                 <%--{--%>
                 <%--    title: "<spring:message code="department"/>",--%>
                 <%--    click: function () {--%>
@@ -643,6 +641,13 @@
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
                     }
                 },
+                {isSeparator: true},
+                {
+                    title: "قرارداد آموزشی",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/class-contract"/>");
+                    }
+                },
             ]
         }),
     });
@@ -753,85 +758,124 @@
             placement: "none",
             data: [
                 {
-                    title: "<spring:message code="training.file"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/trainingFile/"/>");
-                    }
-                },
-                {
-                    title: "<spring:message code="personnel.courses"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
-                    }
-                },
-                {
-                    title: "<spring:message code="personnel.courses.not.passed"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
-                    }
+                    title: "<spring:message code="reports.basic"/>",
+                    submenu:
+                    [
+                        {
+                            title: "<spring:message code="teachers.report"/>",
+                            click: function(){
+                                createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
+                            }
+                        },
+                    ]
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="reports.need.assessment"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
-                    }
+                    title: "<spring:message code="reports.run"/>",
+                    submenu:
+                    [
+                        {
+                        title: "<spring:message code="training.file"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/trainingFile/"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title: "<spring:message code="personnel.courses"/>",
+                            click: function () {
+                            createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title: "<spring:message code="personnel.courses.not.passed"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title: "<spring:message code="report.calender.current.term"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title: "<spring:message code="report.training.overtime"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/trainingOverTime/"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title: "<spring:message code="weekly.training.schedule"/>",
+                            click:function(){
+                                createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title: "<spring:message code="training.class.report"/>",
+                            click: function(){
+                                createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title:"<spring:message code="unfinished.classes"/>",
+                            click: function(){
+                                createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
+                            }
+                        },
+                    ]
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="report.calender.current.term"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");
-                    }
-                },
-                 {isSeparator: true},
-                {
-                    title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="report.training.overtime"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/trainingOverTime/"/>");
-                    }
-                },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="teachers.report"/>",
-                    click:function(){
-                        createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
-                    }
+                    title: "<spring:message code="reports.needs.assessment"/>",
+                    submenu:
+                    [
+                        {
+                            title: "<spring:message code="reports.need.assessment"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
+                            }
+                        },
+                        {isSeparator: true},
+                        {
+                            title:"آمار دوره های نیازسنجی افراد",
+                            click:function(){
+                                createTab(this.title, "<spring:url value="web/personnel-course-NA-report"/>");
+                            }
+                        },
+                    ]
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="weekly.training.schedule"/>",
-                    click:function(){
-                        createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
-                    }
+                    title: "<spring:message code="reports.evaluation.efficacy"/>",
+                    submenu:
+                    [
+                        {
+                            title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
+                            }
+                        },
+                    ]
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="training.class.report"/>",
-                    click:function(){
-                        createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="report.monthly.statistical"/>",
-                    click:function(){
-                        createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
-                    }
-                },
-                {isSeparator: true},
-                {
-                    title:"<spring:message code="unfinished.classes"/>",
-                    click:function(){
-                        createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
-                    }
+                    title: "<spring:message code="reports.managment"/>",
+                    submenu:
+                    [
+                        {
+                            title: "<spring:message code="report.monthly.statistical"/>",
+                            click: function(){
+                                createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
+                            }
+                        },
+                    ]
                 },
                 <%--{--%>
                     <%--title: "غيبت ناموجه",--%>
@@ -1247,6 +1291,20 @@
         downloadForm.submitForm();
     }
 
+    function loadFrameworkMessageFa() {
+        isc.RPCManager.sendRequest({
+            httpMethod: "GET",
+            showPrompt: false,
+            useSimpleHttp: true,
+            serverOutputAsString: false,
+            contentType: "application/json; charset=utf-8",
+            actionURL: "${contextPath}/isomorphic/locales/frameworkMessages_fa.properties",
+            callback: function (RpcResponse_o) {
+                eval(RpcResponse_o.data);
+            }
+        });
+    }
+
     function printToJasper(data, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -1261,6 +1319,26 @@
                 ]
         });
         criteriaForm.setValue("data", JSON.stringify(data));
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
+    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
+        // var advancedCriteria = LG.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "fileName", type: "hidden"},
+                    {name: "params", type: "hidden"},
+                ]
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.setValue("fileName", fileName);
         criteriaForm.setValue("params", JSON.stringify(params));
         criteriaForm.show();
@@ -1306,8 +1384,7 @@
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
-    const polisUrl = rootUrl + "/polis/";
-    const profileAHKUrl = rootUrl + "/profileahk/";
+    const polisUrl = rootUrl + "/polis/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
@@ -1625,7 +1702,7 @@
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
         <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
-
+    loadFrameworkMessageFa();
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>

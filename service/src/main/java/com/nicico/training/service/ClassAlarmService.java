@@ -6,6 +6,7 @@ import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
 import com.nicico.training.model.Alarm;
 import com.nicico.training.repository.AlarmDAO;
+import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -35,6 +36,7 @@ public class ClassAlarmService implements IClassAlarm {
     private final ModelMapper modelMapper;
     private final AlarmDAO alarmDAO;
     private final TclassDAO tclassDAO;
+    private final ClassStudentDAO classStudentDAO;
     private MessageSource messageSource;
 
 //////  '' AS alarmTypeTitleFa, '' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId
@@ -168,7 +170,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             Long term_id = tclassDAO.getTermIdByClassId(class_id);
 
-            String alarmScript = " SELECT 'تداخل استاد' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
+            String alarmScript = " SELECT 'تداخل مدرس' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
                     " null AS trainingPlaceId, null AS reservationId, targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
                     "'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date ||' کلاس '|| c_title_class_current ||' با کد '|| c_code_current ||  ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
                     " null AS detailRecordId, sortField, classIdConflict, sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
@@ -201,7 +203,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "      || tbl_personal_info.c_last_name_fa ) AS teachername, " +
                     "    tbl_class.c_code, " +
                     "    tbl_class.c_title_class, " +
-                    " ( '3' || ' تداخل استاد ' " +
+                    " ( '3' || ' تداخل مدرس ' " +
                     "      || tb1.c_session_date " +
                     "      || '_' " +
                     "      || tb1.c_session_end_hour " +
@@ -1173,7 +1175,7 @@ public class ClassAlarmService implements IClassAlarm {
             alarmScript.append(" UNION ALL ");
 
             //*****teacher conflict*****
-            alarmScript.append(" SELECT targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل استاد' AS alarmType, " +
+            alarmScript.append(" SELECT targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل مدرس' AS alarmType, " +
                     "       'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date || ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
                     "       id1 AS detailRecordId, sortField " +
                     " FROM " +
@@ -1203,7 +1205,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "            || tbl_personal_info.c_last_name_fa ) AS teachername, " +
                     "            tbl_class.c_code, " +
                     "            tbl_class.c_title_class, " +
-                    "            (' تداخل استاد ' || tb1.c_session_date " +
+                    "            (' تداخل مدرس ' || tb1.c_session_date " +
                     "            || '_' " +
                     "            || tb1.c_session_end_hour " +
                     "            || '_' " +
@@ -1608,7 +1610,7 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
     @Override
-    public String checkAlarmsForEndingClass(Long class_id, HttpServletResponse response) throws IOException {
+    public String checkAlarmsForEndingClass(Long class_id, String endDate, HttpServletResponse response) throws IOException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -1677,7 +1679,13 @@ public class ClassAlarmService implements IClassAlarm {
             }
 
             ////old code **> endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
-            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
+            if (endDate.replaceAll("-", "/").compareTo(todayDate) > 0)
+                endingClassAlarm.append("تاریخ پایان کلاس " + endDate.replaceAll("-", "/") + " می باشد.<br />");
+
+            if (classStudentDAO.countClassStudentsByTclassId(class_id) == 0)
+                endingClassAlarm.append("در کلاس هیچ فراگیری وجود ندارد.<br />");
+
+                endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
 
 
             //*****score alarm*****

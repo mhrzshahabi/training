@@ -74,9 +74,6 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.course.titleFa;
-                }
             },
             {
                 name: "startDate",
@@ -94,18 +91,18 @@
                 name: "term.titleFa",
                 title: "<spring:message code='term'/>",
                 align: "center",
-                filterOperator: "iContains",
+                filterOperator: "iContains"
             },
             {
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
                 align: "center",
-                filterOperator: "iContains",
+                filterOperator: "iContains"
             },
             {
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
-                filterOperator: "iContains",
+                filterOperator: "equals",
                 autoFitWidth: true
             },
             {
@@ -122,6 +119,11 @@
                     "2": "در حال اجرا",
                     "3": "پایان یافته"
                 },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }
             },
             {
                 name: "evaluationStatus", title: "<spring:message code='evaluation.status'/>", align: "center",
@@ -130,6 +132,11 @@
                     "2": "در حال ارزیابی",
                     "3": "ارزیابی شده"
                 },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }
             },
             {
                 name: "course.evaluation",
@@ -142,6 +149,11 @@
                     "2": "یادگیری",
                     "3": "رفتاری",
                     "4": "نتایج"
+                },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
                 }
             },
             {name: "titleClass", hidden: true}
@@ -344,7 +356,7 @@
             {region: "محتوی", grade: studentsGradeToGoals},
             {region: "مدرس", grade: studentsGradeToTeacher},
             {region: "امکانات", grade: studentsGradeToFacility},
-            {region: "نظر استاد", grade: teacherGradeToClass}
+            {region: "نظر مدرس", grade: teacherGradeToClass}
         ];
 
         ReactionEvaluationChart.setData(reaction_chartData);

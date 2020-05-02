@@ -2,7 +2,6 @@ package com.nicico.training;
 
 import com.nicico.copper.common.IErrorCode;
 import com.nicico.copper.common.NICICOException;
-import com.nicico.training.model.ProfileAHK;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -108,7 +107,7 @@ public class TrainingException extends NICICOException {
         EvaluationNotFound(404),
         EvaluationAnswerNotFound(404),
         ProvinceNotFound(404),
-        ProfileAHKNotFound(404);
+        InvalidData(405);
 
         private final Integer httpStatusCode;
 

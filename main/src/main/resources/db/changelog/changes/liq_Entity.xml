@@ -2602,10 +2602,10 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="haeri_am (generated)" id="1587785695819-263">
-        <createTable tableName="tbl_profile_ahk">
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-412">
+        <createTable tableName="tbl_class_contract">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_profile_ahkPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_class_contractPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -2620,22 +2620,31 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_family" type="VARCHAR2(500 CHAR)">
+            <column name="f_accountable_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_name" type="VARCHAR2(500 CHAR)">
+            <column name="f_category_id" type="NUMBER(19, 0)"/>
+            <column name="c_contract_number" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_phone_number" type="VARCHAR2(500 CHAR)">
+            <column name="c_date" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
+            <column name="f_first_party_company_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_is_signed" type="NUMBER(1, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_second_party_company_id" type="NUMBER(19, 0)"/>
+            <column name="f_second_party_person_id" type="NUMBER(19, 0)"/>
+            <column name="f_subcategory_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-
-    <changeSet author="haeri_am (generated)" id="1587882446592-264">
-        <createTable tableName="tbl_sender_mail_ahk_v2">
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-413">
+        <createTable tableName="tbl_class_contract_cost">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_sender_mail_ahk_v2PK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_class_contract_costPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -2650,15 +2659,13 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_content" type="VARCHAR2(500 CHAR)">
+            <column name="f_class_contract_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="f_profile_ahk_id" type="NUMBER(19, 0)">
+            <column name="f_class_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_title" type="VARCHAR2(100 CHAR)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="n_teacher_cost_per_hour" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
 

@@ -291,7 +291,8 @@ abaspour 9803
                 return;
             }
             isc.Dialog.create({
-                message: "آیا اطمینان دارید؟",
+                message: "<spring:message code="are.you.sure"/>",
+                title: "<spring:message code="message"/>",
                 icon: "[SKIN]ask.png",
                 buttons: [
                     isc.IButtonSave.create({title: "<spring:message code="yes"/>"}),
@@ -325,7 +326,8 @@ abaspour 9803
                             callback: function (RpcResponse_o) {
                                 if (RpcResponse_o.data == 'success') {
                                     // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
-                                    isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
+                                    //isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
+                                    simpleDialog("<spring:message code="message"/>",rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.", 3000, "say");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");--%>
@@ -443,7 +445,7 @@ abaspour 9803
                                             serverOutputAsString: false,
                                             callback: function (RpcResponse_o) {
                                                 if (RpcResponse_o.data == 'success') {
-                                                    isc.say(targetTitleFa + " عودت داده شد.");
+                                                    simpleDialog("<spring:message code="message"/>", targetTitleFa + " عودت داده شد." , 3000, "say");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
                                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");--%>

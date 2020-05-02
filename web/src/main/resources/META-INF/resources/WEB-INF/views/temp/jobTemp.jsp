@@ -203,7 +203,7 @@
             {name: "etheoType.titleFa", title: "نوع دوره", align: "center"},
             {name: "theoryDuration", title: "طول دوره (ساعت)", align: "center"},
             {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
-            {name: "minTeacherDegree", title: "حداقل مدرک استاد", align: "center"},
+            {name: "minTeacherDegree", title: "حداقل مدرک مدرس", align: "center"},
             {name: "minTeacherExpYears", title: "حداقل سابقه تدريس", align: "center"},
             {name: "minTeacherEvalScore", title: "حداقل نمره ارزيابي", align: "center"},
         ],

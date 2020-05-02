@@ -215,6 +215,12 @@
     <changeSet author="rastegari_h (generated)" id="1587985889507-71">
         <createSequence sequenceName="seq_work_group_id"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-410">
+        <createSequence sequenceName="seq_class_contract_cost_id"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588143353458-411">
+        <createSequence sequenceName="seq_class_contract_id"/>
+    </changeSet>
 
     <changeSet author="haeri_am (generated)" id="1587785695819-262">
         <createSequence sequenceName="seq_profile_ahk__id"/>

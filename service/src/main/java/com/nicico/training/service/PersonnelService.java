@@ -123,6 +123,16 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
+    public PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode) {
+        Personnel[] optionalPersonnel = personnelDAO.findByNationalCode(nationalCode);
+        if(optionalPersonnel != null && optionalPersonnel.length != 0)
+            return modelMapper.map(optionalPersonnel[0], PersonnelDTO.PersonalityInfo.class);
+        else
+            return null;
+    }
+
+    @Override
+    @Transactional
     public List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType) {
 
         String complexTitle = null, assistant = null, affairs = null, section = null, unit = null;

@@ -4,7 +4,7 @@
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 // <script>
-    let userNationalCode_JspWeeklyTrainingSchedule = "<%= SecurityUtil.getNationalCode()%>";
+    var userNationalCode_JspWeeklyTrainingSchedule = "<%= SecurityUtil.getNationalCode()%>";
     //----------------------------------------------------Variables-----------------------------------------------------
     RestDataSource_Class_JspWeeklyTrainingSchedule = isc.TrDS.create({
         fields: [
@@ -111,9 +111,5 @@
         ]
     });
 
-    function call_weeklyTrainingSchedule(selected_person) {
-        userNationalCode_JspWeeklyTrainingSchedule = selected_person.nationalCode;
-        RestDataSource_Class_JspWeeklyTrainingSchedule.fetchDataURL = studentPortalUrl + "/sessionService/specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule;
-    }
 
     // </script>

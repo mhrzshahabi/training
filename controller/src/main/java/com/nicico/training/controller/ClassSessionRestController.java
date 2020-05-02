@@ -10,6 +10,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.Tclass;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ public class ClassSessionRestController {
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final TclassDAO tclassDAO;
 
     //*********************************
 
@@ -200,8 +203,11 @@ public class ClassSessionRestController {
 
 //////        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
 
+        Tclass tclass = tclassDAO.findTclassByIdEquals(Long.parseLong(classId));
+        String sessionTitle = tclass.getCode() + "لیست جلسات کلاس '" + tclass.getTitleClass() + "' با کد ";
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
+        params.put("sessionTitle", sessionTitle);
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(infos) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
@@ -239,51 +245,6 @@ public class ClassSessionRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-    //    @Loggable
-//    @GetMapping(value = "/specListWeeklyTrainingSchedule/{userNationalCode}")
-////    @PreAuthorize("hasAuthority('r_tclass')")
-//    public ResponseEntity<ClassSessionDTO.ClassSessionWeeklyScheduleSpecRs> getWeeklyTrainingSchedule(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-//                                                                                 @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-//                                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
-//                                                                                 @RequestParam(value = "operator", required = false) String operator,
-//                                                                                 @RequestParam(value = "criteria", required = false) String criteria,
-//                                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy,
-//                                                                                 HttpServletResponse httpResponse,
-//                                                                                 @PathVariable String userNationalCode) throws IOException {
-//
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//        SearchDTO.CriteriaRq criteriaRq;
-//        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-//            criteria = "[" + criteria + "]";
-//            criteriaRq = new SearchDTO.CriteriaRq();
-//            criteriaRq.setOperator(EOperator.valueOf(operator))
-//                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-//                    }));
-//
-//
-//            request.setCriteria(criteriaRq);
-//        }
-//
-//        if (StringUtils.isNotEmpty(sortBy)) {
-//            request.setSortBy(sortBy);
-//        }
-//        request.setStartIndex(startRow)
-//                .setCount(endRow - startRow);
-//
-//        SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> response = classSessionService.searchWeeklyTrainingSchedule(request,userNationalCode);
-//
-//        final ClassSessionDTO.WeeklyScheduleSpecRs specResponse = new ClassSessionDTO.WeeklyScheduleSpecRs();
-//        final ClassSessionDTO.ClassSessionWeeklyScheduleSpecRs specRs = new ClassSessionDTO.ClassSessionWeeklyScheduleSpecRs();
-//        specResponse.setData(response.getList())
-//                .setStartRow(startRow)
-//                .setEndRow(startRow + response.getList().size())
-//                .setTotalRows(response.getTotalCount().intValue());
-//
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
     @GetMapping(value = "/specListWeeklyTrainingSchedule/{userNationalCode}")
     public ResponseEntity<ISC<ClassSessionDTO.WeeklySchedule>> getWeeklyTrainingSchedule(HttpServletRequest iscRq, @PathVariable String userNationalCode) throws IOException {
         int startRow = 0;

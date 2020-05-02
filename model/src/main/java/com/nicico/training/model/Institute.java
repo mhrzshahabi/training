@@ -143,4 +143,10 @@ public class Institute extends Auditable {
     @OneToMany(mappedBy = "institute", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Alarm> alarms;
 
+    @Column(name = "c_institute_id", length = 12)
+    private String instituteId;
+
+    @Column(name = "c_economical_id", length = 12)
+    private String economicalId;
+
 }
