@@ -110,8 +110,7 @@ public class TclassService implements ITclassService {
     @Transactional
     public TclassDTO.Info safeCreate(TclassDTO.Create request, HttpServletResponse response) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
-        final float theoryDuration = courseDAO.getCourseTheoryDurationById(tclass.getCourseId());
-        if(theoryDuration >= tclass.getHDuration()){
+        if(checkDuration(tclass)){
             List<Long> list = request.getTrainingPlaceIds();
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
             Set<TrainingPlace> set = new HashSet<>(allById);
@@ -128,6 +127,31 @@ public class TclassService implements ITclassService {
         }
         return null;
     }
+
+
+    @Transactional
+    public TclassDTO.Info safeUpdate(Long id, TclassDTO.Update request, HttpServletResponse response) {
+        final Optional<Tclass> cById = tclassDAO.findById(id);
+        final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        if(checkDuration(tclass)){
+            List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
+            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
+            Set<TrainingPlace> set = new HashSet<>(allById);
+            Tclass updating = new Tclass();
+            modelMapper.map(tclass, updating);
+            modelMapper.map(request, updating);
+            updating.setTrainingPlaceSet(set);
+            return save(updating);
+        }else {
+            try {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+            }
+        return null;
+        }
 
     @Transactional
     @Override
@@ -1132,4 +1156,9 @@ public class TclassService implements ITclassService {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TClassReport.class));
     }
 
+    private boolean checkDuration(Tclass tclass){
+        final float theoryDuration = courseDAO.getCourseTheoryDurationById(tclass.getCourseId());
+        return theoryDuration >= tclass.getHDuration() ? true : false;
+
+    }
 }

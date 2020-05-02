@@ -62,11 +62,11 @@ public class ClassContract extends Auditable {
     private Long firstPartyCompanyId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "f_second_party_company_id", insertable = false, updatable = false)
-    private Company secondPartyCompany;
+    @JoinColumn(name = "f_second_party_institute_id", insertable = false, updatable = false)
+    private Institute secondPartyInstitute;
 
-    @Column(name = "f_second_party_company_id")
-    private Long secondPartyCompanyId;
+    @Column(name = "f_second_party_institute_id")
+    private Long secondPartyInstituteId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_second_party_person_id", insertable = false, updatable = false)

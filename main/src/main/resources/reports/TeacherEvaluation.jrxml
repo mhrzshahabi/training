@@ -55,7 +55,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[فرم ارزیابی اساتید و مربیان]]></text>
+				<text><![CDATA[فرم ارزیابی مدرسان و مربیان]]></text>
 			</staticText>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="481" y="10" width="77" height="61" uuid="f2f525a2-27eb-4235-817b-b6ec57b08fb0"/>
@@ -94,7 +94,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="B Nazanin" isBold="true"/>
 				</textElement>
-				<text><![CDATA[شماره پرسنلی(اساتید داخلی):]]></text>
+				<text><![CDATA[شماره پرسنلی(مدرس داخلی):]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="529" y="68" width="24" height="14" uuid="19123ee9-d252-438f-b263-2fa133c425c7"/>

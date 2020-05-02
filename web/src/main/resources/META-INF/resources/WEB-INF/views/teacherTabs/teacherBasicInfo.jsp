@@ -119,10 +119,15 @@
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
         code='msg.national.code.validation'/>", true);
-                    if (codeCheck === true) {
+                    if (codeCheck === true && DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus") == "false") {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
                         fillPersonalInfoFields(nationalCodeTemp);
+                    }
+                    if (codeCheck === true && DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus") == "true") {
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
+                        var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
+                        fillPersonalInfoByNationalCode(nationalCodeTemp);
                     }
                 }
             },

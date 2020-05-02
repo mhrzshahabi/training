@@ -413,11 +413,11 @@
                                 break;
                             case "SAT":
                                 item.name = "Q" + localQuestions[i].id;
-                                item.title = "استاد: " + localQuestions[i].evaluationQuestion.question;
+                                item.title = "مدرس: " + localQuestions[i].evaluationQuestion.question;
                                 break;
                             case "TRAINING":
                                 item.name = "Q" + localQuestions[i].id;
-                                item.title = "استاد: " + localQuestions[i].evaluationQuestion.question;
+                                item.title = "مدرس: " + localQuestions[i].evaluationQuestion.question;
                                 break;
                             case "Content":
                                 item.name = "Q" + localQuestions[i].id;
