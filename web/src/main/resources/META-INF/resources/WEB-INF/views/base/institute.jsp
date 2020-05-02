@@ -725,7 +725,6 @@
                         ListGrid_Institute_InstituteList_Select();
                     },
                 }],
-// canEdit: false,
                 click: function (form, item, icon) {
                     ListGrid_Institute_InstituteList_Select();
                 },
@@ -842,7 +841,21 @@
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-            }
+            },
+            {
+                name: "instituteId",
+                title: "<spring:message code="company.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                keyPressFilter: "[0-9]"
+            },
+            {
+                name: "economicalId",
+                title: "<spring:message code="company.economical.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                keyPressFilter: "[0-9]"
+            },
         ]
 
     });
@@ -1770,7 +1783,7 @@
             var record = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "لطفا یک استاد را انتخاب کنید.",
+                    message: "لطفا یک مدرس را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
                     buttons: [isc.IButtonSave.create({title: "تائید"})],

@@ -356,7 +356,7 @@
             {region: "محتوی", grade: studentsGradeToGoals},
             {region: "مدرس", grade: studentsGradeToTeacher},
             {region: "امکانات", grade: studentsGradeToFacility},
-            {region: "نظر استاد", grade: teacherGradeToClass}
+            {region: "نظر مدرس", grade: teacherGradeToClass}
         ];
 
         ReactionEvaluationChart.setData(reaction_chartData);

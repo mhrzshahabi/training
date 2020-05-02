@@ -105,6 +105,13 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/byNationalCode/{nationalCode}")
+    public ResponseEntity<PersonnelDTO.PersonalityInfo> findPersonnelByNationalCode(@PathVariable String nationalCode) {
+        PersonnelDTO.PersonalityInfo personalInfoDTO = personnelService.getByNationalCode(nationalCode);
+        return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/statisticalReport/{reportType}")
     public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findAllStatisticalReport(@PathVariable String reportType) {
         List<PersonnelDTO.Info> list = personnelService.findAllStatisticalReportFilter(reportType);

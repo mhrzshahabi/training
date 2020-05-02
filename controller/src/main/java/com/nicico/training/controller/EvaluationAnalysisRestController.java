@@ -99,14 +99,14 @@ public class EvaluationAnalysisRestController {
         params.put("trainingGradeToTeacher", Double.parseDouble(trainingGradeToTeacher));
 
         HashMap<Double,String> doubleArrayList = new HashMap<>();
-        doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"نمره مسئول آموزش به استاد");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به استاد");
+        doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"نمره مسئول آموزش به مدرس");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
         params.put("teacherEvaluationAnalysis", getMinFactor(doubleArrayList));
         doubleArrayList = new HashMap<>();
-        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به استاد");
+        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
         doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"نمره فراگیران به امکانات");
         doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"نمره فراگیران به محتوای دوره");
-        doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"نمره استاد به کلاس");
+        doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"نمره مدرس به کلاس");
         params.put("reactionEvaluationAnalysis", getMinFactor(doubleArrayList));
 
         ArrayList<String> list = new ArrayList();

@@ -688,7 +688,7 @@
             },
             {
                 name: "teacherId",
-                title: "استاد",
+                title: "مدرس",
                 type: "comboBoxItem",
                 filterOperator: "equals",
                 allowEmptyValue: true,
@@ -706,7 +706,7 @@
             },
             {
                 name: "teacherPayingStatus",
-                title: "وضعیت هزینه ی استاد",
+                title: "وضعیت هزینه ی مدرس",
                 type: "comboBoxItem",
                 defaultValue: "3",
                 valueMap: {
@@ -1337,22 +1337,22 @@
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getValue() != undefined) {
-            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "استاد: " + "</span>";
+            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مدرس: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
-            executionInfo_print +="استاد: " ;
+            executionInfo_print +="مدرس: " ;
             executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue();
             executionInfo_print += ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getValue() != undefined) {
-            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی استاد: " + "</span>";
+            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی مدرس: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
-            executionInfo_print  +=  "وضعیت هزینه ی استاد: ";
+            executionInfo_print  +=  "وضعیت هزینه ی مدرس: ";
             executionInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue();
             executionInfo_print  += ", ";
         }

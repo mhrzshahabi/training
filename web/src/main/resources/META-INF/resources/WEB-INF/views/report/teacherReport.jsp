@@ -122,7 +122,7 @@
             },
             {
                 name: "personnelStatus",
-                title: "نوع استاد",
+                title: "نوع مدرس",
                 align: "center",
                 valueMap: {
                     true: "<spring:message code='company.staff'/>",
@@ -167,7 +167,7 @@
 
     var Window_Result_JspTeacherReport = isc.Window.create({
         placement: "fillScreen",
-        title: "گزارش اساتید",
+        title: "گزارش مدرسان",
         canDragReposition: true,
         align: "center",
         autoDraw: false,
@@ -452,7 +452,7 @@
             },
             {
                 name: "evaluationCategory",
-                title: " حداقل نمره ی ارزیابی استاد در گروه",
+                title: " حداقل نمره ی ارزیابی مدرس در گروه",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -546,7 +546,7 @@
             },
             {
                 name: "teachingCategories",
-                title: "استاد در حوزه های",
+                title: "مدرس در حوزه های",
                 type: "selectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
@@ -694,22 +694,22 @@
             }
 
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("enableStatus").getValue() == "true"){
-                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت استاد: " +"</span>";
+                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+ "فعال" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             else  if(DynamicForm_CriteriaForm_JspTeacherReport.getField("enableStatus").getValue() == "false"){
-                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت استاد: " +"</span>";
+                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+ "غیرفعال" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personnelStatus").getValue() == "true"){
-                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع استاد: " +"</span>";
+                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+ "داخلی شرکت مس" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             else  if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personnelStatus").getValue() == "false"){
-                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع استاد: " +"</span>";
+                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +"بیرونی" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
@@ -729,7 +729,7 @@
                 DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() != undefined &&
                 DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() != undefined){
 
-                evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی استاد در گروه: " +"</span>";
+                evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی مدرس در گروه: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue()+ "</span>";
 
@@ -742,18 +742,18 @@
                                     DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue() != undefined){
-                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس استاد: " +"</span>";
+                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس مدرس: " +"</span>";
                 teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                             DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getDisplayValue()+ "</span>";
                 teachingInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getValue() != undefined){
-                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های تدریس استاد: " +"</span>";
+                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های تدریس مدرس: " +"</span>";
                 teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                             DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getDisplayValue()+ "</span>";
             }
 
-            titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش اساتید با توجه به محدودیت های اعمال شده" +"</span>";
+            titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش مدرسان با توجه به محدودیت های اعمال شده" +"</span>";
 
             titr.redraw();
             personalInfo.redraw();

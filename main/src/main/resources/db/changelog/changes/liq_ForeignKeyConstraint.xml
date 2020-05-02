@@ -962,5 +962,8 @@
         <dropForeignKeyConstraint baseTableName="tbl_company" constraintName="FKpurh1o4x7syfmr0agf8e8kkjl"/>
         <addForeignKeyConstraint baseColumnNames="f_address_id" baseTableName="tbl_company" constraintName="FKpurh1o4x7syfmr0agf8e8kkjl" referencedColumnNames="id" referencedTableName="tbl_address"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588392156190-425">
+        <addForeignKeyConstraint baseColumnNames="f_second_party_institute_id" baseTableName="tbl_class_contract" constraintName="FK2ui1srqp84ja82t6uckoa99p2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>
