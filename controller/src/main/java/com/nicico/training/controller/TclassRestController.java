@@ -88,7 +88,7 @@ public class TclassRestController {
     @Loggable
     @PostMapping("/safeCreate")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<TclassDTO.Info> safeCreate(@Validated @RequestBody TclassDTO.Create request,HttpServletResponse response) {
+    public ResponseEntity<TclassDTO.Info> safeCreate(@Validated @RequestBody TclassDTO.Create request, HttpServletResponse response) {
 
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request,response), HttpStatus.CREATED);
 
@@ -98,6 +98,22 @@ public class TclassRestController {
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
         }
+        return infoResponseEntity;
+    }
+
+    @Loggable
+    @PutMapping(value = "/safeUpdate/{id}")
+//    @PreAuthorize("hasAuthority('u_tclass')")
+    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id, @RequestBody TclassDTO.Update request, HttpServletResponse response) {
+
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeUpdate(id, request, response), HttpStatus.OK);
+
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 200) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+        }
+
         return infoResponseEntity;
     }
 

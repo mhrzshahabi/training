@@ -16,6 +16,8 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
 
     Optional<Personnel[]> findOneByNationalCode(String nationalCode);
 
+    Personnel[] findByNationalCode(String nationalCode);
+
     List<Personnel> findOneByPostCode(String postCode);
 
     List<Personnel> findOneByJobNo(String jobNo);

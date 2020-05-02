@@ -120,7 +120,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam" size="7"/>
 								</textElement>
-								<text><![CDATA[استاد]]></text>
+								<text><![CDATA[مدرس]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">

@@ -51,7 +51,7 @@
             },
             {
                 name: "evaluationGrade",
-                title: "نمره ارزیابی فراگیران به استاد",
+                title: "نمره ارزیابی فراگیران به مدرس",
                 canFilter: false
             }
         ],

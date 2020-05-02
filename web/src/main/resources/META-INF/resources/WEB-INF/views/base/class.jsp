@@ -570,17 +570,16 @@
                 colSpan: 2,
                 formatOnBlur: true,
                 title: "<spring:message code='duration'/>:",
-                hint: "<spring:message code='hour'/>",
-                textAlign: "center",
+                textAlign: "Right",
+                type:"StaticTextItem",
                 required: true,
-                showHintInField: true,
                 keyPressFilter: "[0-9.]",
-/*                mapValueToDisplay: function(value){
-                    if (value == undefined) {
-                        return "";
-                    }
-                    return value + " ساعت ";
-                },*/
+                mapValueToDisplay : function(value){
+                    if(!isNaN(value)){
+                        return value + " ساعت ";
+                    }else
+                        return"";
+                },
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
                         return true;
@@ -608,23 +607,6 @@
                             form.addFieldErrors("hduration", "<spring:message code='msg.class.greater.duration'/>", true);
                         }
                     }
-                }
-            },
-            {
-                name: "dDuration",
-                showTitle: false,
-                canEdit: false,
-                hint: "روز",
-                textAlign: "center",
-                showHintInField: true,
-                mapValueToDisplay: function (value) {
-                    if (isNaN(value)) {
-                        if (value) {
-                            return value;
-                        }
-                        return "";
-                    }
-                    return value + " روز ";
                 }
             },
             {
@@ -1428,14 +1410,6 @@
                     return;
                 }
             }
-            /*else if(DynamicForm_Class_JspClass.getValue("autoValid")){
-            if(Number(DynamicForm_Class_JspClass.getValue("hduration"))>=Number(DynamicForm_Class_JspClass.getValue("course.theoryDuration"))){
-                    isc.MyOkDialog.create({
-                        message: "مدت زمان کلاس از دوره باید کمتر باشد.",
-                    });
-                    return;
-                }
-            }*/
             // if (VM_JspClass.hasErrors()) {
             //     return;
             // }
@@ -1454,7 +1428,7 @@
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                classSaveUrl += classRecord.id;
+                classSaveUrl += "safeUpdate/" + classRecord.id;
             } else if (classMethod.localeCompare("POST") === 0)
             {
                 classSaveUrl += "safeCreate";
@@ -2200,7 +2174,7 @@
                 }
                 //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
-                getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
+                // getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
                 if (record.course.evaluation === "1") {
                     DynamicForm_Class_JspClass.setValue("preCourseTest", false);
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
