@@ -42,7 +42,14 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         List<ClassStudentDTO.evaluationAnalysistLearning> list;
         list = mapper.map(classStudents, new TypeToken<List<ClassStudentDTO.evaluationAnalysistLearning>>() {
         }.getType());
-
+        if (list.size() == 0)
+        {
+            ans[0]=Float.valueOf(0);
+            ans[1]=Float.valueOf(0);
+            ans[2]=Float.valueOf(0);
+            ans[3]=Float.valueOf(0);
+            return ans;
+        }
 
         if (scoringMethod.equals("1")) {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
