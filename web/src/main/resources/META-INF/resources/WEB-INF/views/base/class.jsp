@@ -573,14 +573,7 @@
                 hint: "<spring:message code='hour'/>",
                 textAlign: "center",
                 required: true,
-                showHintInField: true,
                 keyPressFilter: "[0-9.]",
-/*                mapValueToDisplay: function(value){
-                    if (value == undefined) {
-                        return "";
-                    }
-                    return value + " ساعت ";
-                },*/
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
                         return true;
@@ -608,23 +601,6 @@
                             form.addFieldErrors("hduration", "<spring:message code='msg.class.greater.duration'/>", true);
                         }
                     }
-                }
-            },
-            {
-                name: "dDuration",
-                showTitle: false,
-                canEdit: false,
-                hint: "روز",
-                textAlign: "center",
-                showHintInField: true,
-                mapValueToDisplay: function (value) {
-                    if (isNaN(value)) {
-                        if (value) {
-                            return value;
-                        }
-                        return "";
-                    }
-                    return value + " روز ";
                 }
             },
             {
@@ -1428,14 +1404,6 @@
                     return;
                 }
             }
-            /*else if(DynamicForm_Class_JspClass.getValue("autoValid")){
-            if(Number(DynamicForm_Class_JspClass.getValue("hduration"))>=Number(DynamicForm_Class_JspClass.getValue("course.theoryDuration"))){
-                    isc.MyOkDialog.create({
-                        message: "مدت زمان کلاس از دوره باید کمتر باشد.",
-                    });
-                    return;
-                }
-            }*/
             // if (VM_JspClass.hasErrors()) {
             //     return;
             // }
@@ -2200,7 +2168,7 @@
                 }
                 //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
-                getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
+                // getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
                 if (record.course.evaluation === "1") {
                     DynamicForm_Class_JspClass.setValue("preCourseTest", false);
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
