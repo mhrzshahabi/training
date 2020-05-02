@@ -73,13 +73,16 @@ public class NeedsAssessmentDTO implements Serializable {
     @ApiModel("NeedsAssessmentDTO - Tree")
     public static class Tree extends Info {
         private Long parentId;
+        private String name;
         private String competenceTypeTitle;
         private String competenceNameTitle;
         private String needsAssessmentDomainTitle;
         private String needsAssessmentPriorityTitle;
+        private String skillTitle;
+        private String skillCourseTitle;
 
         public boolean equvalentOf(NeedsAssessmentDTO.Tree dto,String property){
-            if(this.getParentId().equals(dto.getParentId()) && this.getProperty(property).equals(dto.getProperty(property)))
+            if(this.getParentId().equals(dto.getParentId()) && this.getName().equals(dto.getName()))
                 return true;
             else
                 return false;
@@ -113,6 +116,7 @@ public class NeedsAssessmentDTO implements Serializable {
                     append(competenceTypeTitle).
                     append(needsAssessmentDomainTitle).
                     append(needsAssessmentPriorityTitle).
+                    append(skillTitle).
                     toHashCode();
         }
 

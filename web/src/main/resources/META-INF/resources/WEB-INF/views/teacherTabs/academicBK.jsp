@@ -16,9 +16,9 @@
     RestDataSource_JspAcademicBK = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "educationLevelId"},
-            {name: "educationMajorId"},
-            {name: "educationOrientationId"},
+            {name: "educationLevel.titleFa"},
+            {name: "educationMajor.titleFa"},
+            {name: "educationOrientation.titleFa"},
             {name: "date"},
             {name: "duration"},
             {name: "academicGrade"},
@@ -28,18 +28,19 @@
 
     RestDataSource_EducationLevel_JspAcademicBK = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationLevelUrl + "iscList"
+        fetchDataURL: educationLevelUrl + "spec-list-by-id"
     });
 
     RestDataSource_EducationMajor_JspAcademicBK = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationMajorUrl + "iscList"
+        fetchDataURL: educationMajorUrl + "spec-list-by-id"
     });
 
     RestDataSource_EducationOrientation_JspAcademicBK = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: educationOrientationUrl + "iscList"
     });
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*window*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -60,51 +61,45 @@
                 displayField: "titleFa",
                 valueField: "id",
                 required: true,
-                optionDataSource: RestDataSource_Education_Level_JspTeacher,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
+                optionDataSource: RestDataSource_EducationLevel_JspAcademicBK,
+                autoFetchData: false,
+                filterFields: ["titleFa","titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
-                    }
-                ]
-            },
-
-            {
-                name: "educationMajorId",
-                title: "<spring:message code='education.major'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                width: "*",
-                required: true,
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
+                    }
+                ]
+            },
+            {
+                name: "educationMajorId",
+                title: "<spring:message code='education.major'/>",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                required: true,
+                optionDataSource: RestDataSource_EducationMajor_JspAcademicBK,
+                autoFetchData: false,
+                filterFields: ["titleFa","titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%"
                     }
                 ]
             },
@@ -113,27 +108,24 @@
                 name: "educationOrientationId",
                 title: "<spring:message code='education.orientation'/>",
                 textAlign: "center",
-                editorType: "ComboBoxItem",
                 width: "*",
+                editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
+                filterFields: ["titleFa","titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
@@ -155,7 +147,7 @@
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='work.years'/>",
                 showHintInField: true,
-                length: 5
+                length: 3
             },
             {
                 name: "date",
@@ -172,15 +164,16 @@
                         displayDatePicker('academicBK_date_JspAcademicBK', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
+                validators: [
+                    {
                     type: "custom",
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
                             return DynamicForm_JspAcademicBK.getValue("date") === undefined;
                         return checkBirthDate(value);
-                    }
-                }],
+                    }}
+                ]
             }
         ],
         itemChanged: function (item, newValue) {
@@ -235,6 +228,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='academicBK'/>",
+        close : function(){closeCalendarWindow(); Window_JspAcademicBK.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspAcademicBK, HLayout_SaveOrExit_JspAcademicBK]
         })]
@@ -282,42 +276,28 @@
         align: "center",
         fields: [
             {
-                name: "educationLevelId",
-                title: "<spring:message code='education.level'/>",
-                type: "IntegerItem",
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_EducationLevel_JspAcademicBK
+                name: "educationLevel.titleFa",
+                title: "<spring:message code='education.level'/>"
             },
             {
-                name: "educationMajorId",
-                title: "<spring:message code='education.major'/>",
-                type: "IntegerItem",
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_EducationMajor_JspAcademicBK
+                name: "educationMajor.titleFa",
+                title: "<spring:message code='education.major'/>"
             },
             {
-                name: "educationOrientationId",
-                title: "<spring:message code='education.orientation'/>",
-                type: "IntegerItem",
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_EducationOrientation_JspAcademicBK
+                name: "educationOrientation.titleFa",
+                title: "<spring:message code='education.orientation'/>"
             },
             {name: "collageName", title: "<spring:message code='collage.name'/>"},
             {name: "academicGrade", title: "<spring:message code='academic.grade'/>"},
             {
                 name: "duration",
-                title: "<spring:message code='duration'/>"
+                title: "<spring:message code='duration'/>",
+                filterOperator: "equals",
+                type: "integer"
             },
             {
                 name: "date",
-                title: "<spring:message code='graduation.date'/>",
-                canSort: false
+                title: "<spring:message code='graduation.date'/>"
             }
         ],
         rowDoubleClick: function () {
@@ -396,8 +376,6 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            DynamicForm_JspAcademicBK.getField("educationLevelId").fetchData();
-            DynamicForm_JspAcademicBK.getField("educationMajorId").fetchData();
             var eduMajorValue = record.educationMajorId;
             var eduOrientationValue = record.educationOrientationId;
             var eduLevelValue = record.educationLevelId;
