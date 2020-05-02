@@ -291,6 +291,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='employmentHistory'/>",
+        close : function(){closeCalendarWindow(); Window_JspEmploymentHistory.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspEmploymentHistory, HLayout_SaveOrExit_JspEmploymentHistory]
         })]
@@ -355,13 +356,11 @@
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
         doubleClick: function () {
