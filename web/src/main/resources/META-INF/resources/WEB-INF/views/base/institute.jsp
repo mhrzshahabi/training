@@ -1770,7 +1770,7 @@
             var record = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "لطفا یک استاد را انتخاب کنید.",
+                    message: "لطفا یک مدرس را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
                     buttons: [isc.IButtonSave.create({title: "تائید"})],

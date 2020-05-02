@@ -669,12 +669,12 @@
     })
 
     var teacherButton = isc.IconButton.create({
-        title: "اساتید",
+        title: "مدرسان",
         icon: "pieces/512/teacher.png",
         largeIcon: "pieces/512/teacher.png",
         orientation: "vertical",
         click: function () {
-            createTab("استاد", "<spring:url value="/teacher/show-form"/>", false)
+            createTab("مدرس", "<spring:url value="/teacher/show-form"/>", false)
         }
     })
     var educationButton = isc.IconButton.create({

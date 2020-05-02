@@ -1113,7 +1113,7 @@
             createDialog("info", "<spring:message code='teacher.delete.personal.fail.message'/>");
         } else{
             var msg = getFormulaMessage(resp.httpResponseText, 2, "red", null);
-            createDialog("info", "این استاد بعلت استفاده در کلاس"+ " " + msg + " " +
+            createDialog("info", "این مدرس بعلت استفاده در کلاس"+ " " + msg + " " +
                 "قابل حذف نمی باشد");
         }
     }
@@ -1208,6 +1208,11 @@
 
     function fillPersonalInfoByPersonnelNumber(personnelCode) {
         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
+            "callback: personnel_findOne_result(rpcResponse)"));
+    }
+
+    function  fillPersonalInfoByNationalCode(nationalCode){
+        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
             "callback: personnel_findOne_result(rpcResponse)"));
     }
 
