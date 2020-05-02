@@ -33,5 +33,15 @@
     <changeSet author="poursalehi_mos (generated)" id="1588392156190-481">
         <dropColumn columnName="F_SECOND_PARTY_COMPANY_ID" tableName="TBL_CLASS_CONTRACT"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588393494021-425">
+        <addColumn tableName="tbl_institute">
+            <column name="c_economical_id" type="varchar2(12 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588393494021-426">
+        <addColumn tableName="tbl_institute">
+            <column name="c_institute_id" type="varchar2(12 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
