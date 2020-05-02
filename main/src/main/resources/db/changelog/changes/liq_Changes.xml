@@ -22,5 +22,16 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588392156190-424">
+        <addColumn tableName="tbl_class_contract">
+            <column name="f_second_party_institute_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588392156190-441">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_CONTRACT" constraintName="FK3634Y3AWQMJ068HO3AFXLFWMG"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588392156190-481">
+        <dropColumn columnName="F_SECOND_PARTY_COMPANY_ID" tableName="TBL_CLASS_CONTRACT"/>
+    </changeSet>
 
 </databaseChangeLog>
