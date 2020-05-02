@@ -332,7 +332,7 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterUsingText: "<spring:message code='filteWrUsingText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
@@ -1122,12 +1122,7 @@
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
                 responseID = JSON.parse(resp.data).id;
-                // gridState = "[{id:" + responseID + "}]";
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
-                // setTimeout(function () {
-                //     OK.close();
-                //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                // }, 3000);
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
             }

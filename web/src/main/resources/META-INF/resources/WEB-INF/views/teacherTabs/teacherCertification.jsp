@@ -56,18 +56,15 @@
             {
                 name: "courseTitle",
                 title: "<spring:message code='course.title'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 required: true
             },
             {
                 name: "companyName",
-                title: "<spring:message code='company.name'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title: "<spring:message code='company.name'/>"
             },
             {
                 name: "companyLocation",
-                title: "<spring:message code='location.name'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title: "<spring:message code='location.name'/>"
             },
             {
                 name: "categories",
@@ -104,6 +101,11 @@
                     }
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
+                    if(DynamicForm_JspTeacherCertification.getField("subCategories").getValue() != null &&
+                        DynamicForm_JspTeacherCertification.getField("subCategories").getValue() != undefined &&
+                        DynamicForm_JspTeacherCertification.getField("subCategories").getValue().size() == 0){
+                        DynamicForm_JspTeacherCertification.getField("subCategories").clearValue();
+                    }
                 }
             },
             {
@@ -380,13 +382,11 @@
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
         filterEditorSubmit: function () {
@@ -536,8 +536,7 @@
     function TeacherCertification_save_result(resp) {
         waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             ListGrid_TeacherCertification_refresh();
             Window_JspTeacherCertification.close();
             setTimeout(function () {
@@ -545,11 +544,9 @@
             }, 3000);
         } else {
             if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
     }
@@ -558,8 +555,7 @@
         waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_TeacherCertification_refresh();
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
