@@ -232,7 +232,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     //----------------------components of window--------------------------
 
-    NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
+    let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -242,7 +242,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         fetchDataURL: parameterValueUrl + "/iscList/103",
 
     });
-    JobDs_needsAssessment = isc.TrDS.create({
+    let JobDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -250,14 +250,14 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
-    JobGroupDs_needsAssessment = isc.TrDS.create({
+    let JobGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: jobGroupUrl + "spec-list"
     });
-    PostDs_needsAssessment = isc.TrDS.create({
+    let PostDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -274,14 +274,14 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ],
         fetchDataURL: postUrl + "/wpIscList"
     });
-    PostGroupDs_needsAssessment = isc.TrDS.create({
+    let PostGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: postGroupUrl + "/spec-list"
     });
-    PostGradeDs_needsAssessment = isc.TrDS.create({
+    let PostGradeDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -289,7 +289,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
-    PostGradeGroupDs_needsAssessment = isc.TrDS.create({
+    let PostGradeGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains"},
@@ -351,7 +351,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         clientOnly: true,
     });
 
-    CompetenceTS_needsAssessment = isc.ToolStrip.create({
+    let CompetenceTS_needsAssessment = isc.ToolStrip.create({
         ID: "CompetenceTS_needsAssessment",
         members: [
             // isc.ToolStripButtonRefresh.create({
@@ -924,48 +924,40 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 ID: "printContainer",
                 members: [
                     isc.TabSet.create({
-                        ID: "tabSetClass",
+                        ID: "tabSetNeedsAssessment",
                         // enabled: false,
                         tabBarPosition: "top",
                         tabs: [
                             {
-                                ID: "classSessionsTab",
                                 title: "درخت نیازسنجی",
                                 pane: ListGrid_MoreInformation_JspNeedAssessment
                             },
                             {
-                                ID: "classCheckListTab",
-                                name: "checkList",
                                 enabled: false,
                                 title: "شرایط احراز",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
                             },
                             {
-                                ID: "classStudentsTab",
                                 enabled: false,
                                 title: "شرح شغل",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})
                             },
                             {
-                                ID: "classAttachmentsTab",
                                 enabled: false,
                                 title: "آموزش ها",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
                             },
                             {
-                                ID: "classAttendanceTab",
                                 enabled: false,
                                 title: "پراکندگی شغل در سازمان",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attendance-tab"})
                             },
                             {
-                                ID: "classScoresTab",
                                 enabled: false,
                                 title: "شناسنامه شغل",
                                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
                             },
                             {
-                                ID: "classInfoTab",
                                 title: "درخت اطلاعات",
                                 pane: moreInfoTree
                             },

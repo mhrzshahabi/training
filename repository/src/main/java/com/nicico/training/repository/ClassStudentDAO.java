@@ -53,4 +53,6 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
 
     ClassStudent getClassStudentById(Long classStudentId);
 
+    Integer countClassStudentsByTclassId(Long classId);
+
 }

@@ -334,11 +334,9 @@ public class TclassRestController {
 
 
     @Loggable
-    @GetMapping(value = "/checkEndingClass/{classId}")
-    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException {
-
-        return classAlarmService.checkAlarmsForEndingClass(classId, response);
-
+    @GetMapping(value = "/checkEndingClass/{classId}/{endDate}")
+    public String checkEndingClass(@PathVariable Long classId, @PathVariable String endDate, HttpServletResponse response) throws IOException {
+        return classAlarmService.checkAlarmsForEndingClass(classId, endDate, response);
     }
 
     @Loggable
@@ -520,39 +518,39 @@ public class TclassRestController {
         Object evaluationGrade = null;
 
         for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-            if(criterion.getFieldName().equalsIgnoreCase("courseStatus")){
+            if (criterion.getFieldName().equalsIgnoreCase("courseStatus")) {
                 courseStatus = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("reactionEvaluationOperator")){
+            if (criterion.getFieldName().equalsIgnoreCase("reactionEvaluationOperator")) {
                 reactionEvaluationOperator = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("reactionEvaluationGrade")){
+            if (criterion.getFieldName().equalsIgnoreCase("reactionEvaluationGrade")) {
                 reactionEvaluationGrade = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationOperator")){
+            if (criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationOperator")) {
                 behavioralEvaluationOperator = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationGrade")){
+            if (criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationGrade")) {
                 behavioralEvaluationGrade = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("learningEvaluationOperator")){
+            if (criterion.getFieldName().equalsIgnoreCase("learningEvaluationOperator")) {
                 learningEvaluationOperator = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("learningEvaluationGrade")){
+            if (criterion.getFieldName().equalsIgnoreCase("learningEvaluationGrade")) {
                 learningEvaluationGrade = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("evaluationOperator")){
+            if (criterion.getFieldName().equalsIgnoreCase("evaluationOperator")) {
                 evaluationOperator = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
-            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
+            if (criterion.getFieldName().equalsIgnoreCase("evaluationGrade")) {
                 evaluationGrade = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
@@ -565,29 +563,29 @@ public class TclassRestController {
         SearchDTO.SearchRs<TclassDTO.TClassReport> response = tclassService.reportSearch(request);
 
         List<TclassDTO.TClassReport> listRemovedObjects = new ArrayList<>();
-        if(courseStatus!=null && !courseStatus.equals("3")) {
+        if (courseStatus != null && !courseStatus.equals("3")) {
             for (TclassDTO.TClassReport datum : response.getList()) {
-                    List<Long> courseNeedAssessmentStatus = courseDAO.getCourseNeedAssessmentStatus(datum.getCourse().getId());
-                    if(courseStatus.equals("1") && courseNeedAssessmentStatus.size()==0)
-                        listRemovedObjects.add(datum);
-                     if(courseStatus.equals("2") && courseNeedAssessmentStatus.size()!=0)
-                        listRemovedObjects.add(datum);
+                List<Long> courseNeedAssessmentStatus = courseDAO.getCourseNeedAssessmentStatus(datum.getCourse().getId());
+                if (courseStatus.equals("1") && courseNeedAssessmentStatus.size() == 0)
+                    listRemovedObjects.add(datum);
+                if (courseStatus.equals("2") && courseNeedAssessmentStatus.size() != 0)
+                    listRemovedObjects.add(datum);
             }
         }
         for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
             response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
-        if(reactionEvaluationOperator != null && reactionEvaluationGrade != null) {
+        if (reactionEvaluationOperator != null && reactionEvaluationGrade != null) {
             double grade = Double.parseDouble(reactionEvaluationGrade.toString());
             for (TclassDTO.TClassReport datum : response.getList()) {
-                double classReactionGrade = tclassService.getClassReactionEvaluationGrade(datum.getId(),datum.getTeacherId());
-                if(reactionEvaluationOperator.equals("1")){
-                    if(classReactionGrade >= grade)
+                double classReactionGrade = tclassService.getClassReactionEvaluationGrade(datum.getId(), datum.getTeacherId());
+                if (reactionEvaluationOperator.equals("1")) {
+                    if (classReactionGrade >= grade)
                         listRemovedObjects.add(datum);
                 }
-                if(reactionEvaluationOperator.equals("2")){
-                    if(classReactionGrade <= grade)
+                if (reactionEvaluationOperator.equals("2")) {
+                    if (classReactionGrade <= grade)
                         listRemovedObjects.add(datum);
                 }
             }
@@ -596,16 +594,16 @@ public class TclassRestController {
             response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
-        if(behavioralEvaluationOperator != null && behavioralEvaluationGrade != null) {
+        if (behavioralEvaluationOperator != null && behavioralEvaluationGrade != null) {
             double grade = Double.parseDouble(behavioralEvaluationGrade.toString());
             for (TclassDTO.TClassReport datum : response.getList()) {
                 double classBehavioralGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFEBGrade();
-                if(behavioralEvaluationOperator.equals("1")){
-                    if(classBehavioralGrade >= grade)
+                if (behavioralEvaluationOperator.equals("1")) {
+                    if (classBehavioralGrade >= grade)
                         listRemovedObjects.add(datum);
                 }
-                if(behavioralEvaluationOperator.equals("2")){
-                    if(classBehavioralGrade <= grade)
+                if (behavioralEvaluationOperator.equals("2")) {
+                    if (classBehavioralGrade <= grade)
                         listRemovedObjects.add(datum);
                 }
             }
@@ -614,16 +612,16 @@ public class TclassRestController {
             response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
-        if(learningEvaluationOperator != null && learningEvaluationGrade != null) {
+        if (learningEvaluationOperator != null && learningEvaluationGrade != null) {
             double grade = Double.parseDouble(learningEvaluationGrade.toString());
             for (TclassDTO.TClassReport datum : response.getList()) {
                 double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
-                if(learningEvaluationOperator.equals("1")){
-                    if(classLearningGrade >= grade)
+                if (learningEvaluationOperator.equals("1")) {
+                    if (classLearningGrade >= grade)
                         listRemovedObjects.add(datum);
                 }
-                if(learningEvaluationOperator.equals("2")){
-                    if(classLearningGrade <= grade)
+                if (learningEvaluationOperator.equals("2")) {
+                    if (classLearningGrade <= grade)
                         listRemovedObjects.add(datum);
                 }
             }
@@ -632,16 +630,16 @@ public class TclassRestController {
             response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
-        if(evaluationOperator != null && evaluationGrade != null) {
+        if (evaluationOperator != null && evaluationGrade != null) {
             double grade = Double.parseDouble(evaluationGrade.toString());
             for (TclassDTO.TClassReport datum : response.getList()) {
                 double classEvaluationGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFECBGrade();
-                if(evaluationOperator.equals("1")){
-                    if(classEvaluationGrade >= grade)
+                if (evaluationOperator.equals("1")) {
+                    if (classEvaluationGrade >= grade)
                         listRemovedObjects.add(datum);
                 }
-                if(evaluationOperator.equals("2")){
-                    if(classEvaluationGrade <= grade)
+                if (evaluationOperator.equals("2")) {
+                    if (classEvaluationGrade <= grade)
                         listRemovedObjects.add(datum);
                 }
             }
@@ -673,7 +671,7 @@ public class TclassRestController {
                             @RequestParam String classTimeInfo,
                             @RequestParam String executionInfo,
                             @RequestParam String evaluationInfo
-                            ) throws Exception {
+    ) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
         if (CriteriaStr.equalsIgnoreCase("{}")) {
@@ -682,14 +680,14 @@ public class TclassRestController {
             criteriaRq = objectMapper.readValue(CriteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
-        final SearchDTO.SearchRs<TclassDTO.TClassReport>  searchRs = tclassService.reportSearch(searchRq);
+        final SearchDTO.SearchRs<TclassDTO.TClassReport> searchRs = tclassService.reportSearch(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
-        params.put("courseInfo",courseInfo);
-        params.put("classTimeInfo",classTimeInfo);
-        params.put("executionInfo",executionInfo);
-        params.put("evaluationInfo",evaluationInfo);
+        params.put("courseInfo", courseInfo);
+        params.put("classTimeInfo", classTimeInfo);
+        params.put("executionInfo", executionInfo);
+        params.put("evaluationInfo", evaluationInfo);
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

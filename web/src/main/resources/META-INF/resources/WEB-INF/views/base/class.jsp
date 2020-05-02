@@ -1448,7 +1448,7 @@
                         ListGrid_Class_refresh();
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", 3000, "say");
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                         setTimeout(function () {
                             ListGrid_Class_JspClass.setSelectedState(gridState);
                             ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
@@ -2105,7 +2105,7 @@
         }
     });
 
-    var HLayout_Tab_Class = isc.HLayout.create({
+    let HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
         height: "39%",
         members: [TabSet_Class]
@@ -2280,7 +2280,7 @@
             }
 
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+                "<spring:message code="message"/>");
             setTimeout(function () {
                 var responseID = JSON.parse(resp.data).id;
                 var gridState = "[{id:" + responseID + "}]";
@@ -2505,7 +2505,7 @@
         let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record !== null)
 
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id, "GET", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id + "/" + record.endDate.replaceAll("/", "-"), "GET", null, function (resp) {
 
                 if (resp.data !== "") {
                     TabSet_Class.selectTab("classAlarmsTab");
