@@ -675,11 +675,8 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ID: "needesAssessmentTree",
         data:[],
         fields: [
-            {name: "competenceTypeTitle", title: "<spring:message code="type"/>"},
-            {name: "needsAssessmentDomainTitle", title: "<spring:message code="domain"/>"},
-            {name: "needsAssessmentPriorityTitle", title: "<spring:message code="priority"/>"},
-            {name: "competenceNameTitle",title: "<spring:message code="competence.title"/>"},
-            {name: "skill.titleFa", title: "<spring:message code="skill"/>",width:"40%"},
+            {name: "name", title: "<spring:message code="skill"/>"},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", width:"10%"},
 
         ],
         width: "100%",
@@ -689,7 +686,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         showDropIcons:false,
         showSelectedIcons:false,
         showConnectors: true,
-        baseStyle: "noBorderCell",
+        // baseStyle: "noBorderCell",
         dataProperties:{
         dataArrived:function (parentNode) {
             this.openAll();
@@ -1147,6 +1144,10 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         competenceData.length = 0;
         skillData.length = 0;
         ListGrid_Competence_JspNeedsAssessment.setData([]);
+
+
+
+
         ListGrid_Knowledge_JspNeedsAssessment.setData([]);
         ListGrid_Attitude_JspNeedsAssessment.setData([]);
         ListGrid_Ability_JspNeedsAssessment.setData([]);
