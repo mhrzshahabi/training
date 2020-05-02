@@ -570,10 +570,16 @@
                 colSpan: 2,
                 formatOnBlur: true,
                 title: "<spring:message code='duration'/>:",
-                hint: "<spring:message code='hour'/>",
-                textAlign: "center",
+                textAlign: "Right",
+                type:"StaticTextItem",
                 required: true,
                 keyPressFilter: "[0-9.]",
+                mapValueToDisplay : function(value){
+                    if(!isNaN(value)){
+                        return value + " ساعت ";
+                    }else
+                        return"";
+                },
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
                         return true;
@@ -1422,7 +1428,7 @@
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                classSaveUrl += classRecord.id;
+                classSaveUrl += "safeUpdate/" + classRecord.id;
             } else if (classMethod.localeCompare("POST") === 0)
             {
                 classSaveUrl += "safeCreate";
