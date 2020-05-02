@@ -2101,6 +2101,11 @@
                 ID: "teacherInformationTab",
                 title: "<spring:message code='teacher.information'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
+            },
+            {
+                ID: "costClassTab",
+                title: "<spring:message code='cost.class'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})
             }
 
 
@@ -2422,6 +2427,16 @@
                     }
                     break;
                 }
+                case "costClassTab": {
+
+                    if (typeof loadPage_costClass !== "undefined")
+                    {
+                        loadPage_costClass();
+                    }
+                    break;
+                }
+
+
                 case "classAttendanceTab": {
                     if (typeof loadPage_Attendance !== "undefined")
                         loadPage_Attendance();
