@@ -659,7 +659,7 @@
             Window_Company.close();
         } else if(resp.httpResponseCode == 409)
         {
-            createDialog("info", "کد پستی قبلا ثبت شده",
+            createDialog("info", "شرکتی با کد پستی وارد شده قبلا ثبت شده است",
                 "<spring:message code="message"/>");
         }
         else if(resp.httpResponseCode == 406)
@@ -705,6 +705,7 @@
         DynamicForm_Address_Company.setValue("address.fax", data.fax);
         DynamicForm_Address_Company.setValue("address.webSite", data.webSite);
         DynamicForm_Address_Company.setValue("address.stateId", data.stateId);
+        DynamicForm_Address_Company.getItem("address.stateId").changed(null, null,data.stateId);
         DynamicForm_Address_Company.setValue("address.cityId", data.cityId);
         // createDialog("info", "اطلاعات این آدرس از قبل وجود دارد");
     }

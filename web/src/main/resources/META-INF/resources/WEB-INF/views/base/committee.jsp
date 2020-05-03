@@ -647,7 +647,9 @@
         }
         var cate = DynamicForm_Committee.getValue("categoryId");
         var subCate = DynamicForm_Committee.getValue("subCategoryId");
-        isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null, "callback: show_ConflictCommittee(rpcResponse)"));
+        var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
+        var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
+        isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null,"callback: show_ConflictCommittee(rpcResponse,'" + cate3 + "','" + sc + "')"));
     };
 
 
