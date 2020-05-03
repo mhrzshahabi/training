@@ -295,9 +295,14 @@
     }
 
     var IButton_Questions_Save = isc.IButtonSave.create({
+        title:"دخیره و بستن",
         click: function () {
+
             if (DynamicForm_Questions_Body_JspQuestionEvaluation.getFields().length === 0)
-                return;
+            {
+                 trainingTabSet.removeTabs(trainingTabSet.tabs);
+                 return;
+            }
             let evaluationAnswerList = [];
             let data = {};
             let evaluationFull = true;
@@ -305,10 +310,13 @@
             for (let i = 0; i < questions.length; i++) {
                 if (DynamicForm_Questions_Body_JspQuestionEvaluation.getValue(questions[i].name) === undefined) {
                     evaluationFull = false;
-                    createDialog("info", "به همه سوالات پاسخ داده نشده است!!");
+                 //   createDialog("info", "به همه سوالات پاسخ داده نشده است!!");
+                    trainingTabSet.removeTabs(trainingTabSet.tabs);
                     // break;
+
                     return;
                 }
+
                 let evaluationAnswer = {};
                 evaluationAnswer.answerID = DynamicForm_Questions_Body_JspQuestionEvaluation.getValue(questions[i].name);
                 evaluationAnswer.evaluationQuestionId = questions[i].name.substring(1);
@@ -318,6 +326,7 @@
 
             data.evaluationAnswerList = evaluationAnswerList;
             data.evaluationFull = evaluationFull;
+
             switch (DynamicForm_Questions_Title_JspQuestionEvaluation.getValue("evaluationType")) {
                 case "SEFT":
                     data.evaluatorId = "<%= SecurityUtil.getUserId()%>";
@@ -345,15 +354,22 @@
                     data.questionnaireTypeId = 230;
                     break;
             }
+
             data.classId = DynamicForm_Questions_Title_JspQuestionEvaluation.getItem('course').getSelectedRecord().id;
             let wait = createDialog("wait");
+
             isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
                 wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                    trainingTabSet.removeTabs(trainingTabSet.tabs);
                 }
             }))
+            trainingTabSet.removeTabs(trainingTabSet.tabs);
+
+
         }
+
     });
 
 
@@ -378,12 +394,8 @@
                         click: function () {
                             DynamicForm_Questions_Body_JspQuestionEvaluation.clearValues();
                             DynamicForm_Questions_Body_JspQuestionEvaluation.setFields([]);
-                            // if (criteriaEdit_JspQuestionEvaluation !== null) {
-                            //     wait_JspQuestionEvaluation = createDialog("wait");
-                            //     requestEvaluationQuestionsEdit(criteriaEdit_JspQuestionEvaluation);
-                            // } else{
-                            //     DynamicForm_Questions_Body_JspQuestionEvaluation.clearValues();
-                            // }
+                            trainingTabSet.removeTabs(trainingTabSet.tabs);
+
                         }
                     })
                 ]

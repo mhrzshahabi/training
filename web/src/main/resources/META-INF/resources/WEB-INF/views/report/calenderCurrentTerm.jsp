@@ -92,7 +92,8 @@
                     return record.course.titleFa;
                 }
             },
-             {name: "course.evaluation",title:"نیازسنجی/غیر نیازسنجی"},
+             {name: "course.evaluation",title:"نیازسنجی/غیر نیازسنجی", canFilter: false,
+                 canSort: false,},
         ],
         cellClick:function (record) {
             ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.filterData({corseCode:record.course.code})
@@ -155,6 +156,8 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
+                canFilter: false,
+                canSort: false,
             },
           ],
         headerSpans: [
@@ -166,10 +169,10 @@
          {
 
         },
-              showFilterEditor: true,
+        showFilterEditor: true,
         allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
+       allowFilterExpressions: true,
+       filterOnKeypress: true,
         sortField: 2,
         sortDirection: "descending",
     });
