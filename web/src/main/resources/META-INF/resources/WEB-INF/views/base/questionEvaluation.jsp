@@ -366,7 +366,7 @@
                 }
             }))
 
-
+            mainTS_SP.removeTab(mainTS_SP.selectedTab);
 
         }
 
