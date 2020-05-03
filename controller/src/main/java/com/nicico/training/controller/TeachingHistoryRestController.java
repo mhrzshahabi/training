@@ -76,9 +76,9 @@ public class TeachingHistoryRestController {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null)
+        if (request.get("categories") != null && !((List)request.get("categories")).isEmpty())
             categories = setCats(request);
-        if (request.get("subCategories") != null)
+        if (request.get("subCategories") != null && !((List)request.get("subCategories")).isEmpty())
             subCategories = setSubCats(request);
 
         TeachingHistoryDTO.Create create = modelMapper.map(request, TeachingHistoryDTO.Create.class);
