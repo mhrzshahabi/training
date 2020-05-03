@@ -21,4 +21,7 @@ public interface TermDAO extends JpaRepository<Term, Long>, JpaSpecificationExec
 
     @Query(value = "select distinct SUBSTR(c_code, 1, 4) from tbl_term", nativeQuery = true)
     List<String> getYearsList();
+
+    @Query(value = "select distinct substr(tbl_term.c_startdate, 0, 4) year from tbl_term order by year desc", nativeQuery = true)
+    List<String> getYearsFromStartDate();
 }

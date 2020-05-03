@@ -1951,6 +1951,14 @@
         }
     });
 
+    var RestDataSource_Year_Filter = isc.TrDS.create({
+        fields: [
+            {name: "year"}
+        ],
+        fetchDataURL: termUrl + "years",
+        autoFetchData: true
+    });
+
     var RestDataSource_Term_Filter = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -1963,17 +1971,50 @@
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "450",
+        width: "700",
         height: "100%",
         wrapItemTitles: true,
-        numCols: 2,
-        colWidths: ["10%", "90%"],
+        numCols: 4,
+        colWidths: ["2%", "28%", "2%", "68%"],
         align: "center",
         titleAlign: "left",
         fields: [
             {
+                name: "yearFilter",
+                title: "<spring:message code='year'/>",
+                width: "200",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "year",
+                valueField: "year",
+                optionDataSource: RestDataSource_Year_Filter,
+                filterFields: ["year"],
+                sortField: ["year"],
+                sortDirection: "descending",
+                defaultToFirstOption: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {
+                        name: "year",
+                        title: "<spring:message code='year'/>",
+                        filterOperator: "iContains"
+                    }
+                ]
+                // ,
+                // changed: function (form, item, value) {
+                //     load_classes_by_term(value);
+                // },
+                // dataArrived:function (startRow, endRow, data) {
+                //     if(data.allRows[0].id !== undefined)
+                //     {
+                //         load_classes_by_term(data.allRows[0].id);
+                //     }
+                // }
+            },
+            {
                 name: "termFilter",
                 title: "<spring:message code='term'/>",
+                width: "400",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "code",
@@ -2706,8 +2747,19 @@
     ////*****load classes by term*****
     function load_classes_by_term(value) {
         if(value !== undefined) {
-            var criteria = '{"fieldName":"term.id","operator":"equals","value":' + value + '}';
-            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+
+            ////*****this criteria is for OR two condition (term.id and classStatus)
+            ////*****this criteria is And with user criteria
+            let criteria = {
+                _constructor:"AdvancedCriteria",
+                operator:"or",
+                criteria:[
+                    { fieldName:"term.id", operator:"equals", value: value},
+                    { fieldName:"classStatus", operator:"notEqual", value: "3"}
+                ]
+            }
+            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
+            ListGrid_Class_JspClass.implicitCriteria = criteria;
             ListGrid_Class_JspClass.invalidateCache();
             ListGrid_Class_JspClass.fetchData();
         }
