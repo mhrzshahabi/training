@@ -51,7 +51,7 @@ public class ClassContractDTO {
 
         private CompanyDTO.Info firstPartyCompany;
 
-        private InstituteDTO.Info secondPartyInstitute;
+        private InstituteDTO.ContractInfo secondPartyInstitute;
 
         private PersonalInfoDTO.contractInfo secondPartyPerson;
 

@@ -36,12 +36,7 @@ public class PostGroupDTO {
     @ApiModel("PostGroupInfo")
     public static class Info extends PostGroupDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
         private Set<PostDTO.Info> postSet;
-//        private Integer version;
     }
 
     // ------------------------------
