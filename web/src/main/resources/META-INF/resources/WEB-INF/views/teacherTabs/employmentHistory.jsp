@@ -75,7 +75,7 @@
                 required: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCategoriesChanged = true;
@@ -97,6 +97,11 @@
                     }
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
+                    if(DynamicForm_JspEmploymentHistory.getField("subCategories").getValue() != null &&
+                        DynamicForm_JspEmploymentHistory.getField("subCategories").getValue() != undefined &&
+                        DynamicForm_JspEmploymentHistory.getField("subCategories").getValue().size() == 0){
+                            DynamicForm_JspEmploymentHistory.getField("subCategories").clearValue();
+                    }
                 }
             },
             {
@@ -114,7 +119,7 @@
                 multiple: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCategoriesChanged) {
@@ -291,6 +296,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='employmentHistory'/>",
+        close : function(){closeCalendarWindow(); Window_JspEmploymentHistory.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspEmploymentHistory, HLayout_SaveOrExit_JspEmploymentHistory]
         })]
@@ -355,13 +361,11 @@
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
         doubleClick: function () {

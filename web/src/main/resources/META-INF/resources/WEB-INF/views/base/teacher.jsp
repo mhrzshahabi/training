@@ -184,9 +184,6 @@
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
-        selectionUpdated: function () {
-            // refreshSelectedTab_teacher(null);
-        },
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
@@ -281,7 +278,7 @@
                     pickListFields: [
                         {name: "titleFa"}
                     ]
-                },
+                }
             },
             {
                 name: "personality.educationMajor.titleFa",
@@ -335,7 +332,7 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
+        filterUsingText: "<spring:message code='filteWrUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
@@ -502,6 +499,7 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
+        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide()},
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
