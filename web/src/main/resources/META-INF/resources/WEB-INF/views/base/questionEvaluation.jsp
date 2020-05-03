@@ -300,7 +300,7 @@
 
             if (DynamicForm_Questions_Body_JspQuestionEvaluation.getFields().length === 0)
             {
-                 trainingTabSet.removeTabs(trainingTabSet.tabs);
+                mainTS_SP.removeTab(mainTS_SP.selectedTab);
                  return;
             }
             let evaluationAnswerList = [];
@@ -311,7 +311,7 @@
                 if (DynamicForm_Questions_Body_JspQuestionEvaluation.getValue(questions[i].name) === undefined) {
                     evaluationFull = false;
                  //   createDialog("info", "به همه سوالات پاسخ داده نشده است!!");
-                    trainingTabSet.removeTabs(trainingTabSet.tabs);
+                    mainTS_SP.removeTab(mainTS_SP.selectedTab);
                     // break;
 
                     return;
@@ -362,10 +362,10 @@
                 wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     createDialog("info", "<spring:message code="msg.operation.successful"/>");
-                    trainingTabSet.removeTabs(trainingTabSet.tabs);
+                    mainTS_SP.removeTab(mainTS_SP.selectedTab);
                 }
             }))
-            trainingTabSet.removeTabs(trainingTabSet.tabs);
+
 
 
         }
@@ -394,7 +394,7 @@
                         click: function () {
                             DynamicForm_Questions_Body_JspQuestionEvaluation.clearValues();
                             DynamicForm_Questions_Body_JspQuestionEvaluation.setFields([]);
-                            trainingTabSet.removeTabs(trainingTabSet.tabs);
+                            mainTS_SP.removeTab(mainTS_SP.selectedTab)
 
                         }
                     })
