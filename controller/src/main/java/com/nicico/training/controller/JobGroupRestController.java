@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -54,6 +55,14 @@ public class JobGroupRestController {
 //    @PreAuthorize("hasAuthority('r_job_group')")
     public ResponseEntity<List<JobGroupDTO.Info>> list() {
         return new ResponseEntity<>(jobGroupService.list(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<JobGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<JobGroupDTO.Info> searchRs = jobGroupService.searchWithoutPermission(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
@@ -123,7 +132,6 @@ public class JobGroupRestController {
                 .setCount(endRow - startRow);
 
 
-        //SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
