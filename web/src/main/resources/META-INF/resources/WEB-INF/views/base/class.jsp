@@ -2102,11 +2102,11 @@
                 title: "<spring:message code='teacher.information'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
             },
-            {
-                ID: "costClassTab",
-                title: "<spring:message code='cost.class'/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})
-            }
+            <%--{--%>
+                <%--ID: "costClassTab",--%>
+                <%--title: "<spring:message code='cost.class'/>",--%>
+                <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})--%>
+            <%--}--%>
 
 
         ],
