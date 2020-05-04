@@ -234,13 +234,13 @@
             if (DynamicForm_Syllabus.hasErrors()) {
                 return;
             }
-            titleFa = DynamicForm_Syllabus.getValue('titleFa');
-            titleEn = DynamicForm_Syllabus.getValue('titleEn');
-            goalId = DynamicForm_Syllabus.getValue('goalId');
-            practicalDuration = DynamicForm_Syllabus.getValue('practicalDuration');
-            theoreticalDuration = DynamicForm_Syllabus.getValue('theoreticalDuration');
-            eDomainType = DynamicForm_Syllabus.getValue('edomainTypeId');
-            var data = {
+            const titleFa = DynamicForm_Syllabus.getValue('titleFa');
+            const titleEn = DynamicForm_Syllabus.getValue('titleEn');
+            const goalId = DynamicForm_Syllabus.getValue('goalId');
+            const practicalDuration = DynamicForm_Syllabus.getValue('practicalDuration');
+            const theoreticalDuration = DynamicForm_Syllabus.getValue('theoreticalDuration');
+            const eDomainType = DynamicForm_Syllabus.getValue('edomainTypeId');
+            const data = {
                 "titleFa": titleFa,
                 "titleEn": titleEn,
                 "goalId": goalId,
@@ -269,8 +269,8 @@
                             ListGrid_Syllabus_Goal.setSelectedState(gridState);
                         }, 900);
                         setTimeout(function () {
-                            sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + ListGrid_Syllabus_Goal.getGridSummaryData().get(0).theoreticalDuration;
-                            if (sumSyllabus != (courseRecord.theoryDuration)) {
+                            sumSyllabus = Math.ceil(ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + ListGrid_Syllabus_Goal.getGridSummaryData().get(0).theoreticalDuration);
+                            if (sumSyllabus !== (courseRecord.theoryDuration)) {
                                 isc.Dialog.create({
                                     message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
                                     icon: "[SKIN]ask.png",
@@ -956,7 +956,7 @@
                 showPrompt: true,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    var courses = JSON.parse(resp.data);
+                    let courses = JSON.parse(resp.data);
                     if (courses.length > 1) {
                         for (let i = 0; i < courses.length; i++) {
                             if (courses.get(i).titleFa != DynamicForm_course_MainTab.getItem("titleFa")._value) {
@@ -1068,7 +1068,8 @@
     };
 
     function ListGrid_Syllabus_Goal_Remove() {
-        var record = ListGrid_Syllabus_Goal.getSelectedRecord();
+        let record = ListGrid_Syllabus_Goal.getSelectedRecord();
+        let goalRecord = ListGrid_Goal.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
                 message: "سرفصلی انتخاب نشده است.",
@@ -1080,51 +1081,53 @@
                 }
             });
         } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "<spring:message code='msg.record.remove.ask'/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="verify.delete"/>",
-                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
-                    title: "<spring:message
+                    if(goalRecord.id == record.goalId) {
+                        let Dialog_Delete = isc.Dialog.create({
+                            message: "<spring:message code='msg.record.remove.ask'/>",
+                            icon: "[SKIN]ask.png",
+                            title: "<spring:message code="verify.delete"/>",
+                            buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
+                                title: "<spring:message
         code='global.no'/>"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "<spring:message code='global.form.do.operation'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='global.message'/>"
-                        });
-                        isc.RPCManager.sendRequest({
-                            actionURL: syllabusUrl + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_Syllabus_Goal.invalidateCache();
-                                    evalDomain();
-                                    var OK = isc.Dialog.create({
-                                        message: "<spring:message code='global.form.request.successful'/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='global.form.command.done'/>"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                            })],
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index == 0) {
+                                    <%--let wait = isc.Dialog.create({--%>
+                                        <%--message: "<spring:message code='global.form.do.operation'/>",--%>
+                                        <%--icon: "[SKIN]say.png",--%>
+                                        <%--title: "<spring:message code='global.message'/>"--%>
+                                    <%--});--%>
+                                    let wait = createDialog("wait");
+                                    isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.goalId, "GET", null,(resp)=>{
+                                        let courses = JSON.parse(resp.data);
+                                        if(courses.length>1){
+                                            createDialog("info", "از هدف، سرفصل مورد نظر در دوره دیگری استفاده شده است");
+                                            wait.close();
+                                            return;
+                                        }
+                                        isc.RPCManager.sendRequest(TrDSRequest(syllabusUrl + record.id, "DELETE", null, (resp)=>{
+                                            wait.close();
+                                            if (resp.httpResponseCode == 200) {
+                                                ListGrid_Syllabus_Goal.invalidateCache();
+                                                evalDomain();
+                                                var OK = isc.Dialog.create({
+                                                    message: "<spring:message code='global.form.request.successful'/>",
+                                                    icon: "[SKIN]say.png",
+                                                    title: "<spring:message code='global.form.command.done'/>"
+                                                });
+                                                setTimeout(function () {
+                                                    OK.close();
+                                                }, 3000);
+                                            } else {
+                                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                            }
+                                        }))
+                                    }))
                                 }
                             }
                         });
                     }
-                }
-            });
         }
     };
 

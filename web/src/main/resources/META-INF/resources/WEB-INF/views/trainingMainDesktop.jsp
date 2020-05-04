@@ -169,6 +169,7 @@
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         autoFitWidthApproach: "both",
+        selectCellTextOnClick:true,
         alternateRecordStyles: true,
         showClippedValuesOnHover: true,
         leaveScrollbarGap: false,
@@ -641,13 +642,13 @@
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "قرارداد آموزشی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/class-contract"/>");
-                    }
-                },
+                <%--{isSeparator: true},--%>
+                <%--{--%>
+                <%--    title: "قرارداد آموزشی",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="web/class-contract"/>");--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
@@ -687,12 +688,12 @@
                         createTab(this.title, "<spring:url value="/evaluationCoefficient/show-form"/>");
                     }
                 },
-                {
-                    title: "ثبت نتایج",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "ثبت نتایج",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {
                     title:"<spring:message code="register.Score.PreTest"/>",
                     click: function () {

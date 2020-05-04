@@ -17,10 +17,10 @@
     RestDataSource_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "question", filterOperator: "iContains"},
-            {name: "domainId", filterOperator: "equals"},
-            {name: "domain.id", filterOperator: "equals"},
-            {name: "evaluationIndices", filterOperator: "inSet"}
+            {name: "question", filterOperator: "iContains", autoFitWidth: true},
+            {name: "domainId", filterOperator: "equals", autoFitWidth: true},
+            {name: "domain.id", filterOperator: "equals", autoFitWidth: true},
+            {name: "evaluationIndices", filterOperator: "inSet", autoFitWidth: true}
         ],
         fetchDataURL: configQuestionnaireUrl + "/iscList"
     });
@@ -28,8 +28,8 @@
     RestDataSource_QuestionDomain_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}
         ],
         fetchDataURL: parameterUrl + "/iscList/test"
     });
@@ -37,12 +37,8 @@
     RestDataSource_QuestionIndicator_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
-            {
-                name: "evalStatus",
-                title: "<spring:message code="evaluation.index.evalStatus"/>",
-                filterOperator: "iContains"
-            }
+            {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", filterOperator: "iContains", autoFitWidth: true}
         ],
         fetchDataURL: evaluationIndexUrl + "/iscList"
     });
@@ -66,67 +62,44 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 required: true,
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "title",
-                filterFields: ["title"],
-                multiple: false,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
                 pickListFields: [
-                    {
-                        name: "title",
-                        title: "<spring:message code='question.domain'/>",
-                        filterOperator: "iContains",
-                        width: "30%"
-                    },
-                    {
-                        name: "code",
-                        title: "<spring:message code="code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true,
-                        autoFitWidthApproach: "both",
-                    }
+                    {name: "title"},
+                    {name: "code"}
                 ]
             },
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "selectItem",
+                type: "MultiComboBoxItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "nameFa",
                 filterFields: ["nameFa"],
                 multiple: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                pickListFields: [
-                    {
-                        name: "nameFa",
-                        title: "<spring:message code='question.indicator'/>",
-                        filterOperator: "iContains",
-                        width: "30%"
+                filterOnKeypress: true,
+                comboBoxProperties: {
+                    hint: "",
+                    filterFields: ["nameFa", "nameFa"],
+                    textMatchStyle: "substring",
+                    pickListWidth: 300,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
                     },
-                    {
-                        name: "evalStatus",
-                        title: "<spring:message code="evaluation.index.evalStatus"/>",
-                        autoFitWidth: true,
-                        autoFitWidthApproach: "both",
-                        valueMap:
-                            {
-                                "0": "<spring:message code='deActive'/>",
-                                "1": "<spring:message code='active'/>"
-                            }
-                    }
-                ]
+                    pickListFields: [
+                        {name: "nameFa", title: "<spring:message code='question.indicator'/>", filterOperator: "iContains"},
+                        {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", autoFitWidth: true,
+                            valueMap: {"0": "<spring:message code='deActive'/>", "1": "<spring:message code='active'/>"}
+                        }
+                    ],
+                }
             }
         ]
     });

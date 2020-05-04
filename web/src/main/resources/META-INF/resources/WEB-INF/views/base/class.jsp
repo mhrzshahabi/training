@@ -491,6 +491,12 @@
                 hint: "حداقل نفر",
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
+                blur(form, item){
+                    if(form.getValue("maxCapacity")!==null && parseInt(form.getValue(item)) > parseInt(form.getValue("maxCapacity"))){
+                        createDialog("info","مقدار فیلد حداقل ظرفیت باید کوچکتر یا مساوی مقدار فیلد حداکثر ظرفیت باشد")
+                        item.setValue("");
+                    }
+                }
                 <%--validators:[{--%>
                 <%--type: "custom",--%>
                 <%--errorMessage: "<spring:message code='msg.min.capacity'/>",--%>
@@ -508,7 +514,13 @@
                 hint: "حداکثر نفر",
                 textAlign: "center",
                 showHintInField: true,
-                keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9]",
+                blur(form, item){
+                    if(form.getValue("minCapacity")!== null && parseInt(form.getValue(item)) < parseInt(form.getValue("minCapacity"))){
+                        createDialog("info","مقدار فیلد حداقل ظرفیت باید کوچکتر یا مساوی مقدار فیلد حداکثر ظرفیت باشد")
+                        item.setValue("");
+                    }
+                }
             },
             {
                 name: "code",
