@@ -83,6 +83,7 @@ public class TclassRestController {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
         return infoResponseEntity;
     }
@@ -99,6 +100,7 @@ public class TclassRestController {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
         return infoResponseEntity;
     }
@@ -114,6 +116,7 @@ public class TclassRestController {
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
 
         return infoResponseEntity;
@@ -130,6 +133,7 @@ public class TclassRestController {
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
 
         return infoResponseEntity;
