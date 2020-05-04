@@ -7,7 +7,6 @@
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
-    // var gridState;
     var attachName;
     var attachNameTemp;
     var nationalCodeCheck = true;
@@ -184,6 +183,9 @@
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
+        initialSort: [
+            {property: "teacherCode", direction: "descending", primarySort: true}
+        ],
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
@@ -210,11 +212,12 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                editorType: "ComboBoxItem",
+                editorType: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
                 filterOnKeypress: true,
+                canSort: false,
                 filterEditorProperties:{
                     optionDataSource: RestDataSource_Category_JspTeacher,
                     valueField: "id",
@@ -239,6 +242,7 @@
                 optionDataSource: RestDataSource_SubCategory_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
+                canSort: false,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     optionDataSource: RestDataSource_SubCategory_JspTeacher,
@@ -261,48 +265,19 @@
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: RestDataSource_Education_Level_JspTeacher,
-                    displayField: "titleFa",
-                    valueField: "titleFa",
-                    autoFetchData: true,
-                    filterFields: ["titleFa","titleFa"],
-                    textMatchStyle: "substring",
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both"
-                    },
-                    pickListFields: [
-                        {name: "titleFa"}
-                    ]
+                filterOperator: "equals",
+                sortNormalizer: function (record) {
+                    return record.personality.educationLevel.titleFa;
                 }
             },
             {
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: RestDataSource_Education_Major_JspTeacher,
-                    displayField: "titleFa",
-                    valueField: "titleFa",
-                    autoFetchData: true,
-                    filterFields: ["titleFa","titleFa"],
-                    textMatchStyle: "substring",
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both"
-                    },
-                    pickListFields: [
-                        {name: "titleFa"}
-                    ]
-                },
-
+                filterOperator: "equals",
+                sortNormalizer: function (record) {
+                    return record.personality.educationMajor.titleFa;
+                }
             },
             {
                 name: "personality.contactInfo.mobile",
@@ -320,18 +295,13 @@
                 type: "boolean"
             }
         ],
-        filterEditorSubmit: function () {
-            ListGrid_Teacher_JspTeacher.invalidateCache();
-        },
         cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: true,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        selectionType: "single",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
@@ -359,16 +329,8 @@
             showAttachViewLoader.hide();
             Window_Teacher_JspTeacher.close();
             ListGrid_teacher_refresh();
-            // setTimeout(function () {
-            //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-            // }, 2000);
-            // Page.waitFor(ListGrid_Teacher_JspTeacher,"invalidateCache",exitCallBack());
         }
     });
-
-    // function exitCallBack(){
-    //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-    // }
     //-----------------------------------------------LayOuts and Tabsets and Window-------------------------------------
     var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
@@ -856,7 +818,6 @@
     }
 
     function ListGrid_teacher_edit() {
-        // gridState = ListGrid_Teacher_JspTeacher.getSelectedState();
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         selected_record = record;
         if (record == null || record.id == null) {
@@ -1139,7 +1100,6 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             responseID = JSON.parse(resp.data).id;
             vm.setValue("id", responseID);
-            // gridState = "[{id:" + responseID + "}]";
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
             addAttach(JSON.parse(resp.data).personality.id);
             showAttach(JSON.parse(resp.data).personality.id);
@@ -1166,7 +1126,6 @@
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
                 responseID = JSON.parse(resp.data).id;
-                // gridState = "[{id:" + responseID + "}]";
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);

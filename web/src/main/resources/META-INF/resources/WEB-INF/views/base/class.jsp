@@ -698,6 +698,8 @@
                     "personality.firstNameFa",
                     "personality.nationalCode"
                 ],
+                sortField: ["personality.firstNameFa"],
+                sortDirection: "ascending",
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
                         RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id");
@@ -728,14 +730,19 @@
                 colSpan: 3,
                 required:true,
                 title: "<spring:message code="supervisor"/>:",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 textAlign: "center",
                 valueMap: {
                     1: "آقای دکتر سعیدی",
                     2: "خانم شاکری",
                     3: "خانم اسماعیلی",
-                    4: "خانم احمدی",
-                }
+                    4: "خانم احمدی"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                textMatchStyle: "substring",
+                sortField: 0
 // textBoxStyle:"textItemLite"
             },
             {
@@ -744,14 +751,19 @@
                 required:true,
                 wrapTitle: false,
                 title: "<spring:message code="planner"/>:",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 textAlign: "center",
                 valueMap: {
                     1: "آقای دکتر سعیدی",
                     2: "خانم شاکری",
                     3: "خانم اسماعیلی",
                     4: "خانم احمدی",
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                sortField: 0,
+                textMatchStyle: "substring"
 // textBoxStyle:"textItemLite"
             },
             {
@@ -760,12 +772,17 @@
                 textAlign: "center",
                 wrapTitle: true,
                 title: "<spring:message code="training.request"/>:",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 valueMap: {
                     "1": "نیازسنجی",
                     "2": "درخواست واحد",
                     "3": "نیاز موردی",
                 },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                sortField: 0,
+                textMatchStyle: "substring",
 // textBoxStyle: "textItemLite"
             },
             {
@@ -804,7 +821,11 @@
                     if (form.getValue("instituteId") == null) {
                         form.setValue("instituteId", value);
                     }
+                },
+                pickListProperties: {
+                    sortField: 0
                 }
+
             },
             {
                 name: "instituteId",
@@ -834,6 +855,9 @@
                 ],
                 changed: function (form, item) {
                     form.clearValue("trainingPlaceIds")
+                },
+                pickListProperties: {
+                    sortField: 0
                 }
             },
             {
@@ -856,6 +880,9 @@
                     {name: "titleFa"},
                     {name: "capacity"}
                 ],
+                pickListProperties: {
+                    sortField: 1
+                },
                 click: function (form, item) {
                     if (form.getValue("instituteId")) {
                         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/trainingPlaces";
@@ -885,6 +912,12 @@
                     "3": "نمره از بیست",
                     "4": "بدون نمره",
                 },
+                type: "ComboBoxItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                sortField: 0,
+                textMatchStyle: "substring",
 
                 changed: function () {
                     let record = ListGrid_Class_JspClass.getSelectedRecord();
@@ -979,6 +1012,7 @@
                 title: "<spring:message code="start.evaluation"/>",
                 textAlign: "center",
                 hint: "&nbsp;ماه",
+                sortField: 0,
                 valueMap: {
                     "1": "1",
                     "2": "2",

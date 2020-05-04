@@ -41,11 +41,11 @@ public class Teacher extends Auditable {
     @Column(name = "c_personnel_code")
     private String personnelCode;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "f_personality")
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "f_personality",insertable = false, updatable = false)
     private PersonalInfo personality;
 
-    @Column(name = "f_personality", nullable = false, insertable = false, updatable = false)
+    @Column(name = "f_personality")
     private Long personalityId;
 
     @ManyToMany(fetch = FetchType.LAZY)
