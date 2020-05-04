@@ -169,6 +169,7 @@
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         autoFitWidthApproach: "both",
+        selectCellTextOnClick:true,
         alternateRecordStyles: true,
         showClippedValuesOnHover: true,
         leaveScrollbarGap: false,

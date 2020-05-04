@@ -425,7 +425,7 @@
                                     let evaluationAnswer = {};
                                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
                                     evaluationAnswer.evaluationQuestionId = questions[i].name.substring(1);
-                                    evaluationAnswer.questionSourceId = qustionSourceConvert(questions[i].name);
+                                    evaluationAnswer.questionSourceId = questionSourceConvert(questions[i].name);
                                     evaluationAnswerList.push(evaluationAnswer);
                                 }
                                 data.evaluationAnswerList = evaluationAnswerList;
@@ -460,7 +460,11 @@
                                 data.classId = ListGrid_evaluation_class.getSelectedRecord().id;
                                 isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
                                     if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201){
+                                        const msg = createDialog("info","<spring:message code="global.form.request.successful"/>");
+                                        setTimeout(()=>{msg.close()},3000);
                                         Window_Questions_JspEvaluation.close();
+                                    }else{
+                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                     }
                                 }))
                             }
@@ -690,7 +694,7 @@
                                 }
                             }))
                         }
-                        function qustionSourceConvert(s) {
+                        function questionSourceConvert(s) {
                             switch(s.charAt(0)){
                                 case "G":
                                     return 201;
