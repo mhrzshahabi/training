@@ -309,13 +309,13 @@
                 displayField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
-
                 comboBoxProperties: {
                     hint: "",
                     filterFields: ["firstName", "lastName", "username", "nationalCode"],
                     textMatchStyle: "substring",
                     pickListWidth: 335,
                     pickListProperties: {
+                        autoFitWidthApproach: "both",
                         gridComponents: [
                             isc.ToolStrip.create({
                                 autoDraw:false,
