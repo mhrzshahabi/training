@@ -2012,15 +2012,14 @@
                     }
                 ],
                 changed: function (form, item, value) {
-
                      load_term_by_year(value);
-                   // load_classes_by_term(value);
                 },
                 dataArrived:function (startRow, endRow, data) {
-                    // if(data.allRows[0].id !== undefined)
-                    // {
-                    //     load_classes_by_term(data.allRows[0].id);
-                    // }
+                    if(data.allRows[0].year !== undefined)
+                    {
+
+                        load_term_by_year(data.allRows[0].year);
+                    }
                 }
             },
             {
@@ -2060,6 +2059,8 @@
                 dataArrived:function (startRow, endRow, data) {
                     if(data.allRows[0].id !== undefined)
                     {
+                        DynamicForm_Term_Filter.getItem("termFilter").clearValue();
+                        DynamicForm_Term_Filter.getItem("termFilter").setValue(data.allRows[0].code);
                         load_classes_by_term(data.allRows[0].id);
                     }
                 }
@@ -2785,7 +2786,6 @@
     ////*****load classes by term*****
     function load_classes_by_term(value) {
         if(value !== undefined) {
-
             ////*****this criteria is for OR two condition (term.id and classStatus)
             ////*****this criteria is And with user criteria
             let criteria = {
@@ -2795,7 +2795,7 @@
                     { fieldName:"term.id", operator:"equals", value: value},
                     { fieldName:"classStatus", operator:"notEqual", value: "3"}
                 ]
-            }
+            };
             RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
             ListGrid_Class_JspClass.implicitCriteria = criteria;
             ListGrid_Class_JspClass.invalidateCache();

@@ -549,13 +549,14 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
-                },
-                {
-                    title: "<spring:message code="skill.group"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
-                    }
-                },
+                }
+                <%--,--%>
+                <%--{--%>
+                <%--    title: "<spring:message code="skill.group"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="/skill-group/show-form"/>");--%>
+                <%--    }--%>
+                <%--},--%>
                 <%--{isSeparator: true},--%>
                 <%--{--%>
                 <%--    title: "<spring:message code="need.assessment.skill.based"/>",--%>

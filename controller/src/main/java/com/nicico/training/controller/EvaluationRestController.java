@@ -9,6 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Goal;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.model.Skill;
