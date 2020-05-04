@@ -30,7 +30,7 @@ public class PostGradeGroupDTO implements Serializable {
     @ApiModel("PostGradeGroup - Info")
     public static class Info extends PostGradeGroupDTO {
         private Long id;
-        private Set<PostGradeDTO.Info> postGradesList;
+        private Set<PostGradeDTO.Info> postGradeSet;
     }
 
     @Getter

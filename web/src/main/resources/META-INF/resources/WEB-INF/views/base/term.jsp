@@ -148,6 +148,7 @@
                 title: "<spring:message code="start.date"/>",
                 ID: "startDate_jspTerm",
                 type: 'text',
+
                 required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
@@ -371,6 +372,10 @@
         DynamicForm_Term.clearValues();
         Window_term.setTitle("<spring:message code="create.term"/>");
         Window_term.show();
+        setTimeout(function() {
+        $("input[name='startDate']").attr("readonly",true);
+        $("input[name='endDate']").attr("readonly",true);
+        },300);
     };
 
     function show_TermEditForm() {

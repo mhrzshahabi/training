@@ -642,13 +642,13 @@
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "قرارداد آموزشی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/class-contract"/>");
-                    }
-                },
+                <%--{isSeparator: true},--%>
+                <%--{--%>
+                <%--    title: "قرارداد آموزشی",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="web/class-contract"/>");--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
