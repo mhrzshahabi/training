@@ -2101,7 +2101,12 @@
                 ID: "teacherInformationTab",
                 title: "<spring:message code='teacher.information'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
-            }
+            },
+            <%--{--%>
+                <%--ID: "costClassTab",--%>
+                <%--title: "<spring:message code='cost.class'/>",--%>
+                <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})--%>
+            <%--}--%>
 
 
         ],
@@ -2422,6 +2427,16 @@
                     }
                     break;
                 }
+                case "costClassTab": {
+
+                    if (typeof loadPage_costClass !== "undefined")
+                    {
+                        loadPage_costClass();
+                    }
+                    break;
+                }
+
+
                 case "classAttendanceTab": {
                     if (typeof loadPage_Attendance !== "undefined")
                         loadPage_Attendance();
@@ -2483,7 +2498,7 @@
             showPrompt: false,
             serverOutputAsString: false,
             callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let result = JSON.parse(resp.data).response.data;
                     DynamicForm_Class_JspClass.setValue("dDuration", result.length);
                     console.log("dayDuration");
@@ -2500,10 +2515,12 @@
         }
         isReadOnlyClass = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
         TabSet_Class.enable();
-        if (classRecord.preCourseTest && classRecord.course.evaluation !== "1")
-            TabSet_Class.enableTab("classPreCourseTestQuestionsTab");
-        else
-            TabSet_Class.disableTab("classPreCourseTestQuestionsTab");
+        if (classRecord.preCourseTest && classRecord.course.evaluation !== "1") {
+            TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
+        } else {
+            TabSet_Class.selectTab(0);
+            TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
+        }
     }
 
     //*****check class is ready to end or no*****

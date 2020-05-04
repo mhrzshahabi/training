@@ -847,14 +847,16 @@
                 title: "<spring:message code="company.id"/>",
                 filterOperator: "iContains",
                 length: 12,
-                keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9]",
+                colSpan: 2,
             },
             {
                 name: "economicalId",
                 title: "<spring:message code="company.economical.id"/>",
                 filterOperator: "iContains",
                 length: 12,
-                keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9]",
+                colSpan: 2,
             },
         ]
 

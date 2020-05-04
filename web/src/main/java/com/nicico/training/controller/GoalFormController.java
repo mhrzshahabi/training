@@ -32,9 +32,9 @@ public class GoalFormController {
         return "base/goal";
     }
 
-    @RequestMapping("/print-all/{type}/{token}")
-    public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type, @PathVariable String token) {
-//        String token = (String) request.getSession().getAttribute("AccessToken");
+    @RequestMapping("/print-all/{type}")
+    public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -61,9 +61,9 @@ public class GoalFormController {
             return null;
     }
 
-    @RequestMapping("/print-one-course/{courseId}/{type}/{token}")
-    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId, @PathVariable String token) {
-//        String token = (String) request.getSession().getAttribute("AccessToken");
+    @RequestMapping("/print-one-course/{courseId}/{type}")
+    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
 
         RestTemplate restTemplate = new RestTemplate();

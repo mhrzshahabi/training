@@ -555,6 +555,7 @@
         groupByField: "needsAssessmentPriorityId",
         groupStartOpen: "all",
         showGroupSummary: true,
+        useClientFiltering: true,
         fields: [
             {
                 name: "needsAssessmentPriorityId",
