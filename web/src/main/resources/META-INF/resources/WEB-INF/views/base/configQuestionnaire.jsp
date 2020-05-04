@@ -203,6 +203,7 @@
                 displayField: "nameFa",
                 filterOnKeypress: true,
                 multiple: true,
+                canSort: false,
             }
         ],
         rowDoubleClick: function () {
