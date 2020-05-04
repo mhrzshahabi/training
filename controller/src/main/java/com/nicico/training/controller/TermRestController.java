@@ -229,7 +229,6 @@ public class TermRestController {
     @GetMapping(value = "/years")
     public ResponseEntity<TermDTO.YearsSpecRs> years() {
 
-
         List<TermDTO.Years> list = termService.years();
 
         final TermDTO.YsSpecRs specResponse = new TermDTO.YsSpecRs();

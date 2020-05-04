@@ -1966,8 +1966,7 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55",
-        autoFetchData: true
+        autoFetchData: false
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
@@ -1999,17 +1998,18 @@
                         title: "<spring:message code='year'/>",
                         filterOperator: "iContains"
                     }
-                ]
-                // ,
-                // changed: function (form, item, value) {
-                //     load_classes_by_term(value);
-                // },
-                // dataArrived:function (startRow, endRow, data) {
-                //     if(data.allRows[0].id !== undefined)
-                //     {
-                //         load_classes_by_term(data.allRows[0].id);
-                //     }
-                // }
+                ],
+                changed: function (form, item, value) {
+
+                     load_term_by_year(value);
+                   // load_classes_by_term(value);
+                },
+                dataArrived:function (startRow, endRow, data) {
+                    // if(data.allRows[0].id !== undefined)
+                    // {
+                    //     load_classes_by_term(data.allRows[0].id);
+                    // }
+                }
             },
             {
                 name: "termFilter",
@@ -2743,6 +2743,15 @@
 
         }));
     }
+
+    ////*****load term by year*****
+    function load_term_by_year(value)
+    {
+        let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
+        RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+        DynamicForm_Term_Filter.getItem("termFilter").fetchData();
+    }
+    ////******************************
 
     ////*****load classes by term*****
     function load_classes_by_term(value) {
