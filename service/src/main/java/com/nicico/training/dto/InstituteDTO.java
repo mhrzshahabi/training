@@ -104,25 +104,29 @@ public class InstituteDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ContractInfo")
-    public static class ContractInfo extends InstituteDTO {
+    public static class ContractInfo {
         private Long id;
+        private String titleFa;
         private Long stateId;
         private Long cityId;
         private String phone;
         private String mobile;
         private String restAddress;
+        private String instituteId;
+        private String economicalId;
+        private Set<InstituteAccountDTO.Info> instituteAccountSet;
 
+        public String getShabaNumber() {
+            if (instituteAccountSet.isEmpty())
+                return null;
+            return instituteAccountSet.iterator().next().getShabaNumber();
+        }
 
-        //        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
-//        private Set<EquipmentDTO.Info> equipmentSet;
-//        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-//        private Set<InstituteAccountDTO.Info> instituteAccountSet;
-        private PersonalInfoDTO.Info manager;
-        private InstituteDTO.Info parentInstitute;
-        private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
-        private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
-        private CityDTO.Info city;
-        private StateDTO.Info state;
+        public String getBank() {
+            if (instituteAccountSet.isEmpty())
+                return null;
+            return instituteAccountSet.iterator().next().getBank().getTitleFa();
+        }
     }
 
     // ------------------------------

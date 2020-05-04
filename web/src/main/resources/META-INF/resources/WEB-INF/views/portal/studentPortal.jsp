@@ -166,6 +166,7 @@
     });
 
     MainTS_SP = isc.TabSet.create({
+        ID:"mainTS_SP",
         minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton_SP],

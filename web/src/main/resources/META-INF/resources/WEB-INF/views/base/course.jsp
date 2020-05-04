@@ -155,7 +155,8 @@
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "edomainType.titleFa"},
-            {name: "practicalDuration"}
+            {name: "practicalDuration"},
+            {name: "theoreticalDuration"}
         ],
         fetchDataURL: syllabusUrl + "spec-list"
     });
@@ -593,7 +594,7 @@
                 title: "<spring:message code="course_Running_time"/>",
                 align: "center",
                 summaryFunction: "sum",
-                format: "# ساعت "
+                format: "0 ساعت "
             },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -1487,7 +1488,7 @@
                 prompt: "لطفا مدت دوره را به صورت یک عدد حداکثر 3 رقمی وارد کنید",
                 // height: "30",
                 required: true,
-                mask: "###",
+                mask: "000",
                 useMask: true,
                 // titleOrientation: "top",
                 textAlign: "center",
@@ -2395,7 +2396,7 @@
                         }],
                         // height: "30",
                         width: "*",
-                        mask: "##",
+                        mask: "00",
                         useMask: true,
                         keyPressFilter: "[0-9]",
                         requiredMessage: "لطفا یک عدد بین 1 تا 50 وارد کنید",
@@ -2412,7 +2413,7 @@
                         // height: "30",
                         required: true,
                         width: "*",
-                        mask: "##",
+                        mask: "00",
                         useMask: true,
                         keyPressFilter: "[0-9]",
                         requiredMessage: "لطفا یک عدد بین 65 تا 100 وارد کنید",

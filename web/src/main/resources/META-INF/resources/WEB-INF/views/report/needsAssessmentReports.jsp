@@ -23,6 +23,8 @@
         {title: "<spring:message code='developmental'/>",  type: "<spring:message code='passed'/>", duration: 0}
     ];
 
+    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/NeedsAssessmentPriority", "GET", null, setPriorities_NABOP));
+
     //--------------------------------------------------------------------------------------------------------------------//
     //*post form*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -501,9 +503,7 @@
                 total += records[i].skill.course.theoryDuration;
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
-            if (total !== 0) {
-                chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
-            }
+            chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             return "<spring:message code="duration.hour.sum"/>" + total;
         },
         function (records) {
@@ -513,9 +513,7 @@
                     passed += records[i].skill.course.theoryDuration;
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
-            if (passed !== 0) {
-                chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration = passed;
-            }
+            chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration = passed;
             return "<spring:message code="duration.hour.sum.passed"/>" + passed;
         },
         function (records) {
@@ -537,9 +535,7 @@
                 total += records[i].skill.course.theoryDuration;
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
-            if (total !== 0) {
-                chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
-            }
+            chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             return "<spring:message code="duration.hour.sum"/>" + total;
         }
     ];
@@ -555,6 +551,7 @@
         groupByField: "needsAssessmentPriorityId",
         groupStartOpen: "all",
         showGroupSummary: true,
+        useClientFiltering: true,
         fields: [
             {
                 name: "needsAssessmentPriorityId",
@@ -640,8 +637,14 @@
             },
         ],
         dataArrived: function () {
-            Main_HLayout_NABOP.getMember("Chart_NABOP").setData(chartData_NABOP);
-        }
+            priorities_NABOP.forEach(p => {
+                if (this.originalData.localData.filter(d => d.needsAssessmentPriorityId === p.id).isEmpty()) {
+                    chartData_NABOP.find({title: priorities_NABOP[getIndexById_NABOP(p.id)].title, type: "<spring:message code='total'/>"}).duration = 0;
+                    chartData_NABOP.find({title: priorities_NABOP[getIndexById_NABOP(p.id)].title, type: "<spring:message code='passed'/>"}).duration = 0;
+                }
+            });
+            setTimeout(function () {Main_HLayout_NABOP.getMember("Chart_NABOP").setData(chartData_NABOP);}, 0);
+        },
     });
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
@@ -756,8 +759,6 @@
                 return i;
         }
     }
-
-    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/NeedsAssessmentPriority", "GET", null, setPriorities_NABOP));
 
     function setPriorities_NABOP(resp){
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {

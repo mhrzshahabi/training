@@ -426,6 +426,7 @@
                                     attendanceGrid.setFieldProperties(i, {
                                         change(form, item, value, oldValue) {
                                             if (value == 4) {
+                                                let update = false;
                                                 isc.Window.create({
                                                     ID: "absenceWindow",
                                                     title: "علت غیبت",
@@ -486,7 +487,6 @@
                                                                         } else {
                                                                             // for (let i = 0; i <causeOfAbsence.length ; i++) {
                                                                             let i = 0;
-                                                                            let update = false;
                                                                             do {
                                                                                 if ((!causeOfAbsence.isEmpty()) && (causeOfAbsence[i].studentId == attendanceGrid.getSelectedRecord().studentId) && (causeOfAbsence[i].sessionId == item.getFieldName().substr(2))) {
                                                                                     causeOfAbsence[i].description = absenceForm.getValue("cause");
@@ -500,6 +500,7 @@
                                                                                 data.studentId = attendanceGrid.getSelectedRecord().studentId;
                                                                                 data.description = absenceForm.getValue("cause");
                                                                                 causeOfAbsence.add(data);
+                                                                                update = true;
                                                                             }
                                                                             absenceWindow.close();
                                                                             // alert(item.getFieldName())
@@ -516,7 +517,13 @@
                                                                 }),
                                                             ]
                                                         })
-                                                    ]
+                                                    ],
+                                                    hide(){
+                                                        if(!update){
+                                                            item.setValue(oldValue);
+                                                        }
+                                                        this.Super("hide",arguments)
+                                                    }
                                                 });
                                                 absenceWindow.show();
                                                 for (let i = 0; i < causeOfAbsence.length; i++) {

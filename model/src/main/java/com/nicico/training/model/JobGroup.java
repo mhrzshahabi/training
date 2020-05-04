@@ -32,7 +32,7 @@ public class JobGroup extends Auditable {
     @Column(name = "c_description", length = 500)
     private String description;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_job_jobgroup",
             joinColumns = {@JoinColumn(name = "f_jobgroup_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_job_id", referencedColumnName = "id")})

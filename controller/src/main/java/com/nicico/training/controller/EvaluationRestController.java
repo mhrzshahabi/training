@@ -9,7 +9,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.*;
+import com.nicico.training.model.Goal;
+import com.nicico.training.model.QuestionnaireQuestion;
+import com.nicico.training.model.Skill;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -167,7 +169,6 @@ public class EvaluationRestController {
     public ResponseEntity<EvaluationDTO.Info> create(@RequestBody Object req) {
         EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
         EvaluationDTO.Info info = evaluationService.create(create);
-        studentEvaluationRegister(info);
         return new ResponseEntity<>(info, HttpStatus.CREATED);
     }
 
@@ -176,7 +177,6 @@ public class EvaluationRestController {
     public ResponseEntity<EvaluationDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         EvaluationDTO.Update update = modelMapper.map(request, EvaluationDTO.Update.class);
         EvaluationDTO.Info info = evaluationService.update(id, update);
-        studentEvaluationRegister(info);
         return new ResponseEntity<>(info, HttpStatus.OK);
     }
 

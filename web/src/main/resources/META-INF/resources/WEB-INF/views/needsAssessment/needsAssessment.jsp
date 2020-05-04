@@ -46,7 +46,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
                     if(checkSelectedRecord(ListGrid_NeedsAssessment_JspNeedAssessment)) {
-                        if (ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType == "Post") {
+                        if (ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType === "Post") {
                             var criteria = '{"fieldName":"id","operator":"equals","value":"' + ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId + '"}';
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
                         }
@@ -255,7 +255,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: jobGroupUrl + "spec-list"
+        fetchDataURL: jobGroupUrl + "iscList"
     });
     let PostDs_needsAssessment = isc.TrDS.create({
         fields: [
@@ -495,7 +495,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "workPlaceTitle"},
             {name: "workTurnTitle"},
         ],
-        autoFetchData: true,
+        autoFetchData: false,
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="personnel.for"/>" + "</b></span>", customEdges: ["T","L","R","B"]}),
             "header", "body"],
@@ -564,9 +564,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             this.Super("dataChanged",arguments);
         },
         canEditCell(rowNum, colNum){
-            if(colNum == 1) {
+            if(colNum === 1) {
                 let record = this.getRecord(rowNum);
-                if (record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
+                if (record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
                     return true;
                 }
             }
@@ -776,25 +776,29 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         },
         show(){
             // updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
-            if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")==="Post"){
-                var record;
-                var myVar = setInterval(function () {
-                        record = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord()
-                        if(record != undefined){
-                            Label_PlusData_JspNeedsAssessment.setContents(
-                                "عنوان پست: " + record.titleFa
-                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
-                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
-                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
-                                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
-                            );
+            // if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")==="Post"){
+                let record;
+                let myVar = setInterval(function () {
+                        record = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
+                        if(record !== undefined){
+                            refreshPersonnelLG(record);
+                            if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")==="Post") {
+                                Label_PlusData_JspNeedsAssessment.setContents(
+                                    "عنوان پست: " + record.titleFa
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                                );
+                            } else
+                                Label_PlusData_JspNeedsAssessment.setContents("");
                             clearInterval(myVar)
                         }
-                    },100)
-            }
-            else {
-                Label_PlusData_JspNeedsAssessment.setContents("")
-            }
+                    },100);
+            // }
+            // else {
+            //     Label_PlusData_JspNeedsAssessment.setContents("")
+            // }
             this.Super("show",arguments)
         },
         items:[
@@ -813,11 +817,12 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         pickListFields: [{name: "title"}],
                         defaultToFirstOption: true,
                         changed: function (form, item, value, oldValue) {
-                            if(value != oldValue) {
+                            if(value !== oldValue) {
                                 updateObjectIdLG(form, value);
                                 clearAllGrid();
                                 form.getItem("objectId").clearValue();
                                 Label_PlusData_JspNeedsAssessment.setContents("");
+                                refreshPersonnelLG();
                             }
                         },
                     },
@@ -835,14 +840,15 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         ],
                         click: function(form){
                             // updateObjectIdLG(form, form.getValue("objectType"));
-                            if(form.getValue("objectType")=="Post"){
+                            if(form.getValue("objectType") === "Post"){
                                 PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList";
                                 Window_AddPost_JspNeedsAssessment.show();
                             }
                         },
                         changed: function (form, item, value, oldValue) {
-                            if(value != oldValue){
-                                editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"))
+                            if(value !== oldValue){
+                                editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
+                                refreshPersonnelLG();
                             }
                         },
                     },
@@ -940,23 +946,23 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             //         { fieldName:"id", operator:"equals", value:record.id }
                             //     ]
                             // };
-                            var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
+                            let criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
-                            var wating = createDialog("wait");
+                            let wating = createDialog("wait");
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
-                                c(record.id, "Post");
+                                editNeedsAssessmentRecord(record.id, "Post");
                                 Label_PlusData_JspNeedsAssessment.setContents(
                                     "عنوان پست: " + record.titleFa
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
-                                )
+                                );
                                 wating.close();
                             });
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
-
+                            refreshPersonnelLG(record);
                             Window_AddPost_JspNeedsAssessment.close();
                         }
                     }),
@@ -1107,46 +1113,42 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         }
     }
 
-    function refreshPersonnelLG(form, value) {
-        switch (value) {
+    function refreshPersonnelLG(pickListRecord) {
+        if (pickListRecord == null)
+            pickListRecord = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
+        if (pickListRecord == null){
+            ListGrid_Personnel_JspNeedsAssessment.setData([]);
+            return;
+        }
+        let crt = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: []
+        };
+        switch (NeedsAssessmentTargetDF_needsAssessment.getItem("objectType").getValue()) {
             case 'Job':
-                let criteria = {
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    // criteria: [{fieldName: "jobNo", operator: "equals", value: }]
-                };
+                crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
                 break;
             case 'JobGroup':
-                form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
+                crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
                 break;
             case 'Post':
-                form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [
-                    {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
-                    {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
-                ];
-                form.getItem("objectId").canEdit = false;
-                // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
+                crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
                 break;
             case 'PostGroup':
-                form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
+                crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
                 break;
             case 'PostGrade':
-                form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [
-                    {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
-                    {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
-                ];
+                crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
                 break;
             case 'PostGradeGroup':
-                form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [
-                    {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
-                ];
+                crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
                 break;
         }
+        ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
+        // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
+        ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
+        ListGrid_Personnel_JspNeedsAssessment.fetchData();
     }
 
     function createNeedsAssessmentRecords(data) {
@@ -1203,7 +1205,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, objectType);
         clearAllGrid();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
-            if (resp.httpResponseCode != 200){
+            if (resp.httpResponseCode !== 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
@@ -1229,7 +1231,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 competence.competenceType = data[i].competence.competenceType;
                 DataSource_Competence_JspNeedsAssessment.addData(competence, ()=>{ListGrid_Competence_JspNeedsAssessment.selectRecord(0)});
             }
-            ListGrid_Competence_JspNeedsAssessment.fetchData()
+            ListGrid_Competence_JspNeedsAssessment.fetchData();
             ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
             NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId);
             NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", objectType);
@@ -1319,7 +1321,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        var varParams = [{
+                        let varParams = [{
                             "processKey": "needAssessment_CommitteeWorkflow",
                             "cId": sRecord.id,
                             "needAssessment": needAssessmentTitle,
@@ -1424,7 +1426,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     }
 
     function checkSelectedRecord(lg) {
-        if(lg.getSelectedRecord() == undefined){
+        if(lg.getSelectedRecord() === undefined){
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return false;
         }
@@ -1435,7 +1437,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     function sendToWorkflowAfterUpdate_needsAssessment(selectedRecord, workflowType) {
 
-        var sRecord = selectedRecord;
+        let sRecord = selectedRecord;
 
         if (needs_workflowParameters !== null) {
 
@@ -1508,3 +1510,5 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
+
+    // </script>
