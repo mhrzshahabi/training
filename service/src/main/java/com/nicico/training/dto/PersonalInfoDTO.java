@@ -82,11 +82,7 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoGrid")
     public static class Grid{
         private Long id;
-        @NotEmpty
-        @ApiModelProperty(required = true)
         private String firstNameFa;
-        @NotEmpty
-        @ApiModelProperty(required = true)
         private String lastNameFa;
         private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
         private EducationMajorDTO.EducationMajorInfoTuple educationMajor;

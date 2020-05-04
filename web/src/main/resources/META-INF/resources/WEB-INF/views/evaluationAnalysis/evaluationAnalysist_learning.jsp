@@ -162,7 +162,7 @@
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [
-            ToolStripButton_Print,
+         //   ToolStripButton_Print,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

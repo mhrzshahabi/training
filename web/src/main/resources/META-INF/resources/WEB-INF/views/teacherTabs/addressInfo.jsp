@@ -44,7 +44,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {
@@ -72,7 +72,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {
@@ -91,12 +91,6 @@
                 showValueIconOver: true,
                 showValueIconDown: true,
                 showValueIconFocused: true
-            },
-            {
-                name: "personality.contactInfo.homeAddress.restAddr",
-                title: "<spring:message code='address.rest'/>",
-                type: "textArea",
-                length: "255"
             },
             {
                 name: "personality.contactInfo.homeAddress.phone",
@@ -129,14 +123,24 @@
                         DynamicForm_AddressInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
                 }
             },
-
-
             {
                 name: "personality.contactInfo.personalWebSite",
                 title: "<spring:message code='personal.website'/>",
                 stopOnError: true,
                 keyPressFilter: "[a-z|A-Z |]",
                 length: "30"
+            },
+            {
+                name: "temp",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "personality.contactInfo.homeAddress.restAddr",
+                title: "<spring:message code='address.rest'/>",
+                type: "textArea",
+                height: "100",
+                length: "255"
             }
 
         ],

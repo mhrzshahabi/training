@@ -174,21 +174,7 @@ public class TeacherService implements ITeacherService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request) {
-
-        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("inBlackList", false, EOperator.equals, null);
-
-        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        if (request.getCriteria() != null) {
-            if (request.getCriteria().getCriteria() != null)
-                request.getCriteria().getCriteria().add(criteriaRq);
-            else {
-                criteriaRqList.add(criteriaRq);
-                request.getCriteria().setCriteria(criteriaRqList);
-            }
-        } else
-            request.setCriteria(criteriaRq);
-
-        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = SearchUtil.search(teacherDAO, request, needAssessment -> modelMapper.map(needAssessment,
+        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher,
                 TeacherDTO.Grid.class));
 
         return searchRs;
