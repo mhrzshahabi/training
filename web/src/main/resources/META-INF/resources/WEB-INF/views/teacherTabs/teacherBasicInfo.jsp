@@ -406,7 +406,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='education.categories'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 required: true,
                 optionDataSource: RestDataSource_Categories_JspTeacher,
@@ -442,7 +442,7 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='sub.education.categories'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,

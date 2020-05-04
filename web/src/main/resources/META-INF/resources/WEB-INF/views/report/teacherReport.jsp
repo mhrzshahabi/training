@@ -255,7 +255,7 @@
             {
                 name: "categories",
                 title: "زمینه های آموزشی",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherReport,
                 valueField: "id",
@@ -292,7 +292,7 @@
             {
                 name: "subCategories",
                 title: "زیر زمینه های آموزشی",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -547,7 +547,7 @@
             {
                 name: "teachingCategories",
                 title: "مدرس در حوزه های",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
                 valueField: "id",
@@ -585,7 +585,7 @@
                 name: "teachingSubCategories",
                 title: "و زیر حوزه های",
                 titleAlign: "center",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,

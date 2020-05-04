@@ -103,7 +103,7 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "fullNameFa"},
-            {name: "personality.nationalCode"},
+            {name: "personality.nationalCode"}
         ],
         fetchDataURL: teacherUrl + "fullName-list"
     });
@@ -273,6 +273,7 @@
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
+                        DynamicForm_SelectCourses_JspTClassReport.clearValues();
                         Window_SelectCourses_JspTClassReport.show();
                     }
                 }],
@@ -300,8 +301,8 @@
             {
                 name: "hDurationStart",
                 title: "مدت کلاس: از",
-                keyPressFilter: "[0-9.]",
-                length: 4,
+                keyPressFilter: "[0-9]",
+                length: 3,
                 showHintInField: true,
                 hint: "ساعت",
                 editorExit: function (form, item, value) {
@@ -318,8 +319,8 @@
             {
                 name: "hDurationEnd",
                 title: "تا",
-                length: 4,
-                keyPressFilter: "[0-9.]",
+                length: 3,
+                keyPressFilter: "[0-9]",
                 showHintInField: true,
                 hint: "ساعت",
                 editorExit: function (form, item, value) {
@@ -354,6 +355,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("startDate1", true);
+                        startDateCheck_Order_JspTClassReport = true;
+                        startDate1Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     var endDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
@@ -367,7 +375,8 @@
                         startDate1Check_JspTClassReport = true;
                         form.clearFieldErrors("startDate1", true);
                         form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                    } else {
+                    }
+                    else {
                         startDate1Check_JspTClassReport = true;
                         startDateCheck_Order_JspTClassReport = true;
                         form.clearFieldErrors("startDate1", true);
@@ -390,6 +399,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDateCheck_Order_JspTClassReport = true;
+                        startDate2Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("startDate1");
@@ -431,6 +447,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("endDate1", true);
+                        endDateCheck_Order_JspTClassReport = true;
+                        endDate1Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     var endDate = form.getValue("endDate2");
                     dateCheck = checkDate(value);
@@ -467,6 +490,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("endDate2", true);
+                        endDateCheck_Order_JspTClassReport = true;
+                        endDate2Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("endDate1");
@@ -495,7 +525,7 @@
             {
                 name: "course.categoryId",
                 title: "گروه کاری",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTClassReport,
                 valueField: "id",
@@ -532,7 +562,7 @@
             {
                 name: "course.subCategoryId",
                 title: "زیرگروه کاری",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -571,7 +601,7 @@
             {
                 name: "workYear",
                 title: "سال کاری",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 multiple: true,
                 optionDataSource: RestDataSource_Year_JspTClassReport,
                 valueField: "year",
@@ -634,7 +664,7 @@
             {
                 name: "termId",
                 title: "ترم",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 multiple: true,
                 filterOperator: "equals",
                 disabled: true,
@@ -689,7 +719,7 @@
             {
                 name: "teacherId",
                 title: "مدرس",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 filterOperator: "equals",
                 allowEmptyValue: true,
                 optionDataSource: RestDataSource_Teacher_JspTClassReport,
@@ -707,18 +737,21 @@
             {
                 name: "teacherPayingStatus",
                 title: "وضعیت هزینه ی مدرس",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 defaultValue: "3",
                 valueMap: {
                     "1": "پرداخت شده",
                     "2": "پرداخت نشده",
                     "3": "همه"
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "organizerId",
                 title: "برگزار کننده",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 filterOperator: "equals",
                 allowEmptyValue: true,
                 optionDataSource: RestDataSource_Institute_JspTClassReport,
@@ -738,14 +771,17 @@
             {
                 name: "courseStatus",
                 title: "نوع دوره",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 defaultValue: "3",
                 filterOperator: "equals",
                 valueMap: {
                     "1": "وابسته به نیازسنجی مشاغل",
                     "2": "عدم نیازسنجی",
                     "3": "همه"
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "classStatus",
@@ -786,14 +822,17 @@
             {
                 name: "reactionEvaluationOperator",
                 title: "",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "reactionEvaluationGrade",
@@ -823,14 +862,17 @@
             {
                 name: "learningEvaluationOperator",
                 title: "",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "learningEvaluationGrade",
@@ -860,14 +902,17 @@
             {
                 name: "behavioralEvaluationOperator",
                 title: "",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "behavioralEvaluationGrade",
@@ -897,14 +942,17 @@
             {
                 name: "evaluationOperator",
                 title: "",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "evaluationGrade",
@@ -973,7 +1021,6 @@
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
             DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").setValue(criteriaDisplayValues);
-            DynamicForm_SelectCourses_JspTClassReport.clearValues();
             Window_SelectCourses_JspTClassReport.close();
         }
     });
@@ -1002,7 +1049,69 @@
         title: "گزارش گیری",
         width: 300,
         click: function () {
+            DynamicForm_CriteriaForm_JspTClassReport.validate();
+            if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
+                return;
+            var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");
+            var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");
+            if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                return;
+            }
+            else{
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
+            }
+            if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
+                startDateCheck_Order_JspTClassReport == false ||
+                startDate2Check_JspTClassReport == false ||
+                startDate1Check_JspTClassReport == false ||
+                endDateCheck_Order_JspTClassReport == false ||
+                endDate2Check_JspTClassReport == false ||
+                endDate1Check_JspTClassReport == false) {
+
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (startDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+                if (startDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                }
+                if (endDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                }
+                return;
+            }
             Reporting();
+
             ListGrid_Result_JspTClassReport.invalidateCache();
             ListGrid_Result_JspTClassReport.fetchData(data_values);
             Window_Result_JspTClassReport.show();
@@ -1015,6 +1124,63 @@
         width: 300,
         icon: "<spring:url value="pdf.png"/>",
         click: function () {
+            DynamicForm_CriteriaForm_JspTClassReport.validate();
+            if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
+                return;
+            var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");
+            var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");
+            if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                return;
+            }
+            if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
+                startDateCheck_Order_JspTClassReport == false ||
+                startDate2Check_JspTClassReport == false ||
+                startDate1Check_JspTClassReport == false ||
+                endDateCheck_Order_JspTClassReport == false ||
+                endDate2Check_JspTClassReport == false ||
+                endDate1Check_JspTClassReport == false) {
+
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (startDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+                if (startDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                }
+                if (endDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                }
+                return;
+            }
             Reporting();
 
             var dataParams = new Object();
@@ -1028,56 +1194,6 @@
     });
     //----------------------------------- functions --------------------------------------------------------------------
     function Reporting(){
-        DynamicForm_CriteriaForm_JspTClassReport.validate();
-        if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
-            return;
-        if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
-            startDateCheck_Order_JspTClassReport == false ||
-            startDate2Check_JspTClassReport == false ||
-            startDate1Check_JspTClassReport == false ||
-            endDateCheck_Order_JspTClassReport == false ||
-            endDate2Check_JspTClassReport == false ||
-            endDate1Check_JspTClassReport == false) {
-
-            if (startDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-            }
-            if (startDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-            }
-            if (startDate2Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
-        code='msg.correct.date'/>", true);
-            }
-            if (startDate1Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
-        code='msg.correct.date'/>", true);
-            }
-
-            if (endDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-            }
-            if (endDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-            }
-            if (endDate2Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
-            }
-            if (endDate1Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
-            }
-            return;
-        }
-
-
         data_values = null;
         data_values = DynamicForm_CriteriaForm_JspTClassReport.getValuesAsAdvancedCriteria();
         var removedObjects = [];
@@ -1101,11 +1217,11 @@
             }
             else if (data_values.criteria[i].fieldName == "hDurationStart") {
                 data_values.criteria[i].fieldName = "hDuration";
-                data_values.criteria[i].operator = "greaterThan";
+                data_values.criteria[i].operator = "greaterOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "hDurationEnd") {
                 data_values.criteria[i].fieldName = "hDuration";
-                data_values.criteria[i].operator = "lessThan";
+                data_values.criteria[i].operator = "lessOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "startDate1") {
                 data_values.criteria[i].fieldName = "startDate";
@@ -1125,7 +1241,7 @@
             }
             else if (data_values.criteria[i].fieldName == "workYear") {
                 data_values.criteria[i].fieldName = "startDate";
-                data_values.criteria[i].operator = "iContains";
+                data_values.criteria[i].operator = "inSet";
             }
             else if(data_values.criteria[i].fieldName == "course.categoryId"){
                 data_values.criteria[i].operator = "inSet";
@@ -1435,7 +1551,7 @@
         evaluationInfo.redraw();
     }
 
-
+    //----------------------------------- layOut -----------------------------------------------------------------------
     var HLayOut_CriteriaForm_JspTClassReport = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,

@@ -309,13 +309,13 @@
                 displayField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
-
                 comboBoxProperties: {
                     hint: "",
                     filterFields: ["firstName", "lastName", "username", "nationalCode"],
                     textMatchStyle: "substring",
                     pickListWidth: 335,
                     pickListProperties: {
+                        autoFitWidthApproach: "both",
                         gridComponents: [
                             isc.ToolStrip.create({
                                 autoDraw:false,
@@ -470,34 +470,15 @@
                 filterField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
+                canSort: false,
                 pickListProperties: {
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {
-                        name: "firstName",
-                        title: "<spring:message code="firstName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "lastName",
-                        title: "<spring:message code="lastName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "username",
-                        title: "<spring:message code="username"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "nationalCode",
-                        title: "<spring:message code="national.code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    }
+                    {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true}
                 ]
             }
         ],
