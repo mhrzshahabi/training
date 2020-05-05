@@ -1091,7 +1091,7 @@
 
         function totalPlanning(records) {
             let totalPlanning_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 if (records[i].classStatusId === 1)
                     totalPlanning_ += records[i].hduration;
             }
@@ -1100,7 +1100,7 @@
 
         function totalPassed(records) {
             let totalPassed_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 if (records[i].classStatusId !== 1)
                     totalPassed_ += records[i].hduration;
             }
@@ -1109,7 +1109,7 @@
 
         function totalRejected(records) {
             let totalRejected_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 if (records[i].scoreStateId === 0)
                     totalRejected_ += records[i].hduration;
             }
@@ -1118,7 +1118,7 @@
 
         function totalAll(records) {
             let totalAll_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 totalAll_ += records[i].hduration;
             }
             return "<spring:message code='total.sum'/> : " + totalAll_ + " <spring:message code='hour'/> ";

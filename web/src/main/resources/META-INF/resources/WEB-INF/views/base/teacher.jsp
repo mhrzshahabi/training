@@ -623,7 +623,7 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryIds = this.getValue();
                     var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
+                    for (let i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
@@ -983,7 +983,7 @@
         else {
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
             var catIds = [];
-            for (var i = 0; i < categoryIds.length; i++)
+            for (let i = 0; i < categoryIds.length; i++)
                 catIds.add(categoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
             isTeacherCategoriesChanged = true;
@@ -991,7 +991,7 @@
         }
         if (subCategoryIds != null && subCategoryIds.length > 0) {
             var subCatIds = [];
-            for (var i = 0; i < subCategoryIds.length; i++)
+            for (let i = 0; i < subCategoryIds.length; i++)
                 subCatIds.add(subCategoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
         }

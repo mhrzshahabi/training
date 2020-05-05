@@ -376,8 +376,7 @@
         DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FECBPass").setValue(record.fecbpass);
 
         behavioral_chartData = new Array();
-        var i = 0;
-        for (i=0;i<record.supervisorsGrade.size();i++) {
+        for (let i=0;i<record.supervisorsGrade.size();i++) {
             behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.studentsGrade.get(i) , evaluator :  "<spring:message code='student'/>"});
             behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.supervisorsGrade.get(i), evaluator : "<spring:message code='boss'/>"});
         }
