@@ -41,7 +41,7 @@ public class ClassStudentService implements IClassStudentService {
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
         return SearchUtil.search(classStudentDAO, request, converter);
@@ -117,8 +117,8 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Transactional
-    public List<ClassStudent> findByClassIdAndStudentId(Long classId, Long studentId) {
-        return classStudentDAO.findByTclassIdAndStudentId(classId, studentId);
+    public ClassStudent findByClassIdAndStudentId(Long classId, Long studentId) {
+        return classStudentDAO.findByTclassIdAndStudentId(classId, studentId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
     }
 

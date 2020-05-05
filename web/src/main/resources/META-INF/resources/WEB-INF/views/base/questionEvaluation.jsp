@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-    var studentId_JspQuestionEvaluation;
+    var studentId_JspQuestionEvaluation = null;
     var localQuestions;
     /// var teacherId_JspQuestionEvaluation = ListGrid_evaluation_class.getSelectedRecord().teacherId;
     var evaluationLevelId;
@@ -295,9 +295,14 @@
     }
 
     var IButton_Questions_Save = isc.IButtonSave.create({
+        title:"دخیره و بستن",
         click: function () {
+
             if (DynamicForm_Questions_Body_JspQuestionEvaluation.getFields().length === 0)
-                return;
+            {
+                mainTS_SP.removeTab(mainTS_SP.selectedTab);
+                 return;
+            }
             let evaluationAnswerList = [];
             let data = {};
             let evaluationFull = true;
@@ -305,10 +310,13 @@
             for (let i = 0; i < questions.length; i++) {
                 if (DynamicForm_Questions_Body_JspQuestionEvaluation.getValue(questions[i].name) === undefined) {
                     evaluationFull = false;
-                    createDialog("info", "به همه سوالات پاسخ داده نشده است!!");
+                 //   createDialog("info", "به همه سوالات پاسخ داده نشده است!!");
+                    mainTS_SP.removeTab(mainTS_SP.selectedTab);
                     // break;
+
                     return;
                 }
+
                 let evaluationAnswer = {};
                 evaluationAnswer.answerID = DynamicForm_Questions_Body_JspQuestionEvaluation.getValue(questions[i].name);
                 evaluationAnswer.evaluationQuestionId = questions[i].name.substring(1);
@@ -318,6 +326,7 @@
 
             data.evaluationAnswerList = evaluationAnswerList;
             data.evaluationFull = evaluationFull;
+
             switch (DynamicForm_Questions_Title_JspQuestionEvaluation.getValue("evaluationType")) {
                 case "SEFT":
                     data.evaluatorId = "<%= SecurityUtil.getUserId()%>";
@@ -345,15 +354,22 @@
                     data.questionnaireTypeId = 230;
                     break;
             }
+
             data.classId = DynamicForm_Questions_Title_JspQuestionEvaluation.getItem('course').getSelectedRecord().id;
             let wait = createDialog("wait");
+
             isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
                 wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                    mainTS_SP.removeTab(mainTS_SP.selectedTab);
                 }
             }))
+
+            mainTS_SP.removeTab(mainTS_SP.selectedTab);
+
         }
+
     });
 
 
@@ -378,12 +394,8 @@
                         click: function () {
                             DynamicForm_Questions_Body_JspQuestionEvaluation.clearValues();
                             DynamicForm_Questions_Body_JspQuestionEvaluation.setFields([]);
-                            // if (criteriaEdit_JspQuestionEvaluation !== null) {
-                            //     wait_JspQuestionEvaluation = createDialog("wait");
-                            //     requestEvaluationQuestionsEdit(criteriaEdit_JspQuestionEvaluation);
-                            // } else{
-                            //     DynamicForm_Questions_Body_JspQuestionEvaluation.clearValues();
-                            // }
+                            mainTS_SP.removeTab(mainTS_SP.selectedTab)
+
                         }
                     })
                 ]
@@ -413,11 +425,11 @@
                                 break;
                             case "SAT":
                                 item.name = "Q" + localQuestions[i].id;
-                                item.title = "استاد: " + localQuestions[i].evaluationQuestion.question;
+                                item.title = "مدرس: " + localQuestions[i].evaluationQuestion.question;
                                 break;
                             case "TRAINING":
                                 item.name = "Q" + localQuestions[i].id;
-                                item.title = "استاد: " + localQuestions[i].evaluationQuestion.question;
+                                item.title = "مدرس: " + localQuestions[i].evaluationQuestion.question;
                                 break;
                             case "Content":
                                 item.name = "Q" + localQuestions[i].id;

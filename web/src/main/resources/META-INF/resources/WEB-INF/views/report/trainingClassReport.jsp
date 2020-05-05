@@ -103,7 +103,7 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "fullNameFa"},
-            {name: "personality.nationalCode"},
+            {name: "personality.nationalCode"}
         ],
         fetchDataURL: teacherUrl + "fullName-list"
     });
@@ -115,7 +115,7 @@
             {name: "manager.firstNameFa"},
             {name: "manager.lastNameFa"}
         ],
-        fetchDataURL: instituteUrl + "iscList",
+        fetchDataURL: instituteUrl + "iscList"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var Menu_ListGrid_JspTClassReport= isc.Menu.create({
@@ -255,7 +255,7 @@
             })
         ]
     });
-    //----------------------------------------------------Criteria Form-------------------------------------------------
+    //----------------------------------------------------Criteria Form------------------------------------------------
     var DynamicForm_CriteriaForm_JspTClassReport = isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
@@ -268,10 +268,12 @@
                 name: "course.code",
                 title: "کد دوره",
                 hint: "کدهای دوره را با ; از یکدیگر جدا کنید",
+                prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
+                        DynamicForm_SelectCourses_JspTClassReport.clearValues();
                         Window_SelectCourses_JspTClassReport.show();
                     }
                 }],
@@ -299,8 +301,8 @@
             {
                 name: "hDurationStart",
                 title: "مدت کلاس: از",
-                keyPressFilter: "[0-9.]",
-                length: 4,
+                keyPressFilter: "[0-9]",
+                length: 3,
                 showHintInField: true,
                 hint: "ساعت",
                 editorExit: function (form, item, value) {
@@ -317,8 +319,8 @@
             {
                 name: "hDurationEnd",
                 title: "تا",
-                length: 4,
-                keyPressFilter: "[0-9.]",
+                length: 3,
+                keyPressFilter: "[0-9]",
                 showHintInField: true,
                 hint: "ساعت",
                 editorExit: function (form, item, value) {
@@ -353,6 +355,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("startDate1", true);
+                        startDateCheck_Order_JspTClassReport = true;
+                        startDate1Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     var endDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
@@ -366,7 +375,8 @@
                         startDate1Check_JspTClassReport = true;
                         form.clearFieldErrors("startDate1", true);
                         form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                    } else {
+                    }
+                    else {
                         startDate1Check_JspTClassReport = true;
                         startDateCheck_Order_JspTClassReport = true;
                         form.clearFieldErrors("startDate1", true);
@@ -389,6 +399,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDateCheck_Order_JspTClassReport = true;
+                        startDate2Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("startDate1");
@@ -430,6 +447,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("endDate1", true);
+                        endDateCheck_Order_JspTClassReport = true;
+                        endDate1Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     var endDate = form.getValue("endDate2");
                     dateCheck = checkDate(value);
@@ -466,6 +490,13 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("endDate2", true);
+                        endDateCheck_Order_JspTClassReport = true;
+                        endDate2Check_JspTClassReport = true;
+                        return;
+                    }
                     var dateCheck;
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("endDate1");
@@ -494,7 +525,7 @@
             {
                 name: "course.categoryId",
                 title: "گروه کاری",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTClassReport,
                 valueField: "id",
@@ -531,7 +562,7 @@
             {
                 name: "course.subCategoryId",
                 title: "زیرگروه کاری",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -570,7 +601,7 @@
             {
                 name: "workYear",
                 title: "سال کاری",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 multiple: true,
                 optionDataSource: RestDataSource_Year_JspTClassReport,
                 valueField: "year",
@@ -633,7 +664,7 @@
             {
                 name: "termId",
                 title: "ترم",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 multiple: true,
                 filterOperator: "equals",
                 disabled: true,
@@ -687,9 +718,10 @@
             },
             {
                 name: "teacherId",
-                title: "استاد",
-                type: "comboBoxItem",
+                title: "مدرس",
+                type: "SelectItem",
                 filterOperator: "equals",
+                allowEmptyValue: true,
                 optionDataSource: RestDataSource_Teacher_JspTClassReport,
                 valueField: "id",
                 displayField: "fullNameFa",
@@ -704,27 +736,24 @@
             },
             {
                 name: "teacherPayingStatus",
-                title: "وضعیت هزینه ی استاد",
-                type: "comboBoxItem",
-                // defaultValue: "3",
-                hidden: true,
+                title: "وضعیت هزینه ی مدرس",
+                type: "SelectItem",
+                defaultValue: "3",
                 valueMap: {
                     "1": "پرداخت شده",
                     "2": "پرداخت نشده",
                     "3": "همه"
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
-                name: "temp6",
-                title: "",
-                hidden: true,
-                canEdit: false
-            },
-            {
-                name: "instituteId",
+                name: "organizerId",
                 title: "برگزار کننده",
-                type: "comboBoxItem",
+                type: "SelectItem",
                 filterOperator: "equals",
+                allowEmptyValue: true,
                 optionDataSource: RestDataSource_Institute_JspTClassReport,
                 valueField: "id",
                 displayField: "titleFa",
@@ -742,15 +771,17 @@
             {
                 name: "courseStatus",
                 title: "نوع دوره",
-                type: "comboBoxItem",
-                // defaultValue: "3",
-                hidden: true,
+                type: "SelectItem",
+                defaultValue: "3",
                 filterOperator: "equals",
                 valueMap: {
                     "1": "وابسته به نیازسنجی مشاغل",
                     "2": "عدم نیازسنجی",
                     "3": "همه"
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "classStatus",
@@ -768,8 +799,12 @@
                 }
             },
             {
+                name: "temp6",
+                title: "",
+                canEdit: false
+            },
+            {
                 name: "reactionEvaluation",
-                hidden: true,
                 title: "نمره ارزیابی واکنشی کلاس",
                 type: "checkbox",
                 changed: function (form, item, value) {
@@ -787,21 +822,22 @@
             {
                 name: "reactionEvaluationOperator",
                 title: "",
-                hidden: true,
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "reactionEvaluationGrade",
                 title: "",
                 disabled: true,
-                hidden: true,
                 hint: "نمره ی ارزیابی واکنشی مد نظر را وارد کنید",
                 showHintInField: true,
                 length: 3,
@@ -811,7 +847,6 @@
                 name: "learningEvaluation",
                 title: "نمره ارزیابی یادگیری کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("learningEvaluationOperator").disabled = false;
@@ -827,20 +862,21 @@
             {
                 name: "learningEvaluationOperator",
                 title: "",
-                hidden: true,
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "learningEvaluationGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی یادگیری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -851,7 +887,6 @@
                 name: "behavioralEvaluation",
                 title: "نمره ارزیابی رفتاری کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("behavioralEvaluationOperator").disabled = false;
@@ -867,20 +902,21 @@
             {
                 name: "behavioralEvaluationOperator",
                 title: "",
-                hidden: true,
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "behavioralEvaluationGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی رفتاری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -891,7 +927,6 @@
                 name: "evaluation",
                 title: "نمره اثربخشی کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("evaluationOperator").disabled = false;
@@ -907,20 +942,21 @@
             {
                 name: "evaluationOperator",
                 title: "",
-                hidden: true,
-                type: "comboBoxItem",
+                type: "SelectItem",
                 valueMap: {
                     "1": "کمتر از",
                     "2": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
-                showHintInField: true
+                showHintInField: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
             },
             {
                 name: "evaluationGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی اثربخشی مد نظر را وارد کنید",
                 showHintInField: true,
@@ -985,7 +1021,6 @@
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
             DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").setValue(criteriaDisplayValues);
-            DynamicForm_SelectCourses_JspTClassReport.clearValues();
             Window_SelectCourses_JspTClassReport.close();
         }
     });
@@ -1014,7 +1049,69 @@
         title: "گزارش گیری",
         width: 300,
         click: function () {
+            DynamicForm_CriteriaForm_JspTClassReport.validate();
+            if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
+                return;
+            var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");
+            var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");
+            if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                return;
+            }
+            else{
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
+            }
+            if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
+                startDateCheck_Order_JspTClassReport == false ||
+                startDate2Check_JspTClassReport == false ||
+                startDate1Check_JspTClassReport == false ||
+                endDateCheck_Order_JspTClassReport == false ||
+                endDate2Check_JspTClassReport == false ||
+                endDate1Check_JspTClassReport == false) {
+
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (startDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+                if (startDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                }
+                if (endDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                }
+                return;
+            }
             Reporting();
+
             ListGrid_Result_JspTClassReport.invalidateCache();
             ListGrid_Result_JspTClassReport.fetchData(data_values);
             Window_Result_JspTClassReport.show();
@@ -1027,6 +1124,63 @@
         width: 300,
         icon: "<spring:url value="pdf.png"/>",
         click: function () {
+            DynamicForm_CriteriaForm_JspTClassReport.validate();
+            if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
+                return;
+            var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");
+            var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");
+            if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
+                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
+                return;
+            }
+            if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
+                startDateCheck_Order_JspTClassReport == false ||
+                startDate2Check_JspTClassReport == false ||
+                startDate1Check_JspTClassReport == false ||
+                endDateCheck_Order_JspTClassReport == false ||
+                endDate2Check_JspTClassReport == false ||
+                endDate1Check_JspTClassReport == false) {
+
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (startDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (startDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+                if (startDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (endDateCheck_Order_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDate2Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                }
+                if (endDate1Check_JspTClassReport == false) {
+                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                }
+                return;
+            }
             Reporting();
 
             var dataParams = new Object();
@@ -1040,56 +1194,6 @@
     });
     //----------------------------------- functions --------------------------------------------------------------------
     function Reporting(){
-        DynamicForm_CriteriaForm_JspTClassReport.validate();
-        if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
-            return;
-        if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
-            startDateCheck_Order_JspTClassReport == false ||
-            startDate2Check_JspTClassReport == false ||
-            startDate1Check_JspTClassReport == false ||
-            endDateCheck_Order_JspTClassReport == false ||
-            endDate2Check_JspTClassReport == false ||
-            endDate1Check_JspTClassReport == false) {
-
-            if (startDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-            }
-            if (startDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-            }
-            if (startDate2Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
-        code='msg.correct.date'/>", true);
-            }
-            if (startDate1Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
-        code='msg.correct.date'/>", true);
-            }
-
-            if (endDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-            }
-            if (endDateCheck_Order_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-            }
-            if (endDate2Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
-            }
-            if (endDate1Check_JspTClassReport == false) {
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
-            }
-            return;
-        }
-
-
         data_values = null;
         data_values = DynamicForm_CriteriaForm_JspTClassReport.getValuesAsAdvancedCriteria();
         var removedObjects = [];
@@ -1113,11 +1217,11 @@
             }
             else if (data_values.criteria[i].fieldName == "hDurationStart") {
                 data_values.criteria[i].fieldName = "hDuration";
-                data_values.criteria[i].operator = "greaterThan";
+                data_values.criteria[i].operator = "greaterOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "hDurationEnd") {
                 data_values.criteria[i].fieldName = "hDuration";
-                data_values.criteria[i].operator = "lessThan";
+                data_values.criteria[i].operator = "lessOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "startDate1") {
                 data_values.criteria[i].fieldName = "startDate";
@@ -1137,7 +1241,7 @@
             }
             else if (data_values.criteria[i].fieldName == "workYear") {
                 data_values.criteria[i].fieldName = "startDate";
-                data_values.criteria[i].operator = "iContains";
+                data_values.criteria[i].operator = "inSet";
             }
             else if(data_values.criteria[i].fieldName == "course.categoryId"){
                 data_values.criteria[i].operator = "inSet";
@@ -1146,12 +1250,6 @@
                 data_values.criteria[i].operator = "inSet";
             }
             else if (data_values.criteria[i].fieldName == "courseFilterOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "courseStatus") {
                 removedObjects.add(data_values.criteria[i]);
             }
             else if (data_values.criteria[i].fieldName == "reactionEvaluation") {
@@ -1166,28 +1264,33 @@
             else if (data_values.criteria[i].fieldName == "evaluation") {
                 removedObjects.add(data_values.criteria[i]);
             }
-            else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "learningEvaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "behavioralEvaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "behavioralEvaluationGrade") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "evaluationOperator") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "evaluationGrade") {
+            //-----------------------------------TEMP----------------------------
+            // else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "learningEvaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "evaluationOperator") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            // else if (data_values.criteria[i].fieldName == "evaluationGrade") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
+            //-----------------------------------TEMP----------------------------
+            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
                 removedObjects.add(data_values.criteria[i]);
             }
         }
@@ -1350,33 +1453,33 @@
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getValue() != undefined) {
-            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "استاد: " + "</span>";
+            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مدرس: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
-            executionInfo_print +="استاد: " ;
+            executionInfo_print +="مدرس: " ;
             executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue();
             executionInfo_print += ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getValue() != undefined) {
-            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی استاد: " + "</span>";
+            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی مدرس: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
-            executionInfo_print  +=  "وضعیت هزینه ی استاد: ";
+            executionInfo_print  +=  "وضعیت هزینه ی مدرس: ";
             executionInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue();
             executionInfo_print  += ", ";
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("instituteId").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getValue() != undefined) {
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "برگزار کننده: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("instituteId").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             executionInfo_print +=  "برگزار کننده: " ;
-            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("instituteId").getDisplayValue() ;
+            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() ;
             executionInfo_print +=  ", " ;
         }
 
@@ -1448,7 +1551,7 @@
         evaluationInfo.redraw();
     }
 
-
+    //----------------------------------- layOut -----------------------------------------------------------------------
     var HLayOut_CriteriaForm_JspTClassReport = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,

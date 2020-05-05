@@ -7,7 +7,6 @@
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
-    // var gridState;
     var attachName;
     var attachNameTemp;
     var nationalCodeCheck = true;
@@ -43,7 +42,7 @@
 
     var RestDataSource_Category_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: categoryUrl + "spec-list"
+        fetchDataURL: categoryUrl + "iscList"
     });
 
     var RestDataSource_SubCategory_JspTeacher = isc.TrDS.create({
@@ -63,7 +62,8 @@
 
     var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
-        fetchDataURL: educationMajorUrl + "spec-list"
+        autoCacheAllData: true,
+        fetchDataURL: educationMajorUrl + "iscList",
     });
 
     var RestDataSource_Education_Major_ByID_JspTeacher = isc.TrDS.create({
@@ -183,9 +183,9 @@
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
-        selectionUpdated: function () {
-            // refreshSelectedTab_teacher(null);
-        },
+        initialSort: [
+            {property: "teacherCode", direction: "descending", primarySort: true}
+        ],
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
@@ -212,12 +212,28 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                editorType: "ComboBoxItem",
+                editorType: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
                 filterOnKeypress: true,
-                multiple: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspTeacher,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategories",
@@ -226,34 +242,42 @@
                 optionDataSource: RestDataSource_SubCategory_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
+                canSort: false,
                 filterOnKeypress: true,
-                multiple: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
+                filterOperator: "equals",
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
-                },
-                editorType: "ComboBoxItem",
-                displayField: "titleFa",
-                valueField: "titleFa",
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_Education_Level_JspTeacher
+                }
             },
             {
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                sortNormalizer: function (record) {
-                    return record.personality.educationLevel.titleFa;
-                },
-                editorType: "ComboBoxItem",
-                displayField: "titleFa",
-                valueField: "titleFa",
                 filterOperator: "equals",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher
+                sortNormalizer: function (record) {
+                    return record.personality.educationMajor.titleFa;
+                }
             },
             {
                 name: "personality.contactInfo.mobile",
@@ -271,18 +295,13 @@
                 type: "boolean"
             }
         ],
-        filterEditorSubmit: function () {
-            ListGrid_Teacher_JspTeacher.invalidateCache();
-        },
         cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: true,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        selectionType: "single",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
@@ -310,16 +329,8 @@
             showAttachViewLoader.hide();
             Window_Teacher_JspTeacher.close();
             ListGrid_teacher_refresh();
-            // setTimeout(function () {
-            //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-            // }, 2000);
-            // Page.waitFor(ListGrid_Teacher_JspTeacher,"invalidateCache",exitCallBack());
         }
     });
-
-    // function exitCallBack(){
-    //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-    // }
     //-----------------------------------------------LayOuts and Tabsets and Window-------------------------------------
     var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
@@ -335,7 +346,6 @@
         ]
     });
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
-        // tabBarPosition: "top",
         showResizeBar: true,
         titleEditorTopOffset: 2,
         width: "100%",
@@ -451,11 +461,12 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
+        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide()},
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
-                TabSet_Bottom_JspTeacher,
-                HLayOut_TeacherSaveOrExit_JspTeacher
+                HLayOut_TeacherSaveOrExit_JspTeacher,
+                TabSet_Bottom_JspTeacher
             ]
         })]
     });
@@ -574,7 +585,7 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryIds = this.getValue();
                     var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
+                    for (let i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
@@ -807,7 +818,6 @@
     }
 
     function ListGrid_teacher_edit() {
-        // gridState = ListGrid_Teacher_JspTeacher.getSelectedState();
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         selected_record = record;
         if (record == null || record.id == null) {
@@ -832,13 +842,19 @@
         DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.cityId").setOptionDataSource(null);
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.cityId").setOptionDataSource(null);
 
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationLevelId").fetchData();
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationMajorId").fetchData();
-        DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.stateId").fetchData();
-        DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId").fetchData();
-
         teacherMethod = "PUT";
         vm.editRecord(selected_record);
+
+        if(DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != null && DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != undefined){
+            var catId = DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue();
+            DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").enable();
+            RestDataSource_SubCategory_Evaluation_JspTeacher.implicitCriteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "categoryId", operator: "inSet", value: catId}]
+            };
+            DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").fetchData();
+        }
 
         var eduMajorValue = selected_record.personality.educationMajorId;
         var eduOrientationValue = selected_record.personality.educationOrientationId;
@@ -928,7 +944,7 @@
         else {
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
             var catIds = [];
-            for (var i = 0; i < categoryIds.length; i++)
+            for (let i = 0; i < categoryIds.length; i++)
                 catIds.add(categoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
             isTeacherCategoriesChanged = true;
@@ -936,7 +952,7 @@
         }
         if (subCategoryIds != null && subCategoryIds.length > 0) {
             var subCatIds = [];
-            for (var i = 0; i < subCategoryIds.length; i++)
+            for (let i = 0; i < subCategoryIds.length; i++)
                 subCatIds.add(subCategoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
         }
@@ -1046,8 +1062,7 @@
     function teacher_delete_result(resp) {
         teacherWait.close();
         if (resp.httpResponseCode === 200 && resp.httpResponseText == "ok") {
-            var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -1057,7 +1072,7 @@
             createDialog("info", "<spring:message code='teacher.delete.personal.fail.message'/>");
         } else{
             var msg = getFormulaMessage(resp.httpResponseText, 2, "red", null);
-            createDialog("info", "این استاد بعلت استفاده در کلاس"+ " " + msg + " " +
+            createDialog("info", "این مدرس بعلت استفاده در کلاس"+ " " + msg + " " +
                 "قابل حذف نمی باشد");
         }
     }
@@ -1068,13 +1083,7 @@
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
                 responseID = JSON.parse(resp.data).id;
-                // gridState = "[{id:" + responseID + "}]";
-                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                    "<spring:message code="msg.command.done"/>");
-                // setTimeout(function () {
-                //     OK.close();
-                //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                // }, 3000);
+                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
             }
@@ -1091,9 +1100,7 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             responseID = JSON.parse(resp.data).id;
             vm.setValue("id", responseID);
-            // gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
             addAttach(JSON.parse(resp.data).personality.id);
             showAttach(JSON.parse(resp.data).personality.id);
             selectedRecordID = responseID;
@@ -1119,9 +1126,7 @@
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
                 responseID = JSON.parse(resp.data).id;
-                // gridState = "[{id:" + responseID + "}]";
-                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                    "<spring:message code="msg.command.done"/>");
+                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
@@ -1155,6 +1160,11 @@
 
     function fillPersonalInfoByPersonnelNumber(personnelCode) {
         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
+            "callback: personnel_findOne_result(rpcResponse)"));
+    }
+
+    function  fillPersonalInfoByNationalCode(nationalCode){
+        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
             "callback: personnel_findOne_result(rpcResponse)"));
     }
 

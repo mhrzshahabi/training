@@ -6,6 +6,7 @@ import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
 import com.nicico.training.model.Alarm;
 import com.nicico.training.repository.AlarmDAO;
+import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -35,6 +36,7 @@ public class ClassAlarmService implements IClassAlarm {
     private final ModelMapper modelMapper;
     private final AlarmDAO alarmDAO;
     private final TclassDAO tclassDAO;
+    private final ClassStudentDAO classStudentDAO;
     private MessageSource messageSource;
 
 //////  '' AS alarmTypeTitleFa, '' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId
@@ -168,7 +170,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             Long term_id = tclassDAO.getTermIdByClassId(class_id);
 
-            String alarmScript = " SELECT 'تداخل استاد' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
+            String alarmScript = " SELECT 'تداخل مدرس' AS alarmTypeTitleFa, 'TeacherConflict' AS alarmTypeTitleEn, classId, sessionId ,null AS teacherId, null AS studentId,null AS instituteId, " +
                     " null AS trainingPlaceId, null AS reservationId, targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
                     "'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date ||' کلاس '|| c_title_class_current ||' با کد '|| c_code_current ||  ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
                     " null AS detailRecordId, sortField, classIdConflict, sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
@@ -201,7 +203,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "      || tbl_personal_info.c_last_name_fa ) AS teachername, " +
                     "    tbl_class.c_code, " +
                     "    tbl_class.c_title_class, " +
-                    " ( '3' || ' تداخل استاد ' " +
+                    " ( '3' || ' تداخل مدرس ' " +
                     "      || tb1.c_session_date " +
                     "      || '_' " +
                     "      || tb1.c_session_end_hour " +
@@ -578,7 +580,47 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
-    //****************class attendance alarm*****************
+    //****************class pre course test question alarm*****************
+    @Transactional
+    public void alarmPreCourseTestQuestion(Long class_id) {
+        try {
+            String alarmScript = "  SELECT " +
+                    "'سوالات پیش آزمون'AS alarmTypeTitleFa, 'PreCourseTestQuestion' AS alarmTypeTitleEn, tbl_class.id AS classId, null AS sessionId, null AS teacherId, null AS studentId, " +
+                    " null AS instituteId, null AS trainingPlaceId, null AS reservationId, tbl_class.id AS targetRecordId,'classPreCourseTestQuestionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    "'سوالات آزمون پیش از برگزاری کلاس ثبت نشده است.'AS alarm,  null AS detailRecordId, '8' AS sortField,  null AS classIdConflict, null AS  sessionIdConflict, " +
+                    "  null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " tbl_class  " +
+                    " LEFT JOIN tbl_class_pre_course_test_question ON tbl_class_pre_course_test_question.f_class_id = tbl_class.id " +
+                    " WHERE " +
+                    " tbl_class.c_status<>3 and tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
+
+            List<ClassAlarmDTO> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+
+                if (alarmList.size() > 0) {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("PreCourseTestQuestion", class_id);
+                    saveAlarms(alarmList, class_id);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("PreCourseTestQuestion", class_id);
+                    setClassHasWarningStatus(class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************class attendance alarm*****************IS ON LINE for > Attendance and EvaluationBehaviour and CheckListConflict
     @Transactional
     public List<ClassAlarmDTO> alarmAttendance(Long class_id) {
 
@@ -613,6 +655,66 @@ public class ClassAlarmService implements IClassAlarm {
                     "   tbl_session.f_class_id = :class_id " +
                     "   AND tbl_session.c_session_date <:todaydat" +
                     "   AND (tbl_attendance.c_state IS NULL OR tbl_attendance.c_state = 0)" +
+                    " ) " +
+                    " UNION ALL " +
+                    " SELECT " +
+                    "  'عدم صدور ارزیابی رفتاری'  AS alarmTypeTitleFa, 'EvaluationBehaviour' AS alarmTypeTitleEn, id AS classId, null AS sessionId, null AS teacherId, null AS studentId, " +
+                    "  null AS instituteId, null AS trainingPlaceId, null AS reservationId, id AS targetRecordId,'tabName' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    "   alarm,  null AS detailRecordId, '9' AS sortField,  null AS classIdConflict, null AS  sessionIdConflict, " +
+                    "  null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " (SELECT " +
+                    " tbl_class.id,  'برای ' || COUNT( tbl_class.id) || ' فراگیر این کلاس ارزیابی رفتاری صادر نشده است'  as alarm " +
+                    " FROM " +
+                    "   tbl_class " +
+                    "   INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id " +
+                    "   INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id " +
+                    " WHERE " +
+                    " tbl_class.id = :class_id AND " +
+                    "   tbl_course.c_evaluation = 3 AND " +
+                    "   tbl_class.c_status = 3 " +
+                    "   AND ( tbl_class_student.evaluation_status_behavior IS NULL " +
+                    "         OR tbl_class_student.evaluation_status_behavior = 0 ) " +
+                    " AND     " +
+                    "   trunc(ADD_MONTHS(tbl_class.c_status_date, (CASE WHEN tbl_class.start_evaluation IS NULL THEN 0 ELSE tbl_class.start_evaluation END))) - trunc(sysdate) <= 14 " +
+                    " GROUP BY tbl_class.id    " +
+                    " HAVING COUNT( tbl_class.id) > 0)  " +
+                    " UNION ALL " +
+                    " SELECT DISTINCT " +
+                    "'عدم تکمیل چک لیست' AS alarmTypeTitleFa, " +
+                    " 'CheckListConflict' AS alarmTypeTitleEn, tbchecklist.class_id  AS classId, null AS sessionId, null AS teacherId,  " +
+                    " null AS studentId, null AS instituteId, null AS trainingPlaceId, null AS reservationId,  tbchecklist.class_id AS targetrecordid, " +
+                    " 'classCheckListTab' AS tabname, '/tclass/show-form' AS pageaddress, " +
+                    "'در چک لیست \"' || tbchecklist.c_title_fa || '\" بخش \"' || tbchecklist.c_group || '\" آیتم \"' || tbchecklist.c_title_fa1 || '\" تعیین تکلیف نشده است (انتخاب یا درج توضیحات)' AS alarm,     " +
+                    " null AS detailrecordid, ( '6' || tbchecklist.id || '-' || tbchecklist.iditem ) AS sortfield, null AS classIdConflict,  " +
+                    " null AS  sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " ( " +
+                    "    SELECT " +
+                    "        tbl_check_list.id, " +
+                    "        tbl_check_list.c_title_fa, " +
+                    "        tbl_check_list_item.id AS iditem, " +
+                    "        tbl_check_list_item.c_group, " +
+                    "        tbl_check_list_item.c_title_fa AS c_title_fa1, " +
+                    "        tbl_check_list_item.b_is_deleted, " +
+                    "        tbl_class.id AS class_id " +
+                    "    FROM " +
+                    "        tbl_check_list " +
+                    "        INNER JOIN tbl_check_list_item ON tbl_check_list.id = tbl_check_list_item.f_check_list_id, " +
+                    "        tbl_class " +
+                    "    WHERE " +
+                    "        (CASE WHEN :class_id = 0 THEN 1 WHEN tbl_class.id = :class_id THEN 1 END) IS NOT NULL AND " +
+                    "         tbl_check_list_item.b_is_deleted IS NULL " +
+                    " ) tbchecklist " +
+                    " LEFT JOIN tbl_class_check_list ON tbchecklist.iditem = tbl_class_check_list.f_check_list_item_id " +
+                    "                                  AND tbchecklist.class_id = tbl_class_check_list.f_tclass_id " +
+                    " INNER JOIN tbl_class ON tbl_class.id = tbchecklist.class_id " +
+                    " WHERE " +
+                    " tbl_class.c_status <> 3 AND " +
+                    " tbl_class_check_list.c_description IS NULL " +
+                    " AND   ( " +
+                    "    tbl_class_check_list.b_enabled IS NULL " +
+                    "    OR    tbl_class_check_list.b_enabled = 0 " +
                     " ) ";
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("todaydat", todayDate).getResultList();
@@ -1173,7 +1275,7 @@ public class ClassAlarmService implements IClassAlarm {
             alarmScript.append(" UNION ALL ");
 
             //*****teacher conflict*****
-            alarmScript.append(" SELECT targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل استاد' AS alarmType, " +
+            alarmScript.append(" SELECT targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل مدرس' AS alarmType, " +
                     "       'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date || ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
                     "       id1 AS detailRecordId, sortField " +
                     " FROM " +
@@ -1203,7 +1305,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "            || tbl_personal_info.c_last_name_fa ) AS teachername, " +
                     "            tbl_class.c_code, " +
                     "            tbl_class.c_title_class, " +
-                    "            (' تداخل استاد ' || tb1.c_session_date " +
+                    "            (' تداخل مدرس ' || tb1.c_session_date " +
                     "            || '_' " +
                     "            || tb1.c_session_end_hour " +
                     "            || '_' " +
@@ -1608,7 +1710,7 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
     @Override
-    public String checkAlarmsForEndingClass(Long class_id, HttpServletResponse response) throws IOException {
+    public String checkAlarmsForEndingClass(Long class_id, String endDate, HttpServletResponse response) throws IOException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -1677,7 +1779,13 @@ public class ClassAlarmService implements IClassAlarm {
             }
 
             ////old code **> endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
-            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
+            if (endDate.replaceAll("-", "/").compareTo(todayDate) > 0)
+                endingClassAlarm.append("تاریخ پایان کلاس " + endDate.replaceAll("-", "/") + " می باشد.<br />");
+
+            if (classStudentDAO.countClassStudentsByTclassId(class_id) == 0)
+                endingClassAlarm.append("در کلاس هیچ فراگیری وجود ندارد.<br />");
+
+                endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
 
 
             //*****score alarm*****

@@ -49,8 +49,7 @@
             {
                 name: "langName",
                 title: "<spring:message code="foreign.language"/>",
-                required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                required: true
             },
             {
                 name: "langLevelId",
@@ -81,8 +80,7 @@
             },
             {
                 name: "instituteName",
-                title: "<spring:message code="institute.place"/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title: "<spring:message code="institute.place"/>"
             },
             {
                 name: "duration",
@@ -91,7 +89,11 @@
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='hour'/>",
                 showHintInField: true,
-                length: 5
+                length: 3,
+                editorExit: function (form, item, value) {
+                    var newValue = parseInt(value);
+                    item.setValue(newValue);
+                }
             },
             {
                 name: "startDate",
@@ -249,6 +251,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code="foreign.languages.knowledge"/>",
+        close : function(){closeCalendarWindow(); Window_JspForeignLangKnowledge.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspForeignLangKnowledge, HLayout_SaveOrExit_JspForeignLangKnowledge]
         })]
@@ -289,13 +292,18 @@
             },
             {
                 name: "langLevelId",
-                title:"<spring:message code='knowledge.level'/>",
+                title: "<spring:message code='knowledge.level'/>",
                 type: "IntegerItem",
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_ElangLevel_JspTeacher,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }
             },
             {
                 name: "instituteName",
@@ -303,17 +311,17 @@
             },
             {
                 name: "duration",
-                title: "<spring:message code="duration"/>"
+                title: "<spring:message code="duration"/>",
+                filterOperator: "equals",
+                type: "integer"
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
         rowDoubleClick: function () {
@@ -321,7 +329,7 @@
         },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -394,7 +402,6 @@
         methodForeignLangKnowledge = "POST";
         saveActionUrlForeignLangKnowledge = foreignLangKnowledgeUrl + "/" + teacherIdForeignLangKnowledge;
         DynamicForm_JspForeignLangKnowledge.clearValues();
-        DynamicForm_JspForeignLangKnowledge.getField("langName").enable();
         Window_JspForeignLangKnowledge.show();
     }
 
@@ -407,7 +414,6 @@
             saveActionUrlForeignLangKnowledge = foreignLangKnowledgeUrl + "/" + record.id;
             DynamicForm_JspForeignLangKnowledge.clearValues();
             DynamicForm_JspForeignLangKnowledge.editRecord(record);
-            DynamicForm_JspForeignLangKnowledge.getField("langName").disable();
             Window_JspForeignLangKnowledge.show();
         }
     }

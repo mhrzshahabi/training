@@ -13,15 +13,20 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
+import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TrainingPlaceDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,6 +46,8 @@ public class TclassService implements ITclassService {
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterService parameterService;
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
+    private final CourseDAO courseDAO;
+    private final MessageSource messageSource;
 
     @Transactional(readOnly = true)
     @Override
@@ -92,13 +99,59 @@ public class TclassService implements ITclassService {
     @Transactional
     @Override
     public TclassDTO.Info create(TclassDTO.Create request) {
+        final Tclass tclass = modelMapper.map(request, Tclass.class);
         List<Long> list = request.getTrainingPlaceIds();
         List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
         Set<TrainingPlace> set = new HashSet<>(allById);
-        final Tclass tclass = modelMapper.map(request, Tclass.class);
         tclass.setTrainingPlaceSet(set);
         return save(tclass);
     }
+
+    @Transactional
+    public TclassDTO.Info safeCreate(TclassDTO.Create request, HttpServletResponse response) {
+        final Tclass tclass = modelMapper.map(request, Tclass.class);
+        if(checkDuration(tclass)){
+            List<Long> list = request.getTrainingPlaceIds();
+            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
+            Set<TrainingPlace> set = new HashSet<>(allById);
+            tclass.setTrainingPlaceSet(set);
+            return save(tclass);
+        }
+        else {
+            try {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+        return null;
+    }
+
+
+    @Transactional
+    public TclassDTO.Info safeUpdate(Long id, TclassDTO.Update request, HttpServletResponse response) {
+        final Optional<Tclass> cById = tclassDAO.findById(id);
+        final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        if(checkDuration(tclass)){
+            List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
+            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
+            Set<TrainingPlace> set = new HashSet<>(allById);
+            Tclass updating = new Tclass();
+            modelMapper.map(tclass, updating);
+            modelMapper.map(request, updating);
+            updating.setTrainingPlaceSet(set);
+            return save(updating);
+        }else {
+            try {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+            }
+        return null;
+        }
 
     @Transactional
     @Override
@@ -1103,4 +1156,9 @@ public class TclassService implements ITclassService {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TClassReport.class));
     }
 
+    private boolean checkDuration(Tclass tclass){
+        final float theoryDuration = courseDAO.getCourseTheoryDurationById(tclass.getCourseId());
+        return theoryDuration >= tclass.getHDuration() ? true : false;
+
+    }
 }

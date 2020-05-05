@@ -65,7 +65,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
@@ -75,7 +75,7 @@
                 required: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCategoriesChanged = true;
@@ -97,12 +97,17 @@
                     }
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
+                    if(DynamicForm_JspEmploymentHistory.getField("subCategories").getValue() != null &&
+                        DynamicForm_JspEmploymentHistory.getField("subCategories").getValue() != undefined &&
+                        DynamicForm_JspEmploymentHistory.getField("subCategories").getValue().size() == 0){
+                            DynamicForm_JspEmploymentHistory.getField("subCategories").clearValue();
+                    }
                 }
             },
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -114,7 +119,7 @@
                 multiple: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCategoriesChanged) {
@@ -291,6 +296,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='employmentHistory'/>",
+        close : function(){closeCalendarWindow(); Window_JspEmploymentHistory.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspEmploymentHistory, HLayout_SaveOrExit_JspEmploymentHistory]
         })]
@@ -336,43 +342,70 @@
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspEmploymentHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                canSort: false,
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
         doubleClick: function () {
             ListGrid_EmploymentHistory_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspEmploymentHistory.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

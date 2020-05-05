@@ -12,12 +12,12 @@
     RestDataSource_JspInternalTeachingHistory = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", filterOperator: "iContains"},
-            {name: "titleClass", filterOperator: "equals"},
+            {name: "course.code", filterOperator: "iContains"},
+            {name: "course.titleFa", filterOperator: "equals"},
             {name: "startDate"},
             {name: "endDate"},
             {name: "evaluationGrade"}
-        ],
+        ]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -29,13 +29,13 @@
         fields: [
             {name: "id",hidden: true},
             {
-                name: "code",
-                title: "کد کلاس",
+                name: "course.code",
+                title: "کد دوره",
                 filterOperator: "iContains"
             },
             {
-                name: "titleClass",
-                title: "نام کلاس",
+                name: "course.titleFa",
+                title: "نام دوره",
                 filterOperator: "iContains"
             },
             {
@@ -51,15 +51,12 @@
             },
             {
                 name: "evaluationGrade",
-                title: "نمره ارزیابی فراگیران به استاد",
+                title: "نمره ارزیابی فراگیران به مدرس",
                 canFilter: false
             }
         ],
-        filterEditorSubmit: function () {
-            ListGrid_JspInternalTeachingHistory.invalidateCache();
-        },
         align: "center",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         filterLocally: true,
         sortField: 1,
         sortDirection: "descending",

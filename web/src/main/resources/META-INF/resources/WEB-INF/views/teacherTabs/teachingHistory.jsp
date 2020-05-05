@@ -21,7 +21,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "courseTitle", filterOperator: "iContains"},
-            {name: "educationLevelId", filterOperator: "equals"},
+            {name: "educationLevel.titleFa", filterOperator: "equals"},
             {name: "duration"},
             {name: "categories"},
             {name: "subCategories"},
@@ -45,7 +45,7 @@
 
     RestDataSource_EducationLevel_JspTeachingHistory = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationLevelUrl + "iscList"
+        fetchDataURL: educationLevelUrl + "spec-list-by-id"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -80,26 +80,25 @@
                 valueField: "id",
                 required: true,
                 optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
+                autoFetchData: false,
+                filterFields: ["titleFa","titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
+                },
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeachingHistory,
                 valueField: "id",
@@ -131,12 +130,18 @@
                     }
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
+
+                    if(DynamicForm_JspTeachingHistory.getField("subCategories").getValue() != null &&
+                        DynamicForm_JspTeachingHistory.getField("subCategories").getValue() != undefined &&
+                        DynamicForm_JspTeachingHistory.getField("subCategories").getValue().size() == 0){
+                        DynamicForm_JspTeachingHistory.getField("subCategories").clearValue();
+                    }
                 }
             },
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -174,7 +179,11 @@
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='hour'/>",
                 showHintInField: true,
-                length: 5
+                length: 3,
+                editorExit: function (form, item, value) {
+                    var newValue = parseInt(value);
+                    item.setValue(newValue);
+                }
             },
             {
                 name: "startDate",
@@ -231,7 +240,7 @@
                     click: function (form) {
                         if (!(form.getValue("startDate"))) {
                             dialogTeacher = isc.MyOkDialog.create({
-                                message: "ابتدا تاریخ شروع را انتخاب کنید",
+                                message: "ابتدا تاریخ شروع را انتخاب کنید"
                             });
                             dialogTeacher.addProperties({
                                 buttonClick: function () {
@@ -332,6 +341,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='teachingHistory'/>",
+        close : function(){closeCalendarWindow(); Window_JspTeachingHistory.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspTeachingHistory, HLayout_SaveOrExit_JspTeachingHistory]
         })]
@@ -375,59 +385,82 @@
                 title: "<spring:message code='company.name'/>",
             },
             {
-                name: "educationLevelId",
-                type: "IntegerItem",
-                title: "<spring:message code='education.level'/>",
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory
+                name: "educationLevel.titleFa",
+                title: "<spring:message code='education.level'/>"
             },
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspTeachingHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspTeachingHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                canSort: false,
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "duration",
                 title: "<spring:message code='duration'/>",
-                filterOperator: "equals"
+                filterOperator: "equals",
+                type: "integer"
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
         doubleClick: function () {
             ListGrid_TeachingHistory_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspTeachingHistory.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

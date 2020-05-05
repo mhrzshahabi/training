@@ -34,6 +34,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -120,9 +122,9 @@ public class TeacherRestController {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null)
+        if (request.get("categories") != null && !((List)request.get("categories")).isEmpty())
             categories = setCats(request);
-        if (request.get("subCategories") != null)
+        if (request.get("subCategories") != null && !((List)request.get("subCategories")).isEmpty())
             subCategories = setSubCats(request);
 
         TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
@@ -206,15 +208,15 @@ public class TeacherRestController {
     @GetMapping(value = "/spec-list-grid")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                         @RequestParam(value = "_constructor", required = false) String constructor,
-                                                         @RequestParam(value = "operator", required = false) String operator,
-                                                         @RequestParam(value = "criteria", required = false) String criteria,
-                                                         @RequestParam(value = "id", required = false) Long id,
-                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
-        request.setDistinct(true);
+        SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
@@ -277,13 +279,6 @@ public class TeacherRestController {
         }
         SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
-        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
-        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
-
         List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
 
         List<Integer> teaching_cats = null;
@@ -300,8 +295,8 @@ public class TeacherRestController {
         if(evaluationGrade != null)
            min_evalGrade = Float.parseFloat(evaluationGrade.toString());
 
-        if(evaluationGrade!=null) {
-            for (TeacherDTO.Report datum : specResponse.getData()) {
+        if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
+            for (TeacherDTO.Report datum : response.getList()) {
                 if (evaluationGrade != null) {
                     ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
                     Float teacher_evalGrade = t.getBody();
@@ -311,39 +306,47 @@ public class TeacherRestController {
                 }
             }
         }
+
         for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            specResponse.getData().remove(listRemovedObject);
+            response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
         if(teachingCategories!=null || teachingSubCategories!=null) {
-            for (TeacherDTO.Report datum : specResponse.getData()) {
+            for (TeacherDTO.Report datum : response.getList()) {
                 boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
                 if (relatedTeachingHistory == false)
                     listRemovedObjects.add(datum);
             }
         }
         for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            specResponse.getData().remove(listRemovedObject);
+            response.getList().remove(listRemovedObject);
 
-        for (TeacherDTO.Report datum : specResponse.getData()) {
+        for (TeacherDTO.Report datum : response.getList()) {
             SearchDTO.SearchRq req = new SearchDTO.SearchRq();
             Long tId = datum.getId();
-            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeacherId(req,tId);
+            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(req, tId);
             datum.setNumberOfCourses(""+resp.getList().size());
             if(resp.getList() != null && resp.getList().size() > 0) {
                 String startDate = resp.getList().get(0).getStartDate();
                 for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
                     if (teachingHistory.getStartDate().compareTo(startDate) > 0 || teachingHistory.getStartDate().compareTo(startDate)==0) {
-                        datum.setLastCourse(teachingHistory.getTitleClass());
+                        datum.setLastCourse(teachingHistory.getCourse().getTitleFa());
                         datum.setLastCourseId(teachingHistory.getId());
                     }
                 }
             }
         }
-        for (TeacherDTO.Report datum : specResponse.getData()) {
+        for (TeacherDTO.Report datum : response.getList()) {
             if(datum.getLastCourse() != null)
                 datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(datum.getLastCourseId(),datum.getId()));
         }
+
+        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
+        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getList().size());
 
         specRs.setResponse(specResponse);
 
@@ -352,22 +355,24 @@ public class TeacherRestController {
 
     public Boolean getRelatedTeachingHistory(TeacherDTO.Report teacher, List<Integer> related_cats, List<Integer> related_subCats){
         Boolean relation = false;
-        List<TeachingHistoryDTO.Info> teachingHistories = modelMapper.map(teacher.getTeachingHistories(),List.class);
 
-        if(teachingHistories != null) {
-            for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(request, teacher.getId());
+
+        if(resp != null && resp.getList()!= null ) {
+            for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
                 boolean thisTeachingHistoryRelation = true;
-                List<Long> teacher_cats = teachingHistory.getCategoriesIds();
-                List<Long> teacher_subCats = teachingHistory.getSubCategoriesIds();
-                if (teacher_cats != null && related_cats != null) {
+                Long teacher_cat = teachingHistory.getCourse().getCategoryId();
+                Long teacher_subCat = teachingHistory.getCourse().getSubCategoryId();
+                if (teacher_cat != null && related_cats != null) {
                     for (Integer related_cat : related_cats) {
-                        if (!teacher_cats.contains(Long.parseLong("" + related_cat)))
+                        if (teacher_cat != Long.parseLong("" + related_cat))
                             thisTeachingHistoryRelation = false;
                     }
                 }
-                if (teacher_subCats != null && related_subCats != null) {
+                if (teacher_subCat != null && related_subCats != null) {
                     for (Integer related_subCat : related_subCats) {
-                        if (!teacher_subCats.contains(Long.parseLong("" + related_subCat)))
+                        if (teacher_subCat != Long.parseLong("" + related_subCat))
                             thisTeachingHistoryRelation = false;
                     }
                 }
@@ -378,7 +383,6 @@ public class TeacherRestController {
 
         if(related_cats == null && related_subCats == null)
             relation = true;
-
 
         return relation;
     }
@@ -437,6 +441,34 @@ public class TeacherRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/fullName/{id}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@PathVariable Long id,
+                                                                               @RequestParam("_startRow") Integer startRow,
+                                                                               @RequestParam("_endRow") Integer endRow,
+                                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
+
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 
     // ---------------
 
@@ -733,6 +765,52 @@ public class TeacherRestController {
                     }));
 
 
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        return request;
+    }
+
+    private SearchDTO.SearchRq setSearchCriteriaNotInBlackList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                    @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                    @RequestParam(value = "_constructor", required = false) String constructor,
+                                                    @RequestParam(value = "operator", required = false) String operator,
+                                                    @RequestParam(value = "criteria", required = false) String criteria,
+                                                    @RequestParam(value = "id", required = false) Long id,
+                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            SearchDTO.CriteriaRq ctr =  makeNewCriteria("inBlackList", false, EOperator.equals, null);
+            criteriaRq.getCriteria().add(ctr);
+            request.setCriteria(criteriaRq);
+        }
+        else {
+            SearchDTO.CriteriaRq ctr =  makeNewCriteria("inBlackList", false, EOperator.equals, null);
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setCriteria(new ArrayList<>());
+            criteriaRq.setOperator(EOperator.and);
+            criteriaRq.getCriteria().add(ctr);
             request.setCriteria(criteriaRq);
         }
 

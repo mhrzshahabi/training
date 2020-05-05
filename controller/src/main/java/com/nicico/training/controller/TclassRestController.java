@@ -12,9 +12,11 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelCoursePassedNAReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
+import com.nicico.training.service.EvaluationAnalysistLearningService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -50,28 +54,8 @@ public class TclassRestController {
     private final ObjectMapper objectMapper;
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
-
-
-//    @Loggable
-//    @GetMapping(value = "/student/{classId}")
-////    @PreAuthorize("hasAuthority('r_tclass')")
-//    public ResponseEntity<StudentDTO.StudentSpecRs> getStudentsByClassID(@PathVariable String classID) {
-//        Long classId = Long.parseLong(classID);
-//
-//        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
-//
-//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-//        specResponse.setData(studentList)
-//                .setStartRow(0)
-//                .setEndRow(studentList.size())
-//                .setTotalRows(studentList.size());
-//
-//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
+    private final CourseDAO courseDAO;
+    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -99,7 +83,41 @@ public class TclassRestController {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
+        return infoResponseEntity;
+    }
+
+    @Loggable
+    @PostMapping("/safeCreate")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<TclassDTO.Info> safeCreate(@Validated @RequestBody TclassDTO.Create request, HttpServletResponse response) {
+
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request, response), HttpStatus.CREATED);
+
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 201) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
+        }
+        return infoResponseEntity;
+    }
+
+    @Loggable
+    @PutMapping(value = "/safeUpdate/{id}")
+//    @PreAuthorize("hasAuthority('u_tclass')")
+    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id, @RequestBody TclassDTO.Update request, HttpServletResponse response) {
+
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeUpdate(id, request, response), HttpStatus.OK);
+
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 200) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+        }
+
         return infoResponseEntity;
     }
 
@@ -336,11 +354,9 @@ public class TclassRestController {
 
 
     @Loggable
-    @GetMapping(value = "/checkEndingClass/{classId}")
-    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException {
-
-        return classAlarmService.checkAlarmsForEndingClass(classId, response);
-
+    @GetMapping(value = "/checkEndingClass/{classId}/{endDate}")
+    public String checkEndingClass(@PathVariable Long classId, @PathVariable String endDate, HttpServletResponse response) throws IOException {
+        return classAlarmService.checkAlarmsForEndingClass(classId, endDate, response);
     }
 
     @Loggable
@@ -378,6 +394,7 @@ public class TclassRestController {
     public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
         try {
             tclassService.updatePreCourseTestQuestions(classId, request);
+            classAlarmService.alarmPreCourseTestQuestion(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -500,6 +517,23 @@ public class TclassRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
+
+            SearchDTO.CriteriaRq addedObject = null;
+            SearchDTO.CriteriaRq removedObject = null;
+            for (SearchDTO.CriteriaRq criterion : criteriaRq.getCriteria()) {
+                if (criterion.getFieldName().equalsIgnoreCase("startDate") && criterion.getOperator().equals(EOperator.inSet)) {
+                    SearchDTO.CriteriaRq ctr = makeNewCriteria("year", null, EOperator.or, new ArrayList<>());
+                    for (Object o : criterion.getValue()) {
+                        ctr.getCriteria().add(makeNewCriteria("startDate", o, EOperator.iContains, null));
+                    }
+                    addedObject = ctr;
+                    removedObject = criterion;
+                }
+            }
+            if (removedObject != null)
+                criteriaRq.getCriteria().remove(removedObject);
+            if (addedObject != null)
+                criteriaRq.getCriteria().add(addedObject);
             request.setCriteria(criteriaRq);
         }
 
@@ -509,14 +543,156 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
+
+        List<Object> removedObjects = new ArrayList<>();
+        Object courseStatus = null;
+        Object reactionEvaluationOperator = null;
+        Object reactionEvaluationGrade = null;
+        Object behavioralEvaluationOperator = null;
+        Object behavioralEvaluationGrade = null;
+        Object learningEvaluationOperator = null;
+        Object learningEvaluationGrade = null;
+        Object evaluationOperator = null;
+        Object evaluationGrade = null;
+
+        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+            if (criterion.getFieldName().equalsIgnoreCase("courseStatus")) {
+                courseStatus = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("reactionEvaluationOperator")) {
+                reactionEvaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("reactionEvaluationGrade")) {
+                reactionEvaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationOperator")) {
+                behavioralEvaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("behavioralEvaluationGrade")) {
+                behavioralEvaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("learningEvaluationOperator")) {
+                learningEvaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("learningEvaluationGrade")) {
+                learningEvaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("evaluationOperator")) {
+                evaluationOperator = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if (criterion.getFieldName().equalsIgnoreCase("evaluationGrade")) {
+                evaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+        }
+
+        for (Object removedObject : removedObjects) {
+            request.getCriteria().getCriteria().remove(removedObject);
+        }
+
         SearchDTO.SearchRs<TclassDTO.TClassReport> response = tclassService.reportSearch(request);
+
+        List<TclassDTO.TClassReport> listRemovedObjects = new ArrayList<>();
+        if (courseStatus != null && !courseStatus.equals("3")) {
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                List<Long> courseNeedAssessmentStatus = courseDAO.getCourseNeedAssessmentStatus(datum.getCourse().getId());
+                if (courseStatus.equals("1") && courseNeedAssessmentStatus.size() == 0)
+                    listRemovedObjects.add(datum);
+                if (courseStatus.equals("2") && courseNeedAssessmentStatus.size() != 0)
+                    listRemovedObjects.add(datum);
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if (reactionEvaluationOperator != null && reactionEvaluationGrade != null) {
+            double grade = Double.parseDouble(reactionEvaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classReactionGrade = tclassService.getClassReactionEvaluationGrade(datum.getId(), datum.getTeacherId());
+                if (reactionEvaluationOperator.equals("1")) {
+                    if (classReactionGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if (reactionEvaluationOperator.equals("2")) {
+                    if (classReactionGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if (behavioralEvaluationOperator != null && behavioralEvaluationGrade != null) {
+            double grade = Double.parseDouble(behavioralEvaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classBehavioralGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFEBGrade();
+                if (behavioralEvaluationOperator.equals("1")) {
+                    if (classBehavioralGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if (behavioralEvaluationOperator.equals("2")) {
+                    if (classBehavioralGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if (learningEvaluationOperator != null && learningEvaluationGrade != null) {
+            double grade = Double.parseDouble(learningEvaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
+                if (learningEvaluationOperator.equals("1")) {
+                    if (classLearningGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if (learningEvaluationOperator.equals("2")) {
+                    if (classLearningGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if (evaluationOperator != null && evaluationGrade != null) {
+            double grade = Double.parseDouble(evaluationGrade.toString());
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                double classEvaluationGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFECBGrade();
+                if (evaluationOperator.equals("1")) {
+                    if (classEvaluationGrade >= grade)
+                        listRemovedObjects.add(datum);
+                }
+                if (evaluationOperator.equals("2")) {
+                    if (classEvaluationGrade <= grade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+        for (TclassDTO.TClassReport listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
 
         final TclassDTO.ReportSpecRs specResponse = new TclassDTO.ReportSpecRs();
         final TclassDTO.TclassReportSpecRs specRs = new TclassDTO.TclassReportSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
+                .setTotalRows(response.getList().size());
 
         specRs.setResponse(specResponse);
 
@@ -533,7 +709,7 @@ public class TclassRestController {
                             @RequestParam String classTimeInfo,
                             @RequestParam String executionInfo,
                             @RequestParam String evaluationInfo
-                            ) throws Exception {
+    ) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
         if (CriteriaStr.equalsIgnoreCase("{}")) {
@@ -542,14 +718,14 @@ public class TclassRestController {
             criteriaRq = objectMapper.readValue(CriteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
-        final SearchDTO.SearchRs<TclassDTO.TClassReport>  searchRs = tclassService.reportSearch(searchRq);
+        final SearchDTO.SearchRs<TclassDTO.TClassReport> searchRs = tclassService.reportSearch(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
-        params.put("courseInfo",courseInfo);
-        params.put("classTimeInfo",classTimeInfo);
-        params.put("executionInfo",executionInfo);
-        params.put("evaluationInfo",evaluationInfo);
+        params.put("courseInfo", courseInfo);
+        params.put("classTimeInfo", classTimeInfo);
+        params.put("executionInfo", executionInfo);
+        params.put("evaluationInfo", evaluationInfo);
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

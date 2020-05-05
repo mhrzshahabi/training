@@ -362,6 +362,9 @@
                             "2": "10-12",
                             "3": "14-16"
                         },
+                        pickListProperties: {
+                            showFilterEditor: false
+                        }
                     },
                     {
                         name: "sessionTypeId",
@@ -369,10 +372,14 @@
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
+                        useClientFiltering: false,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         valueMap: {
                             "1": "آموزش",
                             "2": "آزمون"
+                        },
+                        pickListProperties: {
+                            showFilterEditor: false
                         },
                         defaultValue: "1"
                     },
@@ -391,7 +398,10 @@
                             "2": "در حال اجرا",
                             "3": "پایان"
                         },
-                        defaultValue: "1"
+                        defaultValue: "1",
+                        pickListProperties: {
+                            showFilterEditor: false
+                        }
                     },
                     {
                         name: "instituteId",
@@ -409,9 +419,9 @@
                         required: true,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         pickListFields: [
-                            {name: "titleFa"},
-                            {name: "manager.firstNameFa"},
-                            {name: "manager.lastNameFa"}
+                            {name: "titleFa", filterOperator: "iContains"},
+                            {name: "manager.firstNameFa", filterOperator: "iContains"},
+                            {name: "manager.lastNameFa", filterOperator: "iContains"}
                         ],
                         filterFields: ["titleFa", "manager.firstNameFa", "manager.lastNameFa"]
                     },
@@ -433,17 +443,20 @@
                             {
                                 name: "personality.lastNameFa",
                                 title: "<spring:message code="lastName"/>",
-                                titleAlign: "center"
+                                titleAlign: "center",
+                                filterOperator: "iContains"
                             },
                             {
                                 name: "personality.firstNameFa",
                                 title: "<spring:message code="firstName"/>",
-                                titleAlign: "center"
+                                titleAlign: "center",
+                                filterOperator: "iContains"
                             },
                             {
                                 name: "personality.nationalCode",
                                 title: "<spring:message code="national.code"/>",
-                                titleAlign: "center"
+                                titleAlign: "center",
+                                filterOperator: "iContains"
                             }
                         ],
                         filterFields: [

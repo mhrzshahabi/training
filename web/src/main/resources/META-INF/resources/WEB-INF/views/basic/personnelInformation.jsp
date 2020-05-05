@@ -5,9 +5,39 @@
 
 // <script>
 
+    // <<-------------------------------------- Create - ToolStripButton --------------------------------------
+    {
+        //*****toolStrip*****
+        var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
+            title: "<spring:message code="refresh"/>",
+            click: function () {
+                PersonnelInfoListGrid_PersonnelList.invalidateCache();
+                set_PersonnelInfo_Details();
+            }
+        });
+
+
+        var ToolStrip_Personnel_Info = isc.ToolStrip.create({
+            width: "100%",
+            membersMargin: 5,
+            members: [
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh_PI
+                    ]
+                })
+
+            ]
+        });
+    }
+    // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
+
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
-       var PersonnelInfoDS_PersonnelList = isc.TrDS.create({
+        var PersonnelInfoDS_PersonnelList = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {
@@ -86,7 +116,7 @@
             fetchDataURL: personnelUrl + "/iscList"
         });
 
-       var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
+        var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
             dataSource: PersonnelInfoDS_PersonnelList,
             selectionType: "single",
             autoFetchData: true,
@@ -115,6 +145,7 @@
             fields: [
                 {name: "id", primaryKey: true},
                 {name: "courseId"},
+                {name: "courseTitle"},
                 {name: "code"},
                 {name: "titleClass"},
                 {name: "hduration"},
@@ -745,7 +776,7 @@
                         name: "hduration",
                         title: "<spring:message code="duration"/> : ",
                         canEdit: false,
-                        mapValueToDisplay: function(value){
+                        mapValueToDisplay: function (value) {
                             if (isNaN(value)) {
                                 return "";
                             }
@@ -954,11 +985,24 @@
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
     {
-        var HLayout_PersonnelInfo_List = isc.HLayout.create({
+        //*****class HLayout & VLayout*****
+        var HLayout_Actions_PI = isc.HLayout.create({
+            width: "100%",
+            height: "1%",
+            members: [ToolStrip_Personnel_Info]
+        });
+
+        var Hlayout_Grid_PI = isc.HLayout.create({
+            width: "100%",
+            height: "99%",
+            members: [PersonnelInfoListGrid_PersonnelList]
+        });
+
+        var VLayout_PersonnelInfo_List = isc.VLayout.create({
             width: "100%",
             height: "50%",
             showResizeBar: true,
-            members: [PersonnelInfoListGrid_PersonnelList]
+            members: [HLayout_Actions_PI, Hlayout_Grid_PI]
         });
 
         var HLayout_PersonnelInfo_Details = isc.HLayout.create({
@@ -970,7 +1014,7 @@
         var VLayout_PersonnelInfo_Data = isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [HLayout_PersonnelInfo_List, HLayout_PersonnelInfo_Details]
+            members: [VLayout_PersonnelInfo_List, HLayout_PersonnelInfo_Details]
         });
     }
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
@@ -1034,6 +1078,12 @@
                         call_needsAssessmentReports("0", true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
                     }
                 }
+            } else {
+                DynamicForm_PersonnelInfo.clearValues();
+                ListGrid_PersonnelTraining.setData([]);
+                nationalCode_Info = -1;
+                nationalCode_Training = -1;
+                nationalCode_Need = -1;
             }
         }
 
@@ -1041,7 +1091,7 @@
 
         function totalPlanning(records) {
             let totalPlanning_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 if (records[i].classStatusId === 1)
                     totalPlanning_ += records[i].hduration;
             }
@@ -1050,7 +1100,7 @@
 
         function totalPassed(records) {
             let totalPassed_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 if (records[i].classStatusId !== 1)
                     totalPassed_ += records[i].hduration;
             }
@@ -1059,7 +1109,7 @@
 
         function totalRejected(records) {
             let totalRejected_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 if (records[i].scoreStateId === 0)
                     totalRejected_ += records[i].hduration;
             }
@@ -1068,7 +1118,7 @@
 
         function totalAll(records) {
             let totalAll_ = 0;
-            for (i = 0; i < records.length; i++) {
+            for (let i = 0; i < records.length; i++) {
                 totalAll_ += records[i].hduration;
             }
             return "<spring:message code='total.sum'/> : " + totalAll_ + " <spring:message code='hour'/> ";
@@ -1088,16 +1138,16 @@
         //***********************************
 
         //*****get selected course information*****
-        var courseId_Tab_Course,  courseId_Tab_Records, classId_Tab_Class;
+        var courseId_Tab_Course, courseId_Tab_Records, classId_Tab_Class;
+
         function set_PersonnelInfo_CourseInfo() {
 
-            if (ListGrid_PersonnelTraining.getSelectedRecord() !== null)
-            {
+            if (ListGrid_PersonnelTraining.getSelectedRecord() !== null) {
                 let courseId = ListGrid_PersonnelTraining.getSelectedRecord().courseId;
                 let classId = ListGrid_PersonnelTraining.getSelectedRecord().id;
 
                 if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Course") {
-                    if(courseId !== null && courseId_Tab_Course !== courseId) {
+                    if (courseId !== null && courseId_Tab_Course !== courseId) {
                         courseId_Tab_Course = courseId;
                         DynamicForm_PersonnelInfo_CourseInfo.clearValues();
                         isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findCourseByCourseId/" + courseId, "GET", null, function (resp) {
@@ -1108,9 +1158,8 @@
                             }
                         }));
                     }
-                }
-                else if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Class") {
-                    if(classId !== null && classId_Tab_Class !== classId) {
+                } else if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Class") {
+                    if (classId !== null && classId_Tab_Class !== classId) {
                         classId_Tab_Class = classId;
                         DynamicForm_PersonnelInfo_ClassInfo.clearValues();
                         isc.RPCManager.sendRequest(TrDSRequest(personnelInformationUrl + "/findClassByClassId/" + classId, "GET", null, function (resp) {
@@ -1120,10 +1169,8 @@
                             }
                         }));
                     }
-                }
-                else if(PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Records"){
-                    if(courseId !== null && courseId_Tab_Records !== courseId)
-                    {
+                } else if (PersonnelInfo_ClassInfo_Tab.getSelectedTab().id === "ClassInfo_Tab_Records") {
+                    if (courseId !== null && courseId_Tab_Records !== courseId) {
                         courseId_Tab_Records = courseId;
                         RestDataSource_PersonnelInfo_class.fetchDataURL = personnelInformationUrl + "/findClassByCourseId/" + courseId;
                         ListGrid_PersonnelInfo_class.invalidateCache();

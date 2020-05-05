@@ -39,14 +39,14 @@
 
             {
                 type: "BlurbItem",
-                value: "1- فرمول ارزیابی استاد بعد از تدریس دوره = (نمره ارزیابی فراگیران به استاد) * Z2 + (نمره ارزیابی مسئول آموزش به استاد) * Z1 "
+                value: "1- فرمول ارزیابی مدرس بعد از تدریس دوره = (نمره ارزیابی فراگیران به مدرس) * Z2 + (نمره ارزیابی مسئول آموزش به مدرس) * Z1 "
             },
             {
                 width: "200",
                 hint: "%",
                 mask: "###",
                 name: "z1",
-                title: "ضریب نمره ارزیابی مسئول آموزش به استاد &nbsp;(Z1)",
+                title: "ضریب نمره ارزیابی مسئول آموزش به مدرس &nbsp;(Z1)",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -59,7 +59,7 @@
                 hint: "%",
                 mask: "###",
                 name: "z2",
-                title: "ضریب نمره ارزیابی فراگیران به استاد &nbsp;(Z2)",
+                title: "ضریب نمره ارزیابی فراگیران به مدرس &nbsp;(Z2)",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -71,7 +71,7 @@
                 hint: "%",
                 mask: "###",
                 name: "minScoreET",
-                title: "حد قبولی نمره ارزیابی استاد",
+                title: "حد قبولی نمره ارزیابی مدرس",
                 change: function (item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -95,7 +95,7 @@
             {type: "RowSpacerItem"},
             {
                 type: "BlurbItem",
-                value: "2- فرمول ارزیابی واکنشی کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط استاد)*Z3 +(نمره ارزیابی فراگیران به استاد)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1"
+                value: "2- فرمول ارزیابی واکنشی کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط مدرس)*Z3 +(نمره ارزیابی فراگیران به مدرس)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1"
             },
             {
                 width: "200",
@@ -114,7 +114,7 @@
                 hint: "%",
                 mask: "###",
                 name: "z4",
-                title: "ضریب نمره ارزیابی فراگیران به استاد&nbsp;(Z2)",
+                title: "ضریب نمره ارزیابی فراگیران به مدرس&nbsp;(Z2)",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -126,7 +126,7 @@
                 hint: "%",
                 mask: "###",
                 name: "z5",
-                title: "ضریب نمره ارزیابی دوره توسط استاد&nbsp;(Z3)",
+                title: "ضریب نمره ارزیابی دوره توسط مدرس&nbsp;(Z3)",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -430,7 +430,7 @@
                     var fields = DynamicForm_Evaluation_Coefficient.getFields();
                     var toUpdate = [];
 
-                    for (var i = 0; i < fields.length; i++) {
+                    for (let i = 0; i < fields.length; i++) {
                         if (fields[i].getID().startsWith("isc"))
                             continue;
                         toUpdate.add({

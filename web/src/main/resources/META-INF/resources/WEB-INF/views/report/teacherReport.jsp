@@ -122,13 +122,12 @@
             },
             {
                 name: "personnelStatus",
-                title: "نوع استاد",
+                title: "نوع مدرس",
                 align: "center",
                 valueMap: {
                     true: "<spring:message code='company.staff'/>",
                     false: "<spring:message code='external.teacher'/>"
-                },
-
+                }
             },
             {
                 name: "personality.contactInfo.mobile",
@@ -168,7 +167,7 @@
 
     var Window_Result_JspTeacherReport = isc.Window.create({
         placement: "fillScreen",
-        title: "گزارش اساتید",
+        title: "گزارش مدرسان",
         canDragReposition: true,
         align: "center",
         autoDraw: false,
@@ -184,7 +183,7 @@
                     teachingInfo,
                     ListGrid_Result_JspTeacherReport
                     ]
-            }),
+            })
         ]
     });
     //----------------------------------------------------Criteria Form-------------------------------------------------
@@ -256,7 +255,7 @@
             {
                 name: "categories",
                 title: "زمینه های آموزشی",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherReport,
                 valueField: "id",
@@ -293,7 +292,7 @@
             {
                 name: "subCategories",
                 title: "زیر زمینه های آموزشی",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -305,7 +304,7 @@
                 filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCriteriaCategoriesChanged) {
@@ -453,12 +452,13 @@
             },
             {
                 name: "evaluationCategory",
-                title: " حداقل نمره ی ارزیابی استاد در گروه",
+                title: " حداقل نمره ی ارزیابی مدرس در گروه",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
                 defaultValue: null,
                 changeOnKeypress: true,
+                prompt: "در صورت انتخاب گروه زیرگروه هم باید انتخاب شود",
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Category_Evaluation_JspTeacherReport,
@@ -475,15 +475,18 @@
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                changed: function () {
+                changed: function (form,item,value) {
                     isEvaluationCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory");
-                    if (this.getValue() == null || this.getValue() == undefined) {
-                        subCategoryField.clearValue();
-                        subCategoryField.disable();
-                        return;
+
+                    if (value == null || value == undefined) {
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").disable();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").clearValue();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").clearValue();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();
+                    } else{
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").enable();
+                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").enable();
                     }
-                    subCategoryField.enable();
                 }
             },
             {
@@ -543,8 +546,8 @@
             },
             {
                 name: "teachingCategories",
-                title: "استاد در حوزه های",
-                type: "selectItem",
+                title: "مدرس در حوزه های",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
                 valueField: "id",
@@ -582,7 +585,7 @@
                 name: "teachingSubCategories",
                 title: "و زیر حوزه های",
                 titleAlign: "center",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -630,20 +633,6 @@
                     DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                 }
             }
-            if(item.name == "evaluationSubCategory" || item.name=="evaluationGrade"){
-                if(newValue != undefined)
-                    item.clearErrors();
-            }
-            if(item.name == "evaluationCategory"){
-                DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationSubCategory").clearValue();
-                if(newValue == undefined){
-                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationSubCategory").clearErrors();
-                    DynamicForm_CriteriaForm_JspTeacherReport.getItem("evaluationGrade").clearErrors();
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();
-                }
-                if(newValue != undefined)
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").enable();
-            }
         }
     });
 
@@ -654,18 +643,6 @@
         click: function () {
             if (DynamicForm_CriteriaForm_JspTeacherReport.hasErrors())
                 return;
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined)
-            {
-                if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() == undefined ||
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() == undefined)
-                {
-                    if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() == undefined)
-                        DynamicForm_CriteriaForm_JspTeacherReport.addFieldErrors("evaluationSubCategory", "فیلد اجباری است", true);
-                    if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() == undefined)
-                        DynamicForm_CriteriaForm_JspTeacherReport.addFieldErrors("evaluationGrade", "فیلد اجباری است", true);
-                    return;
-                }
-            }
 
             titr.contents = "";
             personalInfo.contents = "";
@@ -717,22 +694,22 @@
             }
 
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("enableStatus").getValue() == "true"){
-                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت استاد: " +"</span>";
+                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+ "فعال" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             else  if(DynamicForm_CriteriaForm_JspTeacherReport.getField("enableStatus").getValue() == "false"){
-                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت استاد: " +"</span>";
+                teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "وضعیت مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+ "غیرفعال" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personnelStatus").getValue() == "true"){
-                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع استاد: " +"</span>";
+                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+ "داخلی شرکت مس" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             else  if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personnelStatus").getValue() == "false"){
-                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع استاد: " +"</span>";
+                teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع مدرس: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +"بیرونی" + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
@@ -748,34 +725,35 @@
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories").getDisplayValue()+ "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined){
-                evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی استاد در گروه: " +"</span>";
+            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined &&
+                DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() != undefined &&
+                DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() != undefined){
+
+                evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی مدرس در گروه: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue()+ "</span>";
-            }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() != undefined){
+
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "و زیرگروه: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getDisplayValue()+ "</span>";
-            }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() != undefined){
+
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مساوی: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                     DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue() != undefined){
-                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس استاد: " +"</span>";
+                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس مدرس: " +"</span>";
                 teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                             DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getDisplayValue()+ "</span>";
                 teachingInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getValue() != undefined){
-                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های تدریس استاد: " +"</span>";
+                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های تدریس مدرس: " +"</span>";
                 teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                             DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getDisplayValue()+ "</span>";
             }
 
-            titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش اساتید با توجه به محدودیت های اعمال شده" +"</span>";
+            titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش مدرسان با توجه به محدودیت های اعمال شده" +"</span>";
 
             titr.redraw();
             personalInfo.redraw();

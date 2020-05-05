@@ -1190,7 +1190,7 @@
         }
     });
 
-    var ToolStripButton_Add_Skill_Group_Jsp = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Add_Skill_Group_Jsp = isc.ToolStripButtonCreate.create({
         click: function () {
 
             ListGrid_Skill_Group_add();

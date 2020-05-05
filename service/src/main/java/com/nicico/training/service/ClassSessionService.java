@@ -57,7 +57,7 @@ public class ClassSessionService implements IClassSession {
     }
 
     //*********************************
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<ClassSessionDTO.Info> list() {
         List<ClassSession> classSessionList = classSessionDAO.findAll();
@@ -469,8 +469,8 @@ public class ClassSessionService implements IClassSession {
     @Override
     public SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode) {
         LocalDate inputDate = LocalDate.now();
-        LocalDate prevSat = inputDate.with(TemporalAdjusters.previous(DayOfWeek.SATURDAY));
-        LocalDate nextFri = inputDate.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+        LocalDate prevSat = inputDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY));
+        LocalDate nextFri = inputDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
         String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
         String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
 
@@ -536,8 +536,19 @@ public class ClassSessionService implements IClassSession {
         // System.out.println(j_days_of_year);
         StringBuffer result = new StringBuffer();
 
-        result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/"
+        if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)
+            result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/0"
                 + (int) dayOfMonth(j_days_of_year));
+        else if(month(j_days_of_year) >= 10 && dayOfMonth(j_days_of_year) < 10)
+            result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/0"
+                    + (int) dayOfMonth(j_days_of_year));
+        else if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) >= 10)
+            result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/"
+                    + (int) dayOfMonth(j_days_of_year));
+        else
+            result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/"
+                    + (int) dayOfMonth(j_days_of_year));
+
         return result.toString();
     }
 

@@ -64,10 +64,9 @@ public class TeacherDTO {
     @ApiModel("TeacherGrid")
     public static class Grid{
         private Long id;
-        @NotEmpty
-        @ApiModelProperty(required = true)
         private String teacherCode;
         private PersonalInfoDTO.Grid personality;
+        private Long personalityId;
         private Boolean enableStatus;
         private Set<CategoryDTO.Info> categories;
         private Set<SubcategoryDTO.Info> subCategories;

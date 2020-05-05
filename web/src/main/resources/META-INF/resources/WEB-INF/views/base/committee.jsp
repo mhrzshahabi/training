@@ -166,7 +166,7 @@
             var activeCommittee = ListGrid_Committee.getSelectedRecord();
 
             var memberIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 memberIds.add(dropRecords[i].id);
             }
             ;
@@ -222,7 +222,7 @@
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
             var activeCommittee = ListGrid_Committee.getSelectedRecord();
             var personIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 personIds.add(dropRecords[i].id);
             }
             ;
@@ -647,7 +647,9 @@
         }
         var cate = DynamicForm_Committee.getValue("categoryId");
         var subCate = DynamicForm_Committee.getValue("subCategoryId");
-        isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null, "callback: show_ConflictCommittee(rpcResponse)"));
+        var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
+        var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
+        isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null,"callback: show_ConflictCommittee(rpcResponse,'" + cate3 + "','" + sc + "')"));
     };
 
 

@@ -40,10 +40,6 @@ public class CourseDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Float theoryDuration;
 
-    //    @NotNull
-//    @ApiModelProperty(required = true)
-//    private Long practicalDuration;
-
     @ApiModelProperty(required = true)
     private Float minTeacherEvalScore;
 
@@ -74,15 +70,6 @@ public class CourseDTO implements Serializable {
     private String acceptancelimit;
 
     private Integer startEvaluation;
-//    @ApiModelProperty(required = true)
-//    private List<Long> preCourse;
-
-
-//    @ApiModelProperty(required = true)
-//    private List<GoalDTO> goalSet;
-
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -94,20 +81,16 @@ public class CourseDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        //        private Integer version;
         private ERunType eRunType;
         private ELevelType eLevelType;
         private ETechnicalType eTechnicalType;
         private ETheoType eTheoType;
-        //        private CategoryDTO.CategoryInfoTuple category;
         private Long categoryId;
         private Long subCategoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
         private Boolean hasSkill;
-//        private Long knowledge;
-//        private Long skill;
-//        private Long attitude;
+
     }    // ------------------------------
 
     @Getter
@@ -120,19 +103,14 @@ public class CourseDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        //        private Integer version;
         private ERunType eRunType;
         private ELevelType eLevelType;
         private ETechnicalType eTechnicalType;
         private ETheoType eTheoType;
         private CategoryDTO.CategoryInfoTuple category;
-        //        private Long categoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
         private Boolean hasSkill;
-//        private Long knowledge;
-//        private Long skill;
-//        private Long attitude;
     }
 
     //-------------------------------

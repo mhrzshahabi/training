@@ -203,11 +203,10 @@ public class TclassDTO {
     @ApiModel("TclassTeachingHistory")
     public static class TeachingHistory {
         private Long id;
-        private String code;
-        private String titleClass;
         private String startDate;
         private String endDate;
         private Double evaluationGrade;
+        private CourseDTO.CourseClassReport course;
     }
 
     @Getter
@@ -523,12 +522,14 @@ public class TclassDTO {
         private String code;
         private CourseDTO.CourseClassReport course;
         private TeacherDTO.TeacherFullNameTuple teacher;
+        private Long teacherId;
         private Set<ClassStudentDTO.AttendanceInfo> classStudents;
         private Integer studentsCount;
         private Long hDuration;
         private String startDate;
         private String endDate;
         private String classStatus;
+        private String scoringMethod;
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();

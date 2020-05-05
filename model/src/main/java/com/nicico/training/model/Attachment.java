@@ -42,7 +42,8 @@ public class Attachment<E> extends Auditable {
             idType = "long", metaType = "string",
             metaValues = {
                     @MetaValue(targetEntity = Tclass.class, value = "Tclass"),
-                    @MetaValue(targetEntity = Teacher.class, value = "Teacher")
+                    @MetaValue(targetEntity = Teacher.class, value = "Teacher"),
+                    @MetaValue(targetEntity = ClassContract.class, value = "ClassContract")
 
             }
     )

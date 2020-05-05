@@ -846,7 +846,7 @@
             ListGrid_Skill_Skill_Edit();
         }
     });
-    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Skill_Skill_Add();
         }

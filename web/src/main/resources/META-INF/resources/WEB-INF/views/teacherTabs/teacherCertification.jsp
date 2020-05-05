@@ -56,23 +56,20 @@
             {
                 name: "courseTitle",
                 title: "<spring:message code='course.title'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 required: true
             },
             {
                 name: "companyName",
-                title: "<spring:message code='company.name'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title: "<spring:message code='company.name'/>"
             },
             {
                 name: "companyLocation",
-                title: "<spring:message code='location.name'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title: "<spring:message code='location.name'/>"
             },
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
@@ -98,18 +95,23 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryIds = this.getValue();
                     var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
+                    for (let i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
+                    if(DynamicForm_JspTeacherCertification.getField("subCategories").getValue() != null &&
+                        DynamicForm_JspTeacherCertification.getField("subCategories").getValue() != undefined &&
+                        DynamicForm_JspTeacherCertification.getField("subCategories").getValue().size() == 0){
+                        DynamicForm_JspTeacherCertification.getField("subCategories").clearValue();
+                    }
                 }
             },
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -147,7 +149,11 @@
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='hour'/>",
                 showHintInField: true,
-                length: 5
+                length: 5,
+                editorExit: function (form, item, value) {
+                    var newValue = parseInt(value);
+                    item.setValue(newValue);
+                }
             },
             {
                 name: "startDate",
@@ -356,22 +362,54 @@
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
                 filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspTeacherCertification,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
+                canSort: false,
                 filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "duration",
@@ -380,24 +418,19 @@
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
-        filterEditorSubmit: function () {
-            ListGrid_JspTeacherCertification.invalidateCache();
-        },
         doubleClick: function () {
             ListGrid_TeacherCertification_Edit();
         },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -536,8 +569,7 @@
     function TeacherCertification_save_result(resp) {
         waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             ListGrid_TeacherCertification_refresh();
             Window_JspTeacherCertification.close();
             setTimeout(function () {
@@ -545,11 +577,9 @@
             }, 3000);
         } else {
             if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
     }
@@ -558,8 +588,7 @@
         waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_TeacherCertification_refresh();
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
