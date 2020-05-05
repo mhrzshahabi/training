@@ -59,8 +59,7 @@
             {
                 name: "subjectTitle",
                 title: "<spring:message code='subject.title'/>",
-                required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                required: true
             },
             {
                 name: "publicationSubjectTypeId",
@@ -92,7 +91,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspPublication,
                 valueField: "id",
@@ -124,12 +123,18 @@
                     }
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
+
+                    if(DynamicForm_JspPublication.getField("subCategories").getValue() != null &&
+                        DynamicForm_JspPublication.getField("subCategories").getValue() != undefined &&
+                        DynamicForm_JspPublication.getField("subCategories").getValue().size() == 0){
+                        DynamicForm_JspPublication.getField("subCategories").clearValue();
+                    }
                 }
             },
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -162,13 +167,11 @@
             },
             {
                 name: "publicationLocation",
-                title:"<spring:message code='publication.location'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title:"<spring:message code='publication.location'/>"
             },
             {
                 name: "publisher",
-                title: "<spring:message code='publisher'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title: "<spring:message code='publisher'/>"
             },
             {
                 name: "publicationDate",
@@ -233,6 +236,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='publication'/>",
+        close : function(){closeCalendarWindow(); Window_JspPublication.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspPublication, HLayout_SaveOrExit_JspPublication]
         })]
@@ -284,22 +288,54 @@
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspPublication,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspPublication,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspPublication,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                canSort: false,
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspPublication,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "publicationLocation",
@@ -311,19 +347,15 @@
             },
             {
                 name: "publicationDate",
-                title: "<spring:message code='publication.date'/>",
-                canSort: false
+                title: "<spring:message code='publication.date'/>"
             }
         ],
         rowDoubleClick: function () {
             ListGrid_Publication_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspPublication.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

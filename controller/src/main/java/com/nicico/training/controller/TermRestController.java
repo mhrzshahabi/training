@@ -81,7 +81,7 @@ public class TermRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
-            new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
 
     }
@@ -212,7 +212,7 @@ public class TermRestController {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        SearchDTO.SearchRs<TermDTO.Info> response = termService.searchByYear(request,year);
+        SearchDTO.SearchRs<TermDTO.Info> response = termService.searchByYear(request, year);
 
         final TermDTO.SpecRs specResponse = new TermDTO.SpecRs();
         final TermDTO.TermSpecRs specRs = new TermDTO.TermSpecRs();
@@ -222,6 +222,25 @@ public class TermRestController {
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/years")
+    public ResponseEntity<TermDTO.YearsSpecRs> years() {
+
+        List<TermDTO.Years> list = termService.years();
+
+        final TermDTO.YsSpecRs specResponse = new TermDTO.YsSpecRs();
+        final TermDTO.YearsSpecRs specRs = new TermDTO.YearsSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }

@@ -9,6 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Goal;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.model.Skill;
@@ -254,4 +255,79 @@ public class EvaluationRestController {
     }
 
     //-------------------------------
+
+    private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
+        if(evaluation.getQuestionnaireTypeId().equals(139L)){
+            Integer x;
+            if(evaluation.getEvaluationFull()) {
+                x = 2;
+            }
+            else {
+                x = 3;
+            }
+            ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
+            if (evaluation.getEvaluationLevelId() == 154L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusReaction(x), ClassStudentDTO.ClassStudentInfo.class);
+            } else if (evaluation.getEvaluationLevelId() == 155L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusLearning(x), ClassStudentDTO.ClassStudentInfo.class);
+            } else if (evaluation.getEvaluationLevelId() == 156L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusBehavior(x), ClassStudentDTO.ClassStudentInfo.class);
+            } else if (evaluation.getEvaluationLevelId() == 157L) {
+                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusResults(x), ClassStudentDTO.ClassStudentInfo.class);
+            }
+        }
+    }
+
+    @Loggable
+    @GetMapping(value = "/class-spec-list")
+    public ResponseEntity<TclassDTO.TclassSpecRs> classList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+
+        //*********************************
+        //******old code for alarms********
+////        for (TclassDTO.Info tclassDTO : response.getList()) {
+////            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
+////                tclassDTO.setHasWarning("alarm");
+////           else
+////              tclassDTO.setHasWarning("");
+////        }
+        //*********************************
+
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 }
