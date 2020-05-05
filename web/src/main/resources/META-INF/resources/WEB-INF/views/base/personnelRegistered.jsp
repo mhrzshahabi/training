@@ -680,6 +680,7 @@
                 title: "<spring:message code='company'/>",
                 textAlign: "center",
                 width: "*",
+                required: true,
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",

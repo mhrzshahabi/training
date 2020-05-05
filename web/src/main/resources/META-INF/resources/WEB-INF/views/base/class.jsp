@@ -71,7 +71,9 @@
             {name: "instituteId"},
             {name: "workflowEndingStatusCode"},
             {name: "workflowEndingStatus"},
-            {name: "preCourseTest", type: "boolean"}
+            {name: "preCourseTest", type: "boolean"},
+            {name: "course.code"},
+            {name: "theoryDuration"}
         ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
@@ -373,7 +375,9 @@
                 align: "center",
                 filterOperator: "iContains"
             },
-            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
+            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+            {name: "course.code", title:"", hidden:true},
+            {name: "theoryDuration" , title: "", hidden:true}
 
         ],
 

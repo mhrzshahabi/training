@@ -66,8 +66,10 @@ public class ClassStudentService implements IClassStudentService {
             }
 
             ClassStudent classStudent = new ClassStudent();
-            classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
-            classStudent.setPresenceTypeId(create.getPresenceTypeId());
+            if(create.getApplicantCompanyName() != null)
+                classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
+            if(create.getPresenceTypeId() != null)
+                classStudent.setPresenceTypeId(create.getPresenceTypeId());
             classStudent.setTclass(tclass);
             classStudent.setStudent(student);
 

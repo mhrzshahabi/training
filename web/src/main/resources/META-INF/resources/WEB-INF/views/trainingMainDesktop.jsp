@@ -1273,7 +1273,7 @@
         })
     }
 
-    function exportToExcel(fields, data) {
+    function exportToExcel(fields, data,titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/export-to-excel/download/",
@@ -1284,11 +1284,13 @@
                     {name: "myToken", type: "hidden"},
                     {name: "fields", type: "hidden"},
                     {name: "data", type: "hidden"},
+                    {name: "titr", type: "hidden"}
                 ]
         });
         <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
         downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
         downloadForm.setValue("data", JSON.stringify(data.toArray()));
+        downloadForm.setValue("titr",titr);
         downloadForm.show();
         downloadForm.submitForm();
     }
