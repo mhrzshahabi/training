@@ -37,7 +37,16 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "عنوان"},
             {name: "courseId", hidden: true},
-            {name: "code", title: "کد"},
+            {
+                name: "categoryId",
+                title: "گروه",
+                optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                autoFitWidth: true,
+            },
+            {name: "code", title: "کد", autoFitWidth: true},
         ],
         fetchDataURL: skillUrl + "/spec-list",
     });
@@ -678,6 +687,7 @@
                         fields: [
                             {name: "titleFa", title: "عنوان"},
                             {name: "code", title: "کد"},
+                            {name: "categoryId"}
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
                     }),
@@ -706,6 +716,9 @@
                         fields: [
                             {name: "titleFa", title: "عنوان"},
                             {name: "code", title: "کد"},
+                            {
+                                name: "categoryId",
+                            }
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
@@ -736,34 +749,38 @@
                             align: "center",
                             height: 30,
                             showEdges: true
-                        }), isc.ToolStrip.create({
-                            width: "100%",
-                            border: '0px',
-                            members: [
-                                isc.ToolStripButton.create({
-                                    width: 250, title: "لیست مهارت های همین دوره",
-                                    click: function () {
-                                        var cat = DynamicForm_course_GroupTab.getField("categoryId").getValue()
-                                        RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/skillthisCourse" + "?categoryId=" + cat
-                                        ListGrid_AllSkill_JspCourse.fetchData()
-                                        ListGrid_AllSkill_JspCourse.invalidateCache()
-                                    }
-                                }), isc.ToolStrip.create({
-                                    width: "100%",
-                                    align: "left",
-                                    border: '0px',
-                                    members: [
-                                        isc.ToolStripButton.create({
-                                            width: 200, title: "لیست تمام مهارت ها",
-                                            click: function () {
-                                                RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/spec-list",
-                                                    ListGrid_AllSkill_JspCourse.fetchData()
-                                                ListGrid_AllSkill_JspCourse.invalidateCache()
-                                            }
-                                        })
-                                    ]
-                                })]
-                        }), "filterEditor", "header", "body"],
+                        }),
+                        //     isc.ToolStrip.create({
+                        //     width: "100%",
+                        //     border: '0px',
+                        //     members: [
+                        //         isc.ToolStripButton.create({
+                        //             // width: 250,
+                        //             title: "مهارت های گروه",
+                        //             click: function () {
+                        //                 let cat = DynamicForm_course_GroupTab.getField("categoryId").getValue()
+                        //                 RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/skillthisCourse" + "?categoryId=" + cat
+                        //                 ListGrid_AllSkill_JspCourse.fetchData()
+                        //                 ListGrid_AllSkill_JspCourse.invalidateCache()
+                        //             }
+                        //         }), isc.ToolStrip.create({
+                        //             width: "100%",
+                        //             align: "left",
+                        //             border: '0px',
+                        //             members: [
+                        //                 isc.ToolStripButton.create({
+                        //                     // width: 200,
+                        //                     title: "همه مهارت ها",
+                        //                     click: function () {
+                        //                         RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/spec-list",
+                        //                             ListGrid_AllSkill_JspCourse.fetchData()
+                        //                         ListGrid_AllSkill_JspCourse.invalidateCache()
+                        //                     }
+                        //                 })
+                        //             ]
+                        //         })]
+                        // }),
+                            "filterEditor", "header", "body"],
                     }),
                     isc.ToolStrip.create({
                         ID: "ListGridOwnSkill_ToolStrip",
@@ -804,6 +821,7 @@
                         fields: [
                             {name: "titleFa", title: "عنوان"},
                             {name: "code", title: "کد"},
+                            {name: "categoryId"},
                             {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
@@ -1035,7 +1053,7 @@
                         showPrompt: false,
                         serverOutputAsString: false,
                         callback: function (resp) {
-                            for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                            for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                                 equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
                             }
                         }
@@ -1815,10 +1833,10 @@
                 ChangeEtechnicalType = false;
                 preCourseIdList = [];
                 equalCourseIdList = [];
-                for (var i = 0; i < testData.length; i++) {
+                for (let i = 0; i < testData.length; i++) {
                     preCourseIdList.add(testData[i].id);
                 }
-                for (var j = 0; j < equalCourse.length; j++) {
+                for (let j = 0; j < equalCourse.length; j++) {
                     equalCourseIdList.add(equalCourse[j].idEC);
                 }
                 let mainObjectiveIdList = [];
@@ -2738,7 +2756,7 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                    for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         preCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }
@@ -2752,7 +2770,7 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                    for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         equalCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }
@@ -2823,7 +2841,7 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                    for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         mainObjectiveDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }

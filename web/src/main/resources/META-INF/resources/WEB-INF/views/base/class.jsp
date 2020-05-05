@@ -274,9 +274,12 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-            if(record.classStatus == "3")
-            {TabSet_Class.enableTab("classScoresTab")}
-            else{TabSet_Class.disableTab("classScoresTab");}
+            // if(record.classStatus == "3")
+            // {
+            //     TabSet_Class.enableTab("classScoresTab")
+            // }
+            // else{TabSet_Class.disableTab("classScoresTab");
+            // }
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         doubleClick: function () {
@@ -1829,7 +1832,7 @@
             var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
             var ClassID = ClassRecord.id;
             var StudentID = [];
-            for (var i = 0; i < dropRecords.getLength(); i++) {
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 StudentID.add(dropRecords[i].id);
             }
             var JSONObj = {"ids": StudentID};
@@ -2610,7 +2613,9 @@
         if (classRecord.preCourseTest && classRecord.course.evaluation !== "1") {
             TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
         } else {
-            TabSet_Class.selectTab(0);
+            if (TabSet_Class.getSelectedTab().ID === "classPreCourseTestQuestionsTab") {
+                TabSet_Class.selectTab(0);
+            }
             TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
         }
     }

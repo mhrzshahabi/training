@@ -1215,7 +1215,7 @@
                 });
             } else {
                 var goalList = new Array();
-                for (var i = 0; i < goalRecord.length; i++) {
+                for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
                 }
                 isc.RPCManager.sendRequest({
@@ -1268,7 +1268,7 @@
                 });
             } else {
                 var arryRecord = new Array();
-                for (var i = 0; i < goalrRecord.length; i++) {
+                for (let i = 0; i < goalrRecord.length; i++) {
                     arryRecord.add(goalrRecord[i].id)
 
                 }

@@ -95,7 +95,7 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryIds = this.getValue();
                     var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
+                    for (let i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }

@@ -675,7 +675,7 @@
                                     click: function () {
                                         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                         var students = [];
-                                        for (var i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                        for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
                                             students.add({
                                                 "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
                                                 "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,

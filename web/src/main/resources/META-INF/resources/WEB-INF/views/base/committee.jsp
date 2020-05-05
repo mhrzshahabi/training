@@ -166,7 +166,7 @@
             var activeCommittee = ListGrid_Committee.getSelectedRecord();
 
             var memberIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 memberIds.add(dropRecords[i].id);
             }
             ;
@@ -222,7 +222,7 @@
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
             var activeCommittee = ListGrid_Committee.getSelectedRecord();
             var personIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 personIds.add(dropRecords[i].id);
             }
             ;
