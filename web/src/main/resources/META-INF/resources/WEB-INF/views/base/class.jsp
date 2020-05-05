@@ -272,9 +272,12 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-            if(record.classStatus == "3")
-            {TabSet_Class.enableTab("classScoresTab")}
-            else{TabSet_Class.disableTab("classScoresTab");}
+            // if(record.classStatus == "3")
+            // {
+            //     TabSet_Class.enableTab("classScoresTab")
+            // }
+            // else{TabSet_Class.disableTab("classScoresTab");
+            // }
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         doubleClick: function () {
