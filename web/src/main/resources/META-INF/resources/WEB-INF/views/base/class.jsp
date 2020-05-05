@@ -2606,7 +2606,9 @@
         if (classRecord.preCourseTest && classRecord.course.evaluation !== "1") {
             TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
         } else {
-            TabSet_Class.selectTab(0);
+            if (TabSet_Class.getSelectedTab().ID === "classPreCourseTestQuestionsTab") {
+                TabSet_Class.selectTab(0);
+            }
             TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
         }
     }

@@ -116,7 +116,6 @@ public class TclassRestController {
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
 
         return infoResponseEntity;
@@ -133,7 +132,6 @@ public class TclassRestController {
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
 
         return infoResponseEntity;
@@ -396,6 +394,7 @@ public class TclassRestController {
     public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
         try {
             tclassService.updatePreCourseTestQuestions(classId, request);
+            classAlarmService.alarmPreCourseTestQuestion(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -531,9 +530,9 @@ public class TclassRestController {
                     removedObject = criterion;
                 }
             }
-            if(removedObject != null)
+            if (removedObject != null)
                 criteriaRq.getCriteria().remove(removedObject);
-            if(addedObject != null)
+            if (addedObject != null)
                 criteriaRq.getCriteria().add(addedObject);
             request.setCriteria(criteriaRq);
         }
