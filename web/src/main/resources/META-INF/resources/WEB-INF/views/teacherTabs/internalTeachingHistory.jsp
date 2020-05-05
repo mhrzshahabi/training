@@ -55,11 +55,8 @@
                 canFilter: false
             }
         ],
-        filterEditorSubmit: function () {
-            ListGrid_JspInternalTeachingHistory.invalidateCache();
-        },
         align: "center",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         filterLocally: true,
         sortField: 1,
         sortDirection: "descending",

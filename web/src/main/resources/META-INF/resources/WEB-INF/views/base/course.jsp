@@ -461,11 +461,11 @@
             {
                 name: "evaluation", title: "<spring:message code="evaluation.level"/>",
                 valueMap: {
-                    "1": "واکنش",
+                    "1": "واکنشی",
                     "2": "یادگیری",
                     "3": "رفتاری",
-                    "4": "نتایج",
-                },
+                    "4": "نتایج"
+                }
             },
             {
                 name: "workflowStatusCode",
@@ -1288,7 +1288,7 @@
                 endRow: false,
                 //     defaultValue: "1",
                 valueMap: {
-                    "1": "واکنش",
+                    "1": "واکنشی",
                     "2": "یادگیری",
                     "3": "رفتاری",
                     "4": "نتایج",

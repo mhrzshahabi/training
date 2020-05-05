@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-    var studentId_JspQuestionEvaluation;
+    var studentId_JspQuestionEvaluation = null;
     var localQuestions;
     /// var teacherId_JspQuestionEvaluation = ListGrid_evaluation_class.getSelectedRecord().teacherId;
     var evaluationLevelId;

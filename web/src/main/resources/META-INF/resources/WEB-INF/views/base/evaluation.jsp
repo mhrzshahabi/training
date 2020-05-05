@@ -899,7 +899,7 @@
                 {name: "workflowEndingStatusCode"},
                 {name: "workflowEndingStatus"}
             ],
-            fetchDataURL: classUrl + "spec-list"
+            fetchDataURL: evaluationUrl + "/class-spec-list"
         });
 
         var ListGrid_evaluation_class = isc.TrLG.create({

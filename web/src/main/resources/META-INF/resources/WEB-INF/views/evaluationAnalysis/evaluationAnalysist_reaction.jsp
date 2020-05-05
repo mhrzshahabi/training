@@ -207,6 +207,9 @@
             width: "200",
             valueMap: ["ستونی", "راداری"],
             defaultValue: "ستونی",
+            pickListProperties: {
+                showFilterEditor: false
+            },
             changed : function (form, item, value) {
                 if(value == "ستونی"){
                     ReactionEvaluationChart.setChartType("Column");

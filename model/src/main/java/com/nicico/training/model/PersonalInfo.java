@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -124,4 +125,7 @@ public class PersonalInfo extends Auditable {
 
     @Column(name = "f_edu_orientation")
     private Long educationOrientationId;
+
+    @OneToMany(mappedBy = "personality", fetch = FetchType.LAZY)
+    private Set<Teacher> teacherSet;
 }

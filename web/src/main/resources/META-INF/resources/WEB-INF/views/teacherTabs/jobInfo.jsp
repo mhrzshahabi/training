@@ -21,13 +21,11 @@
             {
                 name: "personality.jobTitle",
                 title: "<spring:message code='job'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
             {
                 name: "personality.jobLocation",
                 title: "<spring:message code='work.place'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
             {
@@ -62,7 +60,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {
@@ -90,7 +88,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {
@@ -112,12 +110,6 @@
                 showValueIconFocused: true
             },
             {
-                name: "personality.contactInfo.workAddress.restAddr",
-                title: "<spring:message code='address.rest'/>",
-                type: "textArea",
-                length: "255"
-            },
-            {
                 name: "personality.contactInfo.workAddress.phone",
                 title: "<spring:message code='telephone'/>",
                 keyPressFilter: "[0-9]",
@@ -128,6 +120,13 @@
                 title: "<spring:message code='telefax'/>",
                 keyPressFilter: "[0-9]",
                 length: "11"
+            },
+            {
+                name: "personality.contactInfo.workAddress.restAddr",
+                title: "<spring:message code='address.rest'/>",
+                type: "textArea",
+                length: "255",
+                height: "100"
             }
         ],
         itemChanged: function (item, newValue) {
