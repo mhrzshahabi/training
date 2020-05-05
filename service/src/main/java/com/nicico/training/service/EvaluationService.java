@@ -203,7 +203,7 @@ public class EvaluationService implements IEvaluationService {
                 x = 3;
             }
             Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
-            ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            ClassStudent classStudent = byId.orElseGet(() -> classStudentDAO.findByTclassIdAndStudentId(evaluation.getClassId(), evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound)));
             if (evaluation.getEvaluationLevelId() == 154L) {
                 classStudent.setEvaluationStatusReaction(x);
             } else if (evaluation.getEvaluationLevelId() == 155L) {

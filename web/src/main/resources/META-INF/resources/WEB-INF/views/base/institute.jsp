@@ -36,7 +36,7 @@
             {name: "phone"},
             {name: "mobile"},
             {name: "fax"},
-            {name: "email"},
+            {name: "e_mail"},
             {name: "webSite"},
             {name: "teacherNumPHD"},
             {name: "empNumPHD"},
@@ -342,7 +342,7 @@
             {name: "phone", hidden: true},
             {name: "fax", hidden: true},
             {name: "mobile", hidden: true},
-            {name: "email", hidden: true},
+            {name: "e_mail", hidden: true},
             {name: "webSite", hidden: true},
             {name: "teacherNumPHD", hidden: true},
             {name: "empNumPHD", hidden: true},
@@ -1102,18 +1102,18 @@
                 length: "12"
             },
             {
-                name: "email",
+                name: "e_mail",
                 title: "<spring:message code='email'/>",
                 keyPressFilter: "[a-z|A-Z|0-9|.|@|-|_]",
                 width: "*",
                 validators: [TrValidators.EmailValidate],
                 blur: function () {
                     var emailCheck;
-                    emailCheck = checkEmail(DynamicForm_Institute_Institute_Address.getValue("email"));
+                    emailCheck = checkEmail(DynamicForm_Institute_Institute_Address.getValue("e_mail"));
                     if (emailCheck === false)
-                        DynamicForm_Institute_Institute_Address.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("e_mail", "<spring:message code='msg.email.validation'/>", true);
                     if (emailCheck === true)
-                        DynamicForm_Institute_Institute_Address.clearFieldErrors("email", true);
+                        DynamicForm_Institute_Institute_Address.clearFieldErrors("e_mail", true);
                 },
                 length: "50"
             },
@@ -1146,7 +1146,7 @@
                     DynamicForm_Institute_Institute_Address.clearValue("cityId");
                 }
             }
-            if (item.name == "email") {
+            if (item.name == "e_mail") {
             }
 
         }
@@ -1526,8 +1526,7 @@
     });
 
 
-    var ToolStripButton_Institute_Equipment_Add = isc.ToolStripButtonAdd.create({
-        title: "<spring:message code="btn.append"/>",
+    var ToolStripButton_Institute_Equipment_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1761,8 +1760,7 @@
     });
 
 
-    var ToolStripButton_Institute_Teacher_Add = isc.ToolStripButtonAdd.create({
-        title: "<spring:message code="btn.append"/>",
+    var ToolStripButton_Institute_Teacher_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -2154,7 +2152,7 @@
         })]
     });
 
-    var ToolStripButton_Institute_Account_Add = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Institute_Account_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             Function_Institute_Account_Add();
         }
@@ -2501,7 +2499,7 @@
         })]
     });
 
-    var ToolStripButton_Institute_TrainingPlace_Add = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Institute_TrainingPlace_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             Function_Institute_TrainingPlace_Add();
         }
@@ -2900,8 +2898,7 @@
     });
 
 
-    var ToolStripButton_Institute_TrainingPlace_Equipment_Add = isc.ToolStripButtonAdd.create({
-        title: "<spring:message code="btn.append"/>",
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             var record = ListGrid_Institute_TrainingPlace.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -2979,30 +2976,22 @@
         }
     });
     var ToolStripButton_Institute_Institute_Edit = isc.ToolStripButtonEdit.create({
-//icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_Institute_Institute_Edit();
         }
     });
-    var ToolStripButton_Institute_Institute_Add = isc.ToolStripButtonAdd.create({
-
-        title: "<spring:message code='create'/>",
+    var ToolStripButton_Institute_Institute_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Institute_Institute_Add();
         }
     });
     var ToolStripButton_Institute_Institute_Remove = isc.ToolStripButtonRemove.create({
-//icon: "[SKIN]/actions/remove.png",
-        title: "<spring:message code='remove'/>",
         click: function () {
             ListGrid_Institute_Institute_Remove();
         }
     });
 
     var ToolStripButton_Institute_Institute_Print = isc.ToolStripButtonPrint.create({
-//icon: "[SKIN]/RichTextEditor/print.png",
-        title: "<spring:message code='print'/>",
         click: function () {
             ListGrid_institute_print("pdf");
         }
