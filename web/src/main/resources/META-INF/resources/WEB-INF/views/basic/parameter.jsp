@@ -69,7 +69,7 @@
         ID: "ParameterLG_parameter",
         dataSource: ParameterDS_parameter,
         autoFetchData: true,
-        fields: [{name: "id"}, {name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
+        fields: [{name: "id", filterEditorProperties: {keyPressFilter: "[0-9]"}}, {name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="type"/>" + "</b></span>",}),
             ParameterTS_parameter, "filterEditor", "header", "body"
