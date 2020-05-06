@@ -30,7 +30,6 @@
             {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
             {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
             {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "classEndDate", filterOperator: "greaterOrEqual", autoFitWidth: true},
         ],
         fetchDataURL: studentClassReportUrl
     });
@@ -97,14 +96,7 @@
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: termUrl + "spec-list"
-    });
-    var YearDS_SCRV = isc.TrDS.create({
-        fields: [
-            {name: "year", title: "<spring:message code="year"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: termUrl + "yearList"
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=termCode"
     });
     var SectionDS_SCRV = isc.TrDS.create({
         fields: [
@@ -115,14 +107,13 @@
     });
 
     var DynamicForm_TrainingFile = isc.DynamicForm.create({
-        numCols: 11,
+        numCols: 10,
         padding: 10,
-        readOnlyDisplay: "readOnly",
         margin:0,
         // cellPadding: 10,
         titleAlign:"left",
         wrapItemTitles: true,
-        colWidths:[50,150,50,150,50,150,50,150, 50, 100, 50],
+        colWidths:[50,150,50,150,50,150,50,150, 50, 150],
         // sectionVisibilityMode: "mutex",
         fields: [
             // {
@@ -157,7 +148,6 @@
             },
             {
                 name: "studentLastName",
-                colSpan: 2,
                 title:"<spring:message code="lastName"/> ",
                 textAlign: "center",
                 width: "*"
@@ -245,7 +235,6 @@
                     showClippedValuesOnHover: true,
                 },
                 multiple: true,
-                colSpan: 2,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_SCRV,
@@ -323,8 +312,8 @@
                 },
             },
             {
-                name: "termTitleFa",
-                title: "<spring:message code="term"/>",
+                name: "termCode",
+                title: "<spring:message code="term.code"/>",
                 // filterFields: ["value", "value"],
                 // pickListWidth: 100,
                 type: "SelectItem",
@@ -333,139 +322,57 @@
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
-                colSpan: 2,
                 multiple: true,
-                valueField: "titleFa",
-                displayField: "titleFa",
-                initialSort: [
-                    {property: "titleFa", direction: "descending", primarySort: true}
-                ],
+                valueField: "value",
+                displayField: "value",
                 optionDataSource: TermDS_SCRV,
             },
             <%--{--%>
-                <%--name: "year",--%>
-                <%--title: "<spring:message code="year"/>",--%>
-                <%--// filterFields: ["value", "value"],--%>
-                <%--// pickListWidth: 100,--%>
-                <%--type: "SelectItem",--%>
-                <%--criteriaField: "termCode",--%>
-                <%--operator: "contains",--%>
-                <%--// textMatchStyle: "substring",--%>
-                <%--pickListProperties: {--%>
-                    <%--showFilterEditor: false,--%>
-                    <%--showClippedValuesOnHover: true,--%>
-                <%--},--%>
-                <%--multiple: true,--%>
-                <%--valueField: "year",--%>
-                <%--displayField: "year",--%>
-                <%--optionDataSource: YearDS_SCRV,--%>
+                <%--name: "searchBtn",--%>
+                <%--ID: "searchBtnJspTrainingFile",--%>
+                <%--title: "<spring:message code="search"/>",--%>
+                <%--type: "ButtonItem",--%>
+                <%--width:"*",--%>
+                <%--startRow:false,--%>
+                <%--endRow:false,--%>
+                <%--click (form) {--%>
+                    <%--var advancedCriteriaStudentJspTrainingFile = {--%>
+                        <%--_constructor: "AdvancedCriteria",--%>
+                        <%--operator: "and",--%>
+                        <%--criteria: []--%>
+                    <%--};--%>
+                    <%--var items = form.getItems();--%>
+                    <%--for (let i = 0; i < items.length; i++) {--%>
+                        <%--if(items[i].getValue() != undefined){--%>
+                            <%--advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})--%>
+                        <%--}--%>
+                    <%--}--%>
+                    <%--ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);--%>
+                    <%--Window_StudentSearch_JspTrainingFile.show();--%>
+                <%--}--%>
             <%--},--%>
-            // { name: "independence", editorType: "DateRangeItem", showTitle: false, allowRelativeDates: true },
-            {
-                name: "fromDate",
-                titleColSpan: 3,
-                title: "تاریخ شروع کلاس: از",
-                ID: "startDate_jspStudentClassReport",
-                hint: "--/--/----",
-                criteriaField: "classStartDate",
-                operator: "greaterOrEqual",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('startDate_jspStudentClassReport', this, 'ymd', '/');
-                    }
-                }],
-                textAlign: "center",
-                // colSpan: 2,
-                changed: function (form, item, value) {
-                    var dateCheck;
-                    // var endDate = form.getValue("endDate");
-                    dateCheck = checkDate(value);
-                    if (dateCheck === false) {
-                        form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else {
-                        form.clearFieldErrors("fromDate", true);
-                    }
-                }
-            },
-            {
-                name: "toDate",
-                titleColSpan: 1,
-                title: "تا",
-                ID: "endDate_jspStudentClassReport",
-                hint: "--/--/----",
-                criteriaField: "classStartDate",
-                operator: "lessOrEqual",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('endDate_jspStudentClassReport', this, 'ymd', '/');
-                    }
-                }],
-                textAlign: "center",
-                // colSpan: 2,
-                changed: function (form, item, value) {
-                    let dateCheck;
-                    dateCheck = checkDate(value);
-                    if (dateCheck === false) {
-                        form.clearFieldErrors("toDate", true);
-                        form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else {
-                        form.clearFieldErrors("toDate", true);
-                    }
-                }
-            },
-            {type: "SpacerItem"},
-            {
-                name: "searchBtn",
-                ID: "searchBtnJspTrainingFile",
-                title: "<spring:message code="reporting"/>",
-                type: "ButtonItem",
-                colSpan: 1,
-                width:"*",
-                startRow:false,
-                endRow:false,
-                click (form) {
-                    let criteria = form.getValuesAsAdvancedCriteria();
-                    // console.log(criteria);
-
-                    if(criteria == null || Object.keys(criteria).length === 0) {
-                        ListGrid_TrainingFile_TrainingFileJSP.setData([])
-                    }
-                    else{
-                        // delete criteria.fromDate;
-                        // delete criteria.toDate;
-                        // criteria.classEndDate = DynamicForm_TrainingFile.getValue("fromDate");
-
-                        ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-                        RestDataSource_Course_JspTrainingFile.implicitCriteria = criteria;
-                        ListGrid_TrainingFile_TrainingFileJSP.fetchData(criteria)
-                    }
-                }
-            },
-            // {type:"SpacerItem"},
-            {
-                name: "clearBtn",
-                title: "<spring:message code="clear"/>",
-                type: "ButtonItem",
-                width:"*",
-                colSpan: 2,
-                startRow:false,
-                endRow:false,
-                click (form, item) {
-                    form.clearValues();
-                    ListGrid_TrainingFile_TrainingFileJSP.setData([]);
-                }
-            },
+            <%--{--%>
+                <%--name: "clearBtn",--%>
+                <%--title: "<spring:message code="clear"/>",--%>
+                <%--type: "ButtonItem",--%>
+                <%--width:"*",--%>
+                <%--startRow:false,--%>
+                <%--endRow:false,--%>
+                <%--click (form, item) {--%>
+                    <%--form.clearValues();--%>
+                    <%--ListGrid_TrainingFile_TrainingFileJSP.setData([]);--%>
+                <%--}--%>
+            <%--},--%>
         ],
         itemChanged (item, newValue){
-            ListGrid_TrainingFile_TrainingFileJSP.setData([]);
+            if(Object.keys(DynamicForm_TrainingFile.getValuesAsCriteria()).length === 0) {
+                ListGrid_TrainingFile_TrainingFileJSP.setData([])
+            }
+            else{
+                ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
+                RestDataSource_Course_JspTrainingFile.implicitCriteria = DynamicForm_TrainingFile.getValuesAsCriteria();
+                ListGrid_TrainingFile_TrainingFileJSP.fetchData(DynamicForm_TrainingFile.getValuesAsCriteria())
+            }
         },
         // itemKeyPress: function(item, keyName) {
         //     if(keyName == "Enter"){
@@ -497,35 +404,24 @@
 
     var Menu_Courses_TrainingFileJSP = isc.Menu.create({
         data: [
-            {
-                title: "<spring:message code="global.form.print.pdf"/>",
-                click: function () {
-                    let params = {};
-                    params.complex = "مجتمع: " + (DynamicForm_TrainingFile.getValue("studentComplexTitle")?DynamicForm_TrainingFile.getValue("studentComplexTitle").toString():"-");
-                    params.company = "شرکت: " + (DynamicForm_TrainingFile.getValue("studentCompanyName")?DynamicForm_TrainingFile.getValue("studentCompanyName").toString():"-");
-                    params.area = "حوزه: " + (DynamicForm_TrainingFile.getValue("studentCcpArea")?DynamicForm_TrainingFile.getValue("studentCcpArea").toString():"-");
-                    params.assistant = "معاونت: " + (DynamicForm_TrainingFile.getValue("studentCcpAssistant")?DynamicForm_TrainingFile.getValue("studentCcpAssistant").toString():"-");
-                    params.section = "مرکز هزينه: " + (DynamicForm_TrainingFile.getValue("studentCcpSection")?DynamicForm_TrainingFile.getValue("studentCcpSection").toString():"-");
-                    params.unit = "نام واحد: " + (DynamicForm_TrainingFile.getValue("studentCcpUnit")?DynamicForm_TrainingFile.getValue("studentCcpUnit").toString():"-");
-                    params.affairs = "امور: " + (DynamicForm_TrainingFile.getValue("studentCcpAffairs")?DynamicForm_TrainingFile.getValue("studentCcpAffairs").toString():"-");
-                    params.term = "کد ترم: " + (DynamicForm_TrainingFile.getValue("termTitleFa")?DynamicForm_TrainingFile.getValue("termTitleFa").toString():"-");
-                    params.fromDate = "تاریخ شروع کلاس: از: " + (DynamicForm_TrainingFile.getValue("fromDate")?DynamicForm_TrainingFile.getValue("fromDate"):"-");
-                    params.toDate = "تا: " + (DynamicForm_TrainingFile.getValue("toDate")?DynamicForm_TrainingFile.getValue("toDate"):"-");
-                    printWithCriteria(DynamicForm_TrainingFile.getValuesAsAdvancedCriteria(), params, "personnelCourses.jasper");
-                    // printToJasper(ListGrid_TrainingFile_TrainingFileJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
-                }
-            },
+            <%--{--%>
+                <%--title: "<spring:message code="global.form.print.pdf"/>",--%>
+                <%--click: function () {--%>
+                    <%--print_Training_File();--%>
+                <%--}--%>
+            <%--}, --%>
             {
                 title: "<spring:message code="global.form.print.excel"/>",
                 click: function () {
-                    // console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
+                    console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
                     exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
+                    // print_Training_File("excel");
                 }
             },
             <%--{--%>
                 <%--title: "<spring:message code="global.form.print.html"/>",--%>
                 <%--click: function () {--%>
-                    <%--printToJasper(ListGrid_TrainingFile_TrainingFileJSP.getData().localData.toArray(), params, "personnelCourses.jasper", "HTML");--%>
+                    <%--print_Training_File("html");--%>
                 <%--}--%>
             <%--}--%>
         ]
@@ -538,7 +434,6 @@
         allowAdvancedCriteria: true,
         contextMenu: Menu_Courses_TrainingFileJSP,
         dataSource: RestDataSource_Course_JspTrainingFile,
-        // overflow: "scroll",
         filterOnKeypress: true,
         showFilterEditor: false,
 
@@ -572,7 +467,7 @@
     var VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        overflow: "visible",
+        // overflow: "scroll",
         members: [
             // ToolStrip_Actions_Training_File,
             ListGrid_TrainingFile_TrainingFileJSP

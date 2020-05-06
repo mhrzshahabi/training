@@ -15,10 +15,16 @@ import com.nicico.training.repository.EquipmentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -27,6 +33,7 @@ public class EquipmentService implements IEquipmentService {
 
     private final ModelMapper modelMapper;
     private final EquipmentDAO equipmentDAO;
+    private final MessageSource messageSource;
 
     @Transactional(readOnly = true)
     @Override
@@ -48,19 +55,43 @@ public class EquipmentService implements IEquipmentService {
 
     @Transactional
     @Override
-    public EquipmentDTO.Info create(EquipmentDTO.Create request) {
+    public EquipmentDTO.Info create(EquipmentDTO.Create request, HttpServletResponse response) {
         final Equipment equipment = modelMapper.map(request, Equipment.class);
+
+        if (equipmentDAO.isExsits(equipment.getCode(), equipment.getTitleFa(),0L) > 0) {
+            try {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(405, messageSource.getMessage("msg.equipment.duplicate", null, locale));
+                return null;
+            }
+         catch (IOException e){
+            throw new TrainingException(TrainingException.ErrorType.InvalidData);
+        }
+        }
+
         return save(equipment);
     }
 
     @Transactional
     @Override
-    public EquipmentDTO.Info update(Long id, EquipmentDTO.Update request) {
+    public EquipmentDTO.Info update(Long id, EquipmentDTO.Update request,HttpServletResponse response) {
         final Optional<Equipment> cById = equipmentDAO.findById(id);
         final Equipment equipment = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EquipmentNotFound));
         Equipment updating = new Equipment();
         modelMapper.map(equipment, updating);
         modelMapper.map(request, updating);
+
+        if (equipmentDAO.isExsits(updating.getCode(), updating.getTitleFa(), updating.getId()) > 0) {
+            try {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(405, messageSource.getMessage("msg.equipment.duplicate", null, locale));
+                return null;
+            }
+            catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         return save(updating);
     }
 

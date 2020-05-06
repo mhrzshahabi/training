@@ -74,6 +74,8 @@ public class TeacherService implements ITeacherService {
         if (request.getPersonality().getId() != null) {
             personalInfo = personalInfoService.getPersonalInfo(request.getPersonality().getId());
             personalInfoService.modify(request.getPersonality(), personalInfo);
+            if(personalInfo.getPhoto() != null)
+                request.getPersonality().setPhoto(personalInfo.getPhoto());
             modelMapper.map(request.getPersonality(), personalInfo);
         }
         final Teacher teacher = modelMapper.map(request, Teacher.class);
