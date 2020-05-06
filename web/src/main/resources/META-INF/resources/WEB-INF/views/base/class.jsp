@@ -342,6 +342,11 @@
                     "2": "درخواست واحد",
                     "3": "نیاز موردی",
                 },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                }
             },
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -350,6 +355,11 @@
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
                 },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                }
             },
             {
                 name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
@@ -357,6 +367,11 @@
                     "2": "عادی",
                     "3": "مدور",
                     "4": "سالن"
+                },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
                 }
             },
 // {name: "lastModifiedDate",
