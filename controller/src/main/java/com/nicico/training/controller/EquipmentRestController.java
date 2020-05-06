@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -50,15 +51,15 @@ public class EquipmentRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_equipment')")
-    public ResponseEntity<EquipmentDTO.Info> create(@Validated @RequestBody EquipmentDTO.Create request) {
-        return new ResponseEntity<>(equipmentService.create(request), HttpStatus.CREATED);
+    public ResponseEntity<EquipmentDTO.Info> create(@Validated @RequestBody EquipmentDTO.Create request, HttpServletResponse response) {
+        return new ResponseEntity<>(equipmentService.create(request,response), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_equipment')")
-    public ResponseEntity<EquipmentDTO.Info> update(@PathVariable Long id, @Validated @RequestBody EquipmentDTO.Update request) {
-        return new ResponseEntity<>(equipmentService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<EquipmentDTO.Info> update(@PathVariable Long id, @Validated @RequestBody EquipmentDTO.Update request,HttpServletResponse response) {
+        return new ResponseEntity<>(equipmentService.update(id, request,response), HttpStatus.OK);
     }
 
     @Loggable
