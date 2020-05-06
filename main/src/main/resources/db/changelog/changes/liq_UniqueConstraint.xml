@@ -107,4 +107,10 @@
     <changeSet author="poursalehi_mos (generated)" id="1588738080087-427">
         <addUniqueConstraint columnNames="f_parameter_id, c_title" constraintName="UKmj1epdwsyo0vq0504wdam0iql" tableName="tbl_parameter_value"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588747803726-426">
+        <addUniqueConstraint columnNames="c_title_en" constraintName="UC_TBL_CATEGORYC_TITLE_EN_COL" tableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588747803726-427">
+        <addUniqueConstraint columnNames="c_title_fa" constraintName="UC_TBL_CATEGORYC_TITLE_FA_COL" tableName="tbl_category"/>
+    </changeSet>
 </databaseChangeLog>

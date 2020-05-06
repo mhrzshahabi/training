@@ -161,6 +161,7 @@ public class SubcategoryRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+
         SearchDTO.SearchRs<SubcategoryDTO.Info> response = subCategoryService.search(request);
         final SubcategoryDTO.SpecRs specResponse = new SubcategoryDTO.SpecRs();
         specResponse.setData(response.getList())
