@@ -15,7 +15,7 @@ public interface SkillDAO extends JpaRepository<Skill, Long>, JpaSpecificationEx
     String findMaxSkillCode(@Param("skillCodeStart") String skillCodeStart);
 
     @Query(value = "SELECT * FROM tbl_skill ts where Not Exists(select * from TBL_COMPETENCE_SKILL tcs where ts.id=tcs.F_SKILL_ID) and " +
-            " Not Exists(select * from TBL_SKILL_SKILLGROUP tsg where ts.id=tsg.F_SKILL_ID) and  Not Exists(select * from TBL_SKILL_COURSE tsc where ts.id=tsc.F_SKILL_ID)    and id=?", nativeQuery = true)
+            " Not Exists(select * from TBL_SKILL_COURSE tsc where ts.id=tsc.F_SKILL_ID) and id=:skillId", nativeQuery = true)
     Skill getSkillUsedInOther(Long skillId);
 
     List<Skill> findByCourseIsNull();

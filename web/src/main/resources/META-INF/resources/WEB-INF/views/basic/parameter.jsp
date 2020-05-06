@@ -76,8 +76,8 @@
         ],
         contextMenu: ParameterMenu_parameter,
         dataChanged: function () { updateCountLabel(this, ParameterLGCountLabel_parameter)},
-        recordDoubleClick: function () { editParameter_parameter(); },
-        selectionUpdated: function (record) { refreshParameterValueLG_parameter(); }
+        // recordDoubleClick: function () { editParameter_parameter(); },
+        selectionUpdated: function () { refreshParameterValueLG_parameter(); }
     });
 
     ParameterValueDS_parameter = isc.TrDS.create({
@@ -104,7 +104,7 @@
         ],
         contextMenu: ParameterValueMenu_parameter,
         dataChanged: function () { updateCountLabel(this, ParameterValueLGCount_parameter)},
-        recordDoubleClick: function () { editParameterValue_parameter(); }
+        // recordDoubleClick: function () { editParameterValue_parameter(); }
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -185,7 +185,7 @@
         }
         let parameterSaveUrl = parameterUrl;
         action = '<spring:message code="create"/>';
-        if (parameterMethod_parameter.localeCompare("PUT") == 0) {
+        if (parameterMethod_parameter.localeCompare("PUT") === 0) {
             let record = ParameterLG_parameter.getSelectedRecord();
             parameterSaveUrl += "/" + record.id;
             action = '<spring:message code="edit"/>';
@@ -245,7 +245,7 @@
         }
         let parameterValueSaveUrl = parameterValueUrl;
         let action = '<spring:message code="create"/>';
-        if (parameterValueMethod_parameter.localeCompare("PUT") == 0) {
+        if (parameterValueMethod_parameter.localeCompare("PUT") === 0) {
             let record = ParameterValueLG_parameter.getSelectedRecord();
             parameterValueSaveUrl += "/" + record.id;
             action = '<spring:message code="edit"/>';
@@ -264,3 +264,5 @@
             removeRecord(parameterValueUrl + "/" + record.id, entityType, record.title, 'ParameterValueLG_parameter');
         }
     }
+
+    //</script>

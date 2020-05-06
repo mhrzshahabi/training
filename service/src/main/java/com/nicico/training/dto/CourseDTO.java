@@ -2,7 +2,6 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.Goal;
-import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -18,7 +17,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -88,6 +86,7 @@ public class CourseDTO implements Serializable {
         private Long categoryId;
         private Long subCategoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
+        private CategoryDTO.CategoryInfoTuple category;
         private Boolean hasGoal;
         private Boolean hasSkill;
 

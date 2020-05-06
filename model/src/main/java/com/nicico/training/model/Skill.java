@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -25,7 +24,7 @@ public class Skill extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "skill_seq")
     @SequenceGenerator(name = "skill_seq", sequenceName = "seq_skill_id", allocationSize = 1)
-    @Column(name = "id", precision = 0)
+    @Column(name = "id", precision = 10)
     private Long id;
 
     @Column(name = "c_code", length = 10, nullable = false, unique = true)
@@ -40,28 +39,21 @@ public class Skill extends Auditable {
     @Column(name = "c_description", length = 500)
     private String description;
 
-    //معرفی سطح مهارت(آشنایی، توانایی و تسلط)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_skill_level", nullable = false, insertable = false, updatable = false)
     private SkillLevel skillLevel;
 
     @Column(name = "f_skill_level")
     private Long skillLevelId;
 
-    //  گروه بندی مهارت(کامپیوتر/برق/...)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_category", nullable = false, insertable = false, updatable = false)
     private Category category;
 
     @Column(name = "f_category")
     private Long categoryId;
 
-
-    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY)
-    private Set<NeedAssessment> needAssessments;
-
-    //زیر گروه مثلا برای گروه کامپیوتر (شبکه، سخت افزار و ...)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_sub_category", nullable = false, insertable = false, updatable = false)
     private Subcategory subCategory;
 
@@ -69,23 +61,20 @@ public class Skill extends Auditable {
     private Long subCategoryId;
 
     //-------------------------------------------------
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_main_objective_course", insertable = false, updatable = false)
     private Course courseMainObjective;
 
     @Column(name = "f_main_objective_course")
     private Long courseMainObjectiveId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Course course;
 
     @Column(name = "f_course")
     private Long courseId;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skillSet")
-    private Set<SkillGroup> skillGroupSet;
-
-    @OneToMany(mappedBy = "skill")
+    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<NeedsAssessment> needsAssessments;
 }
