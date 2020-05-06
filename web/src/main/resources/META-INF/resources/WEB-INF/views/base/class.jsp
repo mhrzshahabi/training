@@ -73,7 +73,7 @@
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
-            {name: "theoryDuration"}
+            {name: "course.theoryDuration"}
         ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
@@ -380,7 +380,7 @@
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "course.code", title:"", hidden:true},
-            {name: "theoryDuration" , title: "", hidden:true}
+            {name: "course.theoryDuration" , title: "", hidden:true}
 
         ],
 
@@ -842,9 +842,9 @@
                     }
                 },
                 pickListProperties: {
-                    sortField: 0
+                    sortField: 0,
+                    showFilterEditor: true
                 }
-
             },
             {
                 name: "instituteId",
@@ -876,7 +876,8 @@
                     form.clearValue("trainingPlaceIds")
                 },
                 pickListProperties: {
-                    sortField: 0
+                    sortField: 0,
+                    showFilterEditor: true
                 }
             },
             {
@@ -1031,7 +1032,6 @@
                 title: "<spring:message code="start.evaluation"/>",
                 textAlign: "center",
                 hint: "&nbsp;ماه",
-                sortField: 0,
                 valueMap: {
                     "1": "1",
                     "2": "2",
@@ -1045,7 +1045,11 @@
                     "10": "10",
                     "11": "11",
                     "12": "12"
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false,
+                    sortField: 1
+                },
             },
             {
                 name: "acceptancelimit_a",
@@ -2458,8 +2462,6 @@
     }
 
     function GetScoreState(resp) {
-
-        console.log(resp.httpResponseCode)
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
         } else if (resp.httpResponseCode === 406) {
                 createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
@@ -2596,7 +2598,6 @@
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let result = JSON.parse(resp.data).response.data;
                     DynamicForm_Class_JspClass.setValue("dDuration", result.length);
-                    console.log("dayDuration");
                 }
             }
         });
