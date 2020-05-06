@@ -114,7 +114,7 @@
                 showHintInField: true,
                 blur: function () {
                     var codeCheck;
-                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
                     nationalCodeCheck = codeCheck;
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message

@@ -1500,8 +1500,8 @@
     }
 
     function checkNationalCode(code) {
-        if (code === "undefined" || code === null || code === "")
-            return false;
+        if (code === undefined || code === null || code === "")
+            return true;
         let L = code.length;
 
         if (L < 8 || parseFloat(code, 10) === 0)
