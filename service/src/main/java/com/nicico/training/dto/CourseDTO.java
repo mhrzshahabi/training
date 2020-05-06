@@ -122,6 +122,7 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+        private Float theoryDuration;
     }
 
     @Getter

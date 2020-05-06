@@ -161,6 +161,20 @@ public class TermService implements ITermService {
         return criteriaRq;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<TermDTO.Years> years() {
+        List<String> years = termDAO.getYearsFromStartDate();
+
+        List<TermDTO.Years> yearList = new ArrayList<>(years.size());
+
+        for (String year : years)
+        {
+            yearList.add(new TermDTO.Years(year));
+        }
+
+        return yearList;
+    }
 
 
 }

@@ -34,6 +34,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -206,15 +208,15 @@ public class TeacherRestController {
     @GetMapping(value = "/spec-list-grid")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                         @RequestParam(value = "_constructor", required = false) String constructor,
-                                                         @RequestParam(value = "operator", required = false) String operator,
-                                                         @RequestParam(value = "criteria", required = false) String criteria,
-                                                         @RequestParam(value = "id", required = false) Long id,
-                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
-        request.setDistinct(true);
+        SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
@@ -439,6 +441,34 @@ public class TeacherRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/fullName/{id}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@PathVariable Long id,
+                                                                               @RequestParam("_startRow") Integer startRow,
+                                                                               @RequestParam("_endRow") Integer endRow,
+                                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
+
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 
     // ---------------
 
@@ -735,6 +765,52 @@ public class TeacherRestController {
                     }));
 
 
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        return request;
+    }
+
+    private SearchDTO.SearchRq setSearchCriteriaNotInBlackList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                    @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                    @RequestParam(value = "_constructor", required = false) String constructor,
+                                                    @RequestParam(value = "operator", required = false) String operator,
+                                                    @RequestParam(value = "criteria", required = false) String criteria,
+                                                    @RequestParam(value = "id", required = false) Long id,
+                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            SearchDTO.CriteriaRq ctr =  makeNewCriteria("inBlackList", false, EOperator.equals, null);
+            criteriaRq.getCriteria().add(ctr);
+            request.setCriteria(criteriaRq);
+        }
+        else {
+            SearchDTO.CriteriaRq ctr =  makeNewCriteria("inBlackList", false, EOperator.equals, null);
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setCriteria(new ArrayList<>());
+            criteriaRq.setOperator(EOperator.and);
+            criteriaRq.getCriteria().add(ctr);
             request.setCriteria(criteriaRq);
         }
 

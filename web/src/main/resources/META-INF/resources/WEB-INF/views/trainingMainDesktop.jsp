@@ -169,6 +169,7 @@
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         autoFitWidthApproach: "both",
+        selectCellTextOnClick:true,
         alternateRecordStyles: true,
         showClippedValuesOnHover: true,
         leaveScrollbarGap: false,
@@ -548,13 +549,14 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
-                },
-                {
-                    title: "<spring:message code="skill.group"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
-                    }
-                },
+                }
+                <%--,--%>
+                <%--{--%>
+                <%--    title: "<spring:message code="skill.group"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="/skill-group/show-form"/>");--%>
+                <%--    }--%>
+                <%--},--%>
                 <%--{isSeparator: true},--%>
                 <%--{--%>
                 <%--    title: "<spring:message code="need.assessment.skill.based"/>",--%>
@@ -641,13 +643,13 @@
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "قرارداد آموزشی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/class-contract"/>");
-                    }
-                },
+                <%--{isSeparator: true},--%>
+                <%--{--%>
+                <%--    title: "قرارداد آموزشی",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="web/class-contract"/>");--%>
+                <%--    }--%>
+                <%--},--%>
             ]
         }),
     });
@@ -687,12 +689,12 @@
                         createTab(this.title, "<spring:url value="/evaluationCoefficient/show-form"/>");
                     }
                 },
-                {
-                    title: "ثبت نتایج",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "ثبت نتایج",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {
                     title:"<spring:message code="register.Score.PreTest"/>",
                     click: function () {
@@ -1271,7 +1273,7 @@
         })
     }
 
-    function exportToExcel(fields, data) {
+    function exportToExcel(fields, data,titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/export-to-excel/download/",
@@ -1282,11 +1284,13 @@
                     {name: "myToken", type: "hidden"},
                     {name: "fields", type: "hidden"},
                     {name: "data", type: "hidden"},
+                    {name: "titr", type: "hidden"}
                 ]
         });
         <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
         downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
         downloadForm.setValue("data", JSON.stringify(data.toArray()));
+        downloadForm.setValue("titr",titr);
         downloadForm.show();
         downloadForm.submitForm();
     }

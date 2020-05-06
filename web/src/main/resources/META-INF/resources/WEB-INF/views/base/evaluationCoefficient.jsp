@@ -430,7 +430,7 @@
                     var fields = DynamicForm_Evaluation_Coefficient.getFields();
                     var toUpdate = [];
 
-                    for (var i = 0; i < fields.length; i++) {
+                    for (let i = 0; i < fields.length; i++) {
                         if (fields[i].getID().startsWith("isc"))
                             continue;
                         toUpdate.add({

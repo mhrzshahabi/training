@@ -71,7 +71,9 @@
             {name: "instituteId"},
             {name: "workflowEndingStatusCode"},
             {name: "workflowEndingStatus"},
-            {name: "preCourseTest", type: "boolean"}
+            {name: "preCourseTest", type: "boolean"},
+            {name: "course.code"},
+            {name: "course.theoryDuration"}
         ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
@@ -272,9 +274,12 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-            if(record.classStatus == "3")
-            {TabSet_Class.enableTab("classScoresTab")}
-            else{TabSet_Class.disableTab("classScoresTab");}
+            // if(record.classStatus == "3")
+            // {
+            //     TabSet_Class.enableTab("classScoresTab")
+            // }
+            // else{TabSet_Class.disableTab("classScoresTab");
+            // }
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         doubleClick: function () {
@@ -337,6 +342,11 @@
                     "2": "درخواست واحد",
                     "3": "نیاز موردی",
                 },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                }
             },
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -345,6 +355,11 @@
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
                 },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                }
             },
             {
                 name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
@@ -352,6 +367,11 @@
                     "2": "عادی",
                     "3": "مدور",
                     "4": "سالن"
+                },
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
                 }
             },
 // {name: "lastModifiedDate",
@@ -373,7 +393,9 @@
                 align: "center",
                 filterOperator: "iContains"
             },
-            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
+            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+            {name: "course.code", title:"", hidden:true},
+            {name: "course.theoryDuration" , title: "", hidden:true}
 
         ],
 
@@ -491,6 +513,12 @@
                 hint: "حداقل نفر",
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
+                blur(form, item){
+                    if(form.getValue("maxCapacity")!==null && parseInt(form.getValue(item)) > parseInt(form.getValue("maxCapacity"))){
+                        createDialog("info","مقدار فیلد حداقل ظرفیت باید کوچکتر یا مساوی مقدار فیلد حداکثر ظرفیت باشد")
+                        item.setValue("");
+                    }
+                }
                 <%--validators:[{--%>
                 <%--type: "custom",--%>
                 <%--errorMessage: "<spring:message code='msg.min.capacity'/>",--%>
@@ -508,7 +536,13 @@
                 hint: "حداکثر نفر",
                 textAlign: "center",
                 showHintInField: true,
-                keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9]",
+                blur(form, item){
+                    if(form.getValue("minCapacity")!== null && parseInt(form.getValue(item)) < parseInt(form.getValue("minCapacity"))){
+                        createDialog("info","مقدار فیلد حداقل ظرفیت باید کوچکتر یا مساوی مقدار فیلد حداکثر ظرفیت باشد")
+                        item.setValue("");
+                    }
+                }
             },
             {
                 name: "code",
@@ -698,6 +732,8 @@
                     "personality.firstNameFa",
                     "personality.nationalCode"
                 ],
+                sortField: ["personality.firstNameFa"],
+                sortDirection: "ascending",
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
                         RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id");
@@ -728,14 +764,19 @@
                 colSpan: 3,
                 required:true,
                 title: "<spring:message code="supervisor"/>:",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 textAlign: "center",
                 valueMap: {
                     1: "آقای دکتر سعیدی",
                     2: "خانم شاکری",
                     3: "خانم اسماعیلی",
-                    4: "خانم احمدی",
-                }
+                    4: "خانم احمدی"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                textMatchStyle: "substring",
+                sortField: 0
 // textBoxStyle:"textItemLite"
             },
             {
@@ -744,14 +785,19 @@
                 required:true,
                 wrapTitle: false,
                 title: "<spring:message code="planner"/>:",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 textAlign: "center",
                 valueMap: {
                     1: "آقای دکتر سعیدی",
                     2: "خانم شاکری",
                     3: "خانم اسماعیلی",
                     4: "خانم احمدی",
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                sortField: 0,
+                textMatchStyle: "substring"
 // textBoxStyle:"textItemLite"
             },
             {
@@ -760,12 +806,17 @@
                 textAlign: "center",
                 wrapTitle: true,
                 title: "<spring:message code="training.request"/>:",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 valueMap: {
                     "1": "نیازسنجی",
                     "2": "درخواست واحد",
                     "3": "نیاز موردی",
                 },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                sortField: 0,
+                textMatchStyle: "substring",
 // textBoxStyle: "textItemLite"
             },
             {
@@ -804,6 +855,10 @@
                     if (form.getValue("instituteId") == null) {
                         form.setValue("instituteId", value);
                     }
+                },
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: true
                 }
             },
             {
@@ -834,6 +889,10 @@
                 ],
                 changed: function (form, item) {
                     form.clearValue("trainingPlaceIds")
+                },
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: true
                 }
             },
             {
@@ -856,6 +915,9 @@
                     {name: "titleFa"},
                     {name: "capacity"}
                 ],
+                pickListProperties: {
+                    sortField: 1
+                },
                 click: function (form, item) {
                     if (form.getValue("instituteId")) {
                         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/trainingPlaces";
@@ -885,6 +947,12 @@
                     "3": "نمره از بیست",
                     "4": "بدون نمره",
                 },
+                type: "ComboBoxItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                sortField: 0,
+                textMatchStyle: "substring",
 
                 changed: function () {
                     let record = ListGrid_Class_JspClass.getSelectedRecord();
@@ -992,7 +1060,11 @@
                     "10": "10",
                     "11": "11",
                     "12": "12"
-                }
+                },
+                pickListProperties: {
+                    showFilterEditor: false,
+                    sortField: 1
+                },
             },
             {
                 name: "acceptancelimit_a",
@@ -1779,7 +1851,7 @@
             var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
             var ClassID = ClassRecord.id;
             var StudentID = [];
-            for (var i = 0; i < dropRecords.getLength(); i++) {
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 StudentID.add(dropRecords[i].id);
             }
             var JSONObj = {"ids": StudentID};
@@ -1951,6 +2023,14 @@
         }
     });
 
+    var RestDataSource_Year_Filter = isc.TrDS.create({
+        fields: [
+            {name: "year"}
+        ],
+        fetchDataURL: termUrl + "years",
+        autoFetchData: true
+    });
+
     var RestDataSource_Term_Filter = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -1958,22 +2038,54 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55",
-        autoFetchData: true
+        autoFetchData: false
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "450",
+        width: "700",
         height: "100%",
         wrapItemTitles: true,
-        numCols: 2,
-        colWidths: ["10%", "90%"],
+        numCols: 4,
+        colWidths: ["2%", "28%", "2%", "68%"],
         align: "center",
         titleAlign: "left",
         fields: [
             {
+                name: "yearFilter",
+                title: "<spring:message code='year'/>",
+                width: "200",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "year",
+                valueField: "year",
+                optionDataSource: RestDataSource_Year_Filter,
+                filterFields: ["year"],
+                sortField: ["year"],
+                sortDirection: "descending",
+                defaultToFirstOption: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {
+                        name: "year",
+                        title: "<spring:message code='year'/>",
+                        filterOperator: "iContains"
+                    }
+                ],
+                changed: function (form, item, value) {
+                     load_term_by_year(value);
+                },
+                dataArrived:function (startRow, endRow, data) {
+                    if(data.allRows[0].year !== undefined)
+                    {
+
+                        load_term_by_year(data.allRows[0].year);
+                    }
+                }
+            },
+            {
                 name: "termFilter",
                 title: "<spring:message code='term'/>",
+                width: "400",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "code",
@@ -2007,6 +2119,8 @@
                 dataArrived:function (startRow, endRow, data) {
                     if(data.allRows[0].id !== undefined)
                     {
+                        DynamicForm_Term_Filter.getItem("termFilter").clearValue();
+                        DynamicForm_Term_Filter.getItem("termFilter").setValue(data.allRows[0].code);
                         load_classes_by_term(data.allRows[0].id);
                     }
                 }
@@ -2101,7 +2215,12 @@
                 ID: "teacherInformationTab",
                 title: "<spring:message code='teacher.information'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
-            }
+            },
+            <%--{--%>
+                <%--ID: "costClassTab",--%>
+                <%--title: "<spring:message code='cost.class'/>",--%>
+                <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})--%>
+            <%--}--%>
 
 
         ],
@@ -2358,8 +2477,6 @@
     }
 
     function GetScoreState(resp) {
-
-        console.log(resp.httpResponseCode)
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
         } else if (resp.httpResponseCode === 406) {
                 createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
@@ -2422,6 +2539,16 @@
                     }
                     break;
                 }
+                case "costClassTab": {
+
+                    if (typeof loadPage_costClass !== "undefined")
+                    {
+                        loadPage_costClass();
+                    }
+                    break;
+                }
+
+
                 case "classAttendanceTab": {
                     if (typeof loadPage_Attendance !== "undefined")
                         loadPage_Attendance();
@@ -2483,10 +2610,9 @@
             showPrompt: false,
             serverOutputAsString: false,
             callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let result = JSON.parse(resp.data).response.data;
                     DynamicForm_Class_JspClass.setValue("dDuration", result.length);
-                    console.log("dayDuration");
                 }
             }
         });
@@ -2500,10 +2626,14 @@
         }
         isReadOnlyClass = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
         TabSet_Class.enable();
-        if (classRecord.preCourseTest && classRecord.course.evaluation !== "1")
-            TabSet_Class.enableTab("classPreCourseTestQuestionsTab");
-        else
-            TabSet_Class.disableTab("classPreCourseTestQuestionsTab");
+        if (classRecord.preCourseTest && classRecord.course.evaluation !== "1") {
+            TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
+        } else {
+            if (TabSet_Class.getSelectedTab().ID === "classPreCourseTestQuestionsTab") {
+                TabSet_Class.selectTab(0);
+            }
+            TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
+        }
     }
 
     //*****check class is ready to end or no*****
@@ -2703,11 +2833,30 @@
         }));
     }
 
+    ////*****load term by year*****
+    function load_term_by_year(value)
+    {
+        let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
+        RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+        DynamicForm_Term_Filter.getItem("termFilter").fetchData();
+    }
+    ////******************************
+
     ////*****load classes by term*****
     function load_classes_by_term(value) {
         if(value !== undefined) {
-            var criteria = '{"fieldName":"term.id","operator":"equals","value":' + value + '}';
-            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+            ////*****this criteria is for OR two condition (term.id and classStatus)
+            ////*****this criteria is And with user criteria
+            let criteria = {
+                _constructor:"AdvancedCriteria",
+                operator:"or",
+                criteria:[
+                    { fieldName:"term.id", operator:"equals", value: value},
+                    { fieldName:"classStatus", operator:"notEqual", value: "3"}
+                ]
+            };
+            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
+            ListGrid_Class_JspClass.implicitCriteria = criteria;
             ListGrid_Class_JspClass.invalidateCache();
             ListGrid_Class_JspClass.fetchData();
         }

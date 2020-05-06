@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -81,6 +83,7 @@ public class TclassRestController {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
         return infoResponseEntity;
     }
@@ -90,13 +93,14 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<TclassDTO.Info> safeCreate(@Validated @RequestBody TclassDTO.Create request, HttpServletResponse response) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request,response), HttpStatus.CREATED);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request, response), HttpStatus.CREATED);
 
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 201) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
         }
         return infoResponseEntity;
     }
@@ -390,6 +394,7 @@ public class TclassRestController {
     public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
         try {
             tclassService.updatePreCourseTestQuestions(classId, request);
+            classAlarmService.alarmPreCourseTestQuestion(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -512,6 +517,23 @@ public class TclassRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
+
+            SearchDTO.CriteriaRq addedObject = null;
+            SearchDTO.CriteriaRq removedObject = null;
+            for (SearchDTO.CriteriaRq criterion : criteriaRq.getCriteria()) {
+                if (criterion.getFieldName().equalsIgnoreCase("startDate") && criterion.getOperator().equals(EOperator.inSet)) {
+                    SearchDTO.CriteriaRq ctr = makeNewCriteria("year", null, EOperator.or, new ArrayList<>());
+                    for (Object o : criterion.getValue()) {
+                        ctr.getCriteria().add(makeNewCriteria("startDate", o, EOperator.iContains, null));
+                    }
+                    addedObject = ctr;
+                    removedObject = criterion;
+                }
+            }
+            if (removedObject != null)
+                criteriaRq.getCriteria().remove(removedObject);
+            if (addedObject != null)
+                criteriaRq.getCriteria().add(addedObject);
             request.setCriteria(criteriaRq);
         }
 

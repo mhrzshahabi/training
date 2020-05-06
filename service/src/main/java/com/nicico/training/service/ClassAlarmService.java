@@ -580,7 +580,47 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
-    //****************class attendance alarm*****************
+    //****************class pre course test question alarm*****************
+    @Transactional
+    public void alarmPreCourseTestQuestion(Long class_id) {
+        try {
+            String alarmScript = "  SELECT " +
+                    "'سوالات پیش آزمون'AS alarmTypeTitleFa, 'PreCourseTestQuestion' AS alarmTypeTitleEn, tbl_class.id AS classId, null AS sessionId, null AS teacherId, null AS studentId, " +
+                    " null AS instituteId, null AS trainingPlaceId, null AS reservationId, tbl_class.id AS targetRecordId,'classPreCourseTestQuestionsTab' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    "'سوالات آزمون پیش از برگزاری کلاس ثبت نشده است.'AS alarm,  null AS detailRecordId, '8' AS sortField,  null AS classIdConflict, null AS  sessionIdConflict, " +
+                    "  null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " tbl_class  " +
+                    " LEFT JOIN tbl_class_pre_course_test_question ON tbl_class_pre_course_test_question.f_class_id = tbl_class.id " +
+                    " WHERE " +
+                    " tbl_class.c_status<>3 and tbl_class.id =:class_id and tbl_class.pre_course_test = 1 and tbl_class_pre_course_test_question.f_class_id is null ";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).getResultList();
+
+            List<ClassAlarmDTO> alarmList = null;
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+
+                if (alarmList.size() > 0) {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("PreCourseTestQuestion", class_id);
+                    saveAlarms(alarmList, class_id);
+                } else {
+                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("PreCourseTestQuestion", class_id);
+                    setClassHasWarningStatus(class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
+    //****************class attendance alarm*****************IS ON LINE for > Attendance and EvaluationBehaviour and CheckListConflict
     @Transactional
     public List<ClassAlarmDTO> alarmAttendance(Long class_id) {
 
@@ -615,6 +655,66 @@ public class ClassAlarmService implements IClassAlarm {
                     "   tbl_session.f_class_id = :class_id " +
                     "   AND tbl_session.c_session_date <:todaydat" +
                     "   AND (tbl_attendance.c_state IS NULL OR tbl_attendance.c_state = 0)" +
+                    " ) " +
+                    " UNION ALL " +
+                    " SELECT " +
+                    "  'عدم صدور ارزیابی رفتاری'  AS alarmTypeTitleFa, 'EvaluationBehaviour' AS alarmTypeTitleEn, id AS classId, null AS sessionId, null AS teacherId, null AS studentId, " +
+                    "  null AS instituteId, null AS trainingPlaceId, null AS reservationId, id AS targetRecordId,'tabName' AS tabName, '/tclass/show-form' AS pageAddress, " +
+                    "   alarm,  null AS detailRecordId, '9' AS sortField,  null AS classIdConflict, null AS  sessionIdConflict, " +
+                    "  null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " (SELECT " +
+                    " tbl_class.id,  'برای ' || COUNT( tbl_class.id) || ' فراگیر این کلاس ارزیابی رفتاری صادر نشده است'  as alarm " +
+                    " FROM " +
+                    "   tbl_class " +
+                    "   INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id " +
+                    "   INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id " +
+                    " WHERE " +
+                    " tbl_class.id = :class_id AND " +
+                    "   tbl_course.c_evaluation = 3 AND " +
+                    "   tbl_class.c_status = 3 " +
+                    "   AND ( tbl_class_student.evaluation_status_behavior IS NULL " +
+                    "         OR tbl_class_student.evaluation_status_behavior = 0 ) " +
+                    " AND     " +
+                    "   trunc(ADD_MONTHS(tbl_class.c_status_date, (CASE WHEN tbl_class.start_evaluation IS NULL THEN 0 ELSE tbl_class.start_evaluation END))) - trunc(sysdate) <= 14 " +
+                    " GROUP BY tbl_class.id    " +
+                    " HAVING COUNT( tbl_class.id) > 0)  " +
+                    " UNION ALL " +
+                    " SELECT DISTINCT " +
+                    "'عدم تکمیل چک لیست' AS alarmTypeTitleFa, " +
+                    " 'CheckListConflict' AS alarmTypeTitleEn, tbchecklist.class_id  AS classId, null AS sessionId, null AS teacherId,  " +
+                    " null AS studentId, null AS instituteId, null AS trainingPlaceId, null AS reservationId,  tbchecklist.class_id AS targetrecordid, " +
+                    " 'classCheckListTab' AS tabname, '/tclass/show-form' AS pageaddress, " +
+                    "'در چک لیست \"' || tbchecklist.c_title_fa || '\" بخش \"' || tbchecklist.c_group || '\" آیتم \"' || tbchecklist.c_title_fa1 || '\" تعیین تکلیف نشده است (انتخاب یا درج توضیحات)' AS alarm,     " +
+                    " null AS detailrecordid, ( '6' || tbchecklist.id || '-' || tbchecklist.iditem ) AS sortfield, null AS classIdConflict,  " +
+                    " null AS  sessionIdConflict, null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict " +
+                    " FROM " +
+                    " ( " +
+                    "    SELECT " +
+                    "        tbl_check_list.id, " +
+                    "        tbl_check_list.c_title_fa, " +
+                    "        tbl_check_list_item.id AS iditem, " +
+                    "        tbl_check_list_item.c_group, " +
+                    "        tbl_check_list_item.c_title_fa AS c_title_fa1, " +
+                    "        tbl_check_list_item.b_is_deleted, " +
+                    "        tbl_class.id AS class_id " +
+                    "    FROM " +
+                    "        tbl_check_list " +
+                    "        INNER JOIN tbl_check_list_item ON tbl_check_list.id = tbl_check_list_item.f_check_list_id, " +
+                    "        tbl_class " +
+                    "    WHERE " +
+                    "        (CASE WHEN :class_id = 0 THEN 1 WHEN tbl_class.id = :class_id THEN 1 END) IS NOT NULL AND " +
+                    "         tbl_check_list_item.b_is_deleted IS NULL " +
+                    " ) tbchecklist " +
+                    " LEFT JOIN tbl_class_check_list ON tbchecklist.iditem = tbl_class_check_list.f_check_list_item_id " +
+                    "                                  AND tbchecklist.class_id = tbl_class_check_list.f_tclass_id " +
+                    " INNER JOIN tbl_class ON tbl_class.id = tbchecklist.class_id " +
+                    " WHERE " +
+                    " tbl_class.c_status <> 3 AND " +
+                    " tbl_class_check_list.c_description IS NULL " +
+                    " AND   ( " +
+                    "    tbl_class_check_list.b_enabled IS NULL " +
+                    "    OR    tbl_class_check_list.b_enabled = 0 " +
                     " ) ";
 
             List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("todaydat", todayDate).getResultList();

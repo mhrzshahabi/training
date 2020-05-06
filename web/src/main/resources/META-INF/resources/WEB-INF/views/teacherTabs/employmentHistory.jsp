@@ -65,7 +65,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
@@ -107,7 +107,7 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -342,22 +342,54 @@
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspEmploymentHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                canSort: false,
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "startDate",
@@ -371,12 +403,9 @@
         doubleClick: function () {
             ListGrid_EmploymentHistory_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspEmploymentHistory.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

@@ -112,6 +112,12 @@ public class ClassFormController {
         return "classTabs/scores";
     }
 
+    @RequestMapping("/cost-class-tab")
+    public String costclasstabTab() {
+        return "classTabs/costClass";
+    }
+
+
     @RequestMapping("/pre-course-test-questions-tab")
     public String preCourseQuestionsTab() {
         return "classTabs/preCourseTestQuestions";

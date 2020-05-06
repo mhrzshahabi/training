@@ -26,9 +26,9 @@ public class Job extends Auditable {
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
-    @ManyToMany(mappedBy = "jobSet")
+    @ManyToMany(mappedBy = "jobSet", fetch = FetchType.LAZY)
     private Set<JobGroup> jobGroupSet;
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
     private Set<Post> postSet;
 }

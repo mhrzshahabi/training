@@ -6,7 +6,6 @@
     var studentRemoveWait;
     var studentDefaultPresenceId = 103;
     var evalData;
-
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
         data: [
@@ -47,10 +46,129 @@
                     removeStudent_student();
                 }
             }),
-            isc.ToolStripButtonRemove.create({
+            isc.ToolStripButton.create({
                 title: "<spring:message code="evaluation"/>",
                 click: function () {
                     evaluationStudent_student();
+                }
+            }),
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    //roya
+                    let allRows = StudentsLG_student.data.allRows.toArray();
+                    var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+
+                    var data = [];
+                    var fields = [];
+                    var titr = "گزارش فراگیران کلاس " + classRecord.course.titleFa +
+                        " دارای کد دوره: " + classRecord.course.code +
+                        " و کد کلاس: " +  classRecord.code +
+                        " و استاد: " + classRecord.teacher +
+                            " و مدت: " + classRecord.course.theoryDuration +
+                            " ساعت و تاریخ شروع: " +  classRecord.startDate +
+                            " و تاریخ پایان: " +  classRecord.endDate;
+
+                    var record = {};
+                    record.title = "ردیف";
+                    record.name = "row";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "شماره پرسنلی 6 رقمی";
+                    record.name = "personnelNo";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "کد ملی";
+                    record.name = "nationalCode";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "نام";
+                    record.name = "firstName";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "نام خانوادگی";
+                    record.name = "lastName";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "نام پدر";
+                    record.name = "fatherName";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "شرکت";
+                    record.name = "companyName";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "حوزه";
+                    record.name = "ccpArea";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "معاونت";
+                    record.name = "ccpAssistant";
+                    fields.push(record);
+
+                    record = {};
+                    record.title = "امور";
+                    record.name = "ccpAffairs";
+                    fields.push(record);
+
+                    for(var i=0;i< allRows.length;i++){
+                        data[i] = new Object();
+                        data[i].row =  i+1;
+                        data[i].personnelNo =  allRows[i].student.personnelNo2;
+                        data[i].nationalCode =  allRows[i].student.nationalCode;
+                        data[i].firstName =  allRows[i].student.firstName;
+                        data[i].lastName =  allRows[i].student.lastName;
+                        data[i].fatherName =  allRows[i].student.fatherName;
+                        data[i].companyName =  allRows[i].applicantCompanyName;
+                        data[i].ccpArea =  allRows[i].student.ccpArea;
+                        data[i].ccpAssistant =  allRows[i].student.ccpAssistant;
+                        data[i].ccpAffairs =  allRows[i].student.ccpAffairs;
+                    }
+
+                    exportToExcel(fields, data,titr);
+                }
+            }),
+            isc.ToolStripButton.create({
+                icon: "[SKIN]/RichTextEditor/print.png",
+                title: "<spring:message code='print'/>",
+                click: function () {
+                    var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    var titr = "گزارش فراگیران کلاس " + classRecord.course.titleFa +
+                        " دارای کد دوره: " + classRecord.course.code +
+                        " و کد کلاس: " +  classRecord.code +
+                        " و استاد: " + classRecord.teacher +
+                        " و مدت: " + classRecord.course.theoryDuration +
+                        " ساعت و تاریخ شروع: " +  classRecord.startDate +
+                        " و تاریخ پایان: " +  classRecord.endDate;
+                    let params = {};
+                    params.titr = titr;
+
+                    let localData = StudentsLG_student.data.localData.toArray();
+                    let data = [];
+
+                    for (let i = 0; i < localData.length; i++) {
+                        let obj = {};
+                        obj.personnelNo =  localData[i].student.personnelNo2;
+                        obj.nationalCode =  localData[i].student.nationalCode;
+                        obj.firstName =  localData[i].student.firstName;
+                        obj.lastName =  localData[i].student.lastName;
+                        obj.fatherName =  localData[i].student.fatherName;
+                        obj.companyName =  localData[i].applicantCompanyName;
+                        obj.ccpArea =  localData[i].student.ccpArea;
+                        obj.ccpAssistant =  localData[i].student.ccpAssistant;
+                        obj.ccpAffairs =  localData[i].student.ccpAffairs;
+                        data.push(obj);
+                    }
+
+                    printToJasper(data, params, "ClassStudents.jasper");
+
                 }
             }),
             isc.LayoutSpacer.create({width: "*"}),
@@ -132,6 +250,7 @@
             {name: "student.ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
             {name: "student.ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
             {name: "student.ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
+            {name: "student.fatherName", title: "<spring:message code="father.name"/>", filterOperator: "iContains"}
         ],
 
         fetchDataURL: tclassStudentUrl + "/students-iscList/"
@@ -154,6 +273,7 @@
             {name: "student.firstName"},
             {name: "student.lastName"},
             {name: "student.nationalCode"},
+            {name: "student.fatherName",hidden:true},
             {
                 name: "applicantCompanyName",
                 textAlign: "center",
@@ -555,7 +675,7 @@
                                     click: function () {
                                         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                         var students = [];
-                                        for (var i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                        for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
                                             students.add({
                                                 "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
                                                 "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,

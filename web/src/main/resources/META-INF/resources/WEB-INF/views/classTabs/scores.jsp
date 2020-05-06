@@ -51,7 +51,7 @@
             {name: "scoresState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
             {name: "failureReason", title: "<spring:message code="faild.reason"/>", filterOperator: "iContains"},
             {name: "valence", title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
-            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
+            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains",canFilter:false},
         ],
     });
     //**********************************************************************************

@@ -98,7 +98,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeachingHistory,
                 valueField: "id",
@@ -141,7 +141,7 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -179,7 +179,11 @@
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='hour'/>",
                 showHintInField: true,
-                length: 3
+                length: 3,
+                editorExit: function (form, item, value) {
+                    var newValue = parseInt(value);
+                    item.setValue(newValue);
+                }
             },
             {
                 name: "startDate",
@@ -387,22 +391,54 @@
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspTeachingHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspTeachingHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterOnKeypress: true
+                canSort: false,
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "duration",
@@ -422,12 +458,9 @@
         doubleClick: function () {
             ListGrid_TeachingHistory_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspTeachingHistory.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,

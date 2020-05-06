@@ -66,8 +66,10 @@ public class ClassStudentService implements IClassStudentService {
             }
 
             ClassStudent classStudent = new ClassStudent();
-            classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
-            classStudent.setPresenceTypeId(create.getPresenceTypeId());
+            if(create.getApplicantCompanyName() != null)
+                classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
+            if(create.getPresenceTypeId() != null)
+                classStudent.setPresenceTypeId(create.getPresenceTypeId());
             classStudent.setTclass(tclass);
             classStudent.setStudent(student);
 
@@ -117,8 +119,8 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Transactional
-    public List<ClassStudent> findByClassIdAndStudentId(Long classId, Long studentId) {
-        return classStudentDAO.findByTclassIdAndStudentId(classId, studentId);
+    public ClassStudent findByClassIdAndStudentId(Long classId, Long studentId) {
+        return classStudentDAO.findByTclassIdAndStudentId(classId, studentId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
     }
 

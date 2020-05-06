@@ -302,38 +302,58 @@
             },
             {
                 name: "userIds",
-                type: "SelectItem",
+                type: "MultiComboBoxItem",
                 title: "<spring:message code="users"/>",
                 optionDataSource: UserDS_JspWorkGroup,
                 valueField: "id",
                 displayField: "lastName",
-                filterField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "firstName",
-                        title: "<spring:message code="firstName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
+                comboBoxProperties: {
+                    hint: "",
+                    filterFields: ["firstName", "lastName", "username", "nationalCode"],
+                    textMatchStyle: "substring",
+                    pickListWidth: 335,
+                    pickListProperties: {
+                        autoFitWidthApproach: "both",
+                        gridComponents: [
+                            isc.ToolStrip.create({
+                                autoDraw:false,
+                                height:30,
+                                width: "100%",
+                                members: [
+                                    isc.ToolStripButton.create({
+                                        width:"50%",
+                                        icon: "[SKIN]/actions/approve.png",
+                                        title: "<spring:message code='select.all'/>",
+                                        click:function() {
+                                            let fItem = DynamicForm_JspWorkGroup.getField("userIds");
+                                            fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));
+                                            fItem.comboBox.pickList.hide();
+                                        }
+                                    }),
+                                    isc.ToolStripButton.create({
+                                        width:"50%",
+                                        icon: "[SKIN]/actions/close.png",
+                                        title: "<spring:message code='deselect.all'/>",
+                                        click:function() {
+                                            let fItem = DynamicForm_JspWorkGroup.getField("userIds");
+                                            fItem.setValue([]);
+                                            fItem.comboBox.pickList.hide();
+                                        }
+                                    })
+                                ]
+                            }),
+                            "header","body"
+                        ]
                     },
-                    {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-                    {
-                        name: "username",
-                        title: "<spring:message code="username"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "nationalCode",
-                        title: "<spring:message code="national.code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    }
-                ]
+                    pickListFields: [
+                        {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+                        {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                }
             }
         ]
     });
@@ -450,34 +470,15 @@
                 filterField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
+                canSort: false,
                 pickListProperties: {
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {
-                        name: "firstName",
-                        title: "<spring:message code="firstName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "lastName",
-                        title: "<spring:message code="lastName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "username",
-                        title: "<spring:message code="username"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "nationalCode",
-                        title: "<spring:message code="national.code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    }
+                    {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true}
                 ]
             }
         ],

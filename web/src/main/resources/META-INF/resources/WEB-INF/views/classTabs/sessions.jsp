@@ -627,10 +627,14 @@
                     }
                 });
             } else {
-                session_method = "POST";
-                DynamicForm_Session.clearValues();
-                Window_Session.setTitle("<spring:message code="session"/>");
-                Window_Session.show();
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    session_method = "POST";
+                    DynamicForm_Session.clearValues();
+                    Window_Session.setTitle("<spring:message code="session"/>");
+                    Window_Session.show();
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
         }
 
@@ -673,22 +677,25 @@
                     }
                 });
             } else {
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    let courseId = ClassRecord.course.id;
 
-                let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                let courseId = ClassRecord.course.id;
+                    let startHour_ = record.sessionStartHour.split(':')[0].trim();
+                    record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
 
-                let startHour_ = record.sessionStartHour.split(':')[0].trim();
-                record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
+                    DynamicForm_Session.getField("instituteId").fetchData();
+                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
+                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
 
-                DynamicForm_Session.getField("instituteId").fetchData();
-                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
-                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
-
-                session_method = "PUT";
-                DynamicForm_Session.clearValues();
-                DynamicForm_Session.editRecord(record);
-                Window_Session.setTitle("<spring:message code="session"/>");
-                Window_Session.show();
+                    session_method = "PUT";
+                    DynamicForm_Session.clearValues();
+                    DynamicForm_Session.editRecord(record);
+                    Window_Session.setTitle("<spring:message code="session"/>");
+                    Window_Session.show();
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
         }
 
@@ -729,18 +736,21 @@
                     }
                 });
             } else {
-                isc.MyYesNoDialog.create({
-                    message: "<spring:message code="global.grid.record.remove.ask"/>",
-                    title: "<spring:message code="verify.delete"/>",
-                    buttonClick: function (button, index) {
-                        this.close();
-                        if (index === 0) {
-                            isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + record.id, "DELETE", null, show_SessionActionResult));
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    isc.MyYesNoDialog.create({
+                        message: "<spring:message code="global.grid.record.remove.ask"/>",
+                        title: "<spring:message code="verify.delete"/>",
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + record.id, "DELETE", null, show_SessionActionResult));
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
-
         }
 
         //*****show action result function*****
