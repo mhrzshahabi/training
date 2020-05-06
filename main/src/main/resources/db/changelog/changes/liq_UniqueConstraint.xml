@@ -101,11 +101,10 @@
     <changeSet author="heydaripoor (generated)" id="1588136355333-377">
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
     </changeSet>
-
-
-
-
     <changeSet author="heydaripoor (generated)" id="1588155671540-377">
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_address_id" tableName="tbl_company"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588738080087-427">
+        <addUniqueConstraint columnNames="f_parameter_id, c_title" constraintName="UKmj1epdwsyo0vq0504wdam0iql" tableName="tbl_parameter_value"/>
     </changeSet>
 </databaseChangeLog>

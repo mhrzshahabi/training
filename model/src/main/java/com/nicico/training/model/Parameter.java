@@ -24,7 +24,7 @@ public class Parameter extends Auditable {
     @Column(name = "c_title", nullable = false, unique = true)
     private String title;
 
-    @Column(name = "c_code", unique = true)
+    @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_type")
@@ -33,6 +33,6 @@ public class Parameter extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @OneToMany(mappedBy = "parameter", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parameter", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ParameterValue> parameterValueList;
 }
