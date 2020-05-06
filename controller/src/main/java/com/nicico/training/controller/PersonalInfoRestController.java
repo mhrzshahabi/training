@@ -138,8 +138,6 @@ public class PersonalInfoRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    // ---------------
-
     @Loggable
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
@@ -147,6 +145,7 @@ public class PersonalInfoRestController {
         return new ResponseEntity<>(personalInfoService.search(request), HttpStatus.OK);
     }
 
+    //------------------------------------------- Attach Photo ---------------------------------------------------------
     @RequestMapping(value = {"/getAttach/{Id}"}, method = RequestMethod.GET)
     @Transactional
     public ResponseEntity<InputStreamResource> getAttach(ModelMap modelMap, @PathVariable Long Id) {
@@ -161,7 +160,6 @@ public class PersonalInfoRestController {
             e.printStackTrace();
             return null;
         }
-
     }
 
     @RequestMapping(value = {"/checkAttach/{Id}"}, method = RequestMethod.GET)
@@ -196,8 +194,8 @@ public class PersonalInfoRestController {
 
     @Loggable
     @Transactional
-    @PostMapping(value = "/addTempAttach/{id}")
-    public ResponseEntity<String> addTempAttach(@RequestParam("file") MultipartFile file,@PathVariable Long id) throws IOException {
+    @PostMapping(value = "/addTempAttach")
+    public ResponseEntity<String> addTempAttach(@RequestParam("file") MultipartFile file) throws IOException {
         FileInfo fileInfo = new FileInfo();
         File destinationFile = null;
         String fileType = "";
@@ -213,7 +211,7 @@ public class PersonalInfoRestController {
         try {
             if (!file.isEmpty() && fileSize < 30.0) {
                 fileType = file.getOriginalFilename().replace(file.getOriginalFilename(), "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
-                fileName = "Teacher_Photo"+"_"+id+fileType;
+                fileName = "Teacher_Photo"+fileType;
                 destinationFile = new File(tempUploadDir + File.separator + fileName);
                 file.transferTo(destinationFile);
                 fileInfo.setFileName(destinationFile.getPath());
@@ -223,11 +221,28 @@ public class PersonalInfoRestController {
                 int h = readImage.getHeight();
                 int w = readImage.getWidth();
                 if (100 > h || h > 500 || 100 > w || w > 500) {
+                   tempFiles = new File(tempUploadDir).list();
+                    for (String tempFile : tempFiles) {
+                        File file1 = new File(tempUploadDir + "/" + tempFile);
+                        file1.delete();
+                    }
                     return new ResponseEntity<>("wrong dimension", HttpStatus.NOT_ACCEPTABLE);
                 }
-            } else
+            } else {
+                tempFiles = new File(tempUploadDir).list();
+                for (String tempFile : tempFiles) {
+                    File file1 = new File(tempUploadDir + "/" + tempFile);
+                    file1.delete();
+                }
                 return new ResponseEntity<>("wrong size", HttpStatus.NOT_ACCEPTABLE);
+            }
         } catch (Exception ex) {
+
+            String[] tempFiles1 = new File(tempUploadDir).list();
+            for (String tempFile : tempFiles1) {
+                File file1 = new File(tempUploadDir + "/" + tempFile);
+                file1.delete();
+            }
             ex.printStackTrace();
             return new ResponseEntity<>(fileName, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -265,6 +280,6 @@ public class PersonalInfoRestController {
         }
         return new ResponseEntity<>(fileName, HttpStatus.OK);
     }
-
+    //------------------------------------------- Attach Photo ---------------------------------------------------------
 
 }
