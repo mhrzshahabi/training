@@ -831,8 +831,9 @@
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
+                textMatchStyle: "substring",
                 pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains", autoFitWidth:true},
+                    {name: "titleFa", filterOperator: "iContains", autoFitWidth:true, autoFitWidthApproach:true},
                     {name: "manager.firstNameFa", filterOperator: "iContains"},
                     {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
@@ -1069,6 +1070,7 @@
             }
         ],
     });
+
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
 // width: "700",
 // validateOnChange:true,
@@ -2257,8 +2259,8 @@
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
             VM_JspClass.clearErrors(true);
             VM_JspClass.clearValues();
-            VM_JspClass.editRecord(record);
             if (a === 0) {
+                VM_JspClass.editRecord(record);
                 saveButtonStatus();
                 classMethod = "PUT";
                 url = classUrl + record.id;
@@ -2283,9 +2285,20 @@
             } else {
                 classMethod = "POST";
                 url = classUrl;
+
+                DynamicForm1_Class_JspClass.setValue("autoValid", true);
+                DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
+                DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
+                DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
+                DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
+                DynamicForm_Class_JspClass.setValue("topology", record.topology);
+                DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
+                DynamicForm_Class_JspClass.setValue("scoringMethod", record.scoringMethod);
+                DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
+                DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
+                DynamicForm1_Class_JspClass.editRecord(record);
                 Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
-                DynamicForm1_Class_JspClass.setValue("autoValid", true);
             }
 
 // RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
