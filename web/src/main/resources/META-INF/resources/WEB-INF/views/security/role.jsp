@@ -130,8 +130,7 @@
     }
 
     function loadPage_role() {
-        alert('loadPage_role');
         userRecord = UserLG_user.getSelectedRecord();
-        if (checkRecordAsSelected(userRecord)) {alert()}
+        if (checkRecordAsSelected(userRecord)) {}
             //
     }
