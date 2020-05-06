@@ -1388,7 +1388,7 @@
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
-    const polisUrl = rootUrl + "/polis/"
+    const polisUrl = rootUrl + "/polis/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
