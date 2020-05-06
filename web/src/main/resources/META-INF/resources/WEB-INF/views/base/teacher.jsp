@@ -345,6 +345,7 @@
             IButton_Teacher_Exit_JspTeacher
         ]
     });
+
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         showResizeBar: true,
         titleEditorTopOffset: 2,
@@ -368,7 +369,7 @@
             {
                 ID: "academicBK",
                 title: "<spring:message code="academicBK"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"}),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
             },
             {
                 ID: "employmentHistory",
@@ -832,6 +833,8 @@
 
         showAttachViewLoader.setView();
         showAttachViewLoader.show();
+        if(document.getElementById('file-upload') != null)
+            document.getElementById('file-upload').files = undefined;
 
         showAttach(selected_record.personalityId);
 
@@ -976,6 +979,9 @@
         vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
+        if(document.getElementById('file-upload') != null)
+            document.getElementById('file-upload').files = undefined;
+
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);

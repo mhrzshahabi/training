@@ -99,6 +99,7 @@ public class TrainingException extends NICICOException {
         Unauthorized(401),
         Forbidden(403),
         RecordAlreadyExists(405),
+        EquipmentExists(405),
         CompetenceTypeNotFound(404),
         NeedsAssessmentNotFound(404),
         NeedsAssessmentDomainNotFound(404),
