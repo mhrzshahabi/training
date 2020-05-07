@@ -1552,7 +1552,6 @@
                     RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
                     DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
-                    // console.log(item.getSelectedRecord().code)
                 },
                 click: function (form, item) {
                     item.fetchData();
@@ -1757,23 +1756,15 @@
 //------------------------------------
             if (course_method == "POST") {
                 x = courseCode();
-                var wait = createDialog("wait");
+                let wait = createDialog("wait");
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
-                    var newCourseCounter = courseCounterCode(resp.data);
+                    let newCourseCounter = courseCounterCode(resp.data);
                     x = x + newCourseCounter;
                     DynamicForm_course_GroupTab.setValue('code', x);
-                    var data2 = vm_JspCourse.getValues();
+                    let data2 = vm_JspCourse.getValues();
                     ChangeEtechnicalType = false;
-                    // preCourseIdList = [];
-                    // equalCourseIdList = [];
-                    // for (let i = 0; i < testData.length; i++) {
-                    //     preCourseIdList.add(testData[i].id);
-                    // }
-                    // for (let j = 0; j < equalCourse.length; j++) {
-                    //     equalCourseIdList.add(equalCourse[j].idEC);
-                    // }
                     let mainObjectiveIdList = [];
-                    if (mainObjectiveGrid.data.localData != undefined) {
+                    if (mainObjectiveGrid.data.localData !== undefined) {
                         for (let k = 0; k < mainObjectiveGrid.data.localData.length; k++) {
                             mainObjectiveIdList.add(mainObjectiveGrid.data.localData[k].id);
                         }
@@ -1785,23 +1776,24 @@
                     // data2.equalCourseListId = equalCourseIdList;
                     // data2.preCourseListId = preCourseIdList;
 
-                    if (data2.scoringMethod == "1") {
+                    if (data2.scoringMethod === "1") {
                         data2.acceptancelimit = data2.acceptancelimit_a
                     }
                     // data2["workflowStatus"] = "ثبت اولیه";
                     data2.workflowStatus = "ثبت اولیه";
                     data2.workflowStatusCode = "0";
                     delete data2.subCategory;
+                    data2.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
+                    console.log(data2);
                     // data2["workflowStatusCode"] = "0";
 
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
-                        console.log(resp)
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             TabSet_Goal_JspCourse.enable();
                             ListGrid_Course_refresh();
-                            var responseID = JSON.parse(resp.data).id;
-                            var gridState = "[{id:" + responseID + "}]";
+                            let responseID = JSON.parse(resp.data).id;
+                            let gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                             courseRecord = JSON.parse(resp.data);
                             ListGrid_Course_Edit();
@@ -1810,7 +1802,7 @@
                             }, 3000);
 
                         } else if (resp.httpResponseCode === 406) {
-                            var myDialog = createDialog("info", "قبلاً دوره\u200cای با این نام ذخیره شده است.",
+                            let myDialog = createDialog("info", "قبلاً دوره\u200cای با این نام ذخیره شده است.",
                                 "<spring:message code="message"/>");
                             myDialog.addProperties({
                                 buttonClick: function () {
@@ -1826,7 +1818,7 @@
             }
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
-                var data1 = vm_JspCourse.getValues();
+                let data1 = vm_JspCourse.getValues();
                 if (data1.scoringMethod == "1") {
                     data1.acceptancelimit = data1.acceptancelimit_a
                 }
@@ -1847,13 +1839,15 @@
                 data1.equalCourseListId = equalCourseIdList;
                 data1.preCourseListId = preCourseIdList;
                 delete data1.subCategory;
+                data1.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
+                console.log(data1);
 
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         sendToWorkflowAfterUpdate(JSON.parse(resp.data));
                         ListGrid_Course_refresh();
                         courseRecord = JSON.parse(resp.data);
-                        var gridState = "[{id:" + courseRecord.id + "}]";
+                        let gridState = "[{id:" + courseRecord.id + "}]";
                         simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                         ToolStripButton_addSkill.click();
                         setTimeout(function () {
