@@ -95,13 +95,13 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspPublication,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
+                required: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCategoriesChanged = true;
@@ -121,14 +121,9 @@
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
+                    SubCats = SubCats.isEmpty() ? null : SubCats;
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
-
-                    if(DynamicForm_JspPublication.getField("subCategories").getValue() != null &&
-                        DynamicForm_JspPublication.getField("subCategories").getValue() != undefined &&
-                        DynamicForm_JspPublication.getField("subCategories").getValue().size() == 0){
-                        DynamicForm_JspPublication.getField("subCategories").clearValue();
-                    }
                 }
             },
             {
@@ -138,21 +133,21 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspPublication,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
                         var ids = DynamicForm_JspPublication.getField("categories").getValue();
-                        if (ids === []) {
+                        if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspPublication.implicitCriteria = null;
                         } else {
                             RestDataSource_SubCategory_JspPublication.implicitCriteria = {
@@ -439,24 +434,25 @@
             methodPublication = "PUT";
             saveActionUrlPublication = publicationUrl + "/" + record.id;
             DynamicForm_JspPublication.clearValues();
-            DynamicForm_JspPublication.editRecord(record);
-            var categoryIds = DynamicForm_JspPublication.getField("categories").getValue();
-            var subCategoryIds = DynamicForm_JspPublication.getField("subCategories").getValue();
-            if (categoryIds == null || categoryIds.length === 0)
+            var clonedRecord = Object.assign({}, record);
+            clonedRecord.categories = null;
+            clonedRecord.subCategories = null;
+            DynamicForm_JspPublication.editRecord(clonedRecord);
+            if (record.categories == null || record.categories.isEmpty())
                 DynamicForm_JspPublication.getField("subCategories").disable();
             else {
                 DynamicForm_JspPublication.getField("subCategories").enable();
                 var catIds = [];
-                for (var i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
+                for (var i = 0; i < record.categories.length; i++)
+                    catIds.add(record.categories[i].id);
                 DynamicForm_JspPublication.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspPublication.getField("subCategories").focus(null, null);
             }
-            if (subCategoryIds != null && subCategoryIds.length > 0) {
+            if (record.subCategories != null && !record.subCategories.isEmpty()) {
                 var subCatIds = [];
-                for (var i = 0; i < subCategoryIds.length; i++)
-                    subCatIds.add(subCategoryIds[i].id);
+                for (var i = 0; i < record.subCategories.length; i++)
+                    subCatIds.add(record.subCategories[i].id);
                 DynamicForm_JspPublication.getField("subCategories").setValue(subCatIds);
             }
             Window_JspPublication.show();
