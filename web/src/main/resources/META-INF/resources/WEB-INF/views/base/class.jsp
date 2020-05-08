@@ -1498,7 +1498,7 @@
             if (VM_JspClass.hasErrors()) {
                 return;
             }
-            var data = VM_JspClass.getValues();
+            let data = VM_JspClass.getValues();
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
@@ -1506,7 +1506,7 @@
 
                 data.acceptancelimit = data.acceptancelimit_a
             }
-            var classSaveUrl = classUrl;
+            let classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                 classSaveUrl += "safeUpdate/" + classRecord.id;
@@ -1514,49 +1514,50 @@
             {
                 classSaveUrl += "safeCreate";
             }
-            isc.RPCManager.sendRequest({
-                actionURL: classSaveUrl,
-                httpMethod: classMethod,
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-
-                        if (classMethod.localeCompare("PUT") === 0) {
-                            sendEndingClassToWorkflow();
-                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
-                        }
-
-                        ListGrid_Class_refresh();
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                        setTimeout(function () {
-                            ListGrid_Class_JspClass.setSelectedState(gridState);
-                            ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
-                        }, 3000);
-                        Window_Class_JspClass.close();
-
-                        //**********generate class sessions**********
-                        if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
-                            if (autoValid) {
-                                ClassID = JSON.parse(resp.data).id;
-                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), "callback: class_get_sessions_result(rpcResponse)"));
-                            }
-                        }
-                        //**********generate class sessions**********
-
-                    } else {
-                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error");
+            isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), (resp)=>{
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    if (classMethod.localeCompare("PUT") === 0) {
+                        sendEndingClassToWorkflow();
+                        sendToWorkflowAfterUpdate(JSON.parse(resp.data));
                     }
+                    ListGrid_Class_refresh();
+                    let responseID = JSON.parse(resp.data).id;
+                    let gridState = "[{id:" + responseID + "}]";
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                    setTimeout(function () {
+                        ListGrid_Class_JspClass.setSelectedState(gridState);
+                        ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
+                    }, 3000);
+                    Window_Class_JspClass.close();
+
+                    //**********generate class sessions**********
+                    if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
+                        if (autoValid) {
+                            ClassID = JSON.parse(resp.data).id;
+                            isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), "callback: class_get_sessions_result(rpcResponse)"));
+                        }
+                    }
+                    //**********generate class sessions**********
 
                 }
-            });
+                else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error");
+                }
+            }));
+            <%--isc.RPCManager.sendRequest({--%>
+                <%--actionURL: classSaveUrl,--%>
+                <%--httpMethod: classMethod,--%>
+                <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                <%--useSimpleHttp: true,--%>
+                <%--contentType: "application/json; charset=utf-8",--%>
+                <%--showPrompt: false,--%>
+                <%--data: JSON.stringify(data),--%>
+                <%--serverOutputAsString: false,--%>
+                <%--callback: function (resp) {--%>
+                    <%----%>
+
+                <%--}--%>
+            <%--});--%>
         }
     });
 
