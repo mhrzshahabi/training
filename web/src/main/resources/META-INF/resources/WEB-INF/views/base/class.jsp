@@ -38,6 +38,13 @@
         ],
         fetchDataURL: categoryUrl + "spec-list",
     });
+    var RestDataSource_subCategory_JspCourse = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
 
     // var RestDataSource_EAttachmentType_JspClass = isc.TrDS.create({
     //     fields: [
@@ -105,6 +112,7 @@
             {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
             {name: "theoryDuration"},
             {name: "categoryId"},
+            {name: "subCategoryId"},
         ],
         fetchDataURL: courseUrl + "spec-list?type=combo"
 
@@ -835,14 +843,13 @@
 // width:"250",
                 colSpan: 1,
                 pickListWidth: 500,
-                autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
 // addUnknownValues:false,
                 displayField: "titleFa", valueField: "id",
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
+                filterFields: ["titleFa", "titleFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
@@ -859,7 +866,7 @@
                 },
                 pickListProperties: {
                     sortField: 0,
-                    showFilterEditor: true
+                    showFilterEditor: false
                 }
             },
             {
@@ -868,7 +875,6 @@
                 title: "<spring:message code="training.place"/>:",
 // width:"250",
                 colSpan: 1,
-                autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
 // addUnknownValues:false,
                 displayField: "titleFa",
@@ -876,13 +882,14 @@
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
+                filterFields: ["titleFa", "titleFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
                 showHintInField: true,
                 hint: "موسسه",
                 pickListWidth: 500,
+                textMatchStyle: "substring",
                 pickListFields: [
                     {name: "titleFa", filterOperator: "iContains"},
                     {name: "manager.firstNameFa", filterOperator: "iContains"},
@@ -893,7 +900,7 @@
                 },
                 pickListProperties: {
                     sortField: 0,
-                    showFilterEditor: true
+                    showFilterEditor: false
                 }
             },
             {
@@ -1388,7 +1395,7 @@
                 title: "12-14",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                //disabled: true
+                disabled: true
                // defaultValue: true
             },
             {
@@ -1398,7 +1405,7 @@
                 titleOrientation: "top",
                 labelAsTitle: true,
                // defaultValue: true
-               // disabled: true
+               disabled: true
             },
 
             {
@@ -1676,6 +1683,15 @@
                                 name: "categoryId",
                                 title: "<spring:message code="category"/> ",
                                 optionDataSource: RestDataSource_category_JspCourse,
+                                filterOnKeypress: true,
+                                valueField: "id",
+                                displayField: "titleFa",
+                                filterOperator: "equals",
+                            },
+                            {
+                                name: "subCategoryId",
+                                title: "<spring:message code="subcategory"/> ",
+                                optionDataSource: RestDataSource_subCategory_JspCourse,
                                 filterOnKeypress: true,
                                 valueField: "id",
                                 displayField: "titleFa",
