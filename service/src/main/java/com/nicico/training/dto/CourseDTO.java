@@ -26,6 +26,7 @@ import java.util.Set;
 
 public class CourseDTO implements Serializable {
 
+    @NotEmpty
     @ApiModelProperty(required = true)
     private String code;
 
@@ -40,9 +41,11 @@ public class CourseDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Float theoryDuration;
 
+    @NotEmpty
     @ApiModelProperty(required = true)
     private Float minTeacherEvalScore;
 
+    @NotEmpty
     @ApiModelProperty(required = true)
     private Long minTeacherExpYears;
 
@@ -65,6 +68,7 @@ public class CourseDTO implements Serializable {
 
     private String behavioralLevel;
 
+    @NotEmpty
     private String scoringMethod;
 
     private String acceptancelimit;
@@ -122,6 +126,7 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+        private Float theoryDuration;
     }
 
     @Getter
@@ -142,28 +147,31 @@ public class CourseDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CourseCreateRq")
     public static class Create extends CourseDTO {
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eRunTypeId;
 
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eLevelTypeId;
 
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eTheoTypeId;
 
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eTechnicalTypeId;
 
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Long categoryId;
 
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Long subCategoryId;
 
+        @NotEmpty
         private List<Long> mainObjectiveIds;
 //
 //        @ApiModelProperty(required = true)
@@ -180,19 +188,19 @@ public class CourseDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CourseUpdateRq")
     public static class Update extends CourseDTO {
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eRunTypeId;
 
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eLevelTypeId;
 
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eTheoTypeId;
 
-        @NotNull
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eTechnicalTypeId;
 
@@ -200,9 +208,12 @@ public class CourseDTO implements Serializable {
 //        @ApiModelProperty(required = true)
 //        private Integer version;
 
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Long categoryId;
 
+
+        @NotEmpty
         @ApiModelProperty(required = true)
         private Long subCategoryId;
 
@@ -215,6 +226,7 @@ public class CourseDTO implements Serializable {
 
         private String behavioralLevel;
 
+        @NotEmpty
         private List<Long> mainObjectiveIds;
 
     }

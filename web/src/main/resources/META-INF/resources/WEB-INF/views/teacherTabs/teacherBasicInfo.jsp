@@ -114,7 +114,7 @@
                 showHintInField: true,
                 blur: function () {
                     var codeCheck;
-                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
                     nationalCodeCheck = codeCheck;
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
@@ -634,43 +634,6 @@
     DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').titleStyle = 'teacher-code-title';
 
     DynamicForm_BasicInfo_JspTeacher.getItem('evaluation').setCellStyle('eval-code-label');
-
-
-    var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
-        align: "center",
-        canSubmit: true,
-        titleWidth: 0,
-        showInlineErrors: true,
-        showErrorText: false,
-        valuesManager: "vm",
-        numCols: 2,
-        titleAlign: "left",
-        margin: 10,
-        newPadding: 5,
-        fields: [
-            {name: "id", hidden: true},
-            {
-                ID: "attachPic",
-                name: "attachPic",
-                title: "",
-                type: "imageFile",
-                showFileInline: "true",
-                accept: ".png,.gif,.jpg, .jpeg",
-                multiple: ""
-            }
-        ],
-        itemChanged: function (item) {
-            if (item.name === "attachPic") {
-                showTempAttach();
-                setTimeout(function () {
-                    if (attachNameTemp === null || attachNameTemp === "") {
-                        DynamicForm_Photo_JspTeacher.getField("attachPic").setValue(null);
-                        showAttachViewLoader.setView();
-                    }
-                }, 300);
-            }
-        }
-    });
 
     //------------------------------------------ Functions -------------------------------------------------------------
     function upload() {

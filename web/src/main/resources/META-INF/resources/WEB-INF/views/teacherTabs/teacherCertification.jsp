@@ -73,13 +73,13 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
+                required: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCategoriesChanged = true;
@@ -95,17 +95,13 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryIds = this.getValue();
                     var SubCats = [];
-                    for (let i = 0; i < subCategories.length; i++) {
+                    for (var i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
+                    SubCats = SubCats.isEmpty() ? null : SubCats;
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
-                    if(DynamicForm_JspTeacherCertification.getField("subCategories").getValue() != null &&
-                        DynamicForm_JspTeacherCertification.getField("subCategories").getValue() != undefined &&
-                        DynamicForm_JspTeacherCertification.getField("subCategories").getValue().size() == 0){
-                        DynamicForm_JspTeacherCertification.getField("subCategories").clearValue();
-                    }
                 }
             },
             {
@@ -115,21 +111,21 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
                         var ids = DynamicForm_JspTeacherCertification.getField("categories").getValue();
-                        if (ids === []) {
+                        if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = null;
                         } else {
                             RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = {
@@ -516,24 +512,25 @@
             methodTeacherCertification = "PUT";
             saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + record.id;
             DynamicForm_JspTeacherCertification.clearValues();
-            DynamicForm_JspTeacherCertification.editRecord(record);
-            var categoryIds = DynamicForm_JspTeacherCertification.getField("categories").getValue();
-            var subCategoryIds = DynamicForm_JspTeacherCertification.getField("subCategories").getValue();
-            if (categoryIds == null || categoryIds.length === 0)
+            var clonedRecord = Object.assign({}, record);
+            clonedRecord.categories = null;
+            clonedRecord.subCategories = null;
+            DynamicForm_JspTeacherCertification.editRecord(clonedRecord);
+            if (record.categories == null || record.categories.isEmpty())
                 DynamicForm_JspTeacherCertification.getField("subCategories").disable();
             else {
                 DynamicForm_JspTeacherCertification.getField("subCategories").enable();
                 var catIds = [];
-                for (var i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
+                for (var i = 0; i < record.categories.length; i++)
+                    catIds.add(record.categories[i].id);
                 DynamicForm_JspTeacherCertification.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspTeacherCertification.getField("subCategories").focus(null, null);
             }
-            if (subCategoryIds != null && subCategoryIds.length > 0) {
+            if (record.subCategories != null && !record.subCategories.isEmpty()) {
                 var subCatIds = [];
-                for (var i = 0; i < subCategoryIds.length; i++)
-                    subCatIds.add(subCategoryIds[i].id);
+                for (var i = 0; i < record.subCategories.length; i++)
+                    subCatIds.add(record.subCategories[i].id);
                 DynamicForm_JspTeacherCertification.getField("subCategories").setValue(subCatIds);
             }
             Window_JspTeacherCertification.show();

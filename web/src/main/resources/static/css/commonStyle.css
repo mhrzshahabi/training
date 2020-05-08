@@ -478,7 +478,7 @@
     font-size: 11px;
     padding: 3px 4px 3px 4px;
     border-radius: 3px;
-    background-color: #374b71;
+    background-color: rgba(60, 126, 186, 0.55);
     border: solid 1px #374b71;
 }
 

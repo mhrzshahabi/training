@@ -345,6 +345,7 @@
             IButton_Teacher_Exit_JspTeacher
         ]
     });
+
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         showResizeBar: true,
         titleEditorTopOffset: 2,
@@ -368,7 +369,7 @@
             {
                 ID: "academicBK",
                 title: "<spring:message code="academicBK"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"}),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
             },
             {
                 ID: "employmentHistory",
@@ -537,7 +538,7 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
-                disabled: true,
+                disabled: true
             },
             {
                 name: "evaluationNumber",
@@ -585,7 +586,7 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryIds = this.getValue();
                     var SubCats = [];
-                    for (let i = 0; i < subCategories.length; i++) {
+                    for (var i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
@@ -829,6 +830,12 @@
     }
 
     function Edit_teacher() {
+
+        showAttachViewLoader.setView();
+        showAttachViewLoader.show();
+        if(document.getElementById('file-upload') != null)
+            document.getElementById('file-upload').files = undefined;
+
         showAttach(selected_record.personalityId);
 
         vm.clearValues();
@@ -944,7 +951,7 @@
         else {
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
             var catIds = [];
-            for (let i = 0; i < categoryIds.length; i++)
+            for (var i = 0; i < categoryIds.length; i++)
                 catIds.add(categoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
             isTeacherCategoriesChanged = true;
@@ -952,7 +959,7 @@
         }
         if (subCategoryIds != null && subCategoryIds.length > 0) {
             var subCatIds = [];
-            for (let i = 0; i < subCategoryIds.length; i++)
+            for (var i = 0; i < subCategoryIds.length; i++)
                 subCatIds.add(subCategoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
         }
@@ -972,6 +979,9 @@
         vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
+        if(document.getElementById('file-upload') != null)
+            document.getElementById('file-upload').files = undefined;
+
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
@@ -1023,6 +1033,7 @@
         var fileBrowserId = document.getElementById('file-upload');
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
+        selectedRecordPersonalID = personalId;
         if (file !== undefined) {
             TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
         }
@@ -1030,6 +1041,7 @@
 
     function personalInfo_addAttach_result(req) {
         attachName = req.response;
+        showAttach(selectedRecordPersonalID);
     }
 
     function showTempAttach() {
@@ -1040,7 +1052,7 @@
         if (file.size > 30000000) {
             createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
         } else {
-            TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach/" + selectedRecordID, "POST", personalInfo_showTempAttach_result)
+            TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
         }
     }
 
@@ -1102,7 +1114,6 @@
             vm.setValue("id", responseID);
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
             addAttach(JSON.parse(resp.data).personality.id);
-            showAttach(JSON.parse(resp.data).personality.id);
             selectedRecordID = responseID;
             selected_record = JSON.parse(resp.data);
             loadPage_AcademicBK(responseID);
@@ -1182,7 +1193,7 @@
 
     function showAttach(pId) {
         selectedRecordPersonalID = pId;
-        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + selectedRecordPersonalID, "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + pId, "GET", null,
             "callback: personalInfo_checkAttach_result(rpcResponse)"));
     }
 

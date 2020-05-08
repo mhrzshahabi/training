@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Controller;
@@ -41,15 +42,15 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.data;
 @Controller
 @RequestMapping("/export-to-excel")
 public class ExportToExcelController {
-    private final MakeExcelOutputUtil makeExcelOutputUtil;
-    private final SpecListUtil specListUtil;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
     private final StudentClassReportViewService studentClassReportViewService;
 
     @PostMapping(value = {"/download"})
-    public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields, @RequestParam(value = "data") String data) {
+    public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
+                          @RequestParam(value = "data") String data,
+                          @RequestParam(value = "titr") String titr) {
 
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
@@ -67,42 +68,52 @@ public class ExportToExcelController {
             }
             Workbook workbook = new XSSFWorkbook();
             CreationHelper createHelper = workbook.getCreationHelper();
-            Sheet sheet = workbook.createSheet("Export");
+            Sheet sheet = workbook.createSheet("گزارش excel");
             sheet.setRightToLeft(true);
-//        // Create a Font for styling header cells
+
             Font headerFont = workbook.createFont();
-            headerFont.setFontName("Tahoma");
-//        headerFont.setBold(true);
             headerFont.setFontHeightInPoints((short) 12);
-            headerFont.setColor(IndexedColors.RED.getIndex());
-//        // Create a CellStyle with the font
+            headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
+
             CellStyle headerCellStyle = workbook.createCellStyle();
             headerCellStyle.setFont(headerFont);
-            // Create a Row
-            Row headerRow = sheet.createRow(0);
-            // Create cells
+
+            Row headerRow2 = sheet.createRow(0);
+            Cell cell2 = headerRow2.createCell(0);
+            cell2.setCellValue(titr);
+
+            sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
+
+            Row headerRow = sheet.createRow(1);
+
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
                 cell.setCellStyle(headerCellStyle);
             }
-            // Create Cell Style for formatting Date
+
             CellStyle dateCellStyle = workbook.createCellStyle();
             dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
-            // Create Other rows and cells with employees data
+
             int rowNum = 1;
             for (HashMap<String, String> map : allData) {
-                Row row = sheet.createRow(rowNum++);
+                Row row = sheet.createRow(++rowNum);
                 for (int i = 0; i < columns.length; i++) {
                     row.createCell(i)
                             .setCellValue(map.get(columns[i]));
                 }
             }
-            // Resize all columns to fit the content size
+
             for (int i = 0; i < columns.length; i++) {
                 sheet.autoSizeColumn(i);
             }
-            // Write the output to a file
+
+            CellStyle mine = workbook.createCellStyle();
+            mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
+            sheet.getRow(0).setRowStyle(mine);
+
+
             FileOutputStream fileOut = new FileOutputStream(fileFullPath);
             workbook.write(fileOut);
             fileOut.close();
