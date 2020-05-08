@@ -12,8 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
-@Table(name = "tbl_parameter_value",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"f_parameter_id", "c_title"})})
+@Table(name = "tbl_parameter_value", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_parameter_id", "c_title"})})
 public class ParameterValue extends Auditable {
 
     @Id

@@ -17,7 +17,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},
-            {name: "code"}
+            {name: "code", type: "integer", filterOperator: "equals"}
         ],
         fetchDataURL: educationLevelUrl + "iscList"
     });
@@ -266,7 +266,7 @@
         })]
     });
     var Window_EducationOrientation = isc.Window.create({
-        width: "300",
+        width: "500",
         align: "center",
         border: "1px solid gray",
         closeClick: function () {
@@ -589,7 +589,9 @@
             {
                 name: "code",
                 title: "<spring:message code='code'/>",
-                filterOperator: "equals"
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
         ],
         rowDoubleClick: function () {

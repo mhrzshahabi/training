@@ -102,13 +102,13 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspTeachingHistory,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
+                required: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCategoriesChanged = true;
@@ -128,14 +128,9 @@
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
+                    SubCats = SubCats.isEmpty() ? null : SubCats;
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
-
-                    if(DynamicForm_JspTeachingHistory.getField("subCategories").getValue() != null &&
-                        DynamicForm_JspTeachingHistory.getField("subCategories").getValue() != undefined &&
-                        DynamicForm_JspTeachingHistory.getField("subCategories").getValue().size() == 0){
-                        DynamicForm_JspTeachingHistory.getField("subCategories").clearValue();
-                    }
                 }
             },
             {
@@ -145,21 +140,21 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
                         var ids = DynamicForm_JspTeachingHistory.getField("categories").getValue();
-                        if (ids === []) {
+                        if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspTeachingHistory.implicitCriteria = null;
                         } else {
                             RestDataSource_SubCategory_JspTeachingHistory.implicitCriteria = {
@@ -546,24 +541,25 @@
             methodTeachingHistory = "PUT";
             saveActionUrlTeachingHistory = teachingHistoryUrl + "/" + record.id;
             DynamicForm_JspTeachingHistory.clearValues();
-            DynamicForm_JspTeachingHistory.editRecord(record);
-            var categoryIds = DynamicForm_JspTeachingHistory.getField("categories").getValue();
-            var subCategoryIds = DynamicForm_JspTeachingHistory.getField("subCategories").getValue();
-            if (categoryIds == null || categoryIds.length === 0)
+            var clonedRecord = Object.assign({}, record);
+            clonedRecord.categories = null;
+            clonedRecord.subCategories = null;
+            DynamicForm_JspTeachingHistory.editRecord(clonedRecord);
+            if (record.categories == null || record.categories.isEmpty())
                 DynamicForm_JspTeachingHistory.getField("subCategories").disable();
             else {
                 DynamicForm_JspTeachingHistory.getField("subCategories").enable();
                 var catIds = [];
-                for (var i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
+                for (var i = 0; i < record.categories.length; i++)
+                    catIds.add(record.categories[i].id);
                 DynamicForm_JspTeachingHistory.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspTeachingHistory.getField("subCategories").focus(null, null);
             }
-            if (subCategoryIds != null && subCategoryIds.length > 0) {
+            if (record.subCategories != null && !record.subCategories.isEmpty()) {
                 var subCatIds = [];
-                for (var i = 0; i < subCategoryIds.length; i++)
-                    subCatIds.add(subCategoryIds[i].id);
+                for (var i = 0; i < record.subCategories.length; i++)
+                    subCatIds.add(record.subCategories[i].id);
                 DynamicForm_JspTeachingHistory.getField("subCategories").setValue(subCatIds);
             }
             Window_JspTeachingHistory.show();
