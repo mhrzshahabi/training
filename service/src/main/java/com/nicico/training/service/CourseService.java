@@ -2,7 +2,6 @@ package com.nicico.training.service;
 
 import com.google.common.base.Joiner;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -13,9 +12,13 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,19 +35,31 @@ public class CourseService implements ICourseService {
     private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
+    private final TclassDAO tclassDAO;
+    private final JobDAO jobDAO;
+    private final PostDAO postDAO;
+    private final JobGroupDAO jobGroupDAO;
     private final CompetenceDAOOld competenceDAO;
+    private final TclassService tclassService;
+    private final TeacherService teacherService;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
     private final EnumsConverter.ETheoTypeConverter eTheoTypeConverter = new EnumsConverter.ETheoTypeConverter();
+    private final MessageSource messageSource;
 
 
     @Transactional(readOnly = true)
     @Override
     public CourseDTO.Info get(Long id) {
+        return modelMapper.map(getCourse(id), CourseDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Course getCourse(Long id) {
         final Optional<Course> cById = courseDAO.findById(id);
-        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        return modelMapper.map(course, CourseDTO.Info.class);
+        return cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
     }
 
     @Transactional(readOnly = true)
@@ -139,13 +154,22 @@ public class CourseService implements ICourseService {
         return listOut;
     }
 
-
     @Transactional
     @Override
-    public CourseDTO.Info create(CourseDTO.Create request) {
+    public CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response) {
+        if(courseDAO.existsByTitleFa(request.getTitleFa()))
+        {
+
+            try {
+                response.sendError(406,null);
+                return null;
+            } catch (IOException e) {
+
+            }
+        }
         Course course = modelMapper.map(request, Course.class);
-//        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
-        if (true) {
+        if (courseDAO.findByCodeEquals(course.getCode()).isEmpty()) {
+//        if (true) {
             course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
@@ -202,9 +226,9 @@ public class CourseService implements ICourseService {
         ////////////////////////////////////////////////////////////////////////
 
         if (course.getGoalSet().isEmpty()) {
-            course.setHasGoal(true);
-        } else {
             course.setHasGoal(false);
+        } else {
+            course.setHasGoal(true);
         }
         course.setHasSkill(!course.getSkillSet().isEmpty());
         Course save = courseDAO.save(course);
@@ -271,7 +295,6 @@ public class CourseService implements ICourseService {
     }
 
 
-
     //-------jafari--------
     @Transactional(readOnly = true)
     @Override
@@ -323,7 +346,7 @@ public class CourseService implements ICourseService {
             goalSet.add(goal);
         }
         one.setGoalSet(goalSet);
-        if(!one.getGoalSet().isEmpty()){
+        if (!one.getGoalSet().isEmpty()) {
             one.setHasGoal(true);
         }
     }
@@ -339,7 +362,7 @@ public class CourseService implements ICourseService {
             goalSet.remove(goal);
         }
         one.setGoalSet(goalSet);
-        if(one.getGoalSet().isEmpty())
+        if (one.getGoalSet().isEmpty())
             one.setHasGoal(false);
     }
 
@@ -371,59 +394,47 @@ public class CourseService implements ICourseService {
         return skillInfo;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<JobDTO.Info> getJob(Long courseId) {
         Set<Job> jobSet = new HashSet<>();
         Course one = courseDAO.getOne(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
-            Set<NeedAssessment> needAssessments = skill.getNeedAssessments();
-            for (NeedAssessment needAssessment : needAssessments) {
-                Post post = needAssessment.getPost();
-                Job job = post.getJob();
-                jobSet.add(job);
+            List<NeedsAssessment> needAssessments = skill.getNeedsAssessments();
+            for (NeedsAssessment needAssessment : needAssessments) {
+                if (needAssessment.getObjectType().equalsIgnoreCase("job")) {
+                    Optional<Job> jobOptional = jobDAO.findById((Long) needAssessment.getObjectId());
+                    Job job = jobOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                    jobSet.add(job);
+                }
             }
         }
-        List<JobDTO.Info> jobInfo = new ArrayList<>();
-        Optional.ofNullable(jobSet)
-                .ifPresent(jobs ->
-                        jobs.forEach(job ->
-                                jobInfo.add(modelMapper.map(job, JobDTO.Info.class))
-                        ));
-        return jobInfo;
+        return modelMapper.map(jobSet, new TypeToken<List<JobDTO.Info>>() {
+        }.getType());
     }
 
-
-    //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//                for (CompetenceOld competence : competenceSet) {
-//                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
-//                    for (JobCompetence jobCompetence : jobCompetenceSet) {
-//                        JobOld job = jobCompetence.getJob();
-//                        jobSet.add(job);
-//                    }
-//                }
-    //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
-
-//            }
-//            Set<CompetenceOld> competenceSet = skill.getCompetenceSet();
-//            for (CompetenceOld competence : competenceSet) {
-//                Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
-//                for (JobCompetence jobCompetence : jobCompetenceSet) {
-//                    Job job = jobCompetence.getJob();
-//                    jobSet.add(job);
-//                }
-////            }
-//        }
-//        List<JobDTOOld.Info> jobInfo = new ArrayList<>();
-//        Optional.ofNullable(jobSet)
-//                .ifPresent(jobs ->
-//                        jobs.forEach(job ->
-//                                jobInfo.add(modelMapper.map(job, JobDTOOld.Info.class))
-//                        ));
-//        return jobInfo;
-//    }
-
+    @Transactional(readOnly = true)
+    @Override
+    public List<PostDTO.Info> getPost(Long courseId) {
+        Set<Post> postSet = new HashSet<>();
+        Course one = courseDAO.getOne(courseId);
+        Set<Skill> skillSet = one.getSkillSet();
+        for (Skill skill : skillSet) {
+            List<NeedsAssessment> needAssessments = skill.getNeedsAssessments();
+            for (NeedsAssessment needAssessment : needAssessments) {
+                if (needAssessment.getObjectType().equalsIgnoreCase("post")) {
+                    Optional<Post> postOptional = postDAO.findById((Long) needAssessment.getObjectId());
+                    if (postOptional.isPresent()) {
+//                    Post post = postOptional.orElseThrow(()->new TrainingException(TrainingException.ErrorType.NotFound));
+                        postSet.add(postOptional.get());
+                    }
+                }
+            }
+        }
+        return modelMapper.map(postSet, new TypeToken<List<PostDTO.Info>>() {
+        }.getType());
+    }
 
     @Transactional
     @Override
@@ -443,14 +454,6 @@ public class CourseService implements ICourseService {
     @Override
     public List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId) {
         List<CompetenceDTOOld.Info> compeInfoList = new ArrayList<>();
-        //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        List<CompetenceOld> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
-//        Optional.ofNullable(competenceList)
-//                .ifPresent(competence ->
-//                        competence.forEach(comp ->
-//                                compeInfoList.add(modelMapper.map(comp, CompetenceDTOOld.Info.class))
-//                        ));
-//      --------------------------------------- By f.ghazanfari - end ---------------------------------------
         return compeInfoList;
     }
 
@@ -481,28 +484,6 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public List<PostDTO.Info> getPost(Long courseId) {
-        Set<Post> postSet = new HashSet<>();
-        Course one = courseDAO.getOne(courseId);
-        Set<Skill> skillSet = one.getSkillSet();
-        for (Skill skill : skillSet) {
-            Set<NeedAssessment> needAssessments = skill.getNeedAssessments();
-            for (NeedAssessment needAssessment : needAssessments) {
-                Post post = needAssessment.getPost();
-                postSet.add(post);
-            }
-        }
-        List<PostDTO.Info> postInfo = new ArrayList<>();
-        Optional.ofNullable(postSet)
-                .ifPresent(posts ->
-                        posts.forEach(post ->
-                                postInfo.add(modelMapper.map(post, PostDTO.Info.class))
-                        ));
-        return postInfo;
-    }
-
-    @Transactional
-    @Override
     public List<SkillGroupDTO.Info> getSkillGroup(Long courseId) {
         Course one = courseDAO.getOne(courseId);
         Set<SkillGroup> set = new HashSet<>();
@@ -527,10 +508,11 @@ public class CourseService implements ICourseService {
     public boolean checkForDelete(Long id) {
         Optional<Course> one = courseDAO.findById(id);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        Set<Skill> skillSet = course.getSkillSet();
+//        Set<Skill> skillSet = course.getSkillSet();
         Set<Tclass> tclasses = course.getTclassSet();
-        List<Goal> goalSet = course.getGoalSet();
-        return (((skillSet != null && skillSet.size() > 0) || (tclasses != null && tclasses.size() > 0)) ? false : true);
+//        List<Goal> goalSet = course.getGoalSet();
+//        return (((skillSet != null && skillSet.size() > 0) || (tclasses != null && tclasses.size() > 0)) ? false : true);
+        return (!(tclasses != null && tclasses.size() > 0));
     }
 
     @Transactional
@@ -539,6 +521,17 @@ public class CourseService implements ICourseService {
         Optional<Course> one = courseDAO.findById(id);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         course.getGoalSet().clear();
+    }
+    @Transactional
+//    @Override
+    public void unAssignSkills(Long id) {
+        Optional<Course> one = courseDAO.findById(id);
+        final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        Set<Skill> skillSet = course.getSkillSet();
+        for (Skill skill : skillSet) {
+            skill.setCourseMainObjectiveId(null);
+            skill.setCourseId(null);
+        }
     }
 
     @Transactional
@@ -576,19 +569,37 @@ public class CourseService implements ICourseService {
         return "دانشی: " + round(a * 100 / (sumAll)) + "%     " + "نگرشی: " + round(c * 100 / (sumAll)) + "%    " + "مهارتی: " + round(b * 100 / (sumAll)) + "%";
     }
 
-
     @Transactional(readOnly = true)
     @Override
-    public List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId) {
+    public List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> getTeachers(Long courseId) {
         final Optional<Course> optionalCourse = courseDAO.findById(courseId);
         final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String minTeacherDegree = course.getMinTeacherDegree();
         List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(minTeacherDegree);
         EducationLevel educationLevel = byTitleFa.get(0);
-        Long categoryId = course.getCategoryId();
-        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(categoryId, educationLevel.getCode());
-        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.TeacherFullNameTuple>>() {
-        }.getType());
+//        Long categoryId = course.getCategoryId();
+        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(course.getCategoryId(), educationLevel.getCode(), false);
+        List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> sendingList = new ArrayList<>();
+        if(!teachers.isEmpty()) {
+            Comparator<Tclass> tclassComparator = Comparator.comparing(Tclass::getEndDate);
+            for (Teacher teacher : teachers) {
+                Map<String, Object> map = teacherService.evaluateTeacher(teacher.getId(), course.getCategoryId().toString(), course.getSubCategoryId().toString());
+                if(map.get("pass_status").equals("رد")){
+                    continue;
+                }
+                List<Tclass> tclassList = tclassDAO.findByCourseAndTeacher(course, teacher);
+                TeacherDTO.TeacherFullNameTupleWithFinalGrade teacherDTO = modelMapper.map(teacher, TeacherDTO.TeacherFullNameTupleWithFinalGrade.class);
+                Optional<Tclass> max = tclassList.stream().max(tclassComparator);
+                if (max.isPresent()) {
+                    Tclass tclass = max.get();
+                    teacherDTO.setGrade(String.valueOf(tclassService.getStudentsGradeToTeacher(tclass.getClassStudents())));
+                }
+                sendingList.add(teacherDTO);
+            }
+        }
+        return sendingList;
+//        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.TeacherFullNameTuple>>() {
+//        }.getType());
     }
 
 

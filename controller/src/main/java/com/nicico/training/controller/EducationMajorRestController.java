@@ -1,8 +1,10 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
@@ -13,6 +15,7 @@ import com.nicico.training.iservice.IEducationMajorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -135,7 +138,55 @@ public class EducationMajorRestController {
         final EducationMajorDTO.SpecRs specResponse = new EducationMajorDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        final EducationMajorDTO.EducationMajorSpecRs specRs = new EducationMajorDTO.EducationMajorSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/spec-list-by-id")
+//    @PreAuthorize("hasAuthority('r_educationMajor')")
+    public ResponseEntity<EducationMajorDTO.EducationMajorSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                       @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "id", required = false) Long id,
+                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException{
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<EducationMajorDTO.Info> response = educationMajorService.search(request);
+        final EducationMajorDTO.SpecRs specResponse = new EducationMajorDTO.SpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final EducationMajorDTO.EducationMajorSpecRs specRs = new EducationMajorDTO.EducationMajorSpecRs();

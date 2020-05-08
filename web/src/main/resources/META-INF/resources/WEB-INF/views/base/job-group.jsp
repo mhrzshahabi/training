@@ -323,8 +323,6 @@
             }
             ;
 
-            //  alert("${restApiUrl}/api/job-group/addJobs/"+jobGroupId+"/"+jobIds);
-
             var JSONObj = {"ids": jobIds};
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},

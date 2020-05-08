@@ -7,7 +7,6 @@
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
-    // var gridState;
     var attachName;
     var attachNameTemp;
     var nationalCodeCheck = true;
@@ -43,7 +42,7 @@
 
     var RestDataSource_Category_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: categoryUrl + "spec-list"
+        fetchDataURL: categoryUrl + "iscList"
     });
 
     var RestDataSource_SubCategory_JspTeacher = isc.TrDS.create({
@@ -56,9 +55,20 @@
         fetchDataURL: educationLevelUrl + "iscList"
     });
 
+    var RestDataSource_Education_Level_ByID_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationLevelUrl + "spec-list-by-id"
+    });
+
     var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
-        fetchDataURL: educationMajorUrl + "spec-list"
+        autoCacheAllData: true,
+        fetchDataURL: educationMajorUrl + "iscList",
+    });
+
+    var RestDataSource_Education_Major_ByID_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
+        fetchDataURL: educationMajorUrl + "spec-list-by-id"
     });
 
     var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
@@ -173,14 +183,14 @@
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
-        selectionUpdated: function () {
-            // refreshSelectedTab_teacher(null);
-        },
+        initialSort: [
+            {property: "teacherCode", direction: "descending", primarySort: true}
+        ],
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
                 name: "teacherCode",
-                title: "<spring:message code='code'/>",
+                title: "<spring:message code='national.code'/>",
                 align: "center"
             },
             {
@@ -202,50 +212,72 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                editorType: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
                 filterOnKeypress: true,
-                multiple: true,
-                filterLocally: false
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspTeacher,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                editorType: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
+                canSort: false,
                 filterOnKeypress: true,
-                multiple: true,
-                filterLocally: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
+                filterOperator: "equals",
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
-                },
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "titleFa",
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_Education_Level_JspTeacher
+                }
             },
             {
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                sortNormalizer: function (record) {
-                    return record.personality.educationLevel.titleFa;
-                },
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "titleFa",
                 filterOperator: "equals",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher
+                sortNormalizer: function (record) {
+                    return record.personality.educationMajor.titleFa;
+                }
             },
             {
                 name: "personality.contactInfo.mobile",
@@ -263,18 +295,13 @@
                 type: "boolean"
             }
         ],
-        filterEditorSubmit: function () {
-            ListGrid_Teacher_JspTeacher.invalidateCache();
-        },
         cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: true,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        selectionType: "single",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
@@ -302,16 +329,8 @@
             showAttachViewLoader.hide();
             Window_Teacher_JspTeacher.close();
             ListGrid_teacher_refresh();
-            // setTimeout(function () {
-            //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-            // }, 2000);
-            // Page.waitFor(ListGrid_Teacher_JspTeacher,"invalidateCache",exitCallBack());
         }
     });
-
-    // function exitCallBack(){
-    //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-    // }
     //-----------------------------------------------LayOuts and Tabsets and Window-------------------------------------
     var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
@@ -326,11 +345,12 @@
             IButton_Teacher_Exit_JspTeacher
         ]
     });
+
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
-        // tabBarPosition: "top",
         showResizeBar: true,
         titleEditorTopOffset: 2,
         width: "100%",
+        minWidth:1350,
         height: "65%",
         tabs: [
             {
@@ -349,7 +369,7 @@
             {
                 ID: "academicBK",
                 title: "<spring:message code="academicBK"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"}),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
             },
             {
                 ID: "employmentHistory",
@@ -358,8 +378,13 @@
             },
             {
                 ID: "teachingHistory",
-                title: "<spring:message code='teachingHistory'/>",
+                title: "سوابق تدریس خارجی",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teachingHistory-tab"})
+            },
+            {
+                ID: "internalTeachingHistory",
+                title: "سوابق تدریس در این مرکز",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/internalTeachingHistory-tab"})
             },
             {
                 ID: "teacherCertification",
@@ -416,6 +441,8 @@
                     loadPage_AcademicBK(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'teachingHistory')
                     loadPage_TeachingHistory(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "internalTeachingHistory")
+                    loadPage_InternalTeachingHistory(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "teacherCertification")
                     loadPage_TeacherCertification(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "foreignLangKnowledge")
@@ -435,12 +462,12 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
-        minWidth: 1024,
+        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide()},
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
-                TabSet_Bottom_JspTeacher,
-                HLayOut_TeacherSaveOrExit_JspTeacher
+                HLayOut_TeacherSaveOrExit_JspTeacher,
+                TabSet_Bottom_JspTeacher
             ]
         })]
     });
@@ -511,7 +538,7 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
-                disabled: true,
+                disabled: true
             },
             {
                 name: "evaluationNumber",
@@ -792,7 +819,6 @@
     }
 
     function ListGrid_teacher_edit() {
-        // gridState = ListGrid_Teacher_JspTeacher.getSelectedState();
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         selected_record = record;
         if (record == null || record.id == null) {
@@ -804,6 +830,12 @@
     }
 
     function Edit_teacher() {
+
+        showAttachViewLoader.setView();
+        showAttachViewLoader.show();
+        if(document.getElementById('file-upload') != null)
+            document.getElementById('file-upload').files = undefined;
+
         showAttach(selected_record.personalityId);
 
         vm.clearValues();
@@ -817,13 +849,19 @@
         DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.cityId").setOptionDataSource(null);
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.cityId").setOptionDataSource(null);
 
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationLevelId").fetchData();
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationMajorId").fetchData();
-        DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.stateId").fetchData();
-        DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId").fetchData();
-
         teacherMethod = "PUT";
         vm.editRecord(selected_record);
+
+        if(DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != null && DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != undefined){
+            var catId = DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue();
+            DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").enable();
+            RestDataSource_SubCategory_Evaluation_JspTeacher.implicitCriteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "categoryId", operator: "inSet", value: catId}]
+            };
+            DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").fetchData();
+        }
 
         var eduMajorValue = selected_record.personality.educationMajorId;
         var eduOrientationValue = selected_record.personality.educationOrientationId;
@@ -941,6 +979,9 @@
         vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
+        if(document.getElementById('file-upload') != null)
+            document.getElementById('file-upload').files = undefined;
+
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
@@ -992,6 +1033,7 @@
         var fileBrowserId = document.getElementById('file-upload');
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
+        selectedRecordPersonalID = personalId;
         if (file !== undefined) {
             TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
         }
@@ -999,15 +1041,15 @@
 
     function personalInfo_addAttach_result(req) {
         attachName = req.response;
+        showAttach(selectedRecordPersonalID);
     }
-
 
     function showTempAttach() {
         var formData1 = new FormData();
         var fileBrowserId = document.getElementById('file-upload');
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
-        if (file.size > 1024000) {
+        if (file.size > 30000000) {
             createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
         } else {
             TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
@@ -1020,7 +1062,7 @@
             showAttachViewLoader.setViewURL("<spring:url value="/personalInfo/getTempAttach/"/>" + attachNameTemp);
             showAttachViewLoader.show();
         } else if (req.status === 406) {
-            if (req.response.data === "wrong size")
+            if (req.response === "wrong size")
                 createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
             else if (req.response === "wrong dimension")
                 createDialog("info", "<spring:message code="photo.dimension.hint"/>", "<spring:message code='error'/>");
@@ -1031,18 +1073,19 @@
 
     function teacher_delete_result(resp) {
         teacherWait.close();
-        if (resp.httpResponseCode === 200) {
-            var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+        if (resp.httpResponseCode === 200 && resp.httpResponseText == "ok") {
+            var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
             // refreshSelectedTab_teacher(null);
             ListGrid_teacher_refresh();
-        } else if (resp.data === false) {
-            createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
-        } else {
-            createDialog("info", "<spring:message code='msg.record.remove.failed'/>");
+        } else if (resp.httpResponseText === "personalFail") {
+            createDialog("info", "<spring:message code='teacher.delete.personal.fail.message'/>");
+        } else{
+            var msg = getFormulaMessage(resp.httpResponseText, 2, "red", null);
+            createDialog("info", "این مدرس بعلت استفاده در کلاس"+ " " + msg + " " +
+                "قابل حذف نمی باشد");
         }
     }
 
@@ -1052,13 +1095,7 @@
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
                 responseID = JSON.parse(resp.data).id;
-                // gridState = "[{id:" + responseID + "}]";
-                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                    "<spring:message code="msg.command.done"/>");
-                // setTimeout(function () {
-                //     OK.close();
-                //     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                // }, 3000);
+                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
             }
@@ -1075,11 +1112,8 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             responseID = JSON.parse(resp.data).id;
             vm.setValue("id", responseID);
-            // gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                "<spring:message code="msg.command.done"/>");
+            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
             addAttach(JSON.parse(resp.data).personality.id);
-            showAttach(JSON.parse(resp.data).personality.id);
             selectedRecordID = responseID;
             selected_record = JSON.parse(resp.data);
             loadPage_AcademicBK(responseID);
@@ -1103,9 +1137,7 @@
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
                 responseID = JSON.parse(resp.data).id;
-                // gridState = "[{id:" + responseID + "}]";
-                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
-                    "<spring:message code="msg.command.done"/>");
+                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
@@ -1142,6 +1174,11 @@
             "callback: personnel_findOne_result(rpcResponse)"));
     }
 
+    function  fillPersonalInfoByNationalCode(nationalCode){
+        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
+            "callback: personnel_findOne_result(rpcResponse)"));
+    }
+
     function fillWorkAddressFields(postalCode) {
         if (postalCode !== undefined)
             isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,
@@ -1156,7 +1193,7 @@
 
     function showAttach(pId) {
         selectedRecordPersonalID = pId;
-        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + selectedRecordPersonalID, "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + pId, "GET", null,
             "callback: personalInfo_checkAttach_result(rpcResponse)"));
     }
 
@@ -1343,6 +1380,7 @@
 
     function clearTabFilters() {
         ListGrid_JspAcademicBK.clearFilterValues();
+        ListGrid_JspInternalTeachingHistory.clearFilterValues();
         ListGrid_JspEmploymentHistory.clearFilterValues();
         ListGrid_JspTeachingHistory.clearFilterValues();
         ListGrid_JspTeacherCertification.clearFilterValues();
@@ -1356,6 +1394,7 @@
         ListGrid_JspPublication.filterByEditor();
         ListGrid_JspForeignLangKnowledge.filterByEditor();
         ListGrid_JspAttachment.filterByEditor();
+        ListGrid_JspInternalTeachingHistory.filterByEditor();
 
     }
 

@@ -968,7 +968,7 @@ AttitudeSkillLG_needsAssessment
 
 isc.TrHLayoutButtons.create({
 members: [
-isc.IButtonSave.create({click: function () { alert(1)}}),
+isc.IButtonSave.create({click: function () {}}),
 isc.IButtonCancel.create({click: function () { KnowledgeSkillLG_needsAssessment.invalidateCache() }}),
 ]
 }),

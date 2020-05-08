@@ -30,5 +30,42 @@ span {
 
 .myparent .headerButton {
     color: black !important;
-    background-color: #E0E0E0;
+    background-color: #E0E0E0 !important;
 }
+
+.lineFieldRTL,
+.lineField,
+.lineFieldRTL .headerItemRTL,
+.lineFieldRTL .headerItemOver,
+.lineFieldRTL .headerItemOverRTL,
+.lineField .headerItemRTL,
+.lineField .headerItemOver,
+.lineField .headerItemOverRTL {
+    background-color: #97cefc !important;
+    font-weight: normal !important;
+    font-size: 13px !important;
+}
+
+.acceptRTL, .accept {
+    color: #199435 !important;
+}
+
+.rejectedRTL, .rejected {
+    color: #FF0000 !important;
+}
+
+.clickableCellRTL, .clickableCell
+{
+    color: #0066cc !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+}
+
+.clickableCellRTL:hover, .clickableCell:hover
+{
+    color: #003580 !important;
+}
+
+
+
+

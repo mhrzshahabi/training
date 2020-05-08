@@ -12,7 +12,10 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
+import com.nicico.training.repository.PersonalInfoDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -25,10 +28,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +42,7 @@ import java.util.*;
 @RequestMapping(value = "/api/teacher")
 public class TeacherRestController {
 
-    private final ITeacherService teacherService;
+    private final TeacherService teacherService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
@@ -51,29 +57,9 @@ public class TeacherRestController {
     private final ITeacherCertificationService teacherCertificationService;
     private final IPublicationService publicationService;
     private final IForeignLangKnowledgeService foreignLangService;
+    private final TclassDAO tclassDAO;
+    private final ITclassService tclassService;
 
-    private float evaluationGrade = 0;
-    private boolean pass = false;
-    private String pass_status = "";
-    private float table_1_grade = 0;
-    private float table_1_license = 0;
-    private float table_1_work = 0;
-    private float table_1_related_training = 0;
-    private float table_1_unRelated_training = 0;
-    private float table_1_courses = 0;
-    private float table_1_years = 0;
-    private float table_1_related_training_hours = 0;
-    private float table_1_unRelated_training_hours = 0;
-    private float table_2_grade = 0;
-    private float table_3_grade = 0;
-    private float table_3_count_book = 0;
-    private float table_3_count_project = 0;
-    private float table_3_count_article = 0;
-    private float table_3_count_translation = 0;
-    private float table_3_count_note = 0;
-    private float table_4_grade = 0;
-
-    // ------------------------------
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -136,9 +122,9 @@ public class TeacherRestController {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null)
+        if (request.get("categories") != null && !((List)request.get("categories")).isEmpty())
             categories = setCats(request);
-        if (request.get("subCategories") != null)
+        if (request.get("subCategories") != null && !((List)request.get("subCategories")).isEmpty())
             subCategories = setSubCats(request);
 
         TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
@@ -157,15 +143,18 @@ public class TeacherRestController {
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity delete(@PathVariable Long id) {
-        try {
-            teacherService.delete(id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException | DataIntegrityViolationException e) {
-            return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        List<Tclass> tclassList = tclassDAO.getTeacherClasses(id);
+        if(tclassList != null && tclassList.size() != 0)
+            return new ResponseEntity<>(tclassList.get(0).getTitleClass(), HttpStatus.NOT_ACCEPTABLE);
+        else{
+            try {
+                teacherService.delete(id);
+                return new ResponseEntity<>("ok", HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>("personalFail", HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
-
 
     @Loggable
     @DeleteMapping(value = "/list")
@@ -199,7 +188,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -219,27 +208,183 @@ public class TeacherRestController {
     @GetMapping(value = "/spec-list-grid")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                         @RequestParam(value = "_constructor", required = false) String constructor,
-                                                         @RequestParam(value = "operator", required = false) String operator,
-                                                         @RequestParam(value = "criteria", required = false) String criteria,
-                                                         @RequestParam(value = "id", required = false) Long id,
-                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
-        request.setDistinct(true);
+        SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
         final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/spec-list-report")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRsReport> reportList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+        request.setDistinct(true);
+
+        List<Object> removedObjects = new ArrayList<>();
+        Object evaluationCategory = null;
+        Object evaluationSubCategory = null;
+        Object evaluationGrade = null;
+        Object teachingCategories = null;
+        Object teachingSubCategories = null;
+        for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationCategory")){
+                evaluationCategory = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationSubCategory")){
+                evaluationSubCategory = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
+                evaluationGrade = criterion.getValue().get(0);
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("teachingCategories")){
+                teachingCategories = criterion.getValue();
+                removedObjects.add(criterion);
+            }
+            if(criterion.getFieldName().equalsIgnoreCase("teachingSubCategories")){
+                teachingSubCategories = criterion.getValue();
+                removedObjects.add(criterion);
+            }
+        }
+
+        for (Object removedObject : removedObjects) {
+            request.getCriteria().getCriteria().remove(removedObject);
+        }
+        SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
+
+        List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
+
+        List<Integer> teaching_cats = null;
+        List<Integer> teaching_subcats = null;
+
+        if(teachingCategories != null) {
+            teaching_cats = modelMapper.map(teachingCategories, List.class);
+        }
+        if(teachingSubCategories != null) {
+            teaching_subcats = modelMapper.map(teachingSubCategories, List.class);
+        }
+
+        Float min_evalGrade = null;
+        if(evaluationGrade != null)
+           min_evalGrade = Float.parseFloat(evaluationGrade.toString());
+
+        if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
+            for (TeacherDTO.Report datum : response.getList()) {
+                if (evaluationGrade != null) {
+                    ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
+                    Float teacher_evalGrade = t.getBody();
+                    datum.setEvaluationGrade(""+teacher_evalGrade);
+                    if (teacher_evalGrade < min_evalGrade)
+                        listRemovedObjects.add(datum);
+                }
+            }
+        }
+
+        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+        listRemovedObjects.clear();
+
+        if(teachingCategories!=null || teachingSubCategories!=null) {
+            for (TeacherDTO.Report datum : response.getList()) {
+                boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
+                if (relatedTeachingHistory == false)
+                    listRemovedObjects.add(datum);
+            }
+        }
+        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
+            response.getList().remove(listRemovedObject);
+
+        for (TeacherDTO.Report datum : response.getList()) {
+            SearchDTO.SearchRq req = new SearchDTO.SearchRq();
+            Long tId = datum.getId();
+            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(req, tId);
+            datum.setNumberOfCourses(""+resp.getList().size());
+            if(resp.getList() != null && resp.getList().size() > 0) {
+                String startDate = resp.getList().get(0).getStartDate();
+                for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
+                    if (teachingHistory.getStartDate().compareTo(startDate) > 0 || teachingHistory.getStartDate().compareTo(startDate)==0) {
+                        datum.setLastCourse(teachingHistory.getCourse().getTitleFa());
+                        datum.setLastCourseId(teachingHistory.getId());
+                    }
+                }
+            }
+        }
+        for (TeacherDTO.Report datum : response.getList()) {
+            if(datum.getLastCourse() != null)
+                datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(datum.getLastCourseId(),datum.getId()));
+        }
+
+        final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
+        final TeacherDTO.TeacherSpecRsReport specRs = new TeacherDTO.TeacherSpecRsReport();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getList().size());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    public Boolean getRelatedTeachingHistory(TeacherDTO.Report teacher, List<Integer> related_cats, List<Integer> related_subCats){
+        Boolean relation = false;
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(request, teacher.getId());
+
+        if(resp != null && resp.getList()!= null ) {
+            for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
+                boolean thisTeachingHistoryRelation = true;
+                Long teacher_cat = teachingHistory.getCourse().getCategoryId();
+                Long teacher_subCat = teachingHistory.getCourse().getSubCategoryId();
+                if (teacher_cat != null && related_cats != null) {
+                    for (Integer related_cat : related_cats) {
+                        if (teacher_cat != Long.parseLong("" + related_cat))
+                            thisTeachingHistoryRelation = false;
+                    }
+                }
+                if (teacher_subCat != null && related_subCats != null) {
+                    for (Integer related_subCat : related_subCats) {
+                        if (teacher_subCat != Long.parseLong("" + related_subCat))
+                            thisTeachingHistoryRelation = false;
+                    }
+                }
+                if (thisTeachingHistoryRelation == true)
+                    relation = thisTeachingHistoryRelation;
+            }
+        }
+
+        if(related_cats == null && related_subCats == null)
+            relation = true;
+
+        return relation;
     }
 
     @Loggable
@@ -261,7 +406,7 @@ public class TeacherRestController {
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -289,13 +434,41 @@ public class TeacherRestController {
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/fullName/{id}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@PathVariable Long id,
+                                                                               @RequestParam("_startRow") Integer startRow,
+                                                                               @RequestParam("_endRow") Integer endRow,
+                                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
+
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 
     // ---------------
 
@@ -498,7 +671,7 @@ public class TeacherRestController {
         String address = null;
         String phone = null;
 
-        evaluateTeacher(Id,catId,subCatId);
+        Map<String,Object> resultSet = teacherService.evaluateTeacher(Id,catId,subCatId);
 
         name = teacherDTO.getPersonality().getFirstNameFa() + " " + teacherDTO.getPersonality().getLastNameFa();
         personalNum = teacherDTO.getPersonnelCode();
@@ -538,25 +711,25 @@ public class TeacherRestController {
         params.put("address", address);
         params.put("phone", phone);
         params.put("categories",categories);
-        params.put("totalGrade", evaluationGrade);
-        params.put("status", pass_status);
-        params.put("table1Grade", table_1_grade);
-        params.put("tbl1License", table_1_license);
-        params.put("tbl1Work", table_1_work);
-        params.put("tbl1ReTraining", table_1_related_training);
-        params.put("tbl1UnReTraining", table_1_unRelated_training);
-        params.put("tbl1Courses", table_1_courses);
-        params.put("tbl1Years", table_1_years);
-        params.put("tbl1ReTrH", table_1_related_training_hours);
-        params.put("tbl1UReTrH", table_1_unRelated_training_hours);
-        params.put("table2Grade", table_2_grade);
-        params.put("table3Grade", table_3_grade);
-        params.put("table3Book", table_3_count_book);
-        params.put("table3Project", table_3_count_project);
-        params.put("table3Article", table_3_count_article);
-        params.put("table3Translation", table_3_count_translation);
-        params.put("table3Note", table_3_count_note);
-        params.put("table4Grade", table_4_grade);
+        params.put("totalGrade", resultSet.get("evaluationGrade"));
+        params.put("status", resultSet.get("pass_status"));
+        params.put("table1Grade", resultSet.get("table_1_grade"));
+        params.put("tbl1License", resultSet.get("table_1_license"));
+        params.put("tbl1Work", resultSet.get("table_1_work"));
+        params.put("tbl1ReTraining", resultSet.get("table_1_related_training"));
+        params.put("tbl1UnReTraining", resultSet.get("table_1_unRelated_training"));
+        params.put("tbl1Courses", resultSet.get("table_1_courses"));
+        params.put("tbl1Years", resultSet.get("table_1_years"));
+        params.put("tbl1ReTrH", resultSet.get("table_1_related_training_hours"));
+        params.put("tbl1UReTrH", resultSet.get("table_1_unRelated_training_hours"));
+        params.put("table2Grade", resultSet.get("table_2_grade"));
+        params.put("table3Grade", resultSet.get("table_3_grade"));
+        params.put("table3Book", resultSet.get("table_3_count_book"));
+        params.put("table3Project", resultSet.get("table_3_count_project"));
+        params.put("table3Article", resultSet.get("table_3_count_article"));
+        params.put("table3Translation", resultSet.get("table_3_count_translation"));
+        params.put("table3Note", resultSet.get("table_3_count_note"));
+        params.put("table4Grade", resultSet.get("table_4_grade"));
 
         String data = "{" + "\"content\": " + null + "}";
 
@@ -569,299 +742,8 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
     public ResponseEntity<Float> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
-
-        evaluationGrade = 0;
-        pass = false;
-        pass_status = "";
-        table_1_grade = 0;
-        table_1_license = 0;
-        table_1_work = 0;
-        table_1_related_training = 0;
-        table_1_unRelated_training = 0;
-        table_1_courses = 0;
-        table_1_years = 0;
-        table_1_related_training_hours = 0;
-        table_1_unRelated_training_hours = 0;
-        table_2_grade = 0;
-        table_3_grade = 0;
-        table_3_count_book = 0;
-        table_3_count_project = 0;
-        table_3_count_article = 0;
-        table_3_count_translation = 0;
-        table_3_count_note = 0;
-        table_4_grade = 0;
-
-        Long CatId = null;
-        Long SubCatId = null;
-        Category category_selected = null;
-        Subcategory subCategory_selected = null;
-        if(!catId.equalsIgnoreCase("undefined")) {
-            CatId = Long.parseLong(catId);
-            category_selected = modelMapper.map(categoryService.get(CatId),Category.class);
-        }
-        if(!subCatId.equalsIgnoreCase("undefined")) {
-            SubCatId = Long.parseLong(subCatId);
-            subCategory_selected = modelMapper.map(subCategoryService.get(SubCatId), Subcategory.class);
-        }
-        TeacherDTO.Info teacherDTO = teacherService.get(id);
-        Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
-        int teacher_educationLevel = 0;
-
-        if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
-            teacher_educationLevel = 1;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق دیپلم"))
-            teacher_educationLevel = 2;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("لیسانس"))
-            teacher_educationLevel = 3;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق لیسانس"))
-            teacher_educationLevel = 4;
-        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دکتری"))
-            teacher_educationLevel = 5;
-
-        //table 1
-        //table 1 - row 1
-        table_1_license = (teacher_educationLevel-1)*5 + 10;
-        //table 1 - row 2
-        SearchDTO.SearchRq searchRq_employmentHistories = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs_employmentHistories = employmentHistoryService.search(searchRq_employmentHistories,id);
-        List<EmploymentHistoryDTO.Info> employmentHistories = searchRs_employmentHistories.getList();
-
-        for (EmploymentHistoryDTO.Info employmentHistory : employmentHistories) {
-            boolean cat_related = false;
-            boolean subCat_related = false;
-            List<CategoryDTO.CategoryInfoTuple> employmentHistory_catrgories = employmentHistory.getCategories();
-            for (CategoryDTO.CategoryInfoTuple employmentHistory_catrgory : employmentHistory_catrgories) {
-                if(employmentHistory_catrgory.getId() == category_selected.getId())
-                    cat_related = true;
-            }
-            if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
-                    if(employmentHistory_sub_catrgory.getId() == subCategory_selected.getId())
-                        subCat_related = true;
-                }
-            }
-            if(cat_related && subCat_related){
-                if(employmentHistory.getEndDate() != null && employmentHistory.getStartDate()!=null) {
-                    Long years = Long.parseLong(employmentHistory.getEndDate().substring(0,4)) -
-                                Long.parseLong(employmentHistory.getStartDate().substring(0,4)) + 1;
-                    table_1_work += years;
-                }
-            }
-            if(employmentHistory.getEndDate() != null && employmentHistory.getStartDate()!=null) {
-                Long years = Long.parseLong(employmentHistory.getEndDate().substring(0,4)) -
-                        Long.parseLong(employmentHistory.getStartDate().substring(0,4)) + 1;
-                table_1_years += years;
-            }
-        }
-        if(table_1_work > 10)
-            table_1_work = 10;
-        Double table_1_work_double = ((teacher_educationLevel-1)*0.2 + 0.6)*table_1_work;
-        table_1_work = table_1_work_double.floatValue();
-        //table 1 - row 3 & 4
-        SearchDTO.SearchRq searchRq_teachingHistories = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<TeachingHistoryDTO.Info> searchRs_teachingHistories = teachingHistoryService.search(searchRq_teachingHistories,id);
-        List<TeachingHistoryDTO.Info> teachingHistories = searchRs_teachingHistories.getList();
-
-        for (TeachingHistoryDTO.Info teachingHistory : teachingHistories) {
-            boolean cat_related = false;
-            boolean subCat_related = false;
-            List<CategoryDTO.CategoryInfoTuple> teachingHistory_catrgories = teachingHistory.getCategories();
-            for (CategoryDTO.CategoryInfoTuple teachingHistory_catrgory : teachingHistory_catrgories) {
-                if(teachingHistory_catrgory.getId() == category_selected.getId())
-                    cat_related = true;
-            }
-            if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
-                    if(teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
-                        subCat_related = true;
-                }
-            }
-            if(cat_related && subCat_related){
-                if(teachingHistory.getDuration() != null) {
-                    table_1_related_training += teachingHistory.getDuration();
-                    table_1_related_training_hours += teachingHistory.getDuration();
-                }
-            }
-            else{
-                if(teachingHistory.getDuration() != null) {
-                    table_1_unRelated_training += teachingHistory.getDuration();
-                    table_1_unRelated_training_hours += teachingHistory.getDuration();
-                }
-            }
-
-        }
-        if(table_1_unRelated_training > 1000)
-            table_1_unRelated_training = 1000;
-        if(table_1_related_training > 1000)
-            table_1_related_training = 1000;
-        table_1_related_training /= 100;
-        table_1_unRelated_training /= 100;
-
-        Double table_1_unRelated_training_double = ((teacher_educationLevel-1)*0.1 + 0.4)*table_1_unRelated_training;
-        table_1_unRelated_training = table_1_unRelated_training_double.floatValue();
-        Double table_1_related_training_double = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
-        table_1_related_training = table_1_related_training_double.floatValue();
-        //table 1 - row 5
-        SearchDTO.SearchRq searchRq_teacherCertifications = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<TeacherCertificationDTO.Info> searchRs_teacherCertifications = teacherCertificationService.search(searchRq_teacherCertifications,id);
-        List<TeacherCertificationDTO.Info> teacherCertifications = searchRs_teacherCertifications.getList();
-
-        for (TeacherCertificationDTO.Info teacherCertification : teacherCertifications) {
-            boolean cat_related = false;
-            boolean subCat_related = false;
-            List<CategoryDTO.CategoryInfoTuple> teacherCertification_catrgories = teacherCertification.getCategories();
-            for (CategoryDTO.CategoryInfoTuple teacherCertification_catrgory : teacherCertification_catrgories) {
-                if(teacherCertification_catrgory.getId() == category_selected.getId())
-                    cat_related = true;
-            }
-            if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
-                    if(teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
-                        subCat_related = true;
-                }
-            }
-            if(cat_related && subCat_related){
-                if(teacherCertification.getDuration() != null)
-                    table_1_courses += teacherCertification.getDuration();
-            }
-        }
-        if(table_1_courses > 1000)
-            table_1_courses = 1000;
-        table_1_courses  /= 100;
-
-        if(teacher_educationLevel != 1) {
-            Double table_1_courses_double = ((teacher_educationLevel - 1) * 0.1 + 1.2) * table_1_courses;
-            table_1_courses = table_1_courses_double.floatValue();
-        }
-        //table 1 - total
-        table_1_grade = table_1_courses +
-                        table_1_license +
-                        table_1_related_training +
-                        table_1_unRelated_training +
-                        table_1_work;
-
-        //table 2
-        int table_2_relation = 0;
-        Category teacherMajorCategory = teacher.getMajorCategory();
-        Subcategory teacherMajorSubCategory = teacher.getMajorSubCategory();
-        if(teacherMajorCategory != null) {
-            if (category_selected.getId() == teacherMajorCategory.getId()) {
-                table_2_relation += 1;
-                if (subCategory_selected != null && teacherMajorSubCategory != null)
-                    if (subCategory_selected.getId() == teacherMajorSubCategory.getId())
-                        table_2_relation += 1;
-            }
-        }
-        if(teacher_educationLevel == 1)
-            table_2_grade = (float) 2.5;
-        else if(teacher_educationLevel == 2)
-            table_2_grade = 6;
-        else if(teacher_educationLevel == 3)
-            table_2_grade = 8;
-        else if(teacher_educationLevel == 4)
-            table_2_grade = 9;
-        else if(teacher_educationLevel == 5)
-            table_2_grade = 10;
-
-        table_2_grade *= table_2_relation;
-
-         //table 3
-        SearchDTO.SearchRq searchRq_publications = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<PublicationDTO.Info> searchRs_publications = publicationService.search(searchRq_publications,id);
-        List<PublicationDTO.Info> publications= searchRs_publications.getList();
-
-        for (PublicationDTO.Info publication : publications) {
-            boolean cat_related = false;
-            boolean subCat_related = false;
-           List<CategoryDTO.CategoryInfoTuple> publication_catrgories = publication.getCategories();
-            for (CategoryDTO.CategoryInfoTuple publication_catrgory : publication_catrgories) {
-                    if(publication_catrgory.getId() == category_selected.getId())
-                        cat_related = true;
-            }
-            if(cat_related == true) {
-                List<SubcategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
-                for (SubcategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
-                    if(publication_sub_catrgory.getId() == subCategory_selected.getId())
-                        subCat_related = true;
-                }
-            }
-            if(cat_related && subCat_related){
-                if(publication.getPublicationSubjectTypeId() == 0)
-                    table_3_count_book += 1;
-                if(publication.getPublicationSubjectTypeId() == 1)
-                    table_3_count_project += 1;
-                if(publication.getPublicationSubjectTypeId() == 2)
-                    table_3_count_article += 1;
-                if(publication.getPublicationSubjectTypeId() == 3)
-                    table_3_count_translation += 1;
-                if(publication.getPublicationSubjectTypeId() == 4)
-                    table_3_count_note += 1;
-            }
-        }
-        if(table_3_count_book > 10)
-            table_3_count_book = 10;
-        if(table_3_count_project > 10)
-            table_3_count_project = 10;
-        if(table_3_count_article > 10)
-            table_3_count_article = 10;
-        if(table_3_count_note > 10)
-            table_3_count_note = 10;
-        if(table_3_count_translation > 10)
-            table_3_count_translation = 10;
-
-        table_3_grade = table_3_count_book * 7
-                        + table_3_count_project * 4
-                        + table_3_count_article * 3
-                        + table_3_count_translation * 2
-                        + table_3_count_note;
-        //table 4
-        SearchDTO.SearchRq searchRq_foreignLangKnowledges  = new SearchDTO.SearchRq();
-        SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> searchRs_foreignLangKnowledges  = foreignLangService.search(searchRq_foreignLangKnowledges ,id);
-        List<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges = searchRs_foreignLangKnowledges.getList();
-
-        for (ForeignLangKnowledgeDTO.Info foreignLangKnowledge : foreignLangKnowledges) {
-            if(foreignLangKnowledge.getLangName().equalsIgnoreCase("انگلیسی") || foreignLangKnowledge.getLangName().equalsIgnoreCase("زبان انگلیسی")) {
-                if (foreignLangKnowledge.getLangLevelId() == 0)
-                    table_4_grade = 3;
-                else if (foreignLangKnowledge.getLangLevelId() == 1)
-                    table_4_grade = 2;
-                else if (foreignLangKnowledge.getLangLevelId() == 2)
-                    table_4_grade = 1;
-            }
-        }
-        //total grade
-        evaluationGrade = table_1_grade+table_2_grade+table_3_grade+table_4_grade;
-        if(teacher_educationLevel == 1) {
-            if (evaluationGrade >= 25)
-                pass = true;
-        }
-        else if(teacher_educationLevel == 2) {
-            if (evaluationGrade >= 40)
-                pass = true;
-        }
-        else if(teacher_educationLevel == 3) {
-            if (evaluationGrade >= 55)
-                pass = true;
-        }
-        else if(teacher_educationLevel == 4) {
-            if (evaluationGrade >= 60)
-                pass = true;
-        }
-        else if(teacher_educationLevel == 5) {
-            if (evaluationGrade >= 75)
-                pass = true;
-        }
-
-        if(pass)
-            pass_status = "قبول";
-        if(!pass)
-            pass_status = "رد";
-
-
-        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
+       Float evaluationGrade = (Float) teacherService.evaluateTeacher(id,catId,subCatId).get("evaluationGrade");
+       return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
 
 
@@ -883,6 +765,52 @@ public class TeacherRestController {
                     }));
 
 
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        return request;
+    }
+
+    private SearchDTO.SearchRq setSearchCriteriaNotInBlackList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                    @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                    @RequestParam(value = "_constructor", required = false) String constructor,
+                                                    @RequestParam(value = "operator", required = false) String operator,
+                                                    @RequestParam(value = "criteria", required = false) String criteria,
+                                                    @RequestParam(value = "id", required = false) Long id,
+                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            SearchDTO.CriteriaRq ctr =  makeNewCriteria("inBlackList", false, EOperator.equals, null);
+            criteriaRq.getCriteria().add(ctr);
+            request.setCriteria(criteriaRq);
+        }
+        else {
+            SearchDTO.CriteriaRq ctr =  makeNewCriteria("inBlackList", false, EOperator.equals, null);
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setCriteria(new ArrayList<>());
+            criteriaRq.setOperator(EOperator.and);
+            criteriaRq.getCriteria().add(ctr);
             request.setCriteria(criteriaRq);
         }
 
@@ -948,8 +876,31 @@ public class TeacherRestController {
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/all-students-grade-to-teacher")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> getAllStudentsGradeToTeacher(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                             @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "teacherId", required = true) Long teacherId,
+                                                             @RequestParam(value = "courseId", required = true) Long courseId) throws IOException {
+        List<TclassDTO.AllStudentsGradeToTeacher> list = teacherService.getAllStudentsGradeToTeacher(courseId, teacherId);
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specResponse.setData(list)
+                .setStartRow(startRow)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
 
         specRs.setResponse(specResponse);
 
@@ -960,8 +911,9 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/blackList/{inBlackList}/{id}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
-        teacherService.changeBlackListStatus(inBlackList,id);
+    public void changeBlackListStatus(HttpServletRequest req, @PathVariable Boolean inBlackList, @PathVariable Long id) {
+        String reason=req.getParameter("reason");
+        teacherService.changeBlackListStatus(reason,inBlackList,id);
     }
 
 }

@@ -8,12 +8,16 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +27,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,6 +44,7 @@ public class StudentRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+    private final MessageSource messageSource;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -129,7 +137,7 @@ public class StudentRestController {
         final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -143,7 +151,6 @@ public class StudentRestController {
     public ResponseEntity<SearchDTO.SearchRs<StudentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(studentService.search(request), HttpStatus.OK);
     }
-
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
@@ -171,4 +178,16 @@ public class StudentRestController {
         reportUtil.export("/reports/StudentByCriteria.jasper", params, jsonDataSource, response);
     }
 
+    @Loggable
+    @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
+//    @PreAuthorize("hasAuthority('r_student')")
+    public ResponseEntity getOneByNationalCode(@PathVariable String nationalCode) {
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("active", -1, EOperator.equals, null));
+        criteria.getCriteria().add(makeNewCriteria("nationalCode", nationalCode, EOperator.equals, null));
+        List<StudentDTO.Info> studentList = studentService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
+        if (studentList.size() > 0)
+            return new ResponseEntity<>(studentList.get(0), HttpStatus.OK);
+        return new ResponseEntity<>(messageSource.getMessage("student.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
+    }
 }

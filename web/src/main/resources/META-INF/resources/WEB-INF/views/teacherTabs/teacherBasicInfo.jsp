@@ -2,7 +2,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 // <script>
-
+    var hasTeacherCategoriesChanged = false;
+    var hasTeacherMajorCategoryChanged = false;
     //----------------------------------------------------Rest Data Source----------------------------------------------
     var RestDataSource_Category_Evaluation_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -10,6 +11,16 @@
     });
 
     var RestDataSource_SubCategory_Evaluation_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    var RestDataSource_Categories_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategories_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
@@ -22,6 +33,7 @@
         width: "130px",
         border: "1px solid orange",
         scrollbarSize: 0,
+        prompt: "سایز عکس باید کوچکتر از 30 مگا بایت باشد<br/>اندازه ی عکس باید بین 100*100 تا 500*500 پیکسل باشد",
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
 
@@ -29,6 +41,7 @@
         align: "center",
         contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file-upload\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i>آپلود تصویر</label><input id=\"file-upload\" type=\"file\" name=\"file[]\" name=\"attachPic\" onchange=\"upload()\" accept=\".png,.gif,.jpg, .jpeg\"/></form>"
     });
+
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -101,15 +114,20 @@
                 showHintInField: true,
                 blur: function () {
                     var codeCheck;
-                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
                     nationalCodeCheck = codeCheck;
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
         code='msg.national.code.validation'/>", true);
-                    if (codeCheck === true) {
+                    if (codeCheck === true && DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus") == "false") {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
                         fillPersonalInfoFields(nationalCodeTemp);
+                    }
+                    if (codeCheck === true && DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus") == "true") {
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
+                        var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
+                        fillPersonalInfoByNationalCode(nationalCodeTemp);
                     }
                 }
             },
@@ -158,6 +176,7 @@
             {
                 name: "personality.fatherName",
                 title: "<spring:message code='father.name'/>",
+                required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
@@ -213,6 +232,7 @@
             {
                 name: "personality.birthCertificate",
                 title: "<spring:message code='birth.certificate'/>",
+                required: true,
                 keyPressFilter: "[0-9]",
                 length: "15"
             },
@@ -312,7 +332,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 required: true,
-                optionDataSource: RestDataSource_Education_Level_JspTeacher,
+                optionDataSource: RestDataSource_Education_Level_ByID_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -332,29 +352,26 @@
             {
                 name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
+                required: true,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
                 changeOnKeypress: true,
+                autoFetchData: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Education_Major_JspTeacher,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
+                optionDataSource: RestDataSource_Education_Major_ByID_JspTeacher,
+                filterFields: ["titleFa","titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
@@ -389,21 +406,19 @@
             {
                 name: "categories",
                 title: "<spring:message code='education.categories'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 required: true,
-                optionDataSource: RestDataSource_Category_JspTeacher,
+                optionDataSource: RestDataSource_Categories_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: false
                 },
                 changed: function () {
-                    isTeacherCategoriesChanged = true;
+                    hasTeacherCategoriesChanged = true;
                     var subCategoryField = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
@@ -427,28 +442,26 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='sub.education.categories'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
-                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                optionDataSource: RestDataSource_SubCategories_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: false
                 },
                 focus: function () {
-                    if (isTeacherCategoriesChanged) {
-                        isTeacherCategoriesChanged = false;
+                    if (hasTeacherCategoriesChanged) {
+                        hasTeacherCategoriesChanged = false;
                         var ids = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
-                        if (ids === []) {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                        if (ids == []) {
+                            RestDataSource_SubCategories_JspTeacher.implicitCriteria = null;
                         } else {
-                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                            RestDataSource_SubCategories_JspTeacher.implicitCriteria = {
                                 _constructor: "AdvancedCriteria",
                                 operator: "and",
                                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
@@ -461,6 +474,7 @@
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
+                required: true,
                 keyPressFilter: "[0-9]",
                 length: "11",
                 hint: "*********09",
@@ -509,20 +523,30 @@
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
-                filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
+                filterFields: ["titleFa","titleFa"],
+                generateExactMatchCriteria: true,
                 pickListFields: [
                     {
                         name: "titleFa",
                         width: "70%",
                         filterOperator: "iContains"
                     }
-                ]
+                ],
+                changed: function (form,item,value) {
+                    hasTeacherMajorCategoryChanged = true;
+                    DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").clearValue();
+                    if (value == null || value == undefined) {
+                        DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").disable();
+                    } else{
+                        DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").enable();
+                    }
+                }
             },
             {
                 name: "majorSubCategoryId",
@@ -530,6 +554,7 @@
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
+                disabled: true,
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -538,20 +563,36 @@
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
+                filterFields: ["titleFa","titleFa"],
+                sortField: ["id"],
+                generateExactMatchCriteria: true,
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
-                ]
+                ],
+                focus: function () {
+                    if (hasTeacherMajorCategoryChanged) {
+                        hasTeacherMajorCategoryChanged = false;
+                        var id = DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue();
+                        if (id == null || id == undefined) {
+                            RestDataSource_SubCategory_Evaluation_JspTeacher.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_Evaluation_JspTeacher.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: id}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
             },
 
         ],
@@ -593,44 +634,6 @@
     DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').titleStyle = 'teacher-code-title';
 
     DynamicForm_BasicInfo_JspTeacher.getItem('evaluation').setCellStyle('eval-code-label');
-
-
-    var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
-        align: "center",
-        canSubmit: true,
-        titleWidth: 0,
-        showInlineErrors: true,
-        showErrorText: false,
-        valuesManager: "vm",
-        numCols: 2,
-        titleAlign: "left",
-        margin: 10,
-        newPadding: 5,
-        fields: [
-            {name: "id", hidden: true},
-            {
-                ID: "attachPic",
-                name: "attachPic",
-                title: "",
-                type: "imageFile",
-                showFileInline: "true",
-                accept: ".png,.gif,.jpg, .jpeg",
-                multiple: "",
-                // hidden: true,
-            }
-        ],
-        itemChanged: function (item) {
-            if (item.name === "attachPic") {
-                showTempAttach();
-                setTimeout(function () {
-                    if (attachNameTemp === null || attachNameTemp === "") {
-                        DynamicForm_Photo_JspTeacher.getField("attachPic").setValue(null);
-                        showAttachViewLoader.setView();
-                    }
-                }, 300);
-            }
-        }
-    });
 
     //------------------------------------------ Functions -------------------------------------------------------------
     function upload() {

@@ -2,6 +2,7 @@ package com.nicico.training.repository;
 
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
+import com.nicico.training.model.ICourseSCRV;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +27,10 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour);
 
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour, Long id);
+
+    List<ClassSession> findBySessionDateBetween(String start, String end);
+
+    ClassSession getClassSessionById(Long sessionId);
+
 
 }

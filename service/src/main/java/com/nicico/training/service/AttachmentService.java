@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class AttachmentService implements IAttachmentService {
@@ -109,16 +111,6 @@ public class AttachmentService implements IAttachmentService {
                 request.setCriteria(criteriaRq);
         }
         return SearchUtil.search(attachmentDAO, request, attachment -> modelMapper.map(attachment, AttachmentDTO.Info.class));
-    }
-
-
-    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(operator);
-        criteriaRq.setFieldName(fieldName);
-        criteriaRq.setValue(value);
-        criteriaRq.setCriteria(criteriaRqList);
-        return criteriaRq;
     }
 
     // ------------------------------

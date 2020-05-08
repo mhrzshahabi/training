@@ -54,7 +54,7 @@ public class UnjustifiedAbsenceReportService implements IUnjustifiedAbsenceRepor
         {  for(int i=0;i<list.size();i++)
         {
             Object[] arr = (Object[]) list.get(i);
-            unjustifiedAbsenceReportDTO.add(new unjustifiedAbsenceReportDTO(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[4].toString(),arr[5].toString(),arr[6].toString(),arr[7].toString()));
+            unjustifiedAbsenceReportDTO.add(new unjustifiedAbsenceReportDTO(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[5].toString(),arr[7].toString(),arr[8].toString(),arr[9].toString()));
         }}
         return (mapper.map(unjustifiedAbsenceReportDTO, new TypeToken<List<unjustifiedAbsenceReportDTO>>() {
         }.getType()));

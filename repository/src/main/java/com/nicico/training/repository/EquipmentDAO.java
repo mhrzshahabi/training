@@ -30,4 +30,6 @@ public interface EquipmentDAO extends JpaRepository<Equipment, Long>, JpaSpecifi
     @Query(value = "select count(*) from TBL_EQUIPMENT te  where Not EXISTS(select F_EQUIPMENT_ID from TBL_TRAINING_PLACE_EQUIPMENT tpe where  tpe.F_EQUIPMENT_ID=te.ID and tpe.F_TRAINING_PLACE_ID = ?)", nativeQuery = true)
     Integer getUnAttachedEquipmentsCountByTrainingPlaceId(Long trainingPlaceID);
 
+    @Query(value = "select count(*) from TBL_EQUIPMENT te where (te.c_code= :code or te.c_title_fa= :titleFa) and te.id<> :id", nativeQuery = true)
+    Integer isExsits(String code, String titleFa, Long id);
 }

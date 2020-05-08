@@ -5,8 +5,10 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.model.Personnel;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface IPersonnelService {
 
@@ -28,4 +30,14 @@ public interface IPersonnelService {
 
     PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
 
+    @Transactional
+    PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode);
+
+    List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType);
+
+    Personnel findPersonnelByPersonnelNo(String personnelNo);
+
+    SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
+
+    <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter);
 }

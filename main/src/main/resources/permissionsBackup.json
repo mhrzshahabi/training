@@ -914,23 +914,23 @@
     },
     {
       "code": "Teacher_C",
-      "title": "ایجاد استاد"
+      "title": "ایجاد مدرس"
     },
     {
       "code": "Teacher_R",
-      "title": "مشاهده استاد"
+      "title": "مشاهده مدرس"
     },
     {
       "code": "Teacher_U",
-      "title": "ویرایش استاد"
+      "title": "ویرایش مدرس"
     },
     {
       "code": "Teacher_D",
-      "title": "حذف استاد"
+      "title": "حذف مدرس"
     },
     {
       "code": "Teacher_P",
-      "title": "چاپ استاد"
+      "title": "چاپ مدرس"
     },
     {
       "code": "Term_C",

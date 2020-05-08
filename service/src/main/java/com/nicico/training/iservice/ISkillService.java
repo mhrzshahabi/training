@@ -17,6 +17,8 @@ import java.util.List;
 public interface ISkillService {
     SkillDTO.Info get(Long id);
 
+    Skill getSkill(Long id);
+
     List<SkillDTO.Info> list();
 
     @Transactional
@@ -91,4 +93,8 @@ public interface ISkillService {
     List<SkillDTO> listMainObjective(Long mainObjectiveId);
 
     List<Skill> skillList(Long courseId);
+
+
+    @Transactional(readOnly = true)
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType);
 }

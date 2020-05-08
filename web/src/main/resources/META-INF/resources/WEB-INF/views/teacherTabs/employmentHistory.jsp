@@ -65,7 +65,7 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
@@ -73,10 +73,9 @@
                 filterFields: ["titleFa"],
                 multiple: true,
                 required: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCategoriesChanged = true;
@@ -96,6 +95,7 @@
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
+                    SubCats = SubCats.isEmpty() ? null : SubCats;
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
                 }
@@ -103,7 +103,7 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
@@ -113,16 +113,15 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
                         var ids = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
-                        if (ids === []) {
+                        if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = null;
                         } else {
                             RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = {
@@ -293,6 +292,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='employmentHistory'/>",
+        close : function(){closeCalendarWindow(); Window_JspEmploymentHistory.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspEmploymentHistory, HLayout_SaveOrExit_JspEmploymentHistory]
         })]
@@ -338,45 +338,70 @@
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterLocally: false,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspEmploymentHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterLocally: false,
-                filterOnKeypress: true
+                canSort: false,
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>",
-                canSort: false
+                title: "<spring:message code='start.date'/>"
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>",
-                canSort: false
+                title: "<spring:message code='end.date'/>"
             }
         ],
         doubleClick: function () {
             ListGrid_EmploymentHistory_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspEmploymentHistory.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -462,24 +487,25 @@
             methodEmploymentHistory = "PUT";
             saveActionUrlEmploymentHistory = employmentHistoryUrl + "/" + record.id;
             DynamicForm_JspEmploymentHistory.clearValues();
-            DynamicForm_JspEmploymentHistory.editRecord(record);
-            var categoryIds = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
-            var subCategoryIds = DynamicForm_JspEmploymentHistory.getField("subCategories").getValue();
-            if (categoryIds == null || categoryIds.length === 0)
+            var clonedRecord = Object.assign({}, record);
+            clonedRecord.categories = null;
+            clonedRecord.subCategories = null;
+            DynamicForm_JspEmploymentHistory.editRecord(clonedRecord);
+            if (record.categories == null || record.categories.isEmpty())
                 DynamicForm_JspEmploymentHistory.getField("subCategories").disable();
             else {
                 DynamicForm_JspEmploymentHistory.getField("subCategories").enable();
                 var catIds = [];
-                for (var i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
+                for (var i = 0; i < record.categories.length; i++)
+                    catIds.add(record.categories[i].id);
                 DynamicForm_JspEmploymentHistory.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspEmploymentHistory.getField("subCategories").focus(null, null);
             }
-            if (subCategoryIds != null && subCategoryIds.length > 0) {
+            if (record.subCategories != null && !record.subCategories.isEmpty()) {
                 var subCatIds = [];
-                for (var i = 0; i < subCategoryIds.length; i++)
-                    subCatIds.add(subCategoryIds[i].id);
+                for (var i = 0; i < record.subCategories.length; i++)
+                    subCatIds.add(record.subCategories[i].id);
                 DynamicForm_JspEmploymentHistory.getField("subCategories").setValue(subCatIds);
             }
             Window_JspEmploymentHistory.show();

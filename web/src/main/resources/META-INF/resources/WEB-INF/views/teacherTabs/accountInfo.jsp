@@ -35,14 +35,14 @@
                 name: "personality.accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "15"
             },
 
             {
                 name: "personality.accountInfo.accountNumber",
                 title: "<spring:message code='account.number'/>",
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "15"
             },
 
             {
@@ -56,7 +56,7 @@
                 name: "personality.accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "15"
             },
 
             {

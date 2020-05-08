@@ -23,30 +23,28 @@ public class EducationFormController {
         return "base/education";
     }
 
-    @PostMapping("/{educationType}/printWithCriteria/{type}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,
-                                               @PathVariable String educationType,
-                                               @PathVariable String type) {
-        String token = request.getParameter("token");
+    @RequestMapping("/print-one-course/{courseId}/{type}/{token}")
+    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long id, @PathVariable String token) {
+//        String token = (String) request.getSession().getAttribute("AccessToken");
 
-        final RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-        final HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
 
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        type = type.toUpperCase();
-        return restTemplate.exchange(restApiUrl + "/api/" + educationType + "/printWithCriteria/" + type,
-                HttpMethod.POST,
-                entity,
-                byte[].class);
+
+
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/" + id + "/pdf", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/" + id + "/excel", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/" + id + "/html", HttpMethod.GET, entity, byte[].class);
+        else
+            return null;
     }
 }

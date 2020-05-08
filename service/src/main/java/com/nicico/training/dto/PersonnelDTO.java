@@ -4,6 +4,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -105,6 +106,7 @@ public class PersonnelDTO implements Serializable {
         private String educationMajorTitle;
         private String workTurnTitle;
         private String workPlaceTitle;
+        private String complexTitle;
     }
 
     @Getter
@@ -140,4 +142,25 @@ public class PersonnelDTO implements Serializable {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("ComplexTitle")
+    public static class StatisticalReport {
+        private String complexTitle;
+        private String ccpAssistant;
+        private String ccpAffairs;
+        private String ccpSection;
+        private String ccpUnit;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("FieldValue")
+    public static class FieldValue {
+        private String value;
+    }
 }

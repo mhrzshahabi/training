@@ -17,6 +17,7 @@
     var skill_CategoryUrl = rootUrl + "/category/spec-list";
     var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
     var skill_selectedSkillId = -1;
+    var skillChanged_JspSkill = false;
 
     // Start Block Of Combo And List Data Sources ----------------------------------------------------------
 
@@ -54,14 +55,50 @@
     var RestDataSource_Course_JspSkill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name:"scoringMethod"},
-            {name:"acceptancelimit"},
+            {name: "scoringMethod"},
+            {name: "acceptancelimit"},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
-            {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
             {name: "theoryDuration"},
         ],
         fetchDataURL: courseUrl + "spec-list"
+    });
+
+    PostDS_JspSkill = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+
+        ],
+        fetchDataURL: null
+    });
+
+    PostLG_JspSkill = isc.TrLG.create({
+        dataSource: PostDS_JspSkill,
+        selectionType: "single",
+        autoFetchData: false,
+        fields: [
+            {name: "code"},
+            {name: "titleFa"},
+            {name: "job.titleFa"},
+            {name: "postGrade.titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"}
+        ],
     });
 
 
@@ -149,6 +186,7 @@
                 title: "<spring:message code="skill.code"/>",
                 length: 10,
                 type: 'staticText',
+                canEdit: false,
                 required: false,
                 keyPressFilter: "^[A-Z|0-9 ]",
                 width: "300"
@@ -191,55 +229,7 @@
                     errorMessage: "نام مجاز بین چهار تا دویست کاراکتر است"
                 }]
             },
-            {
-                name: "skillLevelId",
-                title: "<spring:message code="skill.level"/>",
-// hint: "<spring:message code="skill.level"/>",
-                showHintInField: true,
-                width: "300",
-                required: true,
-                textAlign: "right",
-                // editorType: "ComboBoxItem",
-                pickListWidth: 300,
-                addUnknownValues: false,
-                useClientFiltering: true,
-                cachePickListResults: true,
-                changeOnKeypress: false,
-                filterOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Skill_Skill_Level,
-                autoFetchData: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                // pickListProperties: {
-                //     showFilterEditor: true
-                // },
-                <%--pickListFields: [--%>
-                    <%--{--%>
-                        <%--name: "titleFa",--%>
-                        <%--title: "<spring:message code="title"/>",--%>
-                        <%--width: "30%",--%>
-                        <%--filterOperator: "iContains"--%>
-                    <%--}--%>
-                <%--],--%>
-                changed: function (form, item, value) {
-                    switch (value) {
-                        case 1:
-                            skill_Level_Symbol = "A";
-                            break;
-                        case 2:
-                            skill_Level_Symbol = "B";
-                            break;
-                        case 3:
-                            skill_Level_Symbol = "C";
-                            break;
-                    }
 
-                }
-            },
             {
                 name: "categoryId",
                 title: "<spring:message code="skill.group"/>",
@@ -280,9 +270,15 @@
                         form.getItem("subCategoryId").fetchData();
                         form.getItem("subCategoryId").setValue([]);
                         form.getItem("subCategoryId").setDisabled(false);
+                        form.getItem("skillLevelId").setValue([]);
+                        form.getItem("skillLevelId").setDisabled(true);
+                        form.clearValue('code');
+
                     }
                 }
             },
+
+
             {
                 name: "subCategoryId",
                 title: "<spring:message code="skill.subcategory"/>",
@@ -317,24 +313,88 @@
                 //     },
                 //     {
                 //         name: "titleFa",
-                        <%--title: "<spring:message code="subcategory"/>",--%>
-                        // width: "60%",
-                        // filterOperator: "iContains"
-                    // }
+                <%--title: "<spring:message code="subcategory"/>",--%>
+                // width: "60%",
+                // filterOperator: "iContains"
+                // }
                 // ],
+                changed: function (form, item, value) {
+                    form.getItem("skillLevelId").setDisabled(false);
+                    form.getItem("skillLevelId").setValue([]);
+                    form.clearValue('code');
+                }
             },
+
             {
-                name: "courseId", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
+                name: "skillLevelId",
+                title: "<spring:message code="skill.level"/>",
+// hint: "<spring:message code="skill.level"/>",
+                showHintInField: true,
+                width: "300",
+                required: true,
+                textAlign: "right",
+                // editorType: "ComboBoxItem",
+                pickListWidth: 300,
+                addUnknownValues: false,
+                useClientFiltering: true,
+                cachePickListResults: true,
+                changeOnKeypress: false,
+                filterOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Skill_Skill_Level,
+                autoFetchData: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                // pickListProperties: {
+                //     showFilterEditor: true
+                // },
+                <%--pickListFields: [--%>
+                <%--{--%>
+                <%--name: "titleFa",--%>
+                <%--title: "<spring:message code="title"/>",--%>
+                <%--width: "30%",--%>
+                <%--filterOperator: "iContains"--%>
+                <%--}--%>
+                <%--],--%>
+                changed: function (form, item, value) {
+                    switch (value) {
+                        case 1:
+                            skill_Level_Symbol = "A";
+                            break;
+                        case 2:
+                            skill_Level_Symbol = "B";
+                            break;
+                        case 3:
+                            skill_Level_Symbol = "C";
+                            break;
+                    }
+                    var code;
+                    code = DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord().code;
+                    isc.RPCManager.sendRequest(TrDSRequest(skill_ActionUrl + "/getMaxSkillCode/" + (code + skill_Level_Symbol), "GET", null, "result_resp(rpcResponse)"));
+                }
+            },
+
+
+            {
+                name: "courseId", editorType: "SelectItem", title: "<spring:message code='course'/>:",
                 textAlign: "center",
                 pickListWidth: 500,
                 optionDataSource: RestDataSource_Course_JspSkill,
                 displayField: "titleFa", valueField: "id",
-                filterFields: ["titleFa", "code", "createdBy"],
+                // filterFields: ["titleFa", "code", "createdBy"],
                 pickListFields: [
                     {name: "code"},
                     {name: "titleFa"},
                     {name: "createdBy"}
                 ],
+                pickListProperties: {
+                    showFilterEditor: true,
+                    alternateRecordStyles: true,
+                    autoFitWidthApproach: "both",
+                },
             },
             {
                 name: "description",
@@ -374,6 +434,7 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
+
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "<spring:message code="msg.operation.successful"/>",
@@ -401,6 +462,12 @@
 
         }
     });
+
+    function result_resp(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            DynamicForm_Skill_Skill.getItem('code').setValue(resp.data);
+        }
+    }
 
     var Hlayout_Skill_Skill_SaveOrExit = isc.HLayout.create({
         layoutMargin: 5,
@@ -514,7 +581,7 @@
                 "<spring:message code="verify.delete"/>");
             Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
-                      this.close();
+                    this.close();
 
                     if (index == 0) {
                         var wait = isc.Dialog.create({
@@ -592,8 +659,8 @@
         DynamicForm_Skill_Skill.clearValues();
         DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(false);
         DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
-        DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(false);
-        DynamicForm_Skill_Skill.getItem("code").visible = false;
+        DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(true);
+        // DynamicForm_Skill_Skill.getItem("code").visible = false;
         Window_Skill_Skill.setTitle("<spring:message code="create.skill"/>");
         Window_Skill_Skill.show();
     };
@@ -685,119 +752,45 @@
             ListGrid_Skill_Skill_Edit();
         },
         fields: [
-// {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains", autoFitWidth:true},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", align: "center", filterOperator: "iContains"},
-            {
-                name: "course.code",
-                // editorType: "TrComboAutoRefresh",
-                title: "<spring:message code='course'/>",
-                textAlign: "center",
-                autoFitWidth: true,
-                // pickListWidth: 500,
-                // optionDataSource: RestDataSource_Course_JspSkill,
-                // displayField: "code",
-                // valueField: "code",
-                // filterFields: ["titleFa", "code", "createdBy"],
-                // pickListFields: [
-                //     {name: "code"},
-                //     {name: "titleFa"},
-                //     {name: "createdBy"}
-                // ],
-                // filterEditorType:"TextItem",
-                // canEdit: true,
-                <%--change: function (form, item, value, oldValue) {--%>
-                    <%--alert(this.grid.getSelectedRecord().course.code)--%>
-                    <%--alert(oldValue)--%>
-                    <%--item.setValue("123")--%>
-                    <%--isc.MyYesNoDialog.create({--%>
-                        <%--buttonClick: function (button, index) {--%>
-                            <%--this.close();--%>
-                            <%--if(index == 0){--%>
-                                <%--let data = this.grid.getSelectedRecord()--%>
-                                <%--isc.RPCManager.sendRequest({--%>
-                                    <%--actionURL: skill_ActionUrl,--%>
-                                    <%--httpMethod: "PUT",--%>
-                                    <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                                    <%--useSimpleHttp: true,--%>
-                                    <%--contentType: "application/json; charset=utf-8",--%>
-                                    <%--showPrompt: false,--%>
-                                    <%--data: JSON.stringify(data),--%>
-                                    <%--serverOutputAsString: false,--%>
-                                    <%--callback: function (resp) {--%>
-                                        <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
-                                            <%--var OK = isc.Dialog.create({--%>
-                                                <%--message: "<spring:message code="msg.operation.successful"/>",--%>
-                                                <%--icon: "[SKIN]say.png",--%>
-                                                <%--title: "<spring:message code="global.form.command.done"/>"--%>
-                                            <%--});--%>
-                                            <%--setTimeout(function () {--%>
-                                                <%--OK.close();--%>
-                                            <%--}, 3000);--%>
-                                            <%--ListGrid_Skill_Skill_refresh();--%>
-                                            <%--Window_Skill_Skill.close();--%>
-                                        <%--} else {--%>
-                                            <%--var OK = isc.Dialog.create({--%>
-                                                <%--message: "<spring:message code="msg.operation.error"/>",--%>
-                                                <%--icon: "[SKIN]say.png",--%>
-                                                <%--title: "<spring:message code="global.form.command.done"/>"--%>
-                                            <%--});--%>
-                                            <%--setTimeout(function () {--%>
-                                                <%--ERROR.close();--%>
-                                            <%--}, 3000);--%>
-                                        <%--}--%>
-
-                                    <%--}--%>
-                                <%--});--%>
-                            <%--}--%>
-                        <%--}--%>
-                    <%--})--%>
-
-                <%--}--%>
-            },
-            {
-                name: "category.titleFa",
-                title: "<spring:message code="group"/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
-            {
-                name: "subCategory.titleFa", title: "<spring:message
-        code="subcategory"/>", align: "center", filterOperator: "iContains"
-            },
-            {
-                name: "skillLevel.titleFa", title: "<spring:message
-        code="skill.level"/>", align: "center", filterOperator: "iContains"
-            },
-// {name: "description",title: "<spring:message code="description"/>",align: "center",filterOperator: "iContains"}
+            {name: "course.code", title: "<spring:message code='course'/>", textAlign: "center", autoFitWidth: true,},
+            {name: "category.titleFa", title: "<spring:message code="group"/>", align: "center", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", align: "center", filterOperator: "iContains"},
+            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", align: "center", filterOperator: "iContains"},
         ],
         selectionType: "single",
-        selectionUpdated  : function() {
+        selectionUpdated: function () {
             let record1 = ListGrid_Skill_Skill.getSelectedRecord();
             // selectedSkillId = record.id;
             // if(state) {
-                let advancedCriteriaJspSkill = {
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: []
-                };
-                // ListGrid_Course_JspSkill.fetchData();
-                // ListGrid_Course_JspSkill.invalidateCache();
-                if (record1.course != undefined) {
-                    advancedCriteriaJspSkill.criteria.add({
-                        fieldName: "code",
-                        operator: "iContains",
-                        value: record1.course.code
-                    });
+            let advancedCriteriaJspSkill = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: []
+            };
+            // ListGrid_Course_JspSkill.fetchData();
+            // ListGrid_Course_JspSkill.invalidateCache();
+            if (record1.course != undefined) {
+                advancedCriteriaJspSkill.criteria.add({
+                    fieldName: "code",
+                    operator: "iContains",
+                    value: record1.course.code
+                });
                 // }
-                    ListGrid_Course_JspSkill.fetchData(advancedCriteriaJspSkill);
-                    ListGrid_Course_JspSkill.invalidateCache();
-                 }
-                else{
-                    ListGrid_Course_JspSkill.fetchData();
-                    ListGrid_Course_JspSkill.invalidateCache();
-                }
+                ListGrid_Course_JspSkill.fetchData(advancedCriteriaJspSkill);
+                ListGrid_Course_JspSkill.invalidateCache();
+            } else {
+                ListGrid_Course_JspSkill.fetchData();
+                ListGrid_Course_JspSkill.invalidateCache();
+            }
+            skillChanged_JspSkill = true;
+            PostDS_JspSkill.fetchDataURL = needsAssessmentReportsUrl + "/skillNA?skillId=" + this.getSelectedRecord().id;
+            if ( Detail_Tab_Skill.getSelectedTab().name === "Post" ){
+                skillChanged_JspSkill = false;
+                refreshLG(PostLG_JspSkill);
+            }
         },
         // selectionChanged: function (record) {
         //     RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skillUrl + "/" + record.id + "/skill-groups";
@@ -853,7 +846,7 @@
             ListGrid_Skill_Skill_Edit();
         }
     });
-    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Skill_Skill_Add();
         }
@@ -875,10 +868,10 @@
     var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
         width: "100%",
         members: [
-             ToolStripButton_Skill_Skill_Add,
-             ToolStripButton_Skill_Skill_Edit,
-             ToolStripButton_Skill_Skill_Remove,
-             ToolStripButton_Skill_Skill_Print,
+            ToolStripButton_Skill_Skill_Add,
+            ToolStripButton_Skill_Skill_Edit,
+            ToolStripButton_Skill_Skill_Remove,
+            ToolStripButton_Skill_Skill_Print,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1166,7 +1159,7 @@
                 httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                         ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                     } else {
@@ -1238,7 +1231,6 @@
     var HLayOut_Skill_AddSkillGroup_Header = isc.HLayout.create({
         width: "100%",
         height: 30,
-//autoDraw: true,
         autoSize: false,
         border: "0px solid yellow",
         backgroundColor: "lightgray",
@@ -1317,7 +1309,7 @@
             Window_Skill_AddSkillGroup.show();
         }
 
-    };
+    }
 
     function Skill_Finish_SkillGroup() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
@@ -1329,7 +1321,7 @@
             // selectedSkillId = record.id;
         }
         ListGrid_Skill_Attached_SkillGroups.invalidateCache();
-    };
+    }
 
     // End Block Add Skill Groups To Skill ---------------------------------------------------------------
 
@@ -1400,118 +1392,34 @@
         canAddFormulaFields: true,
         allowAdvancedCriteria: true,
         hoverMoveWithMouse: true,
-        showRowNumbers:false,
+        showRowNumbers: false,
         selectionAppearance: "checkbox",
         fields: [
-            {
-                name: "code", title: "<spring:message code="corse_code"/>",
-                align: "center",
-                autoFitWidth: true,
-                filterOperator: "iContains"
-            },
-            {
-                name: "titleFa",
-                title: "<spring:message code="course_fa_name"/>",
-                align: "center",
-                autoFitWidth: true,
-                filterOperator: "iContains",
-            },
-            {
-                name: "titleEn",
-                title: "<spring:message code="course_en_name"/>",
-                align: "center",
-                filterOperator: "iContains",
-                hidden: true
-            },
-            {
-                name: "categoryId",
-                title: "<spring:message code="course_category"/>",
-                align: "center",
-                filterOperator: "iContains",
-                optionDataSource: RestDataSource_Skill_Category,
-                valueField: "id",
-                displayField: "titleFa",
-            },
-            {
-                name: "subCategory.titleFa", title: "<spring:message
-        code="course_subcategory"/>", align: "center", filterOperator: "iContains"
-            },
-            {
-                name: "erunType.titleFa",
-                title: "<spring:message code="course_eruntype"/>",
-                align: "center",
-                filterOperator: "iContains",
-                allowFilterOperators: false,
-                canFilter: false
-
-            },
-            {
-                name: "elevelType.titleFa", title: "<spring:message
-        code="cousre_elevelType"/>", align: "center", filterOperator: "iContains",
-                canFilter: false
-            },
-            {
-                name: "etheoType.titleFa", title: "<spring:message
-        code="course_etheoType"/>", align: "center", filterOperator: "iContains",
-                canFilter: false
-            },
-            {
-                name: "theoryDuration", title: "<spring:message
-                code="course_theoryDuration"/>", align: "center", filterOperator: "iContains",
-
-            },
-            {
-                name: "etechnicalType.titleFa", title: "<spring:message
-                 code="course_etechnicalType"/>", align: "center", filterOperator: "iContains",
-                canFilter: false
-            },
-            {
-                name: "minTeacherDegree", title: "<spring:message
-        code="course_minTeacherDegree"/>", align: "center", filterOperator: "iContains", hidden: true
-            },
-            {
-                name: "minTeacherExpYears", title: "<spring:message
-        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "iContains", hidden: true
-            },
-            {
-                name: "minTeacherEvalScore", title: "<spring:message
-        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "iContains", hidden: true
-            },
+            {name: "code", title: "<spring:message code="corse_code"/>", align: "center", autoFitWidth: true, filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center", autoFitWidth: true, filterOperator: "iContains",},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center", filterOperator: "iContains", hidden: true},
+            {name: "categoryId", title: "<spring:message code="course_category"/>", align: "center", filterOperator: "iContains", optionDataSource: RestDataSource_Skill_Category, valueField: "id", displayField: "titleFa",},
+            {name: "subCategory.titleFa", title: "<spring:message code="course_subcategory"/>", align: "center", filterOperator: "iContains"},
+            {name: "erunType.titleFa", title: "<spring:message code="course_eruntype"/>", align: "center", filterOperator: "iContains", allowFilterOperators: false, canFilter: false},
+            {name: "elevelType.titleFa", title: "<spring:message code="cousre_elevelType"/>", align: "center", filterOperator: "iContains", canFilter: false},
+            {name: "etheoType.titleFa", title: "<spring:message code="course_etheoType"/>", align: "center", filterOperator: "iContains", canFilter: false},
+            {name: "theoryDuration", title: "<spring:message code="course_theoryDuration"/>", align: "center", filterOperator: "iContains",},
+            {name: "etechnicalType.titleFa", title: "<spring:message code="course_etechnicalType"/>", align: "center", filterOperator: "iContains", canFilter: false},
+            {name: "minTeacherDegree", title: "<spring:message code="course_minTeacherDegree"/>", align: "center", filterOperator: "iContains", hidden: true},
+            {name: "minTeacherExpYears", title: "<spring:message code="course_minTeacherExpYears"/>", align: "center", filterOperator: "iContains", hidden: true},
+            {name: "minTeacherEvalScore", title: "<spring:message code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "iContains", hidden: true},
             {name: "needText", title: "شرح", hidden: true},
             {name: "description", title: "توضیحات", hidden: true},
-            {
-                name: "workflowStatus",
-                title: "<spring:message code="status"/>",
-                align: "center",
-                autoFitWidth: true,
-                filterOperator: "iContains"
-            },
+            {name: "workflowStatus", title: "<spring:message code="status"/>", align: "center", autoFitWidth: true, filterOperator: "iContains"},
             {
                 name: "behavioralLevel", title: "سطح رفتاری",
-                // hidden:true,
-                valueMap: {
-                    "1": "مشاهده",
-                    "2": "مصاحبه",
-                    "3": "کار پروژه ای"
-                }
+                valueMap: {"1": "مشاهده", "2": "مصاحبه", "3": "کار پروژه ای"}
             },
             {
                 name: "evaluation", title: "<spring:message code="evaluation.level"/>",
-                valueMap: {
-                    "1": "واکنش",
-                    "2": "یادگیری",
-                    "3": "رفتاری",
-                    "4": "نتایج",
-                },
+                valueMap: {"1": "واکنش", "2": "یادگیری", "3": "رفتاری", "4": "نتایج",}
             },
-            {
-                name: "workflowStatusCode",
-                title: "<spring:message code="status"/>",
-                align: "center",
-                autoFitWidth: true,
-                filterOperator: "iContains",
-                hidden: true
-            },
+            {name: "workflowStatusCode", title: "<spring:message code="status"/>", align: "center", autoFitWidth: true, filterOperator: "iContains", hidden: true},
             {name: "hasGoal", type: "boolean", title: "بدون هدف", hidden: true, canFilter: false},
             {name: "hasSkill", type: "boolean", title: "بدون مهارت", hidden: true, canFilter: false}
             // {name: "version", title: "version", canEdit: false, hidden: true},
@@ -1535,8 +1443,8 @@
         //     }
         // },
         selectionChanged: function (record, state) {
-            if(state) {
-                if (ListGrid_Skill_Skill.getSelectedRecord() == null || ListGrid_Skill_Skill.getSelectedRecord() == undefined) {
+            if (state) {
+                if (ListGrid_Skill_Skill.getSelectedRecord() == null || ListGrid_Skill_Skill.getSelectedRecord() === undefined) {
                     createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                     return
                 } else if (ListGrid_Skill_Skill.getSelectedRecord().course !== undefined) {
@@ -1548,7 +1456,7 @@
                     message: "آیا از انتصاب دوره " + ListGrid_Course_JspSkill.getSelectedRecord().titleFa + " به مهارت " + ListGrid_Skill_Skill.getSelectedRecord().titleFa + " اطمینان دارید؟ ",
                     buttonClick: function (button, index) {
                         this.close();
-                        if (index == 0) {
+                        if (index === 0) {
                             let data = ListGrid_Skill_Skill.getSelectedRecord();
                             data.courseId = record.id;
                             isc.RPCManager.sendRequest({
@@ -1577,7 +1485,6 @@
                                 }
                             });
                         }
-                        ;
                         ListGrid_Course_JspSkill.deselectRecord(record);
                     }
                 })
@@ -1589,22 +1496,16 @@
         width: "100%",
         height: "100%",
         tabs: [
-            {
-                // id: "TabPane_Skill_Course",
-                title: "<spring:message code='course'/>",
-                pane: ListGrid_Course_JspSkill
-            },
-            {
-                id: "TabPane_Skill_SkillGroup",
-                title: "<spring:message code='list.skill.group'/>",
-                pane: HLayout_Tab_Skill_SkillGroups
-
-            },
-            <%--{--%>
-                <%--title: "<spring:message code='list.need.Assesment'/>",--%>
-                <%--pane: HLayout_Tab_Skill_Need_Assessment--%>
-            <%--},--%>
-        ]
+            {title: "<spring:message code='course'/>", pane: ListGrid_Course_JspSkill},
+            {id: "TabPane_Skill_SkillGroup", title: "<spring:message code='list.skill.group'/>", pane: HLayout_Tab_Skill_SkillGroups},
+            {title: "<spring:message code='post'/>", name: "Post", pane: PostLG_JspSkill},
+        ],
+        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+            if (name === "Post" && skillChanged_JspSkill) {
+                skillChanged_JspSkill = false;
+                refreshLG(PostLG_JspSkill);
+            }
+        }
     });
 
     var VLayout_Tab_Skill = isc.VLayout.create({
@@ -1620,3 +1521,5 @@
         <%--border: "2px solid blue",--%>
         members: [VLayout_Body_Skill_Skill, VLayout_Tab_Skill]
     });
+
+    //</script>

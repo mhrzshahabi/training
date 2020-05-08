@@ -31,7 +31,7 @@ public class PostGradeGroup extends Auditable {
     @Column(name = "c_description", length = 500)
     private String description;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_post_grade_post_grade_group",
             joinColumns = {@JoinColumn(name = "f_post_grade_group_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_post_grade_id", referencedColumnName = "id")})

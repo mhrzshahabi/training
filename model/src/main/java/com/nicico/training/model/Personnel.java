@@ -1,6 +1,7 @@
 package com.nicico.training.model;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Getter
+@Setter
 @Entity
 @Immutable
 @Table(name = "tbl_personnel")
@@ -165,4 +167,3 @@ public class Personnel {
     @Column(name = "ccp_title")
     private String ccpTitle;
 }
-

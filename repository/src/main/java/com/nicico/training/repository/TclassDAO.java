@@ -3,7 +3,9 @@ package com.nicico.training.repository;
 @Author:roya
 */
 
+import com.nicico.training.model.Course;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,5 +27,61 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Query(value = "select MAX(C_WORKFLOW_ENDING_STATUS_CODE) from TBL_CLASS where ID = :classId", nativeQuery = true)
     public Integer getWorkflowEndingStatusCode(Long classId);
+
+    @Query(value = "select * from TBL_CLASS where F_TEACHER = :tID", nativeQuery = true)
+    public List<Tclass> getTeacherClasses(Long tID);
+
+    @Query(value = "SELECT SUM(C.n_h_duration) as TrainingTime FROM tbl_class_student CS INNER JOIN tbl_class C ON C.id = CS.class_id INNER JOIN tbl_student S ON S.id = CS.student_id WHERE S.national_code =:national_code AND INSTR(C.c_start_date, :year) > 0", nativeQuery = true)
+    public Long getStudentTrainingTime(String national_code, String year);
+
+    @Query(value = " SELECT " +
+            "    c.id, '<b class=\"clickableCell\">' || c.c_code || '</b>', c.c_title_class, c.n_h_duration , c.c_start_date, c.c_end_date, c.c_status as classStatus_id, " +
+            "    case when c.c_status = 1 then 'برنامه ریزی' when c.c_status = 2 then 'در حال اجرا' when c.c_status = 3 then 'پایان یافته' end as classStatus, " +
+            "    case when INSTR(cs.scores_state, 'قبول')>0 then 1 when INSTR(cs.scores_state, 'مردود')>0 then 0 end as score_state_id, " +
+            "    '(<b class=\"'|| case when INSTR(cs.scores_state, 'قبول')>0 then 'acceptRTL' when INSTR(cs.scores_state, 'مردود')>0 then 'rejectedRTL' end ||'\">' || cs.scores_state || '</b>)' || case when cs.score is not null then ' نمره: ' || cs.score else '' end || case when  cs.failure_reason is not null then ' <' ||  cs.failure_reason || '>' else '' end as score_state, " +
+            "    case when co.e_run_type = 1 then 'داخلي' when co.e_run_type = 2 then 'اعزام' when co.e_run_type = 3 then 'سمينار داخلي' " +
+            "     when co.e_run_type = 4 then 'سمينار اعزام' when co.e_run_type = 5 then 'حين كار' when co.e_run_type = 6 then 'خارجی' " +
+            "      when co.e_run_type = 7 then 'سمینار خارجی' when co.e_run_type = 8 then 'مجازي' when co.e_run_type = 9 then 'بازآموزي' " +
+            "       when co.e_run_type = 10 then 'جعبه ابزار' end as ERun_Type, co.id as course_id, co.c_title_fa as course_title " +
+            " FROM " +
+            "    tbl_class c " +
+            "    INNER JOIN tbl_class_student cs ON c.id = cs.class_id " +
+            "    INNER JOIN tbl_student s ON s.id = cs.student_id " +
+            "    INNER JOIN tbl_course co ON co.id = c.f_course " +
+            " WHERE " +
+            "    s.national_code =:national_code ", nativeQuery = true)
+    public List<?> findAllPersonnelClass(String national_code);
+
+    public List<?> findAllTclassByCourseId(Long id);
+
+    public List<Tclass> findTclassesByCourseId(Long id);
+
+    List<Tclass> findByCourseAndTeacher(Course course, Teacher teacher);
+
+    List<Tclass> findByCourseIdAndTeacherId(Long courseId, Long teacherId);
+
+    List<Tclass> findByTeacherId(Long teacherId);
+
+    Tclass findTclassByIdEquals(Long classId);
+
+    List<Tclass> findTclassesByCourseIdEquals(Long courseId);
+
+    @Modifying
+    @Query(value = "update tbl_class set C_HAS_WARNING = :hasWarning where ID = :classId", nativeQuery = true)
+    int updateClassHasWarning(Long classId, String hasWarning);
+
+    @Modifying
+    @Query(value = " update tbl_class " +
+            " set c_has_warning = " +
+            " (SELECT DISTINCT " +
+            "    case when tbl_alarm.f_class_id is null and tbl_alarm.f_class_id_conflict is null then null else 'alarm' end as alarmStatus " +
+            " FROM " +
+            "    tbl_alarm  " +
+            " WHERE tbl_class.id = tbl_alarm.f_class_id or tbl_class.id = tbl_alarm.f_class_id_conflict) " +
+            " where tbl_class.c_status <> 3 ", nativeQuery = true)
+    int updateAllClassHasWarning();
+
+    @Query(value = "select max(f_term) from tbl_class where id = :classId", nativeQuery = true)
+    Long getTermIdByClassId(Long classId);
 
 }

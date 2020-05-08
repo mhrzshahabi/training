@@ -16,13 +16,14 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.NeedAssessmentDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
-import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.model.Skill;
 import com.nicico.training.service.SkillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -37,6 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 //import com.nicico.copper.core.util.report.ReportUtil;
 
@@ -89,6 +93,21 @@ public class SkillRestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
+    }
+
+    @Loggable
+    @GetMapping(value = "/getMaxSkillCode/{code}")
+    public String MaxSkillCode(@PathVariable String code) throws Exception {
+            String maxSkillCode = "";
+            String newSkillCode = "";
+            Integer maxId;
+            maxSkillCode = skillService.getMaxSkillCode(code);
+            if (maxSkillCode == null)
+                throw new Exception("Skill with this Code wrong");
+            maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
+            maxId++;
+            newSkillCode = code + String.format("%04d", maxId);
+            return newSkillCode;
     }
 
     @Loggable
@@ -182,7 +201,7 @@ public class SkillRestController {
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
@@ -799,5 +818,27 @@ public class SkillRestController {
 
     }
 
+
+    @Loggable
+    @GetMapping(value = "/skillthisCourse")
+    public ResponseEntity<ISC<SkillDTO.Info>> spectListAllClass(HttpServletRequest iscRq,@RequestParam Long categoryId) throws IOException {
+        return search2(iscRq, makeNewCriteria(null, null, EOperator.or, null),SkillDTO.Info.class,categoryId);
+    }
+    private <T> ResponseEntity<ISC<T>> search2(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Class<T> infoType,Long categoryId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("categoryId",iscRq.getParameter("categoryId") , EOperator.equals, new ArrayList<>());
+        criteriaRq.getCriteria().add(criteria);
+        criteriaRq.getCriteria().add(criteriaRq1);
+         if (searchRq.getCriteria() != null)
+            criteriaRq.getCriteria().add(searchRq.getCriteria());
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<T> searchRs = skillService.search(searchRq, infoType);
+        return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 
 }

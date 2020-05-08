@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -30,9 +31,8 @@ public class ClassStudent extends Auditable {
     @Column(name = "score")
     private Float score;
 
-    @Column(name="c_valence")
+    @Column(name = "c_valence")
     private String valence;
-
 
     @Column(name = "applicant_company_name", nullable = false)
     private String applicantCompanyName;
@@ -58,18 +58,21 @@ public class ClassStudent extends Auditable {
     @Column(name = "class_id", insertable = false, updatable = false)
     private Long tclassId;
 
-    @Column(name ="evaluation_status_reaction")
+    @Column(name = "evaluation_status_reaction")
     private Integer evaluationStatusReaction;
 
-    @Column(name ="evaluation_status_learning")
+    @Column(name = "evaluation_status_learning")
     private Integer evaluationStatusLearning;
 
-    @Column(name ="evaluation_status_behavior")
+    @Column(name = "evaluation_status_behavior")
     private Integer evaluationStatusBehavior;
 
-    @Column(name ="evaluation_status_results")
+    @Column(name = "evaluation_status_results")
     private Integer evaluationStatusResults;
 
     @Column(name = "pre_test_score")
     private Float preTestScore;
+
+    @OneToMany(mappedBy = "classStudent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<Alarm> alarms;
 }

@@ -1,4 +1,53 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+     <changeSet author="heydaripoor (generated)" id="1588136355333-377">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588146759943-477">
+        <dropColumn columnName="F_ACCOUNTABLE_ID" tableName="TBL_CLASS_CONTRACT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588146999887-423">
+        <addColumn tableName="tbl_class_contract">
+            <column name="f_accountable_id" type="varchar2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588153689653-425">
+        <addColumn tableName="tbl_class_contract">
+            <column name="f_contract_file_id" type="number(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588392156190-424">
+        <addColumn tableName="tbl_class_contract">
+            <column name="f_second_party_institute_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588392156190-441">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_CONTRACT" constraintName="FK3634Y3AWQMJ068HO3AFXLFWMG"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588392156190-481">
+        <dropColumn columnName="F_SECOND_PARTY_COMPANY_ID" tableName="TBL_CLASS_CONTRACT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588393494021-425">
+        <addColumn tableName="tbl_institute">
+            <column name="c_economical_id" type="varchar2(12 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588393494021-426">
+        <addColumn tableName="tbl_institute">
+            <column name="c_institute_id" type="varchar2(12 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588738080087-392">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_parameter"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1588738080087-393">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_parameter_value"/>
+    </changeSet>
+
 </databaseChangeLog>

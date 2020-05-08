@@ -10,6 +10,9 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.Tclass;
+import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +41,12 @@ public class ClassSessionRestController {
 
 
     private final ClassSessionService classSessionService;
+    private final ClassAlarmService classAlarmService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final TclassDAO tclassDAO;
 
     //*********************************
 
@@ -49,6 +54,9 @@ public class ClassSessionRestController {
     @PostMapping(value = "/generateSessions/{classId}")
     public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement, HttpServletResponse response) {
         classSessionService.generateSessions(classId, autoSessionsRequirement, response);
+        classAlarmService.alarmSumSessionsTimes(classId);
+        classAlarmService.alarmTeacherConflict(classId);
+        classAlarmService.alarmTrainingPlaceConflict(classId);
     }
 
     //*********************************
@@ -73,7 +81,16 @@ public class ClassSessionRestController {
     @PostMapping
     public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.ManualSession req, HttpServletResponse response) {
         ClassSessionDTO.ManualSession create = modelMapper.map(req, ClassSessionDTO.ManualSession.class);
-        return new ResponseEntity<>(classSessionService.create(create, response), HttpStatus.CREATED);
+        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.create(create, response), HttpStatus.CREATED);
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 201) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
+        }
+
+        return infoResponseEntity;
     }
 
     //*********************************
@@ -82,7 +99,15 @@ public class ClassSessionRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request, HttpServletResponse response) {
         ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
-        return new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
+        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
+        //*****check alarms*****
+        if (infoResponseEntity.getStatusCodeValue() == 200) {
+            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
+        }
+        return infoResponseEntity;
     }
 
     //*********************************
@@ -90,7 +115,12 @@ public class ClassSessionRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, HttpServletResponse response) {
+        Long classId = classSessionService.getClassIdBySessionId(id);
         classSessionService.delete(id, response);
+        classAlarmService.alarmSumSessionsTimes(classId);
+        classAlarmService.alarmTeacherConflict(classId);
+        classAlarmService.alarmStudentConflict(classId);
+        classAlarmService.alarmTrainingPlaceConflict(classId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -99,6 +129,11 @@ public class ClassSessionRestController {
     @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody ClassSessionDTO.Delete request) {
+        //////if use this method you must use calulate alarms to here/ with alarmSumSessionsTimes method
+        ////// classAlarmService.alarmSumSessionsTimes(classId);
+        ////// classAlarmService.alarmTeacherConflict(classId);
+        ////// classAlarmService.alarmStudentConflict(classId);
+        ////// classAlarmService.alarmTrainingPlaceConflict(classId);
         classSessionService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -136,7 +171,7 @@ public class ClassSessionRestController {
         final ClassSessionDTO.SpecRs specResponse = new ClassSessionDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final ClassSessionDTO.ClassSessionsSpecRs specRs = new ClassSessionDTO.ClassSessionsSpecRs();
@@ -168,8 +203,11 @@ public class ClassSessionRestController {
 
 //////        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
 
+        Tclass tclass = tclassDAO.findTclassByIdEquals(Long.parseLong(classId));
+        String sessionTitle = tclass.getCode() + "لیست جلسات کلاس '" + tclass.getTitleClass() + "' با کد ";
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
+        params.put("sessionTitle", sessionTitle);
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(infos) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
@@ -205,5 +243,20 @@ public class ClassSessionRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.searchWithCriteria(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/specListWeeklyTrainingSchedule/{userNationalCode}")
+    public ResponseEntity<ISC<ClassSessionDTO.WeeklySchedule>> getWeeklyTrainingSchedule(HttpServletRequest iscRq, @PathVariable String userNationalCode) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchRs = null;
+        if(!userNationalCode.equalsIgnoreCase("null")) {
+            searchRs = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        }
+        else
+            return null;
     }
 }

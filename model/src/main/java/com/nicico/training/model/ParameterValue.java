@@ -10,9 +10,9 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
-@Table(name = "tbl_parameter_value")
+@Table(name = "tbl_parameter_value", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_parameter_id", "c_title"})})
 public class ParameterValue extends Auditable {
 
     @Id
@@ -23,7 +23,7 @@ public class ParameterValue extends Auditable {
     @Column(name = "c_title", nullable = false)
     private String title;
 
-    @Column(name = "c_code", unique = true)
+    @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_type")

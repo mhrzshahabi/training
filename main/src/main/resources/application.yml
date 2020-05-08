@@ -2,14 +2,13 @@ spring:
   application:
     name: Training
   profiles:
-    active: Local
+    active: Development
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
   jpa:
     hibernate:
-#      ddl-auto: validate
-    ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
@@ -115,8 +114,8 @@ spring:
   profiles: Development
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: devtraining
-    password: devtraining
+    username: testtraining
+    password: testtraining
   redis:
     host: devapp01.icico.net.ir
     password: nicico

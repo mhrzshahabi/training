@@ -43,11 +43,6 @@ public class JobRestController {
         return new ResponseEntity<>(jobService.list(), HttpStatus.OK);
     }
 
-//    @GetMapping(value = "iscList")
-//    public ResponseEntity<TotalResponse<JobDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
-//        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-//        return new ResponseEntity<>(jobService.search(nicicoCriteria), HttpStatus.OK);
-//    }
 
     @GetMapping(value = "iscList")
     public ResponseEntity<ISC<JobDTO.Info>> list(HttpServletRequest iscRq) throws IOException {

@@ -6,11 +6,14 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PostDTO;
+import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.IPostService;
+import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,8 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequiredArgsConstructor
 public class NeedsAssessmentReportsService {
 
+    private final List<String> needsAssessmentPriorityCodes = Arrays.asList(new String[]{"AZ", "AB", "AT"});
+
     private final ModelMapper modelMapper;
 
     private final PostDAO postDAO;
@@ -36,10 +41,13 @@ public class NeedsAssessmentReportsService {
     private final ClassStudentReportService classStudentReportService;
     private final IPersonnelService personnelService;
     private final ParameterValueService parameterValueService;
+    private final ICourseService courseService;
+    private final ISkillService skillService;
 
     @Transactional(readOnly = true)
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, String personnelNo) {
+//        getCourseNAList(request, 5679L, true);
         List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelNo);
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) needsAssessmentReportList.size());
@@ -72,7 +80,10 @@ public class NeedsAssessmentReportsService {
 //            }
 //        }
         if (personnelNo != null && !mustPass.isEmpty()) {
-            PersonnelDTO.Info student = personnelService.get(personnelNo);
+            PersonnelDTO.Info student = personnelService.getPOrRegisteredP(personnelNo, p -> modelMapper.map(p, PersonnelDTO.Info.class));
+            if (student == null) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
             Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
             Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
 
@@ -97,6 +108,131 @@ public class NeedsAssessmentReportsService {
                 withoutDuplicate.add(needsAssessment);
         });
         return withoutDuplicate;
+    }
+
+    //    @Transactional(readOnly = true)
+//    @Override
+    private MultiValueMap getNAPostsGByPriority(List<NeedsAssessment> needsAssessments) {
+        MultiValueMap postCodes = new MultiValueMap();
+        needsAssessments.forEach(needsAssessment -> {
+            switch (needsAssessment.getObjectType()) {
+                case "Post":
+                    try {
+                        if (((Post) needsAssessment.getObject()).getCode() != null && !postCodes.containsValue(needsAssessment.getObject()))
+                            postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), needsAssessment.getObject());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        return;
+                    }
+                    break;
+                case "PostGroup":
+                    ((PostGroup) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        try {
+                            if (post.getCode() != null && !postCodes.containsValue(post))
+                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    break;
+                case "Job":
+                    ((Job) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        try {
+                            if (post.getCode() != null && !postCodes.containsValue(post))
+                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    break;
+                case "JobGroup":
+                    ((JobGroup) needsAssessment.getObject()).getJobSet().forEach(job -> job.getPostSet().forEach(post -> {
+                        try {
+                            if (post.getCode() != null && !postCodes.containsValue(post))
+                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }));
+                    break;
+                case "PostGrade":
+                    ((PostGrade) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                        try {
+                            if (post.getCode() != null && !postCodes.containsValue(post))
+                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    break;
+                case "PostGradeGroup":
+                    ((PostGradeGroup) needsAssessment.getObject()).getPostGradeSet().forEach(postGrade -> postGrade.getPostSet().forEach(post -> {
+                        try {
+                            if (post.getCode() != null && !postCodes.containsValue(post))
+                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }));
+                    break;
+            }
+        });
+        return postCodes;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<PostDTO.Info> getSkillNAPostList(SearchDTO.SearchRq request, Long skillId) {
+        Skill skill = skillService.getSkill(skillId);
+        List<NeedsAssessment> needsAssessments = new ArrayList<>();
+        needsAssessments.addAll(skill.getNeedsAssessments());
+        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) postsGByPriority.values().size());
+        searchRs.setList(modelMapper.map(postsGByPriority.values(), new TypeToken<List<PostDTO.Info>>() {
+        }.getType()));
+        return searchRs;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
+
+        List<NeedsAssessmentReportsDTO.CourseNAS> result = new ArrayList<>();
+        needsAssessmentPriorityCodes.forEach(code -> {
+            Long pId = parameterValueService.getId(code);
+            result.add(new NeedsAssessmentReportsDTO.CourseNAS().setNeedsAssessmentPriorityId(pId));
+        });
+        Course course = courseService.getCourse(courseId);
+        List<NeedsAssessment> needsAssessments = new ArrayList<>();
+        course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments()));
+        Comparator<NeedsAssessment> comparator = Comparator.comparing(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType()));
+        comparator = comparator.thenComparing(NeedsAssessment::getNeedsAssessmentPriorityId);
+        needsAssessments.sort(comparator);
+        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
+        postsGByPriority.forEach((priority, postList) -> {
+            SearchDTO.CriteriaRq personnelCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            if (request.getCriteria() != null)
+                personnelCriteria.getCriteria().add(request.getCriteria());
+            for (int i = 0; i < ((List<Post>) postList).size(); i += 900) {
+                int endIndex = i + 900 >= ((List<Post>) postList).size() ? ((List<Post>) postList).size() - 1 : i + 900;
+                personnelCriteria.getCriteria().add(makeNewCriteria("postCode", ((List<Post>) postList).subList(i, endIndex).stream().map(Post::getCode).collect(Collectors.toList()), EOperator.inSet, null));
+            }
+            List<PersonnelDTO.Info> personnelInfoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(personnelCriteria).setDistinct(true)).getList();
+            NeedsAssessmentReportsDTO.CourseNAS courseNAS = result.stream().filter(courseNAS1 -> courseNAS1.getNeedsAssessmentPriorityId().equals((Long) priority)).findFirst().orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            courseNAS.setTotalPersonnelCount(personnelInfoList.size());
+            if (passedReport) {
+                personnelInfoList.forEach(p -> {
+                    if (classStudentReportService.isPassed(course, p.getNationalCode()))
+                        courseNAS.setPassedPersonnelCount(courseNAS.getPassedPersonnelCount() + 1);
+                });
+            }
+//            result.add(courseNAS);
+        });
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) result.size());
+        searchRs.setList(result);
+        return searchRs;
     }
 
     @Transactional(readOnly = true)

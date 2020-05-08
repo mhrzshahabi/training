@@ -163,6 +163,7 @@ public class StudentDTO {
         private String ccpAffairs;
         private String ccpSection;
         private String ccpUnit;
+        private String fatherName;
     }
 
     @Getter

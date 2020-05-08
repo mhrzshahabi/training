@@ -20,27 +20,46 @@ import java.util.List;
 public class ClassAlarmDTO implements Serializable {
 
     @ApiModelProperty(required = true)
+    private String alarmTypeTitleFa;
+    @ApiModelProperty(required = true)
+    private String alarmTypeTitleEn;
+    private Long classId;
+    private Long sessionId;
+    private Long teacherId;
+    private Long studentId;
+    private Long instituteId;
+    private Long trainingPlaceId;
+    private Long reservationId;
     private Long targetRecordId;
-
-    @ApiModelProperty(required = true)
     private String tabName;
-
-    @ApiModelProperty(required = true)
     private String pageAddress;
-
-    @ApiModelProperty(required = true)
-    private String alarmType;
-
     @ApiModelProperty(required = true)
     private String alarm;
+    private Long detailRecordId;
+    private String sortField;
+    private Long classIdConflict;
+    private Long sessionIdConflict;
+    private Long instituteIdConflict;
+    private Long trainingPlaceIdConflict;
+    private Long reservationIdConflict;
 
     //*********************************
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ClassAlarmSpecRs")
+    @ApiModel("ClassAlarmInfo")
     public static class Info extends ClassAlarmDTO {
+    }
+
+    //*********************************
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassAlarmCreate")
+    @AllArgsConstructor
+    public static class Create extends ClassAlarmDTO {
     }
 
     //*********************************

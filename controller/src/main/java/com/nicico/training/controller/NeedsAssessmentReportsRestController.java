@@ -1,6 +1,5 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -56,6 +55,26 @@ public class NeedsAssessmentReportsRestController {
             String message = e.getMessage().equals("PostNotFound") ? messageSource.getMessage("needsAssessmentReport.postCode.not.Found", null, locale) : e.getMessage();
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
+    }
+
+    @GetMapping(value = "/courseNA")
+    public ResponseEntity courseNA(HttpServletRequest iscRq,
+                                   @RequestParam Long courseId,
+                                   @RequestParam Boolean passedReport) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        return new ResponseEntity(ISC.convertToIscRs(needsAssessmentReportsService.getCourseNA(searchRq, courseId, passedReport), startRow), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/skillNA")
+    public ResponseEntity courseNA(HttpServletRequest iscRq, @RequestParam Long skillId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        return new ResponseEntity(ISC.convertToIscRs(needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId), startRow), HttpStatus.OK);
     }
 
     @Loggable

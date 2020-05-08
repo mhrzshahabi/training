@@ -3,6 +3,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -25,6 +26,7 @@ public class TeacherDTO {
     private String personnelCode;
     private Boolean enableStatus;
     private Boolean inBlackList;
+    private String blackListDescription;
     private Boolean personnelStatus;
     private String economicalCode;
     private String economicalRecordNumber;
@@ -44,13 +46,16 @@ public class TeacherDTO {
         private PersonalInfoDTO.Info personality;
         private CategoryDTO.CategoryInfoTuple majorCategory;
         private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
-//        private Set<EmploymentHistoryDTO.Info> employmentHistories;
-//        private Set<AcademicBKDTO.Info> academicBKs;
-//        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
-//        private Set<TeachingHistoryDTO.Info> teachingHistories;
-//        private Set<TeacherCertificationDTO.Info> teacherCertifications;
-//        private Set<PublicationDTO.Info> publications;
         private Integer version;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherInformation")
+    public static class TeacherInformation{
+        private PersonalInfoDTO.PersonalInfoCustom personality;
     }
 
     @Getter
@@ -59,10 +64,9 @@ public class TeacherDTO {
     @ApiModel("TeacherGrid")
     public static class Grid{
         private Long id;
-        @NotEmpty
-        @ApiModelProperty(required = true)
         private String teacherCode;
         private PersonalInfoDTO.Grid personality;
+        private Long personalityId;
         private Boolean enableStatus;
         private Set<CategoryDTO.Info> categories;
         private Set<SubcategoryDTO.Info> subCategories;
@@ -85,10 +89,50 @@ public class TeacherDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("TeacherReport")
+    public static class Report{
+        private Long id;
+        private String teacherCode;
+        private String personnelCode;
+        private PersonalInfoDTO.Report personality;
+        private Boolean personnelStatus;
+        Set<TeachingHistoryDTO.Info> teachingHistories;
+        private String numberOfCourses;
+        private String evaluationGrade;
+        private String lastCourse;
+        private Long lastCourseId;
+        private String lastCourseEvaluationGrade;
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("TeacherSpecRsGrid")
     public static class TeacherSpecRsGrid {
         private SpecRsGrid response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherSpecRsReport")
+    public static class TeacherSpecRsReport {
+        private SpecRsReport response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsReport {
+        private List<Report> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 
 
@@ -148,8 +192,8 @@ public class TeacherDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<Info> data;
+    public static class SpecRs<T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -173,8 +217,8 @@ public class TeacherDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class FullNameSpecRs {
-        private List<TeacherFullNameTuple> data;
+    public static class FullNameSpecRs<T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -188,5 +232,18 @@ public class TeacherDTO {
     @ApiModel("TeacherFullNameSpecRs")
     public static class TeacherFullNameSpecRs {
         private FullNameSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("TeacherFullNameTupleWithFinalGrade")
+    public static class TeacherFullNameTupleWithFinalGrade {
+        private Long id;
+        private PersonalInfoDTO personality;
+        private String grade;
+
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
     }
 }

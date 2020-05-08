@@ -59,8 +59,7 @@
             {
                 name: "subjectTitle",
                 title: "<spring:message code='subject.title'/>",
-                required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                required: true
             },
             {
                 name: "publicationSubjectTypeId",
@@ -92,18 +91,17 @@
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Category_JspPublication,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
+                required: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 changed: function () {
                     isCategoriesChanged = true;
@@ -123,6 +121,7 @@
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
+                    SubCats = SubCats.isEmpty() ? null : SubCats;
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
                 }
@@ -130,26 +129,25 @@
             {
                 name: "subCategories",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspPublication,
                 valueField: "id",
-                required: true,
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
-                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
-                    filterOperator: "iContains",
+                    filterOperator: "iContains"
                 },
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
                         var ids = DynamicForm_JspPublication.getField("categories").getValue();
-                        if (ids === []) {
+                        if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspPublication.implicitCriteria = null;
                         } else {
                             RestDataSource_SubCategory_JspPublication.implicitCriteria = {
@@ -164,13 +162,11 @@
             },
             {
                 name: "publicationLocation",
-                title:"<spring:message code='publication.location'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title:"<spring:message code='publication.location'/>"
             },
             {
                 name: "publisher",
-                title: "<spring:message code='publisher'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                title: "<spring:message code='publisher'/>"
             },
             {
                 name: "publicationDate",
@@ -235,6 +231,7 @@
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='publication'/>",
+        close : function(){closeCalendarWindow(); Window_JspPublication.hide()},
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspPublication, HLayout_SaveOrExit_JspPublication]
         })]
@@ -286,24 +283,54 @@
             {
                 name: "categoriesIds",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
+                type: "SelectItem",
                 optionDataSource: RestDataSource_Category_JspPublication,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterLocally: false,
-                filterOnKeypress: true
+                filterOnKeypress: true,
+                canSort: false,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_Category_JspPublication,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "subCategoriesIds",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
+                type: "ComboBoxItem",
                 optionDataSource: RestDataSource_SubCategory_JspPublication,
                 valueField: "id",
                 displayField: "titleFa",
-                multiple: true,
-                filterLocally: false,
-                filterOnKeypress: true
+                canSort: false,
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_SubCategory_JspPublication,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["titleFa","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
             },
             {
                 name: "publicationLocation",
@@ -315,19 +342,15 @@
             },
             {
                 name: "publicationDate",
-                title: "<spring:message code='publication.date'/>",
-                canSort: false
+                title: "<spring:message code='publication.date'/>"
             }
         ],
         rowDoubleClick: function () {
             ListGrid_Publication_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspPublication.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -411,24 +434,25 @@
             methodPublication = "PUT";
             saveActionUrlPublication = publicationUrl + "/" + record.id;
             DynamicForm_JspPublication.clearValues();
-            DynamicForm_JspPublication.editRecord(record);
-            var categoryIds = DynamicForm_JspPublication.getField("categories").getValue();
-            var subCategoryIds = DynamicForm_JspPublication.getField("subCategories").getValue();
-            if (categoryIds == null || categoryIds.length === 0)
+            var clonedRecord = Object.assign({}, record);
+            clonedRecord.categories = null;
+            clonedRecord.subCategories = null;
+            DynamicForm_JspPublication.editRecord(clonedRecord);
+            if (record.categories == null || record.categories.isEmpty())
                 DynamicForm_JspPublication.getField("subCategories").disable();
             else {
                 DynamicForm_JspPublication.getField("subCategories").enable();
                 var catIds = [];
-                for (var i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
+                for (var i = 0; i < record.categories.length; i++)
+                    catIds.add(record.categories[i].id);
                 DynamicForm_JspPublication.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
                 DynamicForm_JspPublication.getField("subCategories").focus(null, null);
             }
-            if (subCategoryIds != null && subCategoryIds.length > 0) {
+            if (record.subCategories != null && !record.subCategories.isEmpty()) {
                 var subCatIds = [];
-                for (var i = 0; i < subCategoryIds.length; i++)
-                    subCatIds.add(subCategoryIds[i].id);
+                for (var i = 0; i < record.subCategories.length; i++)
+                    subCatIds.add(record.subCategories[i].id);
                 DynamicForm_JspPublication.getField("subCategories").setValue(subCatIds);
             }
             Window_JspPublication.show();

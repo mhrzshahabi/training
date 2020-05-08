@@ -14,7 +14,6 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -41,11 +40,7 @@ public class JobGroupDTO {
     @ApiModel("JobGroupInfo")
     public static class Info extends JobGroupDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
-//        private Integer version;
+        private Set<JobDTO.Info> jobSet;
     }
 
     @Getter

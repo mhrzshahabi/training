@@ -45,16 +45,24 @@ public class ParameterRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<ParameterDTO.Info> create(@RequestBody Object rq) {
+    public ResponseEntity create(@RequestBody Object rq) {
         ParameterDTO.Create create = modelMapper.map(rq, ParameterDTO.Create.class);
-        return new ResponseEntity<>(parameterService.create(create), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(parameterService.create(create), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<ParameterDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq) {
         ParameterDTO.Update update = modelMapper.map(rq, ParameterDTO.Update.class);
-        return new ResponseEntity<>(parameterService.update(id, update), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(parameterService.update(id, update), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @Loggable

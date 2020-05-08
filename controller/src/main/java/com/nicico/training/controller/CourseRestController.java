@@ -87,10 +87,10 @@ public class CourseRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req) {
+    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req,HttpServletResponse response) {
         CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
 //        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDTO.Info courseInfo = courseService.create(request);
+        CourseDTO.Info courseInfo = courseService.create(request,response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else
@@ -130,6 +130,7 @@ public class CourseRestController {
             List<GoalDTO.Info> goals = courseService.getGoal(id);
             goals.forEach(g -> goalService.delete(g.getId()));
             courseService.deletGoal(id);
+            courseService.unAssignSkills(id);
             courseService.delete(id);
         }
 
@@ -184,7 +185,7 @@ public class CourseRestController {
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
@@ -273,26 +274,28 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId) {
+    public ResponseEntity<ISC> getJob(@PathVariable Long courseId) {
         List<JobDTO.Info> job = courseService.getJob(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(job)
                 .setStartRow(0)
                 .setEndRow(job.size())
                 .setTotalRows(job.size());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ISC<Object> isc = new ISC<>(response);
+        return new ResponseEntity<>(isc, HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/post/{courseId}")
-    public ResponseEntity<ISC.Response> getPost(@PathVariable Long courseId) {
+    public ResponseEntity<ISC> getPost(@PathVariable Long courseId) {
         List<PostDTO.Info> post = courseService.getPost(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(post)
                 .setStartRow(0)
                 .setEndRow(post.size())
                 .setTotalRows(post.size());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ISC<Object> isc = new ISC<>(response);
+        return new ResponseEntity<>(isc, HttpStatus.OK);
     }
 
     @Loggable
@@ -382,7 +385,6 @@ public class CourseRestController {
         reportUtil.export("/reports/Course.jasper", params, response);
     }
 
-
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
@@ -410,7 +412,6 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/CourseByCriteria.jasper", params, jsonDataSource, response);
     }
-
 
     @Loggable
     @PostMapping(value = {"/GoalsAndSyllabus/{type}"})
@@ -461,7 +462,7 @@ public class CourseRestController {
     @Loggable
     @GetMapping(value = "/get_teachers/{id}")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
-        List<TeacherDTO.TeacherFullNameTuple> infoList = new ArrayList<>();
+        List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> infoList = new ArrayList<>();
         if (id != 0) {
             infoList = courseService.getTeachers(id);
         }

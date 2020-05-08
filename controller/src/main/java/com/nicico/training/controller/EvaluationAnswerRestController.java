@@ -117,7 +117,7 @@ public class EvaluationAnswerRestController {
         final EvaluationAnswerDTO.SpecRs specResponse = new EvaluationAnswerDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final EvaluationAnswerDTO.EvaluationAnswerSpecRs specRs = new EvaluationAnswerDTO.EvaluationAnswerSpecRs();

@@ -362,6 +362,9 @@
                             "2": "10-12",
                             "3": "14-16"
                         },
+                        pickListProperties: {
+                            showFilterEditor: false
+                        }
                     },
                     {
                         name: "sessionTypeId",
@@ -369,10 +372,14 @@
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
+                        useClientFiltering: false,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         valueMap: {
                             "1": "آموزش",
                             "2": "آزمون"
+                        },
+                        pickListProperties: {
+                            showFilterEditor: false
                         },
                         defaultValue: "1"
                     },
@@ -391,7 +398,10 @@
                             "2": "در حال اجرا",
                             "3": "پایان"
                         },
-                        defaultValue: "1"
+                        defaultValue: "1",
+                        pickListProperties: {
+                            showFilterEditor: false
+                        }
                     },
                     {
                         name: "instituteId",
@@ -409,9 +419,9 @@
                         required: true,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
                         pickListFields: [
-                            {name: "titleFa"},
-                            {name: "manager.firstNameFa"},
-                            {name: "manager.lastNameFa"}
+                            {name: "titleFa", filterOperator: "iContains"},
+                            {name: "manager.firstNameFa", filterOperator: "iContains"},
+                            {name: "manager.lastNameFa", filterOperator: "iContains"}
                         ],
                         filterFields: ["titleFa", "manager.firstNameFa", "manager.lastNameFa"]
                     },
@@ -433,17 +443,20 @@
                             {
                                 name: "personality.lastNameFa",
                                 title: "<spring:message code="lastName"/>",
-                                titleAlign: "center"
+                                titleAlign: "center",
+                                filterOperator: "iContains"
                             },
                             {
                                 name: "personality.firstNameFa",
                                 title: "<spring:message code="firstName"/>",
-                                titleAlign: "center"
+                                titleAlign: "center",
+                                filterOperator: "iContains"
                             },
                             {
                                 name: "personality.nationalCode",
                                 title: "<spring:message code="national.code"/>",
-                                titleAlign: "center"
+                                titleAlign: "center",
+                                filterOperator: "iContains"
                             }
                         ],
                         filterFields: [
@@ -614,10 +627,14 @@
                     }
                 });
             } else {
-                session_method = "POST";
-                DynamicForm_Session.clearValues();
-                Window_Session.setTitle("<spring:message code="session"/>");
-                Window_Session.show();
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    session_method = "POST";
+                    DynamicForm_Session.clearValues();
+                    Window_Session.setTitle("<spring:message code="session"/>");
+                    Window_Session.show();
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
         }
 
@@ -660,22 +677,25 @@
                     }
                 });
             } else {
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    let courseId = ClassRecord.course.id;
 
-                let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                let courseId = ClassRecord.course.id;
+                    let startHour_ = record.sessionStartHour.split(':')[0].trim();
+                    record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
 
-                let startHour_ = record.sessionStartHour.split(':')[0].trim();
-                record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
+                    DynamicForm_Session.getField("instituteId").fetchData();
+                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
+                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
 
-                DynamicForm_Session.getField("instituteId").fetchData();
-                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
-                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
-
-                session_method = "PUT";
-                DynamicForm_Session.clearValues();
-                DynamicForm_Session.editRecord(record);
-                Window_Session.setTitle("<spring:message code="session"/>");
-                Window_Session.show();
+                    session_method = "PUT";
+                    DynamicForm_Session.clearValues();
+                    DynamicForm_Session.editRecord(record);
+                    Window_Session.setTitle("<spring:message code="session"/>");
+                    Window_Session.show();
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
         }
 
@@ -716,18 +736,21 @@
                     }
                 });
             } else {
-                isc.MyYesNoDialog.create({
-                    message: "<spring:message code="global.grid.record.remove.ask"/>",
-                    title: "<spring:message code="verify.delete"/>",
-                    buttonClick: function (button, index) {
-                        this.close();
-                        if (index === 0) {
-                            isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + record.id, "DELETE", null, show_SessionActionResult));
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    isc.MyYesNoDialog.create({
+                        message: "<spring:message code="global.grid.record.remove.ask"/>",
+                        title: "<spring:message code="verify.delete"/>",
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + record.id, "DELETE", null, show_SessionActionResult));
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
-
         }
 
         //*****show action result function*****

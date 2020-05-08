@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,9 +46,9 @@ public class CompanyRestController {
     public ResponseEntity create(@RequestBody CompanyDTO.Create request) {
 
         try {
-            return new ResponseEntity<>(companyService.create(request), HttpStatus.CREATED);
+            return new ResponseEntity<>( companyService.create(request), HttpStatus.CREATED);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(TrainingException.ErrorType.DuplicateRecord.getHttpStatusCode(), HttpStatus.CONFLICT);
         }
     }
 
@@ -57,8 +58,11 @@ public class CompanyRestController {
 
         try {
             return new ResponseEntity<>(companyService.update(id, request), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        } catch (TrainingException e) {
+            if (e.getHttpStatusCode().equals(409))
+            return new ResponseEntity<>(TrainingException.ErrorType.DuplicateRecord.getHttpStatusCode(), HttpStatus.CONFLICT);
+            else
+             return new ResponseEntity<>(TrainingException.ErrorType.RecordAlreadyExists.getHttpStatusCode(),HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -113,7 +117,7 @@ public class CompanyRestController {
         final CompanyDTO.SpecRs specResponse = new CompanyDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final CompanyDTO.CompanySpecRs specRs = new CompanyDTO.CompanySpecRs();

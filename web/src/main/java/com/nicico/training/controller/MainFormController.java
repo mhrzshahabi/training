@@ -6,10 +6,7 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +26,28 @@ public class MainFormController {
         return "report/trainingFile";
     }
 
+    @RequestMapping("/studentClassReport")
+    public String showPersonalCoursesForm() {
+        return "report/studentClassReport";
+    }
+
+    @RequestMapping("/personnelCourseNotPassed")
+    public String showPersonalCoursesNotPassedForm() {
+        return "report/personnelCourseNotPassed";
+    }
+
+    @RequestMapping("/trainingOverTime")
+    public String showTrainingOverTime() {
+        return "report/trainingOverTime";
+    }
+
     @RequestMapping("/needsAssessment-reports")
     public String showNeedsAssessmentReportsForm() {
         return "report/needsAssessmentReports";
     }
+
+    @RequestMapping("/calenderCurrentTerm")
+     public String showCalenderCurrentTerm(){return "report/calenderCurrentTerm";}
 
     @RequestMapping("/oaUser")
     public String showOaUserForm() {
@@ -99,8 +114,18 @@ public class MainFormController {
         return "base/configQuestionnaire";
     }
 
-    @PostMapping("/post_print_list/{type}")
-    public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String type) {
+    @RequestMapping("/monthlyStatisticalReport")
+    public String showMonthlyStatisticalReportForm() {
+        return "report/monthlyStatisticalReport";
+    }
+
+    @RequestMapping("class-contract")
+    public String showClassContractForm() {
+        return "run/class-contract";
+    }
+
+    @PostMapping("/print/{entityUrl}/{type}")
+    public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String entityUrl, @PathVariable String type) {
         String token = request.getParameter("myToken");
 
         final RestTemplate restTemplate = new RestTemplate();
@@ -113,19 +138,23 @@ public class MainFormController {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        map.add("params", request.getParameter("params"));
+        map.add("formData", request.getParameter("formData"));
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-        if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/post/print_list/PDF", HttpMethod.POST, entity, byte[].class);
-        else if (type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/post/print_list/EXCEL", HttpMethod.POST, entity, byte[].class);
-        else if (type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/post/print_list/HTML", HttpMethod.POST, entity, byte[].class);
-        else
-            return null;
+        switch (type) {
+            case "pdf":
+                return restTemplate.exchange(restApiUrl + "/api/" + entityUrl + "/print/PDF", HttpMethod.POST, entity, byte[].class);
+            case "excel":
+                return restTemplate.exchange(restApiUrl + "/api/" + entityUrl + "/print/EXCEL", HttpMethod.POST, entity, byte[].class);
+            case "html":
+                return restTemplate.exchange(restApiUrl + "/api/" + entityUrl + "/print/HTML", HttpMethod.POST, entity, byte[].class);
+            default:
+                return null;
+        }
     }
 
     @RequestMapping("/questionnaire")
@@ -148,8 +177,23 @@ public class MainFormController {
         return "security/workGroup";
     }
 
+    @RequestMapping("/course-needs-assessment-reports")
+    public String showCourseNAReportsForm() {
+        return "planning/courseNAReports";
+    }
+
+    @RequestMapping("/student-portal")
+    public String showStudentPortalForm() {
+        return "portal/studentPortal";
+    }
+
+    @RequestMapping("/personnel-course-NA-report")
+    public String showPersonnelCourseNAReportForm() {
+        return "report/personnelCourseNAReport";
+    }
+
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
-    public ResponseEntity<?> perintPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
+    public ResponseEntity<?> printPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("myToken");
 
         final RestTemplate restTemplate = new RestTemplate();
@@ -186,6 +230,42 @@ public class MainFormController {
             default:
                 return null;
         }
+    }
+
+    @PostMapping("/calender_current_term")
+    public ResponseEntity<?> calenderCurrentTermReport(final HttpServletRequest request, @RequestParam Long objectId,
+                                                       @RequestParam String objectType,
+                                                       @RequestParam(required = false) String personnelNo, @RequestParam String nationalCode, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String companyName, @RequestParam String personnelNo2, @RequestParam String postTitle, @RequestParam String postCode)
+    {
+//       String token;
+//          String header_authorization = request.getHeader("Authorization");
+//          String[] splitted = header_authorization.split(" ");
+//                if (!"Bearer".equals(splitted[0])) {
+//                 token = splitted[0];
+//                }
+//                else
+//        token = splitted[1];
+        String token = request.getParameter("token");
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("objectId",String.valueOf(objectId));
+        map.add("objectType",objectType);
+        map.add("personnelNo",personnelNo);
+        map.add("nationalCode",nationalCode);
+        map.add("firstName",firstName);
+        map.add("lastName",lastName);
+        map.add("companyName",companyName);
+        map.add("personnelNo2",personnelNo2);
+        map.add("postTitle",postTitle);
+        map.add("postCode",postCode);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/calenderCurrentTerm/print", HttpMethod.POST, entity, byte[].class);
+
     }
 
 }

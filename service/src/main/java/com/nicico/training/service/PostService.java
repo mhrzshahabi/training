@@ -12,7 +12,6 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.PostDAO;
-import com.nicico.training.repository.PostGroupDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -57,9 +56,9 @@ public class PostService implements IPostService {
 
     @Transactional(readOnly = true)
     @Override
-    public Post getByPostCode(String postCode) {
+    public PostDTO.Info getByPostCode(String postCode) {
         Optional<Post> optionalPost = postDAO.findByCode(postCode);
-        return optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound));
+        return modelMapper.map(optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound)), PostDTO.Info.class);
     }
 
     @Transactional(readOnly = true)

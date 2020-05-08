@@ -1,12 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 //<script>
     var score_value = null //بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
     var classRecord_acceptancelimit = null
     var scoresState_value = null
     var failureReason_value = null
+    var scoringMethodPrint=null
+    var acceptancelimitPrint=null
     var valence_value = null
     var valence_value_failureReason = null
     var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"}
@@ -46,7 +51,7 @@
             {name: "scoresState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
             {name: "failureReason", title: "<spring:message code="faild.reason"/>", filterOperator: "iContains"},
             {name: "valence", title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
-            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
+            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains",canFilter:false},
         ],
     });
     //**********************************************************************************
@@ -99,6 +104,16 @@
 
             }),
 
+                isc.IButton.create({
+                name: "Button",
+               // disabled: true,
+                title: "<spring:message code="print"/>",
+                width: "14%",
+                click: function () {
+                printScore()
+                }
+                }),
+
             isc.ToolStrip.create({
                 width: "50%",
                 align: "left",
@@ -124,7 +139,7 @@
 
 //------
         canSelectCells: true,
-// sortField: 0,
+         sortField: 0,
         dataSource: RestDataSource_ClassStudent,
         fields: [
 
@@ -296,9 +311,10 @@
                                     ListGrid_Cell_score_Update(record, newValue, 4);
                                 } else {
 
-                                    createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
-                                    ListGrid_Cell_score_Update(record, null, 2);
-                                    ListGrid_Class_Student.invalidateCache();
+                                   // createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
+                                    ListGrid_Cell_score_Update(record,newValue, 2);
+                                    ListGrid_Class_Student.refreshFields();
+                                   // ListGrid_Class_Student.invalidateCache();
 
                                 }
 
@@ -321,7 +337,7 @@
                        return true
                     }
                 },// end editor Exit
-
+                sortField: 0,
 
             },
 
@@ -337,15 +353,20 @@
       if( myMap.get(classRecord.scoringMethod) === "ارزشی")
         {
          totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>")
+            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
+            acceptancelimitPrint= myMap1.get(classRecord.acceptancelimit)
         }
         else if ( myMap.get(classRecord.scoringMethod) === "نمره از صد"  ||  myMap.get(classRecord.scoringMethod) ==="نمره از بیست")
             {
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + (classRecord.acceptancelimit) + "</b>");
+            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
+            acceptancelimitPrint=classRecord.acceptancelimit
             }
             else {
 
               totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" +  "ندارد" + "</b>");
-
+            scoringMethodPrint=myMap.get(classRecord.scoringMethod)
+            acceptancelimitPrint="ندارد";
             }
 
 
@@ -419,8 +440,8 @@
             record.scoresState = "قبول با نمره"
             record.failureReason = null
         } else if (a == 2) {
-            record.scoresState = null
-            record.failureReason = null
+             record.scoresState = "مردود"
+             record.failureReason = "عدم کسب حد نصاب نمره"
         } else if (a == 3) {
             record.scoresState = "مردود"
             record.failureReason = failureReason_value
@@ -524,11 +545,52 @@
         }
     }
 
+
+                function printScore() {
+                var Record = ListGrid_Class_JspClass.getSelectedRecord();
+                var classObj={
+                code:Record.code,
+                teacher:Record.teacher,
+                course:Record.course.titleFa,
+                endDate:Record.endDate,
+                startDate:Record.startDate,
+                scoringMethod:scoringMethodPrint,
+                acceptancelimit:acceptancelimitPrint,
+                }
+
+                var advancedCriteria = ListGrid_Class_Student.getCriteria();
+                var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/score/print"/>",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                [
+                {name: "classId", type: "hidden"},
+                {name: "token", type: "hidden"},
+                {name: "class", type: "hidden"},
+                {name: "CriteriaStr", type: "hidden"},
+                ]
+                })
+                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                criteriaForm.setValue("class", JSON.stringify(classObj));
+                criteriaForm.setValue("classId", JSON.stringify(Record.id));
+                criteriaForm.setValue("token", "<%= accessToken %>")
+                criteriaForm.show();
+                criteriaForm.submitForm();
+                };
+
+
+
+
+
+
     function loadPage_Scores() {
-           isc.MyOkDialog.create({
-            message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
-            });
+           // isc.MyOkDialog.create({
+            // message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
+            // });
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        console.log(classRecord)
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
@@ -570,4 +632,5 @@
         } else {
             ListGrid_Class_Student.setData([]);
         }
-    }
+
+}

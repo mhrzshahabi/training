@@ -27,7 +27,10 @@ public class PostGrade extends Auditable {
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
-    @ManyToMany(mappedBy = "postGradeSet")
+    @ManyToMany(mappedBy = "postGradeSet", fetch = FetchType.LAZY)
     private Set<PostGradeGroup> postGradeGroup;
+
+    @OneToMany(mappedBy = "postGrade", fetch = FetchType.LAZY)
+    private Set<Post> postSet;
 
 }

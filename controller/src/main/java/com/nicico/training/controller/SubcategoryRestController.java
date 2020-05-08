@@ -161,11 +161,12 @@ public class SubcategoryRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+
         SearchDTO.SearchRs<SubcategoryDTO.Info> response = subCategoryService.search(request);
         final SubcategoryDTO.SpecRs specResponse = new SubcategoryDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
         final SubcategoryDTO.SubCategorySpecRs specRs = new SubcategoryDTO.SubCategorySpecRs();

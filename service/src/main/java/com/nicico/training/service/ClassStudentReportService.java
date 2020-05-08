@@ -37,6 +37,17 @@ public class ClassStudentReportService {
     }
 
     @Transactional(readOnly = true)
+    public List<ClassStudent> searchClassRegisterOfStudentByNationalCode(String nationalCode) {
+        if (nationalCode != null) {
+            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            criteria.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
+            return classStudentDAO.findAll(NICICOSpecification.of(criteria));
+        }
+        return null;
+    }
+
+
+    @Transactional(readOnly = true)
 //    @Override
     public Set<Long> getPassedCourseAndEQSIdsByNationalCode(String nationalCode) {
         List<Course> passedCourses = searchPassedCoursesOfStudentByNationalCode(nationalCode).stream().map(classStudent -> classStudent.getTclass().getCourse()).collect(Collectors.toList());
@@ -71,5 +82,13 @@ public class ClassStudentReportService {
         if (result)
             isPassed.replace(course.getId(), true);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public Boolean isPassed(Course course, String nationalCode) {
+        Set<Long> passedCourseIds = getPassedCourseAndEQSIdsByNationalCode(nationalCode);
+        Map<Long, Boolean> Passed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
+        return isPassed(course, Passed);
     }
 }

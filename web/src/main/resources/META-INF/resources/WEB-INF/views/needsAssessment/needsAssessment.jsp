@@ -19,6 +19,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     var skillData = [];
     var competenceData = [];
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
+        // autoCacheAllData:true,
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -44,26 +45,38 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             isc.ToolStripButtonEdit.create({
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
-                    if(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType == "Post") {
-                        var criteria = '{"fieldName":"id","operator":"equals","value":"' + ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId + '"}';
-                        PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+                    if(checkSelectedRecord(ListGrid_NeedsAssessment_JspNeedAssessment)) {
+                        if (ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType === "Post") {
+                            var criteria = '{"fieldName":"id","operator":"equals","value":"' + ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId + '"}';
+                            PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+                        }
+                        NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
+                            ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="global.waiting"/>";
+                            editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                            NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                            NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
+                            Window_NeedsAssessment_JspNeedsAssessment.show();
+                        })
+                        // editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                        // one(two);
+                        // function one(callBack) {
+                        //     editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
+                        //     callBack();
+                        // }
+                        // function two() {
+                        //     NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData({"id":ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId} ,function() {
+                        //         Window_NeedsAssessment_JspNeedsAssessment.show();
+                        //     })
+                        // }
                     }
-                    NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
-                        editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                        Window_NeedsAssessment_JspNeedsAssessment.show();
-                        NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId);
-                    })
-                    // editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                    // one(two);
-                    // function one(callBack) {
-                    //     editNeedsAssessmentRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId, ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectType);
-                    //     callBack();
-                    // }
-                    // function two() {
-                    //     NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData({"id":ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord().objectId} ,function() {
-                    //         Window_NeedsAssessment_JspNeedsAssessment.show();
-                    //     })
-                    // }
+                }
+            }),
+            isc.ToolStripButton.create({
+                title: "<spring:message code="more.information"/>",
+                click: function () {
+                    if(checkSelectedRecord(ListGrid_NeedsAssessment_JspNeedAssessment)){
+                        Window_MoreInformation_JspNeedsAssessment.show()
+                    }
                 }
             }),
             isc.ToolStripButton.create({
@@ -93,6 +106,41 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             })
         ]
     });
+    var ToolStrip_NeedsAssessmentTree_JspNeedAssessment = isc.ToolStrip.create({
+        members: [
+            isc.ToolStripButtonPrint.create({
+                click: function () {
+                    // isc.Canvas.showPrintPreview(printContainer)
+                    let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
+                    let advancedCriteria = {
+                        _constructor:"AdvancedCriteria",
+                        operator:"and",
+                        criteria:[
+                            { fieldName:"objectId", operator:"equals", value:rec.objectId },
+                            { fieldName:"objectType", operator:"equals", value:rec.objectType }
+                        ]
+                    };
+                    let params = {};
+                    params.title = priorityList[rec.objectType] + ": " + rec.objectName + "        " +(rec.objectCode ? "کد: " + rec.objectCode : "");
+                    printWithCriteria(advancedCriteria, params, "oneNeedsAssessment.jasper")
+                }
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                        }
+                    })
+                ]
+            })
+        ]
+    });
+    var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
+        contents:"",
+        customEdges: ["R","L","T", "B"]});
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
         // groupByField:["objectType"],
         // groupByField:["objectType", "objectName"],
@@ -141,10 +189,50 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             selectWorkflowRecord();
         }
     });
+    var ListGrid_MoreInformation_JspNeedAssessment = isc.ListGrid.create({
+        // groupByField:["objectType"],
+        groupByField:["competence.competenceType.title", "needsAssessmentDomain.title", "needsAssessmentPriority.title", "competence.title", "skill.titleFa"],
+        allowAdvancedCriteria: true,
+        showFilterEditor: false,
+        showHeaderContextMenu: false,
+        // filterOnKeypress:true,
+        autoFetchData: false,
+        fields:[
+            <%--{name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", valueMap: priorityList},--%>
+            <%--{name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},--%>
+            <%--{name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},--%>
+            {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: false},
+            {name: "skill.course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
+        ],
+        showClippedValuesOnHover: true,
+        dataSource: RestDataSourceNeedsAssessment,
+        gridComponents: [ToolStrip_NeedsAssessmentTree_JspNeedAssessment, Label_Title_JspNeedsAssessment ,"header", "body"],
+        groupStartOpen: "all",
+        getCellCSSText: function (record, rowNum, colNum) {
+
+            if (record.skill == undefined) {
+                return "color:black; font-size: 12px;";
+            }
+            else if(record.skill.course == undefined){
+                return "color:crimson; font-size: 13px;";
+            }
+            else{
+                return "color:blue; font-size: 13px;";
+            }
+            // if (!record.hasSkill) {
+            //     return "color:orange;font-size: 12px;";
+            // }
+        }
+    });
 
     //----------------------components of window--------------------------
 
-    NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
+    let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -154,7 +242,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         fetchDataURL: parameterValueUrl + "/iscList/103",
 
     });
-    JobDs_needsAssessment = isc.TrDS.create({
+    let JobDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -162,14 +250,14 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
-    JobGroupDs_needsAssessment = isc.TrDS.create({
+    let JobGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: jobGroupUrl + "spec-list"
+        fetchDataURL: jobGroupUrl + "iscList"
     });
-    PostDs_needsAssessment = isc.TrDS.create({
+    let PostDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -184,16 +272,16 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: postUrl + "/wpIscList"
+        fetchDataURL: postUrl + "/iscList"
     });
-    PostGroupDs_needsAssessment = isc.TrDS.create({
+    let PostGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: postGroupUrl + "/spec-list"
     });
-    PostGradeDs_needsAssessment = isc.TrDS.create({
+    let PostGradeDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -201,7 +289,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
-    PostGradeGroupDs_needsAssessment = isc.TrDS.create({
+    let PostGradeGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains"},
@@ -252,7 +340,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         fields: [
             {name: "id", hidden:true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-            {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains"},
+            {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
             {name: "needsAssessmentDomainId", filterOperator: "iContains", hidden:true},
             {name: "skillId", primaryKey: true, filterOperator: "iContains", hidden:true},
             {name: "competenceId", filterOperator: "iContains", hidden:true},
@@ -263,7 +351,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         clientOnly: true,
     });
 
-    CompetenceTS_needsAssessment = isc.ToolStrip.create({
+    let CompetenceTS_needsAssessment = isc.ToolStrip.create({
         ID: "CompetenceTS_needsAssessment",
         members: [
             // isc.ToolStripButtonRefresh.create({
@@ -291,6 +379,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_AllCompetence_JspNeedsAssessment",
         dataSource: RestDataSource_Competence_JspNeedsAssessment,
+        showHeaderContextMenu: false,
         selectionType: "single",
         selectionAppearance: "checkbox",
         filterOnKeypress: true,
@@ -320,6 +409,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         selectionType:"single",
 
         // selectionAppearance: "checkbox",
+        showHeaderContextMenu: false,
         showRowNumbers: false,
         border: "1px solid",
         fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
@@ -355,6 +445,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         autoFetchData: true,
         // selectionAppearance: "checkbox",
         showRowNumbers: false,
+        showHeaderContextMenu: false,
         selectionType:"single",
         border: "1px solid",
         fields: [
@@ -371,6 +462,48 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         hoverMode: "details",
         canDragRecordsOut: true,
     });
+
+    let RestDataSource_Personnel_JspNeedsAssessment = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},
+            {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: personnelUrl + "/iscList"
+    });
+
+    let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({
+        width: "100%",
+        dataSource: RestDataSource_Personnel_JspNeedsAssessment,
+        fields: [
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "nationalCode"},
+            {name: "personnelNo"},
+            {name: "personnelNo2"},
+            {name: "companyName"},
+            {name: "employmentStatus"},
+            {name: "complexTitle"},
+            {name: "workPlaceTitle"},
+            {name: "workTurnTitle"},
+        ],
+        autoFetchData: false,
+        gridComponents: [
+            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="personnel.for"/>" + "</b></span>", customEdges: ["T","L","R","B"]}),
+            "header", "body"],
+        // canExpandRecords: true,
+        // expansionMode: "details",
+        // showDetailFields: true
+    });
+
     var ListGrid_Knowledge_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_Knowledge_JspNeedsAssessment",
         autoFetchData:false,
@@ -394,15 +527,22 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 // valueMap:["عملکرد ضروری","عملکرد توسعه ای","عملکرد بهبود"]
             }
         ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "needsAssessmentPriorityId"],
+                title: "<spring:message code="knowledge"/>"
+            }],
+        headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
-        width: "25%",
+        // width: "25%",
         canAcceptDroppedRecords: true,
-        canHover: true,
+        // canHover: true,
         showHoverComponents: true,
-        hoverMode: "details",
+        // hoverMode: "detailField",
         canRemoveRecords:true,
+        showHeaderContextMenu: false,
         showFilterEditor:false,
         removeRecordClick(rowNum){
             removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
@@ -424,9 +564,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             this.Super("dataChanged",arguments);
         },
         canEditCell(rowNum, colNum){
-            if(colNum == 1) {
+            if(colNum === 1) {
                 let record = this.getRecord(rowNum);
-                if (record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
+                if (record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
                     return true;
                 }
             }
@@ -452,15 +592,22 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 }
             }
         ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "needsAssessmentPriorityId"],
+                title: "<spring:message code="ability"/>"
+            }],
+        headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
-        width: "25%",
+        // width: "25%",
+        showHeaderContextMenu: false,
         canAcceptDroppedRecords: true,
-        canHover: true,
+        // canHover: true,
         showHoverComponents: true,
         autoSaveEdits:false,
-        hoverMode: "details",
+        // hoverMode: "details",
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":109},
@@ -498,6 +645,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     var ListGrid_Attitude_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_Attitude_JspNeedsAssessment",
         dataSource: DataSource_Skill_JspNeedsAssessment,
+        showHeaderContextMenu: false,
         showRowNumbers: false,
         autoFetchData:false,
         selectionType:"single",
@@ -514,15 +662,21 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 }
             }
         ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "needsAssessmentPriorityId"],
+                title: "<spring:message code="attitude"/>"
+            }],
+        headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
-        width: "25%",
+        // width: "25%",
         canAcceptDroppedRecords: true,
-        canHover: true,
+        // canHover: true,
         autoSaveEdits:false,
         showHoverComponents: true,
-        hoverMode: "details",
+        // hoverMode: "details",
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":110},
@@ -559,7 +713,39 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     });
 
     //--------------------------------------------------------------------
+    var moreInfoTree = isc.TreeGrid.create({
+        ID: "needesAssessmentTree",
+        data:[],
+        fields: [
+            {name: "name", title: "<spring:message code="skill"/>"},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", width:"10%"},
 
+        ],
+        width: "100%",
+        height: "80%",
+        autoDraw: false,
+        showOpenIcons:false,
+        showDropIcons:false,
+        showSelectedIcons:false,
+        showConnectors: true,
+        // baseStyle: "noBorderCell",
+        dataProperties:{
+        dataArrived:function (parentNode) {
+            this.openAll();
+        },
+        changed:function () {
+            console.log("open");
+        },
+    }
+    });
+    //--------------------------------------------------------------------
+
+    var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
+        // width: "25%",
+        // wrap: true,
+        align:"left",
+        contents:"",
+        customEdges: []});
     var Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="skill.plural.list"/>",
         width: "40%",
@@ -573,12 +759,16 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     ListGrid_AllCompetence_JspNeedsAssessment
                 ]
             })]
-    })
+    });
     var Window_NeedsAssessment_JspNeedsAssessment = isc.Window.create({
         title: "<spring:message code="needs.assessment"/>",
         minWidth: 1024,
+        autoCenter: false,
+        showMaximizeButton: false,
+        autoSize: false,
         keepInParentRect: true,
-        placement:"fillPanel",
+        isModal:false,
+        placement:"fillScreen",
         close(){
           clearAllGrid();
           ListGridNeedsAssessment_Refresh();
@@ -586,6 +776,29 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         },
         show(){
             // updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
+            // if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")==="Post"){
+                let record;
+                let myVar = setInterval(function () {
+                        record = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
+                        if(record !== undefined){
+                            refreshPersonnelLG(record);
+                            if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")==="Post") {
+                                Label_PlusData_JspNeedsAssessment.setContents(
+                                    "عنوان پست: " + record.titleFa
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                                );
+                            } else
+                                Label_PlusData_JspNeedsAssessment.setContents("");
+                            clearInterval(myVar)
+                        }
+                    },100);
+            // }
+            // else {
+            //     Label_PlusData_JspNeedsAssessment.setContents("")
+            // }
             this.Super("show",arguments)
         },
         items:[
@@ -604,10 +817,12 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         pickListFields: [{name: "title"}],
                         defaultToFirstOption: true,
                         changed: function (form, item, value, oldValue) {
-                            if(value != oldValue) {
+                            if(value !== oldValue) {
                                 updateObjectIdLG(form, value);
                                 clearAllGrid();
                                 form.getItem("objectId").clearValue();
+                                Label_PlusData_JspNeedsAssessment.setContents("");
+                                refreshPersonnelLG();
                             }
                         },
                     },
@@ -625,51 +840,62 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         ],
                         click: function(form){
                             // updateObjectIdLG(form, form.getValue("objectType"));
-                            if(form.getValue("objectType")=="Post"){
-                                PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
+                            if(form.getValue("objectType") === "Post"){
+                                PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList";
                                 Window_AddPost_JspNeedsAssessment.show();
                             }
                         },
                         changed: function (form, item, value, oldValue) {
-                            if(value != oldValue){
-                                editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"))
+                            if(value !== oldValue){
+                                editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
+                                refreshPersonnelLG();
                             }
                         },
                     },
                 ]
             }),
+            <%--isc.TrHLayout.create({--%>
+                <%--height: "1%",--%>
+                <%--members: [--%>
+                    <%--Label_PlusData_JspNeedsAssessment,--%>
+                    <%--// isc.LgLabel.create({width: "25%", customEdges: []}),--%>
+                    <%--isc.LgLabel.create({width: "75%",--%>
+                        <%--valign: "bottom",--%>
+                        <%--contents: "<span><b>" + "<spring:message code="domain"/>" + "</b></span>", customEdges: ["T", "B", "R", "L"]}),--%>
+                <%--]--%>
+            <%--}),--%>
             isc.TrHLayout.create({
                 height: "1%",
                 members: [
-                    isc.LgLabel.create({width: "25%", customEdges: []}),
-                    isc.LgLabel.create({width: "75%", contents: "<span><b>" + "<spring:message code="domain"/>" + "</b></span>", customEdges: ["T", "B", "R", "L"]}),
-                ]
-            }),
-            isc.TrHLayout.create({
-                height: "1%",
-                members: [
-                    isc.LgLabel.create({width: "25%", customEdges: []}),
-                    isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="knowledge"/>" + "</b></span>", customEdges: ["R", "B"]}),
-                    isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="ability"/>" + "</b></span>",customEdges: ["R", "B"]}),
-                    isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="attitude"/>" + "</b></span>", customEdges: ["R", "L", "B"]}),
+                    // isc.LgLabel.create({width: "25%", customEdges: []}),
+                    Label_PlusData_JspNeedsAssessment,
+                    <%--isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="knowledge"/>" + "</b></span>", customEdges: ["R", "B", "T"]}),--%>
+                    <%--isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="ability"/>" + "</b></span>",customEdges: ["R", "B", "T"]}),--%>
+                    <%--isc.LgLabel.create({width: "25%", contents: "<span><b>" + "<spring:message code="attitude"/>" + "</b></span>", customEdges: ["R", "L", "B", "T"]}),--%>
                 ]
             }),
             isc.TrHLayout.create({
                 members: [
                     isc.TrVLayout.create({
                         width: "25%",
+                        showResizeBar: true,
                         members: [ListGrid_Competence_JspNeedsAssessment, ListGrid_SkillAll_JspNeedsAssessment]
                     }),
-                    <%--isc.TrVLayout.create({--%>
-                    <%--width: "10%",--%>
-                    <%--members: [--%>
-                    <%--isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence"/>" + "</b></span>"}),--%>
-                    <%--SelectedListGrid_Competence_JspNeedsAssessment--%>
-                    <%--]--%>
-                    <%--}),--%>
-                    ListGrid_Knowledge_JspNeedsAssessment,
-                    ListGrid_Ability_JspNeedsAssessment,
-                    ListGrid_Attitude_JspNeedsAssessment
+                    isc.TrVLayout.create({
+                        // width: "75%",
+                        members: [
+                            isc.TrHLayout.create({
+                                height: "70%",
+                                showResizeBar: true,
+                                members: [
+                                    ListGrid_Knowledge_JspNeedsAssessment,
+                                    ListGrid_Ability_JspNeedsAssessment,
+                                    ListGrid_Attitude_JspNeedsAssessment
+                                ]
+                            }),
+                            ListGrid_Personnel_JspNeedsAssessment
+                        ]
+                    }),
 
                 ]
             }),
@@ -713,20 +939,132 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
                         recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
-                            var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
-                            PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+                            // var criteria = {
+                            //     _constructor:"AdvancedCriteria",
+                            //     operator:"and",
+                            //     criteria:[
+                            //         { fieldName:"id", operator:"equals", value:record.id }
+                            //     ]
+                            // };
+                            let criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
+                            PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+                            let wating = createDialog("wait");
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
                                 editNeedsAssessmentRecord(record.id, "Post");
-                            })
+                                Label_PlusData_JspNeedsAssessment.setContents(
+                                    "عنوان پست: " + record.titleFa
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
+                                    + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                                );
+                                wating.close();
+                            });
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
-
+                            refreshPersonnelLG(record);
                             Window_AddPost_JspNeedsAssessment.close();
                         }
                     }),
                 ]
             })]
-    })
+    });
+    var Window_MoreInformation_JspNeedsAssessment = isc.Window.create({
+        title: "<spring:message code="more.information"/>",
+        // placement: "fillScreen",
+        width: "60%",
+        height: "90%",
+        minWidth: 1024,
+        keepInParentRect: true,
+        autoSize: false,
+        items: [
+            isc.TrHLayout.create({
+                ID: "printContainer",
+                members: [
+                    isc.TabSet.create({
+                        ID: "tabSetNeedsAssessment",
+                        // enabled: false,
+                        tabBarPosition: "top",
+                        tabs: [
+                            {
+                                title: "درخت نیازسنجی",
+                                pane: ListGrid_MoreInformation_JspNeedAssessment
+                            },
+                            {
+                                enabled: false,
+                                title: "شرایط احراز",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
+                            },
+                            {
+                                enabled: false,
+                                title: "شرح شغل",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})
+                            },
+                            {
+                                enabled: false,
+                                title: "آموزش ها",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+                            },
+                            {
+                                enabled: false,
+                                title: "پراکندگی شغل در سازمان",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attendance-tab"})
+                            },
+                            {
+                                enabled: false,
+                                title: "شناسنامه شغل",
+                                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
+                            },
+                            {
+                                title: "درخت اطلاعات",
+                                pane: moreInfoTree
+                            },
+                        ],
+                        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+
+                        }
+                    })
+                ]
+            })
+        ],
+        show() {
+            let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
+            Label_Title_JspNeedsAssessment.setContents(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
+            // this.setTitle(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
+            let advancedCriteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {fieldName: "objectId", operator: "equals", value: rec.objectId},
+                    {fieldName: "objectType", operator: "equals", value: rec.objectType}
+                ]
+            };
+            let criteria = '{"fieldName":"objectId","operator":"equals","value":"' + rec.objectId + '"},' +
+                '{"fieldName":"objectType","operator":"equals","value":"' + rec.objectType + '"}';
+
+            ListGrid_MoreInformation_JspNeedAssessment.invalidateCache();
+            ListGrid_MoreInformation_JspNeedAssessment.fetchData(advancedCriteria);
+
+            var url = needsAssessmentUrl + "/iscTree?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
+            isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+                if (resp.httpResponseCode != 200) {
+                    return flase;
+                } else {
+                    var Treedata = isc.Tree.create({
+                        modelType: "parent",
+                        nameProperty: "Name",
+                        idField: "id",
+                        parentIdField: "parentId",
+                        data: JSON.parse(resp.data).response.data
+                    });
+                    moreInfoTree.setData(Treedata);
+                    moreInfoTree.getData().openAll();
+                }
+            }));
+
+            this.Super("show", arguments)
+        }
+    });
 
     isc.TrVLayout.create({
         members: [ListGrid_NeedsAssessment_JspNeedAssessment],
@@ -773,6 +1111,44 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     ];
                 break;
         }
+    }
+
+    function refreshPersonnelLG(pickListRecord) {
+        if (pickListRecord == null)
+            pickListRecord = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
+        if (pickListRecord == null){
+            ListGrid_Personnel_JspNeedsAssessment.setData([]);
+            return;
+        }
+        let crt = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: []
+        };
+        switch (NeedsAssessmentTargetDF_needsAssessment.getItem("objectType").getValue()) {
+            case 'Job':
+                crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
+                break;
+            case 'JobGroup':
+                crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
+                break;
+            case 'Post':
+                crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
+                break;
+            case 'PostGroup':
+                crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
+                break;
+            case 'PostGrade':
+                crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
+                break;
+            case 'PostGradeGroup':
+                crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
+                break;
+        }
+        ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
+        // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
+        ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
+        ListGrid_Personnel_JspNeedsAssessment.fetchData();
     }
 
     function createNeedsAssessmentRecords(data) {
@@ -829,7 +1205,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, objectType);
         clearAllGrid();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
-            if (resp.httpResponseCode != 200){
+            if (resp.httpResponseCode !== 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
@@ -853,9 +1229,10 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 competence.id = data[i].competenceId;
                 competence.title = data[i].competence.title;
                 competence.competenceType = data[i].competence.competenceType;
-                DataSource_Competence_JspNeedsAssessment.addData(competence);
+                DataSource_Competence_JspNeedsAssessment.addData(competence, ()=>{ListGrid_Competence_JspNeedsAssessment.selectRecord(0)});
             }
             ListGrid_Competence_JspNeedsAssessment.fetchData();
+            ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
             NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId);
             NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", objectType);
             fetchDataDomainsGrid();
@@ -866,6 +1243,10 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         competenceData.length = 0;
         skillData.length = 0;
         ListGrid_Competence_JspNeedsAssessment.setData([]);
+
+
+
+
         ListGrid_Knowledge_JspNeedsAssessment.setData([]);
         ListGrid_Attitude_JspNeedsAssessment.setData([]);
         ListGrid_Ability_JspNeedsAssessment.setData([]);
@@ -915,6 +1296,8 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     }
 
 
+
+
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedAssessment_CommitteeToWorkflow() {
         let sRecord = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord();
@@ -938,7 +1321,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        var varParams = [{
+                        let varParams = [{
                             "processKey": "needAssessment_CommitteeWorkflow",
                             "cId": sRecord.id,
                             "needAssessment": needAssessmentTitle,
@@ -1042,10 +1425,19 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
 
+    function checkSelectedRecord(lg) {
+        if(lg.getSelectedRecord() === undefined){
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
     function sendToWorkflowAfterUpdate_needsAssessment(selectedRecord, workflowType) {
 
-        var sRecord = selectedRecord;
+        let sRecord = selectedRecord;
 
         if (needs_workflowParameters !== null) {
 
@@ -1114,5 +1506,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
 
+    function tree(){
 
+    }
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
+
+    // </script>

@@ -254,7 +254,7 @@
 				<textElement>
 					<font size="12" isUnderline="false"/>
 				</textElement>
-				<text><![CDATA[TRF04-02]]></text>
+				<text><![CDATA[TRF042-02]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="62" y="51" width="43" height="30" uuid="58c51fd2-5533-4283-9143-f0c460606954"/>
@@ -271,7 +271,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[پرسشنامه اطلاعاتی اساتید و مربیان]]></text>
+				<text><![CDATA[پرسشنامه اطلاعاتی مدرسان و مربیان]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="123" y="15" width="342" height="20" uuid="15e97d9b-5deb-4373-bca1-418c861e9369"/>
@@ -323,7 +323,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" isBold="true"/>
 				</textElement>
-				<text><![CDATA[شماره پرسنلی(اساتید داخلی):]]></text>
+				<text><![CDATA[شماره پرسنلی(مدرس داخلی):]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="493" y="60" width="60" height="14" uuid="7711c820-38ee-409f-833d-623147ee14be"/>

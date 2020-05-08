@@ -1,19 +1,23 @@
 package com.nicico.training.service;
 
+import com.ibm.icu.util.PersianCalendar;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.model.Attendance;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTimeComparator;
 import org.modelmapper.ModelMapper;
@@ -27,6 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Service
@@ -50,7 +57,7 @@ public class ClassSessionService implements IClassSession {
     }
 
     //*********************************
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<ClassSessionDTO.Info> list() {
         List<ClassSession> classSessionList = classSessionDAO.findAll();
@@ -299,6 +306,8 @@ public class ClassSessionService implements IClassSession {
         return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.Info>>() {
         }.getType());
     }
+
+
     //*********************************
 
     @Override
@@ -451,7 +460,135 @@ public class ClassSessionService implements IClassSession {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<ClassSession> findBySessionDateBetween(String start, String end) {
+        return classSessionDAO.findBySessionDateBetween(start, end);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode) {
+        LocalDate inputDate = LocalDate.now();
+        LocalDate prevSat = inputDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY));
+        LocalDate nextFri = inputDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
+        String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
+        String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
+
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        list.add(makeNewCriteria("sessionDate", prevSaturday, EOperator.greaterOrEqual, null));
+        list.add(makeNewCriteria("sessionDate", nextFriday, EOperator.lessOrEqual, null));
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else
+                request.getCriteria().setCriteria(list);
+        } else
+            request.setCriteria(criteriaRq);
+
+        Long studentId = null;
+         SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp =  SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
+         if(userNationalCode != null){
+
+            for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
+                classSession.setStudentStatus("ثبت نام نشده");
+                for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
+                    if (attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
+                        studentId = attendanceInfo.getStudent().getId();
+                        classSession.setStudentStatus("ثبت نام شده");
+                    }
+                }
+                List<Attendance> attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                if (attendance != null && attendance.size() != 0)
+                    classSession.setStudentPresentStatus(attendance.get(0).getState());
+            }
+        }
+        return resp;
+    }
+
+    //--------------------------------------------- Calender -----------------------------------------------------------
+    private static double greg_len = 365.2425;
+    private static double greg_origin_from_jalali_base = 629964;
+    private static double len = 365.24219879;
+
+    public static String getPersianDate(Date d) {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(d);
+        int year = gc.get(Calendar.YEAR);
+        return getPersianDate(year, (gc.get(Calendar.MONTH)) + 1,
+                gc.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public static String getPersianDate(int gregYear, int gregMonth, int gregDay) {
+        // passed days from Greg orig
+        double d = Math.ceil((gregYear - 1) * greg_len);
+        // passed days from jalali base
+        double d_j = d + greg_origin_from_jalali_base
+                + getGregDayOfYear(gregYear, gregMonth, gregDay);
+
+        // first result! jalali year
+        double j_y = Math.ceil(d_j / len) - 2346;
+        // day of the year
+        double j_days_of_year = Math
+                .floor(((d_j / len) - Math.floor(d_j / len)) * 365) + 1;
+
+        // System.out.println(j_days_of_year);
+        StringBuffer result = new StringBuffer();
+
+        if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)
+            result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/0"
+                + (int) dayOfMonth(j_days_of_year));
+        else if(month(j_days_of_year) >= 10 && dayOfMonth(j_days_of_year) < 10)
+            result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/0"
+                    + (int) dayOfMonth(j_days_of_year));
+        else if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) >= 10)
+            result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/"
+                    + (int) dayOfMonth(j_days_of_year));
+        else
+            result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/"
+                    + (int) dayOfMonth(j_days_of_year));
+
+        return result.toString();
+    }
+
+    private static double month(double day) {
+
+        if (day < 6 * 31)
+            return Math.ceil(day / 31);
+        else
+            return Math.ceil((day - 6 * 31) / 30) + 6;
+    }
+
+    private static double dayOfMonth(double day) {
+
+        double m = month(day);
+        if (m <= 6)
+            return day - 31 * (m - 1);
+        else
+            return day - (6 * 31) - (m - 7) * 30;
+    }
+
+    private static double getGregDayOfYear(double year, double month, double day) {
+        int greg_moneths_len[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31,
+                30, 31};
+        boolean leap = false;
+        if (((year % 4) == 0) && (((year % 400) != 0)))
+            leap = true;
+        if (leap)
+            greg_moneths_len[2] = 29;
+        int sum = 0;
+        for (int i = 0; i < month; i++)
+            sum += greg_moneths_len[i];
+        return sum + day - 2;
+    }
+    //--------------------------------------------- Calender -----------------------------------------------------------
 
     //*********************************
+    @Transactional
+    public Long getClassIdBySessionId(Long sessionId) {
+        ClassSession classSession = classSessionDAO.getClassSessionById(sessionId);
+        return classSession.getClassId();
+    }
 
 }

@@ -54,20 +54,60 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("contractInfo")
+    public static class contractInfo extends PersonalInfoDTO {
+        private Long id;
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+        private ContactInfoDTO.Info contactInfo;
+        private AccountInfoDTO.Info accountInfo;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonalInfoCustom")
+    public static class PersonalInfoCustom{
+
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PersonalInfoGrid")
     public static class Grid{
         private Long id;
-        @NotEmpty
-        @ApiModelProperty(required = true)
         private String firstNameFa;
-        @NotEmpty
-        @ApiModelProperty(required = true)
         private String lastNameFa;
         private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
         private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
         private ContactInfoDTO.Grid contactInfo;
         private Integer version;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonalInfoReport")
+    public static class Report{
+        private Long id;
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+        private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+        private ContactInfoDTO.Grid contactInfo;
+        private Integer version;
+        public String getName(){
+            return firstNameFa + " " + lastNameFa;
+        }
+    }
+
+
 
     @Getter
     @Setter

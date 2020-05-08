@@ -16,13 +16,13 @@ import com.nicico.training.service.NeedsAssessmentReportsService;
 import com.nicico.training.service.NeedsAssessmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -87,4 +87,11 @@ public class NeedsAssessmentRestController {
         }
     }
 
+    @Loggable
+    @GetMapping("/iscTree")
+    public ResponseEntity<TotalResponse<NeedsAssessmentDTO.Tree>> iscTree(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = needsAssessmentService.tree(nicicoCriteria);
+        return new ResponseEntity<>(treeTotalResponse, HttpStatus.OK);
+    }
 }

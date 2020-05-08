@@ -87,6 +87,7 @@
                 autoFitWidth: true
             },
         ],
+        rowDoubleClick: function () {IButton_Class_Ok_PCTQ.click()}
     });
 
     IButton_Class_Ok_PCTQ = isc.IButtonSave.create({
@@ -430,7 +431,7 @@
         if (id == null)
             return;
         oldQuestionsNum_PCTQ = questions_PCTQ.isEmpty() ? 0 : questions_PCTQ.length;
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "preCourse-test-questions/" + classId_PCTQ, "GET", null, setQuestionsLGData_PCTQ));
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "preCourse-test-questions/" + id, "GET", null, setQuestionsLGData_PCTQ));
     }
 
     function clear_preCourseTestQuestions() {
