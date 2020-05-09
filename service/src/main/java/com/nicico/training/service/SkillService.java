@@ -100,7 +100,7 @@ public class SkillService implements ISkillService {
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
-        if (!requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
+        if (requestSkill.getCourseId()!=null && !requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
             updating.setCourseMainObjectiveId(null);
         }
         Skill skill = skillDAO.saveAndFlush(updating);
@@ -114,7 +114,7 @@ public class SkillService implements ISkillService {
     @Transactional
     @Override
     public void delete(Long id) {
-        skillDAO.deleteById(id);
+        skillDAO.deleteByIdQuery(id);
     }
 
     @Transactional
