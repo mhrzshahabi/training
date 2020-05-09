@@ -489,8 +489,7 @@ public class ClassSessionService implements IClassSession {
 
         Long studentId = null;
          SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp =  SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
-         if(userNationalCode != null){
-
+         if(!userNationalCode.equalsIgnoreCase("null")){
             for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
                 classSession.setStudentStatus("ثبت نام نشده");
                 for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {

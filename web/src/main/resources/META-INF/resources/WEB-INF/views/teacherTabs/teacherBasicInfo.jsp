@@ -387,6 +387,7 @@
                 title: "<spring:message code='education.categories'/>",
                 type: "SelectItem",
                 textAlign: "center",
+                autoFetchData: false,
                 required: true,
                 optionDataSource: RestDataSource_Categories_JspTeacher,
                 valueField: "id",
