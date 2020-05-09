@@ -9,7 +9,7 @@
     var classMethod = "POST";
     var autoValid = false;
     var classWait;
-    var class_userCartableId;
+    // var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
     var isReadOnlyClass = true;
@@ -37,6 +37,13 @@
             {name: "titleFa", type: "text"}
         ],
         fetchDataURL: categoryUrl + "spec-list",
+    });
+    var RestDataSource_subCategory_JspCourse = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
     });
 
     // var RestDataSource_EAttachmentType_JspClass = isc.TrDS.create({
@@ -105,6 +112,7 @@
             {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
             {name: "theoryDuration"},
             {name: "categoryId"},
+            {name: "subCategoryId"},
         ],
         fetchDataURL: courseUrl + "spec-list?type=combo"
 
@@ -120,23 +128,23 @@
     //
     // });
 
-    var RestDataSource_Class_Student_JspClass = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "personality.lastNameFa"},
-            {name: "studentID"}
-        ],
-        fetchDataURL: classUrl + "otherStudent"
-    });
+    // var RestDataSource_Class_Student_JspClass = isc.TrDS.create({
+    //     fields: [
+    //         {name: "id", primaryKey: true},
+    //         {name: "personality.lastNameFa"},
+    //         {name: "studentID"}
+    //     ],
+    //     fetchDataURL: classUrl + "otherStudent"
+    // });
 
-    var RestDataSource_Class_CurrentStudent_JspClass = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "personality.lastNameFa"},
-            {name: "studentID"}
-        ],
-        fetchDataURL: classUrl + "student"
-    });
+    // var RestDataSource_Class_CurrentStudent_JspClass = isc.TrDS.create({
+    //     fields: [
+    //         {name: "id", primaryKey: true},
+    //         {name: "personality.lastNameFa"},
+    //         {name: "studentID"}
+    //     ],
+    //     fetchDataURL: classUrl + "student"
+    // });
     var RestDataSource_Term_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -459,7 +467,7 @@
                 validateOnChange: true,
                 optionDataSource: RestDataSource_Course_JspClass,
                 canEdit: false,
-                // autoFetchData: false,
+                autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
                 filterFields: ["titleFa", "code", "createdBy"],
                 required: true,
@@ -835,19 +843,19 @@
 // width:"250",
                 colSpan: 1,
                 pickListWidth: 500,
-                autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
 // addUnknownValues:false,
                 displayField: "titleFa", valueField: "id",
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
+                filterFields: ["titleFa", "titleFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
+                textMatchStyle: "substring",
                 pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains", autoFitWidth:true},
+                    {name: "titleFa", filterOperator: "iContains", autoFitWidth:true, autoFitWidthApproach:true},
                     {name: "manager.firstNameFa", filterOperator: "iContains"},
                     {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
@@ -858,7 +866,7 @@
                 },
                 pickListProperties: {
                     sortField: 0,
-                    showFilterEditor: true
+                    showFilterEditor: false
                 }
             },
             {
@@ -867,7 +875,6 @@
                 title: "<spring:message code="training.place"/>:",
 // width:"250",
                 colSpan: 1,
-                autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
 // addUnknownValues:false,
                 displayField: "titleFa",
@@ -875,13 +882,14 @@
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
+                filterFields: ["titleFa", "titleFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
                 showHintInField: true,
                 hint: "موسسه",
                 pickListWidth: 500,
+                textMatchStyle: "substring",
                 pickListFields: [
                     {name: "titleFa", filterOperator: "iContains"},
                     {name: "manager.firstNameFa", filterOperator: "iContains"},
@@ -892,7 +900,7 @@
                 },
                 pickListProperties: {
                     sortField: 0,
-                    showFilterEditor: true
+                    showFilterEditor: false
                 }
             },
             {
@@ -1088,6 +1096,7 @@
             }
         ],
     });
+
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
 // width: "700",
 // validateOnChange:true,
@@ -1386,7 +1395,7 @@
                 title: "12-14",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                //disabled: true
+                disabled: true
                // defaultValue: true
             },
             {
@@ -1396,7 +1405,7 @@
                 titleOrientation: "top",
                 labelAsTitle: true,
                // defaultValue: true
-               // disabled: true
+               disabled: true
             },
 
             {
@@ -1489,7 +1498,7 @@
             if (VM_JspClass.hasErrors()) {
                 return;
             }
-            var data = VM_JspClass.getValues();
+            let data = VM_JspClass.getValues();
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
@@ -1497,7 +1506,7 @@
 
                 data.acceptancelimit = data.acceptancelimit_a
             }
-            var classSaveUrl = classUrl;
+            let classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                 classSaveUrl += "safeUpdate/" + classRecord.id;
@@ -1505,49 +1514,50 @@
             {
                 classSaveUrl += "safeCreate";
             }
-            isc.RPCManager.sendRequest({
-                actionURL: classSaveUrl,
-                httpMethod: classMethod,
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-
-                        if (classMethod.localeCompare("PUT") === 0) {
-                            sendEndingClassToWorkflow();
-                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
-                        }
-
-                        ListGrid_Class_refresh();
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                        setTimeout(function () {
-                            ListGrid_Class_JspClass.setSelectedState(gridState);
-                            ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
-                        }, 3000);
-                        Window_Class_JspClass.close();
-
-                        //**********generate class sessions**********
-                        if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
-                            if (autoValid) {
-                                ClassID = JSON.parse(resp.data).id;
-                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), "callback: class_get_sessions_result(rpcResponse)"));
-                            }
-                        }
-                        //**********generate class sessions**********
-
-                    } else {
-                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error");
+            isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), (resp)=>{
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    if (classMethod.localeCompare("PUT") === 0) {
+                        sendEndingClassToWorkflow();
+                        sendToWorkflowAfterUpdate(JSON.parse(resp.data));
                     }
+                    ListGrid_Class_refresh();
+                    let responseID = JSON.parse(resp.data).id;
+                    let gridState = "[{id:" + responseID + "}]";
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                    setTimeout(function () {
+                        ListGrid_Class_JspClass.setSelectedState(gridState);
+                        ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
+                    }, 3000);
+                    Window_Class_JspClass.close();
+
+                    //**********generate class sessions**********
+                    if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
+                        if (autoValid) {
+                            ClassID = JSON.parse(resp.data).id;
+                            isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), "callback: class_get_sessions_result(rpcResponse)"));
+                        }
+                    }
+                    //**********generate class sessions**********
 
                 }
-            });
+                else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error");
+                }
+            }));
+            <%--isc.RPCManager.sendRequest({--%>
+                <%--actionURL: classSaveUrl,--%>
+                <%--httpMethod: classMethod,--%>
+                <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                <%--useSimpleHttp: true,--%>
+                <%--contentType: "application/json; charset=utf-8",--%>
+                <%--showPrompt: false,--%>
+                <%--data: JSON.stringify(data),--%>
+                <%--serverOutputAsString: false,--%>
+                <%--callback: function (resp) {--%>
+                    <%----%>
+
+                <%--}--%>
+            <%--});--%>
         }
     });
 
@@ -1679,6 +1689,15 @@
                                 displayField: "titleFa",
                                 filterOperator: "equals",
                             },
+                            {
+                                name: "subCategoryId",
+                                title: "<spring:message code="subcategory"/> ",
+                                optionDataSource: RestDataSource_subCategory_JspCourse,
+                                filterOnKeypress: true,
+                                valueField: "id",
+                                displayField: "titleFa",
+                                filterOperator: "equals",
+                            },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
                         recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
@@ -1737,242 +1756,242 @@
     /*Add Student Section*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var DynamicForm_ClassStudentHeaderGridHeader_JspClass = isc.DynamicForm.create({
-        titleWidth: 400,
-        width: 700,
-        align: "right",
-        fields: [
-            {name: "id", type: "hidden", title: ""},
-            {
-                name: "course.titleFa",
-                type: "staticText",
-                title: "<spring:message code='course.title'/>",
-                wrapTitle: false,
-                width: 250
-            },
-            {
-                name: "group",
-                type: "staticText",
-                title: "<spring:message code='group'/>",
-                wrapTitle: false,
-                width: 250
-            }
-        ]
-    });
+    <%--var DynamicForm_ClassStudentHeaderGridHeader_JspClass = isc.DynamicForm.create({--%>
+        <%--titleWidth: 400,--%>
+        <%--width: 700,--%>
+        <%--align: "right",--%>
+        <%--fields: [--%>
+            <%--{name: "id", type: "hidden", title: ""},--%>
+            <%--{--%>
+                <%--name: "course.titleFa",--%>
+                <%--type: "staticText",--%>
+                <%--title: "<spring:message code='course.title'/>",--%>
+                <%--wrapTitle: false,--%>
+                <%--width: 250--%>
+            <%--},--%>
+            <%--{--%>
+                <%--name: "group",--%>
+                <%--type: "staticText",--%>
+                <%--title: "<spring:message code='group'/>",--%>
+                <%--wrapTitle: false,--%>
+                <%--width: 250--%>
+            <%--}--%>
+        <%--]--%>
+    <%--});--%>
 
-    var ListGrid_All_Students_JspClass = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
-        canAcceptDroppedRecords: true,
-        canReorderRecords: true,
-        dragTrackerMode: "none",
-        dataSource: RestDataSource_Class_Student_JspClass,
-        showRowNumbers: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        autoFetchData: false,
-        border: "0px solid green",
-        showConnectors: true,
-        canDragRecordsOut: true,
-        closedIconSuffix: "",
-        openIconSuffix: "",
-        selectedIconSuffix: "",
-        dropIconSuffix: "",
-        showOpenIcons: false,
-        showDropIcons: false,
-        selectionType: "multiple",
-        canDragSelect: false,
-        rowNumberFieldProperties: {
-            autoFitWidthApproach: "both",
-            canDragResize: true,
-            autoFitWidth: false,
-            headerTitle: "<spring:message code='row'/>",
-            width: 50
-        },
-        fields: [
-            {name: "id", hidden: true},
-            {name: "lastNameFa", title: "<spring:message code='firstName'/>", align: "center"},
-            {name: "studentID", title: "<spring:message code='student.ID'/>", align: "center"}
-        ],
-        recordDoubleClick: function (viewer, record) {
-            var StudentID = record.id;
-            var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
-            var ClassID = ClassRecord.id;
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudent/" + StudentID + "/" + ClassID, "POST", null, "callback: class_add_student_result(rpcResponse)"));
-        },
-        dataPageSize: 50
-    });
+    <%--var ListGrid_All_Students_JspClass = isc.ListGrid.create({--%>
+        <%--width: "100%",--%>
+        <%--height: "100%",--%>
+        <%--canAcceptDroppedRecords: true,--%>
+        <%--canReorderRecords: true,--%>
+        <%--dragTrackerMode: "none",--%>
+        <%--dataSource: RestDataSource_Class_Student_JspClass,--%>
+        <%--showRowNumbers: true,--%>
+        <%--showRecordComponents: true,--%>
+        <%--showRecordComponentsByCell: true,--%>
+        <%--autoFetchData: false,--%>
+        <%--border: "0px solid green",--%>
+        <%--showConnectors: true,--%>
+        <%--canDragRecordsOut: true,--%>
+        <%--closedIconSuffix: "",--%>
+        <%--openIconSuffix: "",--%>
+        <%--selectedIconSuffix: "",--%>
+        <%--dropIconSuffix: "",--%>
+        <%--showOpenIcons: false,--%>
+        <%--showDropIcons: false,--%>
+        <%--selectionType: "multiple",--%>
+        <%--canDragSelect: false,--%>
+        <%--rowNumberFieldProperties: {--%>
+            <%--autoFitWidthApproach: "both",--%>
+            <%--canDragResize: true,--%>
+            <%--autoFitWidth: false,--%>
+            <%--headerTitle: "<spring:message code='row'/>",--%>
+            <%--width: 50--%>
+        <%--},--%>
+        <%--fields: [--%>
+            <%--{name: "id", hidden: true},--%>
+            <%--{name: "lastNameFa", title: "<spring:message code='firstName'/>", align: "center"},--%>
+            <%--{name: "studentID", title: "<spring:message code='student.ID'/>", align: "center"}--%>
+        <%--],--%>
+        <%--recordDoubleClick: function (viewer, record) {--%>
+            <%--var StudentID = record.id;--%>
+            <%--var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();--%>
+            <%--var ClassID = ClassRecord.id;--%>
+            <%--isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudent/" + StudentID + "/" + ClassID, "POST", null, "callback: class_add_student_result(rpcResponse)"));--%>
+        <%--},--%>
+        <%--dataPageSize: 50--%>
+    <%--});--%>
 
-    var ListGrid_Current_Students_JspClass = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
-        autoDraw: false,
-        canDragRecordsOut: false,
-        dragTrackerMode: "none",
-        canAcceptDroppedRecords: true,
-        canReorderRecords: true,
-        alternateRecordStyles: true,
-        alternateFieldStyles: false,
-        dataSource: RestDataSource_Class_CurrentStudent_JspClass,
-        canDragSelect: true,
-        autoFetchData: false,
-        showRowNumbers: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        rowNumberFieldProperties: {
-            autoFitWidthApproach: "both",
-            canDragResize: true,
-            autoFitWidth: false,
-            headerTitle: "<spring:message code='row'/>",
-            width: 50
-        },
-        canEdit: true,
-        editEvent: "click",
-        editByCell: true,
-        rowEndEditAction: "done",
-        listEndEditAction: "next",
-        fields: [
-            {name: "id", hidden: true},
-            {
-                name: "lastNameFa", title: "<spring:message
-        code='firstName'/>", align: "center", width: "25%", canEdit: false
-            },
-            {
-                name: "studentID",
-                title: "<spring:message code='student.ID'/>",
-                align: "center",
-                width: "25%",
-                canEdit: false
-            },
-            {name: "iconDelete", title: "<spring:message code='remove'/>", width: "15%", align: "center"}
-        ],
+    <%--var ListGrid_Current_Students_JspClass = isc.ListGrid.create({--%>
+        <%--width: "100%",--%>
+        <%--height: "100%",--%>
+        <%--autoDraw: false,--%>
+        <%--canDragRecordsOut: false,--%>
+        <%--dragTrackerMode: "none",--%>
+        <%--canAcceptDroppedRecords: true,--%>
+        <%--canReorderRecords: true,--%>
+        <%--alternateRecordStyles: true,--%>
+        <%--alternateFieldStyles: false,--%>
+        <%--dataSource: RestDataSource_Class_CurrentStudent_JspClass,--%>
+        <%--canDragSelect: true,--%>
+        <%--autoFetchData: false,--%>
+        <%--showRowNumbers: true,--%>
+        <%--showRecordComponents: true,--%>
+        <%--showRecordComponentsByCell: true,--%>
+        <%--rowNumberFieldProperties: {--%>
+            <%--autoFitWidthApproach: "both",--%>
+            <%--canDragResize: true,--%>
+            <%--autoFitWidth: false,--%>
+            <%--headerTitle: "<spring:message code='row'/>",--%>
+            <%--width: 50--%>
+        <%--},--%>
+        <%--canEdit: true,--%>
+        <%--editEvent: "click",--%>
+        <%--editByCell: true,--%>
+        <%--rowEndEditAction: "done",--%>
+        <%--listEndEditAction: "next",--%>
+        <%--fields: [--%>
+            <%--{name: "id", hidden: true},--%>
+            <%--{--%>
+                <%--name: "lastNameFa", title: "<spring:message--%>
+        <%--code='firstName'/>", align: "center", width: "25%", canEdit: false--%>
+            <%--},--%>
+            <%--{--%>
+                <%--name: "studentID",--%>
+                <%--title: "<spring:message code='student.ID'/>",--%>
+                <%--align: "center",--%>
+                <%--width: "25%",--%>
+                <%--canEdit: false--%>
+            <%--},--%>
+            <%--{name: "iconDelete", title: "<spring:message code='remove'/>", width: "15%", align: "center"}--%>
+        <%--],--%>
 
-        recordDrop: function (dropRecords) {
-            var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
-            var ClassID = ClassRecord.id;
-            var StudentID = [];
-            for (let i = 0; i < dropRecords.getLength(); i++) {
-                StudentID.add(dropRecords[i].id);
-            }
-            var JSONObj = {"ids": StudentID};
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudents/" + ClassID, "POST", JSON.stringify(JSONObj), "callback: class_add_students_result(rpcResponse)"));
-        },
+        <%--recordDrop: function (dropRecords) {--%>
+            <%--var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();--%>
+            <%--var ClassID = ClassRecord.id;--%>
+            <%--var StudentID = [];--%>
+            <%--for (let i = 0; i < dropRecords.getLength(); i++) {--%>
+                <%--StudentID.add(dropRecords[i].id);--%>
+            <%--}--%>
+            <%--var JSONObj = {"ids": StudentID};--%>
+            <%--isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudents/" + ClassID, "POST", JSON.stringify(JSONObj), "callback: class_add_students_result(rpcResponse)"));--%>
+        <%--},--%>
 
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
+        <%--createRecordComponent: function (record, colNum) {--%>
+            <%--var fieldName = this.getFieldName(colNum);--%>
 
-            if (fieldName === "iconDelete") {
-                var recordCanvas = isc.HLayout.create({
-                    height: 22,
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-                var removeIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "pieces/16/icon_delete.png",
-                    prompt: "<spring:message code='remove'/>",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                        var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                        var ClassID = ClassRecord.id;
-                        var StudentID = record.id;
-                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "removeStudent/" + StudentID + "/" + ClassID, "DELETE", null, "callback: class_remove_student_result(rpcResponse)"));
-                    }
-                });
-                recordCanvas.addMember(removeIcon);
-                return recordCanvas;
-            } else
-                return null;
-        },
-        dataPageSize: 50
-    });
+            <%--if (fieldName === "iconDelete") {--%>
+                <%--var recordCanvas = isc.HLayout.create({--%>
+                    <%--height: 22,--%>
+                    <%--width: "100%",--%>
+                    <%--layoutMargin: 5,--%>
+                    <%--membersMargin: 10,--%>
+                    <%--align: "center"--%>
+                <%--});--%>
+                <%--var removeIcon = isc.ImgButton.create({--%>
+                    <%--showDown: false,--%>
+                    <%--showRollOver: false,--%>
+                    <%--layoutAlign: "center",--%>
+                    <%--src: "pieces/16/icon_delete.png",--%>
+                    <%--prompt: "<spring:message code='remove'/>",--%>
+                    <%--height: 16,--%>
+                    <%--width: 16,--%>
+                    <%--grid: this,--%>
+                    <%--click: function () {--%>
+                        <%--var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();--%>
+                        <%--var ClassID = ClassRecord.id;--%>
+                        <%--var StudentID = record.id;--%>
+                        <%--isc.RPCManager.sendRequest(TrDSRequest(classUrl + "removeStudent/" + StudentID + "/" + ClassID, "DELETE", null, "callback: class_remove_student_result(rpcResponse)"));--%>
+                    <%--}--%>
+                <%--});--%>
+                <%--recordCanvas.addMember(removeIcon);--%>
+                <%--return recordCanvas;--%>
+            <%--} else--%>
+                <%--return null;--%>
+        <%--},--%>
+        <%--dataPageSize: 50--%>
+    <%--});--%>
 
-    var SectionStack_All_Student_JspClass = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "50%",
-        sections: [
-            {
-                title: "<spring:message code='unregistred.students'/>",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_All_Students_JspClass
-                ]
-            }
-        ]
-    });
+    <%--var SectionStack_All_Student_JspClass = isc.SectionStack.create({--%>
+        <%--visibilityMode: "multiple",--%>
+        <%--width: "50%",--%>
+        <%--sections: [--%>
+            <%--{--%>
+                <%--title: "<spring:message code='unregistred.students'/>",--%>
+                <%--expanded: true,--%>
+                <%--canCollapse: false,--%>
+                <%--align: "center",--%>
+                <%--items: [--%>
+                    <%--ListGrid_All_Students_JspClass--%>
+                <%--]--%>
+            <%--}--%>
+        <%--]--%>
+    <%--});--%>
 
-    var SectionStack_Current_Student_JspClass = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "50%",
-        sections: [
-            {
-                title: "<spring:message code='registred.students'/>",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_Current_Students_JspClass
-                ]
-            }
-        ]
-    });
+    <%--var SectionStack_Current_Student_JspClass = isc.SectionStack.create({--%>
+        <%--visibilityMode: "multiple",--%>
+        <%--width: "50%",--%>
+        <%--sections: [--%>
+            <%--{--%>
+                <%--title: "<spring:message code='registred.students'/>",--%>
+                <%--expanded: true,--%>
+                <%--canCollapse: false,--%>
+                <%--align: "center",--%>
+                <%--items: [--%>
+                    <%--ListGrid_Current_Students_JspClass--%>
+                <%--]--%>
+            <%--}--%>
+        <%--]--%>
+    <%--});--%>
 
-    var HStack_ClassStudent_JspClass = isc.HStack.create({
-        membersMargin: 10,
-        height: 500,
-        members: [
-            SectionStack_All_Student_JspClass,
-            SectionStack_Current_Student_JspClass
-        ]
-    });
+    // var HStack_ClassStudent_JspClass = isc.HStack.create({
+    //     membersMargin: 10,
+    //     height: 500,
+    //     members: [
+    //         SectionStack_All_Student_JspClass,
+    //         SectionStack_Current_Student_JspClass
+    //     ]
+    // });
 
-    var HLayOut_ClassStudentGridHeader_JspClass = isc.HLayout.create({
-        width: 700,
-        height: 30,
-        border: "0px solid yellow",
-        layoutMargin: 5,
-        align: "center",
-        members: [
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass
-        ]
-    });
+    // var HLayOut_ClassStudentGridHeader_JspClass = isc.HLayout.create({
+    //     width: 700,
+    //     height: 30,
+    //     border: "0px solid yellow",
+    //     layoutMargin: 5,
+    //     align: "center",
+    //     members: [
+    //         DynamicForm_ClassStudentHeaderGridHeader_JspClass
+    //     ]
+    // });
 
-    var VLayOut_ClassStudent_JspClass = isc.VLayout.create({
-        width: "100%",
-        height: 400,
-        autoDraw: false,
-        border: "0px solid red", layoutMargin: 5,
-        members: [
-            HLayOut_ClassStudentGridHeader_JspClass,
-            HStack_ClassStudent_JspClass
-        ]
-    });
+    // var VLayOut_ClassStudent_JspClass = isc.VLayout.create({
+    //     width: "100%",
+    //     height: 400,
+    //     autoDraw: false,
+    //     border: "0px solid red", layoutMargin: 5,
+    //     members: [
+    //         HLayOut_ClassStudentGridHeader_JspClass,
+    //         HStack_ClassStudent_JspClass
+    //     ]
+    // });
 
-    var Window_AddStudents_JspClass = isc.Window.create({
-        title: "<spring:message code='students.list'/>",
-        width: 900,
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
-        autoDraw: false,
-        dismissOnEscape: true,
-        closeClick: function () {
-            this.hide();
-        },
-        items: [
-            VLayOut_ClassStudent_JspClass
-        ]
-    });
+    <%--var Window_AddStudents_JspClass = isc.Window.create({--%>
+        <%--title: "<spring:message code='students.list'/>",--%>
+        <%--width: 900,--%>
+        <%--autoSize: true,--%>
+        <%--autoCenter: true,--%>
+        <%--isModal: true,--%>
+        <%--showModalMask: true,--%>
+        <%--align: "center",--%>
+        <%--autoDraw: false,--%>
+        <%--dismissOnEscape: true,--%>
+        <%--closeClick: function () {--%>
+            <%--this.hide();--%>
+        <%--},--%>
+        <%--items: [--%>
+            <%--VLayOut_ClassStudent_JspClass--%>
+        <%--]--%>
+    <%--});--%>
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*ToolStrips and Layout*/
@@ -2037,18 +2056,17 @@
             {name: "code"},
             {name: "startDate"},
             {name: "endDate"}
-        ],
-        autoFetchData: false
+        ]
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
         width: "700",
         height: "100%",
-        wrapItemTitles: true,
+        // wrapItemTitles: true,
         numCols: 4,
         colWidths: ["2%", "28%", "2%", "68%"],
-        align: "center",
-        titleAlign: "left",
+        // align: "center",
+        // titleAlign: "left",
         fields: [
             {
                 name: "yearFilter",
@@ -2276,8 +2294,8 @@
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
             VM_JspClass.clearErrors(true);
             VM_JspClass.clearValues();
-            VM_JspClass.editRecord(record);
             if (a === 0) {
+                VM_JspClass.editRecord(record);
                 saveButtonStatus();
                 classMethod = "PUT";
                 url = classUrl + record.id;
@@ -2302,9 +2320,20 @@
             } else {
                 classMethod = "POST";
                 url = classUrl;
+
+                DynamicForm1_Class_JspClass.setValue("autoValid", true);
+                DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
+                DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
+                DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
+                DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
+                DynamicForm_Class_JspClass.setValue("topology", record.topology);
+                DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
+                DynamicForm_Class_JspClass.setValue("scoringMethod", record.scoringMethod);
+                DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
+                DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
+                DynamicForm1_Class_JspClass.editRecord(record);
                 Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
-                DynamicForm1_Class_JspClass.setValue("autoValid", true);
             }
 
 // RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
@@ -2449,32 +2478,32 @@
         }
     }
 
-    function class_remove_student_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_Current_Students_JspClass.invalidateCache();
-            ListGrid_All_Students_JspClass.invalidateCache();
-        } else {
-            isc.say("<spring:message code='error'/>");
-        }
-    }
+    <%--function class_remove_student_result(resp) {--%>
+        <%--if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+            <%--ListGrid_Current_Students_JspClass.invalidateCache();--%>
+            <%--ListGrid_All_Students_JspClass.invalidateCache();--%>
+        <%--} else {--%>
+            <%--isc.say("<spring:message code='error'/>");--%>
+        <%--}--%>
+    <%--}--%>
 
-    function class_add_student_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_Current_Students_JspClass.invalidateCache();
-            ListGrid_All_Students_JspClass.invalidateCache();
-        } else {
-            isc.say("<spring:message code='error'/>");
-        }
-    }
+    <%--function class_add_student_result(resp) {--%>
+        <%--if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+            <%--ListGrid_Current_Students_JspClass.invalidateCache();--%>
+            <%--ListGrid_All_Students_JspClass.invalidateCache();--%>
+        <%--} else {--%>
+            <%--isc.say("<spring:message code='error'/>");--%>
+        <%--}--%>
+    <%--}--%>
 
-    function class_add_students_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_Current_Students_JspClass.invalidateCache();
-            ListGrid_All_Students_JspClass.invalidateCache();
-        } else {
-            isc.say("<spring:message code='error'/>");
-        }
-    }
+    <%--function class_add_students_result(resp) {--%>
+        <%--if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+            <%--ListGrid_Current_Students_JspClass.invalidateCache();--%>
+            <%--ListGrid_All_Students_JspClass.invalidateCache();--%>
+        <%--} else {--%>
+            <%--isc.say("<spring:message code='error'/>");--%>
+        <%--}--%>
+    <%--}--%>
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -2484,22 +2513,22 @@
 
     }
 
-    function Add_Student() {
-        var record = ListGrid_Class_JspClass.getSelectedRecord();
-        if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
-            ListGrid_All_Students_JspClass.invalidateCache();
-            ListGrid_Current_Students_JspClass.invalidateCache();
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.invalidateCache();
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("course.titleFa", record.course.titleFa);
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("group", record.group);
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("id", record.id);
-            ListGrid_All_Students_JspClass.fetchData({"classID": record.id});
-            ListGrid_Current_Students_JspClass.fetchData({"classID": record.id});
-            Window_AddStudents_JspClass.show();
-        }
-    }
+    <%--function Add_Student() {--%>
+        <%--var record = ListGrid_Class_JspClass.getSelectedRecord();--%>
+        <%--if (record == null || record.id == null) {--%>
+            <%--createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
+        <%--} else {--%>
+            <%--ListGrid_All_Students_JspClass.invalidateCache();--%>
+            <%--ListGrid_Current_Students_JspClass.invalidateCache();--%>
+            <%--DynamicForm_ClassStudentHeaderGridHeader_JspClass.invalidateCache();--%>
+            <%--DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("course.titleFa", record.course.titleFa);--%>
+            <%--DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("group", record.group);--%>
+            <%--DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("id", record.id);--%>
+            <%--ListGrid_All_Students_JspClass.fetchData({"classID": record.id});--%>
+            <%--ListGrid_Current_Students_JspClass.fetchData({"classID": record.id});--%>
+            <%--Window_AddStudents_JspClass.show();--%>
+        <%--}--%>
+    <%--}--%>
 
     function refreshSelectedTab_class(tab) {
         let classRecord = ListGrid_Class_JspClass.getSelectedRecord();

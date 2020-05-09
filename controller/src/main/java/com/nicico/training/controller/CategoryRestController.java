@@ -5,7 +5,10 @@ com.nicico.training.controller
 @Time :12:05 PM
     */
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
@@ -29,6 +32,7 @@ import java.util.List;
 public class CategoryRestController {
 
     private final ICategoryService categoryService;
+    private final ObjectMapper objectMapper;
 
     // ------------------------------
 
@@ -119,10 +123,23 @@ public class CategoryRestController {
                                                            @RequestParam(value = "_constructor", required = false) String constructor,
                                                            @RequestParam(value = "operator", required = false) String operator,
                                                            @RequestParam(value = "criteria", required = false) String criteria,
-                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) {
+                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
 
         SearchDTO.SearchRs<CategoryDTO.Info> response = categoryService.search(request);
 
@@ -131,10 +148,6 @@ public class CategoryRestController {
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
 
         final CategoryDTO.CategorySpecRs specRs = new CategoryDTO.CategorySpecRs();
         specRs.setResponse(specResponse);
@@ -172,10 +185,24 @@ public class CategoryRestController {
                                                                              @RequestParam(value = "operator", required = false) String operator,
                                                                              @RequestParam(value = "criteria", required = false) String criteria,
                                                                              @RequestParam(value = "_sortBy", required = false) String sortBy,
-                                                                             @PathVariable Long categoryId) {
+                                                                             @PathVariable Long categoryId) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
 
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
         List<SubcategoryDTO.Info> subCategories = categoryService.getSubCategories(categoryId);
 
         final SubcategoryDTO.SpecRs specResponse = new SubcategoryDTO.SpecRs();

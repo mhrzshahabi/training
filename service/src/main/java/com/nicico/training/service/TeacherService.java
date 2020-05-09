@@ -74,6 +74,8 @@ public class TeacherService implements ITeacherService {
         if (request.getPersonality().getId() != null) {
             personalInfo = personalInfoService.getPersonalInfo(request.getPersonality().getId());
             personalInfoService.modify(request.getPersonality(), personalInfo);
+            if(personalInfo.getPhoto() != null)
+                request.getPersonality().setPhoto(personalInfo.getPhoto());
             modelMapper.map(request.getPersonality(), personalInfo);
         }
         final Teacher teacher = modelMapper.map(request, Teacher.class);
@@ -277,7 +279,7 @@ public class TeacherService implements ITeacherService {
         }
         TeacherDTO.Info teacherDTO = get(teacherId);
         Teacher teacher = modelMapper.map(teacherDTO, Teacher.class);
-        int teacher_educationLevel = 0;
+        int teacher_educationLevel = 1;
 
         if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
             teacher_educationLevel = 1;
@@ -287,7 +289,7 @@ public class TeacherService implements ITeacherService {
             teacher_educationLevel = 3;
         else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق لیسانس"))
             teacher_educationLevel = 4;
-        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دکتری"))
+        else if (teacher.getPersonality().getEducationLevel().getTitleFa().contains("دکتر"))
             teacher_educationLevel = 5;
 
         //table 1

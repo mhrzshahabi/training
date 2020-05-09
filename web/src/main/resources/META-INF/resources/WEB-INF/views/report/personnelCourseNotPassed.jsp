@@ -1,475 +1,521 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 // <script>
+    
+    var selectedPerson_TrainingFile = null;
+    var printUrl_TrainingFile = "<spring:url value="/web/print/class-student/"/>";
 
-    PersonnelCourseDS_PCNP = isc.TrDS.create({
+    var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
         fields: [
-            {name: "personnelId", hidden: true},
-            {name: "personnelPersonnelNo2", title: "<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNationalCode", title: "<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelFirstName", title: "<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelLastName", title: "<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpUnit", title: "<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpSection", title: "<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpAssistant", title: "<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpArea", title: "<spring:message code='area'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
-
-            {name: "courseId", hidden: true},
-            {name: "courseCode", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title: "<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentId", primaryKey: true, hidden: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentCcpArea", title:"<spring:message code='area'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "equals"},
+            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
+            {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
+            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
         ],
-        fetchDataURL: personnelCourseNotPassedReportUrl
+        fetchDataURL: studentClassReportUrl
     });
-
-    CompanyDS_PCNP = isc.TrDS.create({
-        fields: [{name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true}],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
-    });
-
-    AreaDS_PCNP = isc.TrDS.create({
-        fields: [{name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true}],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
-    });
-
-    ComplexDS_PCNP = isc.TrDS.create({
-        fields: [{name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true}],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
-    });
-
-    AssistantDS_PCNP = isc.TrDS.create({
-        fields: [{name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true}],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
-    });
-
-    AffairsDS_PCNP = isc.TrDS.create({
-        fields: [{name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true}],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
-    });
-
-    UnitDS_PCNP = isc.TrDS.create({
-        fields: [{name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true}],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
-    });
-
-    SectionDS_PCNP = isc.TrDS.create({
-        fields: [{name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true}],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
-    });
-
-    CourseDS_PCNP = isc.TrDS.create({
+    var ScoresStateDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"}
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
         ],
-        fetchDataURL: courseUrl + "spec-list"
+        autoCacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=scoreState"
     });
 
-    CategoryDS_PCNP = isc.TrDS.create({
+    var CompanyDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
         ],
         cacheAllData: true,
-        fetchDataURL: categoryUrl + "spec-list"
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=company"
     });
-
-    PersonnelDS_PCNP = isc.TrDS.create({
+    var AreaDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: -1}]
-        },
+        cacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=area"
+    });
+    var ComplexDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=complex"
+    });
+    var AssistantDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=assistant"
+    });
+    var AffairsDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=affairs"
+    });
+    var CourseDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "courseId", primaryKey: true},
+            {name: "courseCode", title: "<spring:message code="corse_code"/>"},
+            {name: "courseTitleFa", title: "<spring:message code="course_fa_name"/>"},
+        ],
+        fetchDataURL: studentClassReportUrl + "/all-courses",
+    });
+    var UnitDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=unit"
+    });
+    var TermDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=termCode"
+    });
+    var SectionDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=section"
     });
 
-    FilterDF_PCNP = isc.DynamicForm.create({
-        border: "1px solid black",
+    var DynamicForm_TrainingFile = isc.DynamicForm.create({
         numCols: 10,
         padding: 10,
-        margin: 0,
-        titleAlign: "left",
+        margin:0,
+        // cellPadding: 10,
+        titleAlign:"left",
         wrapItemTitles: true,
+        colWidths:[50,150,50,150,50,150,50,150, 50, 150],
+        // sectionVisibilityMode: "mutex",
         fields: [
+            // {
+            //     defaultValue:"جستجو فرد", type:"section", sectionExpanded:true,canTabToHeader:true,
+            //     itemIds: ["studentPersonnelNo2","studentPersonnelNo","studentNationalCode","searchBtn","studentFirstName","studentLastName","clearBtn"],
+            //     width:"80%"
+            // },
             {
-                name: "personnelPersonnelNo",
-                title:"انتخاب پرسنل",
-                operator: "inSet",
+                name: "studentPersonnelNo2",
+                title:"پرسنلی 6رقمی",
+                <%--title:"<spring:message code="personnel.no.6.digits"/>",--%>
                 textAlign: "center",
-                optionDataSource: PersonnelDS_PCNP,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "personnelNo",
-                displayField: "personnelNo",
-                endRow: true,
-                colSpan: 10,
-                // comboBoxWidth: 200,
-                layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 550,
-                    pickListFields: [
-                        {name: "personnelNo2"},
-                        {name: "firstName"},
-                        {name: "lastName"},
-                        {name: "nationalCode"},
-                        {name: "personnelNo"}
-                    ],
-                    filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
-                    pickListProperties: {sortField: "personnelNo"},
-                    textMatchStyle: "substring",
+                width: "*"
+            },
+            {
+                name: "studentPersonnelNo",
+                title:"<spring:message code="personnel.no"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            {
+                name: "studentNationalCode",
+                title:"<spring:message code="national.code"/> ",
+                textAlign: "center",
+                width: "*",
+            },
+            {
+                name: "studentFirstName",
+                title:"<spring:message code="firstName"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            {
+                name: "studentLastName",
+                title:"<spring:message code="lastName"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            // {
+            //     type: "SpacerItem"
+            // },
+            // {
+            //     type: "SpacerItem"
+            // },
+            // {
+            //     defaultValue:"جستجو گروه", type:"section",canTabToHeader:true,
+            //     itemIds: ["classStudentScoresState","studentComplexTitle","studentCcpAffairs","studentCompanyName","courseTitle","termTitleFa"], width:"80%"
+            // },
+            {
+                name: "classStudentScoresState",
+                title: "<spring:message code="score.state"/>",
+                type: "SelectItem",
+                optionDataSource: ScoresStateDS_SCRV,
+                multiple: true,
+                valueField: "value",
+                displayField: "value",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
                 },
             },
-            <%--{--%>
-            <%--    name: "personnelPersonnelNo2",--%>
-            <%--    title: "پرسنلی 6رقمی",--%>
-            <%--    &lt;%&ndash;title:"<spring:message code="personnel.no.6.digits"/>",&ndash;%&gt;--%>
-            <%--    textAlign: "center",--%>
-            <%--    optionDataSource: PersonnelDS_PCNP,--%>
-            <%--    autoFetchData: false,--%>
-            <%--    type: "MultiComboBoxItem",--%>
-            <%--    valueField: "personnelNo2",--%>
-            <%--    displayField: "personnelNo2",--%>
-            <%--    endRow: false,--%>
-            <%--    // comboBoxWidth: 200,--%>
-            <%--    // layoutStyle: "horizontal",--%>
-            <%--    comboBoxProperties: {--%>
-            <%--        hint: "",--%>
-            <%--        pickListWidth: 150,--%>
-            <%--        pickListFields: [{name: "personnelNo2"}],--%>
-            <%--        filterFields: ["personnelNo2", "personnelNo2"],--%>
-            <%--        textMatchStyle: "substring",--%>
-            <%--    },--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    name: "personnelPersonnelNo",--%>
-            <%--    title: "<spring:message code="personnel.no"/> ",--%>
-            <%--    textAlign: "center",--%>
-            <%--    optionDataSource: PersonnelDS_PCNP,--%>
-            <%--    autoFetchData: false,--%>
-            <%--    type: "MultiComboBoxItem",--%>
-            <%--    valueField: "personnelNo",--%>
-            <%--    displayField: "personnelNo",--%>
-            <%--    endRow: false,--%>
-            <%--    // comboBoxWidth: 200,--%>
-            <%--    // layoutStyle: "horizontal",--%>
-            <%--    comboBoxProperties: {--%>
-            <%--        hint: "",--%>
-            <%--        pickListWidth: 150,--%>
-            <%--        pickListFields: [{name: "personnelNo"}],--%>
-            <%--        filterFields: ["personnelNo", "personnelNo"],--%>
-            <%--        textMatchStyle: "substring",--%>
-            <%--    },--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    name: "personnelNationalCode",--%>
-            <%--    title: "<spring:message code="national.code"/> ",--%>
-            <%--    textAlign: "center",--%>
-            <%--    optionDataSource: PersonnelDS_PCNP,--%>
-            <%--    autoFetchData: false,--%>
-            <%--    type: "MultiComboBoxItem",--%>
-            <%--    valueField: "nationalCode",--%>
-            <%--    displayField: "nationalCode",--%>
-            <%--    endRow: false,--%>
-            <%--    // comboBoxWidth: 200,--%>
-            <%--    // layoutStyle: "horizontal",--%>
-            <%--    comboBoxProperties: {--%>
-            <%--        hint: "",--%>
-            <%--        pickListWidth: 150,--%>
-            <%--        pickListFields: [{name: "nationalCode"}],--%>
-            <%--        filterFields: ["nationalCode", "nationalCode"],--%>
-            <%--        textMatchStyle: "substring",--%>
-            <%--    },--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    name: "personnelFirstName",--%>
-            <%--    title: "<spring:message code="firstName"/> ",--%>
-            <%--    textAlign: "center",--%>
-            <%--    optionDataSource: PersonnelDS_PCNP,--%>
-            <%--    autoFetchData: false,--%>
-            <%--    type: "MultiComboBoxItem",--%>
-            <%--    valueField: "firstName",--%>
-            <%--    displayField: "firstName",--%>
-            <%--    endRow: false,--%>
-            <%--    // comboBoxWidth: 200,--%>
-            <%--    // layoutStyle: "horizontal",--%>
-            <%--    comboBoxProperties: {--%>
-            <%--        hint: "",--%>
-            <%--        pickListWidth: 150,--%>
-            <%--        pickListFields: [{name: "firstName"}],--%>
-            <%--        filterFields: ["firstName", "firstName"],--%>
-            <%--        textMatchStyle: "substring",--%>
-            <%--    },--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    name: "personnelLastName",--%>
-            <%--    title: "<spring:message code="lastName"/> ",--%>
-            <%--    textAlign: "center",--%>
-            <%--    optionDataSource: PersonnelDS_PCNP,--%>
-            <%--    autoFetchData: false,--%>
-            <%--    type: "MultiComboBoxItem",--%>
-            <%--    valueField: "lastName",--%>
-            <%--    displayField: "lastName",--%>
-            <%--    endRow: false,--%>
-            <%--    // comboBoxWidth: 200,--%>
-            <%--    // layoutStyle: "horizontal",--%>
-            <%--    comboBoxProperties: {--%>
-            <%--        hint: "",--%>
-            <%--        pickListWidth: 150,--%>
-            <%--        pickListFields: [{name: "lastName"}],--%>
-            <%--        filterFields: ["lastName", "lastName"],--%>
-            <%--        textMatchStyle: "substring",--%>
-            <%--    },--%>
-            <%--},--%>
             {
-                name: "personnelComplexTitle",
+                name: "studentComplexTitle",
                 title: "<spring:message code="complex"/>",
-                optionDataSource: ComplexDS_PCNP,
-                autoFetchData: false,
-                filterFields: ["value", "value"],
+                optionDataSource: ComplexDS_SCRV,
+                // filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
+                type: "SelectItem",
+                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
+                multiple: true,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
             },
             {
-                name: "personnelCompanyName",
+                name: "studentCompanyName",
                 title: "<spring:message code="company"/>",
-                filterFields: ["value", "value"],
+                // filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
+                type: "SelectItem",
+                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
-                optionDataSource: CompanyDS_PCNP,
-                autoFetchData: false,
+                multiple: true,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                optionDataSource: CompanyDS_SCRV,
             },
             {
-                name: "personnelCcpArea",
+                name: "studentCcpArea",
                 title: "<spring:message code="area"/>",
-                filterFields: ["value", "value"],
+                // filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
+                type: "SelectItem",
+                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
-                optionDataSource: AreaDS_PCNP,
-                autoFetchData: false,
+                multiple: true,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                optionDataSource: AreaDS_SCRV,
             },
             {
-                name: "personnelCcpAssistant",
+                name: "studentCcpAssistant",
                 title: "<spring:message code="assistance"/>",
-                filterFields: ["value", "value"],
+                // filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
+                type: "SelectItem",
+                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
-                optionDataSource: AssistantDS_PCNP,
-                autoFetchData: false,
+                multiple: true,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                optionDataSource: AssistantDS_SCRV,
             },
             {
-                name: "personnelCcpSection",
+                name: "studentCcpSection",
                 title: "<spring:message code="section.cost"/>",
-                filterFields: ["value", "value"],
+                // filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
+                type: "SelectItem",
+                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
-                optionDataSource: SectionDS_PCNP,
-                autoFetchData: false,
+                multiple: true,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                optionDataSource: SectionDS_SCRV,
             },
             {
-                name: "personnelCcpUnit",
+                name: "studentCcpUnit",
                 title: "<spring:message code="unitName"/>",
-                filterFields: ["value", "value"],
+                // filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
+                type: "SelectItem",
+                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
-                optionDataSource: UnitDS_PCNP,
-                autoFetchData: false,
+                multiple: true,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                optionDataSource: UnitDS_SCRV,
             },
             {
-                name: "personnelCcpAffairs",
+                name: "studentCcpAffairs",
                 title: "<spring:message code="affairs"/>",
-                optionDataSource: AffairsDS_PCNP,
-                autoFetchData: false,
-                filterFields: ["value", "value"],
-                type: "ComboBoxItem",
+                optionDataSource: AffairsDS_SCRV,
+                // filterFields: ["value", "value"],
+                // pickListWidth: 300,
+                type: "MultiComboBoxItem",
                 textMatchStyle: "substring",
+                comboBoxWidth: 155,
+                layoutStyle: "verticalReverse",
+                comboBoxProperties: {
+                    pickListWidth: 300,
+                },
+                // pickListProperties: {
+                //     showFilterEditor: false,
+                //     showClippedValuesOnHover: true,
+                // },
+                valueField: "value",
+                displayField: "value",
+            },
+            {
+                name: "courseCode",
+                title: "<spring:message code="course"/>",
+                optionDataSource: CourseDS_SCRV,
+                valueField: "courseCode",
+                displayField: "courseCode",
+                // comboBoxFields: [
+                //     {name: "code", autoFitWidth: true},
+                //     {name: "titleFa"},
+                // ],
+                // filterFields: ["titleFa", "code"],
+                type: "MultiComboBoxItem",
+                textMatchStyle: "substring",
+                comboBoxWidth: 155,
+                // layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    pickListWidth: 400,
+                    useClientFiltering: true,
+                },
+            },
+            {
+                name: "termCode",
+                title: "<spring:message code="term.code"/>",
+                // filterFields: ["value", "value"],
+                // pickListWidth: 100,
+                type: "SelectItem",
+                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
+                multiple: true,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                optionDataSource: TermDS_SCRV,
             },
-            {
-                name: "courseId",
-                title: "<spring:message code="course"/>",
-                operator: "inSet",
-                optionDataSource: CourseDS_PCNP,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "id",
-                displayField: "code",
-                // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 500,
-                    pickListFields: [
-                        {name: "code"},
-                        {name: "titleFa"},
-                    ],
-                    filterFields: ["titleFa", "code"],
-                    textMatchStyle: "substring",
-                },
-            },
-            {
-                name: "categoryId",
-                title: "<spring:message code="category"/>",
-                operator: "inSet",
-                optionDataSource: CategoryDS_PCNP,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "id",
-                displayField: "code",
-                endRow: false,
-                // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 150,
-                    pickListFields: [
-                        {name: "code"},
-                        {name: "titleFa"},
-                    ],
-                    filterFields: ["titleFa", "code"],
-                    textMatchStyle: "substring",
-                },
-            },
-            {type: "SpacerItem"},
-            {
-                name: "reportBottom",
-                title: "گزارش گیری",
-                type: "ButtonItem",
-                align: "right",
-                startRow: false,
-                click: function () {
-                    if (Object.keys(FilterDF_PCNP.getValuesAsCriteria()).length === 0) {
-                        createDialog("info", "فیلتری انتخاب نشده است.");
-                    } else {
-                        PersonnelCourseLG_PCNP.implicitCriteria = FilterDF_PCNP.getValuesAsAdvancedCriteria();
-                        PersonnelCourseLG_PCNP.invalidateCache();
-                        PersonnelCourseLG_PCNP.fetchData();
-                    }
-                }
-            }
+            <%--{--%>
+                <%--name: "searchBtn",--%>
+                <%--ID: "searchBtnJspTrainingFile",--%>
+                <%--title: "<spring:message code="search"/>",--%>
+                <%--type: "ButtonItem",--%>
+                <%--width:"*",--%>
+                <%--startRow:false,--%>
+                <%--endRow:false,--%>
+                <%--click (form) {--%>
+                    <%--var advancedCriteriaStudentJspTrainingFile = {--%>
+                        <%--_constructor: "AdvancedCriteria",--%>
+                        <%--operator: "and",--%>
+                        <%--criteria: []--%>
+                    <%--};--%>
+                    <%--var items = form.getItems();--%>
+                    <%--for (let i = 0; i < items.length; i++) {--%>
+                        <%--if(items[i].getValue() != undefined){--%>
+                            <%--advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})--%>
+                        <%--}--%>
+                    <%--}--%>
+                    <%--ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);--%>
+                    <%--Window_StudentSearch_JspTrainingFile.show();--%>
+                <%--}--%>
+            <%--},--%>
+            <%--{--%>
+                <%--name: "clearBtn",--%>
+                <%--title: "<spring:message code="clear"/>",--%>
+                <%--type: "ButtonItem",--%>
+                <%--width:"*",--%>
+                <%--startRow:false,--%>
+                <%--endRow:false,--%>
+                <%--click (form, item) {--%>
+                    <%--form.clearValues();--%>
+                    <%--ListGrid_TrainingFile_TrainingFileJSP.setData([]);--%>
+                <%--}--%>
+            <%--},--%>
         ],
+        itemChanged (item, newValue){
+            if(Object.keys(DynamicForm_TrainingFile.getValuesAsCriteria()).length === 0) {
+                ListGrid_TrainingFile_TrainingFileJSP.setData([])
+            }
+            else{
+                ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
+                RestDataSource_Course_JspTrainingFile.implicitCriteria = DynamicForm_TrainingFile.getValuesAsCriteria();
+                ListGrid_TrainingFile_TrainingFileJSP.fetchData(DynamicForm_TrainingFile.getValuesAsCriteria())
+            }
+        },
+        // itemKeyPress: function(item, keyName) {
+        //     if(keyName == "Enter"){
+        //         // searchBtnJspTrainingFile.click(DynamicForm_TrainingFile);
+        //     }
+        // }
     });
 
-    PersonnelCourseLG_PCNP = isc.TrLG.create({
-        dynamicTitle: true,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        dataSource: PersonnelCourseDS_PCNP,
-        // filterOnKeypress: true,
-        // showFilterEditor: false,
-        gridComponents: [FilterDF_PCNP, "header", "filterEditor", "body"],
-        fields: [
-            {name: "personnelPersonnelNo2"},
-            {name: "personnelNationalCode"},
-            {name: "personnelFirstName"},
-            {name: "personnelLastName"},
-            {name: "personnelCcpUnit"},
-            {name: "personnelCcpSection"},
-            {name: "personnelCcpAssistant"},
-            {name: "personnelCcpArea"},
-            {name: "personnelComplexTitle"},
-            {name: "personnelCcpAffairs"},
-            {name: "personnelCompanyName"},
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListFields = [
+        {name: "courseCode", autoFitWidth: true},
+        {name: "courseTitleFa"},
+    ];
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.filterFields = ["courseTitleFa", "courseCode"];
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.textMatchStyle="substring";
+    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        pickListWidth: 400,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
+    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
+    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.setHint("امور مورد نظر را انتخاب کنید");
+    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        pickListWidth: 300,
+        showClippedValuesOnHover: true,
+    };
 
-            {name: "courseCode"},
-            {name: "courseTitleFa"},
+    var Menu_Courses_TrainingFileJSP = isc.Menu.create({
+        data: [
+            <%--{--%>
+                <%--title: "<spring:message code="global.form.print.pdf"/>",--%>
+                <%--click: function () {--%>
+                    <%--print_Training_File();--%>
+                <%--}--%>
+            <%--}, --%>
+            {
+                title: "<spring:message code="global.form.print.excel"/>",
+                click: function () {
+                    console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
+                    exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
+                    // print_Training_File("excel");
+                }
+            },
+            <%--{--%>
+                <%--title: "<spring:message code="global.form.print.html"/>",--%>
+                <%--click: function () {--%>
+                    <%--print_Training_File("html");--%>
+                <%--}--%>
+            <%--}--%>
         ]
     });
 
-    VLayout_Body_PCNP = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [PersonnelCourseLG_PCNP]
+    var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
+        ID: "TrainingFileGrid",
+        dynamicTitle: true,
+        autoFetchData: false,
+        allowAdvancedCriteria: true,
+        contextMenu: Menu_Courses_TrainingFileJSP,
+        dataSource: RestDataSource_Course_JspTrainingFile,
+        filterOnKeypress: true,
+        showFilterEditor: false,
+
+        gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
+        fields:[
+            {name: "studentPersonnelNo2"},
+            {name: "studentNationalCode"},
+            {name: "studentFirstName"},
+            {name: "studentLastName"},
+            {name: "studentCcpUnit"},
+            {name: "courseCode"},
+            {name: "courseTitleFa"},
+            {name: "classStudentScore"},
+            {name: "classStudentScoresState"},
+        ]
     });
 
-    //</script>
+    var ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({
+        <%--title: "<spring:message code='print'/>",--%>
+        click: function () {
+            print_Training_File();
+        }
+    });
+
+    var ToolStrip_Actions_Training_File = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [ToolStripButton_Training_File]
+    });
+
+    var VLayout_Body_Training_File = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        // overflow: "scroll",
+        members: [
+            // ToolStrip_Actions_Training_File,
+            ListGrid_TrainingFile_TrainingFileJSP
+        ]
+    });
+
+    //*************this function calls from studentPortal page**************
+    <%--function call_trainingFile(selected_person) {--%>
+        <%--selectedPerson_TrainingFile = selected_person;--%>
+        <%--DynamicForm_TrainingFile.hide();--%>
+        <%--RestDataSource_Course_JspTrainingFile.fetchDataURL = studentPortalUrl + "/class-student/classes-of-student/" + selectedPerson_TrainingFile.nationalCode;--%>
+        <%--printUrl_TrainingFile = "<spring:url value="/web/print/student-portal/"/>";--%>
+        <%--ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();--%>
+        <%--ListGrid_TrainingFile_TrainingFileJSP.fetchData();--%>
+    <%--}--%>
+
+    function print_Training_File(type = "pdf") {
+        if (selectedPerson_TrainingFile == null){
+            createDialog("info", "<spring:message code='personnel.not.selected'/>");
+            return;
+        }
+        let params = {};
+        params.firstName = selectedPerson_TrainingFile.firstName;
+        params.lastName = selectedPerson_TrainingFile.lastName;
+        params.nationalCode = selectedPerson_TrainingFile.nationalCode;
+        params.personnelNo = selectedPerson_TrainingFile.personnelNo;
+        params.personnelNo2 = selectedPerson_TrainingFile.personnelNo2;
+        params.companyName = selectedPerson_TrainingFile.companyName;
+        
+        let CriteriaForm_TrainingFile = isc.DynamicForm.create({
+            method: "POST",
+            action: printUrl_TrainingFile + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "myToken", type: "hidden"},
+                    {name: "params", type: "hidden"},
+                    {name: "formData", type: "hidden"},
+                ]
+        });
+        CriteriaForm_TrainingFile.setValue("CriteriaStr", JSON.stringify(ListGrid_TrainingFile_TrainingFileJSP.getCriteria()));
+        CriteriaForm_TrainingFile.setValue("formData", JSON.stringify(selectedPerson_TrainingFile.nationalCode));
+        CriteriaForm_TrainingFile.setValue("myToken", "<%=accessToken%>");
+        CriteriaForm_TrainingFile.setValue("params", JSON.stringify(params));
+        CriteriaForm_TrainingFile.show();
+        CriteriaForm_TrainingFile.submitForm();
+    }
+
+ //</script>

@@ -130,6 +130,7 @@ public class CourseRestController {
             List<GoalDTO.Info> goals = courseService.getGoal(id);
             goals.forEach(g -> goalService.delete(g.getId()));
             courseService.deletGoal(id);
+            courseService.unAssignSkills(id);
             courseService.delete(id);
         }
 

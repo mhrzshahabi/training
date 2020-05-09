@@ -18,6 +18,7 @@
     var isCategoriesChanged;
     var selected_record = null;
     var selectedRecordID = null;
+    var isFileAttached = false;
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -368,7 +369,7 @@
             {
                 ID: "academicBK",
                 title: "<spring:message code="academicBK"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"}),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
             },
             {
                 ID: "employmentHistory",
@@ -461,7 +462,7 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
-        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide()},
+        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide();ListGrid_Teacher_JspTeacher.invalidateCache();},
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
@@ -537,7 +538,7 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
-                disabled: true,
+                disabled: true
             },
             {
                 name: "evaluationNumber",
@@ -829,6 +830,10 @@
     }
 
     function Edit_teacher() {
+
+        showAttachViewLoader.setView();
+        showAttachViewLoader.show();
+
         showAttach(selected_record.personalityId);
 
         vm.clearValues();
@@ -843,7 +848,32 @@
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.cityId").setOptionDataSource(null);
 
         teacherMethod = "PUT";
-        vm.editRecord(selected_record);
+
+        var clonedRecord = Object.assign({}, selected_record);
+        clonedRecord.categories = null;
+        clonedRecord.subCategories = null;
+
+        vm.editRecord(clonedRecord);
+
+        var categoryIds = selected_record.categories;
+        var subCategoryIds =selected_record.subCategories;
+        if (categoryIds == null || categoryIds.length === 0)
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").disable();
+        else {
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
+            var catIds = [];
+            for (let i = 0; i < categoryIds.length; i++)
+                catIds.add(categoryIds[i].id);
+            DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
+            isTeacherCategoriesChanged = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").focus(null, null);
+        }
+        if (subCategoryIds != null && subCategoryIds.length > 0) {
+            var subCatIds = [];
+            for (let i = 0; i < subCategoryIds.length; i++)
+                subCatIds.add(subCategoryIds[i].id);
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
+        }
 
         if(DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != null && DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue() != undefined){
             var catId = DynamicForm_BasicInfo_JspTeacher.getField("majorCategoryId").getValue();
@@ -936,27 +966,6 @@
         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
 
-
-        var categoryIds = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
-        var subCategoryIds = DynamicForm_BasicInfo_JspTeacher.getField("subCategories").getValue();
-        if (categoryIds == null || categoryIds.length === 0)
-            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").disable();
-        else {
-            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
-            var catIds = [];
-            for (let i = 0; i < categoryIds.length; i++)
-                catIds.add(categoryIds[i].id);
-            DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
-            isTeacherCategoriesChanged = true;
-            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").focus(null, null);
-        }
-        if (subCategoryIds != null && subCategoryIds.length > 0) {
-            var subCatIds = [];
-            for (let i = 0; i < subCategoryIds.length; i++)
-                subCatIds.add(subCategoryIds[i].id);
-            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
-        }
-
         selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         loadPage_AcademicBK(selectedRecordID);
         clearTabFilters();
@@ -1019,33 +1028,42 @@
     }
 
     function addAttach(personalId) {
-        var formData1 = new FormData();
-        var fileBrowserId = document.getElementById('file-upload');
-        var file = fileBrowserId.files[0];
-        formData1.append("file", file);
-        if (file !== undefined) {
-            TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
+        if (isFileAttached) {
+            var formData1 = new FormData();
+            var fileBrowserId = document.getElementById('file-upload');
+            var file = fileBrowserId.files[0];
+            formData1.append("file", file);
+            selectedRecordPersonalID = personalId;
+            isFileAttached = false;
+            if (file !== undefined) {
+                TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
+            }
         }
     }
 
     function personalInfo_addAttach_result(req) {
         attachName = req.response;
+        showAttach(selectedRecordPersonalID);
     }
 
     function showTempAttach() {
-        var formData1 = new FormData();
-        var fileBrowserId = document.getElementById('file-upload');
-        var file = fileBrowserId.files[0];
-        formData1.append("file", file);
-        if (file.size > 30000000) {
-            createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
+        if (isFileAttached) {
+            var formData1 = new FormData();
+            var fileBrowserId = document.getElementById('file-upload');
+            var file = fileBrowserId.files[0];
+            formData1.append("file", file);
+            isFileAttached = false;
+            if (file.size > 30000000) {
+                createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
         } else {
-            TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach/" + selectedRecordID, "POST", personalInfo_showTempAttach_result)
+            TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
+        }
         }
     }
 
     function personalInfo_showTempAttach_result(req) {
         if (req.status === 200) {
+            isFileAttached = true;
             attachNameTemp = req.response;
             showAttachViewLoader.setViewURL("<spring:url value="/personalInfo/getTempAttach/"/>" + attachNameTemp);
             showAttachViewLoader.show();
@@ -1102,7 +1120,6 @@
             vm.setValue("id", responseID);
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
             addAttach(JSON.parse(resp.data).personality.id);
-            showAttach(JSON.parse(resp.data).personality.id);
             selectedRecordID = responseID;
             selected_record = JSON.parse(resp.data);
             loadPage_AcademicBK(responseID);
@@ -1182,7 +1199,7 @@
 
     function showAttach(pId) {
         selectedRecordPersonalID = pId;
-        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + selectedRecordPersonalID, "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + pId, "GET", null,
             "callback: personalInfo_checkAttach_result(rpcResponse)"));
     }
 

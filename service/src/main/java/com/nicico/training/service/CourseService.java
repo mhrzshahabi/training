@@ -508,10 +508,11 @@ public class CourseService implements ICourseService {
     public boolean checkForDelete(Long id) {
         Optional<Course> one = courseDAO.findById(id);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        Set<Skill> skillSet = course.getSkillSet();
+//        Set<Skill> skillSet = course.getSkillSet();
         Set<Tclass> tclasses = course.getTclassSet();
-        List<Goal> goalSet = course.getGoalSet();
-        return (((skillSet != null && skillSet.size() > 0) || (tclasses != null && tclasses.size() > 0)) ? false : true);
+//        List<Goal> goalSet = course.getGoalSet();
+//        return (((skillSet != null && skillSet.size() > 0) || (tclasses != null && tclasses.size() > 0)) ? false : true);
+        return (!(tclasses != null && tclasses.size() > 0));
     }
 
     @Transactional
@@ -520,6 +521,17 @@ public class CourseService implements ICourseService {
         Optional<Course> one = courseDAO.findById(id);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         course.getGoalSet().clear();
+    }
+    @Transactional
+//    @Override
+    public void unAssignSkills(Long id) {
+        Optional<Course> one = courseDAO.findById(id);
+        final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        Set<Skill> skillSet = course.getSkillSet();
+        for (Skill skill : skillSet) {
+            skill.setCourseMainObjectiveId(null);
+            skill.setCourseId(null);
+        }
     }
 
     @Transactional

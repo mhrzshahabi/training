@@ -1,14 +1,13 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
 // <script>
-
-    <%
-        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-    %>
-
 
     var category_CategoryHomeUrl = rootUrl + "/category";
     var category_SubCategoryHomeUrl = rootUrl + "/subcategory";
@@ -17,6 +16,8 @@
     var method = "GET";
     var url = category_CategoryHomeUrl;
     var selectedCategoryId = -1;
+
+    // ------------------------------------------- Category -------------------------------------------
 
     var DynamicForm_Category = isc.DynamicForm.create({
         width: "500",
@@ -143,7 +144,7 @@
                         Window_Category.close();
                     } else {
                         var ERROR = isc.Dialog.create({
-                            message: ("کد گروه تکراری است!"),
+                            message: ("گروه تکراری است!"),
                             icon: "[SKIN]stop.png",
                             title: "توجه"
                         });
@@ -199,6 +200,253 @@
             members: [DynamicForm_Category, Hlayout_Category_SaveOrExit]
         })]
     });
+
+    var RestDataSource_Category = isc.TrDS.create({
+        fields: [
+            {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
+            {name: "code"}, {name: "description"}
+        ],
+        fetchDataURL: category_CategoryHomeUrl + "/spec-list"
+    });
+
+    function ListGrid_Category_Remove() {
+
+        var record = ListGrid_Category.getSelectedRecord();
+// console.log(record);
+        if (record == null) {
+            isc.Dialog.create({
+                message: "رکوردی انتخاب نشده است!",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            var Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين ركورد حذف گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "هشدار",
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
+
+                    if (index == 0) {
+                        var wait = isc.Dialog.create({
+                            message: "<spring:message code='global.form.do.operation'/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='global.message'/>"
+                        });
+                        isc.RPCManager.sendRequest({
+                            actionURL: category_CategoryHomeUrl + "/" + record.id,
+                            httpMethod: "DELETE",
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            showPrompt: true,
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                wait.close();
+                                if (resp.data == "true") {
+                                    ListGrid_Category.invalidateCache();
+                                    var OK = isc.Dialog.create({
+                                        message: "ركورد با موفقيت حذف گرديد",
+                                        icon: "[SKIN]say.png",
+                                        title: "انجام شد"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 3000);
+                                } else {
+                                    var ERROR = isc.Dialog.create({
+                                        message: "ركورد مورد نظر قابل حذف نيست",
+                                        icon: "[SKIN]stop.png",
+                                        title: "خطا"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 3000);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    };
+
+    function ListGrid_Category_Edit() {
+        var record = ListGrid_Category.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "رکوردی انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            method = "PUT";
+            url = category_CategoryHomeUrl + "/" + record.id;
+            DynamicForm_Category.clearValues();
+            DynamicForm_Category.getItem("code").setDisabled(true);
+            DynamicForm_Category.editRecord(record);
+            Window_Category.show();
+        }
+    };
+
+    function ListGrid_Category_Add() {
+        method = "POST";
+        url = category_CategoryHomeUrl;
+        DynamicForm_Category.clearValues();
+        DynamicForm_Category.getItem("code").setDisabled(false);
+        Window_Category.show();
+
+    }
+
+    function ListGrid_Category_refresh() {
+        var record = ListGrid_Category.getSelectedRecord();
+        if (record == null || record.id == null) {
+        } else {
+            ListGrid_Category.selectRecord(record);
+        }
+        ListGrid_Category.filterByEditor();
+        ListGrid_Category.invalidateCache();
+    }
+
+    var Menu_ListGrid_Category = isc.Menu.create({
+        width: 150,
+        data: [{
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                ListGrid_Category_refresh();
+            }
+        }, {
+            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+                ListGrid_Category_Add();
+            }
+        }, {
+            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+
+                ListGrid_Category_Edit();
+
+            }
+        }, {
+            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                ListGrid_Category_Remove();
+            }
+        },]
+    });
+
+    var ListGrid_Category = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Category,
+        contextMenu: Menu_ListGrid_Category,
+        selectionType: "single",
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "نام فارسی", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین ", align: "center", filterOperator: "iContains"},
+            {name: "description", title: "توضیحات", align: "center", filterOperator: "iContains"}
+        ],
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        doubleClick: function () {
+            ListGrid_Category_Edit();
+        },
+        selectionUpdated: function (record, state) {
+            RestDataSource_Sub_Category.fetchDataURL = category_CategoryHomeUrl + "/" + record.id + "/sub-categories";
+            selectedCategoryId = record.id;
+            ListGrid_Sub_Category.invalidateCache();
+        },
+        dataArrived: function (startRow, endRow) {
+            record = ListGrid_Category.getSelectedRecord();
+            if (record == null) {
+                RestDataSource_Sub_Category.fetchDataURL = category_SubCategoryDummyUrl;
+                selectedCategoryId = -1;
+            } else {
+                RestDataSource_Sub_Category.fetchDataURL = category_CategoryHomeUrl + "/" + record.id + "/sub-categories";
+                selectedCategoryId = record.id;
+            }
+            ListGrid_Sub_Category.invalidateCache();
+        },
+    });
+
+    var ToolStripButton_Category_Refresh = isc.ToolStripButtonRefresh.create({
+//icon: "<spring:url value="refresh.png"/>",
+        title: "بازخوانی اطلاعات",
+        click: function () {
+            ListGrid_Category_refresh();
+        }
+    });
+    var ToolStripButton_Category_Edit = isc.ToolStripButtonEdit.create({
+//icon: "[SKIN]/actions/edit.png",
+        title: "ویرایش",
+        click: function () {
+            ListGrid_Category_Edit();
+        }
+    });
+    var ToolStripButton_Category_Add = isc.ToolStripButtonAdd.create({
+
+        title: "ایجاد",
+        click: function () {
+            ListGrid_Category_Add();
+        }
+    });
+    var ToolStripButton_Category_Remove = isc.ToolStripButtonRemove.create({
+// icon: "[SKIN]/actions/remove.png",
+        title: "حذف",
+        click: function () {
+            ListGrid_Category_Remove();
+        }
+    });
+    var ToolStrip_Actions_Category = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [,
+            ToolStripButton_Category_Add,
+            ToolStripButton_Category_Edit,
+            ToolStripButton_Category_Remove,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Category_Refresh
+                ]
+            })
+        ]
+    });
+
+    var HLayout_Action_Category = isc.HLayout.create({
+        width: "100%",
+        <%--border: "2px solid blue",--%>
+        members: [ToolStrip_Actions_Category]
+    });
+
+    var HLayout_Grid_Category = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        <%--border: "2px solid blue",--%>
+        members: [ListGrid_Category]
+    });
+
+    var VLayout_Body_Category = isc.VLayout.create({
+        width: "50%",
+        height: "100%",
+        <%--border: "2px solid blue",--%>
+        members: [HLayout_Action_Category, HLayout_Grid_Category]
+    });
+
+    // ------------------------------------------- Subcategory -------------------------------------------
 
     var DynamicForm_Sub_Category = isc.DynamicForm.create({
         width: "500",
@@ -514,7 +762,6 @@
         }
     };
 
-
     function ListGrid_Sub_Category_Edit() {
         var crecord = ListGrid_Category.getSelectedRecord();
         var record = ListGrid_Sub_Category.getSelectedRecord();
@@ -560,8 +807,8 @@
 
 
         }
+        ListGrid_Category.filterByEditor();
         ListGrid_Sub_Category.invalidateCache();
-
     };
 
     var Menu_ListGrid_Sub_Category = isc.Menu.create({
@@ -597,202 +844,21 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center"},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"}
+            {name: "code", title: "کد", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "نام فارسی", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین ", align: "center", filterOperator: "iContains"}
         ],
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-// showFilterEditor: true,
-// filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
         autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-// filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
-    });
-
-    var RestDataSource_Category = isc.TrDS.create({
-        fields: [
-            {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
-            {name: "code"}, {name: "description"}
-        ],
-        fetchDataURL: category_CategoryHomeUrl + "/spec-list"
-    });
-
-    function ListGrid_Category_Remove() {
-
-        var record = ListGrid_Category.getSelectedRecord();
-// console.log(record);
-        if (record == null) {
-            isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است!",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "آيا مي خواهيد اين ركورد حذف گردد؟",
-                icon: "[SKIN]ask.png",
-                title: "هشدار",
-                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                    title: "خير"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-
-                    if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "<spring:message code='global.form.do.operation'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='global.message'/>"
-                        });
-                        isc.RPCManager.sendRequest({
-                            actionURL: category_CategoryHomeUrl + "/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.data == "true") {
-                                    ListGrid_Category.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "ركورد با موفقيت حذف گرديد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام شد"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
-                                        icon: "[SKIN]stop.png",
-                                        title: "خطا"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
-    };
-
-    function ListGrid_Category_Edit() {
-        var record = ListGrid_Category.getSelectedRecord();
-        if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.IButtonSave.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            method = "PUT";
-            url = category_CategoryHomeUrl + "/" + record.id;
-            DynamicForm_Category.clearValues();
-            DynamicForm_Category.getItem("code").setDisabled(true);
-            DynamicForm_Category.editRecord(record);
-            Window_Category.show();
-        }
-    };
-
-    function ListGrid_Category_Add() {
-        method = "POST";
-        url = category_CategoryHomeUrl;
-        DynamicForm_Category.clearValues();
-        DynamicForm_Category.getItem("code").setDisabled(false);
-        Window_Category.show();
-
-    }
-
-    function ListGrid_Category_refresh() {
-        var record = ListGrid_Category.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_Category.selectRecord(record);
-        }
-        ListGrid_Category.invalidateCache();
-    };
-
-    var Menu_ListGrid_Category = isc.Menu.create({
-        width: 150,
-        data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_Category_refresh();
-            }
-        }, {
-            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
-                ListGrid_Category_Add();
-            }
-        }, {
-            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
-
-                ListGrid_Category_Edit();
-
-            }
-        }, {
-            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                ListGrid_Category_Remove();
-            }
-        },]
-    });
-
-    var ListGrid_Category = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_Category,
-        contextMenu: Menu_ListGrid_Category,
-        doubleClick: function () {
-            ListGrid_Category_Edit();
-        },
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center"},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"},
-            {name: "description", title: "توضیحات", align: "center"}
-        ],
-        selectionType: "single",
-        selectionUpdated: function (record, state) {
-            RestDataSource_Sub_Category.fetchDataURL = category_CategoryHomeUrl + "/" + record.id + "/sub-categories";
-            selectedCategoryId = record.id;
-            ListGrid_Sub_Category.invalidateCache();
-        },
-        dataArrived: function (startRow, endRow) {
-            record = ListGrid_Category.getSelectedRecord();
-            if (record == null) {
-                RestDataSource_Sub_Category.fetchDataURL = category_SubCategoryDummyUrl;
-                selectedCategoryId = -1;
-            } else {
-                RestDataSource_Sub_Category.fetchDataURL = category_CategoryHomeUrl + "/" + record.id + "/sub-categories";
-                selectedCategoryId = record.id;
-            }
-            ListGrid_Sub_Category.invalidateCache();
-        },
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
     });
 
     var ToolStripButton_Sub_Category_Refresh = isc.ToolStripButtonRefresh.create({
@@ -802,7 +868,6 @@
             ListGrid_Sub_Category_refresh();
         }
     });
-
     var ToolStripButton_Sub_Category_Edit = isc.ToolStripButtonEdit.create({
 
         title: "ویرایش",
@@ -824,7 +889,6 @@
             ListGrid_Sub_Category_Remove();
         }
     });
-
     var ToolStrip_Actions_Sub_Category = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -841,82 +905,6 @@
                 ]
             }),
         ]
-    });
-
-
-    var ToolStripButton_Category_Refresh = isc.ToolStripButtonRefresh.create({
-//icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
-        click: function () {
-            ListGrid_Category_refresh();
-        }
-    });
-    var ToolStripButton_Category_Edit = isc.ToolStripButtonEdit.create({
-//icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
-        click: function () {
-            ListGrid_Category_Edit();
-        }
-    });
-    var ToolStripButton_Category_Add = isc.ToolStripButtonAdd.create({
-
-        title: "ایجاد",
-        click: function () {
-            ListGrid_Category_Add();
-        }
-    });
-    var ToolStripButton_Category_Remove = isc.ToolStripButtonRemove.create({
-// icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
-        click: function () {
-            ListGrid_Category_Remove();
-        }
-    });
-
-    var ToolStrip_Actions_Category = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [,
-            ToolStripButton_Category_Add,
-            ToolStripButton_Category_Edit,
-            ToolStripButton_Category_Remove,
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    ToolStripButton_Category_Refresh
-                ]
-            })
-        ]
-    });
-
-
-    <%--var HLayout_Actions_Skill_Standard = isc.HLayout.create({--%>
-    <%--width: "100%",--%>
-    <%--members: [ToolStrip_Actions]--%>
-    <%--});--%>
-
-    var HLayout_Action_Category = isc.HLayout.create({
-        width: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [ToolStrip_Actions_Category]
-    });
-
-
-    var HLayout_Grid_Category = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [ListGrid_Category]
-    });
-
-
-    var VLayout_Body_Category = isc.VLayout.create({
-        width: "50%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [HLayout_Action_Category, HLayout_Grid_Category]
     });
 
     var HLayout_Action_SubCategory = isc.HLayout.create({
@@ -947,3 +935,4 @@
     });
 
 
+    //</script>

@@ -45,22 +45,34 @@ public class ParameterValueRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<ParameterValueDTO.Info> create(@RequestBody Object rq) {
+    public ResponseEntity create(@RequestBody Object rq) {
         ParameterValueDTO.Create create = modelMapper.map(rq, ParameterValueDTO.Create.class);
-        return new ResponseEntity<>(parameterValueService.checkAndCreate(create), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(parameterValueService.checkAndCreate(create), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<ParameterValueDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq) {
         ParameterValueDTO.Update update = modelMapper.map(rq, ParameterValueDTO.Update.class);
-        return new ResponseEntity<>(parameterValueService.update(id, update), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(parameterValueService.update(id, update), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<ParameterValueDTO.Info> delete(@PathVariable Long id) {
-        return new ResponseEntity<>(parameterValueService.delete(id), null, HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(parameterValueService.delete(id), null, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     //////////////////////////////////////////config//////////////////////////////////////////

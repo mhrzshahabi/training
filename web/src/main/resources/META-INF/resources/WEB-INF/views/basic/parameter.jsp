@@ -56,7 +56,7 @@
     ParameterDS_parameter = isc.TrDS.create({
         ID: "ParameterDS_parameter",
         fields: [
-            {name: "id", primaryKey: true},
+            {name: "id", primaryKey: true, title: "<spring:message code="identity"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -69,7 +69,7 @@
         ID: "ParameterLG_parameter",
         dataSource: ParameterDS_parameter,
         autoFetchData: true,
-        fields: [{name: "id"}, {name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
+        fields: [{name: "id", filterEditorProperties: {keyPressFilter: "[0-9]"}}, {name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="type"/>" + "</b></span>",}),
             ParameterTS_parameter, "filterEditor", "header", "body"
@@ -137,7 +137,7 @@
             {name: "parameter.id", dataPath: "parameterId", hidden: true,},
             {name: "parameter.title", title: "<spring:message code="parameter.type"/>", canEdit: false},
             {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "code", title: "<spring:message code="code"/>",},
+            {name: "code", title: "<spring:message code="code"/>", required: true,},
             {name: "value", title: "<spring:message code="value"/>",},
             {name: "type", title: "<spring:message code="type"/>",},
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
@@ -184,7 +184,7 @@
             return;
         }
         let parameterSaveUrl = parameterUrl;
-        action = '<spring:message code="create"/>';
+        let action = '<spring:message code="create"/>';
         if (parameterMethod_parameter.localeCompare("PUT") === 0) {
             let record = ParameterLG_parameter.getSelectedRecord();
             parameterSaveUrl += "/" + record.id;
@@ -192,13 +192,14 @@
         }
         let data = ParameterDF_parameter.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="parameter.type"/>', ParameterWin_parameter, ParameterLG_parameter)")
+            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data),
+                "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="parameter"/>', ParameterWin_parameter, ParameterLG_parameter, '" + ParameterDF_parameter.getValue("title") + "')")
         );
     }
 
     function removeParameter_parameter() {
         let record = ParameterLG_parameter.getSelectedRecord();
-        var entityType = '<spring:message code="parameter.type"/>';
+        let entityType = '<spring:message code="parameter.type"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
             removeRecord(parameterUrl + "/" + record.id, entityType, record.title, 'ParameterLG_parameter');
         }
@@ -207,7 +208,7 @@
     // ---------------------------------------------------------------------------------------------------
 
     function refreshParameterValueLG_parameter() {
-        var record = ParameterLG_parameter.getSelectedRecord();
+        let record = ParameterLG_parameter.getSelectedRecord();
         if (checkRecordAsSelected(record, false)) {
             refreshLgDs(ParameterValueLG_parameter, ParameterValueDS_parameter, parameterValueUrl + "/iscList/" + record.id)
         }
@@ -253,13 +254,13 @@
         let data = ParameterValueDF_parameter.getValues();
         isc.RPCManager.sendRequest(
             TrDSRequest(parameterValueSaveUrl, parameterValueMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.value"/>" +
-                "', ParameterValueWin_parameter, ParameterValueLG_parameter)")
+                "', ParameterValueWin_parameter, ParameterValueLG_parameter, '" + ParameterValueDF_parameter.getValue("title") + "')")
         );
     }
 
     function removeParameterValue_parameter() {
         let record = ParameterValueLG_parameter.getSelectedRecord();
-        var entityType = '<spring:message code="parameter.value"/>';
+        let entityType = '<spring:message code="parameter.value"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
             removeRecord(parameterValueUrl + "/" + record.id, entityType, record.title, 'ParameterValueLG_parameter');
         }

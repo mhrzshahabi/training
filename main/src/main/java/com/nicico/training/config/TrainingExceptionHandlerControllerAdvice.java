@@ -75,8 +75,7 @@ public class TrainingExceptionHandlerControllerAdvice extends AbstractExceptionH
             if (oracleDatabaseException.getOracleErrorNumber() == 4063) {
 
                 return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.entity.not-found", null, locale), consoleMessage);
-            }
-           else if (oracleDatabaseException.getOracleErrorNumber() == 6575) {
+            } else if (oracleDatabaseException.getOracleErrorNumber() == 6575) {
 
                 return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.function.not-found", null, locale), consoleMessage);
             }
@@ -87,8 +86,24 @@ public class TrainingExceptionHandlerControllerAdvice extends AbstractExceptionH
             if (transactionRollbackException.getErrorCode() == 2091)
                 return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.unknown.constraint", null, locale), transactionRollbackException.getMessage());
         }
+        NumberFormatException numberFormatException = getNumberFormatException(exception);
+        if (numberFormatException != null) {
+            return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.wrong.data.format", null, locale), numberFormatException.getMessage());
+        }
 
         return error(TrainingException.ErrorType.Forbidden, null, messageSource.getMessage("exception.un-managed", null, locale), exception.getMessage());
+    }
+
+    private NumberFormatException getNumberFormatException(Throwable exception) {
+
+        List<Throwable> innerExceptions = getInnerExceptions(exception, NumberFormatException.class);
+        if (innerExceptions.size() > 0)
+            try {
+                return (NumberFormatException) innerExceptions.get(innerExceptions.size() - 1);
+            } catch (Exception ex) {
+                return null;
+            }
+        return null;
     }
 
     private OracleDatabaseException getOracleException(Throwable exception) {

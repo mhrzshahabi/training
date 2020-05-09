@@ -35,7 +35,7 @@
         ],
 
         fetchDataURL: classCheckListUrl + "spec-list?_startRow=0&_endRow=1000",
-        updateDataURL: classCheckListUrl + "edit",
+       // updateDataURL: classCheckListUrl + "edit",
     });
 
 
@@ -254,6 +254,8 @@
         recordDoubleClick: function () {
             show_CheckListItemEditForm();
         }
+
+
     });
 
     var ListGrid_CheckList = isc.TrLG.create({
@@ -501,22 +503,49 @@
     });
 
     //================================= تکمیل چک لیست===============================================تکمیل چک لیست=========================================تکمیل چک لیست======================================تکمیل چک لیست=====================
+  var list=[];
     var ListGrid_Class_Item = isc.TrLG.create({
         showRowNumbers: false,
         alternateRecordStyles: true,
         showFilterEditor: false,
         autoFetchData: true,
-        editEvent: "click",
-        sortField: 0,
+       // sortField: 0,
+        sortAvailableFields:false,
+        canSort:false,
         editByCell: true,
         modalEditing: true,
         height: 500,
         showGroupSummary: true,
-       // showGroupSummaryInHeader: true,
         groupStartOpen: "all",
         groupByField: 'checkListItem.group',
         nullGroupTitle:"",
         dataSource: RestDataSource_Class_Item,
+        canEdit: true,
+        editEvent: "click",
+        listEndEditAction: "next",
+        autoSaveEdits: false,
+        saveLocally:true,
+        gridComponents: ["header", "filterEditor", "body", isc.TrHLayoutButtons.create({
+            members: [
+                isc.IButtonSave.create({
+
+                    click: function () {
+                      console.log(list)
+
+                            isc.RPCManager.sendRequest(TrDSRequest( classCheckListUrl + "edit","POST",JSON.stringify(list), "callback:refreshData_jsp(rpcResponse)"));
+
+
+                                       }
+                }),
+                isc.IButtonCancel.create({
+
+                    click: function () {
+                        list.clearAll()
+                        Window_Add_User_TO_Committee.close();
+                    }
+                })
+            ]
+        })],
         fields: [
             {name: "checkListItem.group", title: "<spring:message code="group"/>", align: "center", hidden: true},
             {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", canEdit: false, align: "center"},
@@ -525,8 +554,7 @@
                     if (value == null) {
                         item.setValue("")
                     }
-                }
-
+            }
             },
             {
                 name: "enableStatus",
@@ -536,8 +564,46 @@
                 align: "center"
             },
         ],
+        editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
+       {
+          let obj;
+          if(colNum == 1)
+          {
+              obj={id:record.id,  description:  newValue}
+              if (list.filter(function(x){
+                  return x.id==record.id
+              })==0) {
 
-    });
+                  list.push(obj);
+              }
+
+              list.filter(function(x){
+                  return x.id==record.id
+              }).map(function(x){
+                  return x.description=newValue;
+              });
+
+          }
+         if(colNum ==2)
+          {
+              obj={id:record.id, enableStatus:newValue}
+              if (list.filter(function(x){
+                  return x.id==record.id
+              })==0) {
+                  list.push(obj);
+              }
+
+              list.filter(function(x){
+                  return x.id==record.id
+              }).map(function(x){
+                  return x.enableStatus=newValue;
+              });
+          }
+
+      }
+       }
+       });
+
 
 
     var HLayOut_thisCommittee_AddUsers_Jsp = isc.HLayout.create({
@@ -552,6 +618,7 @@
         border: "3px solid gray", layoutMargin: 5,
         members: [HLayOut_thisCommittee_AddUsers_Jsp]
     });
+
 
     var Window_Add_User_TO_Committee = isc.Window.create({
         minWidth: 1024,
@@ -569,7 +636,8 @@
         },
         items: [
             VLayOut_User_Committee_Jsp
-        ]
+        ],
+
     });
 
     //================================== تب چک لیست =====================================
@@ -651,6 +719,7 @@
                     var a2 = checkListDynamicFormField.getValue();
 
                     isc.RPCManager.sendRequest(TrDSRequest(classCheckListUrl + "fill-Table/" + a1.toString() + "/" + a2.toString(), "GET", null, "callback:fill(rpcResponse)"));
+
                 }
             },
             // {
@@ -735,7 +804,7 @@
         setTimeout(function () {
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();
-        }, 2000);
+           }, 500);
 
     }
     ;
@@ -1100,3 +1169,66 @@
             ListGrid_ClassCheckList.setData([]);
         }
     }
+
+    function  save_All_Data() {
+        let list=[];
+        let size=ListGrid_Class_Item.data.size();
+
+        for(let i=0;i<size;i++){
+
+            if(typeof(ListGrid_Class_Item.data.get(i).customStyle)==="undefined"){
+
+                continue;
+            }else{
+                let size1=ListGrid_Class_Item.data.get(i).groupMembers.size();
+
+                for(let j=0;j<size1;j++){
+                    let obj={id:ListGrid_Class_Item.data.get(i).groupMembers[j].id,
+                        description:  ListGrid_Class_Item.data.get(i).groupMembers[j].description,
+                        enableStatus: ListGrid_Class_Item.data.get(i).groupMembers[j].enableStatus
+                    };
+
+                    if(typeof(obj.enableStatus)==="undefined")
+                    {
+                        obj.enableStatus=false;
+                    }
+
+                    if(typeof(obj.description)==="undefined")
+                    {
+                        obj.description='';
+                    }
+
+                    list.push(obj);
+                }
+            }
+        }
+
+        return list;
+
+    }
+
+    function refreshData_jsp(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+            var a1 = checkListDynamicFormField.getValue();
+            var a2 = ListGrid_Class_JspClass.getSelectedRecord().id;
+
+
+            ListGrid_Class_Item.invalidateCache()
+            ListGrid_Class_Item.fetchData(
+                {
+                    operator: "and", criteria: [
+                        {fieldName: "tclassId", operator: "equals", value: a2},
+                        {fieldName: "checkListItem.checkListId", operator: "equals", value: a1},
+                    ]
+                }
+           // ListGrid_Class_Item.invalidateCache()
+
+            );
+            Window_Add_User_TO_Committee.close()
+
+        }
+
+
+    }
+

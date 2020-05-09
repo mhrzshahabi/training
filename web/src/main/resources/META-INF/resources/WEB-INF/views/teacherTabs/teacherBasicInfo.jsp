@@ -114,7 +114,7 @@
                 showHintInField: true,
                 blur: function () {
                     var codeCheck;
-                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
                     nationalCodeCheck = codeCheck;
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
@@ -250,22 +250,15 @@
                 title: "<spring:message code='gender'/>",
                 textAlign: "center",
                 width: "*",
+                autoFetchData: false,
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Egender_JspTeacher,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
@@ -277,21 +270,14 @@
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Emarried_JspTeacher,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
@@ -303,21 +289,14 @@
                 title: "<spring:message code='military'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Emilitary_JspTeacher,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
@@ -408,6 +387,7 @@
                 title: "<spring:message code='education.categories'/>",
                 type: "SelectItem",
                 textAlign: "center",
+                autoFetchData: false,
                 required: true,
                 optionDataSource: RestDataSource_Categories_JspTeacher,
                 valueField: "id",
@@ -479,14 +459,13 @@
                 length: "11",
                 hint: "*********09",
                 showHintInField: true,
-                errorMessage: "<spring:message code='msg.mobile.validation'/>"
-                , changed: function () {
+                errorMessage: "<spring:message code='msg.mobile.validation'/>",
+                blur: function () {
                     var mobileCheck;
                     mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("personality.contactInfo.mobile"));
                     cellPhoneCheck = mobileCheck;
                     if (mobileCheck === false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.mobile", "<spring:message
-        code='msg.mobile.validation'/>", true);
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.mobile", "<spring:message code='msg.mobile.validation'/>", true);
                     if (mobileCheck === true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
                 }
@@ -613,7 +592,7 @@
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
                 }
             } else if (item.name === "attachPic") {
-                showTempAttach();
+                    showTempAttach();
             } else if (item.name === "enableStatus") {
                 if (newValue === "false") {
                     var ask = createDialog("confirm", "<spring:message code='msg.teacher.enable.status.change.confirm'/>");
@@ -635,48 +614,11 @@
 
     DynamicForm_BasicInfo_JspTeacher.getItem('evaluation').setCellStyle('eval-code-label');
 
-
-    var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
-        align: "center",
-        canSubmit: true,
-        titleWidth: 0,
-        showInlineErrors: true,
-        showErrorText: false,
-        valuesManager: "vm",
-        numCols: 2,
-        titleAlign: "left",
-        margin: 10,
-        newPadding: 5,
-        fields: [
-            {name: "id", hidden: true},
-            {
-                ID: "attachPic",
-                name: "attachPic",
-                title: "",
-                type: "imageFile",
-                showFileInline: "true",
-                accept: ".png,.gif,.jpg, .jpeg",
-                multiple: ""
-            }
-        ],
-        itemChanged: function (item) {
-            if (item.name === "attachPic") {
-                showTempAttach();
-                setTimeout(function () {
-                    if (attachNameTemp === null || attachNameTemp === "") {
-                        DynamicForm_Photo_JspTeacher.getField("attachPic").setValue(null);
-                        showAttachViewLoader.setView();
-                    }
-                }, 300);
-            }
-        }
-    });
-
     //------------------------------------------ Functions -------------------------------------------------------------
     function upload() {
+        isFileAttached = true;
         var upload = document.getElementById('file-upload');
         var image = upload.files[0];
-        console.log(image);
         showTempAttach();
         setTimeout(function () {
             if (attachNameTemp === null || attachNameTemp === "") {

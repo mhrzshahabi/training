@@ -23,6 +23,8 @@ public class GoalDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
+
+
     private String titleEn;
 
     // ------------------------------

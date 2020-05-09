@@ -62,7 +62,9 @@ public class PolisRestController {
 
     @Loggable
     @GetMapping("/iscList/{provinceId}")
-    public ResponseEntity<TotalResponse<PolisDTO.Info>> getParametersValueListById(@RequestParam MultiValueMap<String, String> criteria, @PathVariable Long provinceId) {
+    public ResponseEntity<TotalResponse<PolisDTO.Info>> getParametersValueListById(
+            @RequestParam MultiValueMap<String, String> criteria,
+            @PathVariable Long provinceId) {
         return iscList(CriteriaUtil.addCriteria(criteria, "provinceId", "equals", provinceId.toString()));
     }
 

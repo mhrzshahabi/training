@@ -251,7 +251,8 @@ public class ClassSessionRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchRs = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchRs = null;
+            searchRs = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 }
