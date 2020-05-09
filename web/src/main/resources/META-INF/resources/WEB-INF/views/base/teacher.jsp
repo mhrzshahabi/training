@@ -18,6 +18,7 @@
     var isCategoriesChanged;
     var selected_record = null;
     var selectedRecordID = null;
+    var isFileAttached = false;
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -345,7 +346,6 @@
             IButton_Teacher_Exit_JspTeacher
         ]
     });
-
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         showResizeBar: true,
         titleEditorTopOffset: 2,
@@ -586,7 +586,7 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryIds = this.getValue();
                     var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
+                    for (let i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
@@ -833,8 +833,6 @@
 
         showAttachViewLoader.setView();
         showAttachViewLoader.show();
-        if(document.getElementById('file-upload') != null)
-            document.getElementById('file-upload').files = undefined;
 
         showAttach(selected_record.personalityId);
 
@@ -951,7 +949,7 @@
         else {
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
             var catIds = [];
-            for (var i = 0; i < categoryIds.length; i++)
+            for (let i = 0; i < categoryIds.length; i++)
                 catIds.add(categoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
             isTeacherCategoriesChanged = true;
@@ -959,7 +957,7 @@
         }
         if (subCategoryIds != null && subCategoryIds.length > 0) {
             var subCatIds = [];
-            for (var i = 0; i < subCategoryIds.length; i++)
+            for (let i = 0; i < subCategoryIds.length; i++)
                 subCatIds.add(subCategoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
         }
@@ -979,9 +977,6 @@
         vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
-        if(document.getElementById('file-upload') != null)
-            document.getElementById('file-upload').files = undefined;
-
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
@@ -1029,13 +1024,16 @@
     }
 
     function addAttach(personalId) {
-        var formData1 = new FormData();
-        var fileBrowserId = document.getElementById('file-upload');
-        var file = fileBrowserId.files[0];
-        formData1.append("file", file);
-        selectedRecordPersonalID = personalId;
-        if (file !== undefined) {
-            TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
+        if (isFileAttached) {
+            var formData1 = new FormData();
+            var fileBrowserId = document.getElementById('file-upload');
+            var file = fileBrowserId.files[0];
+            formData1.append("file", file);
+            selectedRecordPersonalID = personalId;
+            isFileAttached = false;
+            if (file !== undefined) {
+                TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
+            }
         }
     }
 
@@ -1045,19 +1043,23 @@
     }
 
     function showTempAttach() {
-        var formData1 = new FormData();
-        var fileBrowserId = document.getElementById('file-upload');
-        var file = fileBrowserId.files[0];
-        formData1.append("file", file);
-        if (file.size > 30000000) {
-            createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
+        if (isFileAttached) {
+            var formData1 = new FormData();
+            var fileBrowserId = document.getElementById('file-upload');
+            var file = fileBrowserId.files[0];
+            formData1.append("file", file);
+            isFileAttached = false;
+            if (file.size > 30000000) {
+                createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
         } else {
             TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
+        }
         }
     }
 
     function personalInfo_showTempAttach_result(req) {
         if (req.status === 200) {
+            isFileAttached = true;
             attachNameTemp = req.response;
             showAttachViewLoader.setViewURL("<spring:url value="/personalInfo/getTempAttach/"/>" + attachNameTemp);
             showAttachViewLoader.show();
