@@ -24,7 +24,6 @@
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
-
     //----------------------------------------------------Variables-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
         viewURL: "",
@@ -438,7 +437,7 @@
                     if (hasTeacherCategoriesChanged) {
                         hasTeacherCategoriesChanged = false;
                         var ids = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
-                        if (ids == []) {
+                        if (ids === []) {
                             RestDataSource_SubCategories_JspTeacher.implicitCriteria = null;
                         } else {
                             RestDataSource_SubCategories_JspTeacher.implicitCriteria = {

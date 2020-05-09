@@ -865,7 +865,7 @@
             for (let i = 0; i < categoryIds.length; i++)
                 catIds.add(categoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
-            isTeacherCategoriesChanged = true;
+            hasTeacherCategoriesChanged = true;
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").focus(null, null);
         }
         if (subCategoryIds != null && subCategoryIds.length > 0) {
