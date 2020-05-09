@@ -7,7 +7,9 @@ package com.nicico.training.iservice;/* com.nicico.training.iservice
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EquipmentDTO;
+import org.apache.http.HttpResponse;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface IEquipmentService {
@@ -16,9 +18,9 @@ public interface IEquipmentService {
 
     List<EquipmentDTO.Info> list();
 
-    EquipmentDTO.Info create(EquipmentDTO.Create request);
+    EquipmentDTO.Info create(EquipmentDTO.Create request, HttpServletResponse response);
 
-    EquipmentDTO.Info update(Long id, EquipmentDTO.Update request);
+    EquipmentDTO.Info update(Long id, EquipmentDTO.Update request,HttpServletResponse response);
 
     void delete(Long id);
 

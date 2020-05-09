@@ -1199,51 +1199,36 @@
     }
 
     function studyResponse(resp, action, entityType, winToClose, gridToRefresh, entityTitle) {
-        console.log('resp:');
-        console.log(resp);
-        console.log('action:');
-        console.log(action);
-        console.log('entityType:');
-        console.log(entityType);
-        console.log('winToClose:');
-        console.log(winToClose);
-        console.log('gridToRefresh:');
-        console.log(gridToRefresh);
-        console.log('entityTitle:');
-        console.log(entityTitle);
         let msg;
         let selectedState;
         if (resp == null) {
-            msg = "<spring:message code="msg.error.connecting.to.server"/>";
+            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
         } else {
             let respCode = resp.httpResponseCode;
-            console.log('respCode:');
-            console.log(respCode);
-            if (respCode == 200 || respCode == 201) {
+            if (respCode === 200 || respCode === 201) {
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
-                console.log('selectedState:');
-                console.log(selectedState);
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
-                console.log('entityTitle:');
-                console.log(entityTitle);
                 msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
+
+                if (gridToRefresh !== undefined) {
+                    refreshLG(gridToRefresh);
+                }
+
+                let dialog = createDialog("info", msg);
+                Timer.setTimeout(function () {
+                    dialog.close();
+                }, dialogShowTime);
             } else {
-                if (respCode == 409) {
+                if (respCode === 409) {
                     msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
+                createDialog("info", msg);
             }
-            var dialog = createDialog("info", msg);
-            Timer.setTimeout(function () {
-                dialog.close();
-            }, dialogShowTime);
-        }
-        if (winToClose !== undefined) {
-            winToClose.close();
-        }
-        if (gridToRefresh !== undefined) {
-            refreshLG(gridToRefresh);
+            if (winToClose !== undefined) {
+                winToClose.close();
+            }
         }
     }
 
@@ -1273,7 +1258,7 @@
         })
     }
 
-    function exportToExcel(fields, data) {
+    function exportToExcel(fields, data,titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/export-to-excel/download/",
@@ -1284,11 +1269,13 @@
                     {name: "myToken", type: "hidden"},
                     {name: "fields", type: "hidden"},
                     {name: "data", type: "hidden"},
+                    {name: "titr", type: "hidden"}
                 ]
         });
         <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
         downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
         downloadForm.setValue("data", JSON.stringify(data.toArray()));
+        downloadForm.setValue("titr",titr);
         downloadForm.show();
         downloadForm.submitForm();
     }
@@ -1386,7 +1373,7 @@
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
-    const polisUrl = rootUrl + "/polis/"
+    const polisUrl = rootUrl + "/polis/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
@@ -1513,8 +1500,8 @@
     }
 
     function checkNationalCode(code) {
-        if (code === "undefined" || code === null || code === "")
-            return false;
+        if (code === undefined || code === null || code === "")
+            return true;
         let L = code.length;
 
         if (L < 8 || parseFloat(code, 10) === 0)

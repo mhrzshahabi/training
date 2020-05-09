@@ -28,10 +28,10 @@ public class Category extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @Column(name = "c_title_fa", nullable = false, unique = true)
     private String titleFa;
 
-    @Column(name = "c_title_en")
+    @Column(name = "c_title_en", unique = true)
     private String titleEn;
 
     @Column(name = "c_code", length = 2, nullable = false, unique = true)
@@ -40,7 +40,7 @@ public class Category extends Auditable {
     @Column(name = "c_desc")
     private String description;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Subcategory> subCategorySet;
 
 

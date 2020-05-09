@@ -125,7 +125,4 @@ public class PersonalInfo extends Auditable {
 
     @Column(name = "f_edu_orientation")
     private Long educationOrientationId;
-
-    @OneToMany(mappedBy = "personality", fetch = FetchType.LAZY)
-    private Set<Teacher> teacherSet;
 }

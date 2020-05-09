@@ -375,8 +375,6 @@
             }
             ;
 
-            //  alert("${restApiUrl}/api/post-group/addPosts/"+postGroupId+"/"+postIds);
-
             var JSONObj = {"ids": postIds};
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
