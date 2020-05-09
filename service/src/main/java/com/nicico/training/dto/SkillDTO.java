@@ -13,9 +13,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -48,7 +46,9 @@ public class SkillDTO {
 
     @ApiModelProperty()
     private String description;
+
     private Long courseId;
+
     private Long courseMainObjectiveId;
 
     @Getter
@@ -70,11 +70,6 @@ public class SkillDTO {
         private SkillLevelDTO.SkillLevelInfoTuple skillLevel;
         private CategoryDTO.CategoryInfoTuple category;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
-        private Integer version;
         private CourseDTO.CourseInfoTupleLite course;
     }
 
@@ -96,8 +91,6 @@ public class SkillDTO {
     @Accessors(chain = true)
     @ApiModel("SkillCreateRq")
     public static class Create extends SkillDTO {
-        Set<Long> courseIds;
-        Set<Long> skillGroupIds;
 
     }
 
@@ -108,14 +101,7 @@ public class SkillDTO {
     @Accessors(chain = true)
     @ApiModel("SkillUpdateRq")
     public static class Update extends SkillDTO {
-        Set<Long> courseIds;
-        Set<Long> skillGroupIds;
 
-        // ------------------------------
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

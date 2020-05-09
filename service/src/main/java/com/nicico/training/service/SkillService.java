@@ -36,15 +36,10 @@ public class SkillService implements ISkillService {
     private final ModelMapper modelMapper;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
-    private final NeedAssessmentDAO needAssessmentDAO;
     private final SkillGroupDAO skillGroupDAO;
-    private final SkillLevelDAO skillLevelDAO;
-    private final CategoryDAO categoryDAO;
-    private final SubcategoryDAO subCategoryDAO;
     private final IWorkGroupService workGroupService;
     private final ISkillGroupService skillGroupService;
     private final ICourseService courseService;
-    private String saveType = "";
 
     @Transactional(readOnly = true)
     @Override
@@ -79,20 +74,33 @@ public class SkillService implements ISkillService {
     @Override
     public SkillDTO.Info create(SkillDTO.Create request) {
         final Skill skill = modelMapper.map(request, Skill.class);
-        Set<Long> competences = new HashSet<Long>();
-//        Long defaultCompetence=request.getDefaultCompetenceId();
-//        if(defaultCompetence!=null && defaultCompetence>0){
-//            competences.add(defaultCompetence);
-//            request.setCompetenceIds(competences);
-//        }
-        saveType = "create";
-        return save(skill, request.getCourseIds(), request.getSkillGroupIds());
+
+//        Optional.ofNullable(courseIds)
+//                .ifPresent(courseIdSet -> courseIdSet
+//                        .forEach(courseId ->
+//                                courses.add(courseDAO.findById(courseId)
+//                                        .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound)))
+//                        ));
+
+
+//        final Optional<SkillLevel> slById = skillLevelDAO.findById(skill.getSkillLevelId());
+//        final SkillLevel skillLevel = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillLevelNotFound));
+//
+//        final Optional<Category> categoryById = categoryDAO.findById(skill.getCategoryId());
+//        final Category category = categoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CategoryNotFound));
+//
+//        final Optional<Subcategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
+//        final Subcategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
+
+        final Skill saved = skillDAO.saveAndFlush(skill);
+        if (saved.getCourseId() != null)
+            courseService.updateHasSkill(saved.getCourseId(), true);
+        return modelMapper.map(saved, SkillDTO.Info.class);
     }
 
     @Transactional
     @Override
     public SkillDTO.Info update(Long id, Object request) {
-
         final Optional<Skill> optionalSkill = skillDAO.findById(id);
         final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
@@ -146,47 +154,6 @@ public class SkillService implements ISkillService {
         return skillDAO.findMaxSkillCode(skillCodeStart);
     }
 
-    // ---------------
-
-    @Transactional
-    SkillDTO.Info save(Skill skill, Set<Long> courseIds, Set<Long> skillGroupIds) {
-        final Set<Course> courses = new HashSet<>();
-        final Set<CompetenceOld> competences = new HashSet<>();
-        final Set<SkillGroup> skillGroups = new HashSet<>();
-
-        Optional.ofNullable(courseIds)
-                .ifPresent(courseIdSet -> courseIdSet
-                        .forEach(courseId ->
-                                courses.add(courseDAO.findById(courseId)
-                                        .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound)))
-                        ));
-
-        Optional.ofNullable(skillGroupIds)
-                .ifPresent(skillGroupIdSet -> skillGroupIdSet
-                        .forEach(skillGroupId ->
-                                skillGroups.add(skillGroupDAO.findById(skillGroupId)
-                                        .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound)))
-                        ));
-
-        final Optional<SkillLevel> slById = skillLevelDAO.findById(skill.getSkillLevelId());
-        final SkillLevel skillLevel = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillLevelNotFound));
-
-        final Optional<Category> categoryById = categoryDAO.findById(skill.getCategoryId());
-        final Category category = categoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CategoryNotFound));
-
-        final Optional<Subcategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
-        final Subcategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
-
-        final Skill saved = skillDAO.saveAndFlush(skill);
-
-        if (saved.getCourseId() != null)
-            courseService.updateHasSkill(saved.getCourseId(), true);
-
-        saveType = "";
-        return modelMapper.map(saved, SkillDTO.Info.class);
-    }
-
-    // ------------------------------
 
     @Transactional(readOnly = true)
     @Override
@@ -198,14 +165,14 @@ public class SkillService implements ISkillService {
     }
 
 
-    @Transactional
-    @Override
-    public List<NeedAssessmentDTO.Info> getNeedAssessment(Long skillID) {
-        final Optional<Skill> optionalSkill = skillDAO.findById(skillID);
-        final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        return modelMapper.map(skill.getNeedAssessments(), new TypeToken<List<NeedAssessmentDTO.Info>>() {
-        }.getType());
-    }
+//    @Transactional
+//    @Override
+//    public List<NeedAssessmentDTO.Info> getNeedAssessment(Long skillID) {
+//        final Optional<Skill> optionalSkill = skillDAO.findById(skillID);
+//        final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//        return modelMapper.map(skill.getNeedAssessments(), new TypeToken<List<NeedAssessmentDTO.Info>>() {
+//        }.getType());
+//    }
 
     @Transactional(readOnly = true)
     @Override
@@ -229,16 +196,16 @@ public class SkillService implements ISkillService {
         return courseDAO.getUnAttachedCoursesCountBySkillId(skillID);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<SkillGroupDTO.Info> getSkillGroups(Long skillID) {
-        final Optional<Skill> optionalSkill = skillDAO.findById(skillID);
-        final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-
-
-        return modelMapper.map(skill.getSkillGroupSet(), new TypeToken<List<SkillGroupDTO.Info>>() {
-        }.getType());
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<SkillGroupDTO.Info> getSkillGroups(Long skillID) {
+//        final Optional<Skill> optionalSkill = skillDAO.findById(skillID);
+//        final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//
+//
+//        return modelMapper.map(skill.getSkillGroupSet(), new TypeToken<List<SkillGroupDTO.Info>>() {
+//        }.getType());
+//    }
 
     @Transactional(readOnly = true)
     @Override

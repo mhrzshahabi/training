@@ -149,8 +149,8 @@ public class CourseRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_course')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                       @RequestParam(value = "_endRow", required = false) Integer endRow,
+    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
@@ -258,19 +258,19 @@ public class CourseRestController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/skill-group/{courseId}")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroup(@PathVariable Long courseId) {
-        List<SkillGroupDTO.Info> skillGroup = courseService.getSkillGroup(courseId);
-        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-        specResponse.setData(skillGroup)
-                .setStartRow(0)
-                .setEndRow(skillGroup.size())
-                .setTotalRows(skillGroup.size());
-        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/skill-group/{courseId}")
+//    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroup(@PathVariable Long courseId) {
+//        List<SkillGroupDTO.Info> skillGroup = courseService.getSkillGroup(courseId);
+//        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
+//        specResponse.setData(skillGroup)
+//                .setStartRow(0)
+//                .setEndRow(skillGroup.size())
+//                .setTotalRows(skillGroup.size());
+//        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+//        specRs.setResponse(specResponse);
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
