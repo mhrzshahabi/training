@@ -53,6 +53,9 @@
             {name: "teacher.personality.firstNameFa"},
             {name: "teacher.personality.lastNameFa"},
             {name: "teacher.personality.nationalCode"},
+            {name: "teacher.personality.contactInfo.mobile"},
+            {name: "teacher.personality.contactInfo.homeAddress.state.name"},
+            {name: "teacher.personality.contactInfo.homeAddress.city.name"},
 
         ]
     });
@@ -512,24 +515,18 @@
         // autoFetchData: true,
         fields: [
 
-            {
-                name: "teacher.personality.firstNameFa",
-                title: "<spring:message code="firstName"/>",
-                align: "center",
-                filterOperator: "iContains"
+            {name: "teacher.personality.firstNameFa", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",
+                formatCellValue: function (value, record) {
+                    return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
+                }
             },
-            {
-                name: "teacher.personality.lastNameFa",
-                title: "<spring:message code="lastName"/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
-            {
-                name: "teacher.personality.nationalCode",
-                title: "<spring:message code="national.code"/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
+            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.contactInfo.homeAddress.state.name", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
+                formatCellValue: function (value, record) {
+                    return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
+                }
+            }
         ],
         recordDoubleClick: function () {
 
@@ -1259,12 +1256,13 @@
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(false);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(false);
                         DynamicForm_course_MainTab.getItem("startEvaluation").enable();
-                        DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(true);
+                        //DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(true);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setValue("3");
                     } else {
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(true);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(true);
-                        DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(false);
-                        DynamicForm_course_MainTab.getItem("startEvaluation").clearErrors();
+                        //DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(false);
+                        //DynamicForm_course_MainTab.getItem("startEvaluation").clearErrors();
                         DynamicForm_course_MainTab.getItem("startEvaluation").setValue()
                     }
                 }
@@ -1273,8 +1271,10 @@
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
                 // validateOnChange: true,
-                required: false,
+               // required: false,
+                defaultValue:"",
                 textAlign: "center",
+                width: 60,
                 hint: "&nbsp;ماه",
                 pickListProperties:{
                     showFilterEditor: false
