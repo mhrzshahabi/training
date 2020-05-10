@@ -48,9 +48,10 @@ public class EvaluationAnalysistLearningRestController {
         params.put("scoringMethod", map.get(json.getString("scoringMethod")));
         params.put("minScoreLearning",minScoreLearning);
         Float[] classStudent = evaluationAnalysistLearningService.getStudents(Long.parseLong(recordId), json.getString("scoringMethod"));
+
         params.put("score", classStudent[0]);
-        params.put("preTestScore", classStudent[1]);
-        params.put("ScoreEvaluation", Math.abs(classStudent[3]));
+        params.put("preTestScore",classStudent[1]);
+        params.put("ScoreEvaluation",Math.abs(classStudent[3]));
         if(Math.abs(classStudent[3])>=Float.valueOf(minScoreLearning))
         {
             params.put("resault","تایید");

@@ -50,6 +50,7 @@
 //------
         canSelectCells: true,
 // sortField: 0,
+        canHover:true,
         dataSource: RestDataSource_evaluationAnalysist_learning,
         fields: [
 
@@ -89,6 +90,7 @@
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
+
                     change:function(){
                         change_value=true
                     },
@@ -108,18 +110,19 @@
                             change_value=false
                         }
                         else {return true}
-                    }
+                    },
+                    hoverHTML:function (record, rowNum, colNum, grid) {
+                        return"نمره پیش تست بین 0 تا 100 می باشد"
+                    },
 
              },
+
             {
                 name:"valence",title: "نمره معادل ارزشی",  filterOperator: "iContains",autoFitWidth:true,
                 valueMap: {"1001": "20", "1002": "50", "1003": "65", "1004": "100"},
             },
-
-
         ],
-
-    });
+       });
     //**************************************************************************
 
 
@@ -162,7 +165,7 @@
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [
-         //   ToolStripButton_Print,
+            ToolStripButton_Print,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -228,7 +231,7 @@
 
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             arrData = (JSON.parse(resp.data)).response.data;
-            minscoreValue=arrData[0].value;
+            minscoreValue=arrData.filter(function(x){return x.code=="minScoreEL"})[0].value
         } else {
 
         }
