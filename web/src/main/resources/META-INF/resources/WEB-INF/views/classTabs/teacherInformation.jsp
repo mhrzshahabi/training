@@ -52,7 +52,7 @@
                                 return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
                 }
             },
-            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",},
             {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
             {name: "teacher.personality.contactInfo.homeAddress.state.name", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
                 formatCellValue: function (value, record) {
