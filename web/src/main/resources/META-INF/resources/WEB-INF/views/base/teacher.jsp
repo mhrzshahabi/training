@@ -14,7 +14,6 @@
     var mailCheck = true;
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
-    var isTeacherCategoriesChanged = false;
     var isCategoriesChanged;
     var selected_record = null;
     var selectedRecordID = null;
