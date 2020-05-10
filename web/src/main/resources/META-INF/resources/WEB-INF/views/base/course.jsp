@@ -1257,6 +1257,7 @@
                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(false);
                         DynamicForm_course_MainTab.getItem("startEvaluation").enable();
                         DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(true);
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setValue("3");
                     } else {
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(true);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(true);
