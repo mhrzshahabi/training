@@ -472,6 +472,7 @@
         contextMenu: MenuSkill_Skill,
         autoFetchData: true,
         selectionType: "single",
+        showResizeBar: true,
         fields: [
             {name: "code"},
             {name: "titleFa"},
