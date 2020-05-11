@@ -35,6 +35,7 @@
             {name: "subCategories", filterOperator: "inSet"},
             {name: "personality.contactInfo.homeAddress.id"},
             {name: "personality.contactInfo.workAddress.id"},
+            {name: "personality.accountInfo.id"},
             {name: "personality.educationLevelId"}
         ],
         fetchDataURL: teacherUrl + "spec-list-grid"
@@ -1360,6 +1361,7 @@
             DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
 
 
+
             if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
                 DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.email", personality.contactInfo.email);
@@ -1372,7 +1374,9 @@
                     setHomeAddressFields(personality.contactInfo.homeAddress);
                 }
             }
+
             if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
+                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.id", personality.accountInfo.id);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
