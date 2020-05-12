@@ -1243,10 +1243,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         competenceData.length = 0;
         skillData.length = 0;
         ListGrid_Competence_JspNeedsAssessment.setData([]);
-
-
-
-
         ListGrid_Knowledge_JspNeedsAssessment.setData([]);
         ListGrid_Attitude_JspNeedsAssessment.setData([]);
         ListGrid_Ability_JspNeedsAssessment.setData([]);

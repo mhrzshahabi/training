@@ -7,9 +7,11 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.service.NeedsAssessmentService;
+import com.nicico.training.service.SkillService;
 import com.nicico.training.service.StudentClassReportViewService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,7 @@ public class ExportToExcelController {
     private final StudentClassReportViewService studentClassReportViewService;
     private final TclassService tclassService;
 
+    private final SkillService skillService;
 
     @PostMapping(value = {"/download"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -191,6 +194,10 @@ public class ExportToExcelController {
             case "ClassByCriteria.jasper":
                 SearchDTO.SearchRs<TclassDTO.Info> searchTC = tclassService.search(searchRq);
                 list = searchTC.getList();
+                break;
+            case "Skill_Report.jasper":
+                SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
+                list = searchSkill.getList();
                 break;
         }
         final Gson gson = new Gson();

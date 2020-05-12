@@ -17,12 +17,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -141,8 +143,9 @@ public class ClassCheckListRestController {
 
 
     @Loggable
-    @PostMapping(value = "/edit")
+  //  @PostMapping(value = "/edit")
     public ResponseEntity<ClassCheckListDTO.Info> updateDescription(@RequestParam MultiValueMap<String, String> body) throws IOException {
+
         ResponseEntity<ClassCheckListDTO.Info> infoResponseEntity = new ResponseEntity(classCheckListService.updateDescriptionCheck(body), HttpStatus.OK);
 
         //*****check alarms*****
@@ -151,6 +154,16 @@ public class ClassCheckListRestController {
         }
 
         return infoResponseEntity;
+    }
+
+    @Loggable
+    @PostMapping(value = "/edit")
+    public ResponseEntity<ClassCheckListDTO.Info> updateDescription1(@RequestBody ClassCheckListDTO.Info[] request) throws IOException {
+       for(int i=0;i<request.length;i++)
+       {
+           classCheckListService.updateDescription2(request[i]);
+       }
+        return null;
     }
 
 

@@ -26,6 +26,31 @@
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/NeedsAssessmentPriority", "GET", null, setPriorities_NABOP));
 
     //--------------------------------------------------------------------------------------------------------------------//
+    //*chart form*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    Chart_NABOP = isc.FacetChart.create({
+        valueProperty: "duration",
+        showTitle: false,
+        filled: true,
+        stacked: false,
+    });
+
+    Window_Chart_NABOP = isc.Window.create({
+        placement: "fillScreen",
+        title: "",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 720,
+        minHeight: 540,
+        items: [isc.TrVLayout.create({
+            members: [Chart_NABOP]
+        })]
+    });
+
+    //--------------------------------------------------------------------------------------------------------------------//
     //*post form*/
     //--------------------------------------------------------------------------------------------------------------------//
 
@@ -437,6 +462,7 @@
         numCols: 3,
         padding: 10,
         titleAlign: "left",
+        styleName: "teacher-form",
         fields: [
             {
                 name: "reportType",
@@ -643,7 +669,6 @@
                     chartData_NABOP.find({title: priorities_NABOP[getIndexById_NABOP(p.id)].title, type: "<spring:message code='passed'/>"}).duration = 0;
                 }
             });
-            setTimeout(function () {Main_HLayout_NABOP.getMember("Chart_NABOP").setData(chartData_NABOP);}, 0);
         },
     });
 
@@ -654,18 +679,24 @@
             refreshLG_NABOP(CourseDS_NABOP);
         }
     });
+    ToolStripButton_ShowChart_NABOP = isc.ToolStripButton.create({
+        title: "نمایش چارت",
+        click: function () {
+            showChart_NABOP();
+        }
+    });
     ToolStripButton_Print_NABOP = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print'/>",
         click: function () {
             print_NABOP("pdf");
         }
     });
-
     ToolStrip_Actions_NABOP = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
             [
+                ToolStripButton_ShowChart_NABOP,
                 ToolStripButton_Print_NABOP,
                 isc.ToolStrip.create({
                     width: "100%",
@@ -776,20 +807,7 @@
         }
     }
 
-    createChart_NABOP();
-    function createChart_NABOP () {
-        let Chart_NABOP = isc.Canvas.getById("Chart_NABOP");
-        if (Chart_NABOP) {
-            Chart_NABOP.destroy();
-        }
-        chartData_NABOP = [
-            {title: "<spring:message code='essential'/>",  type: "<spring:message code='total'/>", duration: 0},
-            {title: "<spring:message code='essential'/>",  type: "<spring:message code='passed'/>", duration: 0},
-            {title: "<spring:message code='improving'/>", type: "<spring:message code='total'/>", duration: 0},
-            {title: "<spring:message code='improving'/>", type: "<spring:message code='passed'/>", duration: 0},
-            {title: "<spring:message code='developmental'/>",  type: "<spring:message code='total'/>", duration: 0},
-            {title: "<spring:message code='developmental'/>",  type: "<spring:message code='passed'/>", duration: 0}
-        ];
+    function showChart_NABOP () {
         let facets;
         let chartType;
         if (reportType_NABOP === "1") {
@@ -801,18 +819,11 @@
                 {id: "title", title: "<spring:message code='priority'/>"},
                 {id: "type", title: "<spring:message code='status'/>"}];
         }
-        Chart_NABOP = isc.FacetChart.create({
-            ID: "Chart_NABOP",
-            width: "35%",
-            facets: facets,
-            data: chartData_NABOP,
-            valueProperty: "duration",
-            chartType: chartType,
-            showTitle: false,
-            filled: true,
-            stacked: false,
-        });
-        Main_HLayout_NABOP.addMember(Chart_NABOP);
+
+        Chart_NABOP.setFacets(facets);
+        Chart_NABOP.setData(chartData_NABOP);
+        Chart_NABOP.setChartType(chartType);
+        Window_Chart_NABOP.show();
     }
 
     function setReportType_NABOP(){
@@ -828,11 +839,6 @@
             changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
             ReportTypeDF_NABOP.getItem("objectId").hide();
-            // CoursesLG_NABOP.hideField("competence.title");
-            // CoursesLG_NABOP.hideField("competence.competenceTypeId");
-            // CoursesLG_NABOP.hideField("needsAssessmentDomainId");
-            // CoursesLG_NABOP.hideField("skill.code");
-            // CoursesLG_NABOP.hideField("skill.titleFa");
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             Tabset_Object_NABOP.selectTab("Post");
@@ -842,11 +848,6 @@
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.post/job/postGrade'/> " + postName;
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post/job/postGrade'/>");
-            // CoursesLG_NABOP.showField("competence.title");
-            // CoursesLG_NABOP.showField("competence.competenceTypeId");
-            // CoursesLG_NABOP.showField("needsAssessmentDomainId");
-            // CoursesLG_NABOP.showField("skill.code");
-            // CoursesLG_NABOP.showField("skill.titleFa");
             CoursesLG_NABOP.hideField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = totalSummaryFunc_NABOP;
             Tabset_Object_NABOP.tabs.forEach(tab => Tabset_Object_NABOP.enableTab(tab));
@@ -856,11 +857,6 @@
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post'/>");
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + postName;
-            // CoursesLG_NABOP.hideField("competence.title");
-            // CoursesLG_NABOP.hideField("competence.competenceTypeId");
-            // CoursesLG_NABOP.hideField("needsAssessmentDomainId");
-            // CoursesLG_NABOP.hideField("skill.code");
-            // CoursesLG_NABOP.hideField("skill.titleFa");
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             for (let i = 1; i < Tabset_Object_NABOP.tabs.length; i++)
@@ -870,7 +866,14 @@
         DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
         CoursesLG_NABOP.setData([]);
         CourseDS_NABOP.fetchDataURL = null;
-        createChart_NABOP();
+        chartData_NABOP = [
+            {title: "<spring:message code='essential'/>",  type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='essential'/>",  type: "<spring:message code='passed'/>", duration: 0},
+            {title: "<spring:message code='improving'/>", type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='improving'/>", type: "<spring:message code='passed'/>", duration: 0},
+            {title: "<spring:message code='developmental'/>",  type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='developmental'/>",  type: "<spring:message code='passed'/>", duration: 0}
+        ];
     }
 
     function setTitle_NABOP() {

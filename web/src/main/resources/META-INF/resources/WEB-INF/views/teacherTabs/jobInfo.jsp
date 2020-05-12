@@ -17,7 +17,7 @@
         margin: 10,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
+            {name: "personality.contactInfo.workAddress.id", hidden: true},
             {
                 name: "personality.jobTitle",
                 title: "<spring:message code='job'/>",

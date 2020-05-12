@@ -8,7 +8,7 @@
     var saveActionUrlEmploymentHistory;
     var waitEmploymentHistory;
     var teacherIdEmploymentHistory = null;
-    var isCategoriesChanged = false;
+    var isCategoriesChanged_JspEmploymentHistory = false;
     var startDateCheck_JSPEmpHistory = true;
     var endDateCheck_JSPEmpHistory = true;
     var dateCheck_Order_JSPEmpHistory = true;
@@ -78,7 +78,7 @@
                     filterOperator: "iContains"
                 },
                 changed: function () {
-                    isCategoriesChanged = true;
+                    isCategoriesChanged_JspEmploymentHistory = true;
                     var subCategoryField = DynamicForm_JspEmploymentHistory.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
@@ -118,8 +118,8 @@
                     filterOperator: "iContains"
                 },
                 focus: function () {
-                    if (isCategoriesChanged) {
-                        isCategoriesChanged = false;
+                    if (isCategoriesChanged_JspEmploymentHistory) {
+                        isCategoriesChanged_JspEmploymentHistory = false;
                         var ids = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
                         if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = null;
@@ -499,7 +499,7 @@
                 for (var i = 0; i < record.categories.length; i++)
                     catIds.add(record.categories[i].id);
                 DynamicForm_JspEmploymentHistory.getField("categories").setValue(catIds);
-                isCategoriesChanged = true;
+                isCategoriesChanged_JspEmploymentHistory = true;
                 DynamicForm_JspEmploymentHistory.getField("subCategories").focus(null, null);
             }
             if (record.subCategories != null && !record.subCategories.isEmpty()) {

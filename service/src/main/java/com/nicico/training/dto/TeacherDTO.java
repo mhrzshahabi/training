@@ -55,7 +55,8 @@ public class TeacherDTO {
     @Accessors(chain = true)
     @ApiModel("TeacherInformation")
     public static class TeacherInformation{
-        private PersonalInfoDTO.PersonalInfoCustom personality;
+        private PersonalInfoDTO.contractInfo personality;
+        private String personnelCode;
     }
 
     @Getter

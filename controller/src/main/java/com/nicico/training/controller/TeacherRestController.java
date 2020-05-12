@@ -217,6 +217,13 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
+        for (SearchDTO.CriteriaRq o : request.getCriteria().getCriteria()) {
+            if(o.getFieldName().equalsIgnoreCase("categories"))
+                o.setValue(Long.parseLong(o.getValue().get(0)+""));
+            if(o.getFieldName().equalsIgnoreCase("subCategories"))
+                o.setValue(Long.parseLong(o.getValue().get(0)+""));
+        }
+
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
@@ -536,7 +543,12 @@ public class TeacherRestController {
         if(teacherDTO.getPersonality().getPhoto() != null) {
             String fileName = personUploadDir + "/" + teacherDTO.getPersonality().getPhoto();
             File file = new File(fileName);
-            params.put("personalImg", ImageIO.read(file));
+            try {
+                params.put("personalImg", ImageIO.read(file));
+            }
+            catch(Exception e){
+                params.put("personalImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/personal_photo.png")));
+            }
         }
         if(teacherDTO.getPersonality().getPhoto() == null) {
             params.put("personalImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/personal_photo.png")));
@@ -811,6 +823,7 @@ public class TeacherRestController {
             criteriaRq.setCriteria(new ArrayList<>());
             criteriaRq.setOperator(EOperator.and);
             criteriaRq.getCriteria().add(ctr);
+
             request.setCriteria(criteriaRq);
         }
 

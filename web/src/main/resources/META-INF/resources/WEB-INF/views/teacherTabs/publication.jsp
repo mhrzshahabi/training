@@ -8,7 +8,7 @@
     var saveActionUrlPublication;
     var waitPublication;
     var teacherIdPublication = null;
-    var isCategoriesChanged = false;
+    var isCategoriesChanged_JspPublication = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -69,21 +69,14 @@
                 required: true,
                 width: "*",
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource:  RestDataSource_EPublicationSubjectType_JspTeacher ,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
@@ -104,7 +97,7 @@
                     filterOperator: "iContains"
                 },
                 changed: function () {
-                    isCategoriesChanged = true;
+                    isCategoriesChanged_JspPublication = true;
                     var subCategoryField = DynamicForm_JspPublication.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
@@ -144,8 +137,8 @@
                     filterOperator: "iContains"
                 },
                 focus: function () {
-                    if (isCategoriesChanged) {
-                        isCategoriesChanged = false;
+                    if (isCategoriesChanged_JspPublication) {
+                        isCategoriesChanged_JspPublication = false;
                         var ids = DynamicForm_JspPublication.getField("categories").getValue();
                         if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspPublication.implicitCriteria = null;
@@ -446,7 +439,7 @@
                 for (var i = 0; i < record.categories.length; i++)
                     catIds.add(record.categories[i].id);
                 DynamicForm_JspPublication.getField("categories").setValue(catIds);
-                isCategoriesChanged = true;
+                isCategoriesChanged_JspPublication = true;
                 DynamicForm_JspPublication.getField("subCategories").focus(null, null);
             }
             if (record.subCategories != null && !record.subCategories.isEmpty()) {

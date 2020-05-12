@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassCheckListDTO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
@@ -37,6 +38,9 @@ public interface IClassCheckListService {
 
     ClassCheckListDTO.Info updateDescription(Long id, ClassCheckListDTO.Update request) throws IOException;
 
+
+
+    ClassCheckListDTO.Info updateDescription2(ClassCheckListDTO.Info request) throws IOException;
 
     ClassCheckListDTO.Info updateDescriptionCheck(MultiValueMap<String, String> body) throws IOException;
 
