@@ -6,16 +6,14 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
 import com.nicico.training.service.NeedsAssessmentService;
+import com.nicico.training.service.SkillService;
 import com.nicico.training.service.StudentClassReportViewService;
-import com.nicico.training.utility.MakeExcelOutputUtil;
-import com.nicico.training.utility.SpecListUtil;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -34,9 +32,6 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.data;
 
 @RequiredArgsConstructor
 @Controller
@@ -46,6 +41,7 @@ public class ExportToExcelController {
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
     private final StudentClassReportViewService studentClassReportViewService;
+    private final SkillService skillService;
 
     @PostMapping(value = {"/download"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -191,6 +187,10 @@ public class ExportToExcelController {
             case "personnelCourses.jasper":
                 SearchDTO.SearchRs<StudentClassReportViewDTO.Info> searchSCRVS = studentClassReportViewService.search(searchRq);
                 list = searchSCRVS.getList();
+                break;
+            case "Skill_Report.jasper":
+                SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
+                list = searchSkill.getList();
                 break;
         }
         final Gson gson = new Gson();

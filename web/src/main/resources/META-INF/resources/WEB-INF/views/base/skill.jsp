@@ -446,22 +446,19 @@
             {
                 title: "<spring:message code='print.pdf'/>",
                 click: function () {
-                    "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
-                    window.open('${printUrl}');
+                    printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper");
                 }
             },
             {
                 title: "<spring:message code='print.excel'/>",
                 click: function () {
-                    "<spring:url value="/skill/print-all/excel" var="printUrl"/>"
-                    window.open('${printUrl}');
+                    printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper","excel");
                 }
             },
             {
                 title: "<spring:message code='print.html'/>",
                 click: function () {
-                    "<spring:url value="/skill/print-all/html" var="printUrl"/>"
-                    window.open('${printUrl}');
+                    printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper","html");
                 }
             }
         ]
@@ -522,8 +519,7 @@
     PrintTSB_Skill = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print'/>",
         click: function () {
-            "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
-            window.open('${printUrl}');
+            printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper");
         }
     });
     CourseTSB_Skill = isc.ToolStripButton.create({

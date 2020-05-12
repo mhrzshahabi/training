@@ -62,6 +62,4 @@ public class SkillFormController {
         else
             return null;
     }
-
-
 }
