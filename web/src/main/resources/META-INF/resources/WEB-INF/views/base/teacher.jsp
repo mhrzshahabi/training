@@ -296,6 +296,9 @@
                 type: "boolean"
             }
         ],
+        filterEditorSubmit: function () {
+            ListGrid_Teacher_JspTeacher.invalidateCache();
+        },
         cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: true,
