@@ -198,13 +198,13 @@
                     let params = {};
                     params.code = classGridRecordInAttendanceJsp.code;
                     params.titleClass = classGridRecordInAttendanceJsp.titleClass;
-                    params.startDate = classGridRecordInAttendanceJsp.startDate;
                     params.teacher = classGridRecordInAttendanceJsp.teacher;
                     params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
-                    params.date = DynamicForm_Attendance.getValue("sessionDate");
-                    let localData = ListGrid_Attendance_AttendanceJSP.data.localData.toArray();
+                    params.startDate = classGridRecordInAttendanceJsp.startDate;
+                    let localData = ListGrid_Attendance_AttendanceJSP.getData().localData.toArray();
                     let data = [];
                     if(DynamicForm_Attendance.getValue("filterType") == "1") {
+                        params.date = DynamicForm_Attendance.getValue("sessionDate");
                         let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
                         let sessionKeys = keys.filter(k => k.startsWith("se"));
                         sessionKeys.sort();
@@ -222,6 +222,12 @@
                             data.push(obj);
                         }
                         printToJasper(data, params, "attendance.jasper");
+                    }
+                    else{
+                        params.fullName = DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName+" "
+                            + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName;
+                        data = ListGrid_Attendance_AttendanceJSP.getData().localData.toArray();
+                        printToJasper(data, params, "attendanceStudent.jasper");
                     }
                 }
             }),
@@ -1137,29 +1143,29 @@
                 }
             }, 100)
         },
-        getCellCSSText: function (record, rowNum, colNum){
-            if(this.getFieldName(colNum).startsWith("se") || (this.getFieldName(colNum).valueOf()) == new String("state").valueOf()){
-                let key = this.getFieldName(colNum);
-                if(record[key] != this.getEditedCell(rowNum,colNum))
-                    return "font-weight:bold; color:#0066ff;";
-                switch(record[key]) {
-                    case "1":
-                        return "font-weight:bold; color:#199435;";
-                        break;
-                    case "2":
-                        return "font-weight:bold; color:#199435;";
-                        break;
-                    case "3":
-                        return "font-weight:bold; color:#FF0000;";
-                        break;
-                    case "4":
-                        return "font-weight:bold; color:#FF0000;";
-                        break;
-                    default:
-
-                }
-            }
-        },
+        // getCellCSSText: function (record, rowNum, colNum){
+        //     if(this.getFieldName(colNum).startsWith("se") || (this.getFieldName(colNum).valueOf()) == new String("state").valueOf()){
+        //         let key = this.getFieldName(colNum);
+        //         if(record[key] != this.getEditedCell(rowNum,colNum))
+        //             return "font-weight:bold; color:#0066ff;";
+        //         switch(record[key]) {
+        //             case "1":
+        //                 return "font-weight:bold; color:#199435;";
+        //                 break;
+        //             case "2":
+        //                 return "font-weight:bold; color:#199435;";
+        //                 break;
+        //             case "3":
+        //                 return "font-weight:bold; color:#FF0000;";
+        //                 break;
+        //             case "4":
+        //                 return "font-weight:bold; color:#FF0000;";
+        //                 break;
+        //             default:
+        //
+        //         }
+        //     }
+        // },
         // fields:[]
         // optionDataSource: DataSource_SessionInOneDate,
         // autoFetchData:true,

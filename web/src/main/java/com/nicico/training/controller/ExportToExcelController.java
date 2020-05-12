@@ -6,16 +6,14 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.StudentClassReportViewService;
-import com.nicico.training.utility.MakeExcelOutputUtil;
-import com.nicico.training.utility.SpecListUtil;
+import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -34,9 +32,6 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.data;
 
 @RequiredArgsConstructor
 @Controller
@@ -46,6 +41,8 @@ public class ExportToExcelController {
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
     private final StudentClassReportViewService studentClassReportViewService;
+    private final TclassService tclassService;
+
 
     @PostMapping(value = {"/download"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -151,28 +148,27 @@ public class ExportToExcelController {
                       @RequestParam(value = "fileName") String fileName,
                       @RequestParam(value = "data") String data,
                       @RequestParam(value = "params") String receiveParams
-                      ) throws Exception {
+    ) throws Exception {
         //-------------------------------------
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
-        HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
-//        final Map<String, Object> params = new HashMap<>();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
         data = "{" + "\"content\": " + data + "}";
         params.put("today", DateUtil.todayDate());
-        params.put(ConstantVARs.REPORT_TYPE,type);
+        params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
     @PostMapping(value = {"/print-criteria/{type}"})
-    public void printWithCriteria (HttpServletResponse response,
-                      @PathVariable String type,
-                      @RequestParam(value = "fileName") String fileName,
-                      @RequestParam(value = "CriteriaStr") String criteriaStr,
-                      @RequestParam(value = "params") String receiveParams
-                      ) throws Exception {
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "fileName") String fileName,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr,
+                                  @RequestParam(value = "params") String receiveParams
+    ) throws Exception {
         //-------------------------------------
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
@@ -183,7 +179,7 @@ public class ExportToExcelController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
         List list = null;
-        switch (fileName){
+        switch (fileName) {
             case "oneNeedsAssessment.jasper":
                 final SearchDTO.SearchRs<NeedsAssessmentDTO.Info> searchNAS = needsAssessmentService.search(searchRq);
                 list = searchNAS.getList();
@@ -191,6 +187,10 @@ public class ExportToExcelController {
             case "personnelCourses.jasper":
                 SearchDTO.SearchRs<StudentClassReportViewDTO.Info> searchSCRVS = studentClassReportViewService.search(searchRq);
                 list = searchSCRVS.getList();
+                break;
+            case "ClassByCriteria.jasper":
+                SearchDTO.SearchRs<TclassDTO.Info> searchTC = tclassService.search(searchRq);
+                list = searchTC.getList();
                 break;
         }
         final Gson gson = new Gson();
@@ -200,7 +200,7 @@ public class ExportToExcelController {
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
         params.put("today", DateUtil.todayDate());
-        params.put(ConstantVARs.REPORT_TYPE,type);
+        params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
