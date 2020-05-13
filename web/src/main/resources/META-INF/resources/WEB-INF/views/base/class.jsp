@@ -2693,12 +2693,20 @@
     function hasClassStarted(oldValue){
         let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record !== null)
-
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasClassStarted/" + record.id, "GET", null, function (resp) {
-
                 if (resp.data !== "") {
-                    if(resp.data == "false")
+                    if(resp.data == "false") {
                         classTypeStatus.setValue(oldValue);
+                        isc.Dialog.create({
+                            message: "<spring:message code="class.start.time.not.reached"/>",
+                            icon: "[SKIN]ask.png",
+                            title: "<spring:message code="message"/>",
+                            buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                    }
                 }
 
             }));
