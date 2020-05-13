@@ -9,7 +9,7 @@
 
 //<script>
 
-
+let classRecord;
 
     //******************************
     //Menu
@@ -89,17 +89,34 @@
         }
     });
 
-
+    var infoButton = isc.ToolStripButtonRefresh.create({
+        ID: "infoButton",
+        title:"",
+        icon: "<spring:url value="help.png"/>",
+        click : function() {
+            isc.Dialog.create({
+                title:"توضیحات",
+                message : "این قسمت شامل لیست اساتید برگزارکننده دوره " + classRecord.course.titleFa +" می باشد" ,
+                // icon:"[SKIN]ask.png",
+                buttons : [
+                    isc.Button.create({ title:"<spring:message code='close'/>" }),
+                ],
+                buttonClick : function (button, index) {
+                    this.hide();
+                }
+            });
+        },
+    });
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [
-
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    infoButton,
                     ToolStripButton_Refresh,
                 ]
             })
