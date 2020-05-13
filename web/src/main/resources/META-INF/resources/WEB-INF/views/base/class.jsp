@@ -2698,7 +2698,7 @@
                     if(resp.data == "false") {
                         classTypeStatus.setValue(oldValue);
                         isc.Dialog.create({
-                            message: "<spring:message code="class.start.time.not.reached"/>",
+                            message: "تاریخ شروع کلاس " + ListGrid_Class_JspClass.getSelectedRecord().startDate + " می باشد",
                             icon: "[SKIN]ask.png",
                             title: "<spring:message code="message"/>",
                             buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
