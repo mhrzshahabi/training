@@ -8,16 +8,20 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.service.CompetenceService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class CompetenceRestController {
 
     private final CompetenceService competenceService;
     private final ModelMapper modelMapper;
+    private final MessageSource messageSource;
 
     @Loggable
     @GetMapping("/list")
@@ -59,8 +64,11 @@ public class CompetenceRestController {
     public ResponseEntity delete(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(competenceService.delete(id), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            Locale locale = LocaleContextHolder.getLocale();
+            return new ResponseEntity<>(messageSource.getMessage("exception.unauthorized", null, locale), HttpStatus.UNAUTHORIZED);
         } catch (Exception ex) {
-            return new ResponseEntity(ex.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
     }
 

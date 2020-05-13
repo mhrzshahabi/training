@@ -1208,7 +1208,7 @@
             if (respCode === 200 || respCode === 201) {
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
-                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
+                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";
 
                 if (gridToRefresh !== undefined) {
                     refreshLG(gridToRefresh);
@@ -1220,7 +1220,9 @@
                 }, dialogShowTime);
             } else {
                 if (respCode === 409) {
-                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                } else if (respCode === 401) {
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + resp.httpResponseText;
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
