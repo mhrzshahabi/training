@@ -183,7 +183,7 @@ public class StudentRestController {
 //    @PreAuthorize("hasAuthority('r_student')")
     public ResponseEntity getOneByNationalCode(@PathVariable String nationalCode) {
         SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        criteria.getCriteria().add(makeNewCriteria("active", -1, EOperator.equals, null));
+        criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
         criteria.getCriteria().add(makeNewCriteria("nationalCode", nationalCode, EOperator.equals, null));
         List<StudentDTO.Info> studentList = studentService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
         if (studentList.size() > 0)
