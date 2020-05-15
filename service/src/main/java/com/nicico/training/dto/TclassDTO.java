@@ -508,7 +508,7 @@ public class TclassDTO {
     public static class WeeklySchedule {
         private Long id;
         private String code;
-        private CourseDTO.CourseInfoTuple course;
+        private CourseDTO.CourseWeeklySchedule course;
         private Set<ClassStudentDTO.WeeklySchedule> classStudents;
     }
 

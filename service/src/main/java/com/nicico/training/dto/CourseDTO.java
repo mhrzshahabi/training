@@ -125,7 +125,19 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("CourseWeeklySchedule")
+    public static class CourseWeeklySchedule {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private String evaluation;
         private Float theoryDuration;
+        private Long categoryId;
+        private Long subCategoryId;
     }
 
     @Getter
