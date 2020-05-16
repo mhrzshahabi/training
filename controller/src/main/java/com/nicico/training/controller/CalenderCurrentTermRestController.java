@@ -83,7 +83,7 @@ public class CalenderCurrentTermRestController {
         String personnelNo = null;
         Long postId = null;
         SearchDTO.CriteriaRq cri = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        cri.getCriteria().add(makeNewCriteria("active", -1, EOperator.equals, null));
+        cri.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
         cri.getCriteria().add(makeNewCriteria("nationalCode", SecurityUtil.getNationalCode(), EOperator.equals, null));
         List<PersonnelDTO.Info> personnelList = personnelService.search(new SearchDTO.SearchRq().setCriteria(cri)).getList();
         if (personnelList.isEmpty()) {

@@ -107,17 +107,17 @@
             }
         });
 
+        var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
+            click: function () {
+                ExportToFile.DownloadExcelFormClient(ListGrid_alarm, ListGrid_Class_JspClass, '', "کلاس - هشدارها");
+            }
+        })
+
         var ToolStrip_alarm = isc.ToolStrip.create({
             width: "100%",
             members: [
-                isc.ToolStrip.create({
-                    width: "100%",
-                    align: "left",
-                    border: '0px',
-                    members: [
-                        ToolStripButton_Refresh
-                    ]
-                })
+                        ToolStripButton_Refresh,ToolStripButton_ExportToExcel
+
             ]
         });
     }
