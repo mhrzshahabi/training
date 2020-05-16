@@ -1972,6 +1972,7 @@
 
     var HLayout_Grid_Class_JspClass = isc.TrHLayout.create({
         showResizeBar: true,
+        minWidth:"100%",
         width: "100%",
         height: "60%",
         members: [ListGrid_Class_JspClass]
@@ -2044,6 +2045,7 @@
     });
 
     let HLayout_Tab_Class = isc.HLayout.create({
+        minWidth:"100%",
         width: "100%",
         height: "39%",
         members: [TabSet_Class]
