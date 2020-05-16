@@ -183,7 +183,7 @@
 
     SupervisorDS_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -200,7 +200,7 @@
 
     PlannerDS_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -814,18 +814,16 @@
                 colSpan: 3,
                 required:true,
                 title: "<spring:message code="supervisor"/>:",
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textAlign: "center",
-                operator: "equals",
                 optionDataSource: SupervisorDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
                 displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
-                pickListProperties: {sortField: "personnelNo2", showFilterEditor: false},
-                textMatchStyle: "substring",
+                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
             },
             {
                 name: "planner",
@@ -833,18 +831,16 @@
                 required:true,
                 wrapTitle: false,
                 title: "<spring:message code="planner"/>:",
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textAlign: "center",
-                operator: "equals",
                 optionDataSource: PlannerDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
                 displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
-                pickListProperties: {sortField: "personnelNo2", showFilterEditor: false},
-                textMatchStyle: "substring",
+                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
             },
             {
                 name: "reason",
@@ -2169,6 +2165,10 @@
         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
         Window_Class_JspClass.show();
         DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+        if (userPersonInfo != null) {
+            DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
+            DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
+        }
     }
 
     function ListGrid_class_print(type) {

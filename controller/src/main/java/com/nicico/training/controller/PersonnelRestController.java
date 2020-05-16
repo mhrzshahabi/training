@@ -161,6 +161,8 @@ public class PersonnelRestController {
     @GetMapping(value = "/get-user-info")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity getUserInfo() {
+        if (SecurityUtil.getNationalCode() == null)
+            return new ResponseEntity<>(messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
         return getOneByNationalCode(SecurityUtil.getNationalCode());
     }
 }
