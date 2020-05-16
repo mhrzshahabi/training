@@ -803,6 +803,15 @@
                                 createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");
                             }
                         },
+                        {
+                            title: "<spring:message code="report.course.withOut.teacher"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/courseWithOutTeacherReaport"/>");
+                            }
+                        },
+
+
+
                         {isSeparator: true},
                         {
                             title: "<spring:message code="report.training.overtime"/>",
