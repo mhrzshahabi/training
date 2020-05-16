@@ -520,6 +520,14 @@
                                                                             code='msg.correct.date'/>", true);
                     else if (dateCheck === true)
                         DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("birthDate", true);
+                },
+                editorExit:function(){
+                    let result=reformat(DynamicForm_PersonnelReg_BaseInfo.getValue("birthDate"));
+                    if (result){
+                        DynamicForm_PersonnelReg_BaseInfo.getItem("birthDate").setValue(result);
+                        DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("birthDate", true);
+                        persianRegDateCheck=true;
+                    }
                 }
             },
             {
@@ -723,6 +731,14 @@
                                                                             code='msg.correct.date'/>", true);
                     else if (dateCheck === true)
                         DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
+                },
+                editorExit:function(){
+                    let result=reformat(DynamicForm_PersonnelReg_EmployEdu.getValue("employmentDate"));
+                    if (result){
+                        DynamicForm_PersonnelReg_EmployEdu.getItem("employmentDate").setValue(result);
+                        DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
+                        persianRegEmpDateCheck=true;
+                    }
                 }
                 },
 

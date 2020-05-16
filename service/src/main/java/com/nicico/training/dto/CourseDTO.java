@@ -8,6 +8,7 @@ import com.nicico.training.model.enums.ETechnicalType;
 import com.nicico.training.model.enums.ETheoType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -149,6 +150,16 @@ public class CourseDTO implements Serializable {
         private String titleFa;
         private Long categoryId;
         private Long subCategoryId;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("courseWithOutTeacher")
+    @AllArgsConstructor
+    public  static class courseWithOutTeacher{
+        private Long id;
+        private String code;
+        private String title;
     }
 
     // ------------------------------

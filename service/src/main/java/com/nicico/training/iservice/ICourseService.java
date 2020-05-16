@@ -82,4 +82,8 @@ public interface ICourseService {
     List<CourseDTO.Info> getEvaluation(Long courseId);
 
     CourseDTO.CourseGoals getCourseGoals(Long courseId);
+
+    //----------------------------------------------------------------------
+
+    List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate);
 }

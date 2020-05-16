@@ -280,14 +280,14 @@
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: personnelUrl + "/iscList"
     });
@@ -302,6 +302,7 @@
 
     PersonnelsLG_NABOP = isc.TrLG.create({
         dataSource: PersonnelDS_NABOP,
+        autoFitWidthApproach: "both",
         contextMenu: Menu_Personnel_NABOP,
         selectionType: "single",
         fields: [
@@ -439,6 +440,10 @@
                 refreshLG_NABOP(CourseDS_NABOP);
             }
         }, {
+            title: "نمایش نمودار", click: function () {
+                showChart_NABOP();
+            }
+        },{
             isSeparator: true
         }, {
             title: "<spring:message code="global.form.print.pdf"/>",
@@ -680,7 +685,7 @@
         }
     });
     ToolStripButton_ShowChart_NABOP = isc.ToolStripButton.create({
-        title: "نمایش چارت",
+        title: "نمایش نمودار",
         click: function () {
             showChart_NABOP();
         }

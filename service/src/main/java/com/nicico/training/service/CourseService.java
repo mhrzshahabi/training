@@ -12,11 +12,13 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
@@ -47,6 +49,8 @@ public class CourseService implements ICourseService {
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
     private final EnumsConverter.ETheoTypeConverter eTheoTypeConverter = new EnumsConverter.ETheoTypeConverter();
     private final MessageSource messageSource;
+    @Autowired
+    protected EntityManager entityManager;
 
 
     @Transactional(readOnly = true)
@@ -637,6 +641,29 @@ public class CourseService implements ICourseService {
         Course course = courseDAO.findAllById(courseId).get(0);
         return modelMapper.map(course, CourseDTO.CourseGoals.class);
     }
+
+    //----------------------------------------------------------------------
+    @Transactional
+    @Override
+    public List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate){
+        StringBuilder stringBuilder=new StringBuilder().append("SELECT  tbl_course.id,tbl_course.c_code ,tbl_course.c_title_fa  FROM  tbl_course WHERE tbl_course.id NOT IN (SELECT DISTINCT  tbl_class.f_course  FROM  tbl_class   WHERE   tbl_class.c_start_date >= :startDate    AND   tbl_class.c_end_date <= :endDate )");
+        List<Object> list=new ArrayList<>();
+        list= (List<Object>) entityManager.createNativeQuery(stringBuilder.toString())
+                .setParameter("startDate",startDate)
+                .setParameter("endDate",endDate).getResultList();
+        List<CourseDTO.courseWithOutTeacher> courseWithOutTeacherList =new ArrayList<>();
+        if(list != null)
+        {  for(int i=0;i<list.size();i++)
+        {
+            Object[] arr = (Object[]) list.get(i);
+            courseWithOutTeacherList.add(new CourseDTO.courseWithOutTeacher(Long.valueOf(arr[0].toString()),arr[1].toString(),arr[2].toString()));
+        }}
+        return (modelMapper.map(courseWithOutTeacherList, new TypeToken<List<CourseDTO.courseWithOutTeacher>>() {
+        }.getType()));
+    }
+
+    //----------------------------------------------------------------------
+
 
 }
 
