@@ -57,7 +57,7 @@
             {name: "nationalCode",title: "کد ملی",align: "center",filterOperator: "iContains"},
             {name: "startDate",title: "تاریخ شروع",align: "center",filterOperator: "iContains"},
             {name: "endDate",title: "تاریخ پایان",align: "center",filterOperator: "iContains"},
-            {name: "employeNo",title: "شماره پرسنلی 6 رقمي",align: "center",filterOperator: "iContains"},
+            {name: "personnelNo2",title: "شماره پرسنلی 6 رقمي",align: "center",filterOperator: "iContains"},
             {name: "personnelNo",title: "شماره پرسنلی",align: "center",filterOperator: "iContains"},
             {name: "preTestScore",title: "نمره پیش آزمون/تست",align: "center",filterOperator: "iContains"}
 
