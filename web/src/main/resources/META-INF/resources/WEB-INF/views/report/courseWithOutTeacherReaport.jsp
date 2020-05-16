@@ -90,6 +90,13 @@
                     }
                 }],
 
+                editorExit:function(){
+                    let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate"));
+                    if (result){
+                        DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").setValue(result);
+                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
+                    }
+                },
 
                 blur: function () {
                     var dateCheck;
@@ -134,6 +141,13 @@
 
                     }
                 }],
+                    editorExit:function(){
+                        let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
+                        if (result){
+                            DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").setValue(result);
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                        }
+                    },
                 blur: function () {
 
                     var dateCheck;
