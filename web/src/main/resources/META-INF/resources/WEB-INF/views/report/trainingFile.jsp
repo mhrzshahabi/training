@@ -36,6 +36,7 @@
             {name: "tclass.course.code", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "tclass.course.titleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "tclass.term.titleFa", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "tclass.startDate", title:"<spring:message code='start.date'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "tclass.endDate", title:"<spring:message code='end.date'/>", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "tclass.classStatus", filterOperator: "equals", autoFitWidth: true,
@@ -48,7 +49,8 @@
             },
             {name: "score", title:"<spring:message code='score'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "scoresState", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "student.postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "student.postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "tclass.teacher", title:"<spring:message code='teacher'/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: tclassStudentUrl + "classes-of-student/"
     });
@@ -210,11 +212,13 @@
             {name: "tclass.course.code"},
             {name: "tclass.course.titleFa"},
             {name: "tclass.term.titleFa"},
+            {name: "tclass.startDate"},
             {name: "tclass.endDate"},
             {name: "tclass.classStatus", hidden: true},
             {name: "score"},
             {name: "scoresState"},
             {name: "student.postTitle", hidden: true},
+            {name: "tclass.teacher"},
         ]
 
     });

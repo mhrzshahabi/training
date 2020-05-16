@@ -36,6 +36,180 @@
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
     <script src="<spring:url value='/js/langConverter.js' />"></script>
+
+    <script>
+        class ExportToFile {
+
+            constructor() {
+
+            }
+
+            //Base Methods
+            static getAllFields(listGrid) {
+                let data = listGrid.getAllFields();
+                let len = data.length;
+                let fields = [{'title': 'رديف', 'name': 'rowNum'}];
+                let isValueMap = [false];
+
+                //let nameOfFields = [];
+
+                for (let i = 1; i < len; i++) {
+                    if (typeof (data[i].showIf) == "undefined" || data[i].showIf == "true") {
+                        fields.push({'title': data[i].title, 'name': data[i].name});
+                        isValueMap.push((typeof (data[i].valueMap) == "undefined") ? false : true);
+                    }
+                }
+
+                return {fields: fields, isValueMap: isValueMap};
+            }
+
+            static getData(row, array, index) {
+                if (array.length - 1 > index) {
+
+                    return this.getData(row[array[index]], array, ++index);
+                } else if (array.length - 1 == index) {
+
+                    return row[array[index]];
+                } else {
+                    return '';
+                }
+            }
+
+            static getAllData(listGrid) {
+                let rows = listGrid.data.getAllLoadedRows();
+                let result = this.getAllFields(listGrid);
+                let fields = result.fields;
+                let isValueMaps = result.isValueMap;
+
+                let data = [];
+
+                for (let i = 0; i < rows.length; i++) {
+
+                    data[i] = {};
+
+                    for (let j = 0; j < fields.length; j++) {
+                        if (fields[j].name == 'rowNum') {
+                            data[i][fields[j].name] = (i + 1).toString();
+                        } else {
+                            let tmpStr = ExportToFile.getData(rows[i], fields[j].name.split('.'), 0);
+                            data[i][fields[j].name] = typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? tmpStr : listGrid.getDisplayValue(fields[j].name, tmpStr));
+                        }
+
+                    }
+                }
+                return {data, fields};
+            }
+
+            static generateTitle(parentlistGrid) {
+                let classRecord = parentlistGrid.getSelectedRecord();
+                let result = this.getAllFields(parentlistGrid);
+                let fields = result.fields;
+                let isValueMaps = result.isValueMap;
+
+                var titr = "";
+
+                for (let j = 1; j < fields.length; j++) {
+                    let tmpStr = ExportToFile.getData(classRecord, fields[j].name.split('.'), 0);
+                    console.log(tmpStr);
+                    titr+=fields[j].title+': '+(typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr+' ').trim() : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim()))+' - ';
+                }
+
+                titr = titr.substring(0,titr.length-4);
+
+                return titr;
+            }
+
+            //Send Data Methods
+            static exportToExcelFormClient(fields, data, titr, pageName) {
+                let downloadForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/training/export-to-file/exportExcelFromClient/",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "myToken", type: "hidden"},
+                            {name: "fields", type: "hidden"},
+                            {name: "data", type: "hidden"},
+                            {name: "titr", type: "hidden"},
+                            {name: "pageName", type: "hidden"}
+                        ]
+                });
+                <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
+                downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
+                downloadForm.setValue("data", JSON.stringify(data.toArray()));
+                downloadForm.setValue("titr", titr);
+                downloadForm.setValue("pageName", pageName);
+                downloadForm.show();
+                downloadForm.submitForm();
+            }
+
+            static exportToExcelFormServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+                let downloadForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/training/export-to-file/exportExcelFromServer/",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "myToken", type: "hidden"},
+                            {name: "fields", type: "hidden"},
+                            {name: "fileName", type: "hidden"},
+                            {name: "titr", type: "hidden"},
+                            {name: "pageName", type: "hidden"},
+                            {name: "_sortBy", type: "hidden"},
+                            {name: "_len", type: "hidden"},
+                            {name: "criteriaStr", type: "hidden"}
+                        ]
+                });
+                downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
+                downloadForm.setValue("titr", titr);
+                downloadForm.setValue("fileName", fileName);
+                downloadForm.setValue("pageName", pageName);
+                downloadForm.setValue("_sortBy", sortBy);
+                downloadForm.setValue("_len", len);
+                downloadForm.setValue("criteriaStr", criteriaStr);
+                downloadForm.show();
+                downloadForm.submitForm();
+            }
+
+            //Get Data For Send
+            static DownloadExcelFormClient(listGrid, parentListGrid, titr, pageName) {
+
+                let tmptitr = '';
+
+                if ((titr.length === 0) && parentListGrid != null) {
+                    tmptitr = this.generateTitle(parentListGrid);
+                    console.log('tmptitr:'+tmptitr);
+                } else {
+                    tmptitr = titr;
+                }
+
+                let result = this.getAllData(listGrid);
+
+                this.exportToExcelFormClient(result.fields, result.data, tmptitr, pageName);
+            }
+
+            static DownloadExcelFormServer(listGrid, fileName,len, parentListGrid, titr, pageName,criteria) {
+
+                let tmptitr = '';
+
+                if ((titr.length === 0) && parentListGrid != null) {
+                    tmptitr = this.generateTitle(parentListGrid);
+                    tmptitr='';
+                } else {
+                    tmptitr = titr;
+                }
+
+                let fields = this.getAllFields(listGrid);
+                //let criteria=JSON.stringify(listGrid.data.criteria.criteria);
+
+                this.exportToExcelFormServer(fields.fields,fileName,criteria,'',len, tmptitr, pageName);
+            }
+        }
+    </script>
+
+
     <script src="<spring:url value='/js/dateReformat.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
@@ -500,6 +674,12 @@
                     }
                 },
                 {
+                    title: "<spring:message code="skill"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/skill/show-form"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="needs.assessment"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
@@ -544,13 +724,6 @@
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="skill"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/skill/show-form"/>");
-                    }
-                }
                 <%--,--%>
                 <%--{--%>
                 <%--    title: "<spring:message code="skill.group"/>",--%>
@@ -804,6 +977,15 @@
                                 createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");
                             }
                         },
+                        {
+                            title: "<spring:message code="report.course.withOut.teacher"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/courseWithOutTeacherReaport"/>");
+                            }
+                        },
+
+
+
                         {isSeparator: true},
                         {
                             title: "<spring:message code="report.training.overtime"/>",
@@ -1209,7 +1391,7 @@
             if (respCode === 200 || respCode === 201) {
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
-                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
+                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";
 
                 if (gridToRefresh !== undefined) {
                     refreshLG(gridToRefresh);
@@ -1221,7 +1403,9 @@
                 }, dialogShowTime);
             } else {
                 if (respCode === 409) {
-                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                } else if (respCode === 401) {
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + resp.httpResponseText;
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
@@ -1676,6 +1860,13 @@
     var workflowRecordId = null;
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
+    var userPersonInfo = null;
+    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
+    function setUserPersonInfo(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            userPersonInfo = (JSON.parse(resp.data));
+        }
+    }
 
     <%--isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});--%>
     <%--loadingMessage: "<spring:message code="loading"/>",--%>

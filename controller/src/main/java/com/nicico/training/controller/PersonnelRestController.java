@@ -10,6 +10,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
@@ -154,5 +155,12 @@ public class PersonnelRestController {
         if (!personnelRegisteredList.isEmpty())
             return new ResponseEntity<>(personnelRegisteredList.get(0), HttpStatus.OK);
         return new ResponseEntity<>(messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
+    }
+
+    @Loggable
+    @GetMapping(value = "/get-user-info")
+//    @PreAuthorize("hasAuthority('r_personalInfo')")
+    public ResponseEntity getUserInfo() {
+        return getOneByNationalCode(SecurityUtil.getNationalCode());
     }
 }

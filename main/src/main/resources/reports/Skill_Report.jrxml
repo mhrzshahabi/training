@@ -49,6 +49,9 @@
 		<field name="course.titleFa" class="java.lang.String"/>
 		<field name="course.code" class="java.lang.String"/>
 		<field name="skillLevel.titleFa" class="java.lang.String"/>
+		<variable name="Row_Number" class="java.lang.Integer">
+			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="today" class="java.lang.String"/>
@@ -74,6 +77,17 @@
 				<reportElement x="720" y="0" width="79" height="79" uuid="59ecefe2-e8c6-4fd9-847d-024206c15d37"/>
 				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
 			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="50" y="59" width="50" height="18" uuid="b17233cb-fa54-4aa1-8d13-2c0a9992054f"/>
+				<textFieldExpression><![CDATA[$P{today}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="110" y="57" width="30" height="18" uuid="23b65b85-dc78-4d11-9c74-f8db45e43383"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[تاریخ:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -101,7 +115,7 @@
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="180" height="30" uuid="37d2f44f-0b90-4e22-a12a-d801ab8ffd17"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
@@ -122,7 +136,7 @@
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="30" uuid="3d853710-4eb3-45e3-9e22-bc2433e984e1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
@@ -143,7 +157,7 @@
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="30" uuid="0baee986-04a6-4162-9ff7-4590e7422497"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
@@ -164,7 +178,7 @@
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="30" uuid="9379ef01-9f55-47e3-aeb9-31ad54086016"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
@@ -185,7 +199,7 @@
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="30" uuid="ceb05239-7a77-4f61-a5c3-cdc29da8b46a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
@@ -206,7 +220,7 @@
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="150" height="30" uuid="12483bd0-8735-49f8-a2c7-b575013a50fd"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
@@ -227,7 +241,7 @@
 							</staticText>
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="70" height="30" uuid="329b4190-a947-4711-b76a-7077467cfd26"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
@@ -249,7 +263,11 @@
 						</jr:tableHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="40" height="30" uuid="1b9cd7c7-6917-4b10-9111-8fa71adb84f9"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="f05421a9-9c16-4877-a00c-781e3c71f091"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{Row_Number}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -259,7 +277,7 @@
 	</detail>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="650" y="5" width="100" height="17" uuid="f6a8c64b-d452-4338-92f4-cf66c58e72ad"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
@@ -273,19 +291,4 @@
 			</staticText>
 		</band>
 	</pageFooter>
-	<lastPageFooter>
-		<band height="50">
-			<textField>
-				<reportElement x="20" y="12" width="50" height="18" uuid="b17233cb-fa54-4aa1-8d13-2c0a9992054f"/>
-				<textFieldExpression><![CDATA[$P{today}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="80" y="10" width="30" height="18" uuid="23b65b85-dc78-4d11-9c74-f8db45e43383"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[تاریخ:]]></text>
-			</staticText>
-		</band>
-	</lastPageFooter>
 </jasperReport>
