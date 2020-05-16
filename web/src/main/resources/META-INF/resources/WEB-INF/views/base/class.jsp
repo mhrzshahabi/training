@@ -63,6 +63,7 @@
             {name: "titleClass"},
             {name: "startDate"},
             {name: "endDate"},
+            {name: "studentCount",canFilter:false,canSort:false},
             {name: "code"},
             {name: "term.titleFa"},
 // {name: "teacher.personality.lastNameFa"},
@@ -334,6 +335,12 @@
                 filterOperator: "iContains"
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
+            {
+                name: "studentCount",
+                title: "<spring:message code='student.count'/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {
                 name: "group",
                 title: "<spring:message code='group'/>",

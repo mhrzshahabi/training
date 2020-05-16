@@ -206,6 +206,14 @@
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
                     }
                 }],
+                editorExit:function(){
+                    let result=reformat(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
+                    if (result){
+                        DynamicForm_BasicInfo_JspTeacher.getItem("personality.birthDate").setValue(result);
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.birthDate", true);
+                        persianDateCheck=true;
+                    }
+                },
                 changed: function () {
                     var dateCheck;
                     if (DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate") == null ||

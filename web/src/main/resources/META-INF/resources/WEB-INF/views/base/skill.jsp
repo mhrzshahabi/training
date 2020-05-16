@@ -321,6 +321,20 @@
                 name: "courseId",
                 title: "<spring:message code='course'/>:",
                 textAlign: "center",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 width: "300",
                 type: "ComboBoxItem",
                 pickListWidth: 500,
@@ -470,6 +484,9 @@
         autoFetchData: true,
         selectionType: "single",
         showResizeBar: true,
+        dataArrived:function(){
+            setTimeout(function(){ $("tbody tr td:last-child").css({direction:'ltr'});},100);
+        },
         fields: [
             {name: "code"},
             {name: "titleFa"},
@@ -479,7 +496,17 @@
             {name: "course.code"},
             {name: "course.titleFa"}
         ],
+        rowHover: function(){
+            changeDirection();
+        },
+        rowOver:function(){
+            changeDirection();
+        },
+        rowClick:function(){
+            changeDirection();
+        },
         doubleClick: function () {
+            changeDirection();
             EditSkill_Skill();
         },
         selectionUpdated: function () {
@@ -708,4 +735,14 @@
         CourseWindow_Skill.show();
     }
 
+    const changeDirection=()=>{
+        let classes=".cellAltCol,.cellDarkAltCol, .cellOverAltCol, .cellOverDarkAltCol, .cellSelectedAltCol, .cellSelectedDarkAltCol," +
+                    " .cellSelectedOverAltCol, .cellSelectedOverDarkAltCol, .cellPendingSelectedAltCol, .cellPendingSelectedDarkAltCol," +
+                    " .cellPendingSelectedOverAltCol, .cellPendingSelectedOverDarkAltCol, .cellDeselectedAltCol, .cellDeselectedDarkAltCol," +
+                    " .cellDeselectedOverAltCol, .cellDeselectedOverDarkAltCol, .cellDisabledAltCol, .cellDisabledDarkAltCol";
+        setTimeout(function() {
+            $(classes).css({'direction': 'ltr!important'});
+            $("tbody tr td:last-child").css({'direction':'ltr'});
+        },10);
+    };
     //</script>
