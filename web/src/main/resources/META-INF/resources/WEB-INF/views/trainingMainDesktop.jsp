@@ -1861,8 +1861,8 @@
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
     var userPersonInfo = null;
-    isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/personnel/getOneByNationalCode", "GET", null, userData_Result_SP));
-    function userData_Result_SP(resp) {
+    isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/personnel/getOneByNationalCode", "GET", null, setUserPersonInfo));
+    function setUserPersonInfo(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             userPersonInfo = (JSON.parse(resp.data));
         }
