@@ -1860,6 +1860,13 @@
     var workflowRecordId = null;
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
+    var userPersonInfo = null;
+    isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/personnel/getOneByNationalCode", "GET", null, userData_Result_SP));
+    function userData_Result_SP(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            userPersonInfo = (JSON.parse(resp.data));
+        }
+    }
 
     <%--isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});--%>
     <%--loadingMessage: "<spring:message code="loading"/>",--%>
