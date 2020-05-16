@@ -1143,29 +1143,29 @@
                 }
             }, 100)
         },
-        // getCellCSSText: function (record, rowNum, colNum){
-        //     if(this.getFieldName(colNum).startsWith("se") || (this.getFieldName(colNum).valueOf()) == new String("state").valueOf()){
-        //         let key = this.getFieldName(colNum);
-        //         if(record[key] != this.getEditedCell(rowNum,colNum))
-        //             return "font-weight:bold; color:#0066ff;";
-        //         switch(record[key]) {
-        //             case "1":
-        //                 return "font-weight:bold; color:#199435;";
-        //                 break;
-        //             case "2":
-        //                 return "font-weight:bold; color:#199435;";
-        //                 break;
-        //             case "3":
-        //                 return "font-weight:bold; color:#FF0000;";
-        //                 break;
-        //             case "4":
-        //                 return "font-weight:bold; color:#FF0000;";
-        //                 break;
-        //             default:
-        //
-        //         }
-        //     }
-        // },
+        getCellCSSText: function (record, rowNum, colNum){
+            if(this.getFieldName(colNum).startsWith("se") || (this.getFieldName(colNum).valueOf()) == new String("state").valueOf()){
+                let key = this.getFieldName(colNum);
+                if(record[key] != this.getEditedCell(rowNum,colNum))
+                    return "font-weight:bold; color:#0066ff;";
+                switch(record[key]) {
+                    case "1":
+                        return "font-weight:bold; color:#199435;";
+                        break;
+                    case "2":
+                        return "font-weight:bold; color:#199435;";
+                        break;
+                    case "3":
+                        return "font-weight:bold; color:#FF0000;";
+                        break;
+                    case "4":
+                        return "font-weight:bold; color:#FF0000;";
+                        break;
+                    default:
+
+                }
+            }
+        },
         // fields:[]
         // optionDataSource: DataSource_SessionInOneDate,
         // autoFetchData:true,
