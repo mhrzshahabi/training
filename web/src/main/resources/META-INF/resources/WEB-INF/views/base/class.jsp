@@ -332,9 +332,10 @@
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                autoFitWidth: true
             },
-            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
+            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
@@ -346,12 +347,12 @@
                 title: "<spring:message code='group'/>",
                 align: "center",
                 filterOperator: "equals",
-                autoFitWidth: true
+
             },
             <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center",autoFitWidth: true, filterOperator: "iContains"},
             {
-                name: "reason", title: "<spring:message code='training.request'/>", align: "center",
+                name: "reason", title: "<spring:message code='training.request'/>", align: "center",autoFitWidth: true,
                 valueMap: {
                     "1": "نیازسنجی",
                     "2": "درخواست واحد",
@@ -364,7 +365,7 @@
                 }
             },
             {
-                name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",autoFitWidth: true,
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
@@ -377,7 +378,7 @@
                 }
             },
             {
-                name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
+                name: "topology", title: "<spring:message code='place.shape'/>",autoFitWidth: true, align: "center", valueMap: {
                     "1": "U شکل",
                     "2": "عادی",
                     "3": "مدور",
@@ -406,7 +407,7 @@
                 name: "workflowEndingStatus",
                 title: "<spring:message code="ending.class.status"/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",autoFitWidth: true
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "course.code", title:"", hidden:true},
@@ -2068,7 +2069,7 @@
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "700",
+        width: "400",
         height: "100%",
         // wrapItemTitles: true,
         numCols: 4,
@@ -2079,7 +2080,7 @@
             {
                 name: "yearFilter",
                 title: "<spring:message code='year'/>",
-                width: "200",
+                width: "100",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "year",
@@ -2111,7 +2112,7 @@
             {
                 name: "termFilter",
                 title: "<spring:message code='term'/>",
-                width: "400",
+                width: "300",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "code",
@@ -2263,6 +2264,9 @@
     });
 
     var VLayout_Body_Class_JspClass = isc.TrVLayout.create({
+        width: "100%",
+        height: "100%",
+        overflow: "scroll",
         members: [
             HLayout_Actions_Class_JspClass,
             HLayout_Grid_Class_JspClass,
