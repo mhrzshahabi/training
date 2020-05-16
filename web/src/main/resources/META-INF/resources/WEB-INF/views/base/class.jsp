@@ -1941,6 +1941,16 @@
         ]
     });
 
+    var ToolStrip_Excel_JspClass = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    ExportToFile.DownloadExcelFormClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
+                }
+            })]
+    });
 
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
@@ -1951,6 +1961,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
+            ToolStrip_Excel_JspClass,
             DynamicForm_Term_Filter,
             isc.ToolStrip.create({
                 width: "100%",
