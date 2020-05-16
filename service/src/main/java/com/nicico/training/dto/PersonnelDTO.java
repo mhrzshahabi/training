@@ -71,6 +71,10 @@ public class PersonnelDTO implements Serializable {
         private String ccpSection;
         private String ccpUnit;
         private String ccpTitle;
+        private String address;
+        private String phone;
+        private String mobile;
+        private String email;
     }
 
     @Getter
@@ -107,6 +111,10 @@ public class PersonnelDTO implements Serializable {
         private String workTurnTitle;
         private String workPlaceTitle;
         private String complexTitle;
+        private String address;
+        private String phone;
+        private String mobile;
+        private String email;
     }
 
     @Getter

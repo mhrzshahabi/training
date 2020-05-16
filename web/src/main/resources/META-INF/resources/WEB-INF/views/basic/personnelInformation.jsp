@@ -634,7 +634,7 @@
                         cellStyle: "lineField"
                     },
                     {
-                        name: "tel",
+                        name: "phone",
                         title: "<spring:message code="telephone"/> : ",
                         canEdit: false
                     },

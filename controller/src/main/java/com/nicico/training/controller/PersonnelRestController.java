@@ -145,7 +145,7 @@ public class PersonnelRestController {
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity getOneByNationalCode(@PathVariable String nationalCode) {
         SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        criteria.getCriteria().add(makeNewCriteria("active", -1, EOperator.equals, null));
+        criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
         criteria.getCriteria().add(makeNewCriteria("nationalCode", nationalCode, EOperator.equals, null));
         List<PersonnelDTO.Info> personnelList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
         if (!personnelList.isEmpty())

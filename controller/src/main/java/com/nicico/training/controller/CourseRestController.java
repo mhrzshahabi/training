@@ -486,6 +486,22 @@ public class CourseRestController {
     }
 
     @Loggable
+    @GetMapping(value = "courseWithOutTeacher/{startdate}/{endDate}")
+    public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate,@PathVariable String endDate)
+    {
+        List<CourseDTO.courseWithOutTeacher> list = courseService.courseWithOutTeacher(startdate, endDate);
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
     @GetMapping(value = "getEvaluation/{id}")
     public ResponseEntity<CourseDTO.SpecRs> getEvaluation(@PathVariable Long id) {
         List<CourseDTO.Info> list = courseService.getEvaluation(id);

@@ -781,7 +781,7 @@
                 },
                 pickListProperties: {
                     showFilterEditor: false
-                },
+                }
             },
             {
                 name: "classStatus",

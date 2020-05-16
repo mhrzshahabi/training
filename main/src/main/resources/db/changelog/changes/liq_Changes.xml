@@ -49,5 +49,25 @@
     <changeSet author="poursalehi_mos (generated)" id="1588738080087-393">
         <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_parameter_value"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589446164517-428">
+        <addColumn tableName="tbl_personnel">
+            <column name="address" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589446164517-429">
+        <addColumn tableName="tbl_personnel">
+            <column name="email" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589446164517-430">
+        <addColumn tableName="tbl_personnel">
+            <column name="mobile" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589446164517-431">
+        <addColumn tableName="tbl_personnel">
+            <column name="phone" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -462,6 +462,7 @@
         numCols: 3,
         padding: 10,
         titleAlign: "left",
+        styleName: "teacher-form",
         fields: [
             {
                 name: "reportType",
