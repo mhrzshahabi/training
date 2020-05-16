@@ -419,6 +419,7 @@
         titleAlign: "left",
         numCols: 10,
         itemHoverWidth: "20%",
+        styleName: "teacher-form",
         colWidths: ["5%", "18%", "5%", "11%", "5%", "5%", "6%", "8%", "7%", "8%"],
         padding: 10,
         valuesManager: "VM_JspClass",
@@ -1936,8 +1937,8 @@
             },
             {
                 ID: "teacherInformationTab",
-                title: "<spring:message code='teacher.information'/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
+                title: "<spring:message code='teachers'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"}),
             },
             <%--{--%>
                 <%--ID: "costClassTab",--%>
@@ -2341,12 +2342,20 @@
     function hasClassStarted(oldValue){
         let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record !== null)
-
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasClassStarted/" + record.id, "GET", null, function (resp) {
-
                 if (resp.data !== "") {
-                    if(resp.data == "false")
+                    if(resp.data == "false") {
                         classTypeStatus.setValue(oldValue);
+                        isc.Dialog.create({
+                            message: "<spring:message code="class.start.time.not.reached"/>",
+                            icon: "[SKIN]ask.png",
+                            title: "<spring:message code="message"/>",
+                            buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                    }
                 }
 
             }));

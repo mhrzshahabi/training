@@ -166,4 +166,16 @@ public class Personnel {
 
     @Column(name = "ccp_title")
     private String ccpTitle;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "mobile")
+    private String mobile;
+
+    @Column(name = "email")
+    private String email;
 }
