@@ -1271,7 +1271,7 @@
 // vertical:false,
                 rowSpan: 2,
                 colSpan: 1,
-                fillHorizontalSpace: true,
+                // fillHorizontalSpace: true,
                 defaultValue: 1,
                 endRow: true,
                 valueMap: {

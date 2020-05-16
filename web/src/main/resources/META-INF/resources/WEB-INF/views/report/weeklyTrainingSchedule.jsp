@@ -38,18 +38,14 @@
 
     //----------------------------------------------------Criteria Form-------------------------------------------------
     var DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule = isc.DynamicForm.create({
-        align: "center",
-        titleWidth: 0,
-        titleAlign: "center",
-        showInlineErrors: true,
-        showErrorText: false,
         numCols: 4,
+        colWidths: ["10%", "40%", "10%", "40%"],
+        width: "700",
         fields: [
             {
                 name: "tclass.course.categoryId",
                 title: "انتخاب گروه",
                 textAlign: "center",
-                width: "30%",
                 editorType: "ComboBoxItem",
                 defaultValue: null,
                 changeOnKeypress: true,
@@ -63,12 +59,14 @@
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
+                pickListWidth: "280",
                 generateExactMatchCriteria: true,
+                operator: "equals",
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "titleFa", width: "100%", filterOperator: "iContains"}],
                 changed: function (form,item,value) {
                     isCategoryChanged_JspWeeklyTrainingSchedule = true;
                     if (value == null || value == undefined) {
@@ -83,14 +81,13 @@
                 name: "tclass.course.subCategoryId",
                 title: "انتخاب زیرگروه",
                 textAlign: "center",
-                width: "30%",
-                titleAlign: "center",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultValue: null,
                 displayField: "titleFa",
                 valueField: "id",
                 disabled: true,
+                operator: "equals",
                 optionDataSource: RestDataSource_SubCategory_JspWeeklyTrainingSchedule,
                 autoFetchData: false,
                 addUnknownValues: false,
@@ -100,11 +97,12 @@
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
+                pickListWidth: "280",
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "titleFa", width: "100%", filterOperator: "iContains"}],
                 focus: function () {
                     if (isCategoryChanged_JspWeeklyTrainingSchedule) {
                         isCategoryChanged_JspWeeklyTrainingSchedule = false;
@@ -123,10 +121,11 @@
                 }
             }
         ],
-        itemChanged: function(item,newValue){
-            var newCriteria = isc.DataSource.combineCriteria(ListGrid_Result_JspWeeklyTrainingSchedule.getCriteria(),
-                DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria());
-            ListGrid_Result_JspWeeklyTrainingSchedule.fetchData(newCriteria);
+        itemChanged : function(item, newValue){
+            ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria =
+                DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+            ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
+            ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
         }
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
@@ -135,7 +134,7 @@
         height: "100%",
         dataSource: RestDataSource_Class_JspWeeklyTrainingSchedule,
         initialSort: [
-            {property: "studentStatus", direction: "ascending"},
+            // {property: "studentStatus", direction: "ascending"},
             {property: "sessionDate", direction: "ascending"},
             {property: "sessionStartHour", direction: "ascending"}
         ],
@@ -143,7 +142,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         selectionType: "single",
         canMultiSort: true,
         autoFetchData: true,
@@ -175,11 +174,13 @@
             },
             {
                 name: "dayName",
-                title: "روز"
+                title: "روز",
+                filterOperator: "equals"
             },
             {
                 name: "sessionHour",
-                title: "ساعت"
+                title: "ساعت",
+                filterOperator: "equals"
             },
             {
                 name: "sessionStateFa",
@@ -209,10 +210,10 @@
                     "1": "حاضر",
                     "2": "حاضر و اضافه کار",
                     "3": "غیبت غیر موجه",
-                    "4": "غیبت موجه",
+                    "4": "غیبت موجه"
                 }
-            },
-        ],
+            }
+        ]
     });
 
     HLayout_CriteriaForm_JspWeeklyTrainingSchedule = isc.TrHLayout.create({
