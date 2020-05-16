@@ -63,6 +63,7 @@
             {name: "titleClass"},
             {name: "startDate"},
             {name: "endDate"},
+            {name: "studentCount",canFilter:false,canSort:false},
             {name: "code"},
             {name: "term.titleFa"},
 // {name: "teacher.personality.lastNameFa"},
@@ -335,6 +336,12 @@
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
             {
+                name: "studentCount",
+                title: "<spring:message code='student.count'/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
                 name: "group",
                 title: "<spring:message code='group'/>",
                 align: "center",
@@ -454,6 +461,7 @@
         titleAlign: "left",
         numCols: 10,
         itemHoverWidth: "20%",
+        styleName: "teacher-form",
         colWidths: ["5%", "18%", "5%", "11%", "5%", "5%", "6%", "8%", "7%", "8%"],
         padding: 10,
         valuesManager: "VM_JspClass",

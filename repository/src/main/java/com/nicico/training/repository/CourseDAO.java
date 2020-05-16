@@ -42,5 +42,8 @@ public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecification
 
     @Query(value = "SELECT tbl_course.n_theory_duration FROM tbl_course where ID = :courseId", nativeQuery = true)
     Float getCourseTheoryDurationById(Long courseId);
+
+
+
 }
 

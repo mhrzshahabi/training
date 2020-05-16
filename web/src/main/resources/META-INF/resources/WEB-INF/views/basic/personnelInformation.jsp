@@ -3,35 +3,111 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+//<script>
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
-        //*****toolStrip*****
-        var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
-            title: "<spring:message code="refresh"/>",
-            click: function () {
-                PersonnelInfoListGrid_PersonnelList.invalidateCache();
-                set_PersonnelInfo_Details();
-            }
-        });
+    //*****toolStrip*****
+    var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
+        click: function () {
+            PersonnelInfoListGrid_PersonnelList.invalidateCache();
+            set_PersonnelInfo_Details();
+        }
+    });
+
+    var ToolStrip_Personnel_Info = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_PI
+                ]
+            })
+        ]
+    });
 
 
-        var ToolStrip_Personnel_Info = isc.ToolStrip.create({
-            width: "100%",
-            membersMargin: 5,
-            members: [
-                isc.ToolStrip.create({
-                    width: "100%",
-                    align: "left",
-                    border: '0px',
-                    members: [
-                        ToolStripButton_Refresh_PI
-                    ]
-                })
+    var ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    ExportToFile.DownloadExcelFormClient(ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
+                }
+            })/*,
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
+                    let size = ListGrid_PersonnelTraining.data.size();
 
-            ]
-        });
+                    isc.Window.create({
+                        ID: "exportExcelWindow",
+                        title: "خروجی اکسل",
+                        autoSize: true,
+                        width: 400,
+                        items: [
+                            isc.DynamicForm.create({
+                                ID: "exportExcelForm",
+                                numCols: 1,
+                                padding: 10,
+                                fields: [
+                                    {
+                                        name: "maxRow",
+                                        width: "100%",
+                                        titleOrientation: "top",
+                                        title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+                                        value: size,
+                                        suppressBrowserClearIcon: true,
+                                        icons: [{
+                                            name: "clear",
+                                            src: "[SKIN]actions/close.png",
+                                            width: 10,
+                                            height: 10,
+                                            inline: true,
+                                            prompt: "پاک کردن",
+                                            click: function (form, item, icon) {
+                                                item.clearValue();
+                                                item.focusInItem();
+                                            }
+                                        }],
+                                        iconWidth: 16,
+                                        iconHeight: 16
+                                    }
+                                ]
+                            }),
+                            isc.TrHLayoutButtons.create({
+                                members: [
+                                    isc.IButton.create({
+                                        title: "تایید",
+                                        click: function () {
+                                            if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+                                                ExportToFile.DownloadExcelFormServer(ListGrid_PersonnelTraining, 'tclass-personnel-training', exportExcelForm.getValue("maxRow"), PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", JSON.stringify({ "value": nationalCode }));
+                                            }
+                                        }
+                                    }),
+                                    isc.IButton.create({
+                                        title: "لغو",
+                                        click: function () {
+                                            exportExcelWindow.close();
+                                        }
+                                    }),
+                                ]
+                            })
+                        ]
+                    });
+                    exportExcelWindow.show();
+                }
+            })
+*/
+        ]
+    });
+
     }
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
 
@@ -256,6 +332,7 @@
                 }
 
             ],
+            gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body"],
             cellClick: function (record, rowNum, colNum) {
                 show_ClassInformation(record, rowNum, colNum);
             }
@@ -557,7 +634,7 @@
                         cellStyle: "lineField"
                     },
                     {
-                        name: "tel",
+                        name: "phone",
                         title: "<spring:message code="telephone"/> : ",
                         canEdit: false
                     },
