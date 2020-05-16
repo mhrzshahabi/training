@@ -461,6 +461,7 @@
         titleAlign: "left",
         numCols: 10,
         itemHoverWidth: "20%",
+        styleName: "teacher-form",
         colWidths: ["5%", "18%", "5%", "11%", "5%", "5%", "6%", "8%", "7%", "8%"],
         padding: 10,
         valuesManager: "VM_JspClass",
