@@ -62,6 +62,20 @@ public class ClassStudentRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
+    private ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> searchEvaluationAnalysistLearning(HttpServletRequest iscRq,Long classId, SearchDTO.CriteriaRq criteria) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(criteria);
+        if (searchRq.getCriteria() != null)
+            criteriaRq.getCriteria().add(searchRq.getCriteria());
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs = classStudentService.searchEvaluationAnalysistLearning(searchRq,classId);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
     @Loggable
     @GetMapping(value = "/students-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
@@ -101,7 +115,7 @@ public class ClassStudentRestController {
     @Loggable
     @GetMapping(value = "/evaluationAnalysistLearning/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> evaluationAnalysistLearning(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.evaluationAnalysistLearning.class));
+        return searchEvaluationAnalysistLearning(iscRq,classId, makeNewCriteria("tclassId", classId, EOperator.equals, null));
     }
 
 

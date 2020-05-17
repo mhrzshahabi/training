@@ -13,10 +13,14 @@ import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -124,10 +128,38 @@ public class ClassStudentService implements IClassStudentService {
 
     }
 
-    //*********************************
     @Transactional
     public Long getClassIdByClassStudentId(Long classStudentId) {
         ClassStudent classSession = classStudentDAO.getClassStudentById(classStudentId);
         return classSession.getTclassId();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchEvaluationAnalysistLearning(SearchDTO.SearchRq request, Long classId) {
+        Tclass tClass = tclassService.getTClass(classId);
+        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> result =  SearchUtil.search(classStudentDAO, request,classStudent -> mapper.map(classStudent,
+                ClassStudentDTO.evaluationAnalysistLearning.class));
+        for (ClassStudentDTO.evaluationAnalysistLearning t : result.getList()) {
+            if(tClass.getScoringMethod().equalsIgnoreCase("1")){
+                if(t.getValence() != null){
+                    if(t.getValence().equalsIgnoreCase("1001"))
+                        t.setScore(Float.parseFloat("25"));
+                    else if(t.getValence().equalsIgnoreCase("1002"))
+                        t.setScore(Float.parseFloat("50"));
+                    else if(t.getValence().equalsIgnoreCase("1003"))
+                        t.setScore(Float.parseFloat("75"));
+                    else if(t.getValence().equalsIgnoreCase("1004"))
+                        t.setScore(Float.parseFloat("100"));
+                }
+            }
+            else if(tClass.getScoringMethod().equalsIgnoreCase("3")){
+                if(t.getScore() != null)
+                    t.setScore(t.getScore()*5);
+            }
+        }
+        return result;
+    }
+
+
 }
