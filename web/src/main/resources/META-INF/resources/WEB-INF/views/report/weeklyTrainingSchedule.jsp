@@ -38,69 +38,58 @@
 
     //----------------------------------------------------Criteria Form-------------------------------------------------
     var DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule = isc.DynamicForm.create({
-        numCols: 4,
-        colWidths: ["10%", "40%", "10%", "40%"],
+        numCols: 5,
+        colWidths: ["10%", "30%", "10%", "30%","20%"],
         width: "700",
         fields: [
             {
                 name: "tclass.course.categoryId",
                 title: "انتخاب گروه",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                defaultValue: null,
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
+                type: "ComboBoxItem",
+                editorType: "SelectItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true
+                },
                 optionDataSource: RestDataSource_Category_JspWeeklyTrainingSchedule,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
+                displayField: "titleFa",
+                valueField: "id",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true,
+                textAlign: "center",
                 pickListWidth: "280",
-                generateExactMatchCriteria: true,
-                operator: "equals",
-                pickListProperties: {
-                    showFilterEditor: false
-                },
                 pickListFields: [
                     {name: "titleFa", width: "100%", filterOperator: "iContains"}],
-                changed: function (form,item,value) {
+                changed: function (form, item, value) {
                     isCategoryChanged_JspWeeklyTrainingSchedule = true;
+                    DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.subCategoryId").clearValue();
                     if (value == null || value == undefined) {
                         DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.subCategoryId").disable();
-                        DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.subCategoryId").clearValue();
-                    } else{
+                    } else {
                         DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.subCategoryId").enable();
                     }
                 }
             },
             {
                 name: "tclass.course.subCategoryId",
-                title: "انتخاب زیرگروه",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultValue: null,
-                displayField: "titleFa",
-                valueField: "id",
-                disabled: true,
-                operator: "equals",
+                title: "انتخاب  زیر گروه",
+                type: "ComboBoxItem",
+                editorType: "SelectItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true
+                },
                 optionDataSource: RestDataSource_SubCategory_JspWeeklyTrainingSchedule,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                displayField: "titleFa",
+                valueField: "id",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true,
+                textAlign: "center",
                 pickListWidth: "280",
-                pickListProperties: {
-                    showFilterEditor: false
-                },
                 pickListFields: [
                     {name: "titleFa", width: "100%", filterOperator: "iContains"}],
                 focus: function () {
@@ -119,14 +108,26 @@
                         this.fetchData();
                     }
                 }
+            },
+            {
+                name: "reportBottom",
+                title: "گزارش گیری",
+                type: "ButtonItem",
+                align: "right",
+                width: "100",
+                startRow: false,
+                click: function () {
+                    ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
+
+                    ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
+
+                }
             }
-        ],
-        itemChanged : function(item, newValue){
-            ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria =
-                DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
-            ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
-            ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
-        }
+        ]
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     ListGrid_Result_JspWeeklyTrainingSchedule = isc.TrLG.create({
@@ -135,14 +136,14 @@
         dataSource: RestDataSource_Class_JspWeeklyTrainingSchedule,
         initialSort: [
             // {property: "studentStatus", direction: "ascending"},
-            {property: "sessionDate", direction: "ascending"},
-            {property: "sessionStartHour", direction: "ascending"}
+            // {property: "sessionDate", direction: "ascending"},
+            // {property: "sessionStartHour", direction: "ascending"}
         ],
         canAddFormulaFields: false,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         selectionType: "single",
         canMultiSort: true,
         autoFetchData: true,
@@ -190,6 +191,11 @@
                     "شروع نشده": "شروع نشده",
                     "در حال اجرا": "در حال اجرا",
                     "پایان": "پایان"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
                 }
             },
             {
@@ -199,6 +205,14 @@
                 valueMap: {
                     "ثبت نام شده": "ثبت نام شده",
                     "ثبت نام نشده": "ثبت نام نشده"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },
+                sortNormalizer: function (record) {
+                    return record.studentStatus;
                 }
             },
             {
@@ -211,6 +225,11 @@
                     "2": "حاضر و اضافه کار",
                     "3": "غیبت غیر موجه",
                     "4": "غیبت موجه"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
                 }
             }
         ]
