@@ -1851,7 +1851,7 @@
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "700",
+        width: "100%",
         height: "100%",
         // wrapItemTitles: true,
         numCols: 4,
@@ -1862,7 +1862,7 @@
             {
                 name: "yearFilter",
                 title: "<spring:message code='year'/>",
-                width: "200",
+                width: "100%",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "year",
@@ -1894,7 +1894,7 @@
             {
                 name: "termFilter",
                 title: "<spring:message code='term'/>",
-                width: "400",
+                width: "100%",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "code",
@@ -1938,7 +1938,7 @@
     });
 
     var ToolStrip_Excel_JspClass = isc.ToolStrip.create({
-        width: "100%",
+        width: "50%",
         membersMargin: 5,
         members: [
             isc.ToolStripButtonExcel.create({
