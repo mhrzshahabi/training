@@ -1403,8 +1403,22 @@
                 title: "12-14",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                disabled: true
+                //disabled: true
                // defaultValue: true
+                changed: function (form,item,value) {
+                    if(value){
+                        let dialog_Accept = createDialog("ask", "آیا از انتخاب این گزینه مطمئن هستید؟",
+                            "اخطار");
+                        dialog_Accept.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 1) {
+                                    item.setValue(false);
+                                }
+                            }
+                        });
+                    }
+                }
             },
             {
                 name: "fifth",
@@ -1412,8 +1426,22 @@
                 title: "16-18",
                 titleOrientation: "top",
                 labelAsTitle: true,
+                changed: function (form,item,value) {
+                    if(value){
+                        let dialog_Accept = createDialog("ask", "آیا از انتخاب این گزینه مطمئن هستید؟",
+                            "اخطار");
+                        dialog_Accept.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 1) {
+                                    item.setValue(false);
+                                }
+                            }
+                        });
+                    }
+                }
                // defaultValue: true
-               disabled: true
+               //disabled: true
             },
 
             {
@@ -1486,7 +1514,7 @@
 // return;
             autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
             if (DynamicForm1_Class_JspClass.getValue("autoValid")) {
-                if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third"))) {
+                if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third")|| DynamicForm1_Class_JspClass.getValue("fourth")|| DynamicForm1_Class_JspClass.getValue("fifth"))) {
                     isc.MyOkDialog.create({
                         message: "به منظور تولید اتوماتیک جلسات حداقل یک ساعت جلسه، باید انتخاب شود.",
                     });
