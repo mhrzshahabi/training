@@ -1139,6 +1139,7 @@
         isGroup: true,
         titleAlign: "left",
         wrapItemTitles: true,
+        styleName: "teacher-form",
         groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
@@ -1429,8 +1430,22 @@
                 title: "12-14",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                disabled: true
+                //disabled: true
                // defaultValue: true
+                changed: function (form,item,value) {
+                    if(value){
+                        let dialog_Accept = createDialog("ask", "آیا از انتخاب این گزینه مطمئن هستید؟",
+                            "اخطار");
+                        dialog_Accept.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 1) {
+                                    item.setValue(false);
+                                }
+                            }
+                        });
+                    }
+                }
             },
             {
                 name: "fifth",
@@ -1438,8 +1453,22 @@
                 title: "16-18",
                 titleOrientation: "top",
                 labelAsTitle: true,
+                changed: function (form,item,value) {
+                    if(value){
+                        let dialog_Accept = createDialog("ask", "آیا از انتخاب این گزینه مطمئن هستید؟",
+                            "اخطار");
+                        dialog_Accept.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 1) {
+                                    item.setValue(false);
+                                }
+                            }
+                        });
+                    }
+                }
                // defaultValue: true
-               disabled: true
+               //disabled: true
             },
 
             {
@@ -1512,7 +1541,7 @@
 // return;
             autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
             if (DynamicForm1_Class_JspClass.getValue("autoValid")) {
-                if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third"))) {
+                if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third")|| DynamicForm1_Class_JspClass.getValue("fourth")|| DynamicForm1_Class_JspClass.getValue("fifth"))) {
                     isc.MyOkDialog.create({
                         message: "به منظور تولید اتوماتیک جلسات حداقل یک ساعت جلسه، باید انتخاب شود.",
                     });
@@ -2067,8 +2096,6 @@
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
-    /*Functions*/
-    //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_class_remove() {
         var record = ListGrid_Class_JspClass.getSelectedRecord();
@@ -2144,6 +2171,9 @@
         }
     }
 
+    /*Functions*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
     function ListGrid_Class_refresh() {
         var gridState;
         if (ListGrid_Class_JspClass.getSelectedRecord()) {
@@ -2169,6 +2199,7 @@
             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
+        getOrganizers();
     }
 
     function ListGrid_class_print(type) {
@@ -2518,6 +2549,18 @@
                 }
 
             }));
+    }
+
+    function getOrganizers(){
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultExecutor/DefaultClassOrganizer/" + userPersonInfo.complexTitle , "GET", null,
+            function (resp) {
+                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201)
+                    setOrganize(JSON.parse(resp.data));
+            }
+        ));
+    }
+    function setOrganize(institute){
+        DynamicForm_Class_JspClass.setValue("organizerId",institute.id)
     }
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendEndingClassToWorkflow() {
