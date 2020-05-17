@@ -4,19 +4,25 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.InstituteDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.PersonnelCoursePassedNAReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Institute;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.EvaluationAnalysistLearningService;
+import com.nicico.training.service.ParameterService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +62,8 @@ public class TclassRestController {
     private final StudentDAO studentDAO;
     private final CourseDAO courseDAO;
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
+    private final ParameterService parameterService;
+    private final IInstituteService instituteService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -457,6 +465,15 @@ public class TclassRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/defaultExecutor/{parameterCode}/{cTitle}")
+    public ResponseEntity<InstituteDTO.Info> defaultExecutor(@PathVariable String parameterCode, @PathVariable String cTitle){
+        TotalResponse<ParameterValueDTO.Info> totalResponse = parameterService.getByCode(parameterCode);
+        ParameterValueDTO.Info parameterInfo = totalResponse.getResponse().getData().stream().filter(i -> i.getTitle().equals(cTitle)).findFirst().orElse(null);
+        SearchDTO.SearchRs<InstituteDTO.Info> infoSearchRs = instituteService.search(new SearchDTO.SearchRq().setCriteria(makeNewCriteria("titleFa",parameterInfo.getValue(),EOperator.equals,null)));
+        return new ResponseEntity<InstituteDTO.Info>(infoSearchRs.getList().get(0), HttpStatus.OK);
     }
 
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
