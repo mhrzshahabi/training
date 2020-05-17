@@ -1258,7 +1258,7 @@
         })
     }
 
-    function exportToExcel(fields, data,titr) {
+    function exportToExcel(fields, data, titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/export-to-excel/download/",

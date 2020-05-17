@@ -164,7 +164,6 @@
                 }
             }),
             isc.ToolStripButtonExcel.create({
-                // title: "خروجی اکسل",
                 click: function () {
                     let fields = ListGrid_Attendance_AttendanceJSP.getFields();
                     let sendFields = [];
@@ -183,17 +182,18 @@
                                 allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
                             }
                         }
+                        exportToExcel(sendFields, allRows, "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - در تاریخ: " + DynamicForm_Attendance.getValue("sessionDate"));
                     }
                     else{
                         for (let i = 0; i < allRows.length; i++) {
                             allRows[i]["state"] = attendanceState[allRows[i]["state"]];
                         }
+                        exportToExcel(sendFields, allRows, "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
+                            DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName + " " + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName);
                     }
-                    exportToExcel(sendFields, allRows);
                 }
             }),
             isc.ToolStripButtonPrint.create({
-                // title: "خروجی اکسل",
                 click: function () {
                     let params = {};
                     params.code = classGridRecordInAttendanceJsp.code;
@@ -1237,7 +1237,7 @@
                         return;
                     }
                 }
-            }, 500)
+            }, 700)
         }
         else{
             setTimeout(function () {
