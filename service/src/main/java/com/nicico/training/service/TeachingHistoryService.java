@@ -91,10 +91,17 @@ public class TeachingHistoryService implements ITeachingHistoryService {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         request.setDistinct(true);
+
         if (teacherId != null) {
             list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
             if (request.getCriteria() != null) {
+                for (SearchDTO.CriteriaRq o : request.getCriteria().getCriteria()) {
+                    if(o.getFieldName().equalsIgnoreCase("categories"))
+                        o.setValue(Long.parseLong(o.getValue().get(0)+""));
+                    if(o.getFieldName().equalsIgnoreCase("subCategories"))
+                        o.setValue(Long.parseLong(o.getValue().get(0)+""));
+                }
                 if (request.getCriteria().getCriteria() != null)
                     request.getCriteria().getCriteria().add(criteriaRq);
                 else

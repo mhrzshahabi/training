@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -30,6 +31,9 @@ public class MainFormController {
     public String showPersonalCoursesForm() {
         return "report/studentClassReport";
     }
+
+    @RequestMapping("/courseWithOutTeacherReaport")
+    public String courseWithOutTeacherReaport(){return "report/courseWithOutTeacherReaport";}
 
     @RequestMapping("/personnelCourseNotPassed")
     public String showPersonalCoursesNotPassedForm() {

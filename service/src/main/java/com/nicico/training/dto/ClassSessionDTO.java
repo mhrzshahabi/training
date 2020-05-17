@@ -114,12 +114,6 @@ public class ClassSessionDTO implements Serializable {
             }
                 return result;
         }
-//        public String getStudentStatus(){
-//            return "ثبت نام شده";
-//        }
-//        public String getStudentPresentStatus(){
-//            return "حاضر";
-//        }
     }
 
     @Getter

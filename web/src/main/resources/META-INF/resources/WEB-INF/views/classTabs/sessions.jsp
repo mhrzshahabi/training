@@ -230,7 +230,42 @@
             ],
             doubleClick: function () {
                 show_SessionEditForm();
-            }
+            },
+            getCellCSSText: function (record, rowNum, colNum) {
+                    let result="background-color : ";
+                    let blackColor="; color:black";
+
+                    switch (record.dayCode) {
+                        case 'Sat':
+                            result+="#7d6b99";
+                            break;
+
+                        case 'Sun':
+                            result+="#ff88d2";
+                            break;
+
+                        case 'Mon':
+                            result+="#FFFAF0"+blackColor;
+                            break;
+
+                        case 'Tue':
+                            result+="#CD5C5C";
+                            break;
+
+                        case 'Wed':
+                            result+="#32CD32";
+                            break;
+
+                        case 'Thu':
+                            result+="#ffd700"+blackColor;
+                            break;
+
+                        case 'Fri':
+                            result+="#ADD8E6"+blackColor;
+                            break;
+                    }//end switch-case
+                return result;
+            }//end getCellCSSText
         });
 
         var RestDataSource_Institute_JspSession = isc.TrDS.create({
@@ -293,6 +328,17 @@
             }
         });
 
+        var ToolStrip_Excel_JspClass = isc.ToolStrip.create({
+            width: "100%",
+            membersMargin: 5,
+            members: [
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.DownloadExcelFormClient(ListGrid_session, ListGrid_Class_JspClass, '', "کلاس - جلسات");
+                    }
+                })]
+        });
+
         var ToolStrip_session = isc.ToolStrip.create({
             width: "100%",
             members: [
@@ -300,6 +346,7 @@
                 ToolStripButton_Edit,
                 ToolStripButton_Remove,
                 ToolStripButton_Print,
+                ToolStrip_Excel_JspClass,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -345,7 +392,15 @@
                         textAlign: "center",
                         blur: function () {
                             check_valid_date();
-                        }
+                        },
+                        editorExit:function(){
+                            let result=reformat(DynamicForm_Session.getValue("sessionDate"));
+                            if (result){
+                                DynamicForm_Session.getItem("sessionDate").setValue(result);
+                                DynamicForm_Session.clearFieldErrors("sessionDate", true);
+                                check_valid_date();
+                            }
+                        },
                     },
                     {
                         type: "SpacerItem"

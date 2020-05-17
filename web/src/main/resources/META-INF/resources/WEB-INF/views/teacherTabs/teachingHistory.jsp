@@ -453,6 +453,9 @@
         doubleClick: function () {
             ListGrid_TeachingHistory_Edit();
         },
+        filterEditorSubmit: function () {
+            ListGrid_JspTeachingHistory.invalidateCache();
+        },
         align: "center",
         filterOperator: "iContains",
         filterOnKeypress: true,

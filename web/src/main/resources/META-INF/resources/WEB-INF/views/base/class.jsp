@@ -55,6 +55,7 @@
             {name: "titleClass"},
             {name: "startDate"},
             {name: "endDate"},
+            {name: "studentCount",canFilter:false,canSort:false},
             {name: "code"},
             {name: "term.titleFa"},
 // {name: "teacher.personality.lastNameFa"},
@@ -143,6 +144,40 @@
         ],
 // fetchDataURL: instituteUrl + "0/trainingPlaces"
 //         fetchDataURL: trainingPlaceUrl + "/with-institute"
+    });
+
+    SupervisorDS_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+        },
+    });
+
+    PlannerDS_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+        },
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -299,6 +334,12 @@
                 filterOperator: "iContains"
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
+            {
+                name: "studentCount",
+                title: "<spring:message code='student.count'/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {
                 name: "group",
                 title: "<spring:message code='group'/>",
@@ -738,20 +779,16 @@
                 colSpan: 3,
                 required:true,
                 title: "<spring:message code="supervisor"/>:",
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textAlign: "center",
-                valueMap: {
-                    1: "آقای دکتر سعیدی",
-                    2: "خانم شاکری",
-                    3: "خانم اسماعیلی",
-                    4: "خانم احمدی"
-                },
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                textMatchStyle: "substring",
-                sortField: 0
-// textBoxStyle:"textItemLite"
+                optionDataSource: SupervisorDS_JspClass,
+                autoFetchData: false,
+                valueField: "id",
+                displayField: "lastName",
+                pickListWidth: 550,
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
             },
             {
                 name: "planner",
@@ -759,20 +796,16 @@
                 required:true,
                 wrapTitle: false,
                 title: "<spring:message code="planner"/>:",
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textAlign: "center",
-                valueMap: {
-                    1: "آقای دکتر سعیدی",
-                    2: "خانم شاکری",
-                    3: "خانم اسماعیلی",
-                    4: "خانم احمدی",
-                },
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                sortField: 0,
-                textMatchStyle: "substring"
-// textBoxStyle:"textItemLite"
+                optionDataSource: PlannerDS_JspClass,
+                autoFetchData: false,
+                valueField: "id",
+                displayField: "lastName",
+                pickListWidth: 550,
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
             },
             {
                 name: "reason",
@@ -1071,6 +1104,7 @@
         isGroup: true,
         titleAlign: "left",
         wrapItemTitles: true,
+        styleName: "teacher-form",
         groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
@@ -1236,7 +1270,7 @@
 // vertical:false,
                 rowSpan: 2,
                 colSpan: 1,
-                fillHorizontalSpace: true,
+                // fillHorizontalSpace: true,
                 defaultValue: 1,
                 endRow: true,
                 valueMap: {
@@ -1361,8 +1395,22 @@
                 title: "12-14",
                 titleOrientation: "top",
                 labelAsTitle: true,
-                disabled: true
+                //disabled: true
                // defaultValue: true
+                changed: function (form,item,value) {
+                    if(value){
+                        let dialog_Accept = createDialog("ask", "آیا از انتخاب این گزینه مطمئن هستید؟",
+                            "اخطار");
+                        dialog_Accept.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 1) {
+                                    item.setValue(false);
+                                }
+                            }
+                        });
+                    }
+                }
             },
             {
                 name: "fifth",
@@ -1370,8 +1418,22 @@
                 title: "16-18",
                 titleOrientation: "top",
                 labelAsTitle: true,
+                changed: function (form,item,value) {
+                    if(value){
+                        let dialog_Accept = createDialog("ask", "آیا از انتخاب این گزینه مطمئن هستید؟",
+                            "اخطار");
+                        dialog_Accept.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 1) {
+                                    item.setValue(false);
+                                }
+                            }
+                        });
+                    }
+                }
                // defaultValue: true
-               disabled: true
+               //disabled: true
             },
 
             {
@@ -1443,7 +1505,7 @@
 
             autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
             if (DynamicForm1_Class_JspClass.getValue("autoValid")) {
-                if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third"))) {
+                if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third")|| DynamicForm1_Class_JspClass.getValue("fourth")|| DynamicForm1_Class_JspClass.getValue("fifth"))) {
                     isc.MyOkDialog.create({
                         message: "به منظور تولید اتوماتیک جلسات حداقل یک ساعت جلسه، باید انتخاب شود.",
                     });
@@ -1766,7 +1828,7 @@
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "700",
+        width: "100%",
         height: "100%",
         // wrapItemTitles: true,
         numCols: 4,
@@ -1777,7 +1839,7 @@
             {
                 name: "yearFilter",
                 title: "<spring:message code='year'/>",
-                width: "200",
+                width: "100%",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "year",
@@ -1809,7 +1871,7 @@
             {
                 name: "termFilter",
                 title: "<spring:message code='term'/>",
-                width: "400",
+                width: "100%",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "code",
@@ -1852,6 +1914,16 @@
         ]
     });
 
+    var ToolStrip_Excel_JspClass = isc.ToolStrip.create({
+        width: "50%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    ExportToFile.DownloadExcelFormClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
+                }
+            })]
+    });
 
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
@@ -1862,6 +1934,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
+            ToolStrip_Excel_JspClass,
             DynamicForm_Term_Filter,
             isc.ToolStrip.create({
                 width: "100%",
@@ -1883,6 +1956,7 @@
 
     var HLayout_Grid_Class_JspClass = isc.TrHLayout.create({
         showResizeBar: true,
+        minWidth:"100%",
         width: "100%",
         height: "60%",
         members: [ListGrid_Class_JspClass]
@@ -1955,6 +2029,7 @@
     });
 
     let HLayout_Tab_Class = isc.HLayout.create({
+        minWidth:"100%",
         width: "100%",
         height: "39%",
         members: [TabSet_Class]
@@ -1968,8 +2043,6 @@
         ]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Functions*/
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_class_remove() {
@@ -2046,6 +2119,9 @@
         }
     }
 
+    /*Functions*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
     function ListGrid_Class_refresh() {
         var gridState;
         if (ListGrid_Class_JspClass.getSelectedRecord()) {
@@ -2067,6 +2143,11 @@
         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
         Window_Class_JspClass.show();
         DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+        if (userPersonInfo != null) {
+            DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
+            DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
+        }
+        getOrganizers();
     }
 
     function ListGrid_class_print(type) {
@@ -2347,7 +2428,7 @@
                     if(resp.data == "false") {
                         classTypeStatus.setValue(oldValue);
                         isc.Dialog.create({
-                            message: "<spring:message code="class.start.time.not.reached"/>",
+                            message: "تاریخ شروع کلاس " + ListGrid_Class_JspClass.getSelectedRecord().startDate + " می باشد",
                             icon: "[SKIN]ask.png",
                             title: "<spring:message code="message"/>",
                             buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -2359,6 +2440,18 @@
                 }
 
             }));
+    }
+
+    function getOrganizers(){
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultExecutor/DefaultClassOrganizer/" + userPersonInfo.complexTitle , "GET", null,
+            function (resp) {
+                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201)
+                    setOrganize(JSON.parse(resp.data));
+            }
+        ));
+    }
+    function setOrganize(institute){
+        DynamicForm_Class_JspClass.setValue("organizerId",institute.id)
     }
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendEndingClassToWorkflow() {

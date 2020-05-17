@@ -36,7 +36,7 @@ public class PreTestScoreReportService implements IPreTestScoreReportService {
                 "                tbl_class.c_end_date,         \n" +
                 "             ( CASE\n" +
                 "              WHEN  tbl_student.emp_no IS NULL\n" +
-                "               THEN 'ندارد'\n" +
+                "               THEN 'ندارد' else LPAD(tbl_student.emp_no, 6, '0')\n" +
                 "               END) as emp_no,\n" +
                 "              tbl_student.personnel_no ,\n" +
                 "             tbl_student.national_code,\n" +

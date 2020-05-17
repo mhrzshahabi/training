@@ -52,8 +52,7 @@
         ],
         contextMenu: CompetenceMenu_competence,
         dataChanged: function () { updateCountLabel(this, CompetenceLGCountLabel_competence)},
-        recordDoubleClick: function () { editCompetence_competence(); },
-        selectionUpdated: function (record) { refreshCompetenceValueLG_competence(); }
+        recordDoubleClick: function () { editCompetence_competence(); }
     });
 
     CompetenceTypeDS_competence = isc.TrDS.create({
@@ -119,8 +118,8 @@
             return;
         }
         let competenceSaveUrl = competenceUrl;
-        action = '<spring:message code="create"/>';
-        if (competenceMethod_competence.localeCompare("PUT") == 0) {
+        let action = '<spring:message code="create"/>';
+        if (competenceMethod_competence.localeCompare("PUT") === 0) {
             let record = CompetenceLG_competence.getSelectedRecord();
             competenceSaveUrl += "/" + record.id;
             action = '<spring:message code="edit"/>';
@@ -133,8 +132,10 @@
 
     function removeCompetence_competence() {
         let record = CompetenceLG_competence.getSelectedRecord();
-        var entityType = '<spring:message code="competence"/>';
+        let entityType = '<spring:message code="competence"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
             removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
         }
     }
+
+    //</script>

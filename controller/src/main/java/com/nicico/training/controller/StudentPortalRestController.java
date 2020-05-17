@@ -46,14 +46,14 @@ public class StudentPortalRestController {
     @GetMapping(value = "/class-student/classes-of-student/{nationalCode}")
     public void classesOfStudentList(HttpServletRequest iscRq, HttpServletResponse response, @PathVariable String nationalCode) throws IOException {
         String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
-        response.sendRedirect(restApiUrl + "/api/class-student/classes-of-student/" + SecurityUtil.getNationalCode());
+        response.sendRedirect(restApiUrl + "/api/class-student/classes-of-student/" + SecurityUtil.getNationalCode() + "?" + iscRq.getQueryString());
     }
 
     @Loggable
     @GetMapping(value = "/class-student/class-list-of-student/{nationalCode}")
     public void classesOfStudentJustClassList(HttpServletRequest iscRq, HttpServletResponse response, @PathVariable String nationalCode) throws IOException {
         String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
-        response.sendRedirect(restApiUrl + "/api/class-student/class-list-of-student/" + SecurityUtil.getNationalCode());
+        response.sendRedirect(restApiUrl + "/api/class-student/class-list-of-student/" + SecurityUtil.getNationalCode() + "?" + iscRq.getQueryString());
     }
 
     @Loggable
@@ -93,7 +93,7 @@ public class StudentPortalRestController {
     @GetMapping(value = "/sessionService/specListWeeklyTrainingSchedule/{nationalCode}")
     public void getWeeklyTrainingSchedule(HttpServletRequest iscRq, HttpServletResponse response, @PathVariable String nationalCode) throws IOException {
         String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
-        response.sendRedirect(restApiUrl + "/api/sessionService/specListWeeklyTrainingSchedule/" + SecurityUtil.getNationalCode());
+        response.sendRedirect(restApiUrl + "/api/sessionService/specListWeeklyTrainingSchedule/" + SecurityUtil.getNationalCode() + "?" + iscRq.getQueryString());
     }
 
     /////////////////////////////////////personnel//////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ public class StudentPortalRestController {
     @GetMapping(value = "/personnel/getOneByNationalCode")
     public void getPersonnelInfo(HttpServletRequest iscRq, HttpServletResponse response) throws IOException {
         String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
-        response.sendRedirect(restApiUrl + "/api/personnel/getOneByNationalCode/" + SecurityUtil.getNationalCode());
+        response.sendRedirect(restApiUrl + "/api/personnel/getOneByNationalCode/" + SecurityUtil.getNationalCode() + "?" + iscRq.getQueryString());
     }
 
     /////////////////////////////////////student//////////////////////////////////////////////////////////
@@ -111,7 +111,7 @@ public class StudentPortalRestController {
     @GetMapping(value = "/student/getOneByNationalCode")
     public void getStudentInfo(HttpServletRequest iscRq, HttpServletResponse response) throws IOException {
         String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
-        response.sendRedirect(restApiUrl + "/api/student/getOneByNationalCode/" + SecurityUtil.getNationalCode());
+        response.sendRedirect(restApiUrl + "/api/student/getOneByNationalCode/" + SecurityUtil.getNationalCode() + "?" + iscRq.getQueryString());
     }
 
 }

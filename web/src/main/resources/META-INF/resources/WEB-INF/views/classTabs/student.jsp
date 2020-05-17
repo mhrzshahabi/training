@@ -54,7 +54,8 @@
             }),
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    //roya
+                    ExportToFile.DownloadExcelFormClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
+                   /* //roya
                     let allRows = StudentsLG_student.data.allRows.toArray();
                     var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
 
@@ -132,7 +133,7 @@
                         data[i].ccpAffairs =  allRows[i].student.ccpAffairs;
                     }
 
-                    exportToExcel(fields, data,titr);
+                    exportToExcel(fields, data,titr);*/
                 }
             }),
             isc.ToolStripButton.create({
@@ -426,19 +427,19 @@
         dataSource: PersonnelDS_student,
         selectionType: "single",
         fields: [
-            {name: "id", hidden: true},
+           // {name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
-            {name: "companyName"},
+            {name: "companyName",hidden:true},
             {name: "personnelNo"},
             {name: "personnelNo2"},
             {name: "postTitle"},
             {name: "ccpArea"},
-            {name: "ccpAssistant"},
-            {name: "ccpAffairs"},
-            {name: "ccpSection"},
-            {name: "ccpUnit"},
+            {name: "ccpAssistant",hidden:true},
+            {name: "ccpAffairs",hidden:true},
+            {name: "ccpSection",hidden:true},
+            {name: "ccpUnit",hidden:true},
         ],
         gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
         dataChanged: function () {
@@ -524,19 +525,19 @@
         dataSource: PersonnelRegDS_student,
         selectionType: "single",
         fields: [
-            {name: "id", hidden: true},
+            //{name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
-            {name: "companyName"},
+            {name: "companyName",hidden:true},
             {name: "personnelNo"},
             {name: "personnelNo2"},
             {name: "postTitle"},
             {name: "ccpArea"},
-            {name: "ccpAssistant"},
-            {name: "ccpAffairs"},
-            {name: "ccpSection"},
-            {name: "ccpUnit"},
+            {name: "ccpAssistant",hidden:true},
+            {name: "ccpAffairs",hidden:true},
+            {name: "ccpSection",hidden:true},
+            {name: "ccpUnit",hidden:true},
         ],
         gridComponents: [RegisteredTS_student, "filterEditor", "header", "body"],
         dataChanged: function () {
