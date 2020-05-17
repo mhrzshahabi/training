@@ -73,6 +73,8 @@ public class ClassSessionService implements IClassSession {
         mainHoursRange.put(1, Arrays.asList("08:00", "10:00"));
         mainHoursRange.put(2, Arrays.asList("10:00", "12:00"));
         mainHoursRange.put(3, Arrays.asList("14:00", "16:00"));
+        mainHoursRange.put(4, Arrays.asList("12:00", "14:00"));
+        mainHoursRange.put(5, Arrays.asList("16:00", "18:00"));
 
         return mainHoursRange;
     }
@@ -363,6 +365,10 @@ public class ClassSessionService implements IClassSession {
                 classHoursRange.add(2);
             if (autoSessionsRequirement.getThird() != null && autoSessionsRequirement.getThird())
                 classHoursRange.add(3);
+            if (autoSessionsRequirement.getFourth() != null && autoSessionsRequirement.getFourth())
+                classHoursRange.add(4);
+            if (autoSessionsRequirement.getFifth() != null && autoSessionsRequirement.getFifth())
+                classHoursRange.add(5);
 
             Integer sessionTypeId = 1;
             Integer sessionState = 1;
