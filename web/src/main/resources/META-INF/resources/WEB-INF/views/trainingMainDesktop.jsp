@@ -1446,7 +1446,7 @@
     function exportToExcel(fields, data,titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
-            action: "/training/export-to-excel/download/",
+            action: "/training/export/download/",
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -1482,7 +1482,7 @@
     function printToJasper(data, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/export-to-excel/print/"/>" + type,
+            action: "<spring:url value="/export/print/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -1502,7 +1502,7 @@
         // var advancedCriteria = LG.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
+            action: "<spring:url value="/export/print-criteria/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:

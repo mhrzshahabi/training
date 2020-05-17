@@ -35,8 +35,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/export-to-excel")
-public class ExportToExcelController {
+@RequestMapping("/export")
+public class ExportController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
