@@ -1139,6 +1139,7 @@
         isGroup: true,
         titleAlign: "left",
         wrapItemTitles: true,
+        styleName: "teacher-form",
         groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
