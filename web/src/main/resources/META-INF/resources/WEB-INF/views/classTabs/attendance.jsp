@@ -166,7 +166,8 @@
             isc.ToolStripButtonExcel.create({
                 // title: "خروجی اکسل",
                 click: function () {
-                    let fields = ListGrid_Attendance_AttendanceJSP.getFields();
+                    ExportToFile.DownloadExcelFormClient(ListGrid_Attendance_AttendanceJSP, ListGrid_Class_JspClass, '', "کلاس - حضور و غياب");
+                   /* let fields = ListGrid_Attendance_AttendanceJSP.getFields();
                     let sendFields = [];
                     for (let i = 1; i < fields.length; i++) {
                         let record = {};
@@ -189,7 +190,7 @@
                             allRows[i]["state"] = attendanceState[allRows[i]["state"]];
                         }
                     }
-                    exportToExcel(sendFields, allRows);
+                    exportToExcel(sendFields, allRows);*/
                 }
             }),
             isc.ToolStripButtonPrint.create({

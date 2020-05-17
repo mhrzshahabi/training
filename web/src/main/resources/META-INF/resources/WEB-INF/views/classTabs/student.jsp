@@ -54,7 +54,8 @@
             }),
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    //roya
+                    ExportToFile.DownloadExcelFormClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
+                   /* //roya
                     let allRows = StudentsLG_student.data.allRows.toArray();
                     var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
 
@@ -132,7 +133,7 @@
                         data[i].ccpAffairs =  allRows[i].student.ccpAffairs;
                     }
 
-                    exportToExcel(fields, data,titr);
+                    exportToExcel(fields, data,titr);*/
                 }
             }),
             isc.ToolStripButton.create({

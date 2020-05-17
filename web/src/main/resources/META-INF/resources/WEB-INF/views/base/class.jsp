@@ -183,7 +183,7 @@
 
     SupervisorDS_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -200,7 +200,7 @@
 
     PlannerDS_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -814,18 +814,16 @@
                 colSpan: 3,
                 required:true,
                 title: "<spring:message code="supervisor"/>:",
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textAlign: "center",
-                operator: "equals",
                 optionDataSource: SupervisorDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
                 displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
-                pickListProperties: {sortField: "personnelNo2", showFilterEditor: false},
-                textMatchStyle: "substring",
+                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
             },
             {
                 name: "planner",
@@ -833,18 +831,16 @@
                 required:true,
                 wrapTitle: false,
                 title: "<spring:message code="planner"/>:",
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textAlign: "center",
-                operator: "equals",
                 optionDataSource: PlannerDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
                 displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
-                pickListProperties: {sortField: "personnelNo2", showFilterEditor: false},
-                textMatchStyle: "substring",
+                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
             },
             {
                 name: "reason",
@@ -1308,7 +1304,7 @@
 // vertical:false,
                 rowSpan: 2,
                 colSpan: 1,
-                fillHorizontalSpace: true,
+                // fillHorizontalSpace: true,
                 defaultValue: 1,
                 endRow: true,
                 valueMap: {
@@ -1941,6 +1937,16 @@
         ]
     });
 
+    var ToolStrip_Excel_JspClass = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    ExportToFile.DownloadExcelFormClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
+                }
+            })]
+    });
 
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
@@ -1951,6 +1957,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
+            ToolStrip_Excel_JspClass,
             DynamicForm_Term_Filter,
             isc.ToolStrip.create({
                 width: "100%",
@@ -1972,6 +1979,7 @@
 
     var HLayout_Grid_Class_JspClass = isc.TrHLayout.create({
         showResizeBar: true,
+        minWidth:"100%",
         width: "100%",
         height: "60%",
         members: [ListGrid_Class_JspClass]
@@ -2044,6 +2052,7 @@
     });
 
     let HLayout_Tab_Class = isc.HLayout.create({
+        minWidth:"100%",
         width: "100%",
         height: "39%",
         members: [TabSet_Class]
@@ -2157,6 +2166,10 @@
         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
         Window_Class_JspClass.show();
         DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+        if (userPersonInfo != null) {
+            DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
+            DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
+        }
         getExecutors();
     }
 

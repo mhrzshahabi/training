@@ -29,11 +29,10 @@
     });
 
     var ToolStrip_Actions = isc.ToolStrip.create({
-        ID: "ToolStrip_Actions1",
-       // width: "100%",
+        // width: "100%",
         members: [
             isc.Label.create({
-                ID: "totalsLabel_scores"
+                ID: "totalsCount_Rows"
             })]
     })
     var List_Grid_Reaport_CourseWithOutTeacher = isc.TrLG.create({
@@ -53,6 +52,12 @@
         dataArrived: function ()
         {
             modalDialog.close();
+
+            let totalRows = this.data.getLength();
+            if (totalRows >= 0 && this.data.lengthIsKnown())
+                totalsCount_Rows.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+            else
+                totalsCount_Rows.setContents("&nbsp;");
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
@@ -195,7 +200,7 @@
                     if (!DynamicForm_Report_CourseWithOutTeacher.validate()) {
                         return;
                     }
-                    modalDialog=createDialog('wait', 'لطفا منتظر بمانید', 'در حال واکشی اطلاعات');
+                    modalDialog=createDialog('wait');
                     var strSData=DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").getValue().replace(/(\/)/g, "");
                     RestDataSource_CourseWithOutTeacher.fetchDataURL=courseUrl + "courseWithOutTeacher"+"/"+strSData + "/" + strEData;
@@ -209,7 +214,7 @@
     var ToolStrip_ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
         width: "30%",
         padding:16,
-        members: [
+        members: [ToolStrip_Actions,
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     ExportToFile.DownloadExcelFormClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
