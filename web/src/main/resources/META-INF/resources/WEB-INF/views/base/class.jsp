@@ -2058,8 +2058,6 @@
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
-    /*Functions*/
-    //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_class_remove() {
         var record = ListGrid_Class_JspClass.getSelectedRecord();
@@ -2135,6 +2133,9 @@
         }
     }
 
+    /*Functions*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
     function ListGrid_Class_refresh() {
         var gridState;
         if (ListGrid_Class_JspClass.getSelectedRecord()) {
@@ -2156,6 +2157,7 @@
         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
         Window_Class_JspClass.show();
         DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+        getExecutors();
     }
 
     function ListGrid_class_print(type) {
@@ -2505,6 +2507,18 @@
                 }
 
             }));
+    }
+
+    function getExecutors(){
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultExecutor/CreateClass/" + userPersonInfo.complexTitle , "GET", null,
+            function (resp) {
+                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201)
+                    setExecutor(JSON.parse(resp.data));
+            }
+        ));
+    }
+    function setExecutor(institute){
+        DynamicForm_Class_JspClass.setValue("organizerId",institute.id)
     }
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendEndingClassToWorkflow() {
