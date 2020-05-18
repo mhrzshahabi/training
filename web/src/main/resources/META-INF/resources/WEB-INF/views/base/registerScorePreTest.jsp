@@ -109,26 +109,43 @@
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
-                    change:function(){
-                        change_value=true
-                    },
-                    editorExit:function(editCompletionEvent, record, newValue)
-                    {
+                    change:function(form,item,value,oldValue){
 
-                        if (newValue != null) {
-                        if (validators_ScorePreTest(newValue)) {
-                            ListGrid_Cell_ScorePreTest_Update(record, newValue);
-                        } else {
-                            createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>")
-                                return false;
+                        if(value!=null && value!='' && typeof (value) != 'undefined'&& !value.match(/^(([1-9]\d{0,1})|100|0)$/)){
+                            item.setValue(value.substring(0,value.length-1));
+                        }else{
+                            item.setValue(value);
                         }
-                          }
-                        else if(change_value) {
-                            ListGrid_Cell_ScorePreTest_Update(record, newValue);
-                            change_value=false
+
+                        if(value==null || typeof (value) == 'undefined'){
+                            item.setValue('');
                         }
-                        else {return true}
+
+
+                        if(oldValue==null || typeof (oldValue) == 'undefined'){
+                            oldValue='';
+                        }
+
+
+                        if(item.getValue() != oldValue)
+                        {
+                            change_value=true;
+                        }
+                    },
+                    editorExit:function(editCompletionEvent, record, newValue) {
+
+                        if( change_value){
+                            if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
+
+                                ListGrid_Cell_ScorePreTest_Update(record, newValue);
+
+                            } else {
+                                ListGrid_Cell_ScorePreTest_Update(record, null);
+                            }
+                        }
+                        change_value=false;
                     }
+
 
              },
 
