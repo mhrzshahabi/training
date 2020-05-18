@@ -12,7 +12,9 @@
         "PostGroup",
         "JobGroup",
         "PostGradeGroup",
-        "SkillGroup"
+        "Category",
+        "Subcategory",
+        "Tclass"
     ];
     var isFormDataListArrived = false;
     var formDataList_Permission;
@@ -860,6 +862,12 @@
                 return "<spring:message code="post.grade.group"/>";
             case "SkillGroup":
                 return "<spring:message code="skill.group"/>";
+            case "Category":
+                return "<spring:message code="category"/>";
+            case "Subcategory":
+                return "<spring:message code="subcategory"/>";
+            case "Tclass":
+                return "<spring:message code="class"/>";
 
             case "code":
                 return "<spring:message code="code"/>";

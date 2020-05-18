@@ -25,9 +25,9 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
     public Float[] getStudents(Long id, String scoringMethod) {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put("0", 0);
-        map.put("1001", 20);
-        map.put("1002", 50);
-        map.put("1003", 65);
+        map.put("1001", 40);
+        map.put("1002", 60);
+        map.put("1003", 80);
         map.put("1004", 100);
         DecimalFormat df = new DecimalFormat("0.00");
         Float[] ans = new Float[4];

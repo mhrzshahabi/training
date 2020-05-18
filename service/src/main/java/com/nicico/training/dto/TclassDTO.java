@@ -291,6 +291,15 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private TermDTO term;
+        @Getter(AccessLevel.NONE)
+        private TeacherDTO.TeacherFullNameTuple teacher;
+
+        public String getTeacher() {
+            if (teacher != null)
+                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
+        }
     }
 
     @Getter

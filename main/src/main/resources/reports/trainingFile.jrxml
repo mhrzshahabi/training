@@ -57,6 +57,9 @@
 		</box>
 	</style>
 	<subDataset name="content" uuid="da7e6fac-4bf7-4f4e-8d72-e83be9c32594">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
 		<field name="tclass.code" class="java.lang.String"/>
 		<field name="tclass.course.code" class="java.lang.String"/>
 		<field name="tclass.course.titleFa" class="java.lang.String"/>
@@ -64,6 +67,8 @@
 		<field name="tclass.endDate" class="java.lang.String"/>
 		<field name="score" class="java.lang.String"/>
 		<field name="scoresState" class="java.lang.String"/>
+		<field name="tclass.startDate" class="java.lang.String"/>
+		<field name="tclass.teacher" class="java.lang.String"/>
 		<variable name="Row_Number" class="java.lang.Integer">
 			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
 		</variable>
@@ -233,14 +238,35 @@
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("content")]]></dataSourceExpression>
 					</datasetRun>
 					<jr:columnGroup width="553" uuid="353e2c6b-240c-48fb-8763-6826708c529a">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [8]"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [10]"/>
 						<jr:columnGroup width="553" uuid="0e77cc17-f2e4-4e7d-a2fc-5ae26e179d99">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [8]"/>
-							<jr:column width="60" uuid="fc7e4039-c0e0-4fcc-9a23-afc41356e84d">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [10]"/>
+							<jr:column width="50" uuid="3745f256-e8be-48d6-a68d-d1041f91f29a">
 								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+								<jr:columnHeader style="Table 1_CH" height="30">
+									<staticText>
+										<reportElement x="0" y="0" width="50" height="30" uuid="154f79b3-c85d-4a63-bfa6-b6b2557ff034"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="B Nazanin"/>
+										</textElement>
+										<text><![CDATA[استاد]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table 1_TD" height="26">
+									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+										<reportElement x="0" y="0" width="50" height="26" uuid="58a91cfc-ce78-4bae-a08c-0eff01f4be4b"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="B Nazanin"/>
+										</textElement>
+										<textFieldExpression><![CDATA[$F{tclass.teacher}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="41" uuid="fc7e4039-c0e0-4fcc-9a23-afc41356e84d">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="60" height="30" uuid="48178301-ef07-44e8-b843-9da4f492c7a3"/>
+										<reportElement x="0" y="0" width="41" height="30" uuid="48178301-ef07-44e8-b843-9da4f492c7a3"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -249,19 +275,19 @@
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement x="0" y="0" width="60" height="26" isRemoveLineWhenBlank="true" uuid="db426699-1567-49e6-aadc-c428aac42da6"/>
+										<reportElement x="0" y="0" width="41" height="26" isRemoveLineWhenBlank="true" uuid="db426699-1567-49e6-aadc-c428aac42da6"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{scoresState}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="40" uuid="0a918a70-3182-4c77-bfb2-bf36107dddd0">
-								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<jr:column width="36" uuid="0a918a70-3182-4c77-bfb2-bf36107dddd0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="40" height="30" uuid="c0c92eb2-dad3-4c1c-80c6-ed63f03a1f53"/>
+										<reportElement x="0" y="0" width="36" height="30" uuid="c0c92eb2-dad3-4c1c-80c6-ed63f03a1f53"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -271,19 +297,19 @@
 								<jr:detailCell style="Table 1_TD" height="26">
 									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement x="0" y="0" width="40" height="26" isRemoveLineWhenBlank="true" uuid="394764de-86fb-4cf6-87d4-dcf8f8c65edd"/>
+										<reportElement x="0" y="0" width="36" height="26" isRemoveLineWhenBlank="true" uuid="394764de-86fb-4cf6-87d4-dcf8f8c65edd"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="60" uuid="fe62a9cc-bbe7-4d0b-b3b2-822b4ff56c12">
-								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:column width="53" uuid="fe62a9cc-bbe7-4d0b-b3b2-822b4ff56c12">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="60" height="30" uuid="b5de839f-8c6d-40de-aa04-08a9d6597036"/>
+										<reportElement x="0" y="0" width="53" height="30" uuid="b5de839f-8c6d-40de-aa04-08a9d6597036"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -293,19 +319,41 @@
 								<jr:detailCell style="Table 1_TD" height="26">
 									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement x="0" y="0" width="60" height="26" isRemoveLineWhenBlank="true" uuid="066b5e0f-200b-4618-aa2a-2540491b2e8d"/>
+										<reportElement x="0" y="0" width="53" height="26" isRemoveLineWhenBlank="true" uuid="066b5e0f-200b-4618-aa2a-2540491b2e8d"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{tclass.endDate}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="70" uuid="073a2dbc-6d25-4c32-84cc-f0c1edbcc7fb">
-								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:column width="50" uuid="7942df51-4046-46c9-8b57-2a8eddf58600">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+								<jr:columnHeader style="Table 1_CH" height="30">
+									<staticText>
+										<reportElement x="0" y="0" width="50" height="30" uuid="0da6e4fa-5f6d-4f9b-9b0b-ec3ee4fb22d5"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="B Nazanin"/>
+										</textElement>
+										<text><![CDATA[تاریخ شروع]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table 1_TD" height="26">
+									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+										<reportElement x="0" y="0" width="50" height="26" uuid="fc3aa9a2-8c17-4baf-ba3f-640f9c34792e"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="B Nazanin"/>
+											<paragraph lineSpacing="Single"/>
+										</textElement>
+										<textFieldExpression><![CDATA[$F{tclass.startDate}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="46" uuid="073a2dbc-6d25-4c32-84cc-f0c1edbcc7fb">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="70" height="30" uuid="89900051-43b6-44e9-bd5e-0a1bd2c33a96"/>
+										<reportElement x="0" y="0" width="46" height="30" uuid="89900051-43b6-44e9-bd5e-0a1bd2c33a96"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -315,19 +363,19 @@
 								<jr:detailCell style="Table 1_TD" height="26">
 									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement x="0" y="0" width="70" height="26" isRemoveLineWhenBlank="true" uuid="2e8be464-cfa0-40a1-8b82-bd0309024f35"/>
+										<reportElement x="0" y="0" width="46" height="26" isRemoveLineWhenBlank="true" uuid="2e8be464-cfa0-40a1-8b82-bd0309024f35"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{tclass.term.titleFa}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="140" uuid="785e9679-86ea-42dc-81b5-fdb0146cea53">
-								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+							<jr:column width="122" uuid="785e9679-86ea-42dc-81b5-fdb0146cea53">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="140" height="30" uuid="a0d8da06-7524-4e08-9554-42803fd3b0fb"/>
+										<reportElement x="0" y="0" width="122" height="30" uuid="a0d8da06-7524-4e08-9554-42803fd3b0fb"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -337,20 +385,20 @@
 								<jr:detailCell style="Table 1_TD" height="26">
 									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement x="0" y="0" width="140" height="26" uuid="18813875-0bbb-4651-aebc-d2d02616dbff"/>
+										<reportElement x="0" y="0" width="122" height="26" uuid="18813875-0bbb-4651-aebc-d2d02616dbff"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{tclass.course.titleFa}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="60" uuid="efa69b10-43d0-480a-9f3c-45d386f68306">
-								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+							<jr:column width="51" uuid="efa69b10-43d0-480a-9f3c-45d386f68306">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 								<property name="com.jaspersoft.studio.layout"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="60" height="30" uuid="afaf3799-8009-4323-8cba-53272c2593c0"/>
+										<reportElement x="0" y="0" width="51" height="30" uuid="afaf3799-8009-4323-8cba-53272c2593c0"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -360,19 +408,19 @@
 								<jr:detailCell style="Table 1_TD" height="26">
 									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement x="0" y="0" width="60" height="26" uuid="c9cab979-a521-4996-9774-c85641b3cdad"/>
+										<reportElement x="0" y="0" width="51" height="26" uuid="c9cab979-a521-4996-9774-c85641b3cdad"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{tclass.course.code}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="90" uuid="14692765-3c03-464a-ae84-70e514a8f342">
-								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+							<jr:column width="77" uuid="14692765-3c03-464a-ae84-70e514a8f342">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="90" height="30" uuid="eec7f908-d8cb-4a13-9fd6-9740ba6ec031"/>
+										<reportElement x="0" y="0" width="77" height="30" uuid="eec7f908-d8cb-4a13-9fd6-9740ba6ec031"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -381,19 +429,19 @@
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement x="0" y="0" width="90" height="26" uuid="9a077137-417a-4a86-b150-6e744c8636df"/>
+										<reportElement x="0" y="0" width="77" height="26" uuid="9a077137-417a-4a86-b150-6e744c8636df"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{tclass.code}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="33" uuid="9b66fed3-df78-4c74-8512-77c30ec21182">
-								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+							<jr:column width="27" uuid="9b66fed3-df78-4c74-8512-77c30ec21182">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement x="0" y="0" width="33" height="30" uuid="4b430e40-4afa-4688-a431-bf6ae1f3ec9a"/>
+										<reportElement x="0" y="0" width="27" height="30" uuid="4b430e40-4afa-4688-a431-bf6ae1f3ec9a"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
@@ -402,9 +450,9 @@
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
 									<textField isStretchWithOverflow="true">
-										<reportElement x="0" y="0" width="33" height="26" uuid="e04d9d7a-1ba6-44b2-860d-e7cb1f13e76c"/>
+										<reportElement x="0" y="0" width="27" height="26" uuid="e04d9d7a-1ba6-44b2-860d-e7cb1f13e76c"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="Shabnam" size="8"/>
+											<font fontName="B Nazanin" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$V{Row_Number}]]></textFieldExpression>
 									</textField>

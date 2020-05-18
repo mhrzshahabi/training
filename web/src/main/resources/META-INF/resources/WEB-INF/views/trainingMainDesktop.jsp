@@ -674,6 +674,12 @@
                     }
                 },
                 {
+                    title: "<spring:message code="skill"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/skill/show-form"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="needs.assessment"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
@@ -718,13 +724,6 @@
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="skill"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/skill/show-form"/>");
-                    }
-                }
                 <%--,--%>
                 <%--{--%>
                 <%--    title: "<spring:message code="skill.group"/>",--%>
@@ -1392,7 +1391,7 @@
             if (respCode === 200 || respCode === 201) {
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
-                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
+                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";
 
                 if (gridToRefresh !== undefined) {
                     refreshLG(gridToRefresh);
@@ -1404,7 +1403,9 @@
                 }, dialogShowTime);
             } else {
                 if (respCode === 409) {
-                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                } else if (respCode === 401) {
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + resp.httpResponseText;
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
@@ -1442,7 +1443,7 @@
         })
     }
 
-    function exportToExcel(fields, data,titr) {
+    function exportToExcel(fields, data, titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/export-to-excel/download/",
@@ -1499,7 +1500,7 @@
     }
     function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
         // var advancedCriteria = LG.getCriteria();
-        var criteriaForm = isc.DynamicForm.create({
+        let criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
             target: "_Blank",
@@ -1859,6 +1860,13 @@
     var workflowRecordId = null;
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
+    var userPersonInfo = null;
+    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
+    function setUserPersonInfo(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            userPersonInfo = (JSON.parse(resp.data));
+        }
+    }
 
     <%--isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});--%>
     <%--loadingMessage: "<spring:message code="loading"/>",--%>

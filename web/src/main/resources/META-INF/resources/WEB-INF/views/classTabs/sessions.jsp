@@ -328,6 +328,17 @@
             }
         });
 
+        var ToolStrip_Excel_JspClass = isc.ToolStrip.create({
+            width: "100%",
+            membersMargin: 5,
+            members: [
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.DownloadExcelFormClient(ListGrid_session, ListGrid_Class_JspClass, '', "کلاس - جلسات");
+                    }
+                })]
+        });
+
         var ToolStrip_session = isc.ToolStrip.create({
             width: "100%",
             members: [
@@ -335,6 +346,7 @@
                 ToolStripButton_Edit,
                 ToolStripButton_Remove,
                 ToolStripButton_Print,
+                ToolStrip_Excel_JspClass,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
