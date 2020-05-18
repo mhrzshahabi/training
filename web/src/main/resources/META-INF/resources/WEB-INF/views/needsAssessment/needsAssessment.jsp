@@ -449,6 +449,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         selectionType:"single",
         border: "1px solid",
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "category.titleFa"},
             {name: "subCategory.titleFa"}
@@ -476,6 +477,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: personnelUrl + "/iscList"
     });
@@ -490,6 +492,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "personnelNo"},
             {name: "personnelNo2"},
             {name: "companyName"},
+            {name: "ccpAffairs"},
             {name: "employmentStatus"},
             {name: "complexTitle"},
             {name: "workPlaceTitle"},
