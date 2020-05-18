@@ -147,6 +147,12 @@
                     "true": "تائید",
                     "false": "عدم تائید"
                 }
+            },
+            {
+                name: "tstudent",
+                title: "",
+                baseStyle: "evaluation-code",
+                canEdit: false
             }
         ]
     });
@@ -192,8 +198,8 @@
         title: "تحلیل ارزیابی یادگیری",
         click: function () {
             isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/evaluationAnalysistLearningResult/"
-                + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().scoringMethod , "GET", null,
-                "callback: fill_learning_evaluation_result_resp(rpcResponse)"));
+                + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().scoringMethod ,
+                "GET", null, "callback: fill_learning_evaluation_result_resp(rpcResponse)"));
         }
     });
 
@@ -214,6 +220,7 @@
         DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELPass").setValue(record.felpass);
         DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLGrade").setValue(record.feclgrade);
         DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLPass").setValue(record.feclpass);
+        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("tstudent").setValue(record.tstudent);
     }
 
     var VLayout_Body_evaluation_analysis_learning = isc.VLayout.create({

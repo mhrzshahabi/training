@@ -11,10 +11,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Goal;
-import com.nicico.training.model.QuestionnaireQuestion;
-import com.nicico.training.model.Skill;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +20,7 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -45,6 +44,8 @@ public class EvaluationAnalysisRestController {
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final ParameterService parameterService;
     private final ITclassService tclassService;
+    private final ClassStudentDAO classStudentDAO;
+    private final ModelMapper mapper;
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
@@ -172,7 +173,8 @@ public class EvaluationAnalysisRestController {
     }
 
     @GetMapping("/evaluationAnalysistLearningResult/{classId}/{scoringMethod}")
-    public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId, @PathVariable String scoringMethod) {
+    public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId,
+                                                                                                    @PathVariable String scoringMethod) {
         Float[] result =  evaluationAnalysistLearningService.getStudents(classId,scoringMethod);
         EvaluationDTO.EvaluationLearningResult resultSet = new EvaluationDTO.EvaluationLearningResult();
 
@@ -232,12 +234,58 @@ public class EvaluationAnalysisRestController {
         resultSet.setHavePostTest("true");
         resultSet.setHavePreTest("true");
 
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(classId);
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        map.put("0", 0);
+        map.put("1001", 40);
+        map.put("1002", 60);
+        map.put("1003", 80);
+        map.put("1004", 100);
+
+        int studentCount = classStudents.size();
+        List<Double> preScores = new ArrayList<>();
+        List<Double> postScores = new ArrayList<>();
+
+        for (ClassStudent classStudent : classStudents) {
+            if (classStudent.getScore() == null)
+            {
+                classStudent.setScore((float) 0.0);
+            }
+            if (classStudent.getPreTestScore() == null)
+            {
+                classStudent.setPreTestScore((float) 0.0);
+            }
+            if (classStudent.getValence() == null)
+            {
+                classStudent.setValence(String.valueOf(0));
+            }
+
+            preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+            if(scoringMethod.equalsIgnoreCase("1")) {
+                postScores.add(Double.valueOf(map.get(classStudent.getValence())));
+            }
+            else if(scoringMethod.equalsIgnoreCase("3"))
+                postScores.add(Double.valueOf(classStudent.getScore())*5);
+            else
+                postScores.add(Double.valueOf(classStudent.getScore()));
+        }
+
+        Map<String, Boolean> tStudentResult = calculateTStudentResult(preScores, postScores,studentCount);
+        if(tStudentResult.get("hasDiffer")){
+            if(tStudentResult.get("positiveDiffer"))
+                resultSet.setTstudent("بر اساس توزیع تی استیودنت  با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیر مثبتی داشته اند.");
+            else
+                resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت  چشمگیر منفی داشته اند.");
+        }
+        else
+            resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیری نداشته اند.");
+
         return new ResponseEntity<>(resultSet,HttpStatus.OK);
     }
 
     //------------------------------------------------TStudent----------------------------------------------------------
     //Confidence Level = 95%
-    public void calculateTStudentResult(List<Double> preScores, List<Double> postScores,int studentCount){
+    public Map<String, Boolean> calculateTStudentResult(List<Double> preScores, List<Double> postScores,int studentCount){
         HashMap<Integer, Double> tStudentTable = new HashMap<>();
         tStudentTable.put(1,12.71);
         tStudentTable.put(2,4.303);
@@ -305,6 +353,11 @@ public class EvaluationAnalysisRestController {
             positiveDiffer = true;
         else if(t>0)
             positiveDiffer = false;
+
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("positiveDiffer",positiveDiffer);
+        result.put("hasDiffer",hasDiffer);
+        return  result;
     }
 
     public Double getMean(List<Double> list, int n){
