@@ -43,7 +43,7 @@ public class ExportController {
     private final StudentClassReportViewService studentClassReportViewService;
     private final SkillService skillService;
 
-    @PostMapping(value = {"/download"})
+    @PostMapping(value = {"/excel"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
                           @RequestParam(value = "data") String data,
                           @RequestParam(value = "titr") String titr) {
