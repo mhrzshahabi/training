@@ -188,7 +188,8 @@
                         for (let i = 0; i < allRows.length; i++) {
                             allRows[i]["state"] = attendanceState[allRows[i]["state"]];
                         }
-                        ExportToFile.exportToExcelFormClient(sendFields,allRows, + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
+
+                        ExportToFile.exportToExcelFormClient(sendFields,allRows,  "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
                             DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName + " " + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName,"کلاس - حضور و غیاب");
 
                     }

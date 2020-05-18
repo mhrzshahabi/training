@@ -154,14 +154,13 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "workflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", hidden:true},
             {name: "workflowStatus", title: "<spring:message code="committee.workflow.status"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "mainWorkflowStatus", title: "<spring:message code="main.workflow.status"/>", filterOperator: "iContains"}
-
         ],
         dataSource: RestDataSourceNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
@@ -314,11 +313,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ID: "RestDataSource_Skill_JspNeedsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
         ],
         fetchDataURL: skillUrl + "/spec-list"
     });
@@ -462,17 +461,19 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         showHeaderContextMenu: false,
         selectionType:"single",
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "category.titleFa"},
-            {name: "subCategory.titleFa"}
+            {name: "subCategory.titleFa"},
+            {name: "skillLevel.titleFa"}
         ],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["B"]}),
             "filterEditor", "header", "body"
         ],
-        canHover: true,
-        showHoverComponents: true,
-        hoverMode: "details",
+        // canHover: true,
+        // showHoverComponents: true,
+        // hoverMode: "details",
         canDragRecordsOut: true,
         dataArrived:function(){
             setTimeout(function(){ $("tbody tr td:nth-child(1)").css({direction:'ltr'});},300);
@@ -504,6 +505,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: personnelUrl + "/iscList"
     });
@@ -518,6 +520,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "personnelNo"},
             {name: "personnelNo2"},
             {name: "companyName"},
+            {name: "ccpAffairs"},
             {name: "employmentStatus"},
             {name: "complexTitle"},
             {name: "workPlaceTitle"},
@@ -841,6 +844,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                         optionDataSource: NeedsAssessmentTargetDS_needsAssessment,
                         valueField: "code",
                         displayField: "title",
+                        defaultValue: "Job",
                         autoFetchData: false,
                         pickListFields: [{name: "title"}],
                         defaultToFirstOption: true,
