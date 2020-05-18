@@ -167,6 +167,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
         recordDoubleClick: function () {
             editButtonJspNeedsAsessment.click();
+            changeDirection(0);
         },
         // groupStartOpen: "all",
         dataArrived: function () {
@@ -185,9 +186,22 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             // ListGrid_NeedsAssessment_JspNeedAssessment.expandRecord(ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord());
 
             //console.log(ListGrid_NeedsAssessment_JspNeedAssessment.getGroupTreeSelection());
-
+            setTimeout(function(){ $("tbody tr td:nth-child(7)").css({direction:'ltr'});},100);
             selectWorkflowRecord();
-        }
+        },
+        rowHover: function(){
+            changeDirection(0);
+        },
+        rowOver:function(){
+            changeDirection(0);
+        },
+        rowClick:function(){
+            changeDirection(0);
+        },
+        doubleClick: function () {
+            changeDirection(0);
+            EditSkill_Skill();
+        },
     });
     var ListGrid_MoreInformation_JspNeedAssessment = isc.ListGrid.create({
         // groupByField:["objectType"],
@@ -447,7 +461,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         showRowNumbers: false,
         showHeaderContextMenu: false,
         selectionType:"single",
-        border: "1px solid",
         fields: [
             {name: "titleFa"},
             {name: "category.titleFa"},
@@ -461,6 +474,21 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         showHoverComponents: true,
         hoverMode: "details",
         canDragRecordsOut: true,
+        dataArrived:function(){
+            setTimeout(function(){ $("tbody tr td:nth-child(1)").css({direction:'ltr'});},300);
+        },
+        rowHover: function(){
+            changeDirection(1);
+        },
+        rowOver:function(){
+            changeDirection(1);
+        },
+        rowClick:function(){
+            changeDirection(1);
+        },
+        doubleClick: function () {
+            changeDirection(1);
+        }
     });
 
     let RestDataSource_Personnel_JspNeedsAssessment = isc.TrDS.create({
@@ -1505,6 +1533,20 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     function tree(){
 
     }
+
+    const changeDirection=(status)=>{
+        let classes=".cellAltCol,.cellDarkAltCol, .cellOverAltCol, .cellOverDarkAltCol, .cellSelectedAltCol, .cellSelectedDarkAltCol," +
+            " .cellSelectedOverAltCol, .cellSelectedOverDarkAltCol, .cellPendingSelectedAltCol, .cellPendingSelectedDarkAltCol," +
+            " .cellPendingSelectedOverAltCol, .cellPendingSelectedOverDarkAltCol, .cellDeselectedAltCol, .cellDeselectedDarkAltCol," +
+            " .cellDeselectedOverAltCol, .cellDeselectedOverDarkAltCol, .cellDisabledAltCol, .cellDisabledDarkAltCol";
+        setTimeout(function() {
+            $(classes).css({'direction': 'ltr!important'});
+            if (status==0)
+            $("tbody tr td:nth-child(7)").css({'direction':'ltr'});
+                else
+            $("tbody tr td:nth-child(1)").css({'direction':'ltr'});
+        },10);
+    };
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
 
     // </script>
