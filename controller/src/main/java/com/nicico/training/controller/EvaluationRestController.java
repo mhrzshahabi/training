@@ -39,7 +39,6 @@ import java.util.*;
 @RequestMapping("/api/evaluation")
 public class EvaluationRestController {
 
-    private final OperationalUnitService operationalUnitService;
     private final ObjectMapper objectMapper;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;

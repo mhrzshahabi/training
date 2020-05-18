@@ -399,6 +399,9 @@
         doubleClick: function () {
             ListGrid_EmploymentHistory_Edit();
         },
+        filterEditorSubmit: function () {
+            ListGrid_JspEmploymentHistory.invalidateCache();
+        },
         align: "center",
         filterOperator: "iContains",
         filterOnKeypress: true,

@@ -73,6 +73,8 @@ public class ClassSessionService implements IClassSession {
         mainHoursRange.put(1, Arrays.asList("08:00", "10:00"));
         mainHoursRange.put(2, Arrays.asList("10:00", "12:00"));
         mainHoursRange.put(3, Arrays.asList("14:00", "16:00"));
+        mainHoursRange.put(4, Arrays.asList("12:00", "14:00"));
+        mainHoursRange.put(5, Arrays.asList("16:00", "18:00"));
 
         return mainHoursRange;
     }
@@ -363,6 +365,10 @@ public class ClassSessionService implements IClassSession {
                 classHoursRange.add(2);
             if (autoSessionsRequirement.getThird() != null && autoSessionsRequirement.getThird())
                 classHoursRange.add(3);
+            if (autoSessionsRequirement.getFourth() != null && autoSessionsRequirement.getFourth())
+                classHoursRange.add(4);
+            if (autoSessionsRequirement.getFifth() != null && autoSessionsRequirement.getFifth())
+                classHoursRange.add(5);
 
             Integer sessionTypeId = 1;
             Integer sessionState = 1;
@@ -473,7 +479,6 @@ public class ClassSessionService implements IClassSession {
         LocalDate nextFri = inputDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
         String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
         String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
-        userNationalCode = "3621296476";
 
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
@@ -504,9 +509,42 @@ public class ClassSessionService implements IClassSession {
                     classSession.setStudentPresentStatus(attendance.get(0).getState());
             }
         }
+        resp.getList().sort(new StudentStatusSorter().thenComparing(new DateSorter()).thenComparing(new HourSorter()));
         return resp;
     }
 
+    private class StudentStatusSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
+    {
+        @Override
+        public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
+            if(o1.getStudentStatus() != null && o2.getStudentStatus() != null)
+                return o1.getStudentStatus().compareToIgnoreCase(o2.getStudentStatus());
+            else
+                return 0;
+        }
+    }
+
+    private class DateSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
+    {
+        @Override
+        public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
+            if(o1.getSessionDate() != null && o2.getSessionDate() != null)
+                return o1.getSessionDate().compareToIgnoreCase(o2.getSessionDate());
+            else
+                return 0;
+        }
+    }
+
+    private class HourSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
+    {
+        @Override
+        public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
+            if(o1.getSessionStartHour() != null && o2.getSessionStartHour() != null)
+                return o1.getSessionStartHour().compareToIgnoreCase(o2.getSessionStartHour());
+            else
+                return 0;
+        }
+    }
     //--------------------------------------------- Calender -----------------------------------------------------------
     private static double greg_len = 365.2425;
     private static double greg_origin_from_jalali_base = 629964;
