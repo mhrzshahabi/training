@@ -105,4 +105,20 @@ public class EvaluationDTO implements Serializable {
     }
 
     //-----------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationLearningResult")
+    public static class EvaluationLearningResult{
+        private String preTestMeanScore;
+        private String postTestMeanScore;
+        private String havePreTest;
+        private String havePostTest;
+        private String felgrade;
+        private String limit;
+        private String felpass;
+        private String feclgrade;
+        private String feclpass;
+    }
 }

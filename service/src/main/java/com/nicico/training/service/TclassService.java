@@ -565,6 +565,26 @@ public class TclassService implements ITclassService {
         return result;
     }
 
+    @Override
+    @Transactional
+    public double getJustFERGrade(Long classId){
+        Tclass tclass = getTClass(classId);
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
+        double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
+        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
+        double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
+        double teacherGradeToClass = getTeacherGradeToClass(classId, tclass.getTeacherId());
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+                studentsGradeToGoals,
+                studentsGradeToFacility,
+                percenetOfFilledReactionEvaluationForms,
+                teacherGradeToClass);
+        return (double) FERGradeResult.get("FERGrade");
+
+    }
+
     public Map<String, Object> getFERGrade(double studentsGradeToTeacher,
                                            double studentsGradeToGoals,
                                            double studentsGradeToFacility,
