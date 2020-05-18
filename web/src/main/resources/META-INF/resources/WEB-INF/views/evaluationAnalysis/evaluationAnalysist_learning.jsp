@@ -277,25 +277,41 @@
                 autoFitWidth:true,
                 editEvent: "click",
 
-                change:function(){
-                    change_value=true
+                change:function(form,item,value,oldValue){
+
+                    if(value!=null && value!='' && typeof (value) != 'undefined'&& !value.match(/^(([1-9]\d{0,1})|100|0)$/)){
+                        item.setValue(value.substring(0,value.length-1));
+                    }else{
+                        item.setValue(value);
+                    }
+
+                    if(value==null || typeof (value) == 'undefined'){
+                        item.setValue('');
+                    }
+
+
+                    if(oldValue==null || typeof (oldValue) == 'undefined'){
+                        oldValue='';
+                    }
+
+
+                    if(item.getValue() != oldValue)
+                    {
+                        change_value=true;
+                    }
                 },
-                editorExit:function(editCompletionEvent, record, newValue)
-                {
+                editorExit:function(editCompletionEvent, record, newValue) {
 
-                    if (newValue != null) {
-                        if (validators_evaluarionAnalysist_Learning_ScorePreTest(newValue)) {
+                    if( change_value){
+                        if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
+
                             ListGrid_Cell_evaluationAnalysist_learning(record, newValue);
-                        } else {
-                            createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>")
 
+                        } else {
+                            ListGrid_Cell_evaluationAnalysist_learning(record, null);
                         }
                     }
-                    else if(change_value) {
-                        ListGrid_Cell_evaluationAnalysist_learning(record, newValue);
-                        change_value=false;
-                    }
-                    else {return true}
+                    change_value=false;
                 },
                 hoverHTML:function (record, rowNum, colNum, grid) {
                     return"نمره پیش آزمون بین 0 تا 100 می باشد"
