@@ -577,4 +577,14 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassTerm")
+    public static class TclassTerm {
+        private Long id;
+        private CourseDTO.CourseInfoTuple course;
+        private TermDTO.TermDTOTuple term;
+    }
 }

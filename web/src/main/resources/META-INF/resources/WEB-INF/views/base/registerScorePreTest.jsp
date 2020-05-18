@@ -120,7 +120,7 @@
                             ListGrid_Cell_ScorePreTest_Update(record, newValue);
                         } else {
                             createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>")
-
+                                return false;
                         }
                           }
                         else if(change_value) {
