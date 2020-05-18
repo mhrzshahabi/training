@@ -497,7 +497,7 @@
 
     function nationalCodeExists(nationalCode) {
         return StudentsLG_student.data.localData.some(function(el) {
-            return el.nationalCode === nationalCode;
+            return el.student.nationalCode === nationalCode;
         });
     }
 
