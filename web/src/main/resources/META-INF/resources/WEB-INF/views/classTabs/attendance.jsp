@@ -182,14 +182,15 @@
                                 allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
                             }
                         }
-                        exportToExcel(sendFields, allRows, "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - در تاریخ: " + DynamicForm_Attendance.getValue("sessionDate"));
+                        ExportToFile.exportToExcelFormClient(sendFields,allRows,"لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - در تاریخ: " + DynamicForm_Attendance.getValue("sessionDate"),"کلاس - حضور و غیاب");
                     }
                     else{
                         for (let i = 0; i < allRows.length; i++) {
                             allRows[i]["state"] = attendanceState[allRows[i]["state"]];
                         }
-                        exportToExcel(sendFields, allRows, "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
-                            DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName + " " + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName);
+                        ExportToFile.exportToExcelFormClient(sendFields,allRows, + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
+                            DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName + " " + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName,"کلاس - حضور و غیاب");
+
                     }
                 }
             }),
