@@ -201,6 +201,10 @@ public class TeacherService implements ITeacherService {
         SearchDTO.SearchRs<TeacherDTO.Report> searchRs = SearchUtil.search(teacherDAO, request, needAssessment -> modelMapper.map(needAssessment,
                 TeacherDTO.Report.class));
 
+        searchRs.getList().forEach(x->{
+            x.setCodes(x.getTclasse().stream().map(o->o.getTerm().getCode()).distinct().reduce((a,b)->a+","+b).map(Object::toString).orElse(""));
+        });
+
         return searchRs;
     }
 

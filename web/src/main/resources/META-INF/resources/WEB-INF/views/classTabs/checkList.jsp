@@ -35,7 +35,7 @@
         ],
 
         fetchDataURL: classCheckListUrl + "spec-list?_startRow=0&_endRow=1000",
-       // updateDataURL: classCheckListUrl + "edit",
+// updateDataURL: classCheckListUrl + "edit",
     });
 
 
@@ -88,7 +88,7 @@
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
                     ListGrid_CheckListItem.invalidateCache();
-                    // ListGrid_CheckListItem_DetailViewer.setData([]);
+// ListGrid_CheckListItem_DetailViewer.setData([]);
                 }
             }, {
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
@@ -111,7 +111,7 @@
 
 
     var ToolStripButton_CheckList_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "<spring:url value="refresh.png"/>",
+//icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             let gridState = null;
@@ -149,11 +149,11 @@
     });
     //---------------------------------------------------------------------------
     var ToolStripButton_CheckListItem_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "<spring:url value="refresh.png"/>",
+//icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckListItem.invalidateCache();
-            // ListGrid_CheckListItem_DetailViewer.setData([]);
+// ListGrid_CheckListItem_DetailViewer.setData([]);
         }
     });
     var ToolStripButton_CheckListItem_Edit = isc.ToolStripButtonEdit.create({
@@ -222,7 +222,7 @@
         alternateRecordStyles: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        // canHover:true,
+// canHover:true,
         filterOnKeypress: false,
         showFilterEditor: true,
         contextMenu: Menu_ListGrid_CheckListItem,
@@ -238,7 +238,7 @@
         },
 
         recordClick: function (ListGrid, ListGridRecord, number, ListGridField, number, any, any) {
-            // return ListGrid_CheckListItem_DetailViewer.setData(ListGridRecord);
+// return ListGrid_CheckListItem_DetailViewer.setData(ListGridRecord);
         },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -261,7 +261,7 @@
     var ListGrid_CheckList = isc.TrLG.create({
         filterOperator: "iContains",
         allowAdvancedCriteria: true,
-        // canHover:true,
+// canHover:true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
         showFilterEditor: true,
@@ -279,7 +279,7 @@
 
         },
         selectionUpdated: function () {
-            // ListGrid_CheckListItem_DetailViewer.setData([])
+// ListGrid_CheckListItem_DetailViewer.setData([])
             var record = ListGrid_CheckList.getSelectedRecord();
             RestDataSource_CheckListItem.fetchDataURL = checklistUrl + record.id + "/getCheckListItem";
             ListGrid_CheckListItem.fetchData();
@@ -503,39 +503,37 @@
     });
 
     //================================= تکمیل چک لیست===============================================تکمیل چک لیست=========================================تکمیل چک لیست======================================تکمیل چک لیست=====================
-  var list=[];
+    var list = [];
     var ListGrid_Class_Item = isc.TrLG.create({
         showRowNumbers: false,
         alternateRecordStyles: true,
         showFilterEditor: false,
         autoFetchData: true,
-       // sortField: 0,
-        sortAvailableFields:false,
-        canSort:false,
+// sortField: 0,
+        sortAvailableFields: false,
+        canSort: false,
         editByCell: true,
         modalEditing: true,
         height: 500,
         showGroupSummary: true,
         groupStartOpen: "all",
         groupByField: 'checkListItem.group',
-        nullGroupTitle:"",
+        nullGroupTitle: "",
         dataSource: RestDataSource_Class_Item,
         canEdit: true,
         editEvent: "click",
         listEndEditAction: "next",
         autoSaveEdits: false,
-        saveLocally:true,
+        saveLocally: true,
         gridComponents: ["header", "filterEditor", "body", isc.TrHLayoutButtons.create({
             members: [
                 isc.IButtonSave.create({
 
                     click: function () {
-                      console.log(list)
-
-                            isc.RPCManager.sendRequest(TrDSRequest( classCheckListUrl + "edit","POST",JSON.stringify(list), "callback:refreshData_jsp(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(classCheckListUrl + "edit", "POST", JSON.stringify(list), "callback:refreshData_jsp(rpcResponse)"));
 
 
-                                       }
+                    }
                 }),
                 isc.IButtonCancel.create({
 
@@ -549,12 +547,13 @@
         fields: [
             {name: "checkListItem.group", title: "<spring:message code="group"/>", align: "center", hidden: true},
             {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", canEdit: false, align: "center"},
-            {name: "description",title: "<spring:message code="description"/>",canEdit: true,align: "center",
+            {
+                name: "description", title: "<spring:message code="description"/>", canEdit: true, align: "center",
                 change: function (form, item, value) {
                     if (value == null) {
                         item.setValue("")
                     }
-            }
+                }
             },
             {
                 name: "enableStatus",
@@ -565,45 +564,42 @@
             },
         ],
         editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-       {
-          let obj;
-          if(colNum == 1)
-          {
-              obj={id:record.id,  description:  newValue}
-              if (list.filter(function(x){
-                  return x.id==record.id
-              })==0) {
+            {
+                let obj;
+                if (colNum == 1) {
+                    obj = {id: record.id, description: newValue}
+                    if (list.filter(function (x) {
+                        return x.id == record.id
+                    }) == 0) {
 
-                  list.push(obj);
-              }
+                        list.push(obj);
+                    }
 
-              list.filter(function(x){
-                  return x.id==record.id
-              }).map(function(x){
-                  return x.description=newValue;
-              });
+                    list.filter(function (x) {
+                        return x.id == record.id
+                    }).map(function (x) {
+                        return x.description = newValue;
+                    });
 
-          }
-         if(colNum ==2)
-          {
-              obj={id:record.id, enableStatus:newValue}
-              if (list.filter(function(x){
-                  return x.id==record.id
-              })==0) {
-                  list.push(obj);
-              }
+                }
+                if (colNum == 2) {
+                    obj = {id: record.id, enableStatus: newValue}
+                    if (list.filter(function (x) {
+                        return x.id == record.id
+                    }) == 0) {
+                        list.push(obj);
+                    }
 
-              list.filter(function(x){
-                  return x.id==record.id
-              }).map(function(x){
-                  return x.enableStatus=newValue;
-              });
-          }
+                    list.filter(function (x) {
+                        return x.id == record.id
+                    }).map(function (x) {
+                        return x.enableStatus = newValue;
+                    });
+                }
 
-      }
-       }
-       });
-
+            }
+        }
+    });
 
 
     var HLayOut_thisCommittee_AddUsers_Jsp = isc.HLayout.create({
@@ -670,7 +666,7 @@
         errorOrientation: "right",
         numCols: 6,
         padding: 20,
-        colWidths: ["1%", "20%","15%", "30"],
+        colWidths: ["1%", "20%", "15%", "30"],
         items: [
             {
                 name: "checkList",
@@ -683,7 +679,7 @@
                 textAlign: "center",
                 optionDataSource: RestDataSource_SelectCheckList,
                 width: "220",
-                height:"30",
+                height: "30",
                 filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -704,10 +700,10 @@
             {
                 type: "button",
                 title: "<spring:message code="add.complete.checkList"/>",
-              //  icon: "<spring:url value="check-mark.png"/>",
-             fontsize:2,
+// icon: "<spring:url value="check-mark.png"/>",
+                fontsize: 2,
                 width: 160,
-                height:"30",
+                height: "30",
                 showDownIcon: true,
                 startRow: false,
                 endRow: false,
@@ -722,18 +718,18 @@
 
                 }
             },
-            // {
-            //     type: "SpacerItem",
-            //
-            // },
+// {
+// type: "SpacerItem",
+//
+// },
             {
                 type: "button",
                 title: "<spring:message code="checkList.Design"/>",
-                //icon: "<spring:url value="editCheckList.png"/>",
+//icon: "<spring:url value="editCheckList.png"/>",
                 iconOrientation: "right",
                 showDownIcon: true,
                 width: 160,
-                height:"30",
+                height: "30",
                 startRow: false,
                 endRow: true,
                 click: function () {
@@ -804,7 +800,7 @@
         setTimeout(function () {
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();
-           }, 500);
+        }, 500);
 
     }
     ;
@@ -1126,9 +1122,9 @@
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="message"/>"
             });
-            // setTimeout(function () {
-            //     OK.close();
-            // }, 3000);
+// setTimeout(function () {
+// OK.close();
+// }, 3000);
         }
 
     };
@@ -1146,15 +1142,15 @@
     // };
     // function fireCheckList(record) {
     //
-    //     if (record != -1) {
-    //         RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + record.id;
-    //         ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + record.code});
-    //         ListGrid_ClassCheckList.fetchData();
-    //         ListGrid_ClassCheckList.invalidateCache();
-    //     } else {
-    //         ListGrid_ClassCheckList.setFieldProperties(1, {title: " "});
-    //         ListGrid_ClassCheckList.setData([]);
-    //     }
+    // if (record != -1) {
+    // RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + record.id;
+    // ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + record.code});
+    // ListGrid_ClassCheckList.fetchData();
+    // ListGrid_ClassCheckList.invalidateCache();
+    // } else {
+    // ListGrid_ClassCheckList.setFieldProperties(1, {title: " "});
+    // ListGrid_ClassCheckList.setData([]);
+    // }
     // };
 
     function loadPage_checkList() {
@@ -1170,32 +1166,31 @@
         }
     }
 
-    function  save_All_Data() {
-        let list=[];
-        let size=ListGrid_Class_Item.data.size();
+    function save_All_Data() {
+        let list = [];
+        let size = ListGrid_Class_Item.data.size();
 
-        for(let i=0;i<size;i++){
+        for (let i = 0; i < size; i++) {
 
-            if(typeof(ListGrid_Class_Item.data.get(i).customStyle)==="undefined"){
+            if (typeof (ListGrid_Class_Item.data.get(i).customStyle) === "undefined") {
 
                 continue;
-            }else{
-                let size1=ListGrid_Class_Item.data.get(i).groupMembers.size();
+            } else {
+                let size1 = ListGrid_Class_Item.data.get(i).groupMembers.size();
 
-                for(let j=0;j<size1;j++){
-                    let obj={id:ListGrid_Class_Item.data.get(i).groupMembers[j].id,
-                        description:  ListGrid_Class_Item.data.get(i).groupMembers[j].description,
+                for (let j = 0; j < size1; j++) {
+                    let obj = {
+                        id: ListGrid_Class_Item.data.get(i).groupMembers[j].id,
+                        description: ListGrid_Class_Item.data.get(i).groupMembers[j].description,
                         enableStatus: ListGrid_Class_Item.data.get(i).groupMembers[j].enableStatus
                     };
 
-                    if(typeof(obj.enableStatus)==="undefined")
-                    {
-                        obj.enableStatus=false;
+                    if (typeof (obj.enableStatus) === "undefined") {
+                        obj.enableStatus = false;
                     }
 
-                    if(typeof(obj.description)==="undefined")
-                    {
-                        obj.description='';
+                    if (typeof (obj.description) === "undefined") {
+                        obj.description = '';
                     }
 
                     list.push(obj);
@@ -1222,7 +1217,7 @@
                         {fieldName: "checkListItem.checkListId", operator: "equals", value: a1},
                     ]
                 }
-           // ListGrid_Class_Item.invalidateCache()
+// ListGrid_Class_Item.invalidateCache()
 
             );
             Window_Add_User_TO_Committee.close()
