@@ -258,6 +258,7 @@ public class TeacherRestController {
         Object evaluationGrade = null;
         Object teachingCategories = null;
         Object teachingSubCategories = null;
+        Object term=null;
         for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
             if(criterion.getFieldName().equalsIgnoreCase("evaluationCategory")){
                 evaluationCategory = criterion.getValue().get(0);
@@ -279,12 +280,39 @@ public class TeacherRestController {
                 teachingSubCategories = criterion.getValue();
                 removedObjects.add(criterion);
             }
+
+            if (criterion.getFieldName().equalsIgnoreCase("termId"))
+            {
+                term=criterion.getValue();
+                removedObjects.add(criterion);
+            }
         }
 
         for (Object removedObject : removedObjects) {
             request.getCriteria().getCriteria().remove(removedObject);
         }
+
+       Set<TeacherDTO.Report> set=new HashSet<>();
         SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
+
+        for (TeacherDTO.Report x1:response.getList())
+        {
+            for(TclassDTO.TclassTerm y:x1.getTclasse())
+            {
+                if (term!=null) {
+                    if (((List) term).stream().anyMatch(x -> x.toString().equals(y.getTerm().getId().toString()))) {
+                            if (!set.contains(x1.getId())) {
+                                set.add(x1);
+                            }
+                    }
+                }
+            }
+        }
+
+        if (term!=null) {
+            response.getList().clear();
+            response.getList().addAll(set);
+        }
 
         List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
 

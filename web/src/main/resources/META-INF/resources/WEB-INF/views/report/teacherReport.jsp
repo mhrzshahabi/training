@@ -89,8 +89,18 @@
             {name: "numberOfCourses"},
             {name: "evaluationGrade"},
             {name: "lastCourse"},
+            {name: "codes"},
             {name: "lastCourseEvaluationGrade"}],
         fetchDataURL: teacherUrl + "spec-list-report"
+    });
+    var RestDataSource_Term_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ],
+        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_Result_JspTeacherReport = isc.TrLG.create({
@@ -148,6 +158,10 @@
             {
                 name: "lastCourseEvaluationGrade",
                 title: "نمره ارزيابي کلاسي آخرين دوره تدريسي در شرکت"
+            },
+            {
+                name: "codes",
+                title:"ترم",
             }
         ],
         cellHeight: 43,
@@ -246,6 +260,52 @@
                 },
                 vertical: false,
                 defaultValue: "false"
+            },
+            {
+                name: "termId",
+// titleColSpan: 1,
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                //required: true,
+               // editorType: "ComboBoxItem",
+                type: "SelectItem",
+                multiple: true,
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_JspClass,
+// autoFetchData: true,
+//                 cachePickListResults: true,
+//                 useClientFiltering: true,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                // textMatchStyle: "startsWith",
+                // generateExactMatchCriteria: true,
+                colSpan: 2,
+               // startRow:false,
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ],
+                click: function (form, item) {
+
+                },
+                changed: function () {
+
+                }
             },
             {
                 name: "temp1",
