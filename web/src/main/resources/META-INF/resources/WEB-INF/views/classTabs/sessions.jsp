@@ -237,11 +237,11 @@
 
                     switch (record.dayCode) {
                         case 'Sat':
-                            result+="#7d6b99";
+                            result+="#989899";
                             break;
 
                         case 'Sun':
-                            result+="#ff88d2";
+                            result+="#ffd1f2";
                             break;
 
                         case 'Mon':
@@ -249,19 +249,19 @@
                             break;
 
                         case 'Tue':
-                            result+="#CD5C5C";
+                            result+="#cdb7a3";
                             break;
 
                         case 'Wed':
-                            result+="#32CD32";
+                            result+="#80cd86";
                             break;
 
                         case 'Thu':
-                            result+="#ffd700"+blackColor;
+                            result+="#ffff77"+blackColor;
                             break;
 
                         case 'Fri':
-                            result+="#ADD8E6"+blackColor;
+                            result+="#bedae6"+blackColor;
                             break;
                     }//end switch-case
                 return result;
