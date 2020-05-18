@@ -1443,7 +1443,7 @@
         })
     }
 
-    function exportToExcel(fields, data,titr) {
+    function exportToExcel(fields, data, titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/export-to-excel/download/",
@@ -1500,7 +1500,7 @@
     }
     function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
         // var advancedCriteria = LG.getCriteria();
-        var criteriaForm = isc.DynamicForm.create({
+        let criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
             target: "_Blank",
