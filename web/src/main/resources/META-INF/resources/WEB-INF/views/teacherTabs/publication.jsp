@@ -341,6 +341,9 @@
         rowDoubleClick: function () {
             ListGrid_Publication_Edit();
         },
+        filterEditorSubmit: function () {
+            ListGrid_JspPublication.invalidateCache();
+        },
         align: "center",
         filterOperator: "iContains",
         filterOnKeypress: true,

@@ -34,8 +34,6 @@ public class ExportToFileService implements IExportToFileService {
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
         List<HashMap<String, String>> allData = gson.fromJson(data, resultType);
 
-        String fileFullPath = "export.xlsx";
-
         try {
 
             String[] headers = new String[fields1.size()];
@@ -144,37 +142,22 @@ public class ExportToFileService implements IExportToFileService {
             }
 
             //CellStyle mine = workbook.createCellStyle();
-            // mine.setFillForegroundColor(IndexedColors.BLACK.index);
-            // mine.setFillForegroundColor(IndexedColors.BLUE_GREY.index);
+            //mine.setFillForegroundColor(IndexedColors.BLACK.index);
+            //mine.setFillForegroundColor(IndexedColors.BLUE_GREY.index);
             //mine.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             //sheet.getRow(4).setRowStyle(mine);
 
 
-            FileOutputStream fileOut = new FileOutputStream(fileFullPath);
-            workbook.write(fileOut);
-            fileOut.close();
-
-            File file = new File(fileFullPath);
-            FileInputStream in = new FileInputStream(file);
-            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
-            String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
-            if (mimeType == null) {
-                mimeType = "application/octet-stream";
-            }
+            String mimeType = "application/octet-stream";
+            String fileName = URLEncoder.encode("ExportExcel.xlsx", "UTF-8").replace("+", "%20");
             String headerKey = "Content-Disposition";
             String headerValue;
             response.setContentType(mimeType);
             headerValue = String.format("attachment; filename=\"%s\"", fileName);
             response.setHeader(headerKey, headerValue);
-            response.setContentLength((int) file.length());
-            OutputStream outStream = response.getOutputStream();
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                outStream.write(buffer, 0, bytesRead);
-            }
-            outStream.flush();
-            in.close();
+            workbook.write(response.getOutputStream()); // Write workbook to response.
+
+            workbook.close();
 
         } catch (Exception ex) {
             System.out.println(ex);

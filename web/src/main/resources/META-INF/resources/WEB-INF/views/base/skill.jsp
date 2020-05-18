@@ -481,6 +481,8 @@
     SkillLG_Skill = isc.TrLG.create({
         dataSource: SkillDS_Skill,
         contextMenu: MenuSkill_Skill,
+        width:"100%",
+        minWidth:"100%",
         autoFetchData: true,
         selectionType: "single",
         showResizeBar: true,

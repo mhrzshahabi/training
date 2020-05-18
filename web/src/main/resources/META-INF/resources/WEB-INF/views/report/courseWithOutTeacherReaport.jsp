@@ -29,11 +29,10 @@
     });
 
     var ToolStrip_Actions = isc.ToolStrip.create({
-        ID: "ToolStrip_Actions1",
-       // width: "100%",
+        // width: "100%",
         members: [
             isc.Label.create({
-                ID: "totalsLabel_scores"
+                ID: "totalsCount_Rows"
             })]
     })
     var List_Grid_Reaport_CourseWithOutTeacher = isc.TrLG.create({
@@ -49,21 +48,28 @@
         recordDoubleClick: function () {
 
         },
-        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
+        gridComponents: ["filterEditor", "header", "body"],
         dataArrived: function ()
         {
             modalDialog.close();
+
+            let totalRows = this.data.getLength();
+            if (totalRows >= 0 && this.data.lengthIsKnown())
+                totalsCount_Rows.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+            else
+                totalsCount_Rows.setContents("&nbsp;");
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
-        sortField: 0,    });
+        sortField: 0,
+    });
 
     var DynamicForm_Report_CourseWithOutTeacher = isc.DynamicForm.create({
        numCols: 9,
         colWidths: ["5%","15%","5%","15%","10%","10%"],
-        fields: [
+        items: [
             {
 
                 name: "startDate",
@@ -89,6 +95,13 @@
                     }
                 }],
 
+                editorExit:function(){
+                    let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate"));
+                    if (result){
+                        DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").setValue(result);
+                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
+                    }
+                },
 
                 blur: function () {
                     var dateCheck;
@@ -133,6 +146,13 @@
 
                     }
                 }],
+                    editorExit:function(){
+                        let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
+                        if (result){
+                            DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").setValue(result);
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                        }
+                    },
                 blur: function () {
 
                     var dateCheck;
@@ -180,7 +200,7 @@
                     if (!DynamicForm_Report_CourseWithOutTeacher.validate()) {
                         return;
                     }
-                    modalDialog=createDialog('wait', 'لطفا منتظر بمانید', 'در حال واکشی اطلاعات');
+                    modalDialog=createDialog('wait');
                     var strSData=DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").getValue().replace(/(\/)/g, "");
                     RestDataSource_CourseWithOutTeacher.fetchDataURL=courseUrl + "courseWithOutTeacher"+"/"+strSData + "/" + strEData;
@@ -188,50 +208,31 @@
                     List_Grid_Reaport_CourseWithOutTeacher.fetchData();
                 }
             },
-            // {
-            //     type: "button",
-            //         startRow:false,
-            //         align:"center",
-            //         title: "چاپ گزارش",
-            //         height:"25",
-            //        click:function () {
-            //             if (endDateCheckReportCWOT == false)
-            //                 return;
-            //             if (!DynamicForm_Report_CourseWithOutTeacher.validate()) {
-            //                 return;
-            //             }
-            //            var strSData=DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").getValue().replace(/(\/)/g, "");
-            //            var strEData = DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").getValue().replace(/(\/)/g, "");
-            //            PrintPreTest(strSData,strEData)
-            //         }
-            //
-            //
-            // }
-            // {
-            //     type: "button",
-            //     startRow:false,
-            //     align:"left",
-            //     title: "گزارش غیبت ناموجه",
-            //     height:"30",
-            //    click:function () {
-            //         if (endDateCheckReportCWOT == false)
-            //             return;
-            //         if (!DynamicForm_Report_CourseWithOutTeacher.validate()) {
-            //             return;
-            //         }
-            //         var strSData=DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").getValue().replace(/(\/)/g, "");
-            //         var strEData = DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").getValue().replace(/(\/)/g, "");
-            //            Print(strSData,strEData);
-            //     }
-            //
-            // }
-
-        ]
+         ]
     })
+
+    var ToolStrip_ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
+        width: "30%",
+        padding:16,
+        members: [ToolStrip_Actions,
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    ExportToFile.DownloadExcelFormClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
+                }
+            })
+        ]
+    });
+
+    var Hlayout__Personnel_Info_Training_body = isc.HLayout.create({
+        height:"10%",
+        top:20,
+        members: [ToolStrip_ToolStrip_Personnel_Info_Training_Action]
+    });
+
 
     var Hlayout_Reaport_body = isc.HLayout.create({
         height:"10%",
-        members: [DynamicForm_Report_CourseWithOutTeacher]
+        members: [DynamicForm_Report_CourseWithOutTeacher, Hlayout__Personnel_Info_Training_body]
     })
 
     var Hlayout_Reaport_body1=isc.HLayout.create({
