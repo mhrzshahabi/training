@@ -424,6 +424,9 @@
         doubleClick: function () {
             ListGrid_TeacherCertification_Edit();
         },
+        filterEditorSubmit: function () {
+            ListGrid_JspTeacherCertification.invalidateCache();
+        },
         align: "center",
         filterOperator: "iContains",
         filterOnKeypress: true,

@@ -263,6 +263,7 @@
         showInlineErrors: true,
         showErrorText: false,
         numCols: 6,
+        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
                 name: "course.code",
@@ -1551,17 +1552,28 @@
         evaluationInfo.redraw();
     }
 
+    let Window_CriteriaForm_JspTClassReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "",
+        showCloseButton: false,
+        showMaximizeButton: false,
+        canDragReposition: false,
+        showMinimizeButton: false,
+        canDragResize: false,
+        closeClick: false,
+        minimize: false,
+        items: [DynamicForm_CriteriaForm_JspTClassReport]
+    });
+
     //----------------------------------- layOut -----------------------------------------------------------------------
     var HLayOut_CriteriaForm_JspTClassReport = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "70%",
-        height: "80%",
+        width: "100%",
+        height: "100%",
         alignLayout: "center",
-        padding: 10,
         members: [
-            DynamicForm_CriteriaForm_JspTClassReport
+            Window_CriteriaForm_JspTClassReport
         ]
     });
     var HLayOut_Confirm_JspTClassReport = isc.TrHLayoutButtons.create({

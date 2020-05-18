@@ -479,7 +479,6 @@ public class ClassSessionService implements IClassSession {
         LocalDate nextFri = inputDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
         String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
         String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
-        userNationalCode = "3621296476";
 
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
@@ -510,9 +509,42 @@ public class ClassSessionService implements IClassSession {
                     classSession.setStudentPresentStatus(attendance.get(0).getState());
             }
         }
+        resp.getList().sort(new StudentStatusSorter().thenComparing(new DateSorter()).thenComparing(new HourSorter()));
         return resp;
     }
 
+    private class StudentStatusSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
+    {
+        @Override
+        public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
+            if(o1.getStudentStatus() != null && o2.getStudentStatus() != null)
+                return o1.getStudentStatus().compareToIgnoreCase(o2.getStudentStatus());
+            else
+                return 0;
+        }
+    }
+
+    private class DateSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
+    {
+        @Override
+        public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
+            if(o1.getSessionDate() != null && o2.getSessionDate() != null)
+                return o1.getSessionDate().compareToIgnoreCase(o2.getSessionDate());
+            else
+                return 0;
+        }
+    }
+
+    private class HourSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
+    {
+        @Override
+        public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
+            if(o1.getSessionStartHour() != null && o2.getSessionStartHour() != null)
+                return o1.getSessionStartHour().compareToIgnoreCase(o2.getSessionStartHour());
+            else
+                return 0;
+        }
+    }
     //--------------------------------------------- Calender -----------------------------------------------------------
     private static double greg_len = 365.2425;
     private static double greg_origin_from_jalali_base = 629964;
