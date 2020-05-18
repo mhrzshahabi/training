@@ -9,9 +9,11 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.SkillService;
 import com.nicico.training.service.StudentClassReportViewService;
+import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.poi.ss.usermodel.*;
@@ -41,6 +43,8 @@ public class ExportController {
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
     private final StudentClassReportViewService studentClassReportViewService;
+    private final TclassService tclassService;
+
     private final SkillService skillService;
 
     @PostMapping(value = {"/excel"})
@@ -147,28 +151,27 @@ public class ExportController {
                       @RequestParam(value = "fileName") String fileName,
                       @RequestParam(value = "data") String data,
                       @RequestParam(value = "params") String receiveParams
-                      ) throws Exception {
+    ) throws Exception {
         //-------------------------------------
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
-        HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
-//        final Map<String, Object> params = new HashMap<>();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
         data = "{" + "\"content\": " + data + "}";
         params.put("today", DateUtil.todayDate());
-        params.put(ConstantVARs.REPORT_TYPE,type);
+        params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
     @PostMapping(value = {"/print-criteria/{type}"})
-    public void printWithCriteria (HttpServletResponse response,
-                      @PathVariable String type,
-                      @RequestParam(value = "fileName") String fileName,
-                      @RequestParam(value = "CriteriaStr") String criteriaStr,
-                      @RequestParam(value = "params") String receiveParams
-                      ) throws Exception {
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "fileName") String fileName,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr,
+                                  @RequestParam(value = "params") String receiveParams
+    ) throws Exception {
         //-------------------------------------
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
@@ -179,7 +182,7 @@ public class ExportController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
         List list = null;
-        switch (fileName){
+        switch (fileName) {
             case "oneNeedsAssessment.jasper":
                 final SearchDTO.SearchRs<NeedsAssessmentDTO.Info> searchNAS = needsAssessmentService.search(searchRq);
                 list = searchNAS.getList();
@@ -187,6 +190,10 @@ public class ExportController {
             case "personnelCourses.jasper":
                 SearchDTO.SearchRs<StudentClassReportViewDTO.Info> searchSCRVS = studentClassReportViewService.search(searchRq);
                 list = searchSCRVS.getList();
+                break;
+            case "ClassByCriteria.jasper":
+                SearchDTO.SearchRs<TclassDTO.Info> searchTC = tclassService.search(searchRq);
+                list = searchTC.getList();
                 break;
             case "Skill_Report.jasper":
                 SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
@@ -200,7 +207,7 @@ public class ExportController {
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
         params.put("today", DateUtil.todayDate());
-        params.put(ConstantVARs.REPORT_TYPE,type);
+        params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
