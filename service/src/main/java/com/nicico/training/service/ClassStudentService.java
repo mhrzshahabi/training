@@ -141,25 +141,12 @@ public class ClassStudentService implements IClassStudentService {
         SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> result =  SearchUtil.search(classStudentDAO, request,classStudent -> mapper.map(classStudent,
                 ClassStudentDTO.evaluationAnalysistLearning.class));
         for (ClassStudentDTO.evaluationAnalysistLearning t : result.getList()) {
-            if(tClass.getScoringMethod().equalsIgnoreCase("1")){
-                if(t.getValence() != null){
-                    if(t.getValence().equalsIgnoreCase("1001"))
-                        t.setScore(Float.parseFloat("25"));
-                    else if(t.getValence().equalsIgnoreCase("1002"))
-                        t.setScore(Float.parseFloat("50"));
-                    else if(t.getValence().equalsIgnoreCase("1003"))
-                        t.setScore(Float.parseFloat("75"));
-                    else if(t.getValence().equalsIgnoreCase("1004"))
-                        t.setScore(Float.parseFloat("100"));
-                }
-            }
-            else if(tClass.getScoringMethod().equalsIgnoreCase("3")){
+            if(tClass.getScoringMethod().equalsIgnoreCase("3")){
                 if(t.getScore() != null)
                     t.setScore(t.getScore()*5);
             }
         }
         return result;
     }
-
 
 }

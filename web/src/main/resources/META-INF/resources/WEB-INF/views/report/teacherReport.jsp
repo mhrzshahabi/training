@@ -261,42 +261,9 @@
                 defaultValue: "false"
             },
             {
-                name: "termId",
-                title: "<spring:message code='term'/>",
-                textAlign: "center",
-                type: "SelectItem",
-                multiple: true,
-                displayField: "code",
-                valueField: "id",
-                optionDataSource: RestDataSource_Term_JspClass,
-                filterFields: ["code"],
-                sortField: ["code"],
-                sortDirection: "descending",
-
-                // startRow:false,
-                pickListFields: [
-                    {
-                        name: "code",
-                        title: "<spring:message code='term.code'/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "startDate",
-                        title: "<spring:message code='start.date'/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "endDate",
-                        title: "<spring:message code='end.date'/>",
-                        filterOperator: "iContains"
-                    }
-                ],
-                click: function (form, item) {
-
-                },
-                changed: function () {
-
-                }
+                name: "temp1",
+                title: "",
+                canEdit: false
             },
             {
                 name: "categories",
@@ -667,6 +634,36 @@
                 title: "تدریس داشته است.",
                 canEdit: false
             },
+            {
+                name: "termId",
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                type: "SelectItem",
+                multiple: true,
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_JspClass,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ]
+            }
         ],
         itemChanged: function (item, newValue) {
             if (item.name === "personality.contactInfo.homeAddress.stateId") {
