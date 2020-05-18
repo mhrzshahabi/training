@@ -104,6 +104,8 @@ public class TeacherDTO {
         private Long lastCourseId;
         private String lastCourseEvaluationGrade;
         private Integer version;
+        private String codes;
+        Set<TclassDTO.TclassTerm> tclasse;
     }
 
     @Getter

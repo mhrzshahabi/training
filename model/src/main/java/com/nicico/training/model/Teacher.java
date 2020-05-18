@@ -100,4 +100,7 @@ public class Teacher extends Auditable {
 
     @Column(name = "f_major_sub_category")
     private Long majorSubCategoryId;
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    private Set<Tclass> tclasse;
 }
