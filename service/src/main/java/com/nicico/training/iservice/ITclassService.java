@@ -65,6 +65,9 @@ public interface ITclassService {
 
     public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId, Long trainingId);
 
+    @Transactional
+    double getJustFERGrade(Long classId);
+
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 
     public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code);

@@ -413,9 +413,9 @@
             {
                 title: "<spring:message code="global.form.print.excel"/>",
                 click: function () {
-                    console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
-                    exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
+                    // exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
                     // print_Training_File("excel");
+                    ExportToFile.DownloadExcelFormClient(ListGrid_TrainingFile_TrainingFileJSP,null,"","دوره های گذرانده پرسنل");
                 }
             },
             <%--{--%>

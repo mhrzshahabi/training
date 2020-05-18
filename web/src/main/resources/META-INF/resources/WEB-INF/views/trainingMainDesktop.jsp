@@ -270,6 +270,7 @@
     const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
     const classContractUrl = rootUrl + "/class-contract";
+    const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1446,7 +1447,7 @@
     function exportToExcel(fields, data, titr) {
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
-            action: "/training/export-to-excel/download/",
+            action: "/training/export/excel/",
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -1482,7 +1483,7 @@
     function printToJasper(data, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/export-to-excel/print/"/>" + type,
+            action: "<spring:url value="/export/print/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -1502,7 +1503,7 @@
         // var advancedCriteria = LG.getCriteria();
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/export-to-excel/print-criteria/"/>" + type,
+            action: "<spring:url value="/export/print-criteria/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:

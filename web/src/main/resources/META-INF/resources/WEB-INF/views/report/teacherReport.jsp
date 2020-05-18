@@ -234,7 +234,6 @@
                 title: "<spring:message code='firstName'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
-
             {
                 name: "personality.lastNameFa",
                 title: "<spring:message code='lastName'/>",
@@ -260,52 +259,6 @@
                 },
                 vertical: false,
                 defaultValue: "false"
-            },
-            {
-                name: "termId",
-// titleColSpan: 1,
-                title: "<spring:message code='term'/>",
-                textAlign: "center",
-                //required: true,
-               // editorType: "ComboBoxItem",
-                type: "SelectItem",
-                multiple: true,
-                displayField: "code",
-                valueField: "id",
-                optionDataSource: RestDataSource_Term_JspClass,
-// autoFetchData: true,
-//                 cachePickListResults: true,
-//                 useClientFiltering: true,
-                filterFields: ["code"],
-                sortField: ["code"],
-                sortDirection: "descending",
-                // textMatchStyle: "startsWith",
-                // generateExactMatchCriteria: true,
-                colSpan: 2,
-               // startRow:false,
-                pickListFields: [
-                    {
-                        name: "code",
-                        title: "<spring:message code='term.code'/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "startDate",
-                        title: "<spring:message code='start.date'/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "endDate",
-                        title: "<spring:message code='end.date'/>",
-                        filterOperator: "iContains"
-                    }
-                ],
-                click: function (form, item) {
-
-                },
-                changed: function () {
-
-                }
             },
             {
                 name: "temp1",
@@ -681,6 +634,36 @@
                 title: "تدریس داشته است.",
                 canEdit: false
             },
+            {
+                name: "termId",
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                type: "SelectItem",
+                multiple: true,
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_JspClass,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ]
+            }
         ],
         itemChanged: function (item, newValue) {
             if (item.name === "personality.contactInfo.homeAddress.stateId") {

@@ -37,8 +37,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/export-to-excel")
-public class ExportToExcelController {
+@RequestMapping("/export")
+public class ExportController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
@@ -47,7 +47,7 @@ public class ExportToExcelController {
 
     private final SkillService skillService;
 
-    @PostMapping(value = {"/download"})
+    @PostMapping(value = {"/excel"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
                           @RequestParam(value = "data") String data,
                           @RequestParam(value = "titr") String titr) {
