@@ -98,9 +98,13 @@ public class CheckListItemService implements ICheckListItemService {
         CheckListItem currentCheckListItem = optionalCheckListItem.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CheckListItemNotFound));
         CheckListItem checkListItem = new CheckListItem();
         mapper.map(currentCheckListItem, checkListItem);
+        if(currentCheckListItem.getIsDeleted()== null)
         checkListItem.setIsDeleted(true);
+        else if(currentCheckListItem.getIsDeleted() == true)
+            checkListItem.setIsDeleted(false);
+        else
+            checkListItem.setIsDeleted(true);
         return mapper.map(checkListItemDAO.saveAndFlush(checkListItem), CheckListItemDTO.Info.class);
     }
-
 
 }
