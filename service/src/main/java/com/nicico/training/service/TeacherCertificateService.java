@@ -16,7 +16,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,30 +58,51 @@ public class TeacherCertificateService implements ITeacherCertificationService {
 
     @Transactional
     @Override
-    public void addTeacherCertification(TeacherCertificationDTO.Create request, Long teacherId) {
+    public void addTeacherCertification(TeacherCertificationDTO.Create request, Long teacherId,HttpServletResponse response) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        TeacherCertification teacherCertification = new TeacherCertification();
-        modelMapper.map(request, teacherCertification);
-        try {
-            teacher.getTeacherCertifications().add(teacherCertification);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+
+        if (!teacherCertificationDAO.existsByCourseTitleAndTeacherId(request.getCourseTitle(),request.getTeacherId())){
+            TeacherCertification teacherCertification = new TeacherCertification();
+            modelMapper.map(request, teacherCertification);
+            try {
+                teacher.getTeacherCertifications().add(teacherCertification);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            }
+        }
+        else {
+            try {
+                response.sendError(405,null);
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
         }
     }
 
     @Transactional
     @Override
-    public TeacherCertificationDTO.Info update(Long id, TeacherCertificationDTO.Update request) {
+    public TeacherCertificationDTO.Info update(Long id, TeacherCertificationDTO.Update request, HttpServletResponse response) {
         final TeacherCertification teacherCertification = getTeacherCertification(id);
-        teacherCertification.getCategories().clear();
-        teacherCertification.getSubCategories().clear();
-        TeacherCertification updating = new TeacherCertification();
-        modelMapper.map(teacherCertification, updating);
-        modelMapper.map(request, updating);
-        try {
-            return save(updating);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+
+        if (!teacherCertificationDAO.existsByCourseTitleAndTeacherIdAndIdIsNot(request.getCourseTitle(),request.getTeacherId(),id)) {
+            teacherCertification.getCategories().clear();
+            teacherCertification.getSubCategories().clear();
+            TeacherCertification updating = new TeacherCertification();
+            modelMapper.map(teacherCertification, updating);
+            modelMapper.map(request, updating);
+            try {
+                return save(updating);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            }
+        }
+        else {
+            try {
+                response.sendError(405, null);
+                return null;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
         }
     }
 

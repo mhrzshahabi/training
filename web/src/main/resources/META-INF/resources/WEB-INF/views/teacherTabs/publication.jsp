@@ -491,8 +491,14 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        } else {
-            if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
+        }
+        else {
+            if (resp.httpResponseCode === 405) {
+                createDialog("info", "<spring:message code="publication.title.duplicate"/>",
+                    "<spring:message code="message"/>");
+            }
+
+            else if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
                 createDialog("info", "<spring:message code="msg.record.duplicate"/>",
                     "<spring:message code="message"/>");
             } else {
