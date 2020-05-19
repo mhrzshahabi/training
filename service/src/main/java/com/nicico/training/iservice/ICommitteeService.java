@@ -2,7 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CommitteeDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
+import com.nicico.training.dto.PersonnelDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -23,17 +23,17 @@ public interface ICommitteeService {
 
     SearchDTO.SearchRs<CommitteeDTO.Info> search(SearchDTO.SearchRq request);
 
-    void addMember(Long committeeId, Long personInfiId);
+    void addMember(Long committeeId, String personInfiId);
 
-    void removeMember(Long committeeId, Long personInfiId);
+    void removeMember(Long committeeId, String personInfiId);
 
-    void removeMembers(Long committeeId, Set<Long> personIds);
+    void removeMembers(Long committeeId, Set<String> personIds);
 
-    void addMembers(Long committeeId, Set<Long> personInfiIds);
+    void addMembers(Long committeeId, Set<String> personInfiIds);
 
-    List<PersonalInfoDTO.Info> getMembers(Long committeeId);
+    List<PersonnelDTO.Info> getMembers(Long committeeId);
 
-    Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
+//    Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
 
     boolean checkForDelete(Long CommitteeId);
 

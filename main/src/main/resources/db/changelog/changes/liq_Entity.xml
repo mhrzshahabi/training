@@ -2668,5 +2668,15 @@
             <column name="n_teacher_cost_per_hour" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1589889485463-428">
+        <createTable tableName="tbl_committee_personnel">
+            <column name="f_committee_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_personnel_id" type="VARCHAR2(255 CHAR)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

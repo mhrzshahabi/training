@@ -965,5 +965,11 @@
     <changeSet author="poursalehi_mos (generated)" id="1588392156190-425">
         <addForeignKeyConstraint baseColumnNames="f_second_party_institute_id" baseTableName="tbl_class_contract" constraintName="FK2ui1srqp84ja82t6uckoa99p2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1589889485463-431">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_personnel" constraintName="FK65ehy840fg2dj3e1qyklvr0x6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee" validate="true"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1589889485463-432">
+        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_personnel" constraintName="FK7wmqnnkyqaytki3imc2gqu6m7" deferrable="false" initiallyDeferred="false" referencedColumnNames="personnel_no" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

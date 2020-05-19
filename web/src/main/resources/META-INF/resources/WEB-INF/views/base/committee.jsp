@@ -4,7 +4,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-//<script>
+// <script>
 
     var committee_method = "POST";
     var committeeId;
@@ -27,19 +27,28 @@
     });
 
     var RestDataSource_All_Person = isc.TrDS.create({
-        fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "<spring:message code="firstName"/>", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
-            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>"}
+        fields: [
+            {name: "id", hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},
+            {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
+            {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
+            {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
+            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true, autoFitWidth: true},
         ],
-        fetchDataURL: personalInfoUrl + "spec-list",
+        fetchDataURL: personnelUrl + "/iscList",
     });
 
     var RestDataSource_ThisCommittee_Person = isc.TrDS.create({
 
-        fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%",  title: "<spring:message code="firstName"/>", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", width: "35%",  title: "<spring:message code="firstName"/>", align: "center"},
+            {name: "lastName", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
             {name: "nationalCode", align: "center", width: "30%",  title: "<spring:message code="national.code"/>"}
         ],
 
@@ -48,8 +57,8 @@
 
     var Ds_Member_Attached_Committee = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%",title: "<spring:message code="firstName"/>", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
+            {name: "firstName", width: "35%",title: "<spring:message code="firstName"/>", align: "center"},
+            {name: "lastName", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
             {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>"}
         ],
         autoFetchData: false,
@@ -167,7 +176,7 @@
 
             var memberIds = new Array();
             for (let i = 0; i < dropRecords.getLength(); i++) {
-                memberIds.add(dropRecords[i].id);
+                memberIds.add(dropRecords[i].personnelNo);
             }
             ;
 
@@ -223,7 +232,7 @@
             var activeCommittee = ListGrid_Committee.getSelectedRecord();
             var personIds = new Array();
             for (let i = 0; i < dropRecords.getLength(); i++) {
-                personIds.add(dropRecords[i].id);
+                personIds.add(dropRecords[i].personnelNo);
             }
             ;
             var JSONObj = {"ids": personIds};
@@ -524,7 +533,7 @@
 
             } else {
 
-                RestDataSource_All_Person.fetchDataURL = committeeUrl + record.id + "/unAttachMember";
+                // RestDataSource_All_Person.fetchDataURL = committeeUrl + record.id + "/unAttachMember";
                 ListGrid_All_Person.invalidateCache();
                 ListGrid_All_Person.fetchData();
 
