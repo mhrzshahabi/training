@@ -8,7 +8,7 @@
     var saveActionUrlTeacherCertification;
     var waitTeacherCertification;
     var teacherIdTeacherCertification = null;
-    var isCategoriesChanged = false;
+    var isCategoriesChanged_JspTeacherCertification = false;
     var startDateCheck_JSPTeachCertificate = true;
     var endDateCheck_JSPTeachCertificate = true;
     var dateCheck_Order_JSPTeachCertificate = true;
@@ -82,7 +82,7 @@
                     filterOperator: "iContains"
                 },
                 changed: function () {
-                    isCategoriesChanged = true;
+                    isCategoriesChanged_JspTeacherCertification = true;
                     var subCategoryField = DynamicForm_JspTeacherCertification.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
@@ -122,8 +122,8 @@
                     filterOperator: "iContains"
                 },
                 focus: function () {
-                    if (isCategoriesChanged) {
-                        isCategoriesChanged = false;
+                    if (isCategoriesChanged_JspTeacherCertification) {
+                        isCategoriesChanged_JspTeacherCertification = false;
                         var ids = DynamicForm_JspTeacherCertification.getField("categories").getValue();
                         if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = null;
@@ -424,6 +424,9 @@
         doubleClick: function () {
             ListGrid_TeacherCertification_Edit();
         },
+        filterEditorSubmit: function () {
+            ListGrid_JspTeacherCertification.invalidateCache();
+        },
         align: "center",
         filterOperator: "iContains",
         filterOnKeypress: true,
@@ -524,7 +527,7 @@
                 for (var i = 0; i < record.categories.length; i++)
                     catIds.add(record.categories[i].id);
                 DynamicForm_JspTeacherCertification.getField("categories").setValue(catIds);
-                isCategoriesChanged = true;
+                isCategoriesChanged_JspTeacherCertification = true;
                 DynamicForm_JspTeacherCertification.getField("subCategories").focus(null, null);
             }
             if (record.subCategories != null && !record.subCategories.isEmpty()) {

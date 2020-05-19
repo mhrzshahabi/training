@@ -17,7 +17,7 @@
         margin: 10,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
+            {name: "personality.accountInfo.id", hidden: true},
             {
                 name: "personality.accountInfo.bank",
                 title: "<spring:message code='bank'/>",

@@ -8,7 +8,7 @@
     var saveActionUrlTeachingHistory;
     var waitTeachingHistory;
     var teacherIdTeachingHistory = null;
-    var isCategoriesChanged = false;
+    var isCategoriesChanged_JspTeachingHistory = false;
     var startDateCheck_JSPTeachHistory= true;
     var endDateCheck_JSPTeachHistory= true;
     var dateCheck_Order_JSPTeachHistory= true;
@@ -111,7 +111,7 @@
                     filterOperator: "iContains"
                 },
                 changed: function () {
-                    isCategoriesChanged = true;
+                    isCategoriesChanged_JspTeachingHistory = true;
                     var subCategoryField = DynamicForm_JspTeachingHistory.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
@@ -151,8 +151,8 @@
                     filterOperator: "iContains"
                 },
                 focus: function () {
-                    if (isCategoriesChanged) {
-                        isCategoriesChanged = false;
+                    if (isCategoriesChanged_JspTeachingHistory) {
+                        isCategoriesChanged_JspTeachingHistory = false;
                         var ids = DynamicForm_JspTeachingHistory.getField("categories").getValue();
                         if (ids == null || ids.isEmpty()) {
                             RestDataSource_SubCategory_JspTeachingHistory.implicitCriteria = null;
@@ -453,6 +453,9 @@
         doubleClick: function () {
             ListGrid_TeachingHistory_Edit();
         },
+        filterEditorSubmit: function () {
+            ListGrid_JspTeachingHistory.invalidateCache();
+        },
         align: "center",
         filterOperator: "iContains",
         filterOnKeypress: true,
@@ -553,7 +556,7 @@
                 for (var i = 0; i < record.categories.length; i++)
                     catIds.add(record.categories[i].id);
                 DynamicForm_JspTeachingHistory.getField("categories").setValue(catIds);
-                isCategoriesChanged = true;
+                isCategoriesChanged_JspTeachingHistory = true;
                 DynamicForm_JspTeachingHistory.getField("subCategories").focus(null, null);
             }
             if (record.subCategories != null && !record.subCategories.isEmpty()) {

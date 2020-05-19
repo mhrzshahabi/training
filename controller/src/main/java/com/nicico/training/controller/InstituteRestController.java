@@ -11,7 +11,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.service.InstituteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

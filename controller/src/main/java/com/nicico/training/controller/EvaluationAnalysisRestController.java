@@ -4,14 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.Goal;
-import com.nicico.training.model.QuestionnaireQuestion;
-import com.nicico.training.model.Skill;
+import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +20,13 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,6 +41,11 @@ import java.util.*;
 public class EvaluationAnalysisRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
+    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
+    private final ParameterService parameterService;
+    private final ITclassService tclassService;
+    private final ClassStudentDAO classStudentDAO;
+    private final ModelMapper mapper;
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
@@ -163,5 +171,230 @@ public class EvaluationAnalysisRestController {
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/BehavioralEvaluationResult.jasper", params, jsonDataSource, response);
     }
+
+    @GetMapping("/evaluationAnalysistLearningResult/{classId}/{scoringMethod}")
+    public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId,
+                                                                                                    @PathVariable String scoringMethod) {
+        Float[] result =  evaluationAnalysistLearningService.getStudents(classId,scoringMethod);
+        EvaluationDTO.EvaluationLearningResult resultSet = new EvaluationDTO.EvaluationLearningResult();
+
+        Double minScoreEL = 0.0;
+        Double minPasTestEL = 0.0;
+        Double minPreTestEL = 0.0;
+        Double FECLZ1 = 0.0;
+        Double FECLZ2 = 0.0;
+        Double minScoreFECR = 0.0;
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEL");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("minScoreEL"))
+                minScoreEL = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minPasTestEL"))
+                minPasTestEL = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minPreTestEL"))
+                minPreTestEL = Double.parseDouble(parameterValue.getValue());
+        }
+
+        parameters = parameterService.getByCode("FEC_L");
+        parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("FECLZ1"))
+                FECLZ1 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("FECLZ2"))
+                FECLZ2 = Double.parseDouble(parameterValue.getValue());
+        }
+
+        parameters = parameterService.getByCode("FEC_R");
+        parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
+                minScoreFECR = Double.parseDouble(parameterValue.getValue());
+        }
+
+        float postTestMeanGrade = result[0];
+        float preTestMeanGrade = result[1];
+        float felGrade = result[3];
+        Double ferGrade = tclassService.getJustFERGrade(classId);
+        Double feclGrade = felGrade * FECLZ2 + ferGrade * FECLZ1;
+
+        resultSet.setFelgrade(felGrade + "");
+        if(felGrade >= minScoreEL)
+            resultSet.setFelpass("true");
+        else
+            resultSet.setFelpass("false");
+        resultSet.setLimit(minScoreEL + "");
+        resultSet.setPostTestMeanScore(postTestMeanGrade + "");
+        resultSet.setPreTestMeanScore(preTestMeanGrade + "");
+        resultSet.setFeclgrade(feclGrade.floatValue() + "");
+        if(feclGrade >= minScoreFECR)
+            resultSet.setFeclpass("true");
+        else
+            resultSet.setFeclpass("false");
+        resultSet.setHavePostTest("true");
+        resultSet.setHavePreTest("true");
+
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(classId);
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        map.put("0", 0);
+        map.put("1001", 40);
+        map.put("1002", 60);
+        map.put("1003", 80);
+        map.put("1004", 100);
+
+        int studentCount = classStudents.size();
+        List<Double> preScores = new ArrayList<>();
+        List<Double> postScores = new ArrayList<>();
+
+        for (ClassStudent classStudent : classStudents) {
+            if (classStudent.getScore() == null)
+            {
+                classStudent.setScore((float) 0.0);
+            }
+            if (classStudent.getPreTestScore() == null)
+            {
+                classStudent.setPreTestScore((float) 0.0);
+            }
+            if (classStudent.getValence() == null)
+            {
+                classStudent.setValence(String.valueOf(0));
+            }
+
+            preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+            if(scoringMethod.equalsIgnoreCase("1")) {
+                postScores.add(Double.valueOf(map.get(classStudent.getValence())));
+            }
+            else if(scoringMethod.equalsIgnoreCase("3"))
+                postScores.add(Double.valueOf(classStudent.getScore())*5);
+            else
+                postScores.add(Double.valueOf(classStudent.getScore()));
+        }
+
+        Map<String, Boolean> tStudentResult = calculateTStudentResult(preScores, postScores,studentCount);
+        if(tStudentResult.get("hasDiffer")){
+            if(tStudentResult.get("positiveDiffer"))
+                resultSet.setTstudent("بر اساس توزیع تی استیودنت  با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیر مثبتی داشته اند.");
+            else
+                resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت  چشمگیر منفی داشته اند.");
+        }
+        else
+            resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیری نداشته اند.");
+
+        return new ResponseEntity<>(resultSet,HttpStatus.OK);
+    }
+
+    //------------------------------------------------TStudent----------------------------------------------------------
+    //Confidence Level = 95%
+    public Map<String, Boolean> calculateTStudentResult(List<Double> preScores, List<Double> postScores,int studentCount){
+        HashMap<Integer, Double> tStudentTable = new HashMap<>();
+        tStudentTable.put(1,12.71);
+        tStudentTable.put(2,4.303);
+        tStudentTable.put(3,3.182);
+        tStudentTable.put(4,2.776);
+        tStudentTable.put(5,2.571);
+        tStudentTable.put(6,2.447);
+        tStudentTable.put(7,2.365);
+        tStudentTable.put(8,2.306);
+        tStudentTable.put(9,2.262);
+        tStudentTable.put(10,2.228);
+        tStudentTable.put(11,2.201);
+        tStudentTable.put(12,2.179);
+        tStudentTable.put(13,2.160);
+        tStudentTable.put(14,2.145);
+        tStudentTable.put(15,2.131);
+        tStudentTable.put(16,2.120);
+        tStudentTable.put(17,2.110);
+        tStudentTable.put(18,2.101);
+        tStudentTable.put(19,2.093);
+        tStudentTable.put(20,2.086);
+        tStudentTable.put(21,2.080);
+        tStudentTable.put(22,2.074);
+        tStudentTable.put(23,2.069);
+        tStudentTable.put(24,2.064);
+        tStudentTable.put(25,2.060);
+        tStudentTable.put(26,2.056);
+        tStudentTable.put(27,2.052);
+        tStudentTable.put(28,2.048);
+        tStudentTable.put(29,2.045);
+        tStudentTable.put(30,2.042);
+        tStudentTable.put(40,2.021);
+        tStudentTable.put(60,2.000);
+        tStudentTable.put(80,1.990);
+        tStudentTable.put(100,1.984);
+
+        Double preScores_mean = getMean(preScores,studentCount);
+        Double postScores_mean = getMean(postScores, studentCount);
+
+        Double preScores_deviation = getDeviation(preScores, studentCount,preScores_mean);
+        Double postScores_deviation = getDeviation(postScores, studentCount, postScores_mean);
+
+        Double difference_sum = getDifference(preScores,postScores,studentCount);
+        Double difference_average = difference_sum/studentCount;
+        Double difference_deviation = getDifferenceDeviation(preScores,postScores,studentCount,difference_sum);
+        Double t = difference_sum / difference_deviation;
+        Double t_table=0.0;
+        if(studentCount<=30)
+            t_table = tStudentTable.get(studentCount);
+        else if(studentCount>30 && studentCount<=40)
+            t_table = tStudentTable.get(40);
+        else if(studentCount>40 && studentCount<=60)
+            t_table = tStudentTable.get(60);
+        else if(studentCount>60 && studentCount<=80)
+            t_table = tStudentTable.get(80);
+        else if(studentCount>80 && studentCount<=100)
+            t_table = tStudentTable.get(100);
+        Boolean hasDiffer = false;
+        if(Math.abs(t) < t_table)
+            hasDiffer = false;
+        else if(Math.abs(t) >= t_table)
+            hasDiffer = true;
+        Boolean positiveDiffer = false;
+        if(t<0)
+            positiveDiffer = true;
+        else if(t>0)
+            positiveDiffer = false;
+
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("positiveDiffer",positiveDiffer);
+        result.put("hasDiffer",hasDiffer);
+        return  result;
+    }
+
+    public Double getMean(List<Double> list, int n){
+        Double sum = 0.0;
+        for (Double aDouble : list) {
+            sum += aDouble;
+        }
+        return  sum/n;
+    }
+
+    public Double getDeviation(List<Double> list, int n,Double average){
+        Double dv = 0.0;
+        for (Double aDouble : list) {
+            double dm = aDouble - average;
+            dv += dm * dm;
+        }
+        return Math.sqrt(dv / n);
+    }
+
+    public Double getDifference(List<Double> list1, List<Double> list2, int n){
+        Double sum = 0.0;
+        for(int i=0;i<n;i++){
+            sum += list1.get(i) - list2.get(i);
+
+        }
+        return sum;
+    }
+
+    public Double getDifferenceDeviation(List<Double> list1, List<Double> list2, int n, Double differenceSum){
+        Double t1 = 0.0;
+        for (int i=0;i<n;i++){
+            Double dm = list1.get(i) - list2.get(i);
+            t1 += dm * dm;
+        }
+        return Math.sqrt( ((n*t1) - (differenceSum*differenceSum))/(n-1) );
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     }

@@ -291,6 +291,15 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private TermDTO term;
+        @Getter(AccessLevel.NONE)
+        private TeacherDTO.TeacherFullNameTuple teacher;
+
+        public String getTeacher() {
+            if (teacher != null)
+                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
+        }
     }
 
     @Getter
@@ -508,7 +517,7 @@ public class TclassDTO {
     public static class WeeklySchedule {
         private Long id;
         private String code;
-        private CourseDTO.CourseInfoTuple course;
+        private CourseDTO.CourseWeeklySchedule course;
         private Set<ClassStudentDTO.WeeklySchedule> classStudents;
     }
 
@@ -567,5 +576,15 @@ public class TclassDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassTerm")
+    public static class TclassTerm {
+        private Long id;
+        private CourseDTO.CourseInfoTuple course;
+        private TermDTO.TermDTOTuple term;
     }
 }

@@ -109,26 +109,43 @@
                 canEdit: true,
                 validateOnChange: false,
                 editEvent: "click",
-                    change:function(){
-                        change_value=true
+                    change:function(form,item,value,oldValue){
+
+                        if(value!=null && value!='' && typeof (value) != 'undefined'&& !value.match(/^(([1-9]\d{0,1})|100|0)$/)){
+                            item.setValue(value.substring(0,value.length-1));
+                        }else{
+                            item.setValue(value);
+                        }
+
+                        if(value==null || typeof (value) == 'undefined'){
+                            item.setValue('');
+                        }
+
+
+                        if(oldValue==null || typeof (oldValue) == 'undefined'){
+                            oldValue='';
+                        }
+
+
+                        if(item.getValue() != oldValue)
+                        {
+                            change_value=true;
+                        }
                     },
-                    editorExit:function(editCompletionEvent, record, newValue)
-                    {
+                    editorExit:function(editCompletionEvent, record, newValue) {
 
-                        if (newValue != null) {
-                        if (validators_ScorePreTest(newValue)) {
-                            ListGrid_Cell_ScorePreTest_Update(record, newValue);
-                        } else {
-                            createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>")
+                        if( change_value){
+                            if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
 
+                                ListGrid_Cell_ScorePreTest_Update(record, newValue);
+
+                            } else {
+                                ListGrid_Cell_ScorePreTest_Update(record, null);
+                            }
                         }
-                          }
-                        else if(change_value) {
-                            ListGrid_Cell_ScorePreTest_Update(record, newValue);
-                            change_value=false
-                        }
-                        else {return true}
+                        change_value=false;
                     }
+
 
              },
 

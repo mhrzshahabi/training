@@ -49,9 +49,9 @@ public interface ICourseService {
 
     List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId);
 
-    List<CompetenceDTOOld.Info> getCompetence(Long courseId);
+//    List<CompetenceDTOOld.Info> getCompetence(Long courseId);
 
-    List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
+//    List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
 
     List<SkillDTO.Info> getMainObjective(Long courseId);
 
@@ -82,4 +82,8 @@ public interface ICourseService {
     List<CourseDTO.Info> getEvaluation(Long courseId);
 
     CourseDTO.CourseGoals getCourseGoals(Long courseId);
+
+    //----------------------------------------------------------------------
+
+    List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate);
 }

@@ -47,4 +47,31 @@ public class EducationFormController {
         else
             return null;
     }
+
+    @PostMapping("/{educationType}/printWithCriteria/{type}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,
+                                               @PathVariable String educationType,
+                                               @PathVariable String type) {
+        String token = request.getParameter("token");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        type = type.toUpperCase();
+        return restTemplate.exchange(restApiUrl + "/api/" + educationType + "/printWithCriteria/" + type,
+                HttpMethod.POST,
+                entity,
+                byte[].class);
+    }
 }

@@ -13,7 +13,6 @@ import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
-import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.GoalService;
@@ -50,7 +49,6 @@ public class CourseRestController {
     private final ICourseService iCourseService;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
-    private final CourseDAO courseDAO;
     private final ModelMapper modelMapper;
     private final SkillDAO skillDAO;
 
@@ -87,10 +85,10 @@ public class CourseRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req,HttpServletResponse response) {
+    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req, HttpServletResponse response) {
         CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
 //        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDTO.Info courseInfo = courseService.create(request,response);
+        CourseDTO.Info courseInfo = courseService.create(request, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else
@@ -149,8 +147,8 @@ public class CourseRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_course')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                       @RequestParam(value = "_endRow", required = false) Integer endRow,
+    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
@@ -258,19 +256,19 @@ public class CourseRestController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/skill-group/{courseId}")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroup(@PathVariable Long courseId) {
-        List<SkillGroupDTO.Info> skillGroup = courseService.getSkillGroup(courseId);
-        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-        specResponse.setData(skillGroup)
-                .setStartRow(0)
-                .setEndRow(skillGroup.size())
-                .setTotalRows(skillGroup.size());
-        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/skill-group/{courseId}")
+//    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroup(@PathVariable Long courseId) {
+//        List<SkillGroupDTO.Info> skillGroup = courseService.getSkillGroup(courseId);
+//        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
+//        specResponse.setData(skillGroup)
+//                .setStartRow(0)
+//                .setEndRow(skillGroup.size())
+//                .setTotalRows(skillGroup.size());
+//        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+//        specRs.setResponse(specResponse);
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
@@ -486,6 +484,22 @@ public class CourseRestController {
     }
 
     @Loggable
+    @GetMapping(value = "courseWithOutTeacher/{startdate}/{endDate}")
+    public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate,@PathVariable String endDate)
+    {
+        List<CourseDTO.courseWithOutTeacher> list = courseService.courseWithOutTeacher(startdate, endDate);
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
     @GetMapping(value = "getEvaluation/{id}")
     public ResponseEntity<CourseDTO.SpecRs> getEvaluation(@PathVariable Long id) {
         List<CourseDTO.Info> list = courseService.getEvaluation(id);
@@ -503,13 +517,13 @@ public class CourseRestController {
     @GetMapping(value = "/getCourseMainObjective/{courseId}")
     public String getCourseMainObjective(@PathVariable Long courseId, HttpServletResponse response) throws IOException {
 
-        StringBuilder mainObjective =new StringBuilder();
+        StringBuilder mainObjective = new StringBuilder();
         List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(courseId);
 
         for (Skill skill : skillList) {
 
-           if( mainObjective.length() > 0 )
-               mainObjective.append("_");
+            if (mainObjective.length() > 0)
+                mainObjective.append("_");
 
             mainObjective.append(skill.getTitleFa());
         }

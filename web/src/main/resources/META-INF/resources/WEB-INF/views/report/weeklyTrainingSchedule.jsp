@@ -5,6 +5,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 // <script>
     var userNationalCode_JspWeeklyTrainingSchedule = "<%= SecurityUtil.getNationalCode()%>";
+    var isCategoryChanged_JspWeeklyTrainingSchedule = false;
     //----------------------------------------------------Variables-----------------------------------------------------
     RestDataSource_Class_JspWeeklyTrainingSchedule = isc.TrDS.create({
         fields: [
@@ -17,20 +18,126 @@
             {name: "tclass.code"},
             {name: "tclass.course.code"},
             {name: "tclass.course.titleFa"},
+            {name: "tclass.course.categoryId"},
+            {name: "tclass.course.subCategoryId"},
             {name: "studentStatus"},
             {name: "studentPresentStatus"}
-            ],
+        ],
         fetchDataURL: studentPortalUrl + "/sessionService/specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
+
+    var RestDataSource_Category_JspWeeklyTrainingSchedule = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategory_JspWeeklyTrainingSchedule = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    //----------------------------------------------------Criteria Form-------------------------------------------------
+    var DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule = isc.DynamicForm.create({
+        numCols: 5,
+        colWidths: ["10%", "30%", "10%", "30%","20%"],
+        width: "700",
+        fields: [
+            {
+                name: "tclass.course.categoryId",
+                title: "انتخاب گروه",
+                type: "ComboBoxItem",
+                editorType: "SelectItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true
+                },
+                optionDataSource: RestDataSource_Category_JspWeeklyTrainingSchedule,
+                autoFetchData: false,
+                displayField: "titleFa",
+                valueField: "id",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true,
+                textAlign: "center",
+                pickListWidth: "280",
+                pickListFields: [
+                    {name: "titleFa", width: "100%", filterOperator: "iContains"}],
+                changed: function (form, item, value) {
+                    isCategoryChanged_JspWeeklyTrainingSchedule = true;
+                    DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.subCategoryId").clearValue();
+                    if (value == null || value == undefined) {
+                        DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.subCategoryId").disable();
+                    } else {
+                        DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.subCategoryId").enable();
+                    }
+                }
+            },
+            {
+                name: "tclass.course.subCategoryId",
+                title: "انتخاب  زیر گروه",
+                type: "ComboBoxItem",
+                editorType: "SelectItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true
+                },
+                optionDataSource: RestDataSource_SubCategory_JspWeeklyTrainingSchedule,
+                autoFetchData: false,
+                displayField: "titleFa",
+                valueField: "id",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true,
+                textAlign: "center",
+                pickListWidth: "280",
+                pickListFields: [
+                    {name: "titleFa", width: "100%", filterOperator: "iContains"}],
+                focus: function () {
+                    if (isCategoryChanged_JspWeeklyTrainingSchedule) {
+                        isCategoryChanged_JspWeeklyTrainingSchedule = false;
+                        var id = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getField("tclass.course.categoryId").getValue();
+                        if (id == null || id == undefined) {
+                            RestDataSource_SubCategory_JspWeeklyTrainingSchedule.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_JspWeeklyTrainingSchedule.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: id}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
+            },
+            {
+                name: "reportBottom",
+                title: "گزارش گیری",
+                type: "ButtonItem",
+                align: "right",
+                width: "100",
+                startRow: false,
+                click: function () {
+                    ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
+
+                    ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
+
+                }
+            }
+        ]
+    });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    ListGrid_Result_JspWeeklyTrainingSchedule  = isc.TrLG.create({
+    ListGrid_Result_JspWeeklyTrainingSchedule = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Class_JspWeeklyTrainingSchedule,
         initialSort: [
-            // {property: "studentStatus", direction:"ascending"},
-            {property: "sessionDate", direction: "ascending"},
-            {property: "sessionStartHour", direction: "ascending"}
+            // {property: "studentStatus", direction: "ascending"},
+            // {property: "sessionDate", direction: "ascending"},
+            // {property: "sessionStartHour", direction: "ascending"}
         ],
         canAddFormulaFields: false,
         showFilterEditor: true,
@@ -42,6 +149,8 @@
         autoFetchData: true,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
+            {name: "tclass.course.categoryId", hidden: true},
+            {name: "tclass.course.subCategoryId", hidden: true},
             {
                 name: "tclass.code",
                 title: "کد کلاس"
@@ -62,23 +171,31 @@
                 name: "sessionStartHour",
                 title: "ساعت شروع",
                 filterOperator: "iContains",
-                hidden: true},
+                hidden: true
+            },
             {
                 name: "dayName",
-                title: "روز"
+                title: "روز",
+                filterOperator: "equals"
             },
             {
                 name: "sessionHour",
-                title: "ساعت"
+                title: "ساعت",
+                filterOperator: "equals"
             },
             {
                 name: "sessionStateFa",
                 title: "وضعیت برگزاری",
                 align: "center",
                 valueMap: {
-                    "شروع نشده" : "شروع نشده",
-                    "در حال اجرا" : "در حال اجرا",
-                    "پایان" : "پایان"
+                    "شروع نشده": "شروع نشده",
+                    "در حال اجرا": "در حال اجرا",
+                    "پایان": "پایان"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
                 }
             },
             {
@@ -86,8 +203,16 @@
                 title: "وضعیت شما",
                 align: "center",
                 valueMap: {
-                    "ثبت نام شده" : "ثبت نام شده",
+                    "ثبت نام شده": "ثبت نام شده",
                     "ثبت نام نشده": "ثبت نام نشده"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },
+                sortNormalizer: function (record) {
+                    return record.studentStatus;
                 }
             },
             {
@@ -99,17 +224,39 @@
                     "1": "حاضر",
                     "2": "حاضر و اضافه کار",
                     "3": "غیبت غیر موجه",
-                    "4": "غیبت موجه",
+                    "4": "غیبت موجه"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
                 }
-            },
-        ],
+            }
+        ]
+    });
+
+    HLayout_CriteriaForm_JspWeeklyTrainingSchedule = isc.TrHLayout.create({
+        align: "center",
+        height: "5%",
+        members: [
+            DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule
+        ]
+    });
+
+    HLayout_ListGrid_JspWeeklyTrainingSchedule = isc.TrHLayout.create({
+        align: "center",
+        height: "90%",
+        members: [
+            ListGrid_Result_JspWeeklyTrainingSchedule
+        ]
     });
 
     VLayout_Body_JspWeeklyTrainingSchedule = isc.TrVLayout.create({
         members: [
-           ListGrid_Result_JspWeeklyTrainingSchedule
+            HLayout_CriteriaForm_JspWeeklyTrainingSchedule,
+            HLayout_ListGrid_JspWeeklyTrainingSchedule
         ]
     });
 
 
-    // </script>
+    //

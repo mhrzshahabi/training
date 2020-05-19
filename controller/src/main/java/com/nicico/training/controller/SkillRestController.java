@@ -13,17 +13,14 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.NeedAssessmentDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
-import com.nicico.training.model.Skill;
 import com.nicico.training.service.SkillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -42,7 +39,6 @@ import java.util.Map;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
-//import com.nicico.copper.core.util.report.ReportUtil;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -75,8 +71,8 @@ public class SkillRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_skill')")
     public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request) {
-        String maxSkillCode = "";
-        String newSkillCode = "";
+        String maxSkillCode;
+        String newSkillCode;
         Integer maxId;
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
@@ -98,8 +94,8 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/getMaxSkillCode/{code}")
     public String MaxSkillCode(@PathVariable String code) throws Exception {
-            String maxSkillCode = "";
-            String newSkillCode = "";
+            String maxSkillCode;
+            String newSkillCode;
             Integer maxId;
             maxSkillCode = skillService.getMaxSkillCode(code);
             if (maxSkillCode == null)
@@ -114,9 +110,6 @@ public class SkillRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_skill')")
     public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-//		SkillDTO.Update u=new SkillDTO.Update();
-//        ModelMapper m=new ModelMapper();
-//	    SkillDTO.Update update = m.map(request, SkillDTO.Update.class);
         return new ResponseEntity<>(skillService.update(id, request), HttpStatus.OK);
     }
 
@@ -130,9 +123,10 @@ public class SkillRestController {
 
         try {
 //            flag = skillService.isSkillDeletable(id);
-            if (flag)
+//            if (flag)
                 skillService.delete(id);
         } catch (Exception e) {
+            flag = false;
             httpStatus = HttpStatus.NO_CONTENT;
         }
         return new ResponseEntity<>(flag, httpStatus);
@@ -224,39 +218,39 @@ public class SkillRestController {
     // skill group methods ------------------------------------------------------------------------------------------------
 
 
-    @GetMapping(value = "/{skillId}/need-assessment")
-    public ResponseEntity<ISC<NeedAssessmentDTO.Info>> getNeedAssessment(@PathVariable Long skillId) throws IOException {
-//        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        List<NeedAssessmentDTO.Info> infos = skillService.getNeedAssessment(skillId);
+//    @GetMapping(value = "/{skillId}/need-assessment")
+//    public ResponseEntity<ISC<NeedAssessmentDTO.Info>> getNeedAssessment(@PathVariable Long skillId) throws IOException {
+////        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+////        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+//        List<NeedAssessmentDTO.Info> infos = skillService.getNeedAssessment(skillId);
+//
+//        SearchDTO.SearchRs<NeedAssessmentDTO.Info> searchRs = new SearchDTO.SearchRs<NeedAssessmentDTO.Info>();
+//        searchRs.setList(infos);
+//        searchRs.setTotalCount(Long.valueOf(infos.size()));
+//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+//    }
 
-        SearchDTO.SearchRs<NeedAssessmentDTO.Info> searchRs = new SearchDTO.SearchRs<NeedAssessmentDTO.Info>();
-        searchRs.setList(infos);
-        searchRs.setTotalCount(Long.valueOf(infos.size()));
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
-    }
 
-
-    @Loggable
-    @GetMapping(value = "{skillId}/skill-groups")
-//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroups(@PathVariable Long skillId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        List<SkillGroupDTO.Info> skillGroups = skillService.getSkillGroups(skillId);
-
-        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-        specResponse.setData(skillGroups)
-                .setStartRow(0)
-                .setEndRow(skillGroups.size())
-                .setTotalRows(skillGroups.size());
-
-        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "{skillId}/skill-groups")
+////    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+//    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroups(@PathVariable Long skillId) {
+//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+//
+//        List<SkillGroupDTO.Info> skillGroups = skillService.getSkillGroups(skillId);
+//
+//        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
+//        specResponse.setData(skillGroups)
+//                .setStartRow(0)
+//                .setEndRow(skillGroups.size())
+//                .setTotalRows(skillGroups.size());
+//
+//        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @GetMapping(value = "{skillId}/unattached-skill-groups")
@@ -287,25 +281,25 @@ public class SkillRestController {
     }
 
 
-    @Loggable
-    @GetMapping(value = "/skill-groups")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getAttachedSkillGroups(@RequestParam("skillId") String skillID) {
-        Long skillId = Long.parseLong(skillID);
-
-        List<SkillGroupDTO.Info> skillGroupList = skillService.getSkillGroups(skillId);
-
-        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-        specResponse.setData(skillGroupList)
-                .setStartRow(0)
-                .setEndRow(skillGroupList.size())
-                .setTotalRows(skillGroupList.size());
-
-        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/skill-groups")
+////    @PreAuthorize("hasAuthority('r_tclass')")
+//    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getAttachedSkillGroups(@RequestParam("skillId") String skillID) {
+//        Long skillId = Long.parseLong(skillID);
+//
+//        List<SkillGroupDTO.Info> skillGroupList = skillService.getSkillGroups(skillId);
+//
+//        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
+//        specResponse.setData(skillGroupList)
+//                .setStartRow(0)
+//                .setEndRow(skillGroupList.size())
+//                .setTotalRows(skillGroupList.size());
+//
+//        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @GetMapping(value = "/unattached-skill-groups")

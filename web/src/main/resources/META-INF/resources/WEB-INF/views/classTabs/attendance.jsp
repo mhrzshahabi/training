@@ -164,7 +164,6 @@
                 }
             }),
             isc.ToolStripButtonExcel.create({
-                // title: "خروجی اکسل",
                 click: function () {
                     let fields = ListGrid_Attendance_AttendanceJSP.getFields();
                     let sendFields = [];
@@ -183,28 +182,31 @@
                                 allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
                             }
                         }
+                        ExportToFile.exportToExcelFormClient(sendFields,allRows,"لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - در تاریخ: " + DynamicForm_Attendance.getValue("sessionDate"),"کلاس - حضور و غیاب");
                     }
                     else{
                         for (let i = 0; i < allRows.length; i++) {
                             allRows[i]["state"] = attendanceState[allRows[i]["state"]];
                         }
+
+                        ExportToFile.exportToExcelFormClient(sendFields,allRows,  "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
+                            DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName + " " + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName,"کلاس - حضور و غیاب");
+
                     }
-                    exportToExcel(sendFields, allRows);
                 }
             }),
             isc.ToolStripButtonPrint.create({
-                // title: "خروجی اکسل",
                 click: function () {
                     let params = {};
                     params.code = classGridRecordInAttendanceJsp.code;
                     params.titleClass = classGridRecordInAttendanceJsp.titleClass;
-                    params.startDate = classGridRecordInAttendanceJsp.startDate;
                     params.teacher = classGridRecordInAttendanceJsp.teacher;
                     params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
-                    params.date = DynamicForm_Attendance.getValue("sessionDate");
-                    let localData = ListGrid_Attendance_AttendanceJSP.data.localData.toArray();
+                    params.startDate = classGridRecordInAttendanceJsp.startDate;
+                    let localData = ListGrid_Attendance_AttendanceJSP.getData().localData.toArray();
                     let data = [];
                     if(DynamicForm_Attendance.getValue("filterType") == "1") {
+                        params.date = DynamicForm_Attendance.getValue("sessionDate");
                         let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
                         let sessionKeys = keys.filter(k => k.startsWith("se"));
                         sessionKeys.sort();
@@ -222,6 +224,12 @@
                             data.push(obj);
                         }
                         printToJasper(data, params, "attendance.jasper");
+                    }
+                    else{
+                        params.fullName = DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName+" "
+                            + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName;
+                        data = ListGrid_Attendance_AttendanceJSP.getData().localData.toArray();
+                        printToJasper(data, params, "attendanceStudent.jasper");
                     }
                 }
             }),
@@ -1231,7 +1239,7 @@
                         return;
                     }
                 }
-            }, 500)
+            }, 700)
         }
         else{
             setTimeout(function () {

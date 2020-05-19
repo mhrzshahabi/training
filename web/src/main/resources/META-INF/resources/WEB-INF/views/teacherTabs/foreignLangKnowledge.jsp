@@ -59,21 +59,14 @@
                 width: "*",
                 required: true,
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_ElangLevel_JspTeacher,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]

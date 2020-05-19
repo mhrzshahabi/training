@@ -102,6 +102,7 @@
         autoFetchData: true,
         gridComponents: [PostTS_post, "filterEditor", "header", "body",],
         contextMenu: PostMenu_post,
+        showResizeBar: true,
         sortField: 0,
         dataChanged: function () {
             this.Super("dataChanged", arguments);

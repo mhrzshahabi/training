@@ -13,6 +13,7 @@ import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.repository.CheckListItemDAO;
 import com.nicico.training.repository.ClassCheckListDAO;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -131,6 +132,19 @@ public class ClassCheckListService implements IClassCheckListService {
         Optional<ClassCheckList> optionalCheckListItem = classCheckListDAO.findById(id);
         ClassCheckList currentClassCheckList = optionalCheckListItem.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ClassCheckListNotFound));
         ClassCheckList classCheckList = new ClassCheckList();
+        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+        mapper.map(currentClassCheckList, classCheckList);
+        mapper.map(request, classCheckList);
+        return mapper.map(classCheckListDAO.saveAndFlush(classCheckList), ClassCheckListDTO.Info.class);
+    }
+
+    @Transactional
+    @Override
+    public ClassCheckListDTO.Info updateDescription2(ClassCheckListDTO.Info request) throws IOException {
+        Optional<ClassCheckList> optionalCheckListItem = classCheckListDAO.findById(request.getId());
+        ClassCheckList currentClassCheckList = optionalCheckListItem.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ClassCheckListNotFound));
+        ClassCheckList classCheckList = new ClassCheckList();
+        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         mapper.map(currentClassCheckList, classCheckList);
         mapper.map(request, classCheckList);
         return mapper.map(classCheckListDAO.saveAndFlush(classCheckList), ClassCheckListDTO.Info.class);

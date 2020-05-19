@@ -24,7 +24,6 @@
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
-
     //----------------------------------------------------Variables-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
         viewURL: "",
@@ -207,6 +206,14 @@
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
                     }
                 }],
+                editorExit:function(){
+                    let result=reformat(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
+                    if (result){
+                        DynamicForm_BasicInfo_JspTeacher.getItem("personality.birthDate").setValue(result);
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.birthDate", true);
+                        persianDateCheck=true;
+                    }
+                },
                 changed: function () {
                     var dateCheck;
                     if (DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate") == null ||
@@ -250,22 +257,15 @@
                 title: "<spring:message code='gender'/>",
                 textAlign: "center",
                 width: "*",
+                autoFetchData: false,
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Egender_JspTeacher,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
@@ -277,21 +277,14 @@
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Emarried_JspTeacher,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
@@ -303,21 +296,14 @@
                 title: "<spring:message code='military'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Emilitary_JspTeacher,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
@@ -408,6 +394,7 @@
                 title: "<spring:message code='education.categories'/>",
                 type: "SelectItem",
                 textAlign: "center",
+                autoFetchData: false,
                 required: true,
                 optionDataSource: RestDataSource_Categories_JspTeacher,
                 valueField: "id",
@@ -458,7 +445,7 @@
                     if (hasTeacherCategoriesChanged) {
                         hasTeacherCategoriesChanged = false;
                         var ids = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
-                        if (ids == []) {
+                        if (ids === []) {
                             RestDataSource_SubCategories_JspTeacher.implicitCriteria = null;
                         } else {
                             RestDataSource_SubCategories_JspTeacher.implicitCriteria = {
@@ -479,14 +466,13 @@
                 length: "11",
                 hint: "*********09",
                 showHintInField: true,
-                errorMessage: "<spring:message code='msg.mobile.validation'/>"
-                , changed: function () {
+                errorMessage: "<spring:message code='msg.mobile.validation'/>",
+                blur: function () {
                     var mobileCheck;
                     mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("personality.contactInfo.mobile"));
                     cellPhoneCheck = mobileCheck;
                     if (mobileCheck === false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.mobile", "<spring:message
-        code='msg.mobile.validation'/>", true);
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.mobile", "<spring:message code='msg.mobile.validation'/>", true);
                     if (mobileCheck === true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
                 }
@@ -613,7 +599,7 @@
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
                 }
             } else if (item.name === "attachPic") {
-                showTempAttach();
+                    showTempAttach();
             } else if (item.name === "enableStatus") {
                 if (newValue === "false") {
                     var ask = createDialog("confirm", "<spring:message code='msg.teacher.enable.status.change.confirm'/>");
@@ -637,9 +623,9 @@
 
     //------------------------------------------ Functions -------------------------------------------------------------
     function upload() {
+        isFileAttached = true;
         var upload = document.getElementById('file-upload');
         var image = upload.files[0];
-        console.log(image);
         showTempAttach();
         setTimeout(function () {
             if (attachNameTemp === null || attachNameTemp === "") {

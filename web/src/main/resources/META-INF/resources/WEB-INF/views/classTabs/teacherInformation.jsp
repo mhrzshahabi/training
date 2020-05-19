@@ -9,7 +9,7 @@
 
 //<script>
 
-
+let classRecord;
 
     //******************************
     //Menu
@@ -35,7 +35,9 @@
            {name: "teacher.personality.firstNameFa"},
            {name: "teacher.personality.lastNameFa"},
            {name: "teacher.personality.nationalCode"},
-
+           {name: "teacher.personality.contactInfo.mobile"},
+           {name: "teacher.personality.contactInfo.homeAddress.state.name"},
+           {name: "teacher.personality.contactInfo.homeAddress.city.name"},
         ]
     });
 
@@ -45,11 +47,22 @@
         autoFetchData: true,
         fields: [
 
-            {name: "teacher.personality.firstNameFa", title: "<spring:message code="firstName"/>", align: "center", filterOperator: "iContains"},
-            {name: "teacher.personality.lastNameFa", title: "<spring:message code="lastName"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.firstNameFa", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",
+                formatCellValue: function (value, record) {
+                                return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
+                }
+            },
+            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",},
             {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.contactInfo.homeAddress.state.name", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
+                formatCellValue: function (value, record) {
+                   return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
+                }
+            }
               ],
+
         recordDoubleClick: function () {
+
          
 
         },
@@ -76,17 +89,34 @@
         }
     });
 
-
+    var infoButton = isc.ToolStripButtonRefresh.create({
+        ID: "infoButton",
+        title:"",
+        icon: "<spring:url value="help.png"/>",
+        click : function() {
+            isc.Dialog.create({
+                title:"توضیحات",
+                message : "این قسمت شامل لیست اساتید برگزارکننده دوره " + classRecord.course.titleFa +" می باشد" ,
+                // icon:"[SKIN]ask.png",
+                buttons : [
+                    isc.Button.create({ title:"<spring:message code='close'/>" }),
+                ],
+                buttonClick : function (button, index) {
+                    this.hide();
+                }
+            });
+        },
+    });
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [
-
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    infoButton,
                     ToolStripButton_Refresh,
                 ]
             })

@@ -89,8 +89,18 @@
             {name: "numberOfCourses"},
             {name: "evaluationGrade"},
             {name: "lastCourse"},
+            {name: "codes"},
             {name: "lastCourseEvaluationGrade"}],
         fetchDataURL: teacherUrl + "spec-list-report"
+    });
+    var RestDataSource_Term_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ],
+        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_Result_JspTeacherReport = isc.TrLG.create({
@@ -148,6 +158,10 @@
             {
                 name: "lastCourseEvaluationGrade",
                 title: "نمره ارزيابي کلاسي آخرين دوره تدريسي در شرکت"
+            },
+            {
+                name: "codes",
+                title:"ترم",
             }
         ],
         cellHeight: 43,
@@ -220,7 +234,6 @@
                 title: "<spring:message code='firstName'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
-
             {
                 name: "personality.lastNameFa",
                 title: "<spring:message code='lastName'/>",
@@ -621,6 +634,36 @@
                 title: "تدریس داشته است.",
                 canEdit: false
             },
+            {
+                name: "termId",
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                type: "SelectItem",
+                multiple: true,
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_JspClass,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ]
+            }
         ],
         itemChanged: function (item, newValue) {
             if (item.name === "personality.contactInfo.homeAddress.stateId") {

@@ -55,7 +55,8 @@ public class TeacherDTO {
     @Accessors(chain = true)
     @ApiModel("TeacherInformation")
     public static class TeacherInformation{
-        private PersonalInfoDTO.PersonalInfoCustom personality;
+        private PersonalInfoDTO.contractInfo personality;
+        private String personnelCode;
     }
 
     @Getter
@@ -103,6 +104,8 @@ public class TeacherDTO {
         private Long lastCourseId;
         private String lastCourseEvaluationGrade;
         private Integer version;
+        private String codes;
+        Set<TclassDTO.TclassTerm> tclasse;
     }
 
     @Getter

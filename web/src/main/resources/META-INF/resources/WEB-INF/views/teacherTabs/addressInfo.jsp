@@ -17,7 +17,6 @@
         margin: 10,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
             {name: "personality.contactInfo.homeAddress.id", hidden: true},
             {
                 name: "personality.contactInfo.homeAddress.postalCode",

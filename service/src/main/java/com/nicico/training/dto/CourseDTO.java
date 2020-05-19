@@ -2,13 +2,13 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.Goal;
-import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
 import com.nicico.training.model.enums.ETheoType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -92,6 +91,7 @@ public class CourseDTO implements Serializable {
         private Long categoryId;
         private Long subCategoryId;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
+        private CategoryDTO.CategoryInfoTuple category;
         private Boolean hasGoal;
         private Boolean hasSkill;
 
@@ -126,7 +126,19 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("CourseWeeklySchedule")
+    public static class CourseWeeklySchedule {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private String evaluation;
         private Float theoryDuration;
+        private Long categoryId;
+        private Long subCategoryId;
     }
 
     @Getter
@@ -138,6 +150,16 @@ public class CourseDTO implements Serializable {
         private String titleFa;
         private Long categoryId;
         private Long subCategoryId;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("courseWithOutTeacher")
+    @AllArgsConstructor
+    public  static class courseWithOutTeacher{
+        private Long id;
+        private String code;
+        private String title;
     }
 
     // ------------------------------
