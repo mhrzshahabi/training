@@ -223,7 +223,7 @@
         ]
     });
 
-    var Hlayout__Personnel_Info_Training_body = isc.HLayout.create({
+    var Hlayout__Personnel_Info_Training_body_CWOTR = isc.HLayout.create({
         height:"10%",
         top:20,
         members: [ToolStrip_ToolStrip_Personnel_Info_Training_Action]
@@ -232,7 +232,7 @@
 
     var Hlayout_Reaport_body = isc.HLayout.create({
         height:"10%",
-        members: [DynamicForm_Report_CourseWithOutTeacher, Hlayout__Personnel_Info_Training_body]
+        members: [DynamicForm_Report_CourseWithOutTeacher, Hlayout__Personnel_Info_Training_body_CWOTR]
     })
 
     var Hlayout_Reaport_body1=isc.HLayout.create({

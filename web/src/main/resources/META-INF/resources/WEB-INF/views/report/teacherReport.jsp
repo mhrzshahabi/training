@@ -39,21 +39,21 @@
 
     var RestDataSource_Education_Level_JspTeacherReport = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
-        fetchDataURL: educationLevelUrl + "iscList"
+        fetchDataURL: educationLevelUrl + "spec-list-by-id"
     });
 
     var RestDataSource_Education_Major_JspTeacherReport = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "equals"}],
-        fetchDataURL: educationMajorUrl + "spec-list"
+        fetchDataURL: educationMajorUrl + "spec-list-by-id"
     });
 
     var RestDataSource_City_JspTeacherReport = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "name"}]
+        fields: [{name: "id", primaryKey: true}, {name: "name", filterOperator: "equals"}],
     });
 
     var RestDataSource_State_JspTeacherReport = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "name"}],
-        fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
+        fields: [{name: "id", primaryKey: true}, {name: "name",  filterOperator: "equals"}],
+        fetchDataURL: stateUrl + "spec-list-by-id"
     });
 
     var RestDataSource_Category_Evaluation_JspTeacherReport = isc.TrDS.create({
@@ -345,28 +345,25 @@
                 name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
                 textAlign: "center",
-                editorType: "ComboBoxItem",
                 width: "*",
+                editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Education_Major_JspTeacherReport,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
+                autoFetchData: false,
+                filterFields: ["titleFa","titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                operator: "equals",
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
@@ -379,20 +376,20 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
+                operator: "equals",
                 optionDataSource: RestDataSource_Education_Level_JspTeacherReport,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
+                autoFetchData: false,
+                filterFields: ["titleFa","titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
+                },
                 pickListFields: [
                     {
                         name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
@@ -411,22 +408,19 @@
                 displayField: "name",
                 valueField: "id",
                 optionDataSource: RestDataSource_State_JspTeacherReport,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["name"],
+                autoFetchData: false,
+                filterFields: ["name", "name"],
                 sortField: ["id"],
+                operator: "equals",
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
                 pickListFields: [
                     {
                         name: "name",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
@@ -440,21 +434,18 @@
                 displayField: "name",
                 valueField: "id",
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["name"],
+                filterFields: ["name","name"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                operator: "equals",
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
                 },
                 pickListFields: [
                     {
                         name: "name",
-                        width: "70%",
-                        filterOperator: "iContains"
+                        width: "70%"
                     }
                 ]
             },
