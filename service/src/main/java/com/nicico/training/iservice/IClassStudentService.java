@@ -26,7 +26,7 @@ public interface IClassStudentService {
 
     void delete(ClassStudentDTO.Delete request);
 
-    int setStudentFormIssuance(Map<String, Integer> formIssuance);
+    int setStudentFormIssuance(Map<String, String> formIssuance);
 
     void setTotalStudentWithOutScore(Long classId);
 

@@ -106,8 +106,11 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public int setStudentFormIssuance(Map<String, Integer> formIssuance) {
-        return classStudentDAO.setStudentFormIssuance(Long.parseLong(formIssuance.get("idClassStudent").toString()), formIssuance.get("reaction"), formIssuance.get("learning"), formIssuance.get("behavior"), formIssuance.get("results"));
+    public int setStudentFormIssuance(Map<String, String> formIssuance) {
+        Long classId = Long.parseLong(formIssuance.get("idClassStudent").toString());
+        if(formIssuance.get("evaluationAudienceType") != null)
+            classStudentDAO.setStudentFormIssuanceAudienceType(classId,formIssuance.get("evaluationAudienceType"));
+        return classStudentDAO.setStudentFormIssuance(classId, Integer.parseInt(formIssuance.get("reaction")), Integer.parseInt(formIssuance.get("learning")), Integer.parseInt(formIssuance.get("behavior")), Integer.parseInt(formIssuance.get("results")));
     }
 
     @Transactional

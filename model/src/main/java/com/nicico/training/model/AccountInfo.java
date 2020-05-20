@@ -38,4 +38,11 @@ public class AccountInfo extends Auditable {
 
     @Column(name = "c_shaba_number")
     private String shabaNumber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_institute")
+    private Institute institute;
+
+    @Column(name = "f_institute", insertable = false, updatable = false)
+    private Long instituteId;
 }
