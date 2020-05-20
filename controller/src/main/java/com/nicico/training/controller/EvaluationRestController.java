@@ -66,6 +66,7 @@ public class EvaluationRestController {
         String evaluationType = jsonObject.get("evaluationType").toString();
         String evaluationReturnDate = jsonObject.get("evaluationReturnDate").toString();
         String evaluationAudience = jsonObject.get("evaluationAudience").toString();
+        String evaluationAudiencePost = jsonObject.get("evaluationAudience_Post").toString();
 
 
         List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
@@ -130,6 +131,7 @@ public class EvaluationRestController {
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
         params.put("evaluationAudience", evaluationAudience.equals("null") ? "" : "مخاطب : " + evaluationAudience);
+        params.put("evaluationAudiencePost", "("+evaluationAudiencePost+")");
         params.put("returnDate", evaluationReturnDate.replace("-", "/"));
         params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
                 evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :

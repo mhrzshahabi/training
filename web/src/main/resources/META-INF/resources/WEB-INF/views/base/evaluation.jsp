@@ -134,10 +134,12 @@
                 isc.IButton.create({
                     title: "<spring:message code="select" />",
                     click: function () {
-                        if (EvaluationListGrid_PeronalLIst.getSelectedRecord() !== null) {
+                        if (EvaluationListGrid_PeronalLIst.getSelectedRecord() !== null && (evaluation_Audience_Post.values.audiencePost !== null || evaluation_Audience_Post.values.audiencePost !== undefined)) {
                             evaluation_Audience = EvaluationListGrid_PeronalLIst.getSelectedRecord().firstName + " " + EvaluationListGrid_PeronalLIst.getSelectedRecord().lastName;
                             print_Student_FormIssuance("pdf", ealuation_numberOfStudents);
                             EvaluationWin_PersonList.close();
+                        } else if(evaluation_Audience_Post.values.audiencePost === null || evaluation_Audience_Post.values.audiencePost === undefined){
+                            createDialog('info', "<spring:message code="select.audience.post.ask"/>", "<spring:message code="global.message"/>");
                         } else {
                             isc.Dialog.create({
                                 message: "<spring:message code="select.audience.ask"/>",
@@ -1547,9 +1549,10 @@
 
                     let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
                     let returnDate = evaluation_ReturnDate._value !== undefined ? evaluation_ReturnDate._value.replaceAll("/", "-") : "noDate";
+                    let evaluationPost = (evaluation_Audience_Post.values.audiencePost === null || evaluation_Audience_Post.values.audiencePost === undefined ? "" : evaluation_Audience_Post.values.audiencePost);
 
                     var myObj = {
-                        // evaluationAudience_Post: evaluation_Audience_Post.values.audiencePost,
+                        evaluationAudience_Post: evaluationPost,
                         courseId: selectedClass.course.id,
                         studentId: studentId,
                         evaluationType: selectedTab.id,

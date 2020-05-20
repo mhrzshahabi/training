@@ -180,6 +180,7 @@
 	<parameter name="evaluationType" class="java.lang.String"/>
 	<parameter name="returnDate" class="java.lang.String"/>
 	<parameter name="evaluationAudience" class="java.lang.String"/>
+	<parameter name="evaluationAudiencePost" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -192,14 +193,14 @@
 			<staticText>
 				<reportElement x="105" y="4" width="350" height="20" uuid="5f206d2b-4d4f-4333-97c5-abedd5e10fe0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروي انساني]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="200" y="32" width="200" height="20" uuid="4a348648-d2de-4840-8ee6-615d6cfbbc62"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[فرم ارزيابي اثر بخشي دوره هاي آموزشي]]></text>
 			</staticText>
@@ -210,91 +211,91 @@
 			<staticText>
 				<reportElement x="492" y="111" width="60" height="20" uuid="824f57c6-dea6-4bb7-b2fb-92381af44ce6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="false"/>
+					<font fontName="Shabnam-FD" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[کد دوره :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="458" y="86" width="95" height="20" uuid="4ce6be37-641d-4a74-8e50-b1eb8b62dc27"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="true"/>
+					<font fontName="Shabnam-FD" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[1 - مشخصات کلاس]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="493" y="137" width="60" height="20" uuid="0a9ece29-c119-45d0-ba61-bf46b656ccd1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="false"/>
+					<font fontName="Shabnam-FD" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[تاریخ برگزاری :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="372" y="111" width="118" height="20" uuid="1bdf8b34-8b39-430a-a91c-fbf3005f4edd"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{classCode}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="373" y="137" width="118" height="20" uuid="a6b0afd3-09b0-4851-ba06-5c3d70b5cc52"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12"/>
+					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{startDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="308" y="111" width="60" height="20" uuid="1aa17ffc-973c-4e03-bf9f-f967e5d84692"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="false"/>
+					<font fontName="Shabnam-FD" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[نام دوره :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="308" y="137" width="60" height="20" uuid="f63bba35-c991-4723-b8f6-457efdcc7ea3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="false"/>
+					<font fontName="Shabnam-FD" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[لغایت :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="188" y="111" width="118" height="20" uuid="e0dbb08b-2f8c-48f8-b29b-d64405d23745"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12"/>
+					<font fontName="Shabnam-FD" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseName}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="188" y="137" width="118" height="20" uuid="84905d8d-5ff7-4d68-811f-3d120ecd327d"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12"/>
+					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{endDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="123" y="112" width="60" height="20" uuid="327a8b22-e904-4b06-92f4-4a07d6a9ee33"/>
+				<reportElement x="128" y="112" width="60" height="20" uuid="327a8b22-e904-4b06-92f4-4a07d6a9ee33"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="false"/>
+					<font fontName="Shabnam-FD" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[کد کلاس :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="106" y="138" width="77" height="20" uuid="980e80cd-65f1-42ff-8413-a3c676bd1ec7"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="false"/>
+					<font fontName="Shabnam-FD" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[مهلت برگشت فرم :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="3" y="112" width="118" height="20" uuid="4fdf537f-0e3f-4433-a436-4883c4803de8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{classCode}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="3" y="138" width="101" height="20" uuid="dd86f4ed-9906-4826-b648-9a574050669b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12"/>
+					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{returnDate}]]></textFieldExpression>
 			</textField>
@@ -307,23 +308,30 @@
 			<staticText>
 				<reportElement x="458" y="177" width="95" height="20" uuid="ea4f64ea-683b-4be1-b33d-28f866e062eb"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="true"/>
+					<font fontName="Shabnam-FD" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[2 - مشخصات فراگیر]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="118" y="32" width="82" height="20" uuid="5bd25507-2769-492c-a8c8-e72fe3e0af4c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{evaluationType}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="172" y="55" width="211" height="20" uuid="c5cb936c-4d3d-468e-bd49-e4b9d1c4d053"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="220" y="55" width="258" height="20" uuid="c5cb936c-4d3d-468e-bd49-e4b9d1c4d053"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{evaluationAudience}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="55" width="180" height="20" uuid="b6c67bdd-6a2e-4d10-82d1-d14051118d8e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{evaluationAudiencePost}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -347,16 +355,16 @@
 							<staticText>
 								<reportElement x="0" y="0" width="170" height="30" uuid="205e206d-4e29-4930-9219-fded494e2652"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin"/>
+									<font fontName="Shabnam-FD" size="9"/>
 								</textElement>
 								<text><![CDATA[نام شرکت]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="170" height="30" uuid="989485ae-046c-4c65-b768-d1e2a69971b7"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin" size="11"/>
+									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
 							</textField>
@@ -368,16 +376,16 @@
 							<staticText>
 								<reportElement x="0" y="0" width="80" height="30" uuid="14b32209-5b55-45ca-85f8-95fdbf57f984"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin"/>
+									<font fontName="Shabnam-FD" size="9"/>
 								</textElement>
 								<text><![CDATA[شماره پرسنلی]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="80" height="30" uuid="fc1b203e-79dc-4fcd-93ea-4641af43ef36"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin" size="11"/>
+									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{personnelNo2}]]></textFieldExpression>
 							</textField>
@@ -389,16 +397,16 @@
 							<staticText>
 								<reportElement x="0" y="0" width="80" height="30" uuid="34838a2e-5a41-4921-9ebb-6b4abc2e7c41"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin"/>
+									<font fontName="Shabnam-FD" size="9"/>
 								</textElement>
 								<text><![CDATA[شماره کار]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="80" height="30" uuid="51cdf45e-6304-4ce7-934b-923d60bb4c42"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin" size="11"/>
+									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{personnelNo}]]></textFieldExpression>
 							</textField>
@@ -410,16 +418,16 @@
 							<staticText>
 								<reportElement x="0" y="0" width="80" height="30" uuid="789df902-a2af-4182-8d2c-af0eb550997d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin"/>
+									<font fontName="Shabnam-FD" size="9"/>
 								</textElement>
 								<text><![CDATA[کد ملی]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="80" height="30" uuid="b05d9c55-0d67-45bb-9a7c-43cada331a59"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin" size="11"/>
+									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{nationalCode}]]></textFieldExpression>
 							</textField>
@@ -431,16 +439,16 @@
 							<staticText>
 								<reportElement x="0" y="0" width="80" height="30" uuid="5b576f61-e6c2-48cf-8e2f-ff919032416d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin"/>
+									<font fontName="Shabnam-FD" size="9"/>
 								</textElement>
 								<text><![CDATA[نام خانوادگی]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="80" height="30" uuid="905d44cd-9fa2-4eae-aa33-eb04ea602c54"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin" size="11"/>
+									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{lastName}]]></textFieldExpression>
 							</textField>
@@ -452,16 +460,16 @@
 							<staticText>
 								<reportElement x="0" y="0" width="57" height="30" uuid="51630f2d-1dfb-4e4f-9009-64f4c0519471"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin"/>
+									<font fontName="Shabnam-FD" size="9"/>
 								</textElement>
 								<text><![CDATA[نام]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="57" height="30" uuid="27828f52-4770-429d-841f-015bd20101c1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="B Nazanin"/>
+									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{firstName}]]></textFieldExpression>
 							</textField>
@@ -487,7 +495,7 @@
 								<reportElement x="0" y="0" width="547" height="64" uuid="54189b59-b7e1-4d0e-9ce2-cfe03848230e"/>
 								<box topPadding="4" leftPadding="0" rightPadding="4"/>
 								<textElement textAlignment="Right">
-									<font fontName="B Nazanin" size="12"/>
+									<font fontName="Shabnam-FD" size="9"/>
 								</textElement>
 								<text><![CDATA[توضیحات : ]]></text>
 							</staticText>
@@ -501,7 +509,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="50" height="30" uuid="50e11577-7bc6-43bc-ba10-7cdb86925a94"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[خیلی ضعیف]]></text>
 									</staticText>
@@ -520,7 +528,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="40" height="30" uuid="bf14a1cc-5dc1-4b3f-854d-ba8096b0b61f"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[ضعیف]]></text>
 									</staticText>
@@ -539,7 +547,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="40" height="30" uuid="79b34c3b-b889-448b-ba61-d661ea0a7429"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[متوسط]]></text>
 									</staticText>
@@ -558,7 +566,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="40" height="30" uuid="b1f556c5-2fc8-41f8-903b-4db6d2e8f401"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[خوب]]></text>
 									</staticText>
@@ -578,7 +586,7 @@
 									<staticText>
 										<reportElement x="0" y="0" width="50" height="30" uuid="a5c9ed13-9b53-4785-8ae4-172fc47e6361"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[خیلی خوب]]></text>
 									</staticText>
@@ -597,16 +605,16 @@
 									<staticText>
 										<reportElement x="0" y="0" width="250" height="30" uuid="27661c39-4cf0-4c67-a654-d921a4f44464"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[سوالات]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
-									<textField>
+									<textField isBlankWhenNull="true">
 										<reportElement x="0" y="0" width="250" height="26" uuid="8d239c99-2dcc-4f10-b0a4-bd0169ec7ec6"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin"/>
+											<font fontName="Shabnam-FD" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{question}]]></textFieldExpression>
 									</textField>
@@ -619,16 +627,16 @@
 									<staticText>
 										<reportElement x="0" y="0" width="47" height="30" uuid="69526bd9-0f49-4ef0-8e21-401f6127b54f"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[نوع]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
-									<textField>
+									<textField isBlankWhenNull="true">
 										<reportElement x="0" y="0" width="47" height="26" uuid="7eb36f98-b5a6-44a5-9a68-9a60687dbd30"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin"/>
+											<font fontName="Shabnam-FD" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$F{domain.title}]]></textFieldExpression>
 									</textField>
@@ -641,16 +649,16 @@
 									<staticText>
 										<reportElement x="0" y="0" width="30" height="30" uuid="acd061c3-17c0-4966-82af-b8da0e93b3ca"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin" size="11"/>
+											<font fontName="Shabnam-FD" size="9"/>
 										</textElement>
 										<text><![CDATA[ردیف]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
-									<textField>
+									<textField isBlankWhenNull="true">
 										<reportElement x="0" y="0" width="30" height="26" uuid="97967975-236d-4117-b19d-11df0df2672d"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
-											<font fontName="B Nazanin"/>
+											<font fontName="Shabnam-FD" size="8"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$V{Row_Number}]]></textFieldExpression>
 									</textField>
@@ -663,7 +671,7 @@
 			<staticText>
 				<reportElement x="458" y="73" width="95" height="20" uuid="d60366f9-a160-4092-8ca6-984cd4db37ca"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12" isBold="true"/>
+					<font fontName="Shabnam-FD" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[3 - سوالات]]></text>
 			</staticText>
@@ -671,24 +679,24 @@
 	</detail>
 	<pageFooter>
 		<band height="57">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="7" y="20" width="23" height="17" uuid="4ecbeffd-bc2a-47d5-9b62-a91bf4dfc4da"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11"/>
+					<font fontName="Shabnam-FD" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="39" y="20" width="23" height="17" uuid="8661113b-b115-4bc8-8e4f-9454f959dc94"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11"/>
+					<font fontName="Shabnam-FD" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="31" y="20" width="7" height="17" uuid="f06902d6-b447-4171-8e25-bb6b066258f3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
+					<font fontName="Shabnam-FD" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[/]]></text>
 			</staticText>
