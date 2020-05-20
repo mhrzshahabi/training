@@ -180,7 +180,7 @@
 	<parameter name="evaluationType" class="java.lang.String"/>
 	<parameter name="returnDate" class="java.lang.String"/>
 	<parameter name="evaluationAudience" class="java.lang.String"/>
-	<parameter name="evaluationAudiencePost" class="java.lang.String"/>
+	<parameter name="evaluationAudienceType" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -331,7 +331,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{evaluationAudiencePost}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{evaluationAudienceType}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
