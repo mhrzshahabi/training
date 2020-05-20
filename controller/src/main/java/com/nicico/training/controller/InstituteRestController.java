@@ -504,24 +504,28 @@ public class InstituteRestController {
         return new ResponseEntity<>(new EquipmentDTO.EquipmentSpecRs(), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "{instituteId}/accounts")
+
+    //---------------------------------------------------mostafa--------------------------------------------
+
+//    @Loggable
+//    @GetMapping(value = "{instituteId}/accounts")
 //    @PreAuthorize("hasAnyAuthority('r_teacher')")
-    public ResponseEntity<InstituteAccountDTO.AccountSpecRs> getAccounts(@PathVariable Long instituteId) {
-
-        List<InstituteAccountDTO.Info> instituteAccountList = instituteService.getInstituteAccounts(instituteId);
-
-        final InstituteAccountDTO.SpecRs specResponse = new InstituteAccountDTO.SpecRs();
-        specResponse.setData(instituteAccountList)
-                .setStartRow(0)
-                .setEndRow(instituteAccountList.size())
-                .setTotalRows(instituteAccountList.size());
-
-        final InstituteAccountDTO.AccountSpecRs specRs = new InstituteAccountDTO.AccountSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    public ResponseEntity<InstituteAccountDTO.AccountSpecRs> getAccounts(@PathVariable Long instituteId) {
+//
+//        List<InstituteAccountDTO.Info> instituteAccountList = instituteService.getInstituteAccounts(instituteId);
+//
+//        final InstituteAccountDTO.SpecRs specResponse = new InstituteAccountDTO.SpecRs();
+//        specResponse.setData(instituteAccountList)
+//                .setStartRow(0)
+//                .setEndRow(instituteAccountList.size())
+//                .setTotalRows(instituteAccountList.size());
+//
+//        final InstituteAccountDTO.AccountSpecRs specRs = new InstituteAccountDTO.AccountSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
+    //---------------------------------------------------mostafa--------------------------------------------
 
     @Loggable
     @GetMapping(value = "{instituteId}/trainingPlaces")
