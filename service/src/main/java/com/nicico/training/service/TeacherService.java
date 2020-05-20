@@ -285,7 +285,8 @@ public class TeacherService implements ITeacherService {
         Teacher teacher = modelMapper.map(teacherDTO, Teacher.class);
         int teacher_educationLevel = 1;
 
-        teacher_educationLevel = teacher.getPersonality().getEducationLevel().getCode();
+        if(teacher.getPersonality().getEducationLevel().getCode() != null)
+                teacher_educationLevel = teacher.getPersonality().getEducationLevel().getCode();
 //        if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
 //            teacher_educationLevel = 1;
 //        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق دیپلم"))
