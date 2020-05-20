@@ -91,6 +91,14 @@
             fetchDataURL: personnelUrl + "/iscList",
         });
 
+        evaluation_Audience_Post = isc.FormLayout.create({
+            items:[{
+                name:"audiencePost", type:"radioGroup", title:"نوع مخاطب : ",
+                valueMap:["نماینده آموزش","همکار","مافوق"], defaultValue:null,
+                vertical:false,
+            }],
+        });
+
         EvaluationListGrid_PeronalLIst = isc.TrLG.create({
             dataSource: EvaluationDS_PersonList,
             selectionType: "single",
@@ -114,6 +122,7 @@
 
         var evaluation_Audience = null;
         var ealuation_numberOfStudents = null;
+        evaluation_Audience_Post.setValues(null);
         var Buttons_List_HLayout = isc.HLayout.create({
             width: "100%",
             height: "30px",
@@ -146,6 +155,7 @@
                     title: "<spring:message code="logout"/>",
                     click: function () {
                         evaluation_Audience = null;
+                        evaluation_Audience_Post.setValues(null);
                         EvaluationWin_PersonList.close();
                     }
                 })
@@ -157,6 +167,7 @@
             height: "100%",
             autoDraw: false,
             members: [
+                evaluation_Audience_Post,
                 EvaluationListGrid_PeronalLIst,
                 Buttons_List_HLayout
             ]
@@ -172,7 +183,11 @@
             visibility: "hidden",
             items: [
                 evaluation_personnel_List_VLayout
-            ]
+            ],
+            close : function () {
+                evaluation_Audience_Post.setValues(null);
+                this.Super("close",arguments);
+            }
         });
     }
     // ---------------------------------------- Create - Window ---------------------------------->>
@@ -1534,6 +1549,7 @@
                     let returnDate = evaluation_ReturnDate._value !== undefined ? evaluation_ReturnDate._value.replaceAll("/", "-") : "noDate";
 
                     var myObj = {
+                        // evaluationAudience_Post: evaluation_Audience_Post.values.audiencePost,
                         courseId: selectedClass.course.id,
                         studentId: studentId,
                         evaluationType: selectedTab.id,
