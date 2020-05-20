@@ -17,9 +17,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_sub_category", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"f_category_id", "c_title_en"}),
-        @UniqueConstraint(columnNames = {"f_category_id", "c_title_fa"})}
+@Table(name = "tbl_sub_category", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_category_id", "c_title_fa"})}
 )
 public class Subcategory extends Auditable {
     @Id

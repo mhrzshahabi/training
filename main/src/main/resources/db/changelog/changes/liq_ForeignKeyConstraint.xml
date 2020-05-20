@@ -971,5 +971,11 @@
     <changeSet author="jafari-h (generated)" id="1589889485463-432">
         <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_personnel" constraintName="FK7wmqnnkyqaytki3imc2gqu6m7" deferrable="false" initiallyDeferred="false" referencedColumnNames="personnel_no" referencedTableName="tbl_personnel" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-431">
+        <addForeignKeyConstraint baseColumnNames="f_contact_info" baseTableName="tbl_institute" constraintName="FK2nkg0ycxciyh55ddb74vopmae" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_contact_info" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-432">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_account_info" constraintName="FKrw4at5jc3xopx9hqieknmmlbf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

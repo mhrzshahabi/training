@@ -69,5 +69,49 @@
             <column name="phone" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-428">
+        <addColumn tableName="tbl_institute">
+            <column name="f_contact_info" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-429">
+        <addColumn tableName="tbl_account_info">
+            <column name="f_institute" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-448">
+        <dropForeignKeyConstraint baseTableName="TBL_INSTITUTE" constraintName="FK7W4U3R8E1XIV8GPG3I1G6736I"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-449">
+        <dropForeignKeyConstraint baseTableName="TBL_INSTITUTE" constraintName="FKL9BBWSJ8G9QRSPIE4DLK03H2R"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-490">
+        <dropColumn columnName="C_ADDRESS" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-491">
+        <dropColumn columnName="C_EMAIL" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-492">
+        <dropColumn columnName="C_FAX" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-493">
+        <dropColumn columnName="C_MOBILE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-494">
+        <dropColumn columnName="C_PHONE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-495">
+        <dropColumn columnName="C_POST_CODE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-496">
+        <dropColumn columnName="C_WEBSITE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-497">
+        <dropColumn columnName="F_CITY" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1589948097150-498">
+        <dropColumn columnName="F_STATE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
 
 </databaseChangeLog>
