@@ -210,7 +210,7 @@ public class ClassStudentRestController {
 
     @Loggable
     @PutMapping(value = "/setStudentFormIssuance")
-    public Integer setStudentFormIssuance(@RequestBody Map<String, Integer> formIssuance) {
+    public Integer setStudentFormIssuance(@RequestBody Map<String, String> formIssuance) {
         return classStudentService.setStudentFormIssuance(formIssuance);
     }
 

@@ -182,11 +182,10 @@ public class InstituteService implements IInstituteService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<InstituteAccountDTO.Info> getInstituteAccounts(Long instituteId) {
+    public List<AccountInfoDTO.Info> getInstituteAccounts(Long instituteId) {
         final Optional<Institute> optionalInstitute = instituteDAO.findById(instituteId);
         final Institute institute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
-
-        return modelMapper.map(institute.getInstituteAccountSet(), new TypeToken<List<InstituteAccountDTO.Info>>() {
+        return modelMapper.map(institute.getAccountInfoSet(), new TypeToken<List<AccountInfoDTO.Info>>() {
         }.getType());
 
     }
