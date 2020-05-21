@@ -6,14 +6,8 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.StudentClassReportViewDTO;
-import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.service.NeedsAssessmentService;
-import com.nicico.training.service.SkillService;
-import com.nicico.training.service.StudentClassReportViewService;
-import com.nicico.training.service.TclassService;
+import com.nicico.training.dto.*;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.poi.ss.usermodel.*;
@@ -44,8 +38,8 @@ public class ExportController {
     private final NeedsAssessmentService needsAssessmentService;
     private final StudentClassReportViewService studentClassReportViewService;
     private final TclassService tclassService;
-
     private final SkillService skillService;
+    private final CourseService courseService;
 
     @PostMapping(value = {"/excel"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -198,6 +192,10 @@ public class ExportController {
             case "Skill_Report.jasper":
                 SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
                 list = searchSkill.getList();
+                break;
+            case "CourseByCriteria.jasper":
+                SearchDTO.SearchRs<CourseDTO.Info> searchCourse = courseService.search(searchRq);
+                list = searchCourse.getList();
                 break;
         }
         final Gson gson = new Gson();
