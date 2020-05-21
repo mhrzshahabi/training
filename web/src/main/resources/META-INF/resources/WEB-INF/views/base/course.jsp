@@ -586,9 +586,6 @@
 
     });
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code="refresh"/> ",
-
         click: function () {
             ListGrid_Course_refresh();
             refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
@@ -597,33 +594,29 @@
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-
-        title: "<spring:message code="edit"/> ",
         click: function () {
             ListGrid_Course_Edit()
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-
-        title: "<spring:message code="create"/>",
-
+    var ToolStripButton_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Course_add();
         }
     });
 
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-
-        title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()
         }
     });
     var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
-        //icon: "[SKIN]/RichTextEditor/print.png",
-        title: "<spring:message code='print'/>",
         click: function () {
             print_CourseListGrid("pdf");
+        }
+    });
+    var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.DownloadExcelFormClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
         }
     });
 
@@ -883,7 +876,7 @@
             ToolStripButton_Edit,
             ToolStripButton_Remove,
             ToolStripButton_Print,
-            // ToolStripButton_addSkill,
+            ToolStripExcel_JspCourse,
             ToolStripButton_SendToWorkflow,
             isc.ToolStrip.create({
                 width: "100%",
@@ -2817,23 +2810,8 @@
     }
 
     function print_CourseListGrid(type) {
-        var advancedCriteria_course = ListGrid_Course.getCriteria();
-        var criteriaForm_course = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/course/printWithCriteria/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "myToken", type: "hidden"}
-                ]
-        })
-        criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
-        criteriaForm_course.setValue("myToken", "<%=accessToken%>");
-        criteriaForm_course.show();
-        criteriaForm_course.submitForm();
-    };
+        printWithCriteria(ListGrid_Course.getCriteria(), {}, "CourseByCriteria.jasper", type);
+    }
 
     function courseCode() {
         var subCatDis = DynamicForm_course_GroupTab.getField("subCategory.id").isDisabled();

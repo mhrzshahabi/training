@@ -210,17 +210,17 @@ public class CourseDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CourseUpdateRq")
     public static class Update extends CourseDTO {
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Integer eRunTypeId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Integer eRunTypeId;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Integer eLevelTypeId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Integer eLevelTypeId;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Integer eTheoTypeId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Integer eTheoTypeId;
 
         @NotEmpty
         @ApiModelProperty(required = true)
@@ -230,14 +230,14 @@ public class CourseDTO implements Serializable {
 //        @ApiModelProperty(required = true)
 //        private Integer version;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Long categoryId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Long categoryId;
 
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Long subCategoryId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Long subCategoryId;
 
         @ApiModelProperty(required = true)
         private List<Long> preCourseListId;
