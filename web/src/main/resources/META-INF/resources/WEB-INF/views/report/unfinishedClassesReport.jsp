@@ -89,21 +89,30 @@
                     title: "<spring:message code="class.duration"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
                 },
                 {
                     name: "startDate",
                     title: "<spring:message code="start.date"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "endDate",
                     title: "<spring:message code="end.date"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "firstSession",

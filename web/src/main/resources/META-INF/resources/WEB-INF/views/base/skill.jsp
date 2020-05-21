@@ -584,7 +584,11 @@
         selectionType: "none",
         autoFetchData: false,
         fields: [
-            {name: "code"},
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa"},
             {name: "job.titleFa"},
             {name: "postGrade.titleFa"},

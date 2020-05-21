@@ -410,15 +410,24 @@
             {
                 name: "duration",
                 title: "<spring:message code='duration'/>",
-                filterOperator: "equals"
+                filterOperator: "equals",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>"
+                title: "<spring:message code='start.date'/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>"
+                title: "<spring:message code='end.date'/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             }
         ],
         doubleClick: function () {

@@ -31,9 +31,21 @@
             {name: "id", hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},
             {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
@@ -49,7 +61,11 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", width: "35%",  title: "<spring:message code="firstName"/>", align: "center"},
             {name: "lastName", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
-            {name: "nationalCode", align: "center", width: "30%",  title: "<spring:message code="national.code"/>"}
+            {name: "nationalCode", align: "center", width: "30%",  title: "<spring:message code="national.code"/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            }
         ],
 
     });
@@ -59,7 +75,11 @@
         fields: [{name: "id", primaryKey: true, hidden: true},
             {name: "firstName", width: "35%",title: "<spring:message code="firstName"/>", align: "center"},
             {name: "lastName", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
-            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>"}
+            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            }
         ],
         autoFetchData: false,
     });

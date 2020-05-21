@@ -61,7 +61,11 @@
     PostGradeLG_postGrade = isc.TrLG.create({
         dataSource: PostGradeDS_postGrade,
         fields: [
-            {name: "code",},
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa",},
         ],
         autoFetchData: true,

@@ -283,7 +283,11 @@
         dataSource: RestDataSource_All_Jobs,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد شغل", align: "center", width: "20%"},
+            {name: "code", title: "کد شغل", align: "center", width: "20%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa", title: "نام شغل", align: "center", width: "60%"},
             {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
@@ -360,7 +364,11 @@
         dataSource: RestDataSource_ForThisJobGroup_GetJobs,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد شغل", align: "center", width: "20%"},
+            {name: "code", title: "کد شغل", align: "center", width: "20%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
             {name: "OnDelete", title: "حذف", align: "center"}
         ],
@@ -597,7 +605,11 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام شغل", align: "center", filterOperator: "iContains"},
-            {name: "code", title: "کد شغل ", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "کد شغل ", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             // {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],

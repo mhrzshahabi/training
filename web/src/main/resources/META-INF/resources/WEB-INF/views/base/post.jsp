@@ -87,7 +87,11 @@
     PostLG_post = isc.TrLG.create({
         dataSource: PostDS_post,
         fields: [
-            {name: "code",},
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "titleFa",},
             {name: "job.titleFa",},
             {name: "postGrade.titleFa",},
@@ -96,7 +100,11 @@
             {name: "affairs",},
             {name: "section",},
             {name: "unit",},
-            {name: "costCenterCode",},
+            {name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "costCenterTitleFa",},
         ],
         autoFetchData: true,

@@ -298,7 +298,7 @@
                                     name: "student.nationalCode",
                                     title: "<spring:message code="national.code"/>",
                                     filterOperator: "iContains",
-                                    autoFitWidth: true
+                                    autoFitWidth: true,
                                 },
                                 {
                                     name: "applicantCompanyName",
@@ -672,10 +672,21 @@
                                                 {name: "student.lastName", title: "<spring:message code="lastName"/>"},
                                                 {
                                                     name: "student.nationalCode",
-                                                    title: "<spring:message code="national.code"/>"
+                                                    title: "<spring:message code="national.code"/>",
+                                                    filterEditorProperties: {
+                                                        keyPressFilter: "[0-9]"
+                                                    }
                                                 },
-                                                {name: "student.personnelNo"},
-                                                {name: "student.personnelNo2"},
+                                                {name: "student.personnelNo",
+                                                    filterEditorProperties: {
+                                                        keyPressFilter: "[0-9]"
+                                                    }
+                                                },
+                                                {name: "student.personnelNo2",
+                                                    filterEditorProperties: {
+                                                        keyPressFilter: "[0-9]"
+                                                    }
+                                                },
                                                 {name: "student.postTitle"},
                                                 {
                                                     name: "presenceTypeId",
@@ -976,19 +987,28 @@
                     name: "startDate",
                     title: "<spring:message code='start.date'/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "endDate",
                     title: "<spring:message code='end.date'/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "studentCount",
                     title: "<spring:message code='student.count'/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
                 },
                 {
                     name: "numberOfStudentEvaluation",
@@ -1069,7 +1089,7 @@
                     name: "student.nationalCode",
                     title: "<spring:message code="national.code"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
                 },
                 {
                     name: "applicantCompanyName",
@@ -1093,12 +1113,12 @@
                     name: "student.personnelNo",
                     title: "<spring:message code="personnel.no"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
                 },
                 {
                     name: "student.personnelNo2",
                     title: "<spring:message code="personnel.no.6.digits"/>",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
                 },
                 {
                     name: "student.postTitle",
@@ -1148,9 +1168,21 @@
             fields: [
                 {name: "student.firstName"},
                 {name: "student.lastName"},
-                {name: "student.nationalCode"},
-                {name: "student.personnelNo"},
-                {name: "student.personnelNo2"},
+                {name: "student.nationalCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "student.personnelNo",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "student.personnelNo2",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
                 {name: "student.postTitle"},
                 {name: "student.ccpArea"},
                 {

@@ -273,7 +273,11 @@
         fields: [
             {name: "student.firstName"},
             {name: "student.lastName"},
-            {name: "student.nationalCode"},
+            {name: "student.nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "student.fatherName",hidden:true},
             {
                 name: "applicantCompanyName",
@@ -317,8 +321,16 @@
                     ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
                 }
             },
-            {name: "student.personnelNo"},
-            {name: "student.personnelNo2"},
+            {name: "student.personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "student.personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "student.postTitle"},
             {name: "student.ccpArea"},
             {name: "student.ccpAssistant"},
@@ -351,7 +363,11 @@
             {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {
                 name: "applicantCompanyName",
                 title: "<spring:message code="company.applicant"/>",
@@ -409,10 +425,22 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
             {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
@@ -430,10 +458,22 @@
            // {name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName",hidden:true},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant",hidden:true},
@@ -528,10 +568,22 @@
             //{name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName",hidden:true},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant",hidden:true},

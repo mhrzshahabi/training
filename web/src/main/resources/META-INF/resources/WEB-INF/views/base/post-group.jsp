@@ -335,7 +335,11 @@
         dataSource: RestDataSource_All_Posts,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد پست", align: "center", width: "20%"},
+            {name: "code", title: "کد پست", align: "center", width: "20%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "titleFa", title: "نام پست", align: "center", width: "60%"},
             {name: "titleEn", title: "نام لاتین پست", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
@@ -412,7 +416,11 @@
         dataSource: RestDataSource_ForThisPostGroup_GetPosts,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد پست", align: "center", width: "20%"},
+            {name: "code", title: "کد پست", align: "center", width: "20%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "titleFa", title: "نام پست", align: "center", width: "70%"},
             {name: "OnDelete", title: "حذف", align: "center"}
         ],
@@ -649,7 +657,11 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام پست", align: "center", filterOperator: "iContains"},
-            {name: "code", title: "کد پست ", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "کد پست ", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             // {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],

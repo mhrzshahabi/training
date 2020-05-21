@@ -159,14 +159,20 @@
                 name: "student.nationalCode",
                 title: "<spring:message code="national.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                filterEditorProperties: {
+                keyPressFilter: "[0-9]"
+                }
             },
 
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                filterEditorProperties: {
+                keyPressFilter: "[0-9]"
+                }
             },
 
             {

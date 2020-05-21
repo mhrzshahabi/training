@@ -89,16 +89,27 @@
 
         fields: [
            // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                keyPressFilter: "[0-9|\-]"
+                }
+            },
             {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
             {
                 name: "startDate",
                 title: "<spring:message code="start.date"/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                keyPressFilter: "[0-9/]"
+                }
             },
 
-            {name: "endDate", title: "<spring:message code="end.date"/>", align: "center", filterOperator: "iContains"},
+            {name: "endDate", title: "<spring:message code="end.date"/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                keyPressFilter: "[0-9/]"
+                }
+            },
 
             {name: "description",title: "<spring:message code="description"/>",align: "center",filterOperator: "iContains"},
         ],

@@ -1403,8 +1403,11 @@
             {
                 name: "personnelNo",
                 title: "<spring:message code='personal.ID'/>",
-                align: "center"
-                , filterOperator: "iContains"
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "firstName",
@@ -1422,13 +1425,19 @@
                 name: "birthCertificateNo",
                 title: "<spring:message code='birth.certificate'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "companyName",
