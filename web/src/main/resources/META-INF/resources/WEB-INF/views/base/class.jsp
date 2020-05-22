@@ -1099,6 +1099,58 @@
                 type: "boolean",
                 title: "<spring:message code='class.preCourseTest'/>",
                 hidden: true,
+            },
+            {
+                ID: "goal",
+                name: "goal",
+                colSpan: 1,
+                rowSpan: 2,
+                title: "نوع جامعه هدف :",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: true,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+                valueMap: {
+                    "1": "واحد",
+                    "2": "سایر",
+                },
+                change: function (form, item, value, oldValue) {
+
+
+                    if (value === "1"){
+                        form.getItem("goaletc").hide();
+                        form.getItem("goalcombo").show();
+                    }
+                    else if(value === "2"){
+                        form.getItem("goalcombo").hide();
+                        form.getItem("goaletc").show();
+                    }
+                    else
+                        return false;
+
+                }
+            },
+            {
+                name: "goalcombo",
+                colSpan: 3,
+                rowSpan: 1,
+                type: "SelectItem",
+                required: true,
+                hidden: false,
+                textAlign: "center",
+                title: "انتخاب جامعه هدف:",
+                valueMap: {
+                }
+            },
+            {
+                name: "goaletc",
+                colSpan: 3,
+                rowSpan: 1,
+                hidden: true,
+                title: "مقدار جامعه هدف:",
+                textAlign: "center",
+                required: true,
             }
         ],
     });
