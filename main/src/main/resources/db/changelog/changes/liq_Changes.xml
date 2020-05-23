@@ -2,6 +2,12 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
+    <changeSet author="matin_ar (generated)" id="1589961420552-430">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_audience_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet author="heydaripoor (generated)" id="1588136355333-377">
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
     </changeSet>

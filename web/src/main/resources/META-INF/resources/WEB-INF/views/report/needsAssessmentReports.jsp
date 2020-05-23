@@ -308,12 +308,28 @@
         fields: [
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
-            {name: "postCode"},
+            {name: "postCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "ccpArea"},
             {name: "ccpAssistant"},
             {name: "ccpAffairs"},
@@ -423,7 +439,11 @@
             {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},

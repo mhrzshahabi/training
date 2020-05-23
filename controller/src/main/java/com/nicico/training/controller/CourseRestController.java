@@ -189,7 +189,7 @@ public class CourseRestController {
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+        return new ResponseEntity<>( specRs, HttpStatus.OK);
     }
 
     // ---------------

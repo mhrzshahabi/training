@@ -52,7 +52,11 @@
         },
         fields: [
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code='code'/>", align: "center"},
+            {name: "code", title: "<spring:message code='code'/>", align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa", title: "<spring:message code='global.titleFa'/>", align: "center"},
             {name: "titleEn", title: "<spring:message code='title.en'/> ", align: "center"}
         ],

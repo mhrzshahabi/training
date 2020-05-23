@@ -209,9 +209,9 @@ public class CourseService implements ICourseService {
         course.setPreCourse(s);
         course.setEqualCourse(s1);
         course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
-        course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
-        course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
-        course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
+//        course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
+//        course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
+//        course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
 
         ////////////////////////////////////////////////////////////////////////
         List<EqualCourse> equalCourses = new ArrayList<>();

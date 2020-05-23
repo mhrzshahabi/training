@@ -138,7 +138,7 @@
                 name: "studentNationalCode",
                 title:"<spring:message code="national.code"/> ",
                 textAlign: "center",
-                width: "*",
+                width: "*"
             },
             {
                 name: "studentFirstName",
@@ -439,8 +439,16 @@
 
         gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
         fields:[
-            {name: "studentPersonnelNo2"},
-            {name: "studentNationalCode"},
+            {name: "studentPersonnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "studentNationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "studentFirstName"},
             {name: "studentLastName"},
             {name: "studentCcpUnit"},

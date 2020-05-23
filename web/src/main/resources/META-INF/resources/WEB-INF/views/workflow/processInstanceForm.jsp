@@ -120,13 +120,33 @@
         contextMenu: Menu_ListGrid_WorkflowProcessInstance_List,
         fields: [
             {name: "variableInstances.userFullName.textValue", title: "<spring:message code="created.by.user"/>", width: "30%"},
-            {name: "startDateFa", title: "<spring:message code="start.date"/>", width: "30%"},
-            {name: "endDateFa", title: "<spring:message code="end.date"/>", width: "30%"},
-            {name: "variableInstances.cId.textValue", title: "<spring:message code="competency.number"/>", width: "30%"},
+            {name: "startDateFa", title: "<spring:message code="start.date"/>", width: "30%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "endDateFa", title: "<spring:message code="end.date"/>", width: "30%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "variableInstances.cId.textValue", title: "<spring:message code="competency.number"/>", width: "30%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "processDefinitionKey", title: "<spring:message code="process.key.uploaded"/>", width: "30%"},
             {name: "variableInstances.cTitle.textValue", title: "<spring:message code="description"/>", width: "30%"},
-            {name: "processDefinitionVersion", title: "<spring:message code="version"/>", width: "30%"},
-            {name: "id", title: "id", type: "text", width: "30%"},
+            {name: "processDefinitionVersion", title: "<spring:message code="version"/>", width: "30%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|.]"
+                }
+            },
+            {name: "id", title: "id", type: "text", width: "30%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
         ],
         sortField: 0,
         dataPageSize: 50,

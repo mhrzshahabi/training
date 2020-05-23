@@ -48,6 +48,7 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusLearning;
         private Integer evaluationStatusBehavior;
         private Integer evaluationStatusResults;
+        private String evaluationAudienceType;
     }
 
     @Getter

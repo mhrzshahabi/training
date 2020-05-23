@@ -331,9 +331,16 @@
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
-            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
+            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
@@ -1850,11 +1857,17 @@
                 sortDirection: "descending",
                 defaultToFirstOption: true,
                 useClientFiltering: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
                 pickListFields: [
                     {
                         name: "year",
                         title: "<spring:message code='year'/>",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
                     }
                 ],
                 changed: function (form, item, value) {
@@ -1882,21 +1895,33 @@
                 sortDirection: "descending",
                 defaultToFirstOption: true,
                 useClientFiltering: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
                 pickListFields: [
                     {
                         name: "code",
                         title: "<spring:message code='term.code'/>",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
                     },
                     {
                         name: "startDate",
                         title: "<spring:message code='start.date'/>",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
                     },
                     {
                         name: "endDate",
                         title: "<spring:message code='end.date'/>",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
                     }
                 ],
                 changed: function (form, item, value) {
@@ -1914,15 +1939,10 @@
         ]
     });
 
-    var ToolStrip_Excel_JspClass = isc.ToolStrip.create({
-        width: "50%",
-        membersMargin: 5,
-        members: [
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    ExportToFile.DownloadExcelFormClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
-                }
-            })]
+    var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.DownloadExcelFormClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
+        }
     });
 
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({

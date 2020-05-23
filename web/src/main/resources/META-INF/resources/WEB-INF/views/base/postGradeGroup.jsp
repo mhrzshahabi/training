@@ -141,7 +141,11 @@
         dragTrackerMode: "title",
         canDrag: true,
         fields: [
-            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center"},
+            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"}
         ],
         recordDrop: function (dropRecords) {
@@ -166,7 +170,11 @@
         autoFetchData: false,
         dataSource: RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp,
         fields: [
-            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center"},
+            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},
             {name: "OnDelete", title: "<spring:message code='global.form.remove'/>", align: "center", canFilter: false}
         ],
@@ -295,7 +303,10 @@
                 name: "code",
                 title: "<spring:message code='post.grade.code'/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "titleFa",

@@ -41,7 +41,11 @@
             {name: "studentName", type: "text", title: "نام"},
             {name: "studentFamily", type: "text", title: "نام خانوادگی"},
             {name: "personalNum", type: "text", title: "شماره پرسنلی"},
-            {name: "nationalCode", type: "text", title: "کد ملی"},
+            {name: "nationalCode", type: "text", title: "کد ملی",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "company", type: "text", title: "شرکت"},
             {name: "studentState", type: "text", title: "وضعیت"},
         ],
@@ -57,9 +61,21 @@
             {name: "sessionId", hidden: true, primaryKey: true},
             {name: "studentState", hidden:true, type: "text", title: "وضعیت"},
             {name: "sessionType", title:"نوع جلسه"},
-            {name: "sessionDate", type: "text", title: "تاریخ"},
-            {name: "startHour", type: "text", title: "ساعت شروع"},
-            {name: "endHour", type: "text", title: "ساعت پایان"},
+            {name: "sessionDate", type: "text", title: "تاریخ",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "startHour", type: "text", title: "ساعت شروع",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9:]"
+                }
+            },
+            {name: "endHour", type: "text", title: "ساعت پایان",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9:]"
+                }
+            },
             {name: "state", type: "text", title: "وضعیت"},
         ],
     });
@@ -77,10 +93,22 @@
             {name: "studentId"},
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
         ],
         autoFetchData: false,
         fetchDataURL: attendanceUrl + "/students?classId=0"

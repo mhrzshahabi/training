@@ -152,7 +152,11 @@
     JobLG_job = isc.TrLG.create({
         dataSource: JobDS_job,
         fields: [
-            {name: "code",},
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa",},
         ],
         autoFetchData: true,

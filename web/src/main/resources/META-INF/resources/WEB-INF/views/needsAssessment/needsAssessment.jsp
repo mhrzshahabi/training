@@ -151,7 +151,11 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         fields:[
             {name: "objectType", title: "<spring:message code="type"/>", filterOperator: "iContains", valueMap: priorityList},
             {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "competence.title", title: "<spring:message code="competence.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competence.competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},

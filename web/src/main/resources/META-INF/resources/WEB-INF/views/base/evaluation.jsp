@@ -91,6 +91,14 @@
             fetchDataURL: personnelUrl + "/iscList",
         });
 
+        evaluation_Audience_Type = isc.FormLayout.create({
+            items:[{
+                name:"audiencePost", type:"radioGroup", title:"نوع مخاطب : ",
+                valueMap:["نماینده آموزش","همکار","مافوق"], defaultValue:null,
+                vertical:false,
+            }],
+        });
+
         EvaluationListGrid_PeronalLIst = isc.TrLG.create({
             dataSource: EvaluationDS_PersonList,
             selectionType: "single",
@@ -114,6 +122,7 @@
 
         var evaluation_Audience = null;
         var ealuation_numberOfStudents = null;
+        evaluation_Audience_Type.setValues(null);
         var Buttons_List_HLayout = isc.HLayout.create({
             width: "100%",
             height: "30px",
@@ -125,10 +134,12 @@
                 isc.IButton.create({
                     title: "<spring:message code="select" />",
                     click: function () {
-                        if (EvaluationListGrid_PeronalLIst.getSelectedRecord() !== null) {
+                        if (EvaluationListGrid_PeronalLIst.getSelectedRecord() !== null && (evaluation_Audience_Type.values.audiencePost !== null && evaluation_Audience_Type.values.audiencePost !== undefined)) {
                             evaluation_Audience = EvaluationListGrid_PeronalLIst.getSelectedRecord().firstName + " " + EvaluationListGrid_PeronalLIst.getSelectedRecord().lastName;
                             print_Student_FormIssuance("pdf", ealuation_numberOfStudents);
                             EvaluationWin_PersonList.close();
+                        } else if(evaluation_Audience_Type.values.audiencePost === null || evaluation_Audience_Type.values.audiencePost === undefined){
+                            createDialog('info', "<spring:message code="select.audience.post.ask"/>", "<spring:message code="global.message"/>");
                         } else {
                             isc.Dialog.create({
                                 message: "<spring:message code="select.audience.ask"/>",
@@ -146,6 +157,7 @@
                     title: "<spring:message code="logout"/>",
                     click: function () {
                         evaluation_Audience = null;
+                        evaluation_Audience_Type.setValues(null);
                         EvaluationWin_PersonList.close();
                     }
                 })
@@ -157,6 +169,7 @@
             height: "100%",
             autoDraw: false,
             members: [
+                evaluation_Audience_Type,
                 EvaluationListGrid_PeronalLIst,
                 Buttons_List_HLayout
             ]
@@ -172,7 +185,11 @@
             visibility: "hidden",
             items: [
                 evaluation_personnel_List_VLayout
-            ]
+            ],
+            close : function () {
+                evaluation_Audience_Type.setValues(null);
+                this.Super("close",arguments);
+            }
         });
     }
     // ---------------------------------------- Create - Window ---------------------------------->>
@@ -281,7 +298,7 @@
                                     name: "student.nationalCode",
                                     title: "<spring:message code="national.code"/>",
                                     filterOperator: "iContains",
-                                    autoFitWidth: true
+                                    autoFitWidth: true,
                                 },
                                 {
                                     name: "applicantCompanyName",
@@ -655,10 +672,21 @@
                                                 {name: "student.lastName", title: "<spring:message code="lastName"/>"},
                                                 {
                                                     name: "student.nationalCode",
-                                                    title: "<spring:message code="national.code"/>"
+                                                    title: "<spring:message code="national.code"/>",
+                                                    filterEditorProperties: {
+                                                        keyPressFilter: "[0-9]"
+                                                    }
                                                 },
-                                                {name: "student.personnelNo"},
-                                                {name: "student.personnelNo2"},
+                                                {name: "student.personnelNo",
+                                                    filterEditorProperties: {
+                                                        keyPressFilter: "[0-9]"
+                                                    }
+                                                },
+                                                {name: "student.personnelNo2",
+                                                    filterEditorProperties: {
+                                                        keyPressFilter: "[0-9]"
+                                                    }
+                                                },
                                                 {name: "student.postTitle"},
                                                 {
                                                     name: "presenceTypeId",
@@ -959,19 +987,28 @@
                     name: "startDate",
                     title: "<spring:message code='start.date'/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "endDate",
                     title: "<spring:message code='end.date'/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "studentCount",
                     title: "<spring:message code='student.count'/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
                 },
                 {
                     name: "numberOfStudentEvaluation",
@@ -1052,7 +1089,7 @@
                     name: "student.nationalCode",
                     title: "<spring:message code="national.code"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
                 },
                 {
                     name: "applicantCompanyName",
@@ -1076,12 +1113,12 @@
                     name: "student.personnelNo",
                     title: "<spring:message code="personnel.no"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
                 },
                 {
                     name: "student.personnelNo2",
                     title: "<spring:message code="personnel.no.6.digits"/>",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
                 },
                 {
                     name: "student.postTitle",
@@ -1113,6 +1150,11 @@
                     name: "evaluationStatusResults",
                     title: "<spring:message code="evaluation.results.status"/>",
                     filterOperator: "iContains"
+                },
+                {
+                    name: "evaluationAudienceType",
+                    title: "<spring:message code="evaluation.audience.type"/>",
+                    filterOperator: "iContains"
                 }
             ]
         });
@@ -1126,9 +1168,21 @@
             fields: [
                 {name: "student.firstName"},
                 {name: "student.lastName"},
-                {name: "student.nationalCode"},
-                {name: "student.personnelNo"},
-                {name: "student.personnelNo2"},
+                {name: "student.nationalCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "student.personnelNo",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "student.personnelNo2",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
                 {name: "student.postTitle"},
                 {name: "student.ccpArea"},
                 {
@@ -1169,7 +1223,8 @@
                         "2": "تکمیل شده"
                     },
                     hidden: true
-                }
+                },
+                {name: "evaluationAudienceType",},
             ],
             getCellCSSText: function (record, rowNum, colNum) {
                 if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && record.evaluationStatusReaction === 1)
@@ -1532,8 +1587,10 @@
 
                     let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
                     let returnDate = evaluation_ReturnDate._value !== undefined ? evaluation_ReturnDate._value.replaceAll("/", "-") : "noDate";
+                    let evaluationType = (evaluation_Audience_Type.values.audiencePost === null || evaluation_Audience_Type.values.audiencePost === undefined ? "" : evaluation_Audience_Type.values.audiencePost);
 
                     var myObj = {
+                        evaluationAudienceType: evaluationType,
                         courseId: selectedClass.course.id,
                         studentId: studentId,
                         evaluationType: selectedTab.id,
@@ -1632,6 +1689,7 @@
                         case "TabPane_Reaction": {
 
                             evaluationData = {
+                                "evaluationAudienceType": null,
                                 "idClassStudent": selectedStudent.id,
                                 "reaction": 1,
                                 "learning": selectedStudent.evaluationStatusLearning || 0,
@@ -1644,6 +1702,7 @@
                         case "TabPane_Learning": {
 
                             evaluationData = {
+                                "evaluationAudienceType": null,
                                 "idClassStudent": selectedStudent.id,
                                 "reaction": selectedStudent.evaluationStatusReaction || 0,
                                 "learning": 1,
@@ -1656,6 +1715,7 @@
                         case "TabPane_Behavior": {
 
                             evaluationData = {
+                                "evaluationAudienceType": evaluation_Audience_Type.values.audiencePost,
                                 "idClassStudent": selectedStudent.id,
                                 "reaction": selectedStudent.evaluationStatusReaction || 0,
                                 "learning": selectedStudent.evaluationStatusLearning || 0,
@@ -1668,6 +1728,7 @@
                         case "TabPane_Results": {
 
                             evaluationData = {
+                                "evaluationAudienceType": null,
                                 "idClassStudent": selectedStudent.id,
                                 "reaction": selectedStudent.evaluationStatusReaction || 0,
                                 "learning": selectedStudent.evaluationStatusLearning || 0,
