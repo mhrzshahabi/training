@@ -1057,8 +1057,99 @@
                 }
             },
             {
+                name: "acceptancelimit_a",
+                colSpan: 2,
+                required: true,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap: {
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
+                }
+            },
+            {
+                ID: "targetSocietyTypeId",
+                name: "targetSocietyTypeId",
+                colSpan: 1,
+                rowSpan: 1,
+                title: "نوع جامعه هدف :",
+                wrapTitle: false,
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+                valueMap: {
+                    "1": "واحد",
+                    "2": "سایر",
+                },
+                /*change: function (form, item, value, oldValue) {
+
+
+                    if (value === "1"){
+                        form.getItem("goaletc").hide();
+                        form.getItem("goalcombo").show();
+                    }
+                    else if(value === "2"){
+                        form.getItem("goalcombo").hide();
+                        form.getItem("goaletc").show();
+                    }
+                    else
+                        return false;
+
+                }*/
+            },
+/*            {
+                name: "targetSocietyList", editorType: "TextAreaItem", title: "انتخاب جامعه هدف:",
+                colSpan: 2,
+                rowSpan: 1,
+                displayField: "titleFa", valueField: "id",
+                textAlign: "center",
+                filterFields: ["titleFa"],
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "titleFa", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                /!*changed: function (form, item, value) {
+                },*!/
+            },*/
+            /*{
+                name: "goalcombo",
+                colSpan: 3,
+                rowSpan: 1,
+                type: "SelectItem",
+                // required: true,
+                hidden: false,
+                textAlign: "center",
+                title: "انتخاب جامعه هدف:",
+                valueMap: {
+                }
+            },
+            {
+                name: "goaletc",
+                colSpan: 3,
+                rowSpan: 1,
+                hidden: true,
+                title: "مقدار جامعه هدف:",
+                textAlign: "center",
+                // required: true,
+            },*/
+            {
+                name: "preCourseTest",
+                colSpan: 3,
+                rowSpan: 1,
+                type: "boolean",
+                title: "<spring:message code='class.preCourseTest'/>",
+                hidden: true,
+            },
+            {
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
+                colSpan: 2,
+                rowSpan: 1,
                 textAlign: "center",
                 hint: "&nbsp;ماه",
                 valueMap: {
@@ -1080,78 +1171,6 @@
                     sortField: 1
                 },
             },
-            {
-                name: "acceptancelimit_a",
-                colSpan: 2,
-                required: true,
-                hidden: true,
-                textAlign: "center",
-                title: "حد نمره قبولی",
-                valueMap: {
-                    "1001": "ضعیف",
-                    "1002": "متوسط",
-                    "1003": "خوب",
-                    "1004": "خيلي خوب",
-                }
-            },
-            {
-                name: "preCourseTest",
-                type: "boolean",
-                title: "<spring:message code='class.preCourseTest'/>",
-                hidden: true,
-            },
-            {
-                ID: "goal",
-                name: "goal",
-                colSpan: 1,
-                rowSpan: 2,
-                title: "نوع جامعه هدف :",
-                wrapTitle: true,
-                type: "radioGroup",
-                vertical: true,
-                fillHorizontalSpace: true,
-                defaultValue: "1",
-                valueMap: {
-                    "1": "واحد",
-                    "2": "سایر",
-                },
-                change: function (form, item, value, oldValue) {
-
-
-                    if (value === "1"){
-                        form.getItem("goaletc").hide();
-                        form.getItem("goalcombo").show();
-                    }
-                    else if(value === "2"){
-                        form.getItem("goalcombo").hide();
-                        form.getItem("goaletc").show();
-                    }
-                    else
-                        return false;
-
-                }
-            },
-            {
-                name: "goalcombo",
-                colSpan: 3,
-                rowSpan: 1,
-                type: "SelectItem",
-                required: true,
-                hidden: false,
-                textAlign: "center",
-                title: "انتخاب جامعه هدف:",
-                valueMap: {
-                }
-            },
-            {
-                name: "goaletc",
-                colSpan: 3,
-                rowSpan: 1,
-                hidden: true,
-                title: "مقدار جامعه هدف:",
-                textAlign: "center",
-                required: true,
-            }
         ],
     });
 

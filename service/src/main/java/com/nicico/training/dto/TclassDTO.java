@@ -72,7 +72,8 @@ public class TclassDTO {
     private Integer startEvaluation;
     private Boolean preCourseTest;
     private String hasWarning;
-
+    private List<String> targetSocietyList;
+    private Long targetSocietyTypeId;
 
     @Getter
     @Setter

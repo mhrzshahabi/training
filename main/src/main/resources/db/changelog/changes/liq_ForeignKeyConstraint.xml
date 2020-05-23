@@ -977,5 +977,7 @@
     <changeSet author="poursalehi_mos (generated)" id="1589948097150-432">
         <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_account_info" constraintName="FKrw4at5jc3xopx9hqieknmmlbf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
     </changeSet>
-
+    <changeSet author="matin_ar (generated)" id="1590230361357-433">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_class_target_society" constraintName="FKk4yoctw5ywowj932mow99iy5s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
