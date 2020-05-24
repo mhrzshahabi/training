@@ -44,6 +44,7 @@ public class EducationLevelDTO {
     @Setter
     @ApiModel("EducationLevelInfoTuple")
     static class EducationLevelInfoTuple {
+        private Integer code;
         private String titleFa;
         private String titleEn;
     }
