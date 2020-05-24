@@ -73,7 +73,6 @@ public class TclassDTO {
     private Boolean preCourseTest;
     private String hasWarning;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)

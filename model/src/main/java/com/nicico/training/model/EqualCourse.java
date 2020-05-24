@@ -22,7 +22,6 @@ public class EqualCourse extends Auditable {
     @Column(name = "equal_course_id", precision = 10)
     private Long id;
 
-    //TODO
     @ElementCollection
     @CollectionTable(name = "tbl_equal_and_course", joinColumns = @JoinColumn(name = "f_equal_course_id"))
     @Column(name = "list_equal_and_course")

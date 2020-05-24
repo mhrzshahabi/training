@@ -1057,8 +1057,96 @@
                 }
             },
             {
+                name: "acceptancelimit_a",
+                colSpan: 2,
+                required: true,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap: {
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
+                }
+            },
+            {
+                ID: "targetSocietyTypeId",
+                name: "targetSocietyTypeId",
+                colSpan: 3,
+                rowSpan: 1,
+                title: "نوع جامعه هدف :",
+                wrapTitle: false,
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+                valueMap: {
+                    "1": "واحد",
+                    "2": "سایر",
+                },
+                change: function (form, item, value, oldValue) {
+
+
+                    if (value === "1"){
+                        form.getItem("targetSocietiesEtc").hide();
+                        form.getItem("addtargetSociety").hide();
+                        form.getItem("targetSocietiesCombo").show();
+                    }
+                    else if(value === "2"){
+                        form.getItem("targetSocietiesCombo").hide();
+                        form.getItem("targetSocietiesEtc").show();
+                        form.getItem("addtargetSociety").show();
+                    }
+                    else
+                        return false;
+
+                }
+            },
+            {
+                name: "targetSocietiesCombo",
+                colSpan: 2,
+                rowSpan: 1,
+                type: "SelectItem",
+                multiple: true,
+                hidden: false,
+                textAlign: "center",
+                title: "انتخاب جامعه هدف:",
+                valueMap: {
+                    "1": "امور فاوا",
+                    "2": "عمومی",
+                }
+            },
+            {
+                    name: "targetSocietiesEtc",
+                    colSpan: 2,
+                    rowSpan: 1,
+                    hidden: true,
+                    title: "مقدار جامعه هدف:",
+                    textAlign: "center",
+                },
+            {
+                name: "addtargetSociety",
+                title: "افزودن",
+                type: "button",
+                colSpan: 1,
+                hidden: true,
+                endRow: false, startRow: false,
+                click: function() {
+
+                }
+            },
+            {
+                name: "preCourseTest",
+                colSpan: 1,
+                type: "boolean",
+                title: "<spring:message code='class.preCourseTest'/>",
+                hidden: true,
+            },
+            {
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
+                colSpan: 2,
                 textAlign: "center",
                 hint: "&nbsp;ماه",
                 valueMap: {
@@ -1080,26 +1168,6 @@
                     sortField: 1
                 },
             },
-            {
-                name: "acceptancelimit_a",
-                colSpan: 2,
-                required: true,
-                hidden: true,
-                textAlign: "center",
-                title: "حد نمره قبولی",
-                valueMap: {
-                    "1001": "ضعیف",
-                    "1002": "متوسط",
-                    "1003": "خوب",
-                    "1004": "خيلي خوب",
-                }
-            },
-            {
-                name: "preCourseTest",
-                type: "boolean",
-                title: "<spring:message code='class.preCourseTest'/>",
-                hidden: true,
-            }
         ],
     });
 

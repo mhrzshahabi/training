@@ -184,4 +184,7 @@ public class Tclass extends Auditable {
 
     @OneToMany(mappedBy = "tclassConflict", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Alarm> alarmsConflict;
+
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TargetSociety> targetSocietyList;
 }
