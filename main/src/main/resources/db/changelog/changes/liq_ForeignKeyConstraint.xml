@@ -980,4 +980,16 @@
     <changeSet author="matin_ar (generated)" id="1590230361357-433">
         <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_class_target_society" constraintName="FKk4yoctw5ywowj932mow99iy5s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
     </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-433">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_target_society" constraintName="FK5or06c7bp22fym75d2df5giog" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-434">
+        <addForeignKeyConstraint baseColumnNames="f_targetsociety_type_id" baseTableName="tbl_target_society" constraintName="FKgbwt8eeihabewsk5i46s8q3lt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-435">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_target_society" constraintName="FKl757tat8b0jom5m4xv4vu1dcl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-436">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_target_society" constraintName="FKov30yxko2vbqufhaohoo4ivnh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

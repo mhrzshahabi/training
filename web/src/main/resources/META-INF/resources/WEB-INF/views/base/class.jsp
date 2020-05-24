@@ -1073,7 +1073,7 @@
             {
                 ID: "targetSocietyTypeId",
                 name: "targetSocietyTypeId",
-                colSpan: 1,
+                colSpan: 3,
                 rowSpan: 1,
                 title: "نوع جامعه هدف :",
                 wrapTitle: false,
@@ -1085,62 +1085,60 @@
                     "1": "واحد",
                     "2": "سایر",
                 },
-                /*change: function (form, item, value, oldValue) {
+                change: function (form, item, value, oldValue) {
 
 
                     if (value === "1"){
-                        form.getItem("goaletc").hide();
-                        form.getItem("goalcombo").show();
+                        form.getItem("targetSocietiesEtc").hide();
+                        form.getItem("addtargetSociety").hide();
+                        form.getItem("targetSocietiesCombo").show();
                     }
                     else if(value === "2"){
-                        form.getItem("goalcombo").hide();
-                        form.getItem("goaletc").show();
+                        form.getItem("targetSocietiesCombo").hide();
+                        form.getItem("targetSocietiesEtc").show();
+                        form.getItem("addtargetSociety").show();
                     }
                     else
                         return false;
 
-                }*/
+                }
             },
-/*            {
-                name: "targetSocietyList", editorType: "TextAreaItem", title: "انتخاب جامعه هدف:",
+            {
+                name: "targetSocietiesCombo",
                 colSpan: 2,
                 rowSpan: 1,
-                displayField: "titleFa", valueField: "id",
-                textAlign: "center",
-                filterFields: ["titleFa"],
-                required: true,
-                textMatchStyle: "substring",
-                pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true}
-                ],
-                /!*changed: function (form, item, value) {
-                },*!/
-            },*/
-            /*{
-                name: "goalcombo",
-                colSpan: 3,
-                rowSpan: 1,
                 type: "SelectItem",
-                // required: true,
+                multiple: true,
                 hidden: false,
                 textAlign: "center",
                 title: "انتخاب جامعه هدف:",
                 valueMap: {
+                    "1": "امور فاوا",
+                    "2": "عمومی",
                 }
             },
             {
-                name: "goaletc",
-                colSpan: 3,
-                rowSpan: 1,
+                    name: "targetSocietiesEtc",
+                    colSpan: 2,
+                    rowSpan: 1,
+                    hidden: true,
+                    title: "مقدار جامعه هدف:",
+                    textAlign: "center",
+                },
+            {
+                name: "addtargetSociety",
+                title: "افزودن",
+                type: "button",
+                colSpan: 1,
                 hidden: true,
-                title: "مقدار جامعه هدف:",
-                textAlign: "center",
-                // required: true,
-            },*/
+                endRow: false, startRow: false,
+                click: function() {
+
+                }
+            },
             {
                 name: "preCourseTest",
-                colSpan: 3,
-                rowSpan: 1,
+                colSpan: 1,
                 type: "boolean",
                 title: "<spring:message code='class.preCourseTest'/>",
                 hidden: true,
@@ -1149,7 +1147,6 @@
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
                 colSpan: 2,
-                rowSpan: 1,
                 textAlign: "center",
                 hint: "&nbsp;ماه",
                 valueMap: {

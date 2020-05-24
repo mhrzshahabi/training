@@ -132,5 +132,10 @@
             <column name="c_target_society" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-
+    <changeSet author="matin_ar (generated)" id="1590306557717-497">
+        <dropColumn columnName="F_TARGET_SOCIETY_TYPE" tableName="TBL_CLASS"/>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-491">
+        <dropTable tableName="TBL_CLASS_TARGET_SOCIETY"/>
+    </changeSet>
 </databaseChangeLog>
