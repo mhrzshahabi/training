@@ -63,7 +63,7 @@ public class GoalFormController {
 
     @RequestMapping("/print-one-course/{courseId}/{type}")
     public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId) {
-        String token = (String) request.getSession().getAttribute("AccessToken");
+        String token = request.getParameter("token");
 
 
         RestTemplate restTemplate = new RestTemplate();
