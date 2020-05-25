@@ -1,23 +1,23 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.InstituteAccountDTO;
-
+import com.nicico.training.dto.AccountInfoDTO;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface IInstituteAccountService {
-    InstituteAccountDTO.Info get(Long id);
+    List<AccountInfoDTO.Info> get(Long id, Pageable pageable);
 
-    List<InstituteAccountDTO.Info> list();
+    List<AccountInfoDTO.Info> list();
 
-    InstituteAccountDTO.Info create(Object request);
+    AccountInfoDTO.CreateOrUpdate create(Object request);
 
-    InstituteAccountDTO.Info update(Long id, Object request);
+    AccountInfoDTO.CreateOrUpdate update(Long id, Object request);
 
     void delete(Long id);
 
-    void delete(InstituteAccountDTO.Delete request);
+    void delete(AccountInfoDTO.Delete request);
 
-    SearchDTO.SearchRs<InstituteAccountDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<AccountInfoDTO.Info> search(SearchDTO.SearchRq request);
 
 }

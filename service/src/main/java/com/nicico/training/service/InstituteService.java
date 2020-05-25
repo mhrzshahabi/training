@@ -1,7 +1,4 @@
 package com.nicico.training.service;
-/* com.nicico.training.service
-@Author:roya
-*/
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -37,6 +34,8 @@ public class InstituteService implements IInstituteService {
     private final EnumsConverter.ELicenseTypeConverter eLicenseTypeConverter = new EnumsConverter.ELicenseTypeConverter();
     private final EnumsConverter.EInstituteTypeConverter eInstituteTypeConverter = new EnumsConverter.EInstituteTypeConverter();
 
+    private final AddressService addressService;
+
     @Transactional(readOnly = true)
     @Override
     public InstituteDTO.Info get(Long id) {
@@ -65,7 +64,7 @@ public class InstituteService implements IInstituteService {
 
         if (create.getEinstituteTypeId() != null) {
             institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(create.getEinstituteTypeId()));
-//            institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
+          // institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
         }
         if (create.getElicenseTypeId() != null) {
             institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(create.getElicenseTypeId()));
@@ -91,6 +90,8 @@ public class InstituteService implements IInstituteService {
     @Transactional
     @Override
     public InstituteDTO.Info update(Long id, Object request) {
+
+
         final InstituteDTO.Update update = modelMapper.map(request, InstituteDTO.Update.class);
         final Optional<Institute> cById = instituteDAO.findById(id);
         final Institute institute = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
@@ -103,8 +104,7 @@ public class InstituteService implements IInstituteService {
         Institute parentInstitute = null;
         AccountInfo accountInfo = new AccountInfo();
 
-
-        addressDAO.save(address);
+        addressDAO.saveAndFlush(address);
         accountInfoDAO.save(accountInfo);
 
 
@@ -383,6 +383,4 @@ public class InstituteService implements IInstituteService {
     public TotalResponse<InstituteDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(instituteDAO, request, term -> modelMapper.map(term, InstituteDTO.Info.class));
     }
-
-
 }
