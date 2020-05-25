@@ -33,6 +33,7 @@ public class TclassDTO {
     private String code;
     private Long teacherId;
     private Long instituteId;
+    private Date createdDate;
     private Long organizerId;
     private String titleClass;
     private String teachingType;//روش آموزش

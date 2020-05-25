@@ -53,6 +53,9 @@ public class MainFormController {
     @RequestMapping("/calenderCurrentTerm")
      public String showCalenderCurrentTerm(){return "report/calenderCurrentTerm";}
 
+     @RequestMapping("/classOutsideCurrentTerm")
+     public String showclassOutsideCurrentTerm(){return "report/classOutsideCurrentTerm";}
+
     @RequestMapping("/oaUser")
     public String showOaUserForm() {
         return "security/user";

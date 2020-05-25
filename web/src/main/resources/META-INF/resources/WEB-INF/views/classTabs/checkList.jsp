@@ -787,7 +787,7 @@
         checkselected();
         var a1 = checkListDynamicFormField.getValue();
         var a2 = ListGrid_Class_JspClass.getSelectedRecord().id;
-
+        ListGrid_Class_Item.invalidateCache()
         ListGrid_Class_Item.fetchData(
             {
                 operator: "and", criteria: [
@@ -796,7 +796,9 @@
                 ]
             }
         );
+
         Window_Add_User_TO_Committee.show();
+
         setTimeout(function () {
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();

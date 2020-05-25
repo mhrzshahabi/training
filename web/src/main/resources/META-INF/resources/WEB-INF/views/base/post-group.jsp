@@ -70,15 +70,16 @@
                 <%--});--%>
                 <%--}--%>
             }
-        }, {isSeparator: true},
-            {
-                title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>",
-                click: "window.open('post-group/print/pdf/<%=accessToken%>/')"
-            },
-            {
-                title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",
-                click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
-            },
+        },
+            <%--{isSeparator: true},--%>
+            <%--{--%>
+            <%--    title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>",--%>
+            <%--    click: "window.open('post-group/print/pdf/<%=accessToken%>/')"--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",--%>
+            <%--    click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"--%>
+            <%--},--%>
             {isSeparator: true},
             {
                 title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
@@ -1043,45 +1044,45 @@
             ListGrid_Post_Group_remove();
         }
     });
-    var ToolStripButton_Print_Post_Group_Jsp = isc.ToolStripButtonPrint.create({
-        menu: isc.Menu.create({
-            data: [
-                {
-                    title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>", submenu: [
-                        {
-                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
-                            click: "window.open('post-group/print/pdf/<%=accessToken%>')"
-                        },
-                        {
-                            title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
-                            click: "window.open('post-group/print/excel/<%=accessToken%>')"
-                        },
-                        {
-                            title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
-                            click: "window.open('post-group/print/html/<%=accessToken%>')"
-                        }
+    <%--var ToolStripButton_Print_Post_Group_Jsp = isc.ToolStripButtonPrint.create({--%>
+    <%--    menu: isc.Menu.create({--%>
+    <%--        data: [--%>
+    <%--            {--%>
+    <%--                title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>", submenu: [--%>
+    <%--                    {--%>
+    <%--                        title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",--%>
+    <%--                        click: "window.open('post-group/print/pdf/<%=accessToken%>')"--%>
+    <%--                    },--%>
+    <%--                    {--%>
+    <%--                        title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",--%>
+    <%--                        click: "window.open('post-group/print/excel/<%=accessToken%>')"--%>
+    <%--                    },--%>
+    <%--                    {--%>
+    <%--                        title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",--%>
+    <%--                        click: "window.open('post-group/print/html/<%=accessToken%>')"--%>
+    <%--                    }--%>
 
-                    ]
-                },
-                {
-                    title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu: [
-                        {
-                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
-                            click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
-                        },
-                        {
-                            title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
-                            click: "window.open('post-group/printDetail/excel/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
-                        },
-                        {
-                            title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
-                            click: "window.open('post-group/printDetail/html/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
-                        }
-                    ]
-                },
-            ]
-        })
-    });
+    <%--                ]--%>
+    <%--            },--%>
+    <%--            {--%>
+    <%--                title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu: [--%>
+    <%--                    {--%>
+    <%--                        title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",--%>
+    <%--                        click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"--%>
+    <%--                    },--%>
+    <%--                    {--%>
+    <%--                        title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",--%>
+    <%--                        click: "window.open('post-group/printDetail/excel/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"--%>
+    <%--                    },--%>
+    <%--                    {--%>
+    <%--                        title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",--%>
+    <%--                        click: "window.open('post-group/printDetail/html/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"--%>
+    <%--                    }--%>
+    <%--                ]--%>
+    <%--            },--%>
+    <%--        ]--%>
+    <%--    })--%>
+    <%--});--%>
     var ToolStripButton_Add_Post_Group_AddPost_Jsp = isc.ToolStripButton.create({
         <%--icon: "<spring:url value="post.png"/>",--%>
         title: "لیست پست ها",
@@ -1130,7 +1131,7 @@
             ToolStripButton_Add_Post_Group_Jsp,
             ToolStripButton_Edit_Post_Group_Jsp,
             ToolStripButton_Remove_Post_Group_Jsp,
-            ToolStripButton_Print_Post_Group_Jsp,
+            // ToolStripButton_Print_Post_Group_Jsp,
             ToolStripButton_Add_Post_Group_AddPost_Jsp,
             isc.ToolStrip.create({
                 width: "100%",
