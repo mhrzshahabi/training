@@ -794,10 +794,10 @@
                     OK.close();
                 }, 3000);
             } else {
-                var committeeDataEditCreate = DynamicForm_Committee.getValues();
-                var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
-                var committeeSaveUrlEditCreate = committeeUrl;
-                committeeSaveUrlEditCreate += committeeEditRecord1.id;
+                let committeeDataEditCreate = DynamicForm_Committee.getValues();
+                let committeeEditRecord = ListGrid_Committee.getSelectedRecord();
+                let committeeSaveUrlEditCreate = committeeUrl;
+                committeeSaveUrlEditCreate += committeeEditRecord.id;
                 isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "PUT", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
             }
         } else {
