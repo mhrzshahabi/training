@@ -462,27 +462,29 @@ public class TclassService implements ITclassService {
                     double facilityTotalWeight = 0.0;
                     double goalsTotalWeight = 0.0;
                     for (EvaluationAnswer answer : answers) {
-                        double weight = 1.0;
-                        double grade = 1.0;
-                        QuestionnaireQuestion questionnaireQuestion = null;
-                        Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                        if (question.isPresent())
-                            questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                        if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
-                            weight = questionnaireQuestion.getWeight();
-                        }
-                        grade = Double.parseDouble(answer.getAnswer().getValue());
-                        if (questionnaireQuestion != null) {
-                            if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
-                                teacherTotalGrade += grade * weight;
-                                teacherTotalWeight += weight;
-                            } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
-                                facilityTotalGrade += grade * weight;
-                                facilityTotalWeight += weight;
+                        if(answer.getAnswer() != null) {
+                            double weight = 1.0;
+                            double grade = 1.0;
+                            QuestionnaireQuestion questionnaireQuestion = null;
+                            Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
+                            if (question.isPresent())
+                                questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                            if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
+                                weight = questionnaireQuestion.getWeight();
                             }
-                        } else {//Goals
-                            goalsTotalGrade += grade * weight;
-                            goalsTotalWeight += weight;
+                            grade = Double.parseDouble(answer.getAnswer().getValue());
+                            if (questionnaireQuestion != null) {
+                                if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
+                                    teacherTotalGrade += grade * weight;
+                                    teacherTotalWeight += weight;
+                                } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
+                                    facilityTotalGrade += grade * weight;
+                                    facilityTotalWeight += weight;
+                                }
+                            } else {//Goals
+                                goalsTotalGrade += grade * weight;
+                                goalsTotalWeight += weight;
+                            }
                         }
                     }
                     if (teacherTotalWeight != 0)
@@ -515,7 +517,7 @@ public class TclassService implements ITclassService {
             double totalGrade = 0.0;
             double totalWeight = 0.0;
             for (EvaluationAnswer answer : answers) {
-                if (answer != null) {
+                if (answer != null && answer.getAnswer() != null) {
                     double weight = 1.0;
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
@@ -544,7 +546,7 @@ public class TclassService implements ITclassService {
             double totalGrade = 0.0;
             double totalWeight = 0.0;
             for (EvaluationAnswer answer : answers) {
-                if (answer != null) {
+                if (answer != null && answer.getAnswer() != null) {
                     double weight = 1.0;
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
