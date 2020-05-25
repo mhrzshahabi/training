@@ -48,6 +48,7 @@ public class TclassService implements ITclassService {
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final CourseDAO courseDAO;
     private final MessageSource messageSource;
+    private final TargetSocietyService societyService;
 
     @Transactional(readOnly = true)
     @Override
@@ -110,6 +111,10 @@ public class TclassService implements ITclassService {
     @Transactional
     public TclassDTO.Info safeCreate(TclassDTO.Create request, HttpServletResponse response) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
+        /*List<TargetSocietyDTO.Info> societyList = societyService.coustomCreate(request.getTargetSocietiesCombo(),
+                request.getTargetSocietiesTitles(),
+                request.getTargetSocietyTypeId(),
+                tclass.getId());*/
         if(checkDuration(tclass)){
             List<Long> list = request.getTrainingPlaceIds();
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);

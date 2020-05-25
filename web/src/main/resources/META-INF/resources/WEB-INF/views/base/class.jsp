@@ -1070,7 +1070,7 @@
                     "1004": "خيلي خوب",
                 }
             },
-            {
+            /*{
                 ID: "targetSocietyTypeId",
                 name: "targetSocietyTypeId",
                 colSpan: 3,
@@ -1124,8 +1124,8 @@
                     hidden: true,
                     title: "مقدار جامعه هدف:",
                     textAlign: "center",
-                },
-            {
+                },*/
+            /*{
                 name: "addtargetSociety",
                 title: "افزودن",
                 type: "button",
@@ -1135,7 +1135,7 @@
                 click: function() {
 
                 }
-            },
+            },*/
             {
                 name: "preCourseTest",
                 colSpan: 1,
