@@ -36,6 +36,7 @@
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
     <script src="<spring:url value='/js/langConverter.js' />"></script>
+    <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
 
     <script>
         class ExportToFile {
@@ -110,7 +111,6 @@
 
                 for (let j = 1; j < fields.length; j++) {
                     let tmpStr = ExportToFile.getData(classRecord, fields[j].name.split('.'), 0);
-                    console.log(tmpStr);
                     titr+=fields[j].title+': '+(typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr+' ').trim() : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim()))+' - ';
                 }
 
@@ -180,7 +180,6 @@
 
                 if ((titr.length === 0) && parentListGrid != null) {
                     tmptitr = this.generateTitle(parentListGrid);
-                    console.log('tmptitr:'+tmptitr);
                 } else {
                     tmptitr = titr;
                 }
@@ -206,6 +205,22 @@
 
                 this.exportToExcelFormServer(fields.fields,fileName,criteria,'',len, tmptitr, pageName);
             }
+        }
+
+        function generalGetResp(resp){
+            if(resp.httpResponseCode === 401){
+                var dialog = createDialog("confirm", "<spring:message code="unauthorized"/>");
+                dialog.addProperties({
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index === 0) {
+                            logout();
+                        }
+                    }
+                });
+                return false;
+            }
+            return true;
         }
     </script>
 
@@ -599,27 +614,35 @@
     });
 
     // -------------------------------------------  Page UI - Menu  -----------------------------------------------
-
+    <sec:authorize access="hasAuthority('Menu_BasicInfo')">
     basicInfoTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             placement: "none",
             data: [
-                <%--                <sec:authorize access="hasAuthority('parameter_r')">--%>
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_Parameter')">
                 {
                     title: "<spring:message code="parameter"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }
                 },
-                <%--                </sec:authorize>--%>
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_Group')">
                 {
                     title: "<spring:message code="category&subcategory"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/category/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAnyAuthority('Menu_BasicInfo_Parameter','Menu_BasicInfo_Group')">
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_Skill')">
                 {
                     title: "<spring:message code="skill.level"/>",
                     click: function () {
@@ -627,6 +650,9 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_EducationDegree')">
                 {
                     title: "<spring:message code="education.degree"/>",
                     click: function () {
@@ -634,6 +660,9 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_EquipmentPlural')">
                 {
                     title: "<spring:message code="equipment.plural"/>",
                     click: function () {
@@ -641,12 +670,17 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">
                 {
                     title:"<spring:message code="personnel.information"/>",
                     click:function(){
                         createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
                 /*{isSeparator: true},
                 {
                     title: "<spring:message code="polisAndprovince"/>",
@@ -663,69 +697,107 @@
             ]
         }),
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Menu_NeedAssessment')">
     needsAssessmentTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">
                 {
                     title: "<spring:message code="competence"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/competence/"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Skill')">
                 {
                     title: "<spring:message code="skill"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_NeedAssessment')">
                 {
                     title: "<spring:message code="needs.assessment"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAnyAuthority('Menu_NeedAssessment_Competence','Menu_NeedAssessment_Skill','Menu_NeedAssessment_NeedAssessment')">
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Job')">
                 {
                     title: "<spring:message code="job"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/job/"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_GroupJob')">
                 {
                     title: "<spring:message code="job.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="job-group/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAnyAuthority('Menu_NeedAssessment_Job','Menu_NeedAssessment_GroupJob')">
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_PostGrade')">
                 {
                     title: "<spring:message code="post.grade"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/postGrade/"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_PostGradeGroup')">
                 {
                     title: "<spring:message code="post.grade.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/postGradeGroup/"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAnyAuthority('Menu_NeedAssessment_PostGrade','Menu_NeedAssessment_PostGradeGroup')">
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Post')">
                 {
                     title: "<spring:message code="post"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_PostGroup')">
                 {
                     title: "<spring:message code="post.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
+                </sec:authorize>
+
                 <%--,--%>
                 <%--{--%>
                 <%--    title: "<spring:message code="skill.group"/>",--%>
@@ -743,12 +815,16 @@
             ]
         }),
     });
+    </sec:authorize>
 
+
+    <sec:authorize access="hasAuthority('Menu_Designing')">
     designingTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_Designing_Course')">
                 {
                     title: "<spring:message code="course"/>",
                     click: function () {
@@ -756,6 +832,9 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Designing_Term')">
                 {
                     title: "<spring:message code="term"/>",
                     click: function () {
@@ -763,6 +842,9 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Designing_committee')">
                 {
                     title: "<spring:message code="specialized.committee"/>",
                     click: function () {
@@ -770,6 +852,9 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Designing_Company')">
                 {
                     title: "<spring:message code="company"/>",
                     click: function () {
@@ -777,21 +862,29 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Designing_NeedsAssessmentReportCourse')">
                 {
                     title: "<spring:message code='needsAssessment.report.course'/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/course-needs-assessment-reports"/>");
                     }
                 },
+                </sec:authorize>
             ]
         }),
     });
+    </sec:authorize>
 
+
+    <sec:authorize access="hasAuthority('Menu_Run')">
     runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="run"/>",
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_Run_Class')">
                 {
                     title: "<spring:message code="class"/>",
                     click: function () {
@@ -799,6 +892,9 @@
                     },
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Run_Student')">
                 {
                     title: "<spring:message code="other-student"/>",
                     click: function () {
@@ -806,6 +902,9 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Run_Teacher')">
                 {
                     title: "<spring:message code="teacher"/>",
                     click: function () {
@@ -813,12 +912,16 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Run_Institute')">
                 {
                     title: "<spring:message code="institute"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
                     }
                 },
+                </sec:authorize>
                 <%--{isSeparator: true},--%>
                 <%--{--%>
                 <%--    title: "قرارداد آموزشی",--%>
@@ -829,64 +932,88 @@
             ]
         }),
     });
+    </sec:authorize>
 
+
+    <sec:authorize access="hasAuthority('Menu_Evaluation')">
     evaluationTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_Evaluation_EvaluationIndex')">
                 {
                     title: "<spring:message code="evaluation.index.title"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluationIndex/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Evaluation_Questionnaire')">
                 {
                     title: "<spring:message code="questionnaire"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/config-questionnaire"/>");
                     },
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Evaluation_Evaluation')">
                 {
                     title: "<spring:message code="evaluation"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Evaluation_EvaluationAnalysis')">
                 {
                     title: "<spring:message code="evaluation.analysis"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluationAnalysis/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Evaluation_EvaluationCoefficient')">
                 {
                     title: "<spring:message code="evaluation.Coefficient"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluationCoefficient/show-form"/>");
                     }
                 },
+                </sec:authorize>
                 <%--{--%>
                     <%--title: "ثبت نتایج",--%>
                     <%--click: function () {--%>
                         <%--createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");--%>
                     <%--}--%>
                 <%--},--%>
+
+                <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">
                 {
                     title:"<spring:message code="register.Score.PreTest"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
                     }
                 },
+                </sec:authorize>
 
             ]
         }),
     });
+    </sec:authorize>
 
+
+    <sec:authorize access="hasAuthority('Menu_Cartable')">
     cartableTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="cartable"/>",
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">
                 {
                     title: "<spring:message code="personal"/>",
                     click: function () {
@@ -894,6 +1021,9 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Cartable_Group')">
                 {
                     title: "<spring:message code="group"/>",
                     click: function () {
@@ -901,9 +1031,13 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Cartable_Workflow')">
                 {
                     title: "<spring:message code="workflow"/>",
                     submenu: [
+                        <sec:authorize access="hasAuthority('Menu_Cartable_Workflow_ProcessDefinition')">
                         {
                             title: "<spring:message code="process.definition"/>",
                             click: function () {
@@ -911,47 +1045,65 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Cartable_Workflow_Processes')">
                         {
                             title: "<spring:message code="all.processes"/>",
                             click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
                             }
                         }
+                        </sec:authorize>
                     ]
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Cartable_StudentPortal')">
                 {
                     title: "<spring:message code='student.portal'/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/student-portal"/>");
                     }
                 },
+                </sec:authorize>
             ]
         }),
     });
+    </sec:authorize>
 
+
+    <sec:authorize access="hasAuthority('Menu_Report')">
     reportTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="report"/>",
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_Report_Basic')">
                 {
                     title: "<spring:message code="reports.basic"/>",
                     submenu:
                     [
+                        <sec:authorize access="hasAuthority('Menu_Report_Basic_Teachers')">
                         {
                             title: "<spring:message code="teachers.report"/>",
                             click: function(){
                                 createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
                             }
                         },
+                        </sec:authorize>
                     ]
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Report_ReportsRun')">
                 {
                     title: "<spring:message code="reports.run"/>",
                     submenu:
                     [
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingFile')">
                         {
                         title: "<spring:message code="training.file"/>",
                             click: function () {
@@ -959,6 +1111,9 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PassedPersonnel')">
                         {
                             title: "<spring:message code="personnel.courses"/>",
                             click: function () {
@@ -966,6 +1121,9 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PersonnelCoursesNotPassed')">
                         {
                             title: "<spring:message code="personnel.courses.not.passed"/>",
                             click: function () {
@@ -973,6 +1131,9 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CalenderCurrentTerm')">
                         <%--{--%>
                             <%--title: "<spring:message code="report.calender.current.term"/>",--%>
                             <%--click: function () {--%>
@@ -986,6 +1147,9 @@
                                 createTab(this.title, "<spring:url value="web/classOutsideCurrentTerm"/>");
                             }
                         },
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CourseWithOutTeacher')">
                         {isSeparator: true},
                         {
                             title: "<spring:message code="report.course.withOut.teacher"/>",
@@ -993,10 +1157,14 @@
                                 createTab(this.title, "<spring:url value="web/courseWithOutTeacherReaport"/>");
                             }
                         },
+                        </sec:authorize>
 
 
-
+                        <sec:authorize access="hasAnyAuthority('Menu_Report_ReportsRun_CalenderCurrentTerm','Menu_Report_ReportsRun_CourseWithOutTeacher')">
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
                         {
                             title: "<spring:message code="report.training.overtime"/>",
                             click: function () {
@@ -1004,6 +1172,9 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_WeeklyTrainingSchedule')">
                         {
                             title: "<spring:message code="weekly.training.schedule"/>",
                             click:function(){
@@ -1011,6 +1182,9 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_WeeklyClass')">
                         {
                             title: "<spring:message code="training.class.report"/>",
                             click: function(){
@@ -1018,12 +1192,16 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_UnfinishedClasses')">
                         {
                             title:"<spring:message code="unfinished.classes"/>",
                             click: function(){
                                 createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                             }
                         },
+                        </sec:authorize>
                         {isSeparator: true},
                         {
                             title: "غيبت ناموجه",
@@ -1034,10 +1212,14 @@
                     ]
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment')">
                 {
                     title: "<spring:message code="reports.needs.assessment"/>",
                     submenu:
                     [
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">
                         {
                             title: "<spring:message code="reports.need.assessment"/>",
                             click: function () {
@@ -1045,44 +1227,61 @@
                             }
                         },
                         {isSeparator: true},
+                        </sec:authorize>
+
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
                         {
                             title:"آمار دوره های نیازسنجی افراد",
                             click:function(){
                                 createTab(this.title, "<spring:url value="web/personnel-course-NA-report"/>");
                             }
                         },
+                        </sec:authorize>
                     ]
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR')">
                 {
                     title: "<spring:message code="reports.evaluation.efficacy"/>",
                     submenu:
                     [
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_PretestScoreGreatThanAcceptLimited')">
                         {
                             title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
                             click: function () {
                                 createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                             }
                         },
+                        </sec:authorize>
                     ]
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment')">
                 {
                     title: "<spring:message code="reports.managment"/>",
                     submenu:
                     [
+                        <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
                         {
                             title: "<spring:message code="report.monthly.statistical"/>",
                             click: function(){
                                 createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                             }
                         },
+                        </sec:authorize>
                     ]
                 },
+                </sec:authorize>
             ]
         }),
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Menu_Security')">
     securityTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="security"/>",
         menu: isc.Menu.create({
@@ -1094,6 +1293,7 @@
                 <%--        createTab(this.title, "<spring:url value="web/oaUser"/>");--%>
                 <%--    }--%>
                 <%--},--%>
+                <sec:authorize access="hasAuthority('Menu_Security_Users')">
                 {
                     title: "کاربران",
                     click: function () {
@@ -1101,19 +1301,31 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">
                 {
                     title: "گروه دسترسی",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_WorkGroup')">
                 {
                     title: "<spring:message code="workGroup"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/work-group"/>");
                     },
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAnyAuthority('Menu_Security_PermissionGroup','Menu_Security_WorkGroup')">
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_Roles')">
                 {
                     title: "نقش ها",
                     click: function () {
@@ -1121,19 +1333,31 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">
                 {
                     title: "تخصیص نقش",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_BlackList')">
                 {
                     title: "لیست سیاه",
                     click: function () {
                         createTab(this.title, "<spring:url value="/black-list/show-form"/>");
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAnyAuthority('Menu_Security_RoleSpecialized','Menu_Security_BlackList')">
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_OperationalUnit')">
                 {
                     title: "<spring:message code="operational.unit"/>",
                     click: function () {
@@ -1141,15 +1365,20 @@
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_Settings')">
                 {
                     title: "<spring:message code="configurations"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/config/"/>");
                     }
                 }
+                </sec:authorize>
             ]
         }),
     });
+    </sec:authorize>
 
     trainingToolStrip = isc.ToolStrip.create({
         align: "center",
@@ -1159,16 +1388,37 @@
         shadowDepth: 3,
         shadowColor: "#153560",
         members: [
+            <sec:authorize access="hasAuthority('Menu_BasicInfo')">
             basicInfoTSMB,
-<%--            <sec:authorize access="hasAuthority('NeedsAssessment_Menu')">--%>
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_NeedAssessment')">
                 needsAssessmentTSMB,
-<%--            </sec:authorize>--%>
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_Designing')">
             designingTSMB,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_Run')">
             runTSMB,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_Evaluation')">
             evaluationTSMB,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_Cartable')">
             cartableTSMB,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_Report')">
             reportTSMB,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_Security')">
             securityTSMB
+            </sec:authorize>
         ]
     });
 
