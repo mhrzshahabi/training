@@ -374,6 +374,8 @@
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
         height: "25%",
+        minWidth:1350,
+        width:"100%",
         tabs: [
             {
                 ID: "academicBK",

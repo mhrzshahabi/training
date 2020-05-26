@@ -24,6 +24,32 @@
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
+
+    var RestDataSource_PersonnelDS_JspTeacher = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            }
+        ],
+        fetchDataURL: personnelUrl + "/iscList"
+    });
+
+
     //----------------------------------------------------Variables-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
         viewURL: "",
@@ -130,16 +156,51 @@
                     }
                 }
             },
+
             {
                 name: "personnelCode",
                 title: "<spring:message code='personnel.no'/>",
-                disabled: true,
-                keyPressFilter: "[0-9]",
-                length: "10",
-                blur: function () {
-                    var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
-                    fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
-                }
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                autoFetchData: true,
+                displayField: "personnelNo",
+                valueField: "personnelNo",
+                optionDataSource: RestDataSource_PersonnelDS_JspTeacher,
+                filterFields: ["firstName","lastName", "nationalCode","personnelNo2","personnelNo"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                pickListWidth: 550,
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
+                },
+                pickListFields: [
+                    {name: "firstName"},
+                    {name: "lastName"},
+                    {name: "nationalCode",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {name: "personnelNo",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {name: "personnelNo2",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    }
+                ],
+                changed: function () {
+                            var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getValue();
+                            fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
+                            // var personnelNationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
+                            // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(personnelNationalCodeTemp);
+                        }
             },
             {
                 name: "teacherCode",
@@ -152,12 +213,34 @@
                 title: "<spring:message code='status'/>",
                 type: "radioGroup",
                 width: "*",
-                colSpan: 2,
                 valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true"
             },
-
+            {
+                type: "SpacerItem",
+                colSpan: 1
+            },
+            {
+                name: "updatePersonnelInfo",
+                ID: "updatePersonnelInfo",
+                startRow: false,
+                endRow: false,
+                colSpan: 1,
+                width: "*",
+                type: "button",
+                icon: "[SKIN]/pickers/refresh_picker.png",
+                title: "بارگیری اطلاعات استاد از سیستم پرسنلی",
+                align: "right",
+                click: function () {
+                    var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getValue();
+                    if (personnelCodeTemp != undefined && personnelCodeTemp != null) {
+                        fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
+                    } else {
+                        createDialog("info", "ابتدا شماره پرسنلی را انتخاب کنید.")
+                    }
+                }
+            },
             {
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
