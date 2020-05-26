@@ -1024,6 +1024,13 @@
                                 createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                             }
                         },
+                        {isSeparator: true},
+                        {
+                            title: "غيبت ناموجه",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
+                            }
+                        },
                     ]
                 },
                 {isSeparator: true},
@@ -1072,12 +1079,6 @@
                         },
                     ]
                 },
-                <%--{--%>
-                    <%--title: "غيبت ناموجه",--%>
-                    <%--click: function () {--%>
-                        <%--createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");--%>
-                    <%--}--%>
-                <%--},--%>
             ]
         }),
     });
