@@ -7,6 +7,7 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.model.Personnel;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
@@ -21,6 +22,8 @@ public interface IPersonnelService {
     SearchDTO.SearchRs<PersonnelDTO.Info> search(SearchDTO.SearchRq rq);
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
+
+    HashMap<String, PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos);
 
     List<PersonnelDTO.Info> getByPostCode(Long postId);
 

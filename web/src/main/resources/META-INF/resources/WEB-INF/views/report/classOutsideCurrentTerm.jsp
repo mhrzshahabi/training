@@ -50,17 +50,17 @@
         // autoFetchData: true,
     });
 
-    // var ToolStrip_Actions = isc.ToolStrip.create({
-    //     ID: "ToolStrip_Actions1",
-    //     // width: "100%",
-    //     members: [
-    //         isc.Label.create({
-    //             ID: "totalsLabel_scores"
-    //         })]
-    // })
+    var ToolStrip_Actions = isc.ToolStrip.create({
+        ID: "ToolStrip_Actions1",
+        // width: "100%",
+        members: [
+            isc.Label.create({
+                ID: "totalRecords_COCT"
+            })]
+    })
     var List_Grid_Reaport_classOutsideCurrentTerm = isc.TrLG.create({
         dataSource: RestDataSource_classOutsideCurrentTerm,
-        showRowNumbers: false,
+        showRowNumbers: true,
         //autoFetchData: true,
 
         fields: [
@@ -76,7 +76,18 @@
         recordDoubleClick: function () {
 
         },
-        gridComponents: ["filterEditor", "header", "body"],
+        dataChanged: function () {
+            this.Super("dataChanged", arguments);
+           let totalRows = this.data.getLength();
+            if (totalRows >= 0 && this.data.lengthIsKnown()) {
+
+                totalRecords_COCT.setContents("<spring:message code="number.of.Items"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+
+            } else {
+                totalRecords_COCT.setContents("&nbsp;");
+            }
+        },
+        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -85,7 +96,7 @@
 
     var DynamicForm_Report_COCT = isc.DynamicForm.create({
         numCols: 9,
-        colWidths: ["2%","25%","5%","10%","5%","10%","10"],
+        colWidths: ["2%","20%","5%","17%","5%","17%","5%"],
         fields: [
             {
                 name: "termId",
@@ -144,15 +155,15 @@
                 name: "category.Id",
                 colSpan: 1,
                 title: "<spring:message code="course_category"/>",
-                textAlign: "left",
+                textAlign: "center",
                 // autoFetchData: true,
                 required: true,
                 // titleOrientation: "top",
-                // height: "30",
+                 height: "30",
                 width: "*",
-                // editorType: "TrComboBoxItem",
-                // changeOnKeypress: true,
-                // filterOnKeypress: true,
+              //  editorType: "ComboBoxItem",
+               // changeOnKeypress: true,
+               // filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_category_COCT,
@@ -169,19 +180,21 @@
                    // DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                 },
                 click: function (form, item) {
-                    item.fetchData();
+                 //   item.fetchData();
                 }
             },
             {
                 name: "subCategory.id",
-                colSpan: 1,
+               // colSpan: 1,
                 title: "<spring:message code="course_subcategory"/>",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
-                required: true,
+                //required: true,
                 autoFetchData: false,
-                // titleOrientation: "top",
-                // height: "30",
+                editorType: "ComboBoxItem",
+
+
+                height: "30",
                 width: "*",
                 displayField: "titleFa",
                 valueField: "id",
@@ -210,26 +223,16 @@
                     if (!DynamicForm_Report_COCT.validate()) {
                         return;
                     }
-
-                    let ids=new Array();
-                    ids.push(DynamicForm_Report_COCT.getField("category.Id").getValue());
-                    ids.push(DynamicForm_Report_COCT.getField("subCategory.id").getValue());
-
-
-                    if (ids === []) {
-                        RestDataSource_classOutsideCurrentTerm.implicitCriteria = null;
-                    } else {
-                        RestDataSource_classOutsideCurrentTerm.implicitCriteria = {
+                    let cat=DynamicForm_Report_COCT.getField("category.Id").getValue();
+                    let subCat=DynamicForm_Report_COCT.getField("subCategory.id").getValue();
+                    RestDataSource_classOutsideCurrentTerm.implicitCriteria = {
                             _constructor: "AdvancedCriteria",
                             operator: "and",
                             criteria: [
-                                {fieldName: "course.category.id", operator: "equals", value: ids[0]},
-                                {fieldName: "course.subCategory.id", operator: "equals", value: ids[1]},
+                                {fieldName: "course.category.id", operator: "equals", value: cat},
+                                { operator:"or", criteria:[  {fieldName: "course.subCategory.id", operator: "equals", value: subCat?subCat:subCat=[]}]}
                             ]
                         };
-                        ids=[];
-                        ids=null;
-                    }
 
                     var strSData=DynamicForm_Report_COCT.getItem("termId").getSelectedRecord().startDate
                   //  var strEData = DynamicForm_Report_COCT.getItem("endDate").getValue().replace(/(\/)/g, "");
