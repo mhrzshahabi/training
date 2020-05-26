@@ -3,16 +3,17 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.InstituteAccountDTO;
+import com.nicico.training.dto.AccountInfoDTO;
 import com.nicico.training.iservice.IInstituteAccountService;
+import com.nicico.training.model.AccountInfo;
 import com.nicico.training.model.InstituteAccount;
-import com.nicico.training.repository.InstituteAccountDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,75 +21,69 @@ import java.util.Optional;
 @Service
 public class InstituteAccountService implements IInstituteAccountService {
     private final ModelMapper modelMapper;
-    private final InstituteAccountDAO instituteAccountDAO;
-
-    @Transactional(readOnly = true)
-    @Override
-    public InstituteAccountDTO.Info get(Long id) {
-        final Optional<InstituteAccount> slById = instituteAccountDAO.findById(id);
-        final InstituteAccount account = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
-
-        return modelMapper.map(account, InstituteAccountDTO.Info.class);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<InstituteAccountDTO.Info> list() {
-        final List<InstituteAccount> slAll = instituteAccountDAO.findAll();
-
-        return modelMapper.map(slAll, new TypeToken<List<InstituteAccountDTO.Info>>() {
-        }.getType());
-    }
+    private final AccountInfoDAO accountInfoDAO;
+    private final InstituteDAO instituteDAO;
 
     @Transactional
     @Override
-    public InstituteAccountDTO.Info create(Object request) {
-
-        final InstituteAccount account = modelMapper.map(request, InstituteAccount.class);
-
+    public AccountInfoDTO.CreateOrUpdate create(Object request) {
+        final AccountInfoDTO.CreateOrUpdate account = modelMapper.map(request, AccountInfoDTO.CreateOrUpdate.class);
         return save(account);
+    }
 
+    public AccountInfoDTO.CreateOrUpdate save(AccountInfoDTO.CreateOrUpdate account){
+        AccountInfo accountInfo=modelMapper.map(account, AccountInfo.class);
+        accountInfo.setInstituteId(account.getInstituteId());
+        accountInfo.setInstitute(instituteDAO.getOne(account.getInstituteId()));
+
+        final AccountInfo saved = accountInfoDAO.saveAndFlush(accountInfo);
+        return modelMapper.map(saved, AccountInfoDTO.CreateOrUpdate.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<AccountInfoDTO.Info> list() {
+        final List<AccountInfo> slAll = accountInfoDAO.findAll();
+        return modelMapper.map(slAll, new TypeToken<List<AccountInfoDTO.Info>>(){}.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<AccountInfoDTO.Info> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(accountInfoDAO, request, account -> modelMapper.map(account, AccountInfoDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<AccountInfoDTO.Info> get(Long id, Pageable pageable) {
+        final List<AccountInfo> accountInfos = accountInfoDAO.findAllByInstituteId(id,pageable);
+        return modelMapper.map(accountInfos, new TypeToken<List<AccountInfoDTO.Info>>() {}.getType());
     }
 
     @Transactional
     @Override
-    public InstituteAccountDTO.Info update(Long id, Object request) {
+    public AccountInfoDTO.CreateOrUpdate update(Long id, Object request) {
 
-        final Optional<InstituteAccount> slById = instituteAccountDAO.findById(id);
-        final InstituteAccount account = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
-
+        final Optional<AccountInfo> slById = accountInfoDAO.findById(id);
+        final AccountInfo account = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
         InstituteAccount updating = new InstituteAccount();
 
         modelMapper.map(account, updating);
         modelMapper.map(request, updating);
 
-        return save(updating);
-
+        return save(modelMapper.map(request, AccountInfoDTO.CreateOrUpdate.class));
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        instituteAccountDAO.deleteById(id);
+        accountInfoDAO.deleteById(id);
     }
 
     @Transactional
     @Override
-    public void delete(InstituteAccountDTO.Delete request) {
-        final List<InstituteAccount> slAllById = instituteAccountDAO.findAllById(request.getIds());
-        instituteAccountDAO.deleteAll(slAllById);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public SearchDTO.SearchRs<InstituteAccountDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(instituteAccountDAO, request, account -> modelMapper.map(account, InstituteAccountDTO.Info.class));
-    }
-
-    // ------------------------------
-
-    private InstituteAccountDTO.Info save(InstituteAccount account) {
-        final InstituteAccount saved = instituteAccountDAO.saveAndFlush(account);
-        return modelMapper.map(saved, InstituteAccountDTO.Info.class);
+    public void delete(AccountInfoDTO.Delete request) {
+        final List<AccountInfo> slAllById = accountInfoDAO.findAllById(request.getIds());
+        accountInfoDAO.deleteAll(slAllById);
     }
 }

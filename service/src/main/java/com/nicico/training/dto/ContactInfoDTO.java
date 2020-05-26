@@ -34,7 +34,6 @@ public class ContactInfoDTO {
         private Integer version;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)

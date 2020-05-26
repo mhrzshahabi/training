@@ -26,14 +26,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -132,9 +135,13 @@ public class InstituteRestController {
                     }));
             request.setCriteria(criteriaRq);
         }
+
+        boolean flag=true;
+
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
+
         if (id != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.equals)
@@ -161,6 +168,7 @@ public class InstituteRestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
@@ -504,29 +512,6 @@ public class InstituteRestController {
         return new ResponseEntity<>(new EquipmentDTO.EquipmentSpecRs(), HttpStatus.OK);
     }
 
-
-    //---------------------------------------------------mostafa--------------------------------------------
-
-//    @Loggable
-//    @GetMapping(value = "{instituteId}/accounts")
-//    @PreAuthorize("hasAnyAuthority('r_teacher')")
-//    public ResponseEntity<InstituteAccountDTO.AccountSpecRs> getAccounts(@PathVariable Long instituteId) {
-//
-//        List<InstituteAccountDTO.Info> instituteAccountList = instituteService.getInstituteAccounts(instituteId);
-//
-//        final InstituteAccountDTO.SpecRs specResponse = new InstituteAccountDTO.SpecRs();
-//        specResponse.setData(instituteAccountList)
-//                .setStartRow(0)
-//                .setEndRow(instituteAccountList.size())
-//                .setTotalRows(instituteAccountList.size());
-//
-//        final InstituteAccountDTO.AccountSpecRs specRs = new InstituteAccountDTO.AccountSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-    //---------------------------------------------------mostafa--------------------------------------------
-
     @Loggable
     @GetMapping(value = "{instituteId}/trainingPlaces")
 //    @PreAuthorize("hasAnyAuthority('r_teacher')")
@@ -646,6 +631,4 @@ public class InstituteRestController {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(instituteService.search(nicicoCriteria), HttpStatus.OK);
     }
-
-
 }

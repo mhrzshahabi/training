@@ -1,7 +1,4 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:roya
-*/
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.dto.enums.EInstituteTypeDTO;
@@ -36,26 +33,7 @@ public class InstituteDTO {
     @ApiModelProperty
     private Long cityId;
 
-    @ApiModelProperty
-    private String postalCode;
-
-    @ApiModelProperty
-    private String phone;
-
-    @ApiModelProperty
-    private String mobile;
-
-    @ApiModelProperty
-    private String fax;
-
-    @ApiModelProperty
-    private String webSite;
-
-    @ApiModelProperty
-    private String e_mail;
-
-    @ApiModelProperty
-    private String restAddress;
+    private ContactInfoDTO.Info contactInfo;
 
     private Long managerId;
     private Integer teacherNumPHD;
@@ -68,7 +46,7 @@ public class InstituteDTO {
     private Integer empNumAssociate;
     private Integer teacherNumDiploma;
     private Integer empNumDiploma;
-    private String instituteId;
+    private Long instituteId;
     private String economicalId;
 
     @NotEmpty
@@ -81,20 +59,21 @@ public class InstituteDTO {
 
     private Long parentInstituteId;
 
+    private Long licenseTypeId;
+    private Long companyTypeId;
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("InstituteInfo")
     public static class Info extends InstituteDTO {
         private Long id;
-        //        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
-//        private Set<EquipmentDTO.Info> equipmentSet;
-//        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-//        private Set<InstituteAccountDTO.Info> instituteAccountSet;
         private PersonalInfoDTO.Info manager;
         private InstituteDTO.Info parentInstitute;
         private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
         private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
+        private ParameterValueDTO.MinInfo companyType;
+        private ParameterValueDTO.MinInfo licenseType;
         private CityDTO.Info city;
         private StateDTO.Info state;
     }

@@ -4,6 +4,7 @@ import com.nicico.training.dto.TargetSocietyDTO;
 import com.nicico.training.model.TargetSociety;
 import com.nicico.training.repository.TargetSocietyDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TargetSocietyService extends BaseService<TargetSociety, Long, TargetSocietyDTO.Info, TargetSocietyDTO.Create, TargetSocietyDTO.Update, TargetSocietyDTO.Delete, TargetSocietyDAO> {
+
+    @Autowired
+    TargetSocietyService(TargetSocietyDAO targetSocietyDAO) {
+        super(new TargetSociety(), targetSocietyDAO);
+    }
 
     @Transactional
     public List<TargetSocietyDTO.Info> coustomCreate(List<Long>ids, List<String>titles, Long typeId, Long tclassId){
@@ -38,8 +44,8 @@ public class TargetSocietyService extends BaseService<TargetSociety, Long, Targe
         return result;*/
         TargetSocietyDTO.Create create = new TargetSocietyDTO.Create();
         create.setTitle("test");
-        create.setTclassId(new Long(1));
-        create.setTargetSocietyTypeId(new Long(1));
+        create.setTclassId(new Long(30));
+        create.setTargetSocietyTypeId(new Long(214));
         create.setSocietyId(new Long(1));
         super.create(create);
         return null;

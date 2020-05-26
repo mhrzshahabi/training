@@ -96,7 +96,7 @@
 
     var DynamicForm_Report_COCT = isc.DynamicForm.create({
         numCols: 9,
-        colWidths: ["2%","25%","5%","10%","5%","10%","10"],
+        colWidths: ["2%","20%","5%","17%","5%","17%","5%"],
         fields: [
             {
                 name: "termId",
