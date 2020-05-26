@@ -3,6 +3,7 @@ package com.nicico.training.repository;
 import com.nicico.training.model.ClassCheckList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,12 @@ public interface ClassCheckListDAO extends JpaRepository<ClassCheckList, Long>, 
     @Query(value = "select f_check_list_item_id from tbl_Class_Check_List where f_tclass_id=:tclassid ", nativeQuery = true)
     Set<Long> getSetCheckListItemIdsByTclassId(@Param("tclassid") Long id);
 
+    List<ClassCheckList> findClassCheckListByTclassId(Long id);
+
+    @Modifying
+    @Query(value = "delete from tbl_Class_Check_List where id=:id ",nativeQuery = true)
+    void deleteByID(Long id);
+
+    //@Query(value = "select  id from tbl_Class_Check_List where f_tclass_id =:tclassId and f_check_list_item_id =:checkListItemId", nativeQuery = true)
+    ClassCheckList findClassCheckListByTclassIdAndCheckListItemId(long classId,Long checkListItemId);
 }

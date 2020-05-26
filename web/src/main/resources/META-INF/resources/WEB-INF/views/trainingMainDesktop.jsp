@@ -271,6 +271,7 @@
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
+    const classOutsideCurrentTerm=rootUrl + "/class-outside-current-term";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -972,12 +973,20 @@
                             }
                         },
                         {isSeparator: true},
+                        <%--{--%>
+                            <%--title: "<spring:message code="report.calender.current.term"/>",--%>
+                            <%--click: function () {--%>
+                                <%--createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");--%>
+                            <%--}--%>
+                        <%--},--%>
+                        <%--{isSeparator: true},--%>
                         {
-                            title: "<spring:message code="report.calender.current.term"/>",
+                            title: "<spring:message code="report.class.outside.current.term"/>",
                             click: function () {
-                                createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");
+                                createTab(this.title, "<spring:url value="web/classOutsideCurrentTerm"/>");
                             }
                         },
+                        {isSeparator: true},
                         {
                             title: "<spring:message code="report.course.withOut.teacher"/>",
                             click: function () {
