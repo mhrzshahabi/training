@@ -207,5 +207,7 @@ public class StudentDTO {
     @ApiModel("Student - ClassesOfStudentInfo")
     public static class ClassesOfStudentInfo {
         private String postTitle;
+        private String ccpAffairs;
+        private String postCode;
     }
 }

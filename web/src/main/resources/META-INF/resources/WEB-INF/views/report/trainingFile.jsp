@@ -63,6 +63,8 @@
             {name: "scoresState", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "student.postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "tclass.teacher", title:"<spring:message code='teacher'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.postCode", title:"<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.ccpAffairs", title:"<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: tclassStudentUrl + "classes-of-student/"
     });
@@ -259,7 +261,9 @@
             {name: "score"},
             {name: "scoresState"},
             {name: "student.postTitle", hidden: true},
-            {name: "tclass.teacher"},
+            {name: "student.postCode"},
+            {name: "student.ccpAffairs"},
+            {name: "tclass.teacher"}
         ]
 
     });

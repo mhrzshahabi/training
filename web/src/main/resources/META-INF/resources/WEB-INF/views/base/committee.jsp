@@ -697,12 +697,12 @@
         } else {
             committee_method = "PUT";
             Window_Committee.setTitle("<spring:message code="edit"/>");
-            Window_Committee.show();
             DynamicForm_Committee.clearValues();
             DsSubCategory_committee.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories?_startRow=0&_endRow=55";
             DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
             DynamicForm_Committee.getItem("subCategoryId").fetchData();
             DynamicForm_Committee.editRecord(record);
+            Window_Committee.show();
 
         }
     };
@@ -755,6 +755,7 @@
                 var committeeSaveUrlEdit = committeeUrl;
                 var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
                 committeeSaveUrlEdit += committeeEditRecord1.id;
+
                 isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEdit, "PUT", JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
 
             } else {
@@ -793,11 +794,11 @@
                     OK.close();
                 }, 3000);
             } else {
-                var committeeDataEditCreate = DynamicForm_Committee.getValues();
-                var committeeSaveUrlEditCreate = committeeUrl;
-// var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
-// committeeSaveUrlEditCreate += committeeEditRecord1.id;
-                isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
+                let committeeDataEditCreate = DynamicForm_Committee.getValues();
+                let committeeEditRecord = ListGrid_Committee.getSelectedRecord();
+                let committeeSaveUrlEditCreate = committeeUrl;
+                committeeSaveUrlEditCreate += committeeEditRecord.id;
+                isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "PUT", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
             }
         } else {
             var OK = isc.Dialog.create({
