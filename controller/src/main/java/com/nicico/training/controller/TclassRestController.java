@@ -12,14 +12,11 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.InstituteDTO;
 import com.nicico.training.dto.ParameterValueDTO;
-import com.nicico.training.dto.PersonnelCoursePassedNAReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Institute;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
-import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.EvaluationAnalysistLearningService;
 import com.nicico.training.service.ParameterService;
@@ -35,7 +32,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 

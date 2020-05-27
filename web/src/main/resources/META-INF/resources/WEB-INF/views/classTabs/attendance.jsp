@@ -163,6 +163,12 @@
                     }
                 }
             }),
+            isc.ToolStripButton.create({
+                title: "چاپ فرم خام",
+                click: function () {
+                    printClearForm()
+                }
+            }),
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let fields = ListGrid_Attendance_AttendanceJSP.getFields();
@@ -1252,6 +1258,22 @@
                 }
             }, 500)
         }
+    }
+
+    function printClearForm() {
+        let criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/attendance/clear-print/pdf"/>",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "classId", type: "hidden"},
+                ]
+        });
+        criteriaForm.setValue("classId", classGridRecordInAttendanceJsp.id);
+        criteriaForm.show();
+        criteriaForm.submitForm();
     }
 
 
