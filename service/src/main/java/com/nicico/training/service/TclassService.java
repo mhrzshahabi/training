@@ -13,10 +13,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.CourseDAO;
-import com.nicico.training.repository.QuestionnaireQuestionDAO;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.repository.TrainingPlaceDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -45,10 +42,12 @@ public class TclassService implements ITclassService {
     private final IEvaluationService evaluationService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterService parameterService;
+    private final ParameterValueService parameterValueService;
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final CourseDAO courseDAO;
     private final MessageSource messageSource;
     private final TargetSocietyService societyService;
+    private final TargetSocietyDAO societyDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -111,16 +110,14 @@ public class TclassService implements ITclassService {
     @Transactional
     public TclassDTO.Info safeCreate(TclassDTO.Create request, HttpServletResponse response) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
-        /*List<TargetSocietyDTO.Info> societyList = societyService.coustomCreate(request.getTargetSocietiesCombo(),
-                request.getTargetSocietiesTitles(),
-                request.getTargetSocietyTypeId(),
-                tclass.getId());*/
         if(checkDuration(tclass)){
             List<Long> list = request.getTrainingPlaceIds();
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
             Set<TrainingPlace> set = new HashSet<>(allById);
             tclass.setTrainingPlaceSet(set);
-            return save(tclass);
+            Tclass save = tclassDAO.save(tclass);
+            save.setTargetSocietyList(saveTargetSocieties(request.getTargetSocietyList(),request.getTargetSocietyTypeId(),save.getId()));
+            return modelMapper.map(save,TclassDTO.Info.class);
         }
         else {
             try {
@@ -254,6 +251,22 @@ public class TclassService implements ITclassService {
     }
 
     // ------------------------------
+
+    private List<TargetSociety> saveTargetSocieties(List<Object> societies, Long typeId, Long tclassId){
+        List<TargetSociety> result = new ArrayList<>();
+        String type = parameterValueService.get(typeId).getCode();
+        for(Object society : societies){
+            TargetSociety create = new TargetSociety();
+            if(type.equals("single"))
+                create.setSocietyId(((Integer) society).longValue());
+            else if(type.equals("etc"))
+                create.setTitle((String) society);
+            create.setTargetSocietyTypeId(new Long(typeId));
+            create.setTclassId(tclassId);
+            result.add(societyDAO.save(create));
+        }
+        return result;
+    }
 
     private TclassDTO.Info save(Tclass tclass) {
         final Tclass saved = tclassDAO.saveAndFlush(tclass);

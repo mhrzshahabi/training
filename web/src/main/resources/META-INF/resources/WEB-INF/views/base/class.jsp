@@ -12,6 +12,7 @@
     var startDateCheck = true;
     var endDateCheck = true;
     var isReadOnlyClass = true;
+    var societies = [];
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -37,6 +38,16 @@
         ],
         fetchDataURL: categoryUrl + "spec-list",
     });
+
+    var DataSource_TargetSociety_List = isc.DataSource.create({
+        clientOnly: true,
+        testData: societies,
+        fields: [
+            {name: "societyId", primaryKey: true},
+            {name: "title", type: "text"}
+        ],
+    });
+
     var RestDataSource_subCategory_JspCourse = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -1070,7 +1081,7 @@
                     "1004": "خيلي خوب",
                 }
             },
-            /*{
+            {
                 ID: "targetSocietyTypeId",
                 name: "targetSocietyTypeId",
                 colSpan: 3,
@@ -1080,23 +1091,27 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: "1",
+                defaultValue: "371",
                 valueMap: {
-                    "1": "واحد",
-                    "2": "سایر",
+                    "371": "واحد",
+                    "372": "سایر",
                 },
                 change: function (form, item, value, oldValue) {
 
 
-                    if (value === "1"){
-                        form.getItem("targetSocietiesEtc").hide();
+                    if (value === "371"){
                         form.getItem("addtargetSociety").hide();
-                        form.getItem("targetSocietiesCombo").show();
+                        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+                        DataSource_TargetSociety_List.addData({societyId:0, title: "فاوا"});
+                        DataSource_TargetSociety_List.addData({societyId:1, title: "عمومی"});
+                        form.getItem("targetSocietyList").valueField = "societyId";
+                        form.clearValue();
                     }
-                    else if(value === "2"){
-                        form.getItem("targetSocietiesCombo").hide();
-                        form.getItem("targetSocietiesEtc").show();
+                    else if(value === "372"){
                         form.getItem("addtargetSociety").show();
+                        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+                        form.getItem("targetSocietyList").valueField = "title";
+                        form.getItem("targetSocietyList").clearValue();
                     }
                     else
                         return false;
@@ -1104,38 +1119,39 @@
                 }
             },
             {
-                name: "targetSocietiesCombo",
+                name: "targetSocietyList",
                 colSpan: 2,
                 rowSpan: 1,
                 type: "SelectItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
                 multiple: true,
                 hidden: false,
                 textAlign: "center",
                 title: "انتخاب جامعه هدف:",
-                valueMap: {
-                    "1": "امور فاوا",
-                    "2": "عمومی",
-                }
+                wrapTitle: false,
+                optionDataSource: DataSource_TargetSociety_List,
+                displayField: "title",
+                valueField: "societyId",
             },
             {
-                    name: "targetSocietiesEtc",
-                    colSpan: 2,
-                    rowSpan: 1,
-                    hidden: true,
-                    title: "مقدار جامعه هدف:",
-                    textAlign: "center",
-                },*/
-            /*{
                 name: "addtargetSociety",
                 title: "افزودن",
                 type: "button",
                 colSpan: 1,
                 hidden: true,
                 endRow: false, startRow: false,
+                i:0,
                 click: function() {
-
+                    isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
+                        function (value) {
+                            console.log(value);
+                            DataSource_TargetSociety_List.addData({societyId:i, title: value}),
+                                i +=1;
+                        });
                 }
-            },*/
+            },
             {
                 name: "preCourseTest",
                 colSpan: 1,
@@ -2157,6 +2173,7 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
             VM_JspClass.clearErrors(true);
@@ -2187,7 +2204,6 @@
             } else {
                 classMethod = "POST";
                 url = classUrl;
-
                 DynamicForm1_Class_JspClass.setValue("autoValid", true);
                 DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
                 DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
@@ -2668,6 +2684,34 @@
             }
         }
 
+
+    }
+
+    function getTargetSocieties(id) {
+        isc.RPCManager.sendRequest(
+            TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    var societies = [];
+                    societyMap = {0: "فاوا", 1: "عمومی"};
+                    var item = 0
+                    JSON.parse(resp.data).forEach(
+                        function (currentValue, index, arr) {
+                            if (currentValue.targetSocietyTypeId === 371) {
+                                societies.add(currentValue.societyId);
+                                DataSource_TargetSociety_List.addData({
+                                    societyId: currentValue.societyId,
+                                    title: societyMap[currentValue.societyId]
+                                });
+                            } else if (currentValue.targetSocietyTypeId === 372) {
+                                societies.add(currentValue.title);
+                                DataSource_TargetSociety_List.addData({societyId: item, title: currentValue.title});
+                                item += 1;
+                            }
+                        });
+                    DynamicForm_Class_JspClass.getItem("targetSocietyList").setValue(societies);
+                }
+            })
+        );
 
     }
 
