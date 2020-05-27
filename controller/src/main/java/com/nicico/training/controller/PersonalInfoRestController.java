@@ -82,6 +82,17 @@ public class PersonalInfoRestController {
     }
 
     @Loggable
+    @PostMapping(value = "/safeCreate")
+//    @PreAuthorize("hasAuthority('c_personalInfo')")
+    public ResponseEntity safeCreate(@RequestBody PersonalInfoDTO.SafeCreate request) {
+        try {
+            return new ResponseEntity<>(personalInfoService.safeCreate(request), HttpStatus.CREATED);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_personalInfo')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody PersonalInfoDTO.Update request) {
