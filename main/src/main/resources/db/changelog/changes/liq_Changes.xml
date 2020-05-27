@@ -119,11 +119,13 @@
     <changeSet author="poursalehi_mos (generated)" id="1589948097150-498">
         <dropColumn columnName="F_STATE" tableName="TBL_INSTITUTE"/>
     </changeSet>
+
     <changeSet author="haeri_am (generated)" id="1590226268948-430">
         <addColumn tableName="tbl_institute">
             <column name="f_parameter_value" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+
     <changeSet author="haeri_am (generated)" id="1590230850544-431">
         <addColumn tableName="tbl_institute">
             <column name="l_parameter_value" type="number(19, 0)"/>
