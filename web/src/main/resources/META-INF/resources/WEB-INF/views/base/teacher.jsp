@@ -973,9 +973,20 @@
             "personality.contactInfo.workAddress.stateId", WAOCEnable);
 
 
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
-        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
-        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+        if(selected_record.personnelStatus == true){
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = fa;
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
+            DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(true);
+        }
+        else if(selected_record.personnelStatus == false){
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(false);
+        }
 
         selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         loadPage_AcademicBK(selectedRecordID);
@@ -1008,9 +1019,11 @@
         teacherMethod = "POST";
         vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = false;
-        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = false;
+        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").enable();
+        DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+        DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(false);
         TabSet_Bottom_JspTeacher.hide();
         clearTabFilters();
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
@@ -1140,6 +1153,27 @@
             setTimeout(function () {
                 TabSet_Bottom_JspTeacher.enable();
             }, 300);
+            if(selected_record.personnelStatus == true){
+                DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
+                DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(true);
+            }
+            else if(selected_record.personnelStatus == false){
+                DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(false);
+            }
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.id").setValue(selected_record.personality.id);
+            if(selected_record.personality.contactInfo.homeAddress != undefined)
+                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.id").setValue(selected_record.personality.contactInfo.homeAddress.id);
+            if(selected_record.personality.contactInfo.workAddress != undefined)
+                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.id").setValue(selected_record.personality.contactInfo.workAddress.id);
+            if(selected_record.personality.accountInfo != undefined)
+                DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
             teacherMethod = "PUT";
         } else if (resp.httpResponseText == "duplicateAndBlackList") {
             createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
@@ -1149,7 +1183,12 @@
     }
 
     function teacher_save_edit_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        if (resp.httpResponseText == "duplicateAndBlackList") {
+            createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
+        } else if (resp.httpResponseText == "duplicateAndNotBlackList") {
+            createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
+        }
+        else if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             if (resp.data === "") {
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
@@ -1191,10 +1230,10 @@
             "callback: personnel_findOne_result(rpcResponse)"));
     }
 
-    function  fillPersonalInfoByNationalCode(nationalCode){
-        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
-            "callback: personnel_findOne_result(rpcResponse)"));
-    }
+    // function  fillPersonalInfoByNationalCode(nationalCode){
+    //     isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
+    //         "callback: personnel_findOne_result(rpcResponse)"));
+    // }
 
     function fillWorkAddressFields(postalCode) {
         if (postalCode !== undefined)
@@ -1341,6 +1380,7 @@
             var restAddress = ccp_affairs + "," + ccp_section + "," + ccp_unit;
             if (restAddress != "")
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
+            DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
         }
     }
 
