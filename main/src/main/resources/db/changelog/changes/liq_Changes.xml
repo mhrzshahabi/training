@@ -150,4 +150,10 @@
     <changeSet author="matin_ar (generated)" id="1590306557717-491">
         <dropTable tableName="TBL_CLASS_TARGET_SOCIETY"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1590564324734-401">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_job_id" tableName="tbl_post"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1590564324734-402">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_post_grade_id" tableName="tbl_post"/>
+    </changeSet>
 </databaseChangeLog>
