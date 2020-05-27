@@ -196,7 +196,7 @@
                     evalInfo,
                     teachingInfo,
                     ListGrid_Result_JspTeacherReport
-                ]
+                    ]
             })
         ]
     });
@@ -696,43 +696,43 @@
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.nationalCode").getValue() != undefined){
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "کد ملی: " +"</span>" ;
                 personalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.nationalCode").getValue() + "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.nationalCode").getValue() + "</span>";
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>" ;
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.firstNameFa").getValue() != undefined){
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "نام:  " +"</span>" ;
                 personalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.firstNameFa").getValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.firstNameFa").getValue()+ "</span>";
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>" ;
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.lastNameFa").getValue() != undefined){
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "نام خانوادگی: " +"</span>" ;
                 personalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.lastNameFa").getValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.lastNameFa").getValue()+ "</span>";
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>" ;
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationMajorId").getValue() != undefined){
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "رشته تحصیلی: " +"</span>" ;
                 personalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationMajorId").getDisplayValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationMajorId").getDisplayValue()+ "</span>";
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>" ;
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationLevelId").getValue() != undefined){
                 personalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مدرک تحصیلی: " +"</span>";
                 personalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationLevelId").getDisplayValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.educationLevelId").getDisplayValue()+ "</span>";
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>" ;
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.stateId").getValue() != undefined){
                 personalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "استان: " +"</span>" ;
                 personalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.stateId").getDisplayValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.stateId").getDisplayValue()+ "</span>";
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>" ;
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").getValue() != undefined){
                 personalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "شهر: " +"</span>";
                 personalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").getDisplayValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("personality.contactInfo.homeAddress.cityId").getDisplayValue()+ "</span>";
                 personalInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>" ;
             }
 
@@ -759,13 +759,13 @@
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("categories").getValue() != undefined){
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + "زمینه های آموزشی: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("categories").getDisplayValue() + "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("categories").getDisplayValue() + "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories").getValue() != undefined){
                 teacherInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های آموزشی: " +"</span>";
                 teacherInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories").getDisplayValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories").getDisplayValue()+ "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined &&
@@ -774,26 +774,26 @@
 
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی مدرس در گروه: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue()+ "</span>";
 
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "و زیرگروه: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getDisplayValue()+ "</span>";
+                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getDisplayValue()+ "</span>";
 
                 evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مساوی: " +"</span>";
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
+                                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue() != undefined){
                 teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس مدرس: " +"</span>";
                 teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getDisplayValue()+ "</span>";
+                                            DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getDisplayValue()+ "</span>";
                 teachingInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
             if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getValue() != undefined){
                 teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های تدریس مدرس: " +"</span>";
                 teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                    DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getDisplayValue()+ "</span>";
+                                            DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getDisplayValue()+ "</span>";
             }
 
             titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش مدرسان با توجه به محدودیت های اعمال شده" +"</span>";
@@ -811,8 +811,8 @@
                         data_values.criteria[i].value = true;
                     else if(data_values.criteria[i].value == "false")
                         data_values.criteria[i].value = false;
+                    }
                 }
-            }
             ListGrid_Result_JspTeacherReport.invalidateCache();
             ListGrid_Result_JspTeacherReport.fetchData(data_values);
             Window_Result_JspTeacherReport.show();
