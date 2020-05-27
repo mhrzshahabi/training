@@ -21,27 +21,27 @@
         width: "100%",
         membersMargin: 5,
         members: [
-            isc.ToolStripButtonPrint.create({
-                menu: isc.Menu.create({
-                    data: [
-                        {
-                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
-                                printJobLG_job("pdf");
-                            }
-                        },
-                        {
-                            title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
-                                printJobLG_job("excel");
-                            }
-                        },
-                        {
-                            title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
-                                printJobLG_job("html");
-                            }
-                        },
-                    ]
-                })
-            }),
+            <%--isc.ToolStripButtonPrint.create({--%>
+            <%--    menu: isc.Menu.create({--%>
+            <%--        data: [--%>
+            <%--            {--%>
+            <%--                title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
+            <%--                    printJobLG_job("pdf");--%>
+            <%--                }--%>
+            <%--            },--%>
+            <%--            {--%>
+            <%--                title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {--%>
+            <%--                    printJobLG_job("excel");--%>
+            <%--                }--%>
+            <%--            },--%>
+            <%--            {--%>
+            <%--                title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>", click: function () {--%>
+            <%--                    printJobLG_job("html");--%>
+            <%--                }--%>
+            <%--            },--%>
+            <%--        ]--%>
+            <%--    })--%>
+            <%--}),--%>
 
 
             isc.ToolStripButton.create({
@@ -152,7 +152,11 @@
     JobLG_job = isc.TrLG.create({
         dataSource: JobDS_job,
         fields: [
-            {name: "code",},
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa",},
         ],
         autoFetchData: true,
@@ -414,21 +418,21 @@
         JobLG_job.invalidateCache();
     }
 
-    function printJobLG_job(type) {
-        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/pdf", "POST", null, "callback:test(rpcResponse)"));
+<%--    function printJobLG_job(type) {--%>
+<%--        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/pdf", "POST", null, "callback:test(rpcResponse)"));--%>
 
-// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
+<%--// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));--%>
 
 
-// isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));
+<%--// isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));--%>
 
-// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));
+<%--// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));--%>
 
-// trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());
-// trPrintWithCriteria(,
-// JobLG_job.getCriteria());
-// isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));
-    }
+<%--// trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());--%>
+<%--// trPrintWithCriteria(,--%>
+<%--// JobLG_job.getCriteria());--%>
+<%--// isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));--%>
+<%--    }--%>
 
     function test(resp) {
 // alert('hi');

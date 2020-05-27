@@ -29,6 +29,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -56,6 +57,13 @@ public class PersonnelRestController {
     public ResponseEntity<TotalResponse<PersonnelDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping(value = "checkPersonnelNos")
+    public ResponseEntity<HashMap<String, PersonnelDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
+        HashMap<String, PersonnelDTO.Info> list=personnelService.checkPersonnelNos(personnelNos);
+        return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
     @Loggable

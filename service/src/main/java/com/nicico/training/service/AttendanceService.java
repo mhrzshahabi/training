@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
@@ -15,6 +16,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,11 +67,13 @@ public class AttendanceService implements IAttendanceService {
             Map<String, String> map = new HashMap<>();
             map.put("studentId", studentId.toString());
             map.put("sessionId", s.getId().toString());
+            map.put("sessionState",s.getSessionState().toString());
             map.put("sessionType", s.getSessionType());
             map.put("sessionDate", s.getSessionDate());
             map.put("startHour", s.getSessionStartHour());
             map.put("endHour", s.getSessionEndHour());
             map.put("state", "0");
+            map.put("readOnly",isReadOnly(s.getSessionDate(),s.getSessionState()));
             for (Attendance a : attendances) {
                 if(a.getSessionId().equals(s.getId())){
                     map.put("state", a.getState());
@@ -160,13 +165,16 @@ public class AttendanceService implements IAttendanceService {
             attendanceSaving.add(attendance);
         }
         for (Attendance attendance : attendanceSaving) {
-            List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
-            if (saved == null || saved.size()==0) {
-                attendanceDAO.save(attendance);
-            } else {
-                saved.get(0).setState(attendance.getState());
-                saved.get(0).setDescription(attendance.getDescription());
-                attendanceDAO.save(saved.get(0));
+            ClassSessionDTO.Info info = classSessionService.get(attendance.getSessionId());
+            if(!info.getReadOnly()){
+                List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
+                if (saved == null || saved.size()==0) {
+                    attendanceDAO.save(attendance);
+                } else {
+                    saved.get(0).setState(attendance.getState());
+                    saved.get(0).setDescription(attendance.getDescription());
+                    attendanceDAO.save(saved.get(0));
+                }
             }
         }
     }
@@ -183,18 +191,22 @@ public class AttendanceService implements IAttendanceService {
                 sessionIds.add(Long.valueOf(s.substring(2)));
             }
         }
+
         for (Map<String, String> map : maps.get(0)) {
             for (Long sessionId : sessionIds) {
-                Attendance attendance = new Attendance();
-                attendance.setSessionId(sessionId);
-                attendance.setStudentId(Long.valueOf(map.get("studentId")));
-                attendance.setState(map.get("se" + sessionId));
-                for (Map<String, String> causeOfAbsenceList : maps.get(1)) {
-                    if (map.get("se" + sessionId).equals("4") && causeOfAbsenceList.get("studentId").equals(map.get("studentId")) && causeOfAbsenceList.get("sessionId").equals(attendance.getSessionId().toString())) {
-                        attendance.setDescription(causeOfAbsenceList.get("description"));
+                ClassSessionDTO.Info info = classSessionService.get(sessionId);
+                if(!info.getReadOnly()){
+                    Attendance attendance = new Attendance();
+                    attendance.setSessionId(sessionId);
+                    attendance.setStudentId(Long.valueOf(map.get("studentId")));
+                    attendance.setState(map.get("se" + sessionId));
+                    for (Map<String, String> causeOfAbsenceList : maps.get(1)) {
+                        if (map.get("se" + sessionId).equals("4") && causeOfAbsenceList.get("studentId").equals(map.get("studentId")) && causeOfAbsenceList.get("sessionId").equals(attendance.getSessionId().toString())) {
+                            attendance.setDescription(causeOfAbsenceList.get("description"));
+                        }
                     }
+                    attendanceSaving.add(attendance);
                 }
-                attendanceSaving.add(attendance);
             }
         }
         for (Attendance attendance : attendanceSaving) {
@@ -266,5 +278,12 @@ public class AttendanceService implements IAttendanceService {
     @Transactional(readOnly = true)
     public List<Attendance> findBySessionInAndState(List<ClassSession> sessions, String state){
         return attendanceDAO.findBySessionInAndState(sessions, state);
+    }
+
+    private String isReadOnly(String startingDate, int sessionState){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+        return todayDate.compareTo(startingDate) > 0 && sessionState == 3 ? "false" : "true";
     }
 }

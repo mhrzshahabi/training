@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -8,6 +9,8 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -75,12 +78,23 @@ public class ClassSessionDTO implements Serializable {
         private InstituteDTO.InstituteTitle institute;
         private TrainingPlaceDTO.TrainingPlaceTitle trainingPlace;
         private TeacherDTO.TeacherFullNameTuple teacher;
+        @Getter(AccessLevel.NONE)
+        private boolean readOnly;
 
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
+        }
+
+        public boolean getReadOnly(){
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+            String startingDate = getSessionDate();
+
+            return todayDate.compareTo(startingDate) > 0 && getSessionState() == 3 ? false : true;
         }
     }
 

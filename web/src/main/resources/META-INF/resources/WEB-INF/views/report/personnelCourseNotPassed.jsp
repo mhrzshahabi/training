@@ -449,8 +449,16 @@
         // showFilterEditor: false,
         gridComponents: [FilterDF_PCNP, "header", "filterEditor", "body"],
         fields: [
-            {name: "personnelPersonnelNo2"},
-            {name: "personnelNationalCode"},
+            {name: "personnelPersonnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "personnelFirstName"},
             {name: "personnelLastName"},
             {name: "personnelCcpUnit"},

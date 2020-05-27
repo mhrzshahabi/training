@@ -192,7 +192,10 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='national.code'/>",
-                align: "center"
+                align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "personality.firstNameFa",
@@ -285,6 +288,9 @@
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
                 type: "phoneNumber",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
                 sortNormalizer: function (record) {
                     return record.personality.contactInfo.mobile;
                 }
@@ -368,6 +374,8 @@
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
         height: "25%",
+        minWidth:1350,
+        width:"100%",
         tabs: [
             {
                 ID: "academicBK",

@@ -161,7 +161,7 @@
             },
             {
                 name: "codes",
-                title:"ترم",
+                title:"ترم"
             }
         ],
         cellHeight: 43,
@@ -641,17 +641,26 @@
                     {
                         name: "code",
                         title: "<spring:message code='term.code'/>",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9|\-]"
+                        }
                     },
                     {
                         name: "startDate",
                         title: "<spring:message code='start.date'/>",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
                     },
                     {
                         name: "endDate",
                         title: "<spring:message code='end.date'/>",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
                     }
                 ]
             }

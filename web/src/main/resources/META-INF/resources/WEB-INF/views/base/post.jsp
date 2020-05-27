@@ -22,12 +22,12 @@
     PostTS_post = isc.ToolStrip.create({
         membersMargin: 5,
         members: [
-            isc.ToolStripButtonPrint.create({
-                title: "<spring:message code='print'/>",
-                click: function () {
-                    print_PostListGrid("pdf");
-                }
-            }),
+            <%--isc.ToolStripButtonPrint.create({--%>
+            <%--    title: "<spring:message code='print'/>",--%>
+            <%--    click: function () {--%>
+            <%--        print_PostListGrid("pdf");--%>
+            <%--    }--%>
+            <%--}),--%>
             isc.ToolStripButton.create({
                 top: 260,
                 align: "center",
@@ -87,7 +87,11 @@
     PostLG_post = isc.TrLG.create({
         dataSource: PostDS_post,
         fields: [
-            {name: "code",},
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "titleFa",},
             {name: "job.titleFa",},
             {name: "postGrade.titleFa",},
@@ -96,7 +100,11 @@
             {name: "affairs",},
             {name: "section",},
             {name: "unit",},
-            {name: "costCenterCode",},
+            {name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "costCenterTitleFa",},
         ],
         autoFetchData: true,
@@ -391,22 +399,22 @@
         DetailViewer_Personnel.fetchData();
     }
 
-    function print_PostListGrid(type) {
-        let advancedCriteria_post = PostLG_post.getCriteria();
-        let print_form_post = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/web/print/post/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields: [
-                {name: "CriteriaStr", type: "hidden"},
-                {name: "myToken", type: "hidden"}
-            ]
-        });
-        print_form_post.setValue("CriteriaStr", JSON.stringify(advancedCriteria_post));
-        print_form_post.setValue("myToken", "<%=accessToken%>");
-        print_form_post.show();
-        print_form_post.submitForm();
-    }
+    <%--function print_PostListGrid(type) {--%>
+    <%--    let advancedCriteria_post = PostLG_post.getCriteria();--%>
+    <%--    let print_form_post = isc.DynamicForm.create({--%>
+    <%--        method: "POST",--%>
+    <%--        action: "<spring:url value="/web/print/post/"/>" + type,--%>
+    <%--        target: "_Blank",--%>
+    <%--        canSubmit: true,--%>
+    <%--        fields: [--%>
+    <%--            {name: "CriteriaStr", type: "hidden"},--%>
+    <%--            {name: "myToken", type: "hidden"}--%>
+    <%--        ]--%>
+    <%--    });--%>
+    <%--    print_form_post.setValue("CriteriaStr", JSON.stringify(advancedCriteria_post));--%>
+    <%--    print_form_post.setValue("myToken", "<%=accessToken%>");--%>
+    <%--    print_form_post.show();--%>
+    <%--    print_form_post.submitForm();--%>
+    <%--}--%>
 
     // </script>

@@ -142,13 +142,20 @@
                 title: "<spring:message code='start.date'/>",
                 align: "center",
                 filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
                 //   autoFitWidth: true,
             },
             {
                 name: "term.endDate",
                 title: "<spring:message code='end.date'/>",
                 align: "center",
-                filterOperator: "iContains", // autoFitWidth: true
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+                // autoFitWidth: true
             },
             {
                 name: "teacher",
@@ -192,9 +199,21 @@
             {name: "corseCode", title: "کد دوره", autoFitWidth: true, align: "center",},
             {name: "titleClass", title: "عنوان کلاس", autoFitWidth: true, align: "center",},
             {name: "code", title: "کد کلاس", autoFitWidth: true, align: "center",},
-            {name: "startDate", title: "تاریخ شروع", align: "center",},
-            {name: "endDate", title: "تاریخ پایان", align: "center",},
-            {name: "hduration", title: "مدن زمان(ساعت)", autoFitWidth: true, align: "center",},
+            {name: "startDate", title: "تاریخ شروع", align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "endDate", title: "تاریخ پایان", align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "hduration", title: "مدن زمان(ساعت)", autoFitWidth: true, align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {
                 name: "classStatus", title: "وضعیت کلاس", autoFitWidth: true, valueMap: {
                     "1": "برنامه ریزی",
@@ -307,12 +326,28 @@
         fields: [
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
-            {name: "postCode"},
+            {name: "postCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
         ],
         rowDoubleClick: Select_Person
 

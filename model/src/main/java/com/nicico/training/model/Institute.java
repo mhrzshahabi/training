@@ -52,7 +52,6 @@ public class Institute extends Auditable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "institute", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<TrainingPlace> trainingPlaceSet;
 
-
     @Column(name = "n_teacher_phd_number")
     private Integer teacherNumPHD;
 
@@ -111,11 +110,9 @@ public class Institute extends Auditable {
     @Column(name = "c_economical_id", length = 12)
     private String economicalId;
 
-    //---------------------------------------------------mostafa--------------------------------------------
-
     @OneToMany(mappedBy = "institute", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AccountInfo> accountInfoSet;
-//
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "f_contact_info")
     private ContactInfo contactInfo;
@@ -123,43 +120,17 @@ public class Institute extends Auditable {
     @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
 
-    //    @Column(name = "c_address")
-//    private String restAddress;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_parameter_value", nullable = false, insertable = false, updatable = false)
+    private ParameterValue companyType;
 
-//    @Column(name = "c_post_code", length = 12)
-//    private String postalCode;
+    @Column(name = "f_parameter_value")
+    private Long companyTypeId;
 
-//    @Column(name = "c_phone", length = 50)
-//    private String phone;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "l_parameter_value", nullable = false, insertable = false, updatable = false)
+    private ParameterValue licenseType;
 
-//    @Column(name = "c_mobile", length = 50)
-//    private String mobile;
-
-//    @Column(name = "c_fax", length = 50)
-//    private String fax;
-
-//    @Column(name = "c_website", length = 50)
-//    private String webSite;
-
-//    @Column(name = "c_email", length = 50)
-//    private String e_mail;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "f_city", insertable = false, updatable = false)
-//    private City city;
-
-//    @Column(name = "f_city")
-//    private Long cityId;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "f_state", insertable = false, updatable = false)
-//    private State state;
-
-//    @Column(name = "f_state")
-//    private Long stateId;
-
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "institute", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-//    private Set<InstituteAccount> instituteAccountSet;
-
-    //---------------------------------------------------mostafa--------------------------------------------
+    @Column(name = "l_parameter_value")
+    private Long licenseTypeId;
 }

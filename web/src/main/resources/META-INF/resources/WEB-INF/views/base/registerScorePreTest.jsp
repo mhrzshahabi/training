@@ -93,14 +93,18 @@
                 name: "student.nationalCode",
                 title: "<spring:message code="national.code"/>",
                 filterOperator: "iContains",
-
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
 
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
-
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
                 {
                 name: "preTestScore",
@@ -108,6 +112,9 @@
                 filterOperator: "iContains",
                 canEdit: true,
                 validateOnChange: false,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|.]"
+                    },
                 editEvent: "click",
                     change:function(form,item,value,oldValue){
 
@@ -206,9 +213,16 @@
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
-            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
+            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {
                 name: "group",
                 title: "<spring:message code='group'/>",

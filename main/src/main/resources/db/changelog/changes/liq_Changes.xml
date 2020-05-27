@@ -119,5 +119,34 @@
     <changeSet author="poursalehi_mos (generated)" id="1589948097150-498">
         <dropColumn columnName="F_STATE" tableName="TBL_INSTITUTE"/>
     </changeSet>
+    <changeSet author="haeri_am (generated)" id="1590226268948-430">
+        <addColumn tableName="tbl_institute">
+            <column name="f_parameter_value" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="haeri_am (generated)" id="1590230850544-431">
+        <addColumn tableName="tbl_institute">
+            <column name="l_parameter_value" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
 
+    <changeSet author="matin_ar (generated)" id="1590230361357-431">
+        <addColumn tableName="tbl_class">
+            <column name="f_target_society_type" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590230361357-430">
+        <createTable tableName="tbl_class_target_society">
+            <column name="f_class_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_target_society" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-497">
+        <dropColumn columnName="F_TARGET_SOCIETY_TYPE" tableName="TBL_CLASS"/>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-491">
+        <dropTable tableName="TBL_CLASS_TARGET_SOCIETY"/>
+    </changeSet>
 </databaseChangeLog>

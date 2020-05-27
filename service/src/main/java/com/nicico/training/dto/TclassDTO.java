@@ -33,6 +33,7 @@ public class TclassDTO {
     private String code;
     private Long teacherId;
     private Long instituteId;
+    private Date createdDate;
     private Long organizerId;
     private String titleClass;
     private String teachingType;//روش آموزش
@@ -194,6 +195,15 @@ public class TclassDTO {
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
         private Long courseId;
+        private List<Long> targetSocietiesCombo;
+        private Long targetSocietyTypeId;
+        private String targetSocietiesEtc;
+        @Getter(AccessLevel.NONE)
+        private List<String>targetSocietiesTitles;
+
+        public List<String> getTargetSocietiesTitles() {
+            return targetSocietiesEtc == null ? new ArrayList<String>() : new ArrayList<String>(Arrays.asList(targetSocietiesEtc.split(",")));
+        }
     }
 
     //----------------------------------------------

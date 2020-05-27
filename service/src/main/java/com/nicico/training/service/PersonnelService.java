@@ -24,9 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +70,29 @@ public class PersonnelService implements IPersonnelService {
     @Override
     public TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(personnelDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelDTO.Info.class));
+    }
+
+    @Transactional
+    @Override
+    public HashMap<String, PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos) {
+        HashMap<String, PersonnelDTO.Info> result = new HashMap<>();
+
+        List<Personnel> list = personnelDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos , personnelNos);
+        Personnel prs = null;
+
+        for (String personnelNo : personnelNos) {
+
+            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo)).collect(Collectors.toList()).size()==0)
+            {
+                result.put(personnelNo,new PersonnelDTO.Info());
+
+            } else {
+                prs =list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo)).collect(Collectors.toList()).get(0);
+                result.put(prs.getPersonnelNo(),modelMapper.map(prs,PersonnelDTO.Info.class));
+            }
+        }
+
+        return result;
     }
 
     @Override

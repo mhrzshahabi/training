@@ -40,7 +40,7 @@ public class UnjustifiedAbsenceReportService implements IUnjustifiedAbsenceRepor
                 "                INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session\n" +
                 "                INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id\n" +
                 "                INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id\n" +
-                "                INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id\n" +
+                "                INNER JOIN tbl_student ON tbl_student.id = tbl_attendance.f_student\n" +
                 "            WHERE\n" +
                 "                tbl_attendance.c_state = '3'\n" +
                 "                AND   tbl_class.c_start_date >= :startDate \n" +
