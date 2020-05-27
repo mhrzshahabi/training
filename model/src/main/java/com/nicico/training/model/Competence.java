@@ -37,5 +37,4 @@ public class Competence extends Auditable {
 
     @Column(name = "f_parameter_value")
     private Long competenceTypeId;
-
 }

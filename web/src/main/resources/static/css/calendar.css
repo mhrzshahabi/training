@@ -4,10 +4,10 @@
 }
 @font-face {
     font-family: 'BYekan';
-    src: url("fonts/BYekan.ttf");
-    src: url("fonts/BYekan.eot");
-    src: url("fonts/BYekan.woff");
-    src: local("☺"), url("fonts/BYekan.woff") format("woff"), url("fonts/BYekan.otf") format("opentype"), url("fonts/BYekan.ttf") format("truetype");
+    src: url("../fonts/BYekan.ttf");
+    src: url("../fonts/BYekan.eot");
+    src: url("../fonts/BYekan.woff");
+    src: local("☺"), url("../fonts/BYekan.woff") format("woff"), url("../fonts/BYekan.otf") format("opentype"), url("../fonts/BYekan.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 }
