@@ -165,7 +165,10 @@
             },
             {
                 name: "sessionDate",
-                title: "تاریخ"
+                title: "تاریخ",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "sessionStartHour",

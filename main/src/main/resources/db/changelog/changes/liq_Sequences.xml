@@ -221,9 +221,11 @@
     <changeSet author="poursalehi_mos (generated)" id="1588143353458-411">
         <createSequence sequenceName="seq_class_contract_id"/>
     </changeSet>
-
     <changeSet author="haeri_am (generated)" id="1587785695819-262">
         <createSequence sequenceName="seq_profile_ahk__id"/>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-430">
+        <createSequence sequenceName="seq_target_society_id"/>
     </changeSet>
 
 </databaseChangeLog>

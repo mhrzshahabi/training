@@ -147,19 +147,28 @@
                     name: "sessionDate",
                     title: "<spring:message code="date"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "sessionStartHour",
                     title: "<spring:message code="start.time"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 },
                 {
                     name: "sessionEndHour",
                     title: "<spring:message code="end.time"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 }, {
                     name: "sessionTypeId",
                     title: "sessionTypeId",

@@ -32,7 +32,7 @@ public interface IInstituteService {
 
     List<TeacherDTO.Info> getTeachers(Long instituteId);
 
-    List<InstituteAccountDTO.Info> getInstituteAccounts(Long instituteId);
+    List<AccountInfoDTO.Info> getInstituteAccounts(Long instituteId);
 
     List<TrainingPlaceDTO.Info> getTrainingPlaces(Long instituteId);
 

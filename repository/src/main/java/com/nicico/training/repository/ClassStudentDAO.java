@@ -40,6 +40,12 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "where id = :idClassStudent", nativeQuery = true)
     public int setStudentFormIssuance(Long idClassStudent, Integer reaction, Integer learning, Integer behavior, Integer results);
 
+    @Modifying
+    @Query(value = "update TBL_CLASS_STUDENT set " +
+            "EVALUATION_AUDIENCE_TYPE = :AudienceType " +
+            "where id = :idClassStudent", nativeQuery = true)
+    public int setStudentFormIssuanceAudienceType(Long idClassStudent, String AudienceType);
+
     List<ClassStudent> findByStudentId(Long studentId);
 
 

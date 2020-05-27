@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// script
+// <script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    PersonnelMenu_personnel = isc.Menu.create({
+    var PersonnelMenu_personnel = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -17,7 +17,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    PersonnelTS_personnel = isc.ToolStrip.create({
+    var PersonnelTS_personnel = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
@@ -64,7 +64,7 @@
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    PersonnelDS_personnel = isc.TrDS.create({
+    var PersonnelDS_personnel = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -81,7 +81,7 @@
         fetchDataURL: personnelUrl + "/iscList"
     });
 
-    PersonnelLG_personnel = isc.TrLG.create({
+    var PersonnelLG_personnel = isc.TrLG.create({
         width: "100%",
         dataSource: PersonnelDS_personnel,
         fields: [

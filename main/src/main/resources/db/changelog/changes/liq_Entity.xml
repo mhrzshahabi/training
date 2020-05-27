@@ -2668,5 +2668,39 @@
             <column name="n_teacher_cost_per_hour" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1589889485463-428">
+        <createTable tableName="tbl_committee_personnel">
+            <column name="f_committee_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_personnel_id" type="VARCHAR2(255 CHAR)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1590306557717-431">
+        <createTable tableName="tbl_target_society">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_target_societyPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_society_id" type="NUMBER(19, 0)"/>
+            <column name="f_targetsociety_type_id" type="NUMBER(19, 0)"/>
+            <column name="f_class_id" type="NUMBER(19, 0)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

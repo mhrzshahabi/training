@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class TeacherCertificationRestController {
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationLevel')")
-    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request, HttpServletResponse response) {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;
 
@@ -62,7 +63,7 @@ public class TeacherCertificationRestController {
         if (subCategories != null && subCategories.size() > 0)
             update.setSubCategories(subCategories);
         try {
-            return new ResponseEntity<>(teacherCertificationService.update(id, update), HttpStatus.OK);
+            return new ResponseEntity<>(teacherCertificationService.update(id, update,response), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -72,7 +73,7 @@ public class TeacherCertificationRestController {
     @PostMapping(value = "/{teacherId}")
     @Transactional
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addTeacherCertification(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
+    public ResponseEntity addTeacherCertification(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId,HttpServletResponse response) {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;
 
@@ -88,7 +89,7 @@ public class TeacherCertificationRestController {
         if (subCategories != null && subCategories.size() > 0)
             create.setSubCategories(subCategories);
         try {
-            teacherCertificationService.addTeacherCertification(create, teacherId);
+            teacherCertificationService.addTeacherCertification(create, teacherId,response);
             return new ResponseEntity(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);

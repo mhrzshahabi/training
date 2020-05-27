@@ -3,56 +3,35 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.nicico.copper.common.domain.ConstantVARs;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.dto.StudentClassReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.StudentClassReportViewService;
 import com.nicico.training.service.TclassService;
-import com.nicico.training.utility.MakeExcelOutputUtil;
-import com.nicico.training.utility.SpecListUtil;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
-import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellAddress;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xssf.usermodel.extensions.XSSFCellAlignment;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.*;
 
 import static net.minidev.json.parser.JSONParser.DEFAULT_PERMISSIVE_MODE;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.data;
 
 @RequiredArgsConstructor
 @Controller
@@ -166,7 +145,7 @@ public class ExportToFileController {
                 List<String> aList = null;
 
                 if (list.length == 0) {
-                    aList=new ArrayList<String>();
+                    aList = new ArrayList<String>();
                     aList.add(fields1.get(j).get("name"));
                 } else {
                     aList = Arrays.asList(list);
@@ -176,7 +155,7 @@ public class ExportToFileController {
 
                 tmpData.put(fields1.get(j).get("name"), tmpName);
             }
-            tmpData.put("rowNum",Integer.toString(i+1));
+            tmpData.put("rowNum", Integer.toString(i + 1));
 
             allData.add(tmpData);
         }

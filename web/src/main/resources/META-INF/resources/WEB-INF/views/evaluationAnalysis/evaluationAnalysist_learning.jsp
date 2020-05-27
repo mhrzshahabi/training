@@ -247,14 +247,18 @@
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
-                filterOperator: "iContains",autoFitWidth:true
-
+                filterOperator: "iContains",autoFitWidth:true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "student.nationalCode",
                 title: "<spring:message code="national.code"/>",
-                filterOperator: "iContains",autoFitWidth:true
-
+                filterOperator: "iContains",autoFitWidth:true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "student.firstName",
@@ -276,7 +280,9 @@
                 validateOnChange: false,
                 autoFitWidth:true,
                 editEvent: "click",
-
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|.]"
+                },
                 change:function(form,item,value,oldValue){
 
                     if(value!=null && value!='' && typeof (value) != 'undefined'&& !value.match(/^(([1-9]\d{0,1})|100|0)$/)){
@@ -318,12 +324,17 @@
                 }
             },
             {
-                name:"score", title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true
-
+                name:"score", title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|.]"
+                }
             },
             {
                 name:"valence",title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true,
-                valueMap: {"1001": "40", "1002": "60", "1003": "80", "1004": "100"}
+                valueMap: {"1001": "40", "1002": "60", "1003": "80", "1004": "100"},
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|.]"
+                }
             }
         ]
     });

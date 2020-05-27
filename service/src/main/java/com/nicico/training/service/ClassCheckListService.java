@@ -95,25 +95,33 @@ public class ClassCheckListService implements IClassCheckListService {
 
         List<ClassCheckList> ClassCheckListArray = new ArrayList<>();
 
-        List<Long> checkListItemIdsByTclassId = classCheckListDAO.getCheckListItemIdsByTclassId(classId);   //لیست تمام چک لیست های مربوط به این کلاس گرفته شده
+        List<Long> ClasscheckListItem= classCheckListDAO.getCheckListItemIdsByTclassId(classId);   //لیست تمام چک لیست های مربوط به این کلاس گرفته شده
 
-        List<CheckListItem> checkListItemsListId = checkListItemDAO.getCheckListItemsByCheckListId(checkListId);//لیست تمام چک لیست ایتم ها ی مربوط به چک لیست مورد نظر
+        List<CheckListItem> checkListItems = checkListItemDAO.getCheckListItemsByCheckListId(checkListId);//لیست تمام چک لیست ایتم ها ی مربوط به چک لیست مورد نظر
 
 
-        for (CheckListItem x : checkListItemsListId) {
-            if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted() == null)) {
+        for (CheckListItem Item : checkListItems) {
+            if (!ClasscheckListItem.contains(Item.getId()) && Item.getIsDeleted() == null ) {
                 ClassCheckList classCheckList = new ClassCheckList();
                 classCheckList.setTclassId(classId);
-                classCheckList.setCheckListItemId(x.getId());
+                classCheckList.setCheckListItemId(Item.getId());
+                ClassCheckListArray.add(classCheckList);
+            }                                                                                          //ایتم غیر فعال است
+            else if (ClasscheckListItem.contains(Item.getId()) && (Item.getIsDeleted() != null && Item.getIsDeleted() == true)) {
+                ClassCheckList classCheckList= classCheckListDAO.findClassCheckListByTclassIdAndCheckListItemId(classId,Item.getId());
+                delete(classCheckList.getId());
+               }
+            else if(!ClasscheckListItem.contains(Item.getId()) && (Item.getIsDeleted()!=null && Item.getIsDeleted() == false))
+            {
+                ClassCheckList classCheckList = new ClassCheckList();
+                classCheckList.setTclassId(classId);
+                classCheckList.setCheckListItemId(Item.getId());
                 ClassCheckListArray.add(classCheckList);
             }
-
         }
         List<ClassCheckList> save = classCheckListDAO.saveAll(ClassCheckListArray);
         return mapper.map(save, new TypeToken<List<ClassCheckListDTO.Info>>() {
         }.getType());
-
-
     }
 
 

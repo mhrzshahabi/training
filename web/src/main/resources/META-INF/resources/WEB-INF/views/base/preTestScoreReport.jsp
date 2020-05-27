@@ -54,11 +54,31 @@
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "firstName", title: "نام", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "lastName",title: "نام خانوادگی",align: "center",filterOperator: "iContains"},
-            {name: "nationalCode",title: "کد ملی",align: "center",filterOperator: "iContains"},
-            {name: "startDate",title: "تاریخ شروع",align: "center",filterOperator: "iContains"},
-            {name: "endDate",title: "تاریخ پایان",align: "center",filterOperator: "iContains"},
-            {name: "personnelNo2",title: "شماره پرسنلی 6 رقمي",align: "center",filterOperator: "iContains",canFilter:false},
-            {name: "personnelNo",title: "شماره پرسنلی",align: "center",filterOperator: "iContains"},
+            {name: "nationalCode",title: "کد ملی",align: "center",filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "startDate",title: "تاریخ شروع",align: "center",filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "endDate",title: "تاریخ پایان",align: "center",filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "personnelNo2",title: "شماره پرسنلی 6 رقمي",align: "center",filterOperator: "iContains",canFilter:false,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo",title: "شماره پرسنلی",align: "center",filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "preTestScore",title: "نمره پیش آزمون/تست",align: "center",filterOperator: "iContains"}
 
 

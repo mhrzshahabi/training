@@ -376,7 +376,9 @@
             {
                 name: "theoryDuration", title: "<spring:message
                 code="course_theoryDuration"/>", align: "center", filterOperator: "iContains",
-
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
@@ -497,7 +499,11 @@
         fields: [
             // {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", align: "center"},
-            {name: "code", title: "<spring:message code="job.code"/>", align: "center"},
+            {name: "code", title: "<spring:message code="job.code"/>", align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
@@ -520,8 +526,16 @@
                     return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
                 }
             },
-            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains"},
-            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "teacher.personality.contactInfo.homeAddress.state.name", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
                 formatCellValue: function (value, record) {
                     return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
@@ -572,9 +586,6 @@
 
     });
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code="refresh"/> ",
-
         click: function () {
             ListGrid_Course_refresh();
             refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
@@ -583,33 +594,29 @@
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-
-        title: "<spring:message code="edit"/> ",
         click: function () {
             ListGrid_Course_Edit()
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-
-        title: "<spring:message code="create"/>",
-
+    var ToolStripButton_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Course_add();
         }
     });
 
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-
-        title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()
         }
     });
     var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
-        //icon: "[SKIN]/RichTextEditor/print.png",
-        title: "<spring:message code='print'/>",
         click: function () {
             print_CourseListGrid("pdf");
+        }
+    });
+    var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.DownloadExcelFormClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
         }
     });
 
@@ -641,7 +648,11 @@
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
-                            {name: "code", title: "کد"},
+                            {name: "code", title: "کد",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9]"
+                                }
+                            },
                             {name: "categoryId"}
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
@@ -670,7 +681,11 @@
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
-                            {name: "code", title: "کد"},
+                            {name: "code", title: "کد",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9/]"
+                                }
+                            },
                             {
                                 name: "categoryId",
                             }
@@ -775,7 +790,11 @@
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
-                            {name: "code", title: "کد"},
+                            {name: "code", title: "کد",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9/]"
+                                }
+                            },
                             {name: "categoryId"},
                             {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
                         ],
@@ -857,7 +876,7 @@
             ToolStripButton_Edit,
             ToolStripButton_Remove,
             ToolStripButton_Print,
-            // ToolStripButton_addSkill,
+            ToolStripExcel_JspCourse,
             ToolStripButton_SendToWorkflow,
             isc.ToolStrip.create({
                 width: "100%",
@@ -2486,7 +2505,11 @@
                         fields: [
                             {name: "id", primaryKey: true, hidden: true},
                             {name: "titleFa", title: "نام فارسی", align: "center"},
-                            {name: "code", title: "کد", align: "center"}
+                            {name: "code", title: "کد", align: "center",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9/]"
+                                }
+                            }
                         ],
                         ID: "RestData_Post_JspCourse",
                         fetchDataURL: courseUrl + "post/" + courseRecord.id,
@@ -2787,23 +2810,8 @@
     }
 
     function print_CourseListGrid(type) {
-        var advancedCriteria_course = ListGrid_Course.getCriteria();
-        var criteriaForm_course = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/course/printWithCriteria/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "myToken", type: "hidden"}
-                ]
-        })
-        criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
-        criteriaForm_course.setValue("myToken", "<%=accessToken%>");
-        criteriaForm_course.show();
-        criteriaForm_course.submitForm();
-    };
+        printWithCriteria(ListGrid_Course.getCriteria(), {}, "CourseByCriteria.jasper", type);
+    }
 
     function courseCode() {
         var subCatDis = DynamicForm_course_GroupTab.getField("subCategory.id").isDisabled();

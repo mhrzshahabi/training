@@ -4,7 +4,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-//<script>
+// <script>
 
     var committee_method = "POST";
     var committeeId;
@@ -27,20 +27,45 @@
     });
 
     var RestDataSource_All_Person = isc.TrDS.create({
-        fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "<spring:message code="firstName"/>", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
-            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>"}
+        fields: [
+            {name: "id", hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},
+            {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
+            {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
+            {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
+            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true, autoFitWidth: true},
         ],
-        fetchDataURL: personalInfoUrl + "spec-list",
+        fetchDataURL: personnelUrl + "/iscList",
     });
 
     var RestDataSource_ThisCommittee_Person = isc.TrDS.create({
 
-        fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%",  title: "<spring:message code="firstName"/>", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
-            {name: "nationalCode", align: "center", width: "30%",  title: "<spring:message code="national.code"/>"}
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", width: "35%",  title: "<spring:message code="firstName"/>", align: "center"},
+            {name: "lastName", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
+            {name: "nationalCode", align: "center", width: "30%",  title: "<spring:message code="national.code"/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            }
         ],
 
     });
@@ -48,9 +73,13 @@
 
     var Ds_Member_Attached_Committee = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%",title: "<spring:message code="firstName"/>", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
-            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>"}
+            {name: "firstName", width: "35%",title: "<spring:message code="firstName"/>", align: "center"},
+            {name: "lastName", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
+            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            }
         ],
         autoFetchData: false,
     });
@@ -167,7 +196,7 @@
 
             var memberIds = new Array();
             for (let i = 0; i < dropRecords.getLength(); i++) {
-                memberIds.add(dropRecords[i].id);
+                memberIds.add(dropRecords[i].personnelNo);
             }
             ;
 
@@ -223,7 +252,7 @@
             var activeCommittee = ListGrid_Committee.getSelectedRecord();
             var personIds = new Array();
             for (let i = 0; i < dropRecords.getLength(); i++) {
-                personIds.add(dropRecords[i].id);
+                personIds.add(dropRecords[i].personnelNo);
             }
             ;
             var JSONObj = {"ids": personIds};
@@ -524,7 +553,7 @@
 
             } else {
 
-                RestDataSource_All_Person.fetchDataURL = committeeUrl + record.id + "/unAttachMember";
+                // RestDataSource_All_Person.fetchDataURL = committeeUrl + record.id + "/unAttachMember";
                 ListGrid_All_Person.invalidateCache();
                 ListGrid_All_Person.fetchData();
 
@@ -668,12 +697,12 @@
         } else {
             committee_method = "PUT";
             Window_Committee.setTitle("<spring:message code="edit"/>");
-            Window_Committee.show();
             DynamicForm_Committee.clearValues();
             DsSubCategory_committee.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories?_startRow=0&_endRow=55";
             DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
             DynamicForm_Committee.getItem("subCategoryId").fetchData();
             DynamicForm_Committee.editRecord(record);
+            Window_Committee.show();
 
         }
     };
@@ -726,6 +755,7 @@
                 var committeeSaveUrlEdit = committeeUrl;
                 var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
                 committeeSaveUrlEdit += committeeEditRecord1.id;
+
                 isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEdit, "PUT", JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
 
             } else {
@@ -764,11 +794,11 @@
                     OK.close();
                 }, 3000);
             } else {
-                var committeeDataEditCreate = DynamicForm_Committee.getValues();
-                var committeeSaveUrlEditCreate = committeeUrl;
-// var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
-// committeeSaveUrlEditCreate += committeeEditRecord1.id;
-                isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
+                let committeeDataEditCreate = DynamicForm_Committee.getValues();
+                let committeeEditRecord = ListGrid_Committee.getSelectedRecord();
+                let committeeSaveUrlEditCreate = committeeUrl;
+                committeeSaveUrlEditCreate += committeeEditRecord.id;
+                isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "PUT", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
             }
         } else {
             var OK = isc.Dialog.create({

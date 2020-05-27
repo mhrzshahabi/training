@@ -58,6 +58,9 @@ public class ClassStudent extends Auditable {
     @Column(name = "class_id", insertable = false, updatable = false)
     private Long tclassId;
 
+    @Column(name = "evaluation_audience_type")
+    private String evaluationAudienceType;
+
     @Column(name = "evaluation_status_reaction")
     private Integer evaluationStatusReaction;
 

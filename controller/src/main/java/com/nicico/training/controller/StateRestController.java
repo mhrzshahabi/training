@@ -147,12 +147,12 @@ public class StateRestController {
     @GetMapping(value = "/spec-list-by-id")
 //    @PreAuthorize("hasAuthority('r_educationMajor')")
     public ResponseEntity<StateDTO.StateSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                     @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                     @RequestParam(value = "_constructor", required = false) String constructor,
-                                                     @RequestParam(value = "operator", required = false) String operator,
-                                                     @RequestParam(value = "criteria", required = false) String criteria,
-                                                     @RequestParam(value = "id", required = false) Long id,
-                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException{
+                                                                       @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "id", required = false) Long id,
+                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException{
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;

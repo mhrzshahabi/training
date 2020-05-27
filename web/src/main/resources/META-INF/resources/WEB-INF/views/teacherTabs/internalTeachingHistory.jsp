@@ -41,13 +41,18 @@
             {
                 name: "startDate",
                 title: "تاریخ شروع",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "endDate",
                 title: "تاریخ خاتمه",
-                filterOperator: "iContains"
-
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "evaluationGrade",

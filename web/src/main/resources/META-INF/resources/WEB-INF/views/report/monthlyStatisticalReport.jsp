@@ -82,27 +82,39 @@
                     title: "<spring:message code="sum.of.present.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalPresent(records)"
+                    summaryFunction: "totalPresent(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 },
                 {
                     name: "overtime",
                     title: "<spring:message code="total.hours.of.overtime"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalOvertime(records)"
+                    summaryFunction: "totalOvertime(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 },
                 {
                     name: "unjustifiedAbsence",
                     title: "<spring:message code="sum.of.unjustified.absence.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalUnjustifiedAbsence(records)"
+                    summaryFunction: "totalUnjustifiedAbsence(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 }, {
                     name: "acceptableAbsence",
                     title: "<spring:message code="sum.of.justified.absence.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalAcceptableAbsence(records)"
+                    summaryFunction: "totalAcceptableAbsence(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 }
             ]
         });

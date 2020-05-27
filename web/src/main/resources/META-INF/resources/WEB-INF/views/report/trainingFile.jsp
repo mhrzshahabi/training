@@ -16,10 +16,22 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
             {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
@@ -51,6 +63,8 @@
             {name: "scoresState", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "student.postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "tclass.teacher", title:"<spring:message code='teacher'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.postCode", title:"<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.ccpAffairs", title:"<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: tclassStudentUrl + "classes-of-student/"
     });
@@ -63,9 +77,21 @@
         fields: [
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant"},
@@ -104,19 +130,28 @@
                 name: "personnelNo2",
                 title:"<spring:message code="personnel.no.6.digits"/>",
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "personnelNo",
                 title:"<spring:message code="personnel.no"/> ",
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "nationalCode",
                 title:"<spring:message code="national.code"/> ",
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "searchBtn",
@@ -212,13 +247,23 @@
             {name: "tclass.course.code"},
             {name: "tclass.course.titleFa"},
             {name: "tclass.term.titleFa"},
-            {name: "tclass.startDate"},
-            {name: "tclass.endDate"},
+            {name: "tclass.startDate",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "tclass.endDate",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "tclass.classStatus", hidden: true},
             {name: "score"},
             {name: "scoresState"},
             {name: "student.postTitle", hidden: true},
-            {name: "tclass.teacher"},
+            {name: "student.postCode"},
+            {name: "student.ccpAffairs"},
+            {name: "tclass.teacher"}
         ]
 
     });

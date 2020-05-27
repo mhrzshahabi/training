@@ -30,6 +30,8 @@
         "3": "غیبت بدون مجوز",
         "4": "غیبت با مجوز",
     };
+    var readOnlySession;
+    var sessionState;
     var DataSource_SessionInOneDate = isc.DataSource.create({
         ID: "attendanceDS",
         clientOnly: true,
@@ -41,7 +43,11 @@
             {name: "studentName", type: "text", title: "نام"},
             {name: "studentFamily", type: "text", title: "نام خانوادگی"},
             {name: "personalNum", type: "text", title: "شماره پرسنلی"},
-            {name: "nationalCode", type: "text", title: "کد ملی"},
+            {name: "nationalCode", type: "text", title: "کد ملی",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "company", type: "text", title: "شرکت"},
             {name: "studentState", type: "text", title: "وضعیت"},
         ],
@@ -57,9 +63,21 @@
             {name: "sessionId", hidden: true, primaryKey: true},
             {name: "studentState", hidden:true, type: "text", title: "وضعیت"},
             {name: "sessionType", title:"نوع جلسه"},
-            {name: "sessionDate", type: "text", title: "تاریخ"},
-            {name: "startHour", type: "text", title: "ساعت شروع"},
-            {name: "endHour", type: "text", title: "ساعت پایان"},
+            {name: "sessionDate", type: "text", title: "تاریخ",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "startHour", type: "text", title: "ساعت شروع",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9:]"
+                }
+            },
+            {name: "endHour", type: "text", title: "ساعت پایان",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9:]"
+                }
+            },
             {name: "state", type: "text", title: "وضعیت"},
         ],
     });
@@ -77,10 +95,22 @@
             {name: "studentId"},
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
         ],
         autoFetchData: false,
         fetchDataURL: attendanceUrl + "/students?classId=0"
@@ -362,6 +392,8 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
+                                readOnlySession = JSON.parse(resp.data)[0].readOnly;
+                                sessionState = JSON.parse(resp.data)[0].sessionState;
                                 let fields1 = [
                                     {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true},
                                     {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true},
@@ -433,6 +465,11 @@
                                 for (let i = 5; i < attendanceGrid.getAllFields().size(); i++) {
                                     attendanceGrid.setFieldProperties(i, {
                                         change(form, item, value, oldValue) {
+                                            if(readOnlySession){
+                                                attendanceWarn(sessionState,DynamicForm_Attendance.values.sessionDate);
+                                                value = oldValue;
+                                                return false;
+                                            }
                                             if (value == 4) {
                                                 let update = false;
                                                 isc.Window.create({
@@ -684,6 +721,13 @@
                                             }
                                         },
                                         change(form, item, value, oldValue) {
+                                            readOnlySession = item.record.readOnly == "true";
+                                            sessionState = parseInt(item.record.sessionState);
+                                            if(readOnlySession){
+                                                attendanceWarn(sessionState,item.record.sessionDate);
+                                                value = oldValue;
+                                                return false;
+                                            }
                                             if (value == 4) {
                                                 isc.Window.create({
                                                     ID: "absenceWindow",
@@ -1139,7 +1183,6 @@
                             } else {
                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                             }
-
                         }
                     });
                 }
@@ -1254,6 +1297,12 @@
         }
     }
 
+    function attendanceWarn(state, date) {
+        if(state !== 3 )
+            createDialog("info","کلاس پایان نیافته است");
+        else
+            createDialog("info","تاریخ شروع کلاس " + date + " می باشد");
+    }
 
     // isc.confirm.addProperties({
     //     buttonClick: function (button, index) {

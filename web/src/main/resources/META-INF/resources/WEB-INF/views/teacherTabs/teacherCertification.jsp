@@ -410,15 +410,24 @@
             {
                 name: "duration",
                 title: "<spring:message code='duration'/>",
-                filterOperator: "equals"
+                filterOperator: "equals",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "startDate",
-                title: "<spring:message code='start.date'/>"
+                title: "<spring:message code='start.date'/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "endDate",
-                title: "<spring:message code='end.date'/>"
+                title: "<spring:message code='end.date'/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             }
         ],
         doubleClick: function () {
@@ -576,7 +585,12 @@
                 OK.close();
             }, 3000);
         } else {
-            if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
+            if (resp.httpResponseCode === 405) {
+                createDialog("info", "<spring:message code="teacherCertification.title.duplicate"/>",
+                    "<spring:message code="message"/>");
+            }
+
+            else if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
                 createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");

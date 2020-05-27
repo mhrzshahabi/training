@@ -16,7 +16,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,30 +58,51 @@ public class PublicationService implements IPublicationService {
 
     @Transactional
     @Override
-    public void addPublication(PublicationDTO.Create request, Long teacherId) {
+    public void addPublication(PublicationDTO.Create request, Long teacherId,HttpServletResponse response) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
         Publication publication = new Publication();
-        modelMapper.map(request, publication);
-        try {
-            teacher.getPublications().add(publication);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+
+        if (!publicationDAO.existsBySubjectTitleAndTeacherId(request.getSubjectTitle(),request.getTeacherId())){
+            modelMapper.map(request, publication);
+            try {
+                teacher.getPublications().add(publication);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            }
+        }
+        else {
+            try {
+                response.sendError(405,null);
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
         }
     }
 
     @Transactional
     @Override
-    public PublicationDTO.Info update(Long id, PublicationDTO.Update request) {
+    public PublicationDTO.Info update(Long id, PublicationDTO.Update request,HttpServletResponse response) {
         final Publication publication = getPublication(id);
-        publication.getCategories().clear();
-        publication.getSubCategories().clear();
-        Publication updating = new Publication();
-        modelMapper.map(publication, updating);
-        modelMapper.map(request, updating);
-        try {
-            return save(updating);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+
+        if (!publicationDAO.existsBySubjectTitleAndTeacherIdAndIdIsNot(request.getSubjectTitle(),request.getTeacherId(),id)) {
+            publication.getCategories().clear();
+            publication.getSubCategories().clear();
+            Publication updating = new Publication();
+            modelMapper.map(publication, updating);
+            modelMapper.map(request, updating);
+            try {
+                return save(updating,response);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            }
+        }
+        else {
+            try {
+                response.sendError(405, null);
+                return null;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
         }
     }
 
@@ -121,9 +143,11 @@ public class PublicationService implements IPublicationService {
         return SearchUtil.search(publicationDAO, request, publication -> modelMapper.map(publication, PublicationDTO.Info.class));
     }
 
-    private PublicationDTO.Info save(Publication publication) {
-        final Publication saved = publicationDAO.saveAndFlush(publication);
-        return modelMapper.map(saved, PublicationDTO.Info.class);
+    @Transactional
+    @Override
+    public PublicationDTO.Info save(Publication publication, HttpServletResponse response) {
+            final Publication saved = publicationDAO.saveAndFlush(publication);
+            return modelMapper.map(saved, PublicationDTO.Info.class);
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {

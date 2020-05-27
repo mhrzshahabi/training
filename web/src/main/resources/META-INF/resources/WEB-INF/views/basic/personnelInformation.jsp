@@ -200,12 +200,28 @@
                 {name: "id", hidden: true},
                 {name: "firstName"},
                 {name: "lastName"},
-                {name: "nationalCode"},
+                {name: "nationalCode",
+                    filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                    }
+                },
                 {name: "companyName"},
-                {name: "personnelNo"},
-                {name: "personnelNo2"},
+                {name: "personnelNo",
+                    filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "personnelNo2",
+                    filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                    }
+                },
                 {name: "postTitle"},
-                {name: "postCode"},
+                {name: "postCode",
+                    filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                    }
+                },
                 {name: "ccpArea"},
                 {name: "ccpAssistant"},
                 {name: "ccpAffairs"},
@@ -277,21 +293,30 @@
                     title: "<spring:message code="class.duration"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                    }
                 },
                 {
                     name: "startDate",
                     title: "<spring:message code='start.date'/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "endDate",
                     title: "<spring:message code='end.date'/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "classStatusId",

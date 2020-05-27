@@ -126,6 +126,8 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+        private CategoryDTO.CategoryInfoTuple category;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
     }
 
     @Getter
@@ -217,7 +219,7 @@ public class CourseDTO implements Serializable {
 //        @NotEmpty
 //        @ApiModelProperty(required = true)
 //        private Integer eLevelTypeId;
-//
+
 //        @NotEmpty
 //        @ApiModelProperty(required = true)
 //        private Integer eTheoTypeId;
@@ -229,12 +231,12 @@ public class CourseDTO implements Serializable {
 //        @NotNull
 //        @ApiModelProperty(required = true)
 //        private Integer version;
-//
+
 //        @NotEmpty
 //        @ApiModelProperty(required = true)
 //        private Long categoryId;
-//
-//
+
+
 //        @NotEmpty
 //        @ApiModelProperty(required = true)
 //        private Long subCategoryId;
