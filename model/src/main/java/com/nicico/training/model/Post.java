@@ -29,11 +29,11 @@ public class Post extends Auditable {
     private String titleFa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_job_id", nullable = false)
+    @JoinColumn(name = "f_job_id")
     private Job job;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_post_grade_id", nullable = false)
+    @JoinColumn(name = "f_post_grade_id")
     private PostGrade postGrade;
 
 //    @ManyToOne(fetch = FetchType.LAZY)

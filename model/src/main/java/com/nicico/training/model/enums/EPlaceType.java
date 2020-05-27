@@ -20,9 +20,9 @@ public enum EPlaceType {
     LanguageLab(5, "آزمایشگاه زبان"),
     Theory(6, "تئوری"),
     Lab(7, "آزمایشگاهی"),
-    WorkShop(7, "کارگاهی"),
-    Public(7, "عمومی"),
-    Robotic(7, "رباتیک");
+    WorkShop(8, "کارگاهی"),
+    Public(9, "عمومی"),
+    Robotic(10, "رباتیک");
 
     private final Integer id;
     private final String titleFa;

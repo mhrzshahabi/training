@@ -1,6 +1,5 @@
 package com.nicico.training.service;
 
-import com.ibm.icu.util.PersianCalendar;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -17,7 +16,6 @@ import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
-import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTimeComparator;
 import org.modelmapper.ModelMapper;
