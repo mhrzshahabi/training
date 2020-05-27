@@ -83,7 +83,6 @@
         fetchDataURL: enumUrl + "eMilitary/spec-list"
     });
     //--------------------------------------------Dynamic Form----------------------------------------------------------
-    var vm = isc.ValuesManager.create({});
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
@@ -121,13 +120,17 @@
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
+                        vm.clearValues();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     }
                     else if(personnelStatusTemp == "false"){
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
                         DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+                        vm.clearValues();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
+                        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     }
                 }
             },
@@ -151,6 +154,10 @@
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
                         fillPersonalInfoFields(nationalCodeTemp);
+                        vm.clearValues();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(nationalCodeTemp);
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
+                        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     }
                 }
             },
@@ -196,6 +203,10 @@
                 changed: function () {
                             var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
                             fillPersonalInfoFields(nationalCodeTemp);
+                            vm.clearValues();
+                            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").setValue(DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
+                            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                            DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                         },
                 validators : [{
                     type: "requiredIf",

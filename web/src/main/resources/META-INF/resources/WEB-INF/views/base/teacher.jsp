@@ -18,6 +18,7 @@
     var selected_record = null;
     var selectedRecordID = null;
     var isFileAttached = false;
+    var vm = isc.ValuesManager.create({});
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -793,6 +794,17 @@
         }
         var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
         DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
+
+        if (selected_record != null) {
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.id").setValue(selected_record.personality.id);
+            if (selected_record.personality.contactInfo.homeAddress != undefined)
+                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.id").setValue(selected_record.personality.contactInfo.homeAddress.id);
+            if (selected_record.personality.contactInfo.workAddress != undefined)
+                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.id").setValue(selected_record.personality.contactInfo.workAddress.id);
+            if (selected_record.personality.accountInfo != undefined)
+                DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
+        }
+
         var data = vm.getValues();
         var teacherSaveUrl = teacherUrl;
 
@@ -818,6 +830,17 @@
         }
         var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
         DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
+
+        if (selected_record != null) {
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.id").setValue(selected_record.personality.id);
+            if (selected_record.personality.contactInfo.homeAddress != undefined)
+                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.id").setValue(selected_record.personality.contactInfo.homeAddress.id);
+            if (selected_record.personality.contactInfo.workAddress != undefined)
+                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.id").setValue(selected_record.personality.contactInfo.workAddress.id);
+            if (selected_record.personality.accountInfo != undefined)
+                DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
+        }
+
         var data = vm.getValues();
         var teacherSaveUrl = teacherUrl;
 
@@ -975,7 +998,7 @@
 
         if(selected_record.personnelStatus == true){
             DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
-            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = fa;
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
             DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
             DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(true);
@@ -1017,7 +1040,7 @@
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.stateId").enable();
 
         teacherMethod = "POST";
-        vm.clearValues();
+        // vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
@@ -1327,6 +1350,7 @@
 
     function personnel_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
+            vm.clearValues();
             var personnel = JSON.parse(resp.data);
             if (personnel.firstName != undefined && personnel.firstName != null)
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personnel.firstName);
@@ -1381,6 +1405,7 @@
             if (restAddress != "")
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
             DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
         }
     }
 
