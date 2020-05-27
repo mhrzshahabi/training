@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -54,13 +56,24 @@ public class InstituteService implements IInstituteService {
 
     @Transactional
     @Override
-    public InstituteDTO.Info create(Object request) {
+    public InstituteDTO.Info create(Object request, HttpServletResponse response) {
         PersonalInfo manager = null;
         Institute parentInstitute = null;
         final InstituteDTO.Create create = modelMapper.map(request, InstituteDTO.Create.class);
 
 
         final Institute institute = modelMapper.map(create, Institute.class);
+
+        String postalCode=institute.getContactInfo().getWorkAddress().getPostalCode();
+
+        if (postalCode!=null && addressDAO.existsByPostalCode(postalCode))
+        {
+            try {
+                response.sendError(405,null);
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
 
         if (create.getEinstituteTypeId() != null) {
             institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(create.getEinstituteTypeId()));

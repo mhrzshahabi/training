@@ -52,6 +52,13 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("PersonalInfoCreateOrUpdateRq")
+    public static class SafeCreate extends PersonalInfoDTO {
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("contractInfo")
     public static class contractInfo extends PersonalInfoDTO {
         private Long id;

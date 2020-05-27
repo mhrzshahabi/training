@@ -8,6 +8,7 @@
         </addColumn>
     </changeSet>
 
+
     <changeSet author="heydaripoor (generated)" id="1588136355333-377">
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
     </changeSet>
@@ -119,11 +120,13 @@
     <changeSet author="poursalehi_mos (generated)" id="1589948097150-498">
         <dropColumn columnName="F_STATE" tableName="TBL_INSTITUTE"/>
     </changeSet>
+
     <changeSet author="haeri_am (generated)" id="1590226268948-430">
         <addColumn tableName="tbl_institute">
             <column name="f_parameter_value" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+
     <changeSet author="haeri_am (generated)" id="1590230850544-431">
         <addColumn tableName="tbl_institute">
             <column name="l_parameter_value" type="number(19, 0)"/>
@@ -148,5 +151,11 @@
     </changeSet>
     <changeSet author="matin_ar (generated)" id="1590306557717-491">
         <dropTable tableName="TBL_CLASS_TARGET_SOCIETY"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1590564324734-401">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_job_id" tableName="tbl_post"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1590564324734-402">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_post_grade_id" tableName="tbl_post"/>
     </changeSet>
 </databaseChangeLog>

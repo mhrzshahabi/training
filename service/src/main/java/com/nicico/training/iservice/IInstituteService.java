@@ -10,6 +10,7 @@ import com.nicico.training.dto.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface IInstituteService {
@@ -18,7 +19,7 @@ public interface IInstituteService {
 
     List<InstituteDTO.Info> list();
 
-    InstituteDTO.Info create(Object request);
+    InstituteDTO.Info create(Object request, HttpServletResponse response);
 
     InstituteDTO.Info update(Long id, Object request);
 
