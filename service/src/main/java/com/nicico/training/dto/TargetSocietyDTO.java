@@ -37,7 +37,6 @@ public class TargetSocietyDTO implements Serializable {
     public static class Create extends TargetSocietyDTO {
         @ApiModelProperty(required = true)
         private Long tclassId;
-        private Long targetSocietyTypeId;
     }
 
     @Getter

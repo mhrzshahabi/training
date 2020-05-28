@@ -43,5 +43,4 @@ public class TargetSocietyService extends BaseService<TargetSociety, Long, Targe
     public List<TargetSocietyDTO.Info> getListById(Long id){
         return modelMapper.map(dao.findAllByTclassId(id), new TypeToken<List<TargetSocietyDTO.Info>>(){}.getType());
     }
-
 }

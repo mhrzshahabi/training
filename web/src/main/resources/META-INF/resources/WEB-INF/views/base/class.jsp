@@ -1102,16 +1102,15 @@
                     if (value === "371"){
                         form.getItem("addtargetSociety").hide();
                         DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
-                        DataSource_TargetSociety_List.addData({societyId:0, title: "فاوا"});
-                        DataSource_TargetSociety_List.addData({societyId:1, title: "عمومی"});
-                        form.getItem("targetSocietyList").valueField = "societyId";
-                        form.clearValue();
+                        getSocietiesList();
+                        form.getItem("targetSocieties").valueField = "societyId";
+                        form.getItem("targetSocieties").clearValue();
                     }
                     else if(value === "372"){
                         form.getItem("addtargetSociety").show();
                         DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
-                        form.getItem("targetSocietyList").valueField = "title";
-                        form.getItem("targetSocietyList").clearValue();
+                        form.getItem("targetSocieties").valueField = "title";
+                        form.getItem("targetSocieties").clearValue();
                     }
                     else
                         return false;
@@ -1119,7 +1118,7 @@
                 }
             },
             {
-                name: "targetSocietyList",
+                name: "targetSocieties",
                 colSpan: 2,
                 rowSpan: 1,
                 type: "SelectItem",
@@ -1146,7 +1145,6 @@
                 click: function() {
                     isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
                         function (value) {
-                            console.log(value);
                             DataSource_TargetSociety_List.addData({societyId:i, title: value}),
                                 i +=1;
                         });
@@ -2173,6 +2171,7 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            getSocietiesList();
             getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
@@ -2195,7 +2194,6 @@
                 }
                 //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
-                // getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
                 if (record.course.evaluation === "1") {
                     DynamicForm_Class_JspClass.setValue("preCourseTest", false);
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
@@ -2218,8 +2216,6 @@
                 Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
             }
-
-// RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
         }
     }
 
@@ -2251,6 +2247,7 @@
             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
+        getSocietiesList();
         getOrganizers();
     }
 
@@ -2693,26 +2690,39 @@
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     var societies = [];
                     societyMap = {0: "فاوا", 1: "عمومی"};
-                    var item = 0
+                    var item = 0;
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
                                 societies.add(currentValue.societyId);
-                                DataSource_TargetSociety_List.addData({
-                                    societyId: currentValue.societyId,
-                                    title: societyMap[currentValue.societyId]
-                                });
+                                DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "societyId";
+                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
                             } else if (currentValue.targetSocietyTypeId === 372) {
                                 societies.add(currentValue.title);
+                                DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
                                 DataSource_TargetSociety_List.addData({societyId: item, title: currentValue.title});
                                 item += 1;
+                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
                             }
                         });
-                    DynamicForm_Class_JspClass.getItem("targetSocietyList").setValue(societies);
+                    DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(societies);
                 }
             })
         );
-
+    }
+    
+    function getSocietiesList() {
+        isc.RPCManager.sendRequest(
+            TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    JSON.parse(resp.data).forEach(
+                        function (currentValue, index, arr) {
+                            DataSource_TargetSociety_List.addData(currentValue);
+                        }
+                    );
+                }
+            }));
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

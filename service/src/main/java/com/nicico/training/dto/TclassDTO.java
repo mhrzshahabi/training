@@ -185,7 +185,12 @@ public class TclassDTO {
     public static class Create extends TclassDTO {
         private Long courseId;
         private Long targetSocietyTypeId;
-        private List<Object> targetSocietyList;
+        @Getter(AccessLevel.NONE)
+        private List<Object> targetSocieties;
+
+        public List<Object> gettargetSocieties() {
+            return targetSocieties == null ? new ArrayList<>(0) : targetSocieties;
+        }
     }
 
     //----------------------------------------------
@@ -230,6 +235,13 @@ public class TclassDTO {
     @ApiModel("TclassUpdateRq")
     public static class Update extends TclassDTO {
         private Long courseId;
+        private Long targetSocietyTypeId;
+        @Getter(AccessLevel.NONE)
+        private List<Object> targetSocieties;
+
+        public List<Object> gettargetSocieties() {
+            return targetSocieties == null ? new ArrayList<>(0) : targetSocieties;
+        }
     }
 
     // ------------------------------

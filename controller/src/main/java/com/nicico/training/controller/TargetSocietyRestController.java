@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,6 +21,20 @@ import java.util.List;
 public class TargetSocietyRestController {
 
     private final TargetSocietyService societyService;
+
+    @Loggable
+    @GetMapping("/getList")
+    public ResponseEntity<List<TargetSocietyDTO.Info>> getList(){
+        List<TargetSocietyDTO.Info> infoList = new ArrayList<>();
+        String [] titles = {"عمومی" ,"خصوصی","فاوا"};
+        for(int i = 0;i < 3; i++) {
+            TargetSocietyDTO.Info info = new TargetSocietyDTO.Info();
+            info.setTitle(titles[i]);
+            info.setSocietyId(new Long(i));
+            infoList.add(info);
+        }
+        return new ResponseEntity<List<TargetSocietyDTO.Info>>(infoList, HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping("/getListById/{id}")
