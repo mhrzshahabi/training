@@ -15,6 +15,8 @@ public interface IPersonalInfoService {
 
     PersonalInfoDTO.Info create(PersonalInfoDTO.Create request);
 
+    PersonalInfoDTO.Info safeCreate(PersonalInfoDTO.SafeCreate request);
+
     PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request);
 
     void delete(Long id);

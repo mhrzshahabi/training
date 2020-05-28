@@ -4,9 +4,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AddressDTO;
+import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.iservice.IAddressService;
 import com.nicico.training.model.Address;
+import com.nicico.training.model.ContactInfo;
 import com.nicico.training.repository.AddressDAO;
+import com.nicico.training.repository.ContactInfoDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -21,6 +24,7 @@ import java.util.Optional;
 public class AddressService implements IAddressService {
     private final ModelMapper modelMapper;
     private final AddressDAO addressDAO;
+    private final ContactInfoDAO contactInfoDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -121,5 +125,11 @@ public class AddressService implements IAddressService {
         return addressDAO.getOne(id);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public ContactInfoDTO.Info getByPostalCodeWithContact(String postalCode) {
+        Optional<ContactInfo> address = contactInfoDAO.findByWorkAddressPostalCode(postalCode);
 
+        return  modelMapper.map(address.orElse(null),ContactInfoDTO.Info.class);
+    }
 }

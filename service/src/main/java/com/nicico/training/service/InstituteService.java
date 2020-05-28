@@ -1,7 +1,4 @@
 package com.nicico.training.service;
-/* com.nicico.training.service
-@Author:roya
-*/
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -20,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -36,6 +35,8 @@ public class InstituteService implements IInstituteService {
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final EnumsConverter.ELicenseTypeConverter eLicenseTypeConverter = new EnumsConverter.ELicenseTypeConverter();
     private final EnumsConverter.EInstituteTypeConverter eInstituteTypeConverter = new EnumsConverter.EInstituteTypeConverter();
+
+    private final AddressService addressService;
 
     @Transactional(readOnly = true)
     @Override
@@ -55,7 +56,7 @@ public class InstituteService implements IInstituteService {
 
     @Transactional
     @Override
-    public InstituteDTO.Info create(Object request) {
+    public InstituteDTO.Info create(Object request, HttpServletResponse response) {
         PersonalInfo manager = null;
         Institute parentInstitute = null;
         final InstituteDTO.Create create = modelMapper.map(request, InstituteDTO.Create.class);
@@ -63,9 +64,21 @@ public class InstituteService implements IInstituteService {
 
         final Institute institute = modelMapper.map(create, Institute.class);
 
+        String postalCode=institute.getContactInfo().getWorkAddress().getPostalCode();
+
+        if (postalCode!=null && addressDAO.existsByPostalCode(postalCode))
+        {
+            try {
+                response.sendError(405,null);
+                return null;
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         if (create.getEinstituteTypeId() != null) {
             institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(create.getEinstituteTypeId()));
-//            institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
+          // institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
         }
         if (create.getElicenseTypeId() != null) {
             institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(create.getElicenseTypeId()));
@@ -90,7 +103,24 @@ public class InstituteService implements IInstituteService {
 
     @Transactional
     @Override
-    public InstituteDTO.Info update(Long id, Object request) {
+    public InstituteDTO.Info update(Long id, LinkedHashMap request,HttpServletResponse response) {
+        Object postalCode=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress")).get("postalCode");
+        Object idAddress=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress")).get("id");
+        boolean status=false;
+
+        if (postalCode!=null && idAddress !=null)
+            status=addressDAO.existsByPostalCodeAndIdNot(postalCode.toString(),Long.valueOf(idAddress.toString()));
+
+        if (postalCode!=null && status)
+        {
+            try {
+                response.sendError(405,null);
+                return null;
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         final InstituteDTO.Update update = modelMapper.map(request, InstituteDTO.Update.class);
         final Optional<Institute> cById = instituteDAO.findById(id);
         final Institute institute = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
@@ -103,8 +133,7 @@ public class InstituteService implements IInstituteService {
         Institute parentInstitute = null;
         AccountInfo accountInfo = new AccountInfo();
 
-
-        addressDAO.save(address);
+        addressDAO.saveAndFlush(address);
         accountInfoDAO.save(accountInfo);
 
 
@@ -383,6 +412,4 @@ public class InstituteService implements IInstituteService {
     public TotalResponse<InstituteDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(instituteDAO, request, term -> modelMapper.map(term, InstituteDTO.Info.class));
     }
-
-
 }

@@ -68,6 +68,7 @@ public class TeacherDTO {
         private String teacherCode;
         private PersonalInfoDTO.Grid personality;
         private Long personalityId;
+        private Boolean personnelStatus;
         private Boolean enableStatus;
         private Set<CategoryDTO.Info> categories;
         private Set<SubcategoryDTO.Info> subCategories;
