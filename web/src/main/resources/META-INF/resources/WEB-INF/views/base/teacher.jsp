@@ -1404,13 +1404,14 @@
             var restAddress = ccp_affairs + "," + ccp_section + "," + ccp_unit;
             if (restAddress != "")
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
-            DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
-            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
         }
+        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
     }
 
     function personalInfo_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
+            vm.clearValues();
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personality.nationalCode);
@@ -1461,6 +1462,7 @@
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
             }
         }
+        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
     }
 
     function clearTabFilters() {

@@ -154,7 +154,6 @@
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
                         fillPersonalInfoFields(nationalCodeTemp);
-                        vm.clearValues();
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(nationalCodeTemp);
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
                         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
@@ -203,7 +202,6 @@
                 changed: function () {
                             var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
                             fillPersonalInfoFields(nationalCodeTemp);
-                            vm.clearValues();
                             DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").setValue(DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
                             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
                             DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
