@@ -1243,8 +1243,9 @@
             Window_Institute_Institute.close();
 
         }
+
         else if(respCode==405){
-            createDialog("info", "<spring:message code="postal.ocde.duplicate"/>",
+            createDialog("info", "<spring:message code="postal.code.duplicate"/>",
                 "<spring:message code="message"/>");
         }
         else {
@@ -2644,6 +2645,7 @@
                 title: "<spring:message code='national.code'/>",
                 keyPressFilter: "[0-9|/|.]| ",
                 width: "*",
+                length:10,
                 required:true
             },
             {
@@ -3390,7 +3392,7 @@
 
     function fillAddressFields(postalCode) {
         if (postalCode !== undefined)
-            isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,
+            isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getByPostalCodeWithContact/" + postalCode, "GET", null,
                 "callback: address_findOne_result(rpcResponse)"));
     }
 
@@ -3400,12 +3402,13 @@
         }
         let data = JSON.parse(resp.data);
 
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.cityId", data.city.name);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.stateId", data.state.name);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.id", data.id);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.postalCode", data.postalCode);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.restAddr", data.restAddr);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.phone", data.phone);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.fax", data.fax);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.webSite", data.webSite);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.email", data.email);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.mobile", data.mobile);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.cityId", data.workAddress.city.id);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.stateId", data.workAddress.state.id);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.postalCode", data.workAddress.postalCode);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.restAddr", data.workAddress.restAddr);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.phone", data.workAddress.phone);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.fax", data.workAddress.fax);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.webSite", data.workAddress.webSite);
     }

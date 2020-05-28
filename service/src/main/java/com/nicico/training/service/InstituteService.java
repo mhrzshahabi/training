@@ -70,6 +70,7 @@ public class InstituteService implements IInstituteService {
         {
             try {
                 response.sendError(405,null);
+                return null;
             } catch (IOException e){
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
             }
@@ -102,8 +103,23 @@ public class InstituteService implements IInstituteService {
 
     @Transactional
     @Override
-    public InstituteDTO.Info update(Long id, Object request) {
+    public InstituteDTO.Info update(Long id, LinkedHashMap request,HttpServletResponse response) {
+        Object postalCode=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress")).get("postalCode");
+        Object idAddress=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress")).get("id");
+        boolean status=false;
 
+        if (postalCode!=null && idAddress !=null)
+            status=addressDAO.existsByPostalCodeAndIdNot(postalCode.toString(),Long.valueOf(idAddress.toString()));
+
+        if (postalCode!=null && status)
+        {
+            try {
+                response.sendError(405,null);
+                return null;
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
 
         final InstituteDTO.Update update = modelMapper.map(request, InstituteDTO.Update.class);
         final Optional<Institute> cById = instituteDAO.findById(id);

@@ -18,4 +18,6 @@ public interface AddressDAO extends JpaRepository<Address, Long>, JpaSpecificati
     Optional<Address> findByPostalCode(@Param("postalCode") String postalCode);
 
     boolean existsByPostalCode(String postalCode);
+
+    boolean existsByPostalCodeAndIdNot(String postalCode,Long id);
 }
