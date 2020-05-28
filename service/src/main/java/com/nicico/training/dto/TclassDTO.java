@@ -189,6 +189,8 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> gettargetSocieties() {
+            if(targetSocieties == null)
+                return new ArrayList<>(0);
             boolean accept = true;
             for (Object society : targetSocieties){
                 if(targetSocietyTypeId == 371 && society instanceof Integer)
@@ -198,7 +200,7 @@ public class TclassDTO {
                 accept = false;
                 break;
             }
-            return targetSocieties != null && accept ? targetSocieties : new ArrayList<>(0);
+            return accept ? targetSocieties : new ArrayList<>(0);
         }
     }
 
@@ -249,6 +251,8 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> gettargetSocieties() {
+            if(targetSocieties == null)
+                return new ArrayList<>(0);
             boolean accept = true;
             for (Object society : targetSocieties){
                 if(targetSocietyTypeId == 371 && society instanceof Integer)
@@ -258,7 +262,7 @@ public class TclassDTO {
                 accept = false;
                 break;
             }
-            return targetSocieties != null && accept ? targetSocieties : new ArrayList<>(0);
+            return accept ? targetSocieties : new ArrayList<>(0);
         }
     }
 

@@ -26,13 +26,6 @@ public class TargetSocietyRestController {
     @GetMapping("/getList")
     public ResponseEntity<List<TargetSocietyDTO.Info>> getList(){
         List<TargetSocietyDTO.Info> infoList = new ArrayList<>();
-        String [] titles = {"عمومی" ,"خصوصی","فاوا"};
-        for(int i = 0;i < 3; i++) {
-            TargetSocietyDTO.Info info = new TargetSocietyDTO.Info();
-            info.setTitle(titles[i]);
-            info.setSocietyId(new Long(i));
-            infoList.add(info);
-        }
         return new ResponseEntity<List<TargetSocietyDTO.Info>>(infoList, HttpStatus.OK);
     }
 

@@ -2691,18 +2691,23 @@
                     var societies = [];
                     societyMap = {0: "فاوا", 1: "عمومی"};
                     var item = 0;
+                    DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
+                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
                                 societies.add(currentValue.societyId);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "societyId";
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
+                                DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                             } else if (currentValue.targetSocietyTypeId === 372) {
                                 societies.add(currentValue.title);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
                                 DataSource_TargetSociety_List.addData({societyId: item, title: currentValue.title});
                                 item += 1;
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
+                                DynamicForm_Class_JspClass.getItem("addtargetSociety").show();
                             }
                         });
                     DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(societies);
