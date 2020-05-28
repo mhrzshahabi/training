@@ -148,6 +148,10 @@
                 },
                 defaultDynamicValue:function () {
                     return
+                },
+                changed:function () {
+                    List_Grid_Reaport_classOutsideCurrentTerm.setData([])
+
                 }
             },
 
@@ -178,6 +182,7 @@
                     RestDataSource_subCategory_COCT.fetchDataURL = categoryUrl + value + "/sub-categories";
                     DynamicForm_Report_COCT.getItem("subCategory.id").fetchData();
                    // DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                    List_Grid_Reaport_classOutsideCurrentTerm.setData([])
                 },
                 click: function (form, item) {
                  //   item.fetchData();
@@ -206,6 +211,7 @@
                 },
                 changed: function (form, item, value) {
                    // DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                    List_Grid_Reaport_classOutsideCurrentTerm.setData([])
                 }
             },
             {

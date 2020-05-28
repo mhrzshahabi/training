@@ -4,21 +4,10 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.training.TrainingException;
-import com.nicico.training.iservice.IEvaluationService;
-import com.nicico.training.iservice.IQuestionnaireQuestionService;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.QuestionnaireQuestionDAO;
-import com.nicico.training.service.EvaluationService;
-import com.nicico.training.service.ParameterService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
@@ -195,14 +184,23 @@ public class TclassDTO {
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
         private Long courseId;
-        private List<Long> targetSocietiesCombo;
         private Long targetSocietyTypeId;
-        private String targetSocietiesEtc;
         @Getter(AccessLevel.NONE)
-        private List<String>targetSocietiesTitles;
+        private List<Object> targetSocieties;
 
-        public List<String> getTargetSocietiesTitles() {
-            return targetSocietiesEtc == null ? new ArrayList<String>() : new ArrayList<String>(Arrays.asList(targetSocietiesEtc.split(",")));
+        public List<Object> gettargetSocieties() {
+            if(targetSocieties == null)
+                return new ArrayList<>(0);
+            boolean accept = true;
+            for (Object society : targetSocieties){
+                if(targetSocietyTypeId == 371 && society instanceof Integer)
+                    continue;
+                else if(targetSocietyTypeId == 372 && society instanceof String)
+                    continue;
+                accept = false;
+                break;
+            }
+            return accept ? targetSocieties : new ArrayList<>(0);
         }
     }
 
@@ -248,6 +246,24 @@ public class TclassDTO {
     @ApiModel("TclassUpdateRq")
     public static class Update extends TclassDTO {
         private Long courseId;
+        private Long targetSocietyTypeId;
+        @Getter(AccessLevel.NONE)
+        private List<Object> targetSocieties;
+
+        public List<Object> gettargetSocieties() {
+            if(targetSocieties == null)
+                return new ArrayList<>(0);
+            boolean accept = true;
+            for (Object society : targetSocieties){
+                if(targetSocietyTypeId == 371 && society instanceof Integer)
+                    continue;
+                else if(targetSocietyTypeId == 372 && society instanceof String)
+                    continue;
+                accept = false;
+                break;
+            }
+            return accept ? targetSocieties : new ArrayList<>(0);
+        }
     }
 
     // ------------------------------

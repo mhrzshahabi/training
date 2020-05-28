@@ -21,14 +21,13 @@ public class TargetSocietyDTO implements Serializable {
     @ApiModelProperty(required = true)
     private String title;
     private Long societyId;
+    private Long targetSocietyTypeId;
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TargetSociety - Info")
     public static class Info extends TargetSocietyDTO {
-        private Long id;
-        private Integer version;
     }
 
     @Getter
@@ -38,7 +37,6 @@ public class TargetSocietyDTO implements Serializable {
     public static class Create extends TargetSocietyDTO {
         @ApiModelProperty(required = true)
         private Long tclassId;
-        private Long targetSocietyTypeId;
     }
 
     @Getter

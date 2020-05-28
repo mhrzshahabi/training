@@ -117,25 +117,37 @@ public class TeacherRestController {
     @PutMapping(value = "/{id}")
     //@PreAuthorize("hasAuthority('Teacher_U')")
     public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
-        ((LinkedHashMap) request).remove("attachPic");
+        final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
+        Teacher teacher = null;
+        if(tById.isPresent())
+            teacher = tById.get();
+        if(teacher != null && !teacher.getId().equals(id)) {
+            if (teacher.isInBlackList() == true)
+                return new ResponseEntity<>("duplicateAndBlackList", HttpStatus.NOT_ACCEPTABLE);
+            else
+                return new ResponseEntity<>("duplicateAndNotBlackList", HttpStatus.NOT_ACCEPTABLE);
+        }
+        else {
+            ((LinkedHashMap) request).remove("attachPic");
 
-        List<CategoryDTO.Info> categories = null;
-        List<SubcategoryDTO.Info> subCategories = null;
+            List<CategoryDTO.Info> categories = null;
+            List<SubcategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null && !((List)request.get("categories")).isEmpty())
-            categories = setCats(request);
-        if (request.get("subCategories") != null && !((List)request.get("subCategories")).isEmpty())
-            subCategories = setSubCats(request);
+            if (request.get("categories") != null && !((List) request.get("categories")).isEmpty())
+                categories = setCats(request);
+            if (request.get("subCategories") != null && !((List) request.get("subCategories")).isEmpty())
+                subCategories = setSubCats(request);
 
-        TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
-        if (categories != null && categories.size() > 0)
-            update.setCategories(categories);
-        if (subCategories != null && subCategories.size() > 0)
-            update.setSubCategories(subCategories);
-        try {
-            return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
+            if (categories != null && categories.size() > 0)
+                update.setCategories(categories);
+            if (subCategories != null && subCategories.size() > 0)
+                update.setSubCategories(subCategories);
+            try {
+                return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
+            } catch (TrainingException ex) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
 

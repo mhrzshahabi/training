@@ -3,7 +3,9 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AddressDTO;
+import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.iservice.IAddressService;
+import com.nicico.training.model.ContactInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -108,5 +110,12 @@ public class AddressRestController {
         return new ResponseEntity<>(addressService.getOneByPostalCode(postalCode), HttpStatus.OK);
     }
 
-
+    @Loggable
+    @GetMapping(value = "/getByPostalCodeWithContact/{postalCode}")
+//    @PreAuthorize("hasAuthority('r_personalInfo')")
+    public ResponseEntity<ContactInfoDTO.Info> getByPostalCodeWithContact(@PathVariable String postalCode) {
+        if (postalCode == null || postalCode.equals("undefined"))
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(addressService.getByPostalCodeWithContact(postalCode), HttpStatus.OK);
+    }
 }
