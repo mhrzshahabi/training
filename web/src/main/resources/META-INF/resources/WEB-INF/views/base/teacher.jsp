@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     var teacherMethod = "POST";
@@ -116,23 +117,46 @@
     //----------------------------------------------------Menu-------------------------------------------------------
     var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
         width: 150,
-        data: [{
+        data: [
+            <sec:authorize access="hasAuthority('Teacher_R')">
+            {
             title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_teacher_refresh();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_C')">
+            {
             title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_teacher_add();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_U')">
+            {
             title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_teacher_edit();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_D')">
+            {
             title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_teacher_remove();
             }
-        }, {isSeparator: true}, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('Teacher_C','Teacher_R','Teacher_U','Teacher_D')">
+
+            {isSeparator: true},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_P')">
+            {
             title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                 trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
                     ListGrid_Teacher_JspTeacher.getCriteria());
@@ -161,6 +185,8 @@
                     trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id, null);
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Teacher_E')">
             {
                 title: "<spring:message code='teacher.evaluation'/>",
                 click: function () {
@@ -174,17 +200,26 @@
                     Window_Evaluation_JspTeacher.show();
                 }
             }
+            </sec:authorize>
         ]
     });
     //----------------------------------------------------ListGrid------------------------------------------------------
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
         width: "100%",
         height: "100%",
+
+        <sec:authorize access="hasAuthority('Teacher_R')">
         dataSource: RestDataSource_Teacher_JspTeacher,
+        </sec:authorize>
+
+
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
+
+        <sec:authorize access="hasAuthority('Teacher_U')">
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
+        </sec:authorize>
         initialSort: [
             {property: "teacherCode", direction: "descending", primarySort: true}
         ],
@@ -532,7 +567,9 @@
         padding: 10,
         members: [
             IButton_Evaluation_Show_JspTeacher,
+            <sec:authorize access="hasAuthority('Teacher_P')">
             IButton_Evaluation_Print_JspTeacher,
+            </sec:authorize>
             IButton_Evaluation_Exit_JspTeacher
         ]
     });
@@ -743,13 +780,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Teacher_C')">
             ToolStripButton_Add_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_U')">
             ToolStripButton_Edit_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_D')">
             ToolStripButton_Remove_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_P')">
             ToolStripButton_Print_JspTeacher,
             ToolStripButton_Print_InfoForm_JspTeacher,
             ToolStripButton_Print_Empty_InfoForm_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_E')">
             ToolStripButton_Evaluation_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_R')">
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -758,6 +811,7 @@
                     ToolStripButton_Refresh_JspTeacher
                 ]
             })
+            </sec:authorize>
 
         ]
     });
@@ -1404,13 +1458,14 @@
             var restAddress = ccp_affairs + "," + ccp_section + "," + ccp_unit;
             if (restAddress != "")
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
-            DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
-            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
         }
+        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
     }
 
     function personalInfo_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
+            vm.clearValues();
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personality.nationalCode);
@@ -1461,6 +1516,7 @@
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
             }
         }
+        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
     }
 
     function clearTabFilters() {

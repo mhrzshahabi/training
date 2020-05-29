@@ -111,26 +111,15 @@ public class TeacherService implements ITeacherService {
             personalInfo.setEducationLevel(educationLevel);
             personalInfo.setEducationMajor(educationMajor);
             personalInfo.setEducationOrientation(educationOrientation);
+            personalInfoService.modify(request.getPersonality(), personalInfo);
             request.getPersonality().setId(personalInfo.getId());
             request.setPersonalityId(personalInfo.getId());
-                teacher.setPersonality(personalInfo);
+            teacher.setPersonality(personalInfo);
         }
-
-        EducationLevel educationLevel = null;
-        EducationMajor educationMajor = null;
-        EducationOrientation educationOrientation = null;
-        if(request.getPersonality().getEducationLevelId() != null)
-             educationLevel = modelMapper.map(educationLevelService.get(request.getPersonality().getEducationLevelId()),EducationLevel.class);
-        if(request.getPersonality().getEducationMajorId() != null)
-            educationMajor = modelMapper.map(educationMajorService.get(request.getPersonality().getEducationMajorId()),EducationMajor.class);
-        if(request.getPersonality().getEducationOrientationId() != null)
-            educationOrientation = modelMapper.map(educationOrientationService.get(request.getPersonality().getEducationOrientationId()),EducationOrientation.class);
-
 
         teacher.getCategories().clear();
         teacher.getSubCategories().clear();
         Teacher updating = new Teacher();
-        personalInfoService.modify(request.getPersonality(), teacher.getPersonality());
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
         try {

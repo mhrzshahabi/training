@@ -215,6 +215,7 @@
     {
         var Menu_ListGrid_evaluation_class = isc.Menu.create({
             data: [
+                <sec:authorize access="hasAuthority('Evaluation_C')">
                 {
                     title: "<spring:message code="record.evaluation.results"/>",
                     <%--icon: "<spring:url value="refresh.png"/>",--%>
@@ -657,7 +658,11 @@
                                 isc.TrHLayoutButtons.create({
                                     members: [
                                         IButton_Questions_Save,
+
+                                        <sec:authorize access="hasAuthority('Evaluation_P')">
                                         IButton_Questions_Print,
+                                        </sec:authorize>
+
                                         isc.IButtonCancel.create({
                                             click: function () {
                                                 Window_Questions_JspEvaluation.close();
@@ -887,6 +892,9 @@
                         }
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_R')">
                 {
                     title: "<spring:message code="refresh"/>",
                     <%--icon: "<spring:url value="refresh.png"/>",--%>
@@ -894,6 +902,7 @@
                         ListGrid_evaluation_class.invalidateCache();
                     }
                 }
+                </sec:authorize>
                 <%--,--%>
                 <%--{--%>
                 <%--title: "<spring:message code="print.pdf"/>",--%>
@@ -1052,7 +1061,9 @@
         var ListGrid_evaluation_class = isc.TrLG.create({
             width: "100%",
             height: "100%",
+            <sec:authorize access="hasAuthority('Evaluation_R')">
             dataSource: RestDataSource_evaluation_class,
+            </sec:authorize>
             contextMenu: Menu_ListGrid_evaluation_class,
             canAddFormulaFields: false,
             autoFetchData: true,
@@ -1380,6 +1391,7 @@
             width: "100%",
             membersMargin: 5,
             members: [
+                <sec:authorize access="hasAuthority('Evaluation_R')">
                 DynamicForm_Evalution_Term_Filter,
                 isc.ToolStrip.create({
                     width: "100%",
@@ -1389,6 +1401,7 @@
                         ToolStripButton_Refresh,
                     ]
                 })
+                </sec:authorize>
 
             ]
         });
@@ -1420,8 +1433,12 @@
             width: "100%",
             membersMargin: 5,
             members: [
+
+                <sec:authorize access="hasAuthority('Evaluation_PrintPreTest')">
                 ToolStripButton_FormIssuance,
                 ToolStripButton_FormIssuanceForAll,
+                </sec:authorize>
+
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -1512,6 +1529,7 @@
             height: "10px",
             padding: 0,
             fields: [
+                <sec:authorize access="hasAuthority('Evaluation_PrintPreTest')">
                 {
                     name: "evaluationReturnDate",
                     title: "<spring:message code='return.date'/>",
@@ -1536,6 +1554,7 @@
                         evaluation_check_date();
                     }
                 }
+                </sec:authorize>
             ]
         });
 
@@ -1556,27 +1575,38 @@
             tabBarPosition: "top",
             enabled: false,
             tabs: [
+                <sec:authorize access="hasAuthority('Evaluation_Reaction')">
                 {
                     id: "TabPane_Reaction",
                     title: "<spring:message code="evaluation.reaction"/>",
                     pane: VLayout_Body_evaluation
                 }
                 ,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Learning')">
                 {
                     id: "TabPane_Learning",
                     title: "<spring:message code="evaluation.learning"/>",
                     pane: VLayout_Body_evaluation
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Behavior')">
                 {
                     id: "TabPane_Behavior",
                     title: "<spring:message code="evaluation.behavioral"/>",
                     pane: VLayout_Body_evaluation
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Results')">
                 {
                     id: "TabPane_Results",
                     title: "<spring:message code="evaluation.results"/>",
                     pane: VLayout_Body_evaluation
                 }
+                </sec:authorize>
             ],
             tabSelected: function (tabNum, tabPane, ID, tab, name) {
                 if (isc.Page.isLoaded())
