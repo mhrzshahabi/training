@@ -37,6 +37,9 @@ public class TeacherService implements ITeacherService {
     private final ICategoryService categoryService;
     private final ISubcategoryService subCategoryService;
     private final ITeacherHelpService teacherHelpService;
+    private final IEducationLevelService educationLevelService;
+    private final IEducationMajorService educationMajorService;
+    private final IEducationOrientationService educationOrientationService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -92,11 +95,31 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
+
+        PersonalInfo personalInfo = modelMapper.map(personalInfoService.getOneByNationalCode(request.getPersonality().getNationalCode()),PersonalInfo.class);
         final Teacher teacher = getTeacher(id);
+        if (personalInfo != null) {
+            EducationLevel educationLevel = null;
+            EducationMajor educationMajor = null;
+            EducationOrientation educationOrientation = null;
+            if(request.getPersonality().getEducationLevelId() != null)
+                educationLevel = modelMapper.map(educationLevelService.get(request.getPersonality().getEducationLevelId()),EducationLevel.class);
+            if(request.getPersonality().getEducationMajorId() != null)
+                educationMajor = modelMapper.map(educationMajorService.get(request.getPersonality().getEducationMajorId()),EducationMajor.class);
+            if(request.getPersonality().getEducationOrientationId() != null)
+                educationOrientation = modelMapper.map(educationOrientationService.get(request.getPersonality().getEducationOrientationId()),EducationOrientation.class);
+            personalInfo.setEducationLevel(educationLevel);
+            personalInfo.setEducationMajor(educationMajor);
+            personalInfo.setEducationOrientation(educationOrientation);
+            personalInfoService.modify(request.getPersonality(), personalInfo);
+            request.getPersonality().setId(personalInfo.getId());
+            request.setPersonalityId(personalInfo.getId());
+            teacher.setPersonality(personalInfo);
+        }
+
         teacher.getCategories().clear();
         teacher.getSubCategories().clear();
         Teacher updating = new Teacher();
-        personalInfoService.modify(request.getPersonality(), teacher.getPersonality());
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
         try {

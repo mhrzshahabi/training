@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -155,28 +156,47 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     Menu_JspConfigQuestionnaire = isc.Menu.create({
-        data: [{
+        data: [
+            <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
+            {
             title: "<spring:message code='refresh'/>", click: function () {
                 refreshLG(ListGrid_JspConfigQuestionnaire);
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('EvaluationQuestion_C')">
+            {
             title: "<spring:message code='create'/>", click: function () {
                 ListGrid_ConfigQuestionnaire_Add();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('EvaluationQuestion_U')">
+            {
             title: "<spring:message code='edit'/>", click: function () {
                 ListGrid_ConfigQuestionnaire_Edit();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('EvaluationQuestion_D')">
+            {
             title: "<spring:message code='remove'/>", click: function () {
                 ListGrid_ConfigQuestionnaire_Remove();
             }
         }
+            </sec:authorize>
         ]
     });
 
     ListGrid_JspConfigQuestionnaire = isc.TrLG.create({
+
+        <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
         dataSource: RestDataSource_JspConfigQuestionnaire,
+        </sec:authorize>
+
         contextMenu: Menu_JspConfigQuestionnaire,
         autoFetchData: true,
         sortField: 1,
@@ -206,9 +226,11 @@
                 canSort: false,
             }
         ],
+        <sec:authorize access="hasAuthority('EvaluationQuestion_U')">
         rowDoubleClick: function () {
             ListGrid_ConfigQuestionnaire_Edit();
         },
+        </sec:authorize>
         getCellCSSText: function (record) {
             if (record.domain.code === "SAT")
                 return "color:red;font-size: 12px;";
@@ -253,9 +275,18 @@
         membersMargin: 5,
         members:
             [
+                <sec:authorize access="hasAuthority('EvaluationQuestion_C')">
                 ToolStripButton_Add_JspConfigQuestionnaire,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('EvaluationQuestion_U')">
                 ToolStripButton_Edit_JspConfigQuestionnaire,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('EvaluationQuestion_D')">
                 ToolStripButton_Remove_JspConfigQuestionnaire,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -264,6 +295,7 @@
                         ToolStripButton_Refresh_JspConfigQuestionnaire
                     ]
                 })
+                </sec:authorize>
             ]
     });
 
@@ -278,11 +310,16 @@
         tabBarPosition: "right",
         tabBarThickness: 125,
         tabs: [
+            <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
             {title: "<spring:message code="question.bank"/>", pane: VLayout_Body_JspConfigQuestionnaire},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_R')">
             {
                 title: "<spring:message code="questionnaire"/>",
                 pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})
             },
+            </sec:authorize>
         ]
     });
 
