@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -10,20 +11,42 @@
     isc.Menu.create({
         ID: "QuestionnaireMenu_questionnaire",
         data: [
+            <sec:authorize access="hasAuthority('Questionnaire_R')">
             {title: "<spring:message code="refresh"/>", click: function () { refreshLG(QuestionnaireLG_questionnaire, cleanLG(QuestionnaireQuestionLG_questionnaire)); }},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_C')">
             {title: "<spring:message code="create"/>", click: function () { createQuestionnaire_questionnaire(); }},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_U')">
             {title: "<spring:message code="edit"/>", click: function () { editQuestionnaire_questionnaire(); }},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_D')">
             {title: "<spring:message code="remove"/>", click: function () { removeQuestionnaire_questionnaire(); }},
+            </sec:authorize>
         ]
     });
 
     isc.Menu.create({
         ID: "QuestionnaireQuestionMenu_questionnaire",
         data: [
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
             {title: "<spring:message code="refresh"/>", click: function () { refreshQuestionnaireQuestionLG_questionnaire(); }},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_C')">
             {title: "<spring:message code="create"/>", click: function () { createQuestionnaireQuestion_questionnaire(); }},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_U')">
             {title: "<spring:message code="edit"/>", click: function () { editQuestionnaireQuestion_questionnaire(); }},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_D')">
             {title: "<spring:message code="remove"/>", click: function () { removeQuestionnaireQuestion_questionnaire(); }},
+            </sec:authorize>
         ]
     });
 
@@ -31,24 +54,52 @@
     isc.ToolStrip.create({
         ID: "QuestionnaireTS_questionnaire",
         members: [
+            <sec:authorize access="hasAuthority('Questionnaire_R')">
             isc.ToolStripButtonRefresh.create({click: function () { refreshLG(QuestionnaireLG_questionnaire, cleanLG(QuestionnaireQuestionLG_questionnaire)); }}),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_C')">
             isc.ToolStripButtonCreate.create({click: function () { createQuestionnaire_questionnaire(); }}),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_U')">
             isc.ToolStripButtonEdit.create({click: function () { editQuestionnaire_questionnaire(); }}),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_D')">
             isc.ToolStripButtonRemove.create({click: function () { removeQuestionnaire_questionnaire(); }}),
+            </sec:authorize>
+
             isc.LayoutSpacer.create({width: "*"}),
+            <sec:authorize access="hasAuthority('Questionnaire_R')">
             isc.Label.create({ID: "QuestionnaireLGCountLabel_questionnaire"}),
+            </sec:authorize>
         ]
     });
 
     isc.ToolStrip.create({
         ID: "QuestionnaireQuestionTS_questionnaire",
         members: [
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
             isc.ToolStripButtonRefresh.create({click: function () { refreshQuestionnaireQuestionLG_questionnaire(); }}),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_C')">
             isc.ToolStripButtonAdd.create({click: function () { createQuestionnaireQuestion_questionnaire(); }}),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_U')">
             isc.ToolStripButtonEdit.create({click: function () { editQuestionnaireQuestion_questionnaire(); }}),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_D')">
             isc.ToolStripButtonRemove.create({click: function () { removeQuestionnaireQuestion_questionnaire(); }}),
+            </sec:authorize>
             isc.LayoutSpacer.create({width: "*"}),
+
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
             isc.Label.create({ID: "QuestionnaireQuestionLGCount_questionnaire"}),
+            </sec:authorize>
         ]
     });
 
@@ -76,7 +127,10 @@
 
     QuestionnaireLG_questionnaire = isc.TrLG.create({
         ID: "QuestionnaireLG_questionnaire",
+        <sec:authorize access="hasAuthority('Questionnaire_R')">
         dataSource: QuestionnaireDS_questionnaire,
+        </sec:authorize>
+
         autoFetchData: true,
         fields: [{name: "title"},{name:"questionnaireType.title"},{name: "description"}],
         gridComponents: [
@@ -85,8 +139,12 @@
         ],
         contextMenu: QuestionnaireMenu_questionnaire,
         dataChanged: function () { updateCountLabel(this, QuestionnaireLGCountLabel_questionnaire)},
+        <sec:authorize access="hasAuthority('Questionnaire_U')">
         recordDoubleClick: function () { editQuestionnaire_questionnaire(); },
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
         selectionUpdated: function (record) { refreshQuestionnaireQuestionLG_questionnaire(); }
+        </sec:authorize>
     });
 
     QuestionnaireQuestionDS_questionnaire = isc.TrDS.create({
@@ -111,7 +169,9 @@
         ],
         contextMenu: QuestionnaireQuestionMenu_questionnaire,
         dataChanged: function () { updateCountLabel(this, QuestionnaireQuestionLGCount_questionnaire)},
+        <sec:authorize access="hasAuthority('QuestionnaireQuestion_U')">
         recordDoubleClick: function () { editQuestionnaireQuestion_questionnaire(); }
+        </sec:authorize>
     });
 
     EvaluationQuestionDS_questionnaire = isc.TrDS.create({

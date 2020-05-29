@@ -2,6 +2,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -12,6 +14,7 @@
     var startDateCheck = true;
     var endDateCheck = true;
     var isReadOnlyClass = true;
+    var societies = [];
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -37,6 +40,16 @@
         ],
         fetchDataURL: categoryUrl + "spec-list",
     });
+
+    var DataSource_TargetSociety_List = isc.DataSource.create({
+        clientOnly: true,
+        testData: societies,
+        fields: [
+            {name: "societyId", primaryKey: true},
+            {name: "title", type: "text"}
+        ],
+    });
+
     var RestDataSource_subCategory_JspCourse = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -186,31 +199,53 @@
 
     var Menu_ListGrid_Class_JspClass = isc.Menu.create({
 // width: 150,
-        data: [{
+        data: [
+                <sec:authorize access="hasAuthority('Tclass_R')">
+            {
             title: "<spring:message code='refresh'/>",
             <%--icon: "<spring:url value="refresh.png"/>", --%>
             click: function () {
                 ListGrid_Class_refresh();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_C')">
+            {
             title: "<spring:message code='create'/>",
             <%--icon: "<spring:url value="create.png"/>", --%>
             click: function () {
                 ListGrid_Class_add();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_U')">
+            {
             title: "<spring:message code='edit'/>",
             <%--icon: "<spring:url value="edit.png"/>", --%>
             click: function () {
                 ListGrid_class_edit();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_D')">
+            {
             title: "<spring:message code='remove'/>",
             <%--icon: "<spring:url value="remove.png"/>",--%>
             click: function () {
                 ListGrid_class_remove();
             }
-        }, {isSeparator: true}, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('Tclass_C','Tclass_R','Tclass_U','Tclass_D')">
+            {isSeparator: true},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_P')">
+            {
             title: "<spring:message code='print.pdf'/>",
             <%--icon: "<spring:url value="pdf.png"/>", --%>
             click: function () {
@@ -229,6 +264,7 @@
                 ListGrid_class_print("html");
             }
         },
+            </sec:authorize>
             {isSeparator: true},
             {
                 title: "<spring:message code='students.list'/>",
@@ -248,7 +284,9 @@
         // ID: "classListGrid",
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('Tclass_R')">
         dataSource: RestDataSource_Class_JspClass,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Class_JspClass,
         // dataPageSize: 50,
         // allowAdvancedCriteria: true,
@@ -288,11 +326,14 @@
             // }
             // else{TabSet_Class.disableTab("classScoresTab");
             // }
+
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
+        <sec:authorize access="hasAuthority('Tclass_U')">
         doubleClick: function () {
             ListGrid_class_edit();
         },
+        </sec:authorize>
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -1070,7 +1111,7 @@
                     "1004": "خيلي خوب",
                 }
             },
-            /*{
+            {
                 ID: "targetSocietyTypeId",
                 name: "targetSocietyTypeId",
                 colSpan: 3,
@@ -1080,23 +1121,26 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: "1",
+                defaultValue: "371",
                 valueMap: {
-                    "1": "واحد",
-                    "2": "سایر",
+                    "371": "واحد",
+                    "372": "سایر",
                 },
                 change: function (form, item, value, oldValue) {
 
 
-                    if (value === "1"){
-                        form.getItem("targetSocietiesEtc").hide();
+                    if (value === "371"){
                         form.getItem("addtargetSociety").hide();
-                        form.getItem("targetSocietiesCombo").show();
+                        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+                        getSocietiesList();
+                        form.getItem("targetSocieties").valueField = "societyId";
+                        form.getItem("targetSocieties").clearValue();
                     }
-                    else if(value === "2"){
-                        form.getItem("targetSocietiesCombo").hide();
-                        form.getItem("targetSocietiesEtc").show();
+                    else if(value === "372"){
                         form.getItem("addtargetSociety").show();
+                        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+                        form.getItem("targetSocieties").valueField = "title";
+                        form.getItem("targetSocieties").clearValue();
                     }
                     else
                         return false;
@@ -1104,38 +1148,38 @@
                 }
             },
             {
-                name: "targetSocietiesCombo",
+                name: "targetSocieties",
                 colSpan: 2,
                 rowSpan: 1,
                 type: "SelectItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
                 multiple: true,
                 hidden: false,
                 textAlign: "center",
                 title: "انتخاب جامعه هدف:",
-                valueMap: {
-                    "1": "امور فاوا",
-                    "2": "عمومی",
-                }
+                wrapTitle: false,
+                optionDataSource: DataSource_TargetSociety_List,
+                displayField: "title",
+                valueField: "societyId",
             },
             {
-                    name: "targetSocietiesEtc",
-                    colSpan: 2,
-                    rowSpan: 1,
-                    hidden: true,
-                    title: "مقدار جامعه هدف:",
-                    textAlign: "center",
-                },*/
-            /*{
                 name: "addtargetSociety",
                 title: "افزودن",
                 type: "button",
                 colSpan: 1,
                 hidden: true,
                 endRow: false, startRow: false,
+                i:0,
                 click: function() {
-
+                    isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
+                        function (value) {
+                            DataSource_TargetSociety_List.addData({societyId:i, title: value}),
+                                i +=1;
+                        });
                 }
-            },*/
+            },
             {
                 name: "preCourseTest",
                 colSpan: 1,
@@ -1840,30 +1884,36 @@
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
+    <sec:authorize access="hasAuthority('Tclass_R')">
     var ToolStripButton_Refresh_JspClass = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Class_refresh();
         }
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Tclass_U')">
     var ToolStripButton_Edit_JspClass = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_class_edit();
         }
     });
-
+    </sec:authorize>
+    <sec:authorize access="hasAuthority('Tclass_C')">
     var ToolStripButton_Add_JspClass = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Class_add();
         }
     });
-
+    </sec:authorize>
+    <sec:authorize access="hasAuthority('Tclass_D')">
     var ToolStripButton_Remove_JspClass = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_class_remove();
         }
     });
-
+    </sec:authorize>
+    <sec:authorize access="hasAuthority('Tclass_P')">
     var ToolStripButton_Print_JspClass = isc.ToolStripButtonPrint.create({
 //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
@@ -1871,7 +1921,9 @@
             ListGrid_class_print("pdf");
         }
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Tclass_C')">
     var ToolStripButton_copy_of_class = isc.ToolStripButton.create({
         title: "<spring:message code='copy.of.class'/>",
         click: function () {
@@ -1884,7 +1936,7 @@
             }, 700);
         }
     });
-
+    </sec:authorize>
     var RestDataSource_Year_Filter = isc.TrDS.create({
         fields: [
             {name: "year"}
@@ -2017,12 +2069,31 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Tclass_C')">
             ToolStripButton_Add_JspClass,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_U')">
             ToolStripButton_Edit_JspClass,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_D')">
             ToolStripButton_Remove_JspClass,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_P')">
             ToolStripButton_Print_JspClass,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_C')">
             ToolStripButton_copy_of_class,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_P')">
             ToolStrip_Excel_JspClass,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Tclass_R')">
             DynamicForm_Term_Filter,
             isc.ToolStrip.create({
                 width: "100%",
@@ -2032,7 +2103,7 @@
                     ToolStripButton_Refresh_JspClass,
                 ]
             })
-
+            </sec:authorize>
         ]
     });
 
@@ -2055,53 +2126,79 @@
         enabled: false,
         tabBarPosition: "top",
         tabs: [
+            <sec:authorize access="hasAuthority('TclassSessionsTab')">
             {
                 ID: "classSessionsTab",
                 title: "<spring:message code="sessions"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassCheckListTab')">
             {
                 ID: "classCheckListTab",
                 name: "checkList",
                 title: "<spring:message code="checkList"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab')">
             {
                 ID: "classStudentsTab",
                 title: "<spring:message code="student.plural"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab')">
             {
                 ID: "classAttachmentsTab",
                 title: "<spring:message code="attachments"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassAttendanceTab')">
             {
                 ID: "classAttendanceTab",
                 title: "<spring:message code="attendance"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attendance-tab"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassScoresTab')">
             {
                 ID: "classScoresTab",
                 name: "scores",
                 title: "<spring:message code="register.scores"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassAlarmsTab')">
             {
                 ID: "classAlarmsTab",
                 title: "<spring:message code="alarms"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
             {
                 ID: "classPreCourseTestQuestionsTab",
                 title: "<spring:message code='class.preCourseTestQuestion'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassteacherInformationTab')">
             {
                 ID: "teacherInformationTab",
                 title: "<spring:message code='teachers'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"}),
             },
+            </sec:authorize>
             <%--{--%>
                 <%--ID: "costClassTab",--%>
                 <%--title: "<spring:message code='cost.class'/>",--%>
@@ -2112,6 +2209,7 @@
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
+
                 refreshSelectedTab_class(tab);
         }
     });
@@ -2157,6 +2255,8 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            getSocietiesList();
+            getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
             VM_JspClass.clearErrors(true);
@@ -2178,7 +2278,6 @@
                 }
                 //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
-                // getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
                 if (record.course.evaluation === "1") {
                     DynamicForm_Class_JspClass.setValue("preCourseTest", false);
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
@@ -2187,7 +2286,6 @@
             } else {
                 classMethod = "POST";
                 url = classUrl;
-
                 DynamicForm1_Class_JspClass.setValue("autoValid", true);
                 DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
                 DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
@@ -2202,8 +2300,6 @@
                 Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
             }
-
-// RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
         }
     }
 
@@ -2235,6 +2331,7 @@
             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
+        getSocietiesList();
         getOrganizers();
     }
 
@@ -2365,6 +2462,7 @@
                 }
                 case "classCheckListTab": {
                     if (typeof loadPage_checkList !== "undefined")
+
                         loadPage_checkList();
                     break;
                 }
@@ -2473,14 +2571,17 @@
         }
         isReadOnlyClass = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
         TabSet_Class.enable();
+
+        <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
         if (classRecord.preCourseTest && classRecord.course.evaluation !== "1") {
             TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
         } else {
             if (TabSet_Class.getSelectedTab().ID === "classPreCourseTestQuestionsTab") {
                 TabSet_Class.selectTab(0);
             }
-            TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
+              TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
         }
+        </sec:authorize>
     }
 
     //*****check class is ready to end or no*****
@@ -2669,6 +2770,52 @@
         }
 
 
+    }
+
+    function getTargetSocieties(id) {
+        isc.RPCManager.sendRequest(
+            TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    var societies = [];
+                    societyMap = {0: "فاوا", 1: "عمومی"};
+                    var item = 0;
+                    DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
+                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    JSON.parse(resp.data).forEach(
+                        function (currentValue, index, arr) {
+                            if (currentValue.targetSocietyTypeId === 371) {
+                                societies.add(currentValue.societyId);
+                                DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "societyId";
+                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
+                                DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
+                            } else if (currentValue.targetSocietyTypeId === 372) {
+                                societies.add(currentValue.title);
+                                DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
+                                DataSource_TargetSociety_List.addData({societyId: item, title: currentValue.title});
+                                item += 1;
+                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
+                                DynamicForm_Class_JspClass.getItem("addtargetSociety").show();
+                            }
+                        });
+                    DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(societies);
+                }
+            })
+        );
+    }
+    
+    function getSocietiesList() {
+        isc.RPCManager.sendRequest(
+            TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    JSON.parse(resp.data).forEach(
+                        function (currentValue, index, arr) {
+                            DataSource_TargetSociety_List.addData(currentValue);
+                        }
+                    );
+                }
+            }));
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

@@ -2,124 +2,6 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="matin_ar (generated)" id="1589961420552-430">
-        <addColumn tableName="tbl_class_student">
-            <column name="evaluation_audience_type" type="varchar2(255 CHAR)"/>
-        </addColumn>
-    </changeSet>
-
-
-    <changeSet author="heydaripoor (generated)" id="1588136355333-377">
-        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588146759943-477">
-        <dropColumn columnName="F_ACCOUNTABLE_ID" tableName="TBL_CLASS_CONTRACT"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588146999887-423">
-        <addColumn tableName="tbl_class_contract">
-            <column name="f_accountable_id" type="varchar2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588153689653-425">
-        <addColumn tableName="tbl_class_contract">
-            <column name="f_contract_file_id" type="number(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588392156190-424">
-        <addColumn tableName="tbl_class_contract">
-            <column name="f_second_party_institute_id" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588392156190-441">
-        <dropForeignKeyConstraint baseTableName="TBL_CLASS_CONTRACT" constraintName="FK3634Y3AWQMJ068HO3AFXLFWMG"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588392156190-481">
-        <dropColumn columnName="F_SECOND_PARTY_COMPANY_ID" tableName="TBL_CLASS_CONTRACT"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588393494021-425">
-        <addColumn tableName="tbl_institute">
-            <column name="c_economical_id" type="varchar2(12 CHAR)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588393494021-426">
-        <addColumn tableName="tbl_institute">
-            <column name="c_institute_id" type="varchar2(12 CHAR)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588738080087-392">
-        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_parameter"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1588738080087-393">
-        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_parameter_value"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589446164517-428">
-        <addColumn tableName="tbl_personnel">
-            <column name="address" type="varchar2(255 CHAR)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589446164517-429">
-        <addColumn tableName="tbl_personnel">
-            <column name="email" type="varchar2(255 CHAR)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589446164517-430">
-        <addColumn tableName="tbl_personnel">
-            <column name="mobile" type="varchar2(255 CHAR)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589446164517-431">
-        <addColumn tableName="tbl_personnel">
-            <column name="phone" type="varchar2(255 CHAR)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-428">
-        <addColumn tableName="tbl_institute">
-            <column name="f_contact_info" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-429">
-        <addColumn tableName="tbl_account_info">
-            <column name="f_institute" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-448">
-        <dropForeignKeyConstraint baseTableName="TBL_INSTITUTE" constraintName="FK7W4U3R8E1XIV8GPG3I1G6736I"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-449">
-        <dropForeignKeyConstraint baseTableName="TBL_INSTITUTE" constraintName="FKL9BBWSJ8G9QRSPIE4DLK03H2R"/>
-    </changeSet>
-
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-490">
-        <dropColumn columnName="C_ADDRESS" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-491">
-        <dropColumn columnName="C_EMAIL" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-492">
-        <dropColumn columnName="C_FAX" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-493">
-        <dropColumn columnName="C_MOBILE" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-494">
-        <dropColumn columnName="C_PHONE" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-495">
-        <dropColumn columnName="C_POST_CODE" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-496">
-        <dropColumn columnName="C_WEBSITE" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-497">
-        <dropColumn columnName="F_CITY" tableName="TBL_INSTITUTE"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1589948097150-498">
-        <dropColumn columnName="F_STATE" tableName="TBL_INSTITUTE"/>
-    </changeSet>
     <changeSet author="haeri_am (generated)" id="1590226268948-430">
         <addColumn tableName="tbl_institute">
             <column name="f_parameter_value" type="number(19, 0)"/>
@@ -156,4 +38,7 @@
     <changeSet author="poursalehi_mos (generated)" id="1590564324734-402">
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_post_grade_id" tableName="tbl_post"/>
     </changeSet>
+
+
+
 </databaseChangeLog>

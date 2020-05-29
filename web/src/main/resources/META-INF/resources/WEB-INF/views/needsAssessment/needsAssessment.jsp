@@ -1,6 +1,7 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%
 final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
@@ -35,6 +36,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     });
     var ToolStrip_NeedsAssessment_JspNeedAssessment = isc.ToolStrip.create({
         members: [
+            <sec:authorize access="hasAuthority('NeedAssessment_C')">
             isc.ToolStripButtonCreate.create({
                 click: function () {
                     NeedsAssessmentTargetDF_needsAssessment.clearValues();
@@ -42,6 +44,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     Window_NeedsAssessment_JspNeedsAssessment.show();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
             isc.ToolStripButtonEdit.create({
                 ID: "editButtonJspNeedsAsessment",
                 click: function () {
@@ -71,6 +76,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     }
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('NeedAssessment_R')">
             isc.ToolStripButton.create({
                 title: "<spring:message code="more.information"/>",
                 click: function () {
@@ -79,18 +87,28 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     }
                 }
             }),
+            </sec:authorize>
+
+
+            <sec:authorize access="hasAuthority('NeedAssessment_WFCommittee')">
             isc.ToolStripButton.create({
                 title: "<spring:message code="send.to.committee.workflow"/>",
                 click: function () {
                     sendNeedAssessment_CommitteeToWorkflow();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('NeedAssessment_WFMain')">
             isc.ToolStripButton.create({
                 title: "<spring:message code="send.to.main.workflow"/>",
                 click: function () {
                     sendNeedAssessment_MainWorkflow();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('NeedAssessment_R')">
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -104,10 +122,12 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     })
                 ]
             })
+            </sec:authorize>
         ]
     });
     var ToolStrip_NeedsAssessmentTree_JspNeedAssessment = isc.ToolStrip.create({
         members: [
+            <sec:authorize access="hasAuthority('NeedAssessment_C')">
             isc.ToolStripButtonPrint.create({
                 click: function () {
                     // isc.Canvas.showPrintPreview(printContainer)
@@ -125,6 +145,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     printWithCriteria(advancedCriteria, params, "oneNeedsAssessment.jasper")
                 }
             }),
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -166,12 +187,19 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             {name: "mainWorkflowStatusCode", title: "<spring:message code="status"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "mainWorkflowStatus", title: "<spring:message code="main.workflow.status"/>", filterOperator: "iContains"}
         ],
+        <sec:authorize access="hasAuthority('NeedAssessment_R')">
         dataSource: RestDataSourceNeedsAssessment,
+        </sec:authorize>
+
         gridComponents: [ToolStrip_NeedsAssessment_JspNeedAssessment, "filterEditor", "header", "body"],
+
+        <sec:authorize access="hasAuthority('NeedAssessment_U')">
         recordDoubleClick: function () {
             editButtonJspNeedsAsessment.click();
             changeDirection(0);
         },
+        </sec:authorize>
+
         // groupStartOpen: "all",
         dataArrived: function () {
             // alert("here")

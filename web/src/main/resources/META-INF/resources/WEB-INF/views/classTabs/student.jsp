@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -12,26 +13,38 @@
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
         data: [
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
             {
                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                     refreshStudentsLG_student();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab_ADD')">
             {
                 title: "<spring:message code="add"/>", icon: "<spring:url value="create.png"/>", click: function () {
                     addStudent_student();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab_D')">
             {
                 title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     removeStudent_student();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab_E')">
             {
                 title: "<spring:message code="evaluation"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     evaluationStudent_student();
                 }
             },
+            </sec:authorize>
         ]
     });
 
@@ -39,22 +52,32 @@
     StudentTS_student = isc.ToolStrip.create({
         members: [
 
+            <sec:authorize access="hasAuthority('TclassStudentsTab_ADD')">
             isc.ToolStripButtonAdd.create({
                 click: function () {
                     addStudent_student();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab_D')">
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     removeStudent_student();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab_E')">
             isc.ToolStripButton.create({
                 title: "<spring:message code="evaluation"/>",
                 click: function () {
                     evaluationStudent_student();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassStudentsTab_P')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     ExportToFile.DownloadExcelFormClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
@@ -96,14 +119,17 @@
 
                 }
             }),
+            </sec:authorize>
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "StudentsCount_student"}),
 
+            <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
             isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refreshStudentsLG_student();
                 }
             }),
+            </sec:authorize>
         ]
     });
 
@@ -211,7 +237,9 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "titleFa",
+                <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
                 optionDataSource: RestDataSource_company_Student,
+                </sec:authorize>
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,

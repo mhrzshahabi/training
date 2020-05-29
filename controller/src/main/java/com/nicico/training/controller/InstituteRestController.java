@@ -66,17 +66,19 @@ public class InstituteRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_institute')")
-    public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request) {
+    public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request,HttpServletResponse response) {
         //       InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
-        return new ResponseEntity<>(instituteService.create(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(instituteService.create(request,response), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_institute')")
-    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody LinkedHashMap request,HttpServletResponse response) {
         //InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
-        return new ResponseEntity<>(instituteService.update(id, request), HttpStatus.OK);
+
+
+        return new ResponseEntity<>(instituteService.update(id, request,response), HttpStatus.OK);
     }
 
     @Loggable

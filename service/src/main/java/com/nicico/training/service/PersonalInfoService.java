@@ -90,6 +90,19 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     @Transactional
     @Override
+    public PersonalInfoDTO.Info safeCreate(PersonalInfoDTO.SafeCreate request) {
+        PersonalInfo personalInfo = modelMapper.map(request, PersonalInfo.class);
+
+        try {
+            return modelMapper.map(personalInfoDAO.saveAndFlush(personalInfo), PersonalInfoDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
+
+    }
+
+    @Transactional
+    @Override
     public PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request) {
         PersonalInfo personalInfo = getPersonalInfo(id);
         setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
