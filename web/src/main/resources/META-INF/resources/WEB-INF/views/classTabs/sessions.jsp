@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken1 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -19,6 +20,7 @@
     {
         Menu_ListGrid_session = isc.Menu.create({
             data: [
+                <sec:authorize access="hasAuthority('TclassSessionsTab_R')">
                 {
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
@@ -26,6 +28,10 @@
                         ListGrid_session.invalidateCache();
                     }
                 },
+                </sec:authorize>
+
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_C')">
                 {
                     title: "<spring:message code="create"/>",
                     // title: "<spring:message code="create"/>",
@@ -34,6 +40,9 @@
                         create_Session();
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_U')">
                 {
                     title: "<spring:message code="edit"/>",
                     icon: "<spring:url value="edit.png"/>",
@@ -41,6 +50,9 @@
                         show_SessionEditForm();
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_D')">
                 {
                     title: "<spring:message code="remove"/>",
                     icon: "<spring:url value="remove.png"/>",
@@ -48,9 +60,14 @@
                         remove_Session();
                     }
                 },
+                </sec:authorize>
+
+
                 {
                     isSeparator: true
                 },
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_P')">
                 {
                     title: "<spring:message code="print.pdf"/>",
                     icon: "<spring:url value="pdf.png"/>",
@@ -72,6 +89,7 @@
                         print_SessionListGrid("html");
                     }
                 }
+               </sec:authorize>
             ]
         })
     }
@@ -115,7 +133,10 @@
         var ListGrid_session = isc.TrLG.create({
             width: "100%",
             height: "100%",
+
+            <sec:authorize access="hasAuthority('TclassSessionsTab_R')">
             dataSource: RestDataSource_session,
+            </sec:authorize>
             contextMenu: Menu_ListGrid_session,
             canAddFormulaFields: false,
             // autoFetchData: true,
@@ -351,11 +372,24 @@
         var ToolStrip_session = isc.ToolStrip.create({
             width: "100%",
             members: [
+                <sec:authorize access="hasAuthority('TclassSessionsTab_C')">
                 ToolStripButton_Add,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_U')">
                 ToolStripButton_Edit,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_D')">
                 ToolStripButton_Remove,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_P')">
                 ToolStripButton_Print,
                 ToolStrip_Excel_JspClass,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_R')">
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -364,6 +398,7 @@
                         ToolStripButton_Refresh
                     ]
                 })
+                </sec:authorize>
             ]
         });
     }

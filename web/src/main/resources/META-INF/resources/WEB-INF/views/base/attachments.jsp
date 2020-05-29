@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -161,27 +161,47 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     Menu_ListGrid_JspAttachments = isc.Menu.create({
-        data: [{
+        data: [
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab_R')">
+            {
             title: "<spring:message code='refresh'/>", click: function () {
                 ListGrid_Attachments_refresh();
             }
-        }, {
+            },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab_C')">
+            {
             title: "<spring:message code='create'/>", click: function () {
                 ListGrid_Attachments_Add();
             }
-        }, {
+             },
+            </sec:authorize>
+
+
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab_U')">
+            {
             title: "<spring:message code='edit'/>", click: function () {
                 ListGrid_Attachments_Edit();
             }
-        }, {
+            },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab_D')">
+            {
             title: "<spring:message code='remove'/>", click: function () {
                 ListGrid_Attachments_Remove();
             }
-        }, {
+            },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab_Download')">
+            {
             title: "<spring:message code='download'/>", click: function () {
                 Show_Attachment_Attachments(ListGrid_JspAttachment.getSelectedRecord());
             }
         }
+            </sec:authorize>
         ]
     });
 
@@ -202,7 +222,9 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Attachments_JspAttachments,
+        <sec:authorize access="hasAuthority('TclassAttachmentsTab_R')">
         contextMenu: Menu_ListGrid_JspAttachments,
+        </sec:authorize>
         selectionType: "single",
         sortField: 1,
         sortDirection: "descending",
@@ -228,36 +250,56 @@
         }
     });
 
+
     ToolStripButton_Refresh_JspAttachment = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Attachments_refresh();
         }
     });
 
+
+
     ToolStripButton_Edit_JspAttachment = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_Attachments_Edit();
         }
     });
+
+
+
     ToolStripButton_Add_JspAttachment = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Attachments_Add();
         }
     });
+
+
+
     ToolStripButton_Remove_JspAttachment = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_Attachments_Remove();
         }
     });
 
+
     ToolStrip_Actions_JspAttachment = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
             [
+                <sec:authorize access="hasAuthority('TclassAttachmentsTab_C')">
                 ToolStripButton_Add_JspAttachment,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassAttachmentsTab_U')">
                 ToolStripButton_Edit_JspAttachment,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassAttachmentsTab_D')">
                 ToolStripButton_Remove_JspAttachment,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassAttachmentsTab_R')">
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -266,6 +308,8 @@
                         ToolStripButton_Refresh_JspAttachment
                     ]
                 })
+                </sec:authorize>
+
             ]
     });
 
