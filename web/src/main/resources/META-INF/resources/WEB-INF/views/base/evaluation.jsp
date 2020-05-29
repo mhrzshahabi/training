@@ -18,6 +18,23 @@
 
     // <<-------------------------------------- Create - Window ------------------------------------
     {
+        var RestDataSource_Year_Filter = isc.TrDS.create({
+            fields: [
+                {name: "year"}
+            ],
+            fetchDataURL: termUrl + "years",
+            autoFetchData: true
+        });
+
+        var RestDataSource_Term_Filter = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true},
+                {name: "code"},
+                {name: "startDate"},
+                {name: "endDate"}
+            ]
+        });
+
         EvaluationDS_PersonList = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
@@ -372,6 +389,7 @@
                             fetchDataURL: parameterValueUrl + "/iscList/98"
                         });
                         var vm_JspEvaluation = isc.ValuesManager.create({});
+
                         var DynamicForm_Questions_Title_JspEvaluation = isc.DynamicForm.create({
                             ID: "DynamicForm_Questions_Title_JspEvaluation",
                             validateOnChange: true,
@@ -901,6 +919,107 @@
             ]
         })
     }
+
+    var DynamicForm_Evalution_Term_Filter = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        numCols: 4,
+        colWidths: ["2%", "28%", "2%", "68%"],
+        fields: [
+            {
+                name: "yearFilter",
+                title: "<spring:message code='year'/>",
+                width: "100%",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "year",
+                valueField: "year",
+                optionDataSource: RestDataSource_Year_Filter,
+                filterFields: ["year"],
+                sortField: ["year"],
+                sortDirection: "descending",
+                defaultToFirstOption: true,
+                useClientFiltering: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
+                pickListFields: [
+                    {
+                        name: "year",
+                        title: "<spring:message code='year'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_term_by_year(value);
+                },
+                dataArrived:function (startRow, endRow, data) {
+                    if(data.allRows[0].year !== undefined)
+                    {
+                        load_term_by_year(data.allRows[0].year);
+                    }
+                }
+            },
+            {
+                name: "termFilter",
+                title: "<spring:message code='term'/>",
+                width: "100%",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_Filter,
+                filterFields: ["code"],
+                sortField: ["code"],
+                sortDirection: "descending",
+                defaultToFirstOption: true,
+                useClientFiltering: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_classes_by_term(value);
+                },
+                dataArrived:function (startRow, endRow, data) {
+                    if(data.allRows[0].id !== undefined)
+                    {
+                        DynamicForm_Evalution_Term_Filter.getItem("termFilter").clearValue();
+                        DynamicForm_Evalution_Term_Filter.getItem("termFilter").setValue(data.allRows[0].code);
+                        load_classes_by_term(data.allRows[0].id);
+                    }
+                }
+            }
+        ]
+    });
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
@@ -919,7 +1038,7 @@
                 {name: "course.code"},
                 {name: "course.evaluation"},
                 {name: "institute.titleFa"},
-                {name: "studentCount"},
+                {name: "studentCount",canFilter:false,canSort:false},
                 {name: "numberOfStudentEvaluation"},
                 {name: "classStatus"},
                 {name: "trainingPlaceIds"},
@@ -1261,12 +1380,13 @@
             width: "100%",
             membersMargin: 5,
             members: [
+                DynamicForm_Evalution_Term_Filter,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Refresh
+                        ToolStripButton_Refresh,
                     ]
                 })
 
@@ -1882,6 +2002,36 @@
             criteriaForm.setValue("title", JSON.stringify(DynamicForm_Questions_Title_JspEvaluation.getValues()));
             criteriaForm.show();
             criteriaForm.submitForm();
+        }
+
+        function load_term_by_year(value)
+        {
+            let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
+            RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+            DynamicForm_Evalution_Term_Filter.getItem("termFilter").fetchData();
+        }
+        ////******************************
+
+        ////*****load classes by term*****
+        function load_classes_by_term(value) {
+            if(value !== undefined) {
+                let criteria = {
+                    _constructor:"AdvancedCriteria",
+                    operator:"or",
+                    criteria:[
+                        { fieldName:"term.id", operator:"equals", value: value},
+                        { fieldName:"classStatus", operator:"notEqual", value: "3"}
+                    ]
+                };
+                RestDataSource_evaluation_class.fetchDataURL = evaluationUrl + "/class-spec-list";
+               ListGrid_evaluation_class.implicitCriteria = criteria;
+               ListGrid_evaluation_class.invalidateCache();
+               ListGrid_evaluation_class.fetchData();
+            }
+            else
+            {
+                createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
+            }
         }
 
     }
