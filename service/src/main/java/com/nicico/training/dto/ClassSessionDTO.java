@@ -208,6 +208,17 @@ public class ClassSessionDTO implements Serializable {
         private String sessionDate;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AttendanceClearForm")
+    public static class AttendanceClearForm {
+        private String dayName;
+        private String sessionDate;
+        private String sessionStartHour;
+        private String sessionEndHour;
+    }
+
     //*********************************
 
     @Getter

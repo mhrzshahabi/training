@@ -5,6 +5,7 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassSession;
@@ -16,6 +17,7 @@ import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +46,7 @@ public class AttendanceFormController {
     @PostMapping(value = {"/clear-print/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
-//                                  @RequestParam(value = "fileName") String fileName,
+                                  @RequestParam(value = "list") List<Object> list,
                                   @RequestParam(value = "classId") Long classId
 //                                  @RequestParam(value = "params") String receiveParams
     ) throws Exception {
@@ -66,7 +68,7 @@ public class AttendanceFormController {
                 .thenComparing(ClassSession::getSessionStartHour))
                 .collect(Collectors.toList());
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
-        final Map<String, Object> params = print(sessionList);
+        final Map<String, Object> params = print(modelMapper.map(list, new TypeToken<ClassSessionDTO.AttendanceClearForm>(){}.getType()));
         params.put("days", "روزهای تشکیل کلاس: " + daysOnClass.toString());
         params.put("titleClass", tclassDTO.getTitleClass());
         params.put("code", tclassDTO.getCode());
@@ -80,13 +82,13 @@ public class AttendanceFormController {
         reportUtil.export("/reports/attendanceClear.jasper", params, jsonDataSource, response);
     }
 
-    protected HashMap<String, Object> print(List<ClassSession> sessionList) {
+    protected HashMap<String, Object> print(List<ClassSessionDTO.AttendanceClearForm> sessionList) {
         final HashMap<String, Object> params = new HashMap<>();
         String date = sessionList.get(0).getSessionDate();
         int d = 1;
         double se = 1;
         params.put("d" + d, date);
-        for (ClassSession session : sessionList) {
+        for (ClassSessionDTO.AttendanceClearForm session : sessionList) {
             if (session.getSessionDate().equals(date)) {
                 params.put("se" + (int) se, session.getSessionStartHour() + " - " + session.getSessionEndHour());
                 se++;

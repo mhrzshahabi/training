@@ -36,8 +36,6 @@
         ID: "attendanceDS",
         clientOnly: true,
         testData: sessionInOneDate,
-        // dataFormat: "json",
-        // dataURL: attendanceUrl + "/session-in-date",
         fields: [
             {name: "studentId", hidden: true, primaryKey: true},
             {name: "studentName", type: "text", title: "نام"},
@@ -86,7 +84,10 @@
             {name: "sessionDate", primaryKey: true},
             {name: "dayName"},
         ],
-        autoFetchData: false,
+        // autoFetchData: true,
+        // clientOnly:true,
+        // cacheData: true,
+        // clientOnly: true,
         fetchDataURL: attendanceUrl + "/session-date?id=0"
     });
     var RestData_Student_AttendanceJSP = isc.TrDS.create({
@@ -196,7 +197,32 @@
             isc.ToolStripButton.create({
                 title: "چاپ فرم خام",
                 click: function () {
-                    printClearForm()
+                    isc.RPCManager.sendRequest(TrDSRequest(attendanceUrl + "/session-date?classId=" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
+                        if (resp.httpResponseCode == 200) {
+                            const data = JSON.parse(resp.data).response.data;
+                            isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
+                                if(resp.httpResponseCode == 200){
+                                    const sessions = JSON.parse(resp.data);
+                                    let date = sessions.sessionDate;
+                                    let sessionList = [];
+                                    for(let s of sessions){
+                                        if(s.sessionDate == date){
+                                            sessionList.push(s);
+                                            continue;
+                                        }
+                                        printClearForm(sessionList);
+                                        date = s.sessionDate;
+                                        sessionList.length = 0;
+                                        sessionList.push(s);
+                                    }
+                                }
+                            }));
+
+                            console.log(data)
+                            console.log(Math.ceil(data.length/5))
+                            // printClearForm();
+                        }
+                    }));
                 }
             }),
             isc.ToolStripButtonExcel.create({
@@ -1309,7 +1335,8 @@
         else
             createDialog("info","تاریخ شروع کلاس " + date + " می باشد");
     }
-    function printClearForm() {
+    function printClearForm(list) {
+
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/attendance/clear-print/pdf"/>",
@@ -1318,9 +1345,11 @@
             fields:
                 [
                     {name: "classId", type: "hidden"},
+                    {name: "list", type: "hidden"},
                 ]
         });
         criteriaForm.setValue("classId", classGridRecordInAttendanceJsp.id);
+        criteriaForm.setValue("list", list);
         criteriaForm.show();
         criteriaForm.submitForm();
     }
