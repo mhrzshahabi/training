@@ -336,12 +336,12 @@
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
-        rowDoubleClick: Select_Person_NABOP
+        rowDoubleClick: "Select_Person_NABOP()"
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Person_NABOP
+        click: "Select_Person_NABOP()"
     });
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -756,7 +756,7 @@
 
     function Select_Person_NABOP(selected_Person) {
         selected_Person = (selected_Person == null) ? PersonnelsLG_NABOP.getSelectedRecord() : selected_Person;
-
+        console.log(selected_Person);
         if (selected_Person == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
