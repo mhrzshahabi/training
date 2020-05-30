@@ -756,7 +756,6 @@
 
     function Select_Person_NABOP(selected_Person) {
         selected_Person = (selected_Person == null) ? PersonnelsLG_NABOP.getSelectedRecord() : selected_Person;
-        console.log(selected_Person);
         if (selected_Person == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
