@@ -83,7 +83,6 @@
         fetchDataURL: enumUrl + "eMilitary/spec-list"
     });
     //--------------------------------------------Dynamic Form----------------------------------------------------------
-    var vm = isc.ValuesManager.create({});
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
@@ -106,6 +105,7 @@
                 name: "personnelStatus",
                 title: "<spring:message code='teacher.type'/>",
                 type: "radioGroup",
+                textMatchStyle:"exact",
                 width: "*",
                 valueMap: {
                     "true": "<spring:message code='company.staff'/>",
@@ -114,18 +114,24 @@
                 vertical: false,
                 defaultValue: "false",
                 changed: function () {
-                    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
-                    vm.clearValues();
                     DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
-                    if (personnelStatusTemp == "true") {
+                    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
+                    if(personnelStatusTemp == "true"){
+                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
+                        vm.clearValues();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
-                    } else if (personnelStatusTemp == "false") {
-                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
+                        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     }
-
+                    else if(personnelStatusTemp == "false"){
+                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+                        DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+                        vm.clearValues();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
+                        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+                    }
                 }
             },
             {
@@ -144,15 +150,13 @@
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
         code='msg.national.code.validation'/>", true);
-                    if (codeCheck === true && DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus") == "false") {
+                    if (codeCheck === true) {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
                         fillPersonalInfoFields(nationalCodeTemp);
-                    }
-                    if (codeCheck === true && DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus") == "true") {
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
-                        var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
-                        fillPersonalInfoByNationalCode(nationalCodeTemp);
+                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(nationalCodeTemp);
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
+                        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     }
                 }
             },
@@ -196,11 +200,17 @@
                     }
                 ],
                 changed: function () {
-                            var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getValue();
-                            fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
-                            // var personnelNationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
-                            // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(personnelNationalCodeTemp);
-                        }
+                            var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
+                            fillPersonalInfoFields(nationalCodeTemp);
+                            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").setValue(DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
+                            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                            DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+                        },
+                validators : [{
+                    type: "requiredIf",
+                    expression: "DynamicForm_BasicInfo_JspTeacher.getValue('personnelStatus') == 'true'",
+                    errorMessage: "فیلد اجباری است"
+                }]
             },
             {
                 name: "teacherCode",
@@ -233,6 +243,7 @@
                 title: "بارگیری اطلاعات استاد از سیستم پرسنلی",
                 align: "right",
                 click: function () {
+                    DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getValue();
                     if (personnelCodeTemp != undefined && personnelCodeTemp != null) {
                         fillPersonalInfoByPersonnelNumber(personnelCodeTemp);

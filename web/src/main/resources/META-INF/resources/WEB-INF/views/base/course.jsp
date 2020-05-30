@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -168,7 +169,9 @@
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
-        data: [{
+        data: [
+            <sec:authorize access="hasAuthority('Course_R')">
+            {
             title: "<spring:message code="refresh"/>",
             <%--icon: "<spring:url value="refresh.png"/>", --%>
             click: function () {
@@ -178,39 +181,60 @@
                 // ListGrid_CourseSyllabus.setData([]);
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
             }
-        }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Course_C')">
+            {
             title: "<spring:message code="create"/>",
             <%--icon: "<spring:url value="create.png"/>", --%>
             click: function () {
                 ListGrid_Course_add();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_U')">
+            {
             title: "<spring:message code="edit"/>",
             <%--icon: "<spring:url value="edit.png"/>", --%>
             click: function () {
                 ListGrid_Course_Edit();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_D')">
+            {
             title: "<spring:message code="remove"/>",
             <%--icon: "<spring:url value="remove.png"/>", --%>
             click: function () {
                 ListGrid_Course_remove()
             }
         },
+            </sec:authorize>
+
             <%--, {--%>
             <%--title: "تعریف هدف و سرفصل", icon: "<spring:url value="goal.png"/>", click: function () {--%>
             <%--openTabGoal();--%>
             <%--}--%>
             <%--}--%>
+            <sec:authorize access="hasAuthority('Course_WF')">
             {
                 title: "<spring:message code='send.to.workflow'/>",
                 click: function () {
                     getCourseMainObjective_RunWorkflow();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('Course_C','Course_R','Course_U','Course_D','Course_WF')">
             {
                 isSeparator: true
-            }, {
+            },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_P')">
+            {
                 title: "<spring:message code="format.pdf"/>",
                 <%--icon: "<spring:url value="pdf.png"/>",--%>
                 click: function () {
@@ -236,11 +260,14 @@
                     window.open("course/testCourse/" + ListGrid_Course.getSelectedRecord().id + "/pdf/<%=accessToken%>");
                 }
             }
+            </sec:authorize>
         ]
     });
     var ListGrid_Course = isc.TrLG.create({
         ID: "gridCourse",
+        <sec:authorize access="hasAuthority('Course_R')">
         dataSource: RestDataSource_course,
+        </sec:authorize>
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
         allowAdvancedCriteria: true,
@@ -274,10 +301,14 @@
         <%--return this.rowHoverComponent;--%>
         <%--},--%>
 
+        <sec:authorize access="hasAuthority('Course_U')">
         rowDoubleClick: function () {
             // DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
         },
+        </sec:authorize>
+
+        <sec:authorize access="hasAnyAuthority('Course_Syllabus','Course_Job','Course_Post','Course_Skill','Course_Teachers')">
         selectionChanged: function (record, state) {
             if (state) {
                 courseRecord = record;
@@ -293,6 +324,7 @@
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
             }
         },
+        </sec:authorize>
 
         //working
         dataArrived: function () {
@@ -585,6 +617,8 @@
         showResizeBar: false,
 
     });
+
+    <sec:authorize access="hasAuthority('Course_R')">
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Course_refresh();
@@ -593,33 +627,49 @@
 
         }
     });
+    </sec:authorize>
+
+    <sec:authorize access="hasAuthority('Course_U')">
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_Course_Edit()
         }
     });
+    </sec:authorize>
+
+    <sec:authorize access="hasAuthority('Course_C')">
     var ToolStripButton_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Course_add();
         }
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Course_D')">
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_Course_remove()
         }
     });
+    </sec:authorize>
+
+    <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
         click: function () {
             print_CourseListGrid("pdf");
         }
     });
+    </sec:authorize>
+
+    <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
         click: function () {
             ExportToFile.DownloadExcelFormClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
         }
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Course_WF')">
     var ToolStripButton_SendToWorkflow = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/column_preferences.png",
         title: "<spring:message code='send.to.workflow'/>",
@@ -627,6 +677,7 @@
             getCourseMainObjective_RunWorkflow();
         }
     });
+    </sec:authorize>
 
     var Window_AddMainObjective = isc.Window.create({
         title: "<spring:message code="skill.plural.list"/>",
@@ -872,12 +923,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Course_C')">
             ToolStripButton_Add,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_U')">
             ToolStripButton_Edit,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_D')">
             ToolStripButton_Remove,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_P')">
             ToolStripButton_Print,
+
             ToolStripExcel_JspCourse,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_WF')">
             ToolStripButton_SendToWorkflow,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_R')">
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -886,6 +954,7 @@
                     ToolStripButton_Refresh
                 ]
             })
+            </sec:authorize>
         ]
     });
 
@@ -2485,16 +2554,23 @@
         ID: "tabSetCourse",
         tabBarPosition: "top",
         tabs: [
+            <sec:authorize access="hasAuthority('Course_Syllabus')">
             {
                 ID: "tabGoal",
                 title: "<spring:message code="course_syllabus_goal"/>",
                 pane: ListGrid_CourseSyllabus
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_Job')">
             {
                 ID: "tabJobJspCourse",
                 title: "<spring:message code="job"/>",
                 pane: ListGrid_CourseJob
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_Post')">
             {
                 ID: "tabPostJspCourse",
                 title: "<spring:message code="post"/>",
@@ -2516,22 +2592,29 @@
                     }),
                 })
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_Skill')">
             {
                 ID: "tabSkillJspCourse",
                 title: "<spring:message code="skill"/>",
                 pane: ListGrid_CourseSkill
 
             },
+            </sec:authorize>
             // {
             //     ID: "tabSkillGroupJspCourse",
             //     title: "گروه مهارت",
             //     pane: ListGrid_SkillGroup
             // },
+
+            <sec:authorize access="hasAuthority('Course_Teachers')">
             {
                 ID: "teacherInformationCourse",
                 title: "<spring:message code='teacher.information'/>",
                 pane: ListGrid_teacherInformation_Course
             }
+            </sec:authorize>
             <%-- {--%>
             <%-- title: "<spring:message code="course.evaluation"/>",--%>
             <%-- ID:"courseEvaluationTAB",--%>

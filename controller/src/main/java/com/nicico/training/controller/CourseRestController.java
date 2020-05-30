@@ -55,21 +55,21 @@ public class CourseRestController {
     // ---------------------------------
     @Loggable
     @GetMapping(value = "/{id}")
-    //@PreAuthorize("hasAuthority('r_course')")
+    //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(courseService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-//	@PreAuthorize("hasAuthority('r_course')")
+	//@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<CourseDTO.Info>> list() {
         return new ResponseEntity<>(courseService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/preCourse/{courseId}")
-//	@PreAuthorize("hasAuthority('r_course')")
+	//@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<CourseDTO.Info>> preCourseList(@PathVariable Long courseId) {
         List<CourseDTO.Info> list = courseService.preCourseList(courseId);
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -77,7 +77,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/equalCourse/{courseId}")
-//	@PreAuthorize("hasAuthority('r_course')")
+	//@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<Map>> equalCourseList(@PathVariable Long courseId) {
         List<Map> list = courseService.equalCourseList(courseId);
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -85,6 +85,7 @@ public class CourseRestController {
 
     @Loggable
     @PostMapping
+    //@PreAuthorize("hasAuthority('Course_C')")
     public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req, HttpServletResponse response) {
         CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
 //        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
@@ -97,6 +98,8 @@ public class CourseRestController {
 
     @Loggable
     @PutMapping(value = "setPreCourse/{id}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity setPreCourse(@PathVariable Long id, @RequestBody List<Long> req) {
         courseService.setPreCourse(id, req);
         return new ResponseEntity(HttpStatus.CREATED);
@@ -104,6 +107,8 @@ public class CourseRestController {
 
     @Loggable
     @PutMapping(value = "setEqualCourse/{id}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity setEqualCourse(@PathVariable Long id, @RequestBody List<String> req) {
         courseService.setEqualCourse(id, req);
         return new ResponseEntity(HttpStatus.CREATED);
@@ -111,7 +116,7 @@ public class CourseRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    //@PreAuthorize("hasAuthority('u_course')")
+    //@PreAuthorize("hasAuthority('Course_U')")
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
 //		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
@@ -121,7 +126,7 @@ public class CourseRestController {
 
     @Loggable
     @DeleteMapping(value = "deleteCourse/{id}")
-    //@PreAuthorize("hasAuthority('d_course')")
+    //@PreAuthorize("hasAuthority('Course_D')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
         if (check) {
@@ -138,7 +143,7 @@ public class CourseRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-//	@PreAuthorize("hasAuthority('d_course')")
+	//@PreAuthorize("hasAuthority('Course_D')")
     public ResponseEntity<Void> delete(@Validated @RequestBody CourseDTO.Delete request) {
         courseService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -146,7 +151,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-//	@PreAuthorize("hasAuthority('r_course')")
+	//@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
                                                        @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
@@ -196,13 +201,15 @@ public class CourseRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-//	@PreAuthorize("hasAuthority('r_course')")
+	//@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<SearchDTO.SearchRs<CourseDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(courseService.search(request), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/{courseId}/goal")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity<GoalDTO.GoalSpecRs> getGoal(@PathVariable Long courseId) {
 
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -221,6 +228,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/skill/{courseId}")
+    //@PreAuthorize("hasAuthority('Course_Skill')")
     public ResponseEntity<SkillDTO.SkillSpecRs> getSkill(@PathVariable Long courseId) {
         List<SkillDTO.Info> skill = courseService.getSkill(courseId);
         final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
@@ -235,6 +243,8 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/goal-mainObjective/{courseId}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity<List<Map<String, String>>> getGoalsAndMainObjectives(@PathVariable Long courseId) {
         List<GoalDTO.Info> goals = courseService.getGoal(courseId);
         List<SkillDTO.Info> mainObjectives = courseService.getMainObjective(courseId);
@@ -272,6 +282,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
+    //@PreAuthorize("hasAuthority('Course_Job')")
     public ResponseEntity<ISC> getJob(@PathVariable Long courseId) {
         List<JobDTO.Info> job = courseService.getJob(courseId);
         ISC.Response response = new ISC.Response();
@@ -285,6 +296,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/post/{courseId}")
+    //@PreAuthorize("hasAuthority('Course_Post')")
     public ResponseEntity<ISC> getPost(@PathVariable Long courseId) {
         List<PostDTO.Info> post = courseService.getPost(courseId);
         ISC.Response response = new ISC.Response();
@@ -298,7 +310,8 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/{courseId}/{goalIdList}")
-//	@PreAuthorize("hasAuthority('d_course')")
+    // @PreAuthorize("hasAuthority('d_course')")
+    //TODO:Unknown
     public ResponseEntity<Void> getCourseIdvGoalsId(@PathVariable Long courseId, @PathVariable List<Long> goalIdList) {
         courseService.getCourseIdvGoalsId(courseId, goalIdList);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -306,7 +319,8 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/remove/{courseId}/{goalIdList}")
-//	@PreAuthorize("hasAuthority('d_course')")
+	//@PreAuthorize("hasAuthority('d_course')")
+    //TODO:Unknown
     public ResponseEntity<Void> removeCourseSGoal(@PathVariable Long courseId, @PathVariable List<Long> goalIdList) {
         courseService.removeCourseSGoal(courseId, goalIdList);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -314,6 +328,8 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/goal/{courseId}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity<GoalDTO.GoalSpecRs> getGoalWithOut(@PathVariable Long courseId) {
         List<GoalDTO.Info> goal = courseService.getGoalWithOut(courseId);
         final GoalDTO.SpecRs specResponse = new GoalDTO.SpecRs();
@@ -330,6 +346,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/getmaxcourse/{str}")
+    //@PreAuthorize("hasAuthority('Course_C')")
     public ResponseEntity<String> getMaxCourseCode(@PathVariable String str) {
         return new ResponseEntity<>(courseService.getMaxCourseCode(str), HttpStatus.OK);
     }
@@ -377,6 +394,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = {"/print/{type}"})
+    //@PreAuthorize("hasAuthority('Course_P')")
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -385,6 +403,7 @@ public class CourseRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
+    //@PreAuthorize("hasAuthority('Course_P')")
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
@@ -413,6 +432,7 @@ public class CourseRestController {
 
     @Loggable
     @PostMapping(value = {"/GoalsAndSyllabus/{type}"})
+    //@PreAuthorize("hasAuthority('Course_P')")
     public void printGoalsAndSyllabus(HttpServletResponse response,
                                       @PathVariable String type,
                                       @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
@@ -429,6 +449,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = {"/printTest/{courseId}"})
+    //@PreAuthorize("hasAuthority('Course_P')")
     public void printGoalsAndSyllabus(HttpServletResponse response, @PathVariable Long courseId) throws Exception {
         final Map<String, Object> params = new HashMap<>();
         String domain = courseService.getDomain(courseId);
@@ -459,6 +480,8 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/get_teachers/{id}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> infoList = new ArrayList<>();
         if (id != 0) {
@@ -478,6 +501,8 @@ public class CourseRestController {
     //---------------------heydari---------------------------
     @Loggable
     @PutMapping(value = "evaluation/{id}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity<CourseDTO.Info> updateEvaluation(@PathVariable Long id, @RequestBody Object request) {
         CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
         return new ResponseEntity<>(courseService.updateEvaluation(id, update), HttpStatus.OK);
@@ -485,6 +510,8 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "courseWithOutTeacher/{startdate}/{endDate}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate,@PathVariable String endDate)
     {
         List<CourseDTO.courseWithOutTeacher> list = courseService.courseWithOutTeacher(startdate, endDate);
@@ -501,6 +528,8 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "getEvaluation/{id}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    //TODO:Unknown
     public ResponseEntity<CourseDTO.SpecRs> getEvaluation(@PathVariable Long id) {
         List<CourseDTO.Info> list = courseService.getEvaluation(id);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
@@ -515,6 +544,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/getCourseMainObjective/{courseId}")
+    //@PreAuthorize("hasAuthority('Course_WF')")
     public String getCourseMainObjective(@PathVariable Long courseId, HttpServletResponse response) throws IOException {
 
         StringBuilder mainObjective = new StringBuilder();

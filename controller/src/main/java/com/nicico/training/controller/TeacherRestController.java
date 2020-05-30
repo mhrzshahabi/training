@@ -63,21 +63,21 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(teacherService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<List<TeacherDTO.Info>> list() {
         return new ResponseEntity<>(teacherService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-//    @PreAuthorize("hasAuthority('c_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_C')")
     public ResponseEntity create(@Validated @RequestBody LinkedHashMap request) {
         final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
         Teacher teacher = null;
@@ -115,33 +115,45 @@ public class TeacherRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('u_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_U')")
     public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
-        ((LinkedHashMap) request).remove("attachPic");
+        final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
+        Teacher teacher = null;
+        if(tById.isPresent())
+            teacher = tById.get();
+        if(teacher != null && !teacher.getId().equals(id)) {
+            if (teacher.isInBlackList() == true)
+                return new ResponseEntity<>("duplicateAndBlackList", HttpStatus.NOT_ACCEPTABLE);
+            else
+                return new ResponseEntity<>("duplicateAndNotBlackList", HttpStatus.NOT_ACCEPTABLE);
+        }
+        else {
+            ((LinkedHashMap) request).remove("attachPic");
 
-        List<CategoryDTO.Info> categories = null;
-        List<SubcategoryDTO.Info> subCategories = null;
+            List<CategoryDTO.Info> categories = null;
+            List<SubcategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null && !((List)request.get("categories")).isEmpty())
-            categories = setCats(request);
-        if (request.get("subCategories") != null && !((List)request.get("subCategories")).isEmpty())
-            subCategories = setSubCats(request);
+            if (request.get("categories") != null && !((List) request.get("categories")).isEmpty())
+                categories = setCats(request);
+            if (request.get("subCategories") != null && !((List) request.get("subCategories")).isEmpty())
+                subCategories = setSubCats(request);
 
-        TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
-        if (categories != null && categories.size() > 0)
-            update.setCategories(categories);
-        if (subCategories != null && subCategories.size() > 0)
-            update.setSubCategories(subCategories);
-        try {
-            return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
+            if (categories != null && categories.size() > 0)
+                update.setCategories(categories);
+            if (subCategories != null && subCategories.size() > 0)
+                update.setSubCategories(subCategories);
+            try {
+                return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
+            } catch (TrainingException ex) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('d_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_D')")
     public ResponseEntity delete(@PathVariable Long id) {
         List<Tclass> tclassList = tclassDAO.getTeacherClasses(id);
         if(tclassList != null && tclassList.size() != 0)
@@ -158,7 +170,7 @@ public class TeacherRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-//    @PreAuthorize("hasAuthority('d_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_D')")
     public ResponseEntity delete(@Validated @RequestBody TeacherDTO.Delete request) {
         try {
             teacherService.delete(request);
@@ -171,7 +183,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                          @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                          @RequestParam(value = "_constructor", required = false) String constructor,
@@ -197,7 +209,7 @@ public class TeacherRestController {
     }
 
     @GetMapping(value = "/info/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id)throws IOException {
         TeacherDTO.Info response = teacherService.get(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -206,7 +218,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list-grid")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridList(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                                  @RequestParam(value = "_constructor", required = false) String constructor,
@@ -240,7 +252,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list-report")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public ResponseEntity<TeacherDTO.TeacherSpecRsReport> reportList(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                                  @RequestParam(value = "_constructor", required = false) String constructor,
@@ -424,7 +436,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/fullName-list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
                                                                          @RequestParam(value = "_endRow", required = false, defaultValue = "50") Integer endRow,
                                                                          @RequestParam(value = "_constructor", required = false) String constructor,
@@ -452,7 +464,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/fullName-list/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameListFilter(@PathVariable Long id,
                                                                                @RequestParam("_startRow") Integer startRow,
                                                                                @RequestParam("_endRow") Integer endRow,
@@ -479,7 +491,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/fullName/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@PathVariable Long id,
                                                                                @RequestParam("_startRow") Integer startRow,
                                                                                @RequestParam("_endRow") Integer endRow,
@@ -509,7 +521,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<SearchDTO.SearchRs<TeacherDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(teacherService.search(request), HttpStatus.OK);
     }
@@ -517,6 +529,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
@@ -542,6 +555,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithDetail/{id}"})
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
         final SearchDTO.SearchRq searchRq_academicBk = new SearchDTO.SearchRq();
         final SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs_academicBk = academicBKService.search(searchRq_academicBk, Long.valueOf(id));
@@ -699,6 +713,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printEvaluation/{id}/{catId}/{subCatId}"})
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public void printEvaluation(HttpServletResponse response,@PathVariable String id, @PathVariable String catId, @PathVariable String subCatId) throws Exception {
         final Map<String, Object> params = new HashMap<>();
 
@@ -781,6 +796,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
+    //@PreAuthorize("hasAuthority('Teacher_E')")
     public ResponseEntity<Float> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
        Float evaluationGrade = (Float) teacherService.evaluateTeacher(id,catId,subCatId).get("evaluationGrade");
        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
@@ -900,7 +916,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/full-spec-list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> fullList(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                          @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                          @RequestParam(value = "_constructor", required = false) String constructor,
@@ -927,7 +943,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/all-students-grade-to-teacher")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> getAllStudentsGradeToTeacher(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                              @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                              @RequestParam(value = "_constructor", required = false) String constructor,
@@ -951,7 +967,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/blackList/{inBlackList}/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public void changeBlackListStatus(HttpServletRequest req, @PathVariable Boolean inBlackList, @PathVariable Long id) {
         String reason=req.getParameter("reason");
         teacherService.changeBlackListStatus(reason,inBlackList,id);

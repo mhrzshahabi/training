@@ -4,6 +4,7 @@ import com.nicico.training.dto.TargetSocietyDTO;
 import com.nicico.training.model.TargetSociety;
 import com.nicico.training.repository.TargetSocietyDAO;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,34 +22,25 @@ public class TargetSocietyService extends BaseService<TargetSociety, Long, Targe
     }
 
     @Transactional
-    public List<TargetSocietyDTO.Info> coustomCreate(List<Long>ids, List<String>titles, Long typeId, Long tclassId){
-        /*List<TargetSocietyDTO.Info> result = new ArrayList<>();
+    public List<TargetSocietyDTO.Info> coustomListCreate(List<Object> societies, Long typeId, Long tclassId){
+        List<TargetSocietyDTO.Info> result = new ArrayList<>();
 
-        if(typeId == 1){
-            for(Long id : ids){
-                TargetSocietyDTO.Create create = new TargetSocietyDTO.Create();
-                create.setSocietyId(id);
-                create.setTargetSocietyTypeId(typeId);
-                create.setTclassId(tclassId);
-                result.add(super.create(create));
-            }
-        }else if(typeId == 2){
-            for(String title : titles){
-                TargetSocietyDTO.Create create = new TargetSocietyDTO.Create();
-                create.setTitle(title);
-                create.setTargetSocietyTypeId(typeId);
-                create.setTclassId(tclassId);
-                result.add(super.create(create));
-            }
+        for(Object society : societies){
+            TargetSocietyDTO.Create create = new TargetSocietyDTO.Create();
+            if(typeId == 1)
+                create.setSocietyId(((Integer) society).longValue());
+            else if(typeId == 2)
+                create.setTitle((String) society);
+            create.setTargetSocietyTypeId(new Long(214));
+            create.setTclassId(tclassId);
+            result.add(super.create(create));
         }
-        return result;*/
-        TargetSocietyDTO.Create create = new TargetSocietyDTO.Create();
-        create.setTitle("test");
-        create.setTclassId(new Long(30));
-        create.setTargetSocietyTypeId(new Long(214));
-        create.setSocietyId(new Long(1));
-        super.create(create);
-        return null;
+
+        return result;
     }
 
+    @Transactional
+    public List<TargetSocietyDTO.Info> getListById(Long id){
+        return modelMapper.map(dao.findAllByTclassId(id), new TypeToken<List<TargetSocietyDTO.Info>>(){}.getType());
+    }
 }

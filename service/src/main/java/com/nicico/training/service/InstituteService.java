@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -54,13 +56,25 @@ public class InstituteService implements IInstituteService {
 
     @Transactional
     @Override
-    public InstituteDTO.Info create(Object request) {
+    public InstituteDTO.Info create(Object request, HttpServletResponse response) {
         PersonalInfo manager = null;
         Institute parentInstitute = null;
         final InstituteDTO.Create create = modelMapper.map(request, InstituteDTO.Create.class);
 
 
         final Institute institute = modelMapper.map(create, Institute.class);
+
+        String postalCode=institute.getContactInfo().getWorkAddress().getPostalCode();
+
+        if (postalCode!=null && addressDAO.existsByPostalCode(postalCode))
+        {
+            try {
+                response.sendError(405,null);
+                return null;
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
 
         if (create.getEinstituteTypeId() != null) {
             institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(create.getEinstituteTypeId()));
@@ -89,8 +103,25 @@ public class InstituteService implements IInstituteService {
 
     @Transactional
     @Override
-    public InstituteDTO.Info update(Long id, Object request) {
+    public InstituteDTO.Info update(Long id, LinkedHashMap request,HttpServletResponse response) {
+        LinkedHashMap workAddress=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress"));
+        Object postalCode=workAddress.get("postalCode");
+        Object idAddress=workAddress.get("id");
 
+        boolean status=false;
+
+        if (postalCode!=null && idAddress !=null)
+            status=addressDAO.existsByPostalCodeAndIdNot(postalCode.toString(),Long.valueOf(idAddress.toString()));
+
+        if (postalCode!=null && status)
+        {
+            try {
+                response.sendError(405,null);
+                return null;
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
 
         final InstituteDTO.Update update = modelMapper.map(request, InstituteDTO.Update.class);
         final Optional<Institute> cById = instituteDAO.findById(id);
