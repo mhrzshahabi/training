@@ -612,7 +612,7 @@
     {"code": "Questionnaire_D","title": "حذف پرسشنامه - پرسشنامه"},
     {"code": "Questionnaire_P","title": "چاپ پرسشنامه - پرسشنامه"},
     {"code": "QuestionnaireQuestion_C","title": "ایجاد پرسشنامه - پرسشنامه - مقدار"},
-    {"code": "QuestionnaireQuestion_R","title": "مشاهده پرسشنامه - پرسشنامه - مقدار"}
+    {"code": "QuestionnaireQuestion_R","title": "مشاهده پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_U","title": "ویرایش پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_D","title": "حذف پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_P","title": "چاپ پرسشنامه - پرسشنامه - مقدار"}

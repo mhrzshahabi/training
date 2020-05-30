@@ -104,8 +104,10 @@ public class InstituteService implements IInstituteService {
     @Transactional
     @Override
     public InstituteDTO.Info update(Long id, LinkedHashMap request,HttpServletResponse response) {
-        Object postalCode=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress")).get("postalCode");
-        Object idAddress=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress")).get("id");
+        LinkedHashMap workAddress=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress"));
+        Object postalCode=workAddress.get("postalCode");
+        Object idAddress=workAddress.get("id");
+
         boolean status=false;
 
         if (postalCode!=null && idAddress !=null)
