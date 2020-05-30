@@ -1442,6 +1442,26 @@
         members: [IButton_Institute_PersonalList_Choose, IButton_Institute_PersonalList_Exit]
     });
 
+    var HLayOut_Institute_PersonalList_Toolstrip = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "10",
+        alignLayout: "right",
+        align: "right",
+        padding: 10,
+        membersMargin: 10,
+        members: [isc.ToolStripButtonCreate.create({click: function () {
+                Function_Institute_Manager_Add();
+            }
+        }),
+            isc.ToolStripButtonEdit.create({click: function () {
+                    Function_Institute_Manager_Edit();
+                }
+            }),]
+    });
+
     var Window_Institute_PersonalList = isc.Window.create({
         title: "<spring:message code='institute.selectmanager'/>",
         width: 800,
@@ -1468,10 +1488,7 @@
             padding: 10,
             membersMargin: 10,
             margin:5,
-            members: [ isc.ToolStripButtonCreate.create({click: function () {
-                    Function_Institute_Manager_Add();
-                }
-            }) , VLayout_Institute_PersonalList, HLayOut_Institute_PersonalList_Select]
+            members: [  HLayOut_Institute_PersonalList_Toolstrip,VLayout_Institute_PersonalList, HLayOut_Institute_PersonalList_Select]
         })]
     });
 
@@ -2754,15 +2771,11 @@
 
         let data = DynamicForm_Institute_Manager.getValues();
 
-        console.log(data);
-
         isc.RPCManager.sendRequest(TrDSRequest(institute_Manager_Url+"safeCreate", "POST", JSON.stringify(data)
             ,"callback: save_Institute_Manage_result(rpcResponse)"));
     }
 
     function save_Institute_Manage_result(resp) {
-        console.log(resp);
-
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var responseID = JSON.parse(resp.data).id;
             //------------------------------------
@@ -3284,9 +3297,9 @@
             var stateValue = undefined;
             var cityValue = undefined;
 
-            if (record != null && record.contactInfo.workAddress.stateId != null)
+            if (record != null && record.contactInfo!=null && record.contactInfo.workAddress.stateId != null)
                 stateValue = record.contactInfo.workAddress.stateId;
-            if (record != null && record.contactInfo.workAddress.cityId != null)
+            if (record != null && record.contactInfo!=null && record.contactInfo.workAddress.cityId != null)
                 cityValue = record.contactInfo.workAddress.cityId;
             if (cityValue == undefined) {
                 DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
@@ -3317,6 +3330,21 @@
     function Function_Institute_Manager_Add(){
         Window_Manager_Account.show();
         Window_Manager_Account.bringToFront();
+    }
+
+    function Function_Institute_Manager_Edit(){
+        var record = ListGrid_Institute_PersonalInfo_List.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+           // profileAHKTitleMenuMethod = "PUT";
+            DynamicForm_Institute_Manager.clearValues();
+            DynamicForm_Institute_Manager.editRecord(record);
+            Window_Manager_Account.show();
+            Window_Manager_Account.bringToFront();
+        }
+
+
     }
 
     function ListGrid_Institute_Institute_refresh() {
