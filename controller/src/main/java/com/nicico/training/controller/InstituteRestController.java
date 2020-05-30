@@ -63,22 +63,36 @@ public class InstituteRestController {
         return new ResponseEntity<>(instituteService.list(), HttpStatus.OK);
     }
 
+//    @Loggable
+//    @PostMapping
+////    @PreAuthorize("hasAuthority('c_institute')")
+//    public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request, HttpServletResponse response) {
+//        //       InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
+//        return new ResponseEntity<>(instituteService.create(request, response), HttpStatus.CREATED);
+//    }
+
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_institute')")
-    public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request,HttpServletResponse response) {
-        //       InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
-        return new ResponseEntity<>(instituteService.create(request,response), HttpStatus.CREATED);
+    public ResponseEntity<InstituteDTO.Info> create(@RequestBody InstituteDTO.Create request, HttpServletResponse response) {
+        return new ResponseEntity<>(instituteService.create(request, response), HttpStatus.OK);
     }
+
+//    @Loggable
+//    @PutMapping(value = "/{id}")
+////    @PreAuthorize("hasAuthority('u_institute')")
+//    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody LinkedHashMap request,HttpServletResponse response) {
+//        //InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
+//
+//
+//        return new ResponseEntity<>(instituteService.update(id, request,response), HttpStatus.OK);
+//    }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_institute')")
-    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody LinkedHashMap request,HttpServletResponse response) {
-        //InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
-
-
-        return new ResponseEntity<>(instituteService.update(id, request,response), HttpStatus.OK);
+    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody InstituteDTO.Update request, HttpServletResponse response) {
+        return new ResponseEntity<>(instituteService.update(id, request, response), HttpStatus.OK);
     }
 
     @Loggable
@@ -138,7 +152,7 @@ public class InstituteRestController {
             request.setCriteria(criteriaRq);
         }
 
-        boolean flag=true;
+        boolean flag = true;
 
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);

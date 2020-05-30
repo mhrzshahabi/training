@@ -19,7 +19,6 @@ public class ContactInfoDTO {
     private String email;
     private String mobile;
     private String personalWebSite;
-    private String description;
     private Long homeAddressId;
     private Long workAddressId;
 
@@ -37,8 +36,21 @@ public class ContactInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("InstituteContactInfo")
+    public static class InstituteContactInfo extends ContactInfoDTO {
+        private Long id;
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private AddressDTO.InstituteAddress workAddress;
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ContactInfoGrid")
-    public static class Grid{
+    public static class Grid {
         private Long id;
         private String mobile;
         private Integer version;

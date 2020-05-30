@@ -39,6 +39,15 @@ public class AddressDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("InstituteAddress")
+    public static class InstituteAddress extends AddressDTO {
+        private Long id;
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("CompanyAddress")
     public static class CompanyAddress {
         private Long id;
