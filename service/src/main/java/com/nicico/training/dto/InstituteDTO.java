@@ -1,8 +1,6 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.dto.enums.EInstituteTypeDTO;
-import com.nicico.training.dto.enums.ELicenseTypeDTO;
 import com.nicico.training.model.AccountInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -64,9 +62,9 @@ public class InstituteDTO {
     public static class Info extends InstituteDTO {
         private Long id;
         private PersonalInfoDTO.PersonalInfoCustom manager;
-        private InstituteDTO.InstituteInfoTuple parentInstitute;
-//        private ParameterValueDTO.MinInfo companyType;
-//        private ParameterValueDTO.MinInfo licenseType;
+        private InstituteDTO.Info parentInstitute;
+        private ParameterValueDTO.MinInfo companyType;
+        private ParameterValueDTO.MinInfo licenseType;
         private ContactInfoDTO.InstituteContactInfo contactInfo;
     }
 

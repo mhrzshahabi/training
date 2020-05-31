@@ -3,6 +3,8 @@ package com.nicico.training.service;
 @Author:roya
 */
 
+import com.nicico.copper.common.domain.criteria.NICICOPageable;
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
@@ -19,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -185,7 +188,47 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
+
+        long start = System.nanoTime();
+
+        Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+        List<Tclass> list = all.getContent();
+
+        Long totalCount = all.getTotalElements();
+        SearchDTO.SearchRs<TclassDTO.Info> searchRs=null;
+
+        if (totalCount == 0) {
+
+            searchRs=new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TclassDTO.Info>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = list.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(list.get(i).getId());
+            }
+
+            request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+            request.setStartIndex(null);
+
+
+            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
+                    TclassDTO.Info.class));
+        }
+
+        searchRs.setTotalCount(totalCount);
+
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+
+        System.out.println((timeElapsed * 1.0) / 1_000_000);
+
+        return searchRs;
+
+
+        //return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
 
     @Transactional(readOnly = true)

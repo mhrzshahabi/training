@@ -8,7 +8,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -35,10 +34,6 @@ public class InstituteService implements IInstituteService {
     private final AddressDAO addressDAO;
     private final PersonalInfoDAO personalInfoDAO;
     private final TrainingPlaceDAO trainingPlaceDAO;
-    private final EnumsConverter.ELicenseTypeConverter eLicenseTypeConverter = new EnumsConverter.ELicenseTypeConverter();
-    private final EnumsConverter.EInstituteTypeConverter eInstituteTypeConverter = new EnumsConverter.EInstituteTypeConverter();
-
-    private final AddressService addressService;
     private final IPersonalInfoService personalInfoService;
     private final IEducationLevelService educationLevelService;
     private final IEducationMajorService educationMajorService;
@@ -55,71 +50,31 @@ public class InstituteService implements IInstituteService {
     public Institute getInstitute(Long id) {
         final Optional<Institute> gById = instituteDAO.findById(id);
         return gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
-
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<InstituteDTO.Info> list() {
         final List<Institute> gAll = instituteDAO.findAll();
-        return modelMapper.map(gAll, new TypeToken<List<InstituteDTO.Info>>() {
-        }.getType());
+        return modelMapper.map(gAll, new TypeToken<List<InstituteDTO.Info>>(){}.getType());
     }
-
-//    @Transactional
-//    @Override
-//    public InstituteDTO.Info create(Object request, HttpServletResponse response) {
-//        PersonalInfo manager = null;
-//        Institute parentInstitute = null;
-//        final InstituteDTO.Create create = modelMapper.map(request, InstituteDTO.Create.class);
-//
-//
-//        final Institute institute = modelMapper.map(create, Institute.class);
-//
-//        String postalCode = institute.getContactInfo().getWorkAddress().getPostalCode();
-//
-//        if (postalCode != null && addressDAO.existsByPostalCode(postalCode)) {
-//            try {
-//                response.sendError(405, null);
-//                return null;
-//            } catch (IOException e) {
-//                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-//            }
-//        }
-//
-//        if (create.getEinstituteTypeId() != null) {
-//            institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(create.getEinstituteTypeId()));
-//            // institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
-//        }
-//        if (create.getElicenseTypeId() != null) {
-//            institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(create.getElicenseTypeId()));
-////            institute.setELicenseTypeTitleFa(institute.getELicenseType().getTitleFa());
-//        }
-//
-//        if (institute.getParentInstituteId() != null) {
-//            Optional<Institute> optionalInstitute = instituteDAO.findById(institute.getParentInstituteId());
-//            parentInstitute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
-//        }
-//
-//        if (institute.getManagerId() != null) {
-//            Optional<PersonalInfo> optionalPersonalInfo = personalInfoDAO.findById(institute.getManagerId());
-//            manager = optionalPersonalInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
-//        }
-//
-//        institute.setManager(manager);
-//        institute.setParentInstitute(parentInstitute);
-//
-//        return modelMapper.map(instituteDAO.saveAndFlush(institute), InstituteDTO.Info.class);
-//    }
 
     @Transactional
     @Override
     public InstituteDTO.Info create(InstituteDTO.Create request, HttpServletResponse response) {
-
         final Institute institute = modelMapper.map(request, Institute.class);
-        PersonalInfo personalInfo = personalInfoService.getPersonalInfo(request.getManager().getId());
+
+        if (institute.getContactInfo().getWorkAddress().getPostalCode()!=null && addressDAO.existsByPostalCode(institute.getContactInfo().getWorkAddress().getPostalCode())) {
+            try {
+                response.sendError(405, null);
+                return null;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
+        PersonalInfo personalInfo = personalInfoService.getPersonalInfo(request.getManagerId());
         personalInfoService.modify(request.getManager(), personalInfo);
-//        modelMapper.map(request.getManager(), personalInfo);
         institute.setManager(personalInfo);
         try {
             return modelMapper.map(instituteDAO.saveAndFlush(institute), InstituteDTO.Info.class);
@@ -128,71 +83,27 @@ public class InstituteService implements IInstituteService {
         }
     }
 
-//    @Transactional
-//    @Override
-//    public InstituteDTO.Info update(Long id, LinkedHashMap request,HttpServletResponse response) {
-//        LinkedHashMap workAddress=((LinkedHashMap)((LinkedHashMap)request.get("contactInfo")).get("workAddress"));
-//        Object postalCode=workAddress.get("postalCode");
-//        Object idAddress=workAddress.get("id");
-//
-//        boolean status=false;
-//
-//        if (postalCode!=null && idAddress !=null)
-//            status=addressDAO.existsByPostalCodeAndIdNot(postalCode.toString(),Long.valueOf(idAddress.toString()));
-//
-//        if (postalCode!=null && status)
-//        {
-//            try {
-//                response.sendError(405,null);
-//                return null;
-//            } catch (IOException e){
-//                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-//            }
-//        }
-//
-//        final InstituteDTO.Update update = modelMapper.map(request, InstituteDTO.Update.class);
-//        final Optional<Institute> cById = instituteDAO.findById(id);
-//        final Institute institute = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
-//
-//        Institute updating = new Institute();
-//        modelMapper.map(institute, updating);
-//        modelMapper.map(request, updating);
-//
-//        Address address = new Address();
-//        Institute parentInstitute = null;
-//        AccountInfo accountInfo = new AccountInfo();
-//
-//        addressDAO.saveAndFlush(address);
-//        accountInfoDAO.save(accountInfo);
-//
-//
-//        if (updating.getEinstituteTypeId() != null) {
-//            updating.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(update.getEinstituteTypeId()));
-////             updating.setEInstituteTypeTitleFa(updating.getEInstituteType().getTitleFa());
-//        }
-//        if (updating.getElicenseTypeId() != null) {
-//            updating.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(update.getElicenseTypeId()));
-////             updating.setELicenseTypeTitleFa(updating.getELicenseType().getTitleFa());
-//        }
-//        if (updating.getParentInstituteId() != null) {
-//            Optional<Institute> optionalInstitute = instituteDAO.findById(updating.getParentInstituteId());
-//            parentInstitute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
-//        }
-//
-//        /*if (updating.getManagerId() != null) {
-//            Optional<PersonalInfo> optionalPersonalInfo = personalInfoDAO.findById(updating.getManagerId());
-//            PersonalInfo manager = optionalPersonalInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
-//            updating.setManagerId(updating.getManagerId());
-//        }
-//*/
-//        updating.setParentInstitute(parentInstitute);
-//
-//        return modelMapper.map(instituteDAO.saveAndFlush(updating), InstituteDTO.Info.class);
-//    }
-
     @Transactional
     @Override
     public InstituteDTO.Info update(Long id, InstituteDTO.Update request, HttpServletResponse response) {
+        String postalCode=request.getContactInfo().getWorkAddress().getPostalCode();
+        Long idAddress=request.getContactInfo().getWorkAddress().getId();
+
+        boolean status=false;
+
+        if (postalCode!=null && idAddress !=null)
+            status=addressDAO.existsByPostalCodeAndIdNot(postalCode,idAddress);
+
+        if (postalCode!=null && status)
+        {
+            try {
+                response.sendError(405,null);
+                return null;
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         PersonalInfo personalInfo = modelMapper.map(personalInfoService.getOneByNationalCode(request.getManager().getNationalCode()), PersonalInfo.class);
         final Institute institute = getInstitute(id);
         if (personalInfo != null) {
@@ -223,14 +134,12 @@ public class InstituteService implements IInstituteService {
         }
     }
 
-
     @Transactional
     @Override
     public void delete(Long id) {
         final Optional<Institute> cById = instituteDAO.findById(id);
         final Institute institute = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
         Long adId = null, acId = null;
-
 
         instituteDAO.deleteById(id);
     }
