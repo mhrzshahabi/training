@@ -3,12 +3,15 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.StudentClassReportViewDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IStudentService;
+import com.nicico.training.repository.StudentClassReportViewDAO;
 import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.StudentClassReportViewService;
@@ -43,6 +46,8 @@ public class ExportToFileController {
     private final ObjectMapper objectMapper;
     private final NeedsAssessmentService needsAssessmentService;
     private final StudentClassReportViewService studentClassReportViewService;
+    private final StudentClassReportViewDAO studentClassReportViewDAO;
+
     private final TclassService tClassService;
     private final IStudentService studentService;
     private final ModelMapper modelMapper;
@@ -137,6 +142,19 @@ public class ExportToFileController {
                     ObjectMapper mapper = new ObjectMapper();
                     jsonString = mapper.writeValueAsString(list2);
                     count = list2.size();
+                }
+                break;
+
+            case "studentClassReport":
+
+
+                List<StudentClassReportViewDTO.InfoTuple> list3= SearchUtil.search(studentClassReportViewDAO, request, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
+                if (list3 == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list3);
+                    count = list3.size();
                 }
                 break;
         }
