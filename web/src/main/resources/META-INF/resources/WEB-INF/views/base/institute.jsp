@@ -324,35 +324,53 @@
                 align: "center",
                 filterOperator: "iContains"
             },
+            <%--{--%>
+            <%--    name: "parentInstitute.titleFa",--%>
+            <%--    title: "<spring:message code='institute.parent'/>",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains"--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "parentInstituteId",--%>
+            <%--    title: "<spring:message code='institute.parent'/>",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains"--%>
+            <%--},--%>
             {
-                name: "parentInstitute.titleFa",
-                title: "<spring:message code='institute.parent'/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
-            {
-                name: "companyType.title",
+                name: "companyTypeId",
                 title: "<spring:message code='institute.type'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "equals",
+                textAlign: "center",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EInstituteType,
+                addUnknownValues: false,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                },
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
             {
-                name: "licenseType.title",
+                name: "licenseTypeId",
                 title: "<spring:message code='diploma.type'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "equals",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_ELicenseType,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
-            {name: "state.name", hidden: true},
-            {name: "city.name", hidden: true},
-            {name: "restAddress", hidden: true},
-            {name: "stateId", hidden: true},
-            {name: "cityId", hidden: true},
-            {name: "postalCode", hidden: true},
-            {name: "phone", hidden: true},
-            {name: "fax", hidden: true},
-            {name: "mobile", hidden: true},
-            {name: "e_mail", hidden: true},
-            {name: "webSite", hidden: true},
             {name: "teacherNumPHD", hidden: true},
             {name: "empNumPHD", hidden: true},
             {name: "teacherNumLicentiate", hidden: true},
@@ -1008,6 +1026,7 @@
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
         fields: [
+            {name: "contactInfo.id", hidden: true},
             {
                 name: "contactInfo.workAddress.stateId",
                 type: "IntegerItem",
