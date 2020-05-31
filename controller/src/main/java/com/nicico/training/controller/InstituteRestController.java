@@ -28,13 +28,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -48,6 +45,7 @@ public class InstituteRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -66,19 +64,15 @@ public class InstituteRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_institute')")
-    public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request,HttpServletResponse response) {
-        //       InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
-        return new ResponseEntity<>(instituteService.create(request,response), HttpStatus.CREATED);
+    public ResponseEntity<InstituteDTO.Info> create(@RequestBody InstituteDTO.Create request, HttpServletResponse response) {
+        return new ResponseEntity<>(instituteService.create(request, response), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_institute')")
-    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody LinkedHashMap request,HttpServletResponse response) {
-        //InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
-
-
-        return new ResponseEntity<>(instituteService.update(id, request,response), HttpStatus.OK);
+    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody InstituteDTO.Update request, HttpServletResponse response) {
+        return new ResponseEntity<>(instituteService.update(id, request, response), HttpStatus.OK);
     }
 
     @Loggable
@@ -138,7 +132,7 @@ public class InstituteRestController {
             request.setCriteria(criteriaRq);
         }
 
-        boolean flag=true;
+        boolean flag = true;
 
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -632,5 +626,18 @@ public class InstituteRestController {
     public ResponseEntity<TotalResponse<InstituteDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(instituteService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/iscTupleList")
+    public ResponseEntity<ISC<InstituteDTO.InstituteInfoTuple>> list(HttpServletRequest iscRq, @RequestParam(required = false) Long id) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        if (id != null) {
+            searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
+        }
+        SearchDTO.SearchRs<InstituteDTO.InstituteInfoTuple> searchRs = instituteService.search(searchRq, i -> modelMapper.map(i, InstituteDTO.InstituteInfoTuple.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 }

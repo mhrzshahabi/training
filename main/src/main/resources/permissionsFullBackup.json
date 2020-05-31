@@ -612,10 +612,37 @@
     {"code": "Questionnaire_D","title": "حذف پرسشنامه - پرسشنامه"},
     {"code": "Questionnaire_P","title": "چاپ پرسشنامه - پرسشنامه"},
     {"code": "QuestionnaireQuestion_C","title": "ایجاد پرسشنامه - پرسشنامه - مقدار"},
-    {"code": "QuestionnaireQuestion_R","title": "مشاهده پرسشنامه - پرسشنامه - مقدار"}
+    {"code": "QuestionnaireQuestion_R","title": "مشاهده پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_U","title": "ویرایش پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_D","title": "حذف پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_P","title": "چاپ پرسشنامه - پرسشنامه - مقدار"}
+
+    {"code": "TclassSessionsTab", "title": "کلاس - تب جلسات"},
+    {"code": "TclassCheckListTab", "title": "کلاس - تب چک لیست"},
+    {"code": "TclassStudentsTab", "title": "کلاس - تب فراگیران"},
+    {"code": "TclassAttachmentsTab", "title": "کلاس - تب ضمائم"},
+    {"code": "TclassAttendanceTab", "title": "کلاس - تب حضور غیاب"},
+    {"code": "TclassScoresTab", "title": "کلاس - تب ثبت نمرات"},
+    {"code": "TclassAlarmsTab", "title": "کلاس - تب هشدارها"},
+    {"code": "TclassPreCourseTestQuestionsTab", "title": "کلاس - تب سوالات پیش آزمون"},
+    {"code": "TclassteacherInformationTab", "title": "کلاس - تب مدرسان"},
+    {"code": "TclassSessionsTab_C", "title": "کلاس - تب جلسات - ایجاد"},
+    {"code": "TclassSessionsTab_U", "title": "کلاس - تب جلسات - ویرایش"},
+    {"code": "TclassSessionsTab_D", "title": "کلاس - تب جلسات - حذف"},
+    {"code": "TclassSessionsTab_P", "title": "کلاس - تب جلسات - چاپ"},
+    {"code": "TclassSessionsTab_R", "title": "کلاس - تب جلسات - مشاهده"},
+
+    {"code": "TclassStudentsTab_ADD", "title": "کلاس - تب فراگیران - افزودن"},
+    {"code": "TclassStudentsTab_D", "title": "کلاس - تب فراگیران - حذف"},
+    {"code": "TclassStudentsTab_E", "title": "کلاس - تب فراگیران - ارزیابی"},
+    {"code": "TclassStudentsTab_R", "title": "کلاس - تب فراگیران - مشاهده "},
+    {"code": "TclassStudentsTab_P", "title": "کلاس - تب فراگیران - چاپ "},
+
+    {"code": "TclassAttachmentsTab_C", "title": "کلاس - تب ضمائم - ایجاد"},
+    {"code": "TclassAttachmentsTab_U", "title": "کلاس - تب ضمائم - ویرایش"},
+    {"code": "TclassAttachmentsTab_D", "title": "کلاس - تب ضمائم - حذف"},
+    {"code": "TclassAttachmentsTab_R", "title": "کلاس - تب ضمائم - مشاهده"},
+    {"code": "TclassAttachmentsTab_Download", "title": "کلاس - تب ضمائم - دانلود"}
 
   ]
 }

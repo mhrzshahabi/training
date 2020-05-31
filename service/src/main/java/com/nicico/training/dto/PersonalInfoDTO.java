@@ -52,8 +52,18 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("PersonalInfoCreateOrUpdateRq")
+    @ApiModel("PersonalInfoSafeCreate")
     public static class SafeCreate extends PersonalInfoDTO {
+        private ContactInfoDTO.Info contactInfo;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonalInfoSafeUpdate")
+    public static class SafeUpdate extends PersonalInfoDTO {
+        private Long id;
+        private ContactInfoDTO.CreateOrUpdate contactInfo;
     }
 
     @Getter
@@ -74,7 +84,7 @@ public class PersonalInfoDTO {
     @Accessors(chain = true)
     @ApiModel("PersonalInfoCustom")
     public static class PersonalInfoCustom{
-
+        private Long id;
         private String firstNameFa;
         private String lastNameFa;
         private String nationalCode;

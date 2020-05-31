@@ -77,7 +77,7 @@ public class ClassOutsideCurrentTermRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
-        String str= DateUtil.convertKhToMi1(startDate).replaceAll("[\\s\\-]", "");
+        String str= DateUtil.convertKhToMi1(startDate.trim()).replaceAll("[\\s\\-]", "");
 
         List<Long> longList=response.getList().stream().filter(x->Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0,10).replaceAll("[\\s\\-]", ""))>Long.valueOf(str))
                 .map(x->x.getId()).collect(Collectors.toList());

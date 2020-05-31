@@ -93,6 +93,17 @@ public class PersonalInfoRestController {
     }
 
     @Loggable
+    @PutMapping(value = "safeUpdate/{id}")
+//    @PreAuthorize("hasAuthority('u_personalInfo')")
+    public ResponseEntity safeUpdate(@PathVariable Long id, @RequestBody PersonalInfoDTO.SafeUpdate request) {
+        try {
+            return new ResponseEntity<>(personalInfoService.safeUpdate(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_personalInfo')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody PersonalInfoDTO.Update request) {

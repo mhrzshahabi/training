@@ -1,8 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.dto.enums.EInstituteTypeDTO;
-import com.nicico.training.dto.enums.ELicenseTypeDTO;
+import com.nicico.training.model.AccountInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -23,18 +22,9 @@ public class InstituteDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String titleEn;
-
-    @ApiModelProperty
-    private Long stateId;
-
-    @ApiModelProperty
-    private Long cityId;
-
-    private ContactInfoDTO.Info contactInfo;
-
+    private Long contactInfoId;
     private Long managerId;
     private Integer teacherNumPHD;
     private Integer empNumPHD;
@@ -48,17 +38,7 @@ public class InstituteDTO {
     private Integer empNumDiploma;
     private Long instituteId;
     private String economicalId;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer einstituteTypeId;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer elicenseTypeId;
-
     private Long parentInstituteId;
-
     private Long licenseTypeId;
     private Long companyTypeId;
 
@@ -68,14 +48,9 @@ public class InstituteDTO {
     @ApiModel("InstituteInfo")
     public static class Info extends InstituteDTO {
         private Long id;
-        private PersonalInfoDTO.Info manager;
+        private PersonalInfoDTO.PersonalInfoCustom manager;
+        private ContactInfoDTO.InstituteContactInfo contactInfo;
         private InstituteDTO.Info parentInstitute;
-        private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
-        private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
-        private ParameterValueDTO.MinInfo companyType;
-        private ParameterValueDTO.MinInfo licenseType;
-        private CityDTO.Info city;
-        private StateDTO.Info state;
     }
 
     @Getter
@@ -85,26 +60,10 @@ public class InstituteDTO {
     public static class ContractInfo {
         private Long id;
         private String titleFa;
-        private Long stateId;
-        private Long cityId;
-        private String phone;
-        private String mobile;
-        private String restAddress;
         private String instituteId;
         private String economicalId;
-        private Set<InstituteAccountDTO.Info> instituteAccountSet;
-
-        public String getShabaNumber() {
-            if (instituteAccountSet.isEmpty())
-                return null;
-            return instituteAccountSet.iterator().next().getShabaNumber();
-        }
-
-        public String getBank() {
-            if (instituteAccountSet.isEmpty())
-                return null;
-            return instituteAccountSet.iterator().next().getBank().getTitleFa();
-        }
+        private Set<AccountInfo> accountInfoSet;
+        private ContactInfoDTO.InstituteContactInfo contactInfo;
     }
 
     // ------------------------------
@@ -125,9 +84,7 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteCreateRq")
     public static class Create extends InstituteDTO {
-        Set<Long> equipmentIds;
-        Set<Long> trainingPlaceIds;
-        Set<Long> teacherIds;
+        private ContactInfoDTO.CreateOrUpdate contactInfo;
     }
 
     // ------------------------------
@@ -137,6 +94,7 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteUpdateRq")
     public static class Update extends InstituteDTO {
+        private ContactInfoDTO.CreateOrUpdate contactInfo;
     }
 
     // ------------------------------

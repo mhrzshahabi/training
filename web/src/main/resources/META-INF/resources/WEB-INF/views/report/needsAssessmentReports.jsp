@@ -147,7 +147,7 @@
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     JobLG_NABOP = isc.TrLG.create({
@@ -159,7 +159,7 @@
             {name: "code"},
             {name: "titleFa"},
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     PostGradeLG_NABOP = isc.TrLG.create({
@@ -171,7 +171,7 @@
             {name: "code"},
             {name: "titleFa"},
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     PostGroupLG_NABOP = isc.TrLG.create({
@@ -183,7 +183,7 @@
             {name: "titleFa"},
             {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     JobGroupLG_NABOP = isc.TrLG.create({
@@ -195,7 +195,7 @@
             {name: "titleFa"},
             {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     PostGradeGroupLG_NABOP = isc.TrLG.create({
@@ -207,7 +207,7 @@
             {name: "titleFa"},
             {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     Tabset_Object_NABOP = isc.TabSet.create({
@@ -225,7 +225,7 @@
 
     IButton_Post_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Post_NABOP
+        click: "Select_Post_NABOP()"
     });
 
     HLayout_Post_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -336,12 +336,12 @@
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
-        rowDoubleClick: Select_Person_NABOP
+        rowDoubleClick: "Select_Person_NABOP()"
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Person_NABOP
+        click: "Select_Person_NABOP()"
     });
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -756,7 +756,6 @@
 
     function Select_Person_NABOP(selected_Person) {
         selected_Person = (selected_Person == null) ? PersonnelsLG_NABOP.getSelectedRecord() : selected_Person;
-
         if (selected_Person == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;

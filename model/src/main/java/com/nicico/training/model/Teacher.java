@@ -52,13 +52,13 @@ public class Teacher extends Auditable {
     @JoinTable(name = "tbl_teacher_category",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
-    private List<Category> categories;
+    private Set<Category> categories;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_teacher_subcategory",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
-    private List<Subcategory> subCategories;
+    private Set<Subcategory> subCategories;
 
     @Column(name = "c_economical_code")
     private String economicalCode;

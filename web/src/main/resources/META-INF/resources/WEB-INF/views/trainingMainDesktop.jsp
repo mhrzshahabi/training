@@ -111,10 +111,10 @@
 
                 for (let j = 1; j < fields.length; j++) {
                     let tmpStr = ExportToFile.getData(classRecord, fields[j].name.split('.'), 0);
-                    titr+=fields[j].title+': '+(typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr+' ').trim() : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim()))+' - ';
+                    titr += fields[j].title + ': ' + (typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr + ' ').trim() : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim())) + ' - ';
                 }
 
-                titr = titr.substring(0,titr.length-4);
+                titr = titr.substring(0, titr.length - 4);
 
                 return titr;
             }
@@ -145,6 +145,7 @@
             }
 
             static exportToExcelFormServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
                     action: "/training/export-to-file/exportExcelFromServer/",
@@ -162,6 +163,8 @@
                             {name: "criteriaStr", type: "hidden"}
                         ]
                 });
+
+
                 downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
                 downloadForm.setValue("titr", titr);
                 downloadForm.setValue("fileName", fileName);
@@ -189,26 +192,32 @@
                 this.exportToExcelFormClient(result.fields, result.data, tmptitr, pageName);
             }
 
-            static DownloadExcelFormServer(listGrid, fileName,len, parentListGrid, titr, pageName,criteria) {
+            static DownloadExcelFormServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
 
                 let tmptitr = '';
 
                 if ((titr.length === 0) && parentListGrid != null) {
                     tmptitr = this.generateTitle(parentListGrid);
-                    tmptitr='';
+                    tmptitr = '';
                 } else {
                     tmptitr = titr;
                 }
 
                 let fields = this.getAllFields(listGrid);
                 //let criteria=JSON.stringify(listGrid.data.criteria.criteria);
+                let sort = listGrid.getSort();
+                let sortStr='';
 
-                this.exportToExcelFormServer(fields.fields,fileName,criteria,'',len, tmptitr, pageName);
+                if (sort != null && sort.size() != 0){
+                    sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+                }
+
+                this.exportToExcelFormServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
             }
         }
 
-        function generalGetResp(resp){
-            if(resp.httpResponseCode === 401){
+        function generalGetResp(resp) {
+            if (resp.httpResponseCode === 401) {
                 var dialog = createDialog("confirm", "<spring:message code="unauthorized"/>");
                 dialog.addProperties({
                     buttonClick: function (button, index) {
@@ -272,7 +281,7 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
-    const teacherInformation =rootUrl +"/teacherInformation"
+    const teacherInformation = rootUrl + "/teacherInformation"
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
@@ -286,7 +295,7 @@
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
-    const classOutsideCurrentTerm=rootUrl + "/class-outside-current-term";
+    const classOutsideCurrentTerm = rootUrl + "/class-outside-current-term";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -303,7 +312,13 @@
     // isc.FileLoader.cacheLocale("fa");
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({
-        height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false, pickListProperties: {
+        height: 27,
+        width: "*",
+        addUnknownValues: false,
+        wrapHintText: false,
+        canSelectText: true,
+        cachePickListResults: false,
+        pickListProperties: {
             showFilterEditor: true,
             alternateRecordStyles: true,
             autoFitWidthApproach: "both",
@@ -319,24 +334,43 @@
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleAlign: "right", titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
-        readOnlyDisplay: "static", padding: 10, canTabToIcons: false,
+        width: "100%",
+        errorOrientation: "right",
+        showErrorStyle: false,
+        wrapItemTitles: false,
+        titleAlign: "right",
+        titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>",
+        requiredTitleSuffix: "",
+        readOnlyDisplay: "static",
+        padding: 10,
+        canTabToIcons: false,
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
-    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
+    isc.ComboBoxItem.addProperties({
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        useClientFiltering: false,
+        changeOnKeypress: false,
+    });
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"}, contentType: "application/json; charset=utf-8",
-            useSimpleHttp: true, showPrompt: false, willHandleError: true, actionURL: actionURLParam, httpMethod: httpMethodParam,
-            data: dataParam, callback: callbackParam,
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            contentType: "application/json; charset=utf-8",
+            useSimpleHttp: true,
+            showPrompt: false,
+            willHandleError: true,
+            actionURL: actionURLParam,
+            httpMethod: httpMethodParam,
+            data: dataParam,
+            callback: callbackParam,
         }
     };
     isc.defineClass("TrDS", RestDataSource);
@@ -361,7 +395,7 @@
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         autoFitWidthApproach: "both",
-        selectCellTextOnClick:true,
+        selectCellTextOnClick: true,
         alternateRecordStyles: true,
         showClippedValuesOnHover: true,
         leaveScrollbarGap: false,
@@ -421,13 +455,13 @@
         MobileValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-            expression:/^((\+98)|(0))[9\d{9}]{10}$/,
+            expression: /^((\+98)|(0))[9\d{9}]{10}$/,
         },
         PhoneValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.phone.number"/>",
             expression: /^(0\d{2})[\d{8}]{8}$/,
-                // |()|(\+\d{4}):can be add in order to not use any section's code or use +---- format for that.
+            // |()|(\+\d{4}):can be add in order to not use any section's code or use +---- format for that.
         },
         PostalCodeValidate: {
             type: "custom",
@@ -674,8 +708,8 @@
 
                 <sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">
                 {
-                    title:"<spring:message code="personnel.information"/>",
-                    click:function(){
+                    title: "<spring:message code="personnel.information"/>",
+                    click: function () {
                         createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
                     }
                 },
@@ -986,15 +1020,15 @@
                 },
                 </sec:authorize>
                 <%--{--%>
-                    <%--title: "ثبت نتایج",--%>
-                    <%--click: function () {--%>
-                        <%--createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");--%>
-                    <%--}--%>
+                <%--title: "ثبت نتایج",--%>
+                <%--click: function () {--%>
+                <%--createTab(this.title, "<spring:url value="/questionEvaluation/show-form"/>");--%>
+                <%--}--%>
                 <%--},--%>
 
                 <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">
                 {
-                    title:"<spring:message code="register.Score.PreTest"/>",
+                    title: "<spring:message code="register.Score.PreTest"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
                     }
@@ -1084,16 +1118,16 @@
                 {
                     title: "<spring:message code="reports.basic"/>",
                     submenu:
-                    [
-                        <sec:authorize access="hasAuthority('Menu_Report_Basic_Teachers')">
-                        {
-                            title: "<spring:message code="teachers.report"/>",
-                            click: function(){
-                                createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
-                            }
-                        },
-                        </sec:authorize>
-                    ]
+                        [
+                            <sec:authorize access="hasAuthority('Menu_Report_Basic_Teachers')">
+                            {
+                                title: "<spring:message code="teachers.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="teacherReport/show-form"/>");
+                                }
+                            },
+                            </sec:authorize>
+                        ]
                 },
                 {isSeparator: true},
                 </sec:authorize>
@@ -1102,114 +1136,114 @@
                 {
                     title: "<spring:message code="reports.run"/>",
                     submenu:
-                    [
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingFile')">
-                        {
-                        title: "<spring:message code="training.file"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/trainingFile/"/>");
-                            }
-                        },
-                        {isSeparator: true},
-                        </sec:authorize>
+                        [
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingFile')">
+                            {
+                                title: "<spring:message code="training.file"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/trainingFile/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PassedPersonnel')">
-                        {
-                            title: "<spring:message code="personnel.courses"/>",
-                            click: function () {
-                            createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
-                            }
-                        },
-                        {isSeparator: true},
-                        </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PassedPersonnel')">
+                            {
+                                title: "<spring:message code="personnel.courses"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/studentClassReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PersonnelCoursesNotPassed')">
-                        {
-                            title: "<spring:message code="personnel.courses.not.passed"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
-                            }
-                        },
-                        {isSeparator: true},
-                        </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PersonnelCoursesNotPassed')">
+                            {
+                                title: "<spring:message code="personnel.courses.not.passed"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/personnelCourseNotPassed/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CalenderCurrentTerm')">
-                        <%--{--%>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CalenderCurrentTerm')">
+                            <%--{--%>
                             <%--title: "<spring:message code="report.calender.current.term"/>",--%>
                             <%--click: function () {--%>
-                                <%--createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");--%>
+                            <%--createTab(this.title, "<spring:url value="web/calenderCurrentTerm"/>");--%>
                             <%--}--%>
-                        <%--},--%>
-                        <%--{isSeparator: true},--%>
-                        {
-                            title: "<spring:message code="report.class.outside.current.term"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/classOutsideCurrentTerm"/>");
-                            }
-                        },
-                        </sec:authorize>
+                            <%--},--%>
+                            <%--{isSeparator: true},--%>
+                            {
+                                title: "<spring:message code="report.class.outside.current.term"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/classOutsideCurrentTerm"/>");
+                                }
+                            },
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CourseWithOutTeacher')">
-                        {isSeparator: true},
-                        {
-                            title: "<spring:message code="report.course.withOut.teacher"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/courseWithOutTeacherReaport"/>");
-                            }
-                        },
-                        </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CourseWithOutTeacher')">
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="report.course.withOut.teacher"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/courseWithOutTeacherReaport"/>");
+                                }
+                            },
+                            </sec:authorize>
 
 
-                        <sec:authorize access="hasAnyAuthority('Menu_Report_ReportsRun_CalenderCurrentTerm','Menu_Report_ReportsRun_CourseWithOutTeacher')">
-                        {isSeparator: true},
-                        </sec:authorize>
+                            <sec:authorize access="hasAnyAuthority('Menu_Report_ReportsRun_CalenderCurrentTerm','Menu_Report_ReportsRun_CourseWithOutTeacher')">
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
-                        {
-                            title: "<spring:message code="report.training.overtime"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/trainingOverTime/"/>");
-                            }
-                        },
-                        {isSeparator: true},
-                        </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "<spring:message code="report.training.overtime"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/trainingOverTime/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_WeeklyTrainingSchedule')">
-                        {
-                            title: "<spring:message code="weekly.training.schedule"/>",
-                            click:function(){
-                                createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
-                            }
-                        },
-                        {isSeparator: true},
-                        </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_WeeklyTrainingSchedule')">
+                            {
+                                title: "<spring:message code="weekly.training.schedule"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_WeeklyClass')">
-                        {
-                            title: "<spring:message code="training.class.report"/>",
-                            click: function(){
-                                createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
-                            }
-                        },
-                        {isSeparator: true},
-                        </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_WeeklyClass')">
+                            {
+                                title: "<spring:message code="training.class.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_UnfinishedClasses')">
-                        {
-                            title:"<spring:message code="unfinished.classes"/>",
-                            click: function(){
-                                createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
-                            }
-                        },
-                        </sec:authorize>
-                        {isSeparator: true},
-                        {
-                            title: "غيبت ناموجه",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
-                            }
-                        },
-                    ]
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_UnfinishedClasses')">
+                            {
+                                title: "<spring:message code="unfinished.classes"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
+                                }
+                            },
+                            </sec:authorize>
+                            {isSeparator: true},
+                            {
+                                title: "غيبت ناموجه",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
+                                }
+                            },
+                        ]
                 },
                 {isSeparator: true},
                 </sec:authorize>
@@ -1218,26 +1252,26 @@
                 {
                     title: "<spring:message code="reports.needs.assessment"/>",
                     submenu:
-                    [
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">
-                        {
-                            title: "<spring:message code="reports.need.assessment"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
-                            }
-                        },
-                        {isSeparator: true},
-                        </sec:authorize>
+                        [
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">
+                            {
+                                title: "<spring:message code="reports.need.assessment"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
 
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
-                        {
-                            title:"آمار دوره های نیازسنجی افراد",
-                            click:function(){
-                                createTab(this.title, "<spring:url value="web/personnel-course-NA-report"/>");
-                            }
-                        },
-                        </sec:authorize>
-                    ]
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
+                            {
+                                title: "آمار دوره های نیازسنجی افراد",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/personnel-course-NA-report"/>");
+                                }
+                            },
+                            </sec:authorize>
+                        ]
                 },
                 {isSeparator: true},
                 </sec:authorize>
@@ -1246,16 +1280,16 @@
                 {
                     title: "<spring:message code="reports.evaluation.efficacy"/>",
                     submenu:
-                    [
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_PretestScoreGreatThanAcceptLimited')">
-                        {
-                            title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
-                            }
-                        },
-                        </sec:authorize>
-                    ]
+                        [
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_PretestScoreGreatThanAcceptLimited')">
+                            {
+                                title: "<spring:message code="pretest.score.great.than.accept.limited"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
+                                }
+                            },
+                            </sec:authorize>
+                        ]
                 },
                 {isSeparator: true},
                 </sec:authorize>
@@ -1264,16 +1298,16 @@
                 {
                     title: "<spring:message code="reports.managment"/>",
                     submenu:
-                    [
-                        <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
-                        {
-                            title: "<spring:message code="report.monthly.statistical"/>",
-                            click: function(){
-                                createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
-                            }
-                        },
-                        </sec:authorize>
-                    ]
+                        [
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            {
+                                title: "<spring:message code="report.monthly.statistical"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
+                                }
+                            },
+                            </sec:authorize>
+                        ]
                 },
                 </sec:authorize>
             ]
@@ -1293,7 +1327,7 @@
                 <%--        createTab(this.title, "<spring:url value="web/oaUser"/>");--%>
                 <%--    }--%>
                 <%--},--%>
-                <sec:authorize access="hasAuthority('Menu_Security_Users')">
+                <%--<sec:authorize access="hasAuthority('Menu_Security_Users')">
                 {
                     title: "کاربران",
                     click: function () {
@@ -1301,7 +1335,7 @@
                     }
                 },
                 {isSeparator: true},
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">
                 {
@@ -1393,7 +1427,7 @@
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('Menu_NeedAssessment')">
-                needsAssessmentTSMB,
+            needsAssessmentTSMB,
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('Menu_Designing')">
@@ -1721,7 +1755,7 @@
         <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
         downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
         downloadForm.setValue("data", JSON.stringify(data.toArray()));
-        downloadForm.setValue("titr",titr);
+        downloadForm.setValue("titr", titr);
         downloadForm.show();
         downloadForm.submitForm();
     }
@@ -1759,6 +1793,7 @@
         criteriaForm.show();
         criteriaForm.submitForm();
     }
+
     function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
         // var advancedCriteria = LG.getCriteria();
         let criteriaForm = isc.DynamicForm.create({
@@ -1791,7 +1826,7 @@
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
     const targetSocietyUrl = rootUrl + "/target-society/";
-    const calenderCurrentTerm=rootUrl+"/calenderCurrentTerm/";
+    const calenderCurrentTerm = rootUrl + "/calenderCurrentTerm/";
     const classReportUrl = rootUrl + "/classReport/";
     const instituteUrl = rootUrl + "/institute/";
     const educationUrl = rootUrl + "/education/";
@@ -1799,7 +1834,7 @@
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
     const termUrl = rootUrl + "/term/";
-    const preTestScoreReportURL =rootUrl +"/preTestScoreReport/";
+    const preTestScoreReportURL = rootUrl + "/preTestScoreReport/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
     const personalInfoUrl = rootUrl + "/personalInfo/";
@@ -1887,12 +1922,9 @@
         willHandleError: true,
         handleError: function (response, request) {
             let userErrorMessage = "<spring:message code="msg.error.connecting.to.server"/>";
-            if(JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0)
-            {
-               userErrorMessage = JSON.parse(response.httpResponseText).message;
-            }
-            else if(JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0)
-            {
+            if (JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0) {
+                userErrorMessage = JSON.parse(response.httpResponseText).message;
+            } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
             }
 
@@ -1900,15 +1932,15 @@
 
 
             <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>
-                <%--let userErrorMessage = "<spring:message code="exception.un-managed"/>";--%>
-                    <%--if(JSON.parse(response.httpResponseText).message.length > 0)--%>
-                        <%--userErrorMessage = JSON.parse(response.httpResponseText).message;--%>
-                        <%--else if(JSON.parse(response.httpResponseText).errors[0].message.length > 0 && response.httpResponseCode === 403)--%>
-                        <%--userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;--%>
+            <%--let userErrorMessage = "<spring:message code="exception.un-managed"/>";--%>
+            <%--if(JSON.parse(response.httpResponseText).message.length > 0)--%>
+            <%--userErrorMessage = JSON.parse(response.httpResponseText).message;--%>
+            <%--else if(JSON.parse(response.httpResponseText).errors[0].message.length > 0 && response.httpResponseCode === 403)--%>
+            <%--userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;--%>
 
-                <%--createDialog("info", userErrorMessage);--%>
+            <%--createDialog("info", userErrorMessage);--%>
             <%--} else--%>
-                <%--createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");--%>
+            <%--createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");--%>
         }
     });
 
@@ -2124,6 +2156,7 @@
     var todayDate = JalaliDate.JalaliTodayDate();
     var userPersonInfo = null;
     isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
+
     function setUserPersonInfo(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             userPersonInfo = (JSON.parse(resp.data));
@@ -2142,8 +2175,8 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
-        <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
-        <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
+    <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
+    <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
     loadFrameworkMessageFa();
     // ---------------------------------------- Not Ok - End ----------------------------------------
