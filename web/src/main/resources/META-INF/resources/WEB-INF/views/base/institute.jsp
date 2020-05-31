@@ -1150,8 +1150,8 @@
         ],
 
         itemChanged: function (item, newValue) {
-            if (item.name == "contactInfo.workAddress.stateId") {
-                if (newValue == undefined) {
+            if (item.name === "contactInfo.workAddress.stateId") {
+                if (newValue === undefined) {
                     DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
                 } else {
                     RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
@@ -1160,7 +1160,7 @@
                     DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
                 }
             }
-            if (item.name == "e_mail") {
+            if (item.name === "e_mail") {
             }
 
         }

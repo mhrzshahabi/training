@@ -84,7 +84,7 @@ public class PersonalInfoDTO {
     @Accessors(chain = true)
     @ApiModel("PersonalInfoCustom")
     public static class PersonalInfoCustom{
-
+        private Long id;
         private String firstNameFa;
         private String lastNameFa;
         private String nationalCode;

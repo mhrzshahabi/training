@@ -1293,7 +1293,7 @@
                 <%--        createTab(this.title, "<spring:url value="web/oaUser"/>");--%>
                 <%--    }--%>
                 <%--},--%>
-                <sec:authorize access="hasAuthority('Menu_Security_Users')">
+                <%--<sec:authorize access="hasAuthority('Menu_Security_Users')">
                 {
                     title: "کاربران",
                     click: function () {
@@ -1301,7 +1301,7 @@
                     }
                 },
                 {isSeparator: true},
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">
                 {

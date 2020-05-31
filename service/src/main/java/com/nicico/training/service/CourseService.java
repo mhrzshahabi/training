@@ -653,7 +653,7 @@ public class CourseService implements ICourseService {
         {  for(int i=0;i<list.size();i++)
         {
             Object[] arr = (Object[]) list.get(i);
-            courseWithOutTeacherList.add(new CourseDTO.courseWithOutTeacher(Long.valueOf(arr[0].toString()),arr[1].toString(),arr[2].toString()));
+            courseWithOutTeacherList.add(new CourseDTO.courseWithOutTeacher(Long.valueOf(arr[0].toString()), (arr[1] == null ? "" : arr[1].toString()),(arr[2] == null ? "" : arr[2].toString())));
         }}
         return (modelMapper.map(courseWithOutTeacherList, new TypeToken<List<CourseDTO.courseWithOutTeacher>>() {
         }.getType()));
