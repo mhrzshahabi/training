@@ -3,6 +3,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.dto.enums.EInstituteTypeDTO;
 import com.nicico.training.dto.enums.ELicenseTypeDTO;
+import com.nicico.training.model.AccountInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -27,13 +28,7 @@ public class InstituteDTO {
     @ApiModelProperty
     private String titleEn;
 
-    @ApiModelProperty
-    private Long stateId;
-
-    @ApiModelProperty
-    private Long cityId;
-
-    private ContactInfoDTO.Info contactInfo;
+    private Long contactInfoId;
 
     private Long managerId;
     private Integer teacherNumPHD;
@@ -68,14 +63,11 @@ public class InstituteDTO {
     @ApiModel("InstituteInfo")
     public static class Info extends InstituteDTO {
         private Long id;
-        private PersonalInfoDTO.Info manager;
-        private InstituteDTO.Info parentInstitute;
-        private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
-        private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
-        private ParameterValueDTO.MinInfo companyType;
-        private ParameterValueDTO.MinInfo licenseType;
-        private CityDTO.Info city;
-        private StateDTO.Info state;
+        private PersonalInfoDTO.PersonalInfoCustom manager;
+        private InstituteDTO.InstituteInfoTuple parentInstitute;
+//        private ParameterValueDTO.MinInfo companyType;
+//        private ParameterValueDTO.MinInfo licenseType;
+        private ContactInfoDTO.InstituteContactInfo contactInfo;
     }
 
     @Getter
@@ -85,26 +77,10 @@ public class InstituteDTO {
     public static class ContractInfo {
         private Long id;
         private String titleFa;
-        private Long stateId;
-        private Long cityId;
-        private String phone;
-        private String mobile;
-        private String restAddress;
         private String instituteId;
         private String economicalId;
-        private Set<InstituteAccountDTO.Info> instituteAccountSet;
-
-        public String getShabaNumber() {
-            if (instituteAccountSet.isEmpty())
-                return null;
-            return instituteAccountSet.iterator().next().getShabaNumber();
-        }
-
-        public String getBank() {
-            if (instituteAccountSet.isEmpty())
-                return null;
-            return instituteAccountSet.iterator().next().getBank().getTitleFa();
-        }
+        private Set<AccountInfo> accountInfoSet;
+        private ContactInfoDTO.InstituteContactInfo contactInfo;
     }
 
     // ------------------------------
@@ -125,9 +101,8 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteCreateRq")
     public static class Create extends InstituteDTO {
-        Set<Long> equipmentIds;
-        Set<Long> trainingPlaceIds;
-        Set<Long> teacherIds;
+        private ContactInfoDTO.InstituteContactInfo contactInfo;
+        private PersonalInfoDTO.CreateOrUpdate manager;
     }
 
     // ------------------------------
@@ -137,6 +112,8 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteUpdateRq")
     public static class Update extends InstituteDTO {
+        private ContactInfoDTO.InstituteContactInfo contactInfo;
+        private PersonalInfoDTO.CreateOrUpdate manager;
     }
 
     // ------------------------------
