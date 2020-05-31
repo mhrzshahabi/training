@@ -333,12 +333,12 @@
                 align: "center",
                 filterOperator: "iContains"
             },
-            <%--{--%>
-            <%--    name: "parentInstitute.titleFa",--%>
-            <%--    title: "<spring:message code='institute.parent'/>",--%>
-            <%--    align: "center",--%>
-            <%--    filterOperator: "iContains"--%>
-            <%--},--%>
+            {
+                name: "parentInstitute.titleFa",
+                title: "<spring:message code='institute.parent'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
             <%--{--%>
             <%--    name: "parentInstituteId",--%>
             <%--    title: "<spring:message code='institute.parent'/>",--%>
@@ -749,20 +749,57 @@
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 length: "255"
             },
+            <%--{--%>
+            <%--    name: "parentInstituteId",--%>
+            <%--    title: "<spring:message code='institute.parent'/>",--%>
+            <%--    iconWidth: 16,--%>
+            <%--    iconHeight: 16,--%>
+            <%--    suppressBrowserClearIcon: true,--%>
+            <%--    icons: [--%>
+            <%--    //     {--%>
+            <%--    //     name: "add",--%>
+            <%--    //     src: "[SKIN]/actions/add.png",--%>
+            <%--    //     click: function (form, item, icon) {--%>
+            <%--    //         ListGrid_Institute_InstituteList_Select();--%>
+            <%--    //     },--%>
+            <%--    // },--%>
+            <%--        {--%>
+            <%--            name: "remove",--%>
+            <%--            src: "[SKIN]/actions/remove.png",--%>
+            <%--            click: function (form, item, icon) {--%>
+            <%--                DynamicForm_Institute_Institute.clearValue("parentInstituteId");--%>
+            <%--                DynamicForm_Institute_Institute.clearValue("parentInstitute.titleFa")--%>
+            <%--            },--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--    // click: function (form, item, icon) {--%>
+            <%--    //     ListGrid_Institute_InstituteList_Select();--%>
+            <%--    // },--%>
+            <%--    // readOnly: true,--%>
+            <%--    type: "ComboBoxItem",--%>
+            <%--    optionDataSource: RestDataSource_TupleInstitute_Institute,--%>
+            <%--    valueField: "id",--%>
+            <%--    displayField: "titleFa",--%>
+            <%--    filterFields: ["titleFa","titleFa"],--%>
+            <%--    // keyPressFilter: "[]",--%>
+            <%--    pickListFields: [{name: "titleFa", width: "30%", filterOperator: "iContains"}],--%>
+            <%--    textMatchStyle: "substring",--%>
+            <%--    pickListProperties: {showFilterEditor: false, allowAdvancedCriteria: true},--%>
+            <%--    width: "*",--%>
+            <%--},--%>
             {
                 name: "parentInstituteId",
                 title: "<spring:message code='institute.parent'/>",
                 iconWidth: 16,
                 iconHeight: 16,
                 suppressBrowserClearIcon: true,
-                icons: [
-                //     {
-                //     name: "add",
-                //     src: "[SKIN]/actions/add.png",
-                //     click: function (form, item, icon) {
-                //         ListGrid_Institute_InstituteList_Select();
-                //     },
-                // },
+                icons: [{
+                    name: "add",
+                    src: "[SKIN]/actions/add.png",
+                    click: function (form, item, icon) {
+                        ListGrid_Institute_InstituteList_Select();
+                    },
+                },
                     {
                         name: "remove",
                         src: "[SKIN]/actions/remove.png",
@@ -772,20 +809,14 @@
                         },
                     }
                 ],
-                // click: function (form, item, icon) {
-                //     ListGrid_Institute_InstituteList_Select();
-                // },
-                // readOnly: true,
-                type: "ComboBoxItem",
-                optionDataSource: RestDataSource_TupleInstitute_Institute,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa","titleFa"],
-                // keyPressFilter: "[]",
-                pickListFields: [{name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                textMatchStyle: "substring",
-                pickListProperties: {showFilterEditor: false, allowAdvancedCriteria: true},
+                click: function (form, item, icon) {
+                    ListGrid_Institute_InstituteList_Select();
+                },
+                readOnly: true,
+                type: 'text',
+                keyPressFilter: "[]",
                 width: "*",
+                length: "10"
             },
             {
                 name: "parentInstitute.titleFa",

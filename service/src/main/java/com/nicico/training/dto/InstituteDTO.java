@@ -50,7 +50,7 @@ public class InstituteDTO {
         private Long id;
         private PersonalInfoDTO.PersonalInfoCustom manager;
         private ContactInfoDTO.InstituteContactInfo contactInfo;
-        private InstituteDTO.InstituteInfoTuple parentInstitute;
+        private InstituteDTO.Info parentInstitute;
     }
 
     @Getter
