@@ -6,7 +6,9 @@ import com.google.gson.Gson;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.StudentClassReportViewService;
@@ -42,6 +44,7 @@ public class ExportToFileController {
     private final NeedsAssessmentService needsAssessmentService;
     private final StudentClassReportViewService studentClassReportViewService;
     private final TclassService tClassService;
+    private final IStudentService studentService;
     private final ModelMapper modelMapper;
     private final ExportToFileService exportToFileService;
     private final MessageSource messageSource;
@@ -69,7 +72,7 @@ public class ExportToFileController {
                                    @RequestParam(value = "_endRow", defaultValue = "200") Integer endRow,
                                    @RequestParam(value = "_constructor", required = false) String constructor,
                                    @RequestParam(value = "operator", required = false) String operator,*/
-                                      @RequestParam(value = "criteriaStr", required = false) String criteria
+                                      @RequestParam(value = "criteriaStr") String criteria
             /*@RequestParam(value = "_sortBy", required = false) String sortBy*/) throws Exception {
 
         //String criteria = req.getParameter("CriteriaStr");
@@ -122,6 +125,18 @@ public class ExportToFileController {
                     ObjectMapper mapper = new ObjectMapper();
                     jsonString = mapper.writeValueAsString(list);
                     count = list.size();
+                }
+                break;
+            case "trainingFile":
+
+                List<StudentDTO.Info> list2 = studentService.search(request).getList();
+
+                if (list2 == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list2);
+                    count = list2.size();
                 }
                 break;
         }

@@ -128,11 +128,14 @@ public class ExportToFileService implements IExportToFileService {
             dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));*/
 
             int rowNum = 3;
+            String tmpCell="";
             for (HashMap<String, String> map : allData) {
                 Row tempRow = sheet.createRow(++rowNum);
                 for (int i = 0; i < columns.length; i++) {
                     Cell cell = tempRow.createCell(i);
-                    cell.setCellValue(map.get(columns[i]).replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)","[link href=$7]$10[/link]").replaceAll("<[^>]*>",""));
+                    tmpCell=map.get(columns[i])==null?"":map.get(columns[i]);
+
+                    cell.setCellValue(tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)","[link href=$7]$10[/link]").replaceAll("<[^>]*>",""));
                     cell.setCellStyle(bodyCellStyle);
                 }
             }
