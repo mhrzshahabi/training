@@ -208,19 +208,29 @@ public class TeacherService implements ITeacherService {
 
         Long totalCount=all.getTotalElements();
 
-        List<Long> ids = new ArrayList<>();
-        int len =listTeacher.size();
+        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs=null;
 
-        for (int i = 0; i < len; i++) {
-            ids.add(listTeacher.get(i).getId());
+        if (totalCount == 0) {
+
+            searchRs=new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TeacherDTO.Grid>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = listTeacher.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(listTeacher.get(i).getId());
+            }
+
+            request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+            request.setStartIndex(null);
+
+
+            searchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher,
+                    TeacherDTO.Grid.class));
         }
 
-        request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
-        request.setStartIndex(null);
-
-
-        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher,
-                TeacherDTO.Grid.class));
         searchRs.setTotalCount(totalCount);
         return searchRs;
     }
