@@ -734,7 +734,15 @@
                     click: function (form, item, icon) {
                         ListGrid_Institute_InstituteList_Select();
                     },
-                }],
+                },
+                    {
+                        name: "remove",
+                        src: "[SKIN]/actions/remove.png",
+                        click: function (form, item, icon) {
+                            DynamicForm_Institute_Institute.clearValue("parentInstituteId");
+                        },
+                    }
+                ],
                 click: function (form, item, icon) {
                     ListGrid_Institute_InstituteList_Select();
                 },
@@ -1486,7 +1494,7 @@
             alignLayout: "center",
             align: "center",
             padding: 10,
-            membersMargin: 10,
+            membersMargin: 5,
             margin:5,
             members: [  HLayOut_Institute_PersonalList_Toolstrip,VLayout_Institute_PersonalList, HLayOut_Institute_PersonalList_Select]
         })]
