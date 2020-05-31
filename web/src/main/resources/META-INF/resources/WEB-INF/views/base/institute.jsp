@@ -18,6 +18,7 @@
     var institute_Manager_Url = rootUrl + "/personalInfo/";
     var equipmentDestUrl = "";
     var globalWait = undefined;
+    var InstituteManagerEdit=false;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -222,9 +223,9 @@
             {name: "id", primaryKey: true},
             {name: "firstNameFa"},
             {name: "lastNameFa"},
-            {name: "fatherName"},
             {name: "nationalCode"},
-            {name: "birthDate"}
+            {name: "contactInfo.mobile"},
+            {name: "contactInfo.email"}
         ],
         fetchDataURL: personalInfoUrl + "spec-list"
     });
@@ -623,7 +624,7 @@
 
     var ListGrid_Institute_PersonalInfo_List = isc.TrLG.create({
         width: "100%",
-        height: "100%",
+        height: "80%",
         dataSource: RestDataSource_Institute_PersonalInfo_List,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -640,24 +641,23 @@
                 filterOperator: "iContains"
             },
             {
-                name: "fatherName",
-                title: "<spring:message code='father.name'/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
-            {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 align: "center",
                 filterOperator: "iContains"
             },
             {
-                name: "birthDate",
-                title: "<spring:message code='birth.date'/>",
+                name: "contactInfo.mobile",
+                title: "<spring:message code='mobile'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "contactInfo.email",
+                title: "<spring:message code='email'/>",
                 align: "center",
                 filterOperator: "iContains"
             }
-
         ],
         sortDirection: "descending",
         dataPageSize: 50,
@@ -2651,12 +2651,6 @@
                 required:true
             },
             {
-                name: "fatherName",
-                title: "<spring:message code='father.name'/>",
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]| ",
-                width: "*",
-            },
-            {
                 name: "nationalCode",
                 validators: [TrValidators.NationalCodeValidate],
                 title: "<spring:message code='national.code'/>",
@@ -2666,40 +2660,36 @@
                 required:true
             },
             {
-                name: "birthDate",
-                title: "<spring:message code='birth.date'/>",
-                ID: "birthDate",
-                hint: todayDate,
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('birthDate', this, 'ymd', '/');
-                    }
-                }],
-                editorExit:function(){
-                    let result=reformat(DynamicForm_Institute_Manager.getValue("birthDate"));
-                    if (result){
-                        DynamicForm_Institute_Manager.getItem("birthDate").setValue(result);
-                        DynamicForm_Institute_Manager.clearFieldErrors("birthDate", true);
-                        persianDateCheck=true;
-                    }
+                name: "contactInfo.mobile",
+                keyPressFilter: "[0-9|-|+]",
+                title: "<spring:message code='mobile'/>",
+                width: "*",
+                validators: [TrValidators.MobileValidate],
+                blur: function () {
+                    var mobileCheck;
+                    mobileCheck = checkMobile(DynamicForm_Institute_Manager.getValue("mobile"));
+                    if (mobileCheck === false)
+                        DynamicForm_Institute_Manager.addFieldErrors("mobile", "<spring:message code='msg.invalid.phone.number'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_Institute_Manager.clearFieldErrors("mobile", true);
                 },
-                changed: function () {
-                    var dateCheck;
-                    if (DynamicForm_Institute_Manager.getValue("birthDate") == null ||
-                        DynamicForm_Institute_Manager.getValue("birthDate") == "")
-                        dateCheck = true;
-                    else
-                        dateCheck = checkBirthDate(DynamicForm_Institute_Manager.getValue("birthDate"));
-                    persianDateCheck = dateCheck;
-                    if (dateCheck === false)
-                        DynamicForm_Institute_Manager.addFieldErrors("birthDate", "<spring:message code='msg.correct.date'/>", true);
-                    else if (dateCheck === true)
-                        DynamicForm_Institute_Manager.clearFieldErrors("birthDate", true);
-                }
+                length: "13"
+            },
+            {
+                name: "contactInfo.email",
+                title: "<spring:message code='email'/>",
+                keyPressFilter: "[a-z|A-Z|0-9|.|@|-|_]",
+                width: "*",
+                validators: [TrValidators.EmailValidate],
+                blur: function () {
+                    var emailCheck;
+                    emailCheck = checkEmail(DynamicForm_Institute_Manager.getValue("e_mail"));
+                    if (emailCheck === false)
+                        DynamicForm_Institute_Manager.addFieldErrors("e_mail", "<spring:message code='msg.email.validation'/>", true);
+                    if (emailCheck === true)
+                        DynamicForm_Institute_Manager.clearFieldErrors("e_mail", true);
+                },
+                length: "50"
             },
         ],
     });
@@ -2770,6 +2760,13 @@
         }
 
         let data = DynamicForm_Institute_Manager.getValues();
+
+        if (InstituteManagerEdit)
+        {
+            isc.RPCManager.sendRequest(TrDSRequest(institute_Manager_Url+"safeUpdate/"+data.id, "PUT", JSON.stringify(data)
+                ,"callback: save_Institute_Manage_result(rpcResponse)"));
+            return;
+        }//end if
 
         isc.RPCManager.sendRequest(TrDSRequest(institute_Manager_Url+"safeCreate", "POST", JSON.stringify(data)
             ,"callback: save_Institute_Manage_result(rpcResponse)"));
@@ -3330,6 +3327,7 @@
     function Function_Institute_Manager_Add(){
         Window_Manager_Account.show();
         Window_Manager_Account.bringToFront();
+        InstituteManagerEdit=false;
     }
 
     function Function_Institute_Manager_Edit(){
@@ -3337,14 +3335,12 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-           // profileAHKTitleMenuMethod = "PUT";
+            InstituteManagerEdit=true;
             DynamicForm_Institute_Manager.clearValues();
             DynamicForm_Institute_Manager.editRecord(record);
             Window_Manager_Account.show();
             Window_Manager_Account.bringToFront();
         }
-
-
     }
 
     function ListGrid_Institute_Institute_refresh() {
