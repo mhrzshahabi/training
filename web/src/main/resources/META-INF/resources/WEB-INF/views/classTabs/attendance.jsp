@@ -203,10 +203,17 @@
                             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
                                 if(resp.httpResponseCode == 200){
                                     const sessions = JSON.parse(resp.data);
-                                    let date = sessions.sessionDate;
+                                    let date = sessions[0].sessionDate;
                                     let sessionList = [];
+                                    let i = 1;
                                     for(let s of sessions){
                                         if(s.sessionDate == date){
+                                            sessionList.push(s);
+                                            continue;
+                                        }
+                                        else if(i<5){
+                                            i++;
+                                            date = s.sessionDate;
                                             sessionList.push(s);
                                             continue;
                                         }
@@ -215,11 +222,12 @@
                                         sessionList.length = 0;
                                         sessionList.push(s);
                                     }
+                                    printClearForm(sessionList);
                                 }
                             }));
 
-                            console.log(data)
-                            console.log(Math.ceil(data.length/5))
+                            // console.log(data)
+                            // console.log(Math.ceil(data.length/5))
                             // printClearForm();
                         }
                     }));
@@ -1285,7 +1293,7 @@
         classGridRecordInAttendanceJsp = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classGridRecordInAttendanceJsp == null)) {
             // DynamicForm_Attendance.setValue("sessionDate", "");
-            DynamicForm_Attendance.setValue("attendanceTitle", "کلاس " + classGridRecordInAttendanceJsp.titleClass + " گروه " + classGridRecordInAttendanceJsp.group);
+            DynamicForm_Attendance.setValue("attendanceTitle", "کلاس " + (classGridRecordInAttendanceJsp.titleClass?classGridRecordInAttendanceJsp.titleClass:classGridRecordInAttendanceJsp.course.titleFa) + " گروه " + classGridRecordInAttendanceJsp.group);
             DynamicForm_Attendance.setValue("sessionDate","");
             DynamicForm_Attendance.redraw();
             sessionInOneDate.length = 0;
@@ -1336,6 +1344,7 @@
             createDialog("info","تاریخ شروع کلاس " + date + " می باشد");
     }
     function printClearForm(list) {
+        // console.log(list)
 
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -1349,7 +1358,7 @@
                 ]
         });
         criteriaForm.setValue("classId", classGridRecordInAttendanceJsp.id);
-        criteriaForm.setValue("list", list);
+        criteriaForm.setValue("list", JSON.stringify(list));
         criteriaForm.show();
         criteriaForm.submitForm();
     }

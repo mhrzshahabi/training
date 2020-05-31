@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,11 +48,16 @@ public class AttendanceFormController {
     @PostMapping(value = {"/clear-print/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
-                                  @RequestParam(value = "list") List<Object> list,
+                                  @RequestParam(value = "list") String list,
                                   @RequestParam(value = "classId") Long classId
 //                                  @RequestParam(value = "params") String receiveParams
     ) throws Exception {
         //-------------------------------------
+        Gson gson = new Gson();
+        Type resultType = new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>() {
+        }.getType();
+        List<ClassSessionDTO.AttendanceClearForm> allData = gson.fromJson(list, resultType);
+
         Tclass tClass = tclassService.getTClass(classId);
         TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
         Set<ClassStudent> students = tClass.getClassStudents();
@@ -68,7 +75,8 @@ public class AttendanceFormController {
                 .thenComparing(ClassSession::getSessionStartHour))
                 .collect(Collectors.toList());
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
-        final Map<String, Object> params = print(modelMapper.map(list, new TypeToken<ClassSessionDTO.AttendanceClearForm>(){}.getType()));
+        final Map<String, Object> params = print(allData);
+//        final Map<String, Object> params = print(modelMapper.map(list, new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>(){}.getType()));
         params.put("days", "روزهای تشکیل کلاس: " + daysOnClass.toString());
         params.put("titleClass", tclassDTO.getTitleClass());
         params.put("code", tclassDTO.getCode());
