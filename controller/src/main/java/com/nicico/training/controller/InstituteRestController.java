@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -627,11 +629,14 @@ public class InstituteRestController {
     }
 
     @GetMapping(value = "/iscTupleList")
-    public ResponseEntity<ISC<InstituteDTO.InstituteInfoTuple>> list(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<InstituteDTO.InstituteInfoTuple>> list(HttpServletRequest iscRq, @RequestParam(required = false) Long id) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        if (id != null) {
+            searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
+        }
         SearchDTO.SearchRs<InstituteDTO.InstituteInfoTuple> searchRs = instituteService.search(searchRq, i -> modelMapper.map(i, InstituteDTO.InstituteInfoTuple.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }

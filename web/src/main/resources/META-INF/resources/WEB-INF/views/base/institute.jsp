@@ -65,6 +65,15 @@
         fetchDataURL: institute_Institute_Url + "spec-list"
     });
 
+    var RestDataSource_TupleInstitute_Institute = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"},
+            {name: "titleEn"},
+        ],
+        fetchDataURL: institute_Institute_Url + "iscTupleList"
+    });
+
     var RestDataSource_Institute_Institute_Account = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -746,13 +755,14 @@
                 iconWidth: 16,
                 iconHeight: 16,
                 suppressBrowserClearIcon: true,
-                icons: [{
-                    name: "add",
-                    src: "[SKIN]/actions/add.png",
-                    click: function (form, item, icon) {
-                        ListGrid_Institute_InstituteList_Select();
-                    },
-                },
+                icons: [
+                //     {
+                //     name: "add",
+                //     src: "[SKIN]/actions/add.png",
+                //     click: function (form, item, icon) {
+                //         ListGrid_Institute_InstituteList_Select();
+                //     },
+                // },
                     {
                         name: "remove",
                         src: "[SKIN]/actions/remove.png",
@@ -762,14 +772,20 @@
                         },
                     }
                 ],
-                click: function (form, item, icon) {
-                    ListGrid_Institute_InstituteList_Select();
-                },
-                readOnly: true,
-                type: 'text',
-                keyPressFilter: "[]",
+                // click: function (form, item, icon) {
+                //     ListGrid_Institute_InstituteList_Select();
+                // },
+                // readOnly: true,
+                type: "ComboBoxItem",
+                optionDataSource: RestDataSource_TupleInstitute_Institute,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa","titleFa"],
+                // keyPressFilter: "[]",
+                pickListFields: [{name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                textMatchStyle: "substring",
+                pickListProperties: {showFilterEditor: false, allowAdvancedCriteria: true},
                 width: "*",
-                length: "10"
             },
             {
                 name: "parentInstitute.titleFa",
