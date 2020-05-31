@@ -65,8 +65,8 @@ public class InstituteDTO {
         private Long id;
         private PersonalInfoDTO.PersonalInfoCustom manager;
         private InstituteDTO.InstituteInfoTuple parentInstitute;
-//        private ParameterValueDTO.MinInfo companyType;
-//        private ParameterValueDTO.MinInfo licenseType;
+        private ParameterValueDTO.MinInfo companyType;
+        private ParameterValueDTO.MinInfo licenseType;
         private ContactInfoDTO.InstituteContactInfo contactInfo;
     }
 
