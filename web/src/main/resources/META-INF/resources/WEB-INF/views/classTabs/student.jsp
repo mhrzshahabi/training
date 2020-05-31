@@ -855,6 +855,7 @@
 
                                         this.parseExcel = function(file) {
                                             var reader = new FileReader();
+                                            var records = [];
 
                                             reader.onload = function(e) {
                                                 var data = e.target.result;
@@ -874,13 +875,9 @@
                                                         else if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
                                                             return item.personnelNo==Object.values(XL_row_object[i])[0];
                                                         }).length==0){
-
                                                             let current={personnelNo:Object.values(XL_row_object[i])[0]};
+                                                            records.add(current);
 
-                                                            GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat([current]));
-
-                                                            GroupSelectedPersonnelsLG_student.invalidateCache();
-                                                            GroupSelectedPersonnelsLG_student.fetchData();
                                                             continue;
                                                         }
                                                         else{
@@ -891,7 +888,15 @@
                                                     DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
                                                     createDialog("info", "فایل به لیست اضافه شد.");
 
-                                                })
+                                                });
+
+                                                if(records.length > 0){
+                                                    GroupSelectedPersonnelsLG_student.setData(records);
+                                                    GroupSelectedPersonnelsLG_student.invalidateCache();
+                                                    GroupSelectedPersonnelsLG_student.fetchData();
+                                                }else{
+                                                    createDialog("info", "خطا در محتویات فایل");
+                                                }
 
                                             };
 

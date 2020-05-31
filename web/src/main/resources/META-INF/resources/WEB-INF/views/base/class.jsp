@@ -2777,7 +2777,6 @@
             TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     var societies = [];
-                    societyMap = {0: "فاوا", 1: "عمومی"};
                     var item = 0;
                     DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                     DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
