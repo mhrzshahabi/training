@@ -660,8 +660,8 @@ public class TeacherRestController {
         params.put("address", address);
         params.put("connectionInfo", connection);
         String categories = null;
-        List<Category> categoryList = teacher.getCategories();
-        List<Subcategory> subCategoryList = teacher.getSubCategories();
+        List<Category> categoryList = (List<Category>) teacher.getCategories();
+        List<Subcategory> subCategoryList = (List<Subcategory>) teacher.getSubCategories();
         for (Category category : categoryList) {
             categories += category.getTitleFa() + " ";
             for (Subcategory subCategory : subCategoryList) {
