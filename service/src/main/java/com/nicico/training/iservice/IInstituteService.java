@@ -7,22 +7,28 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.Institute;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface IInstituteService {
 
     InstituteDTO.Info get(Long id);
 
+    Institute getInstitute(Long id);
+
     List<InstituteDTO.Info> list();
 
-    InstituteDTO.Info create(Object request, HttpServletResponse response);
+//    InstituteDTO.Info create(Object request, HttpServletResponse response);
 
-    InstituteDTO.Info update(Long id, LinkedHashMap request, HttpServletResponse response);
+//    InstituteDTO.Info update(Long id, LinkedHashMap request, HttpServletResponse response);
+
+    InstituteDTO.Info create(InstituteDTO.Create request, HttpServletResponse response);
+
+    InstituteDTO.Info update(Long id, InstituteDTO.Update request, HttpServletResponse response);
 
     void delete(Long id);
 

@@ -456,7 +456,7 @@
                 required: true,
                 keyPressFilter: "[0-9]",
                 length: "10",
-                changed: function () {
+                blur: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
                     var codeCheckPerReg;
                     codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
