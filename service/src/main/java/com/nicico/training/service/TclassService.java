@@ -189,27 +189,43 @@ public class TclassService implements ITclassService {
     @Override
     public SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) {
 
+        long start = System.nanoTime();
+
         Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
-        List<Tclass> list=all.getContent();
+        List<Tclass> list = all.getContent();
 
-        Long totalCount=all.getTotalElements();
+        Long totalCount = all.getTotalElements();
+        SearchDTO.SearchRs<TclassDTO.Info> searchRs=null;
 
-        List<Long> ids = new ArrayList<>();
-        int len =list.size();
+        if (totalCount == 0) {
 
-        for (int i = 0; i < len; i++) {
-            ids.add(list.get(i).getId());
+            searchRs=new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TclassDTO.Info>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = list.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(list.get(i).getId());
+            }
+
+            request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+            request.setStartIndex(null);
+
+
+            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
+                    TclassDTO.Info.class));
         }
 
-        request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
-        request.setStartIndex(null);
-
-
-        SearchDTO.SearchRs<TclassDTO.Info> searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
-                TclassDTO.Info.class));
         searchRs.setTotalCount(totalCount);
-        return searchRs;
 
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+
+        System.out.println((timeElapsed * 1.0) / 1_000_000);
+
+        return searchRs;
 
 
         //return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));

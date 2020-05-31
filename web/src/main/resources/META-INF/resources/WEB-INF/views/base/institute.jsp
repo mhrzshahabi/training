@@ -758,6 +758,7 @@
                         src: "[SKIN]/actions/remove.png",
                         click: function (form, item, icon) {
                             DynamicForm_Institute_Institute.clearValue("parentInstituteId");
+                            DynamicForm_Institute_Institute.clearValue("parentInstitute.titleFa")
                         },
                     }
                 ],
@@ -1029,56 +1030,37 @@
             {name: "contactInfo.id", hidden: true},
             {
                 name: "contactInfo.workAddress.stateId",
-                type: "IntegerItem",
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "name",
-                required: true,
-                valueField: "id",
                 optionDataSource: RestDataSource_Institute_State,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
+                required: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
+                displayField: "name",
+                valueField: "id",
+                filterFields: ["name"],
+                changed: function (form, item, value) {
+                    DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
+                    if (value !== null && value !== undefined) {
+                        RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + value;
+                        DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").fetchData();
+                    }
                 },
-                pickListFields: [
-                    {name: "name", width: "30%", filterOperator: "iContains"}],
             },
             {
                 name: "contactInfo.workAddress.cityId",
-                type: "IntegerItem",
                 title: "<spring:message code='city'/>",
+                prompt: "<spring:message code="msg.city.choose.state.first"/>",
+                optionDataSource: RestDataSource_Institute_City,
                 textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-// defaultToFirstOption: true,
+                destroyed: true,
                 required: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "name",
                 valueField: "id",
-                optionDataSource: RestDataSource_Institute_City,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "name", width: "30%", filterOperator: "iContains"}]
+                filterFields: ["name"],
+
             },
             {
                 name: "contactInfo.workAddress.postalCode",
@@ -1176,7 +1158,7 @@
             }
         ],
 
-        itemChanged: function (item, newValue) {
+    /*    itemChanged: function (item, newValue) {
             if (item.name === "contactInfo.workAddress.stateId") {
                 if (newValue === undefined) {
                     DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
@@ -1190,7 +1172,7 @@
             if (item.name === "e_mail") {
             }
 
-        }
+        }*/
 
     });
 
@@ -1417,15 +1399,12 @@
                 }
             });
         } else {
-//console.log('record:' + JSON.stringify(record));
             var id = record.id;
             var name = record.titleFa;
             DynamicForm_Institute_Institute.getItem("parentInstituteId").setValue(id);
             DynamicForm_Institute_Institute.getItem("parentInstitute.titleFa").setValue(name);
             Window_Institute_InstituteList.close();
-
         }
-
     }
 
 
@@ -3313,26 +3292,14 @@
         } else {
             ValuesManager_Institute_InstituteValue.clearValues();
             ValuesManager_Institute_InstituteValue.clearErrors();
-            DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
-            DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").fetchData();
+           // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
+           // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").fetchData();
 
-            ValuesManager_Institute_InstituteValue.editRecord(record);
+             ValuesManager_Institute_InstituteValue.editRecord(record);
+            //DynamicForm_Institute_Institute.getItem("parentInstitute.titleFa").setValue(record.titleFa);
 
-            var stateValue = undefined;
-            var cityValue = undefined;
-
-            if (record != null && record.contactInfo!=null && record.contactInfo.workAddress.stateId != null)
-                stateValue = record.contactInfo.workAddress.stateId;
-            if (record != null && record.contactInfo!=null && record.contactInfo.workAddress.cityId != null)
-                cityValue = record.contactInfo.workAddress.cityId;
-            if (cityValue == undefined) {
-                DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
-            }
-            if (stateValue != undefined) {
-                RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue;
-                DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").optionDataSource = RestDataSource_Institute_City;
-                DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").fetchData();
-            }
+            if (record != null && record.contactInfo!=null && record.contactInfo.workAddress.stateId !== undefined)
+                RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" +record.contactInfo.workAddress.stateId;
 
             instituteMethod = "PUT";
             Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().titleFa, 3, "red", "I"));
@@ -3344,8 +3311,8 @@
         ValuesManager_Institute_InstituteValue.clearValues();
         ValuesManager_Institute_InstituteValue.clearErrors(true);
         instituteMethod = "POST";
-        DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
-        ;
+       // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
+      //  ;
         Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
         Window_Institute_Institute.show();
         Window_Institute_Institute.bringToFront();
@@ -3443,7 +3410,7 @@
 
     function fillAddressFields(postalCode) {
         if (postalCode !== undefined)
-            isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getByPostalCodeWithContact/" + postalCode, "GET", null,
+            isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,
                 "callback: address_findOne_result(rpcResponse)"));
     }
 
@@ -3453,13 +3420,13 @@
         }
         let data = JSON.parse(resp.data);
 
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.email", data.email);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.mobile", data.mobile);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.cityId", data.workAddress.city.id);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.stateId", data.workAddress.state.id);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.postalCode", data.workAddress.postalCode);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.restAddr", data.workAddress.restAddr);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.phone", data.workAddress.phone);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.fax", data.workAddress.fax);
-        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.webSite", data.workAddress.webSite);
+      //  DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.id", data.id)
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.postalCode", data.postalCode);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.restAddr", data.restAddr);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.phone", data.phone);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.fax", data.fax);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.webSite", data.webSite);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.stateId",data.stateId);
+        DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").changed(null, null, data.stateId);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.cityId", data.cityId);
     }
