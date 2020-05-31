@@ -1,6 +1,8 @@
 package com.nicico.training.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.domain.criteria.NICICOPageable;
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -19,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -199,9 +202,26 @@ public class TeacherService implements ITeacherService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request) {
+
+        Page<Teacher> all = teacherDAO.findAll(NICICOSpecification.of(request),NICICOPageable.of(request));
+        List<Teacher> listTeacher=all.getContent();
+
+        Long totalCount=all.getTotalElements();
+
+        List<Long> ids = new ArrayList<>();
+        int len =listTeacher.size();
+
+        for (int i = 0; i < len; i++) {
+            ids.add(listTeacher.get(i).getId());
+        }
+
+        request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+        request.setStartIndex(null);
+
+
         SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher,
                 TeacherDTO.Grid.class));
-
+        searchRs.setTotalCount(totalCount);
         return searchRs;
     }
 
