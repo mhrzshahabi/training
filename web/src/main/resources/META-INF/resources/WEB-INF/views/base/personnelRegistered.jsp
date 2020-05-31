@@ -459,7 +459,7 @@
                 blur: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
                     var codeCheckPerReg;
-                    codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
+                    codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value);
                     codeMeliCheckPerReg = codeCheckPerReg;
                     if (codeCheckPerReg === false) {
                         DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
@@ -1668,7 +1668,7 @@
 
 
     function checkCodeMeliPerReg(code) {
-        if (code === "undefined" || code === null || code === "")
+        if (code === undefined || code === null || code === "")
             return false;
         var L = code.length;
 
