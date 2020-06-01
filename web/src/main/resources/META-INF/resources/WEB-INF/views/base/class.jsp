@@ -395,7 +395,15 @@
                 autoFitWidth: true
             },
             <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
+            {
+                name: "teacher",
+                title: "<spring:message code='teacher'/>",
+                align: "center",
+                filterOperator: "iContains",
+                sortNormalizer(record) {
+                    return record.teacher.personality.lastNameFa;
+                }
+            },
             {
                 name: "reason", title: "<spring:message code='training.request'/>", align: "center",
                 valueMap: {

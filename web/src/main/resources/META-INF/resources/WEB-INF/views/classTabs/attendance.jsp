@@ -206,7 +206,7 @@
                                     let date = sessions[0].sessionDate;
                                     let sessionList = [];
                                     let i = 1;
-                                    let page = 1;
+                                    let page = 0;
                                     for(let s of sessions){
                                         if(s.sessionDate == date){
                                             sessionList.push(s);

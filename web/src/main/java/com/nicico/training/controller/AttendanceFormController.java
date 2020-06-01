@@ -32,6 +32,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Controller
@@ -49,8 +50,8 @@ public class AttendanceFormController {
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "list") String list,
-                                  @RequestParam(value = "classId") Long classId
-//                                  @RequestParam(value = "params") String receiveParams
+                                  @RequestParam(value = "classId") Long classId,
+                                  @RequestParam(value = "page") String page
     ) throws Exception {
         //-------------------------------------
         Gson gson = new Gson();
@@ -74,6 +75,7 @@ public class AttendanceFormController {
         List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
                 .thenComparing(ClassSession::getSessionStartHour))
                 .collect(Collectors.toList());
+        int pages = (int)Math.ceil(sessionList.stream().map(ClassSession::getSessionDate).collect(Collectors.toSet()).size() / 5)+1;
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
         final Map<String, Object> params = print(allData);
 //        final Map<String, Object> params = print(modelMapper.map(list, new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>(){}.getType()));
@@ -83,6 +85,8 @@ public class AttendanceFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
+        params.put("page", page);
+        params.put("pages", String.valueOf(pages));
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);

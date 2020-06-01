@@ -200,6 +200,8 @@
 	<parameter name="d5" class="java.lang.String"/>
 	<parameter name="days" class="java.lang.String"/>
 	<parameter name="endDate" class="java.lang.String"/>
+	<parameter name="page" class="java.lang.String"/>
+	<parameter name="pages" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -210,7 +212,7 @@
 	<pageHeader>
 		<band height="114" splitType="Stretch">
 			<staticText>
-				<reportElement x="105" y="4" width="350" height="42" uuid="5f206d2b-4d4f-4333-97c5-abedd5e10fe0"/>
+				<reportElement x="105" y="15" width="350" height="30" uuid="5f206d2b-4d4f-4333-97c5-abedd5e10fe0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="13" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -236,7 +238,7 @@
 				<text><![CDATA[کد کلاس :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="135" y="71" width="44" height="20" isPrintWhenDetailOverflows="true" uuid="0a9ece29-c119-45d0-ba61-bf46b656ccd1"/>
+				<reportElement positionType="Float" x="73" y="71" width="44" height="20" isPrintWhenDetailOverflows="true" uuid="0a9ece29-c119-45d0-ba61-bf46b656ccd1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10" isBold="false"/>
 				</textElement>
@@ -264,35 +266,35 @@
 				<textFieldExpression><![CDATA[$P{code}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="22" y="71" width="113" height="20" isPrintWhenDetailOverflows="true" uuid="8558c256-5b8e-4454-9cac-c58879d6db8b"/>
+				<reportElement positionType="Float" x="-3" y="71" width="76" height="20" isPrintWhenDetailOverflows="true" uuid="8558c256-5b8e-4454-9cac-c58879d6db8b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{startDate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="190" y="70" width="302" height="20" isPrintWhenDetailOverflows="true" uuid="7fbb87a5-678c-40e4-9ec6-ae0d1edcdc94"/>
+				<reportElement positionType="Float" x="120" y="70" width="372" height="20" isPrintWhenDetailOverflows="true" uuid="7fbb87a5-678c-40e4-9ec6-ae0d1edcdc94"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{titleClass}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="190" y="92" width="148" height="20" isPrintWhenDetailOverflows="true" uuid="d1e8cdbc-7a42-4b33-92fc-93ee176a0a99"/>
+				<reportElement positionType="Float" x="120" y="92" width="218" height="20" isPrintWhenDetailOverflows="true" uuid="d1e8cdbc-7a42-4b33-92fc-93ee176a0a99"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{teacher}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="134" y="92" width="43" height="20" isPrintWhenDetailOverflows="true" uuid="01801726-dd8a-4155-b455-ea650b845e71"/>
+				<reportElement positionType="Float" x="72" y="92" width="43" height="20" isPrintWhenDetailOverflows="true" uuid="01801726-dd8a-4155-b455-ea650b845e71"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[تاریخ پایان :]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="21" y="92" width="113" height="20" isPrintWhenDetailOverflows="true" uuid="ff8a19bd-f576-4de8-a632-69ce90104b57"/>
+				<reportElement positionType="Float" x="-3" y="92" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="ff8a19bd-f576-4de8-a632-69ce90104b57"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
@@ -1150,7 +1152,7 @@
 							<jr:columnHeader style="Table 1_CH" height="40" rowSpan="1">
 								<staticText>
 									<reportElement x="0" y="0" width="12" height="40" uuid="acd061c3-17c0-4966-82af-b8da0e93b3ca"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+									<textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
 										<font fontName="B Nazanin" size="10"/>
 									</textElement>
 									<text><![CDATA[ردیف]]></text>
@@ -1172,7 +1174,7 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="21">
+		<band height="43">
 			<staticText>
 				<reportElement x="80" y="1" width="25" height="20" uuid="d2eb0778-c8d0-45e2-9b0c-ef8ad8de546d"/>
 				<textElement verticalAlignment="Middle">
@@ -1180,13 +1182,6 @@
 				</textElement>
 				<text><![CDATA[صفحه:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="70" y="1" width="10" height="20" uuid="d22b4175-9503-4534-8995-35ff0895a05c"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="59" y="1" width="11" height="20" uuid="13aa1109-6362-489c-9e82-e2af5ab1fae8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1194,12 +1189,19 @@
 				</textElement>
 				<text><![CDATA[از]]></text>
 			</staticText>
-			<textField evaluationTime="Report">
-				<reportElement x="49" y="1" width="10" height="20" uuid="263773b9-fc81-45f8-9431-be4c2bd748e0"/>
+			<textField>
+				<reportElement x="70" y="1" width="10" height="20" uuid="dfdcce1b-1b36-44a3-a92e-19a6acbb955e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="10"/>
+					<font fontName="Shabnam-FD" size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{page}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="1" width="18" height="20" uuid="f3725a6d-c262-458b-aff6-3d6d27b02a96"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pages}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
