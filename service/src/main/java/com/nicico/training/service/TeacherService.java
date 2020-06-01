@@ -1,6 +1,8 @@
 package com.nicico.training.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.domain.criteria.NICICOPageable;
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -19,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -199,9 +202,36 @@ public class TeacherService implements ITeacherService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request) {
-        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher,
-                TeacherDTO.Grid.class));
 
+        Page<Teacher> all = teacherDAO.findAll(NICICOSpecification.of(request),NICICOPageable.of(request));
+        List<Teacher> listTeacher=all.getContent();
+
+        Long totalCount=all.getTotalElements();
+
+        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs=null;
+
+        if (totalCount == 0) {
+
+            searchRs=new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TeacherDTO.Grid>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = listTeacher.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(listTeacher.get(i).getId());
+            }
+
+            request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+            request.setStartIndex(null);
+
+
+            searchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher,
+                    TeacherDTO.Grid.class));
+        }
+
+        searchRs.setTotalCount(totalCount);
         return searchRs;
     }
 
@@ -221,8 +251,7 @@ public class TeacherService implements ITeacherService {
         } else
             request.setCriteria(criteriaRq);
 
-        SearchDTO.SearchRs<TeacherDTO.Report> searchRs = SearchUtil.search(teacherDAO, request, needAssessment -> modelMapper.map(needAssessment,
-                TeacherDTO.Report.class));
+        SearchDTO.SearchRs<TeacherDTO.Report> searchRs = SearchUtil.search(teacherDAO, request, tclass -> modelMapper.map(tclass, TeacherDTO.Report.class));
 
         searchRs.getList().forEach(x->{
             x.setCodes(x.getTclasse().stream().map(o->o.getTerm().getCode()).distinct().reduce((a,b)->a+","+b).map(Object::toString).orElse(""));
@@ -308,18 +337,8 @@ public class TeacherService implements ITeacherService {
         Teacher teacher = modelMapper.map(teacherDTO, Teacher.class);
         int teacher_educationLevel = 1;
 
-        if(teacher.getPersonality().getEducationLevel().getCode() != null)
+        if(teacher.getPersonality().getEducationLevel() != null && teacher.getPersonality().getEducationLevel().getCode() != null)
                 teacher_educationLevel = teacher.getPersonality().getEducationLevel().getCode();
-//        if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
-//            teacher_educationLevel = 1;
-//        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق دیپلم"))
-//            teacher_educationLevel = 2;
-//        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("لیسانس"))
-//            teacher_educationLevel = 3;
-//        else if (teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق لیسانس"))
-//            teacher_educationLevel = 4;
-//        else if (teacher.getPersonality().getEducationLevel().getTitleFa().contains("دکتر"))
-//            teacher_educationLevel = 5;
 
         //table 1
         //table 1 - row 1

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
@@ -20,9 +19,9 @@ import java.util.List;
 @Repository
 public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecificationExecutor<Tclass> {
 
-    @EntityGraph(attributePaths = {"institute","course","term","course.category","course.subCategory"})
+    /*@EntityGraph(attributePaths = {"institute","course","term","course.category","course.subCategory"})
     @Override
-    Page<Tclass> findAll(@Nullable Specification<Tclass> var1, Pageable var2);
+    Page<Tclass> findAll(@Nullable Specification<Tclass> var1, Pageable var2);*/
 
     List<Tclass> findByCourseIdAndTermId(Long courseId, Long termId);
 
@@ -88,5 +87,10 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Query(value = "select max(f_term) from tbl_class where id = :classId", nativeQuery = true)
     Long getTermIdByClassId(Long classId);
+
+
+    @EntityGraph(attributePaths = {"institute","course","term","course.category","course.subCategory","classStudents","classStudents.student","teacher","teacher.personality","trainingPlaceSet"})
+    @Override
+    List<Tclass> findAll(@Nullable Specification<Tclass> var1);
 
 }

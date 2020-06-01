@@ -16,11 +16,13 @@ import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.service.TeacherService;
+import com.sun.rmi.rmid.ExecOptionPermission;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -28,9 +30,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.imageio.ImageIO;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -59,6 +63,8 @@ public class TeacherRestController {
     private final IForeignLangKnowledgeService foreignLangService;
     private final TclassDAO tclassDAO;
     private final ITclassService tclassService;
+    @Autowired
+    protected EntityManager entityManager;
 
 
     @Loggable
@@ -295,8 +301,8 @@ public class TeacherRestController {
 
             if (criterion.getFieldName().equalsIgnoreCase("termId"))
             {
-                term=criterion.getValue();
-                removedObjects.add(criterion);
+                criterion.setFieldName("tclasse.term.id");
+                criterion.setOperator(EOperator.inSet);
             }
         }
 
@@ -305,38 +311,10 @@ public class TeacherRestController {
         }
 
        Set<TeacherDTO.Report> set=new HashSet<>();
-        SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
+       SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
-        for (TeacherDTO.Report x1:response.getList())
-        {
-            for(TclassDTO.TclassTerm y:x1.getTclasse())
-            {
-                if (term!=null) {
-                    if (((List) term).stream().anyMatch(x -> x.toString().equals(y.getTerm().getId().toString()))) {
-                            if (!set.contains(x1.getId())) {
-                                set.add(x1);
-                            }
-                    }
-                }
-            }
-        }
-
-        if (term!=null) {
-            response.getList().clear();
-            response.getList().addAll(set);
-        }
 
         List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
-
-        List<Integer> teaching_cats = null;
-        List<Integer> teaching_subcats = null;
-
-        if(teachingCategories != null) {
-            teaching_cats = modelMapper.map(teachingCategories, List.class);
-        }
-        if(teachingSubCategories != null) {
-            teaching_subcats = modelMapper.map(teachingSubCategories, List.class);
-        }
 
         Float min_evalGrade = null;
         if(evaluationGrade != null)
@@ -358,34 +336,39 @@ public class TeacherRestController {
             response.getList().remove(listRemovedObject);
         listRemovedObjects.clear();
 
-        if(teachingCategories!=null || teachingSubCategories!=null) {
-            for (TeacherDTO.Report datum : response.getList()) {
-                boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
-                if (relatedTeachingHistory == false)
-                    listRemovedObjects.add(datum);
-            }
-        }
-        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            response.getList().remove(listRemovedObject);
-
         for (TeacherDTO.Report datum : response.getList()) {
-            SearchDTO.SearchRq req = new SearchDTO.SearchRq();
             Long tId = datum.getId();
-            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(req, tId);
-            datum.setNumberOfCourses(""+resp.getList().size());
-            if(resp.getList() != null && resp.getList().size() > 0) {
-                String startDate = resp.getList().get(0).getStartDate();
-                for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
-                    if (teachingHistory.getStartDate().compareTo(startDate) > 0 || teachingHistory.getStartDate().compareTo(startDate)==0) {
-                        datum.setLastCourse(teachingHistory.getCourse().getTitleFa());
-                        datum.setLastCourseId(teachingHistory.getId());
-                    }
-                }
+            List<?> result1 = null;
+            Object[] res1 = null;
+            String courseId = null;
+            String classId = null;
+            List<?> result2 = null;
+            String courseTitle = null;
+            List<?> result3 = null;
+            String classCount = null;
+
+            String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" +  tId + ") AND ROWNUM = 1";
+            result1 = (List<?>) entityManager.createNativeQuery(sql1).getResultList();
+            if(result1.size() > 0) {
+                res1 = (Object[]) result1.get(0);
+                courseId = res1[0].toString();
+                classId = res1[1].toString();
             }
-        }
-        for (TeacherDTO.Report datum : response.getList()) {
+
+            if(courseId != null) {
+                String sql2 = "select c_title_fa from tbl_course where id =" + courseId;
+                result2 = (List<?>) entityManager.createNativeQuery(sql2).getResultList();
+                courseTitle = (String) result2.get(0);
+            }
+
+            String sql3 = "select count(id) from tbl_class where f_teacher =" + tId;
+            result3 = (List<?>) entityManager.createNativeQuery(sql3).getResultList();
+            classCount = ((BigDecimal) result3.get(0)).toString();
+
+            datum.setLastCourse(courseTitle);
+            datum.setNumberOfCourses(classCount);
             if(datum.getLastCourse() != null)
-                datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(datum.getLastCourseId(),datum.getId()));
+                datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(Long.parseLong(classId),tId));
         }
 
         final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
@@ -393,7 +376,7 @@ public class TeacherRestController {
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getList().size());
+                .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
 
@@ -660,8 +643,8 @@ public class TeacherRestController {
         params.put("address", address);
         params.put("connectionInfo", connection);
         String categories = null;
-        List<Category> categoryList = teacher.getCategories();
-        List<Subcategory> subCategoryList = teacher.getSubCategories();
+        List<Category> categoryList = (List<Category>) teacher.getCategories();
+        List<Subcategory> subCategoryList = (List<Subcategory>) teacher.getSubCategories();
         for (Category category : categoryList) {
             categories += category.getTitleFa() + " ";
             for (Subcategory subCategory : subCategoryList) {

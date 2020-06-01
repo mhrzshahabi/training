@@ -1071,7 +1071,11 @@
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
-            sortField: 0,
+            //sortField: 0,
+            initialSort: [
+// {property: "createdBy", direction: "ascending"},
+                {property: "startDate", direction: "descending", primarySort: true}
+            ],
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -1286,7 +1290,7 @@
                     title: "<spring:message code="evaluation.audience.type"/>",
                     filterOperator: "iContains"
                 }
-            ]
+            ],
         });
 
 
@@ -1318,41 +1322,61 @@
                 {
                     name: "evaluationStatusReaction",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
-                    }
+                    },
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {
                     name: "evaluationStatusLearning",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
                     },
-                    hidden: true
+                    hidden: true,
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {
                     name: "evaluationStatusBehavior",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
                     },
-                    hidden: true
+                    hidden: true,
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {
                     name: "evaluationStatusResults",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
                     },
-                    hidden: true
+                    hidden: true,
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {name: "evaluationAudienceType",},
             ],
@@ -1713,7 +1737,7 @@
         function print_Student_FormIssuance(type, numberOfStudents) {
 
 
-            if (Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Reaction" && ListGrid_evaluation_class.getSelectedRecord().classStatus !== "3") {
+            /*if (Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Reaction" && ListGrid_evaluation_class.getSelectedRecord().classStatus !== "3") {
                 isc.Dialog.create({
                     message: "اين كلاس هنوز خاتمه اوليه نخورده است",
                     icon: "[SKIN]ask.png",
@@ -1725,7 +1749,7 @@
                 });
 
                 return;
-            }
+            }*/
 
             if (ListGrid_evaluation_student.getTotalRows() > 0) {
                 let selectedClass = ListGrid_evaluation_class.getSelectedRecord();
@@ -1938,6 +1962,9 @@
                         RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
                         ListGrid_evaluation_student.invalidateCache();
                         ListGrid_evaluation_student.fetchData();
+
+                        ToolStripButton_FormIssuance.setTitle("<spring:message code="student.form.issuance.Reaction"/>");
+                        ToolStripButton_FormIssuanceForAll.setTitle("<spring:message code="students.form.issuance.Reaction"/>");
                         break;
                     }
                     case "TabPane_Learning": {
@@ -1949,6 +1976,9 @@
                         RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
                         ListGrid_evaluation_student.invalidateCache();
                         ListGrid_evaluation_student.fetchData();
+
+                        ToolStripButton_FormIssuance.setTitle("<spring:message code="student.form.issuance"/>");
+                        ToolStripButton_FormIssuanceForAll.setTitle("<spring:message code="students.form.issuance"/>");
                         break;
                     }
                     case "TabPane_Behavior": {
@@ -1960,6 +1990,9 @@
                         RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
                         ListGrid_evaluation_student.invalidateCache();
                         ListGrid_evaluation_student.fetchData();
+
+                        ToolStripButton_FormIssuance.setTitle("<spring:message code="student.form.issuance"/>");
+                        ToolStripButton_FormIssuanceForAll.setTitle("<spring:message code="students.form.issuance"/>");
                         break;
                     }
                     case "TabPane_Results": {
@@ -1971,6 +2004,9 @@
                         RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
                         ListGrid_evaluation_student.invalidateCache();
                         ListGrid_evaluation_student.fetchData();
+
+                        ToolStripButton_FormIssuance.setTitle("<spring:message code="student.form.issuance"/>");
+                        ToolStripButton_FormIssuanceForAll.setTitle("<spring:message code="students.form.issuance"/>");
                         break;
                     }
                 }
