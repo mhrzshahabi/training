@@ -613,4 +613,12 @@ public class TclassDTO {
         private CourseDTO.CourseInfoTuple course;
         private TermDTO.TermDTOTuple term;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassTeacherReport")
+    public static class TclassTeacherReport {
+        private TermDTO.TermDTOTuple term;
+    }
 }
