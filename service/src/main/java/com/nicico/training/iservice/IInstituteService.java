@@ -61,7 +61,7 @@ public interface IInstituteService {
 
     void addTeachers(List<Long> teacherIds, Long instituteId);
 
-    List<TeacherDTO.Info> getUnAttachedTeachers(Long instituteId, Pageable pageable);
+    SearchDTO.SearchRs<TeacherDTO.Info> getUnAttachedTeachers(SearchDTO.SearchRq request, Long instituteID);
 
     Integer getUnAttachedTeachersCount(Long instituteId);
 

@@ -411,6 +411,7 @@
                 valueField: "id",
                 displayField: "code",
                 endRow: false,
+                layoutStyle: "horizontal",
                 // comboBoxWidth: 200,
                 // layoutStyle: "horizontal",
                 comboBoxProperties: {
@@ -421,8 +422,8 @@
                         {name: "titleFa"},
                     ],
                     filterFields: ["titleFa", "code"],
+                    pickListProperties: {},
                     textMatchStyle: "substring",
-
                 },
             },
             {type: "SpacerItem"},
