@@ -2255,6 +2255,7 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            autoTimeActivation(false);
             getSocietiesList();
             getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
@@ -2331,6 +2332,7 @@
             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
+        autoTimeActivation(true);
         getSocietiesList();
         getOrganizers();
     }
@@ -2632,6 +2634,7 @@
     }
 
     function getOrganizers(){
+        if(userPersonInfo !== null && userPersonInfo !== undefined)
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultExecutor/DefaultClassOrganizer/" + userPersonInfo.complexTitle , "GET", null,
             function (resp) {
                 if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201)
@@ -2815,6 +2818,23 @@
                     );
                 }
             }));
+    }
+
+    function autoTimeActivation(active = true) {
+        var times = ["autoValid",
+            "first", "second", "third", "fourth", "fifth",
+            "saturday", "sunday", "monday", "tuesday" ,"wednesday", "thursday", "friday"];
+        if(active){
+            times.forEach(
+                function (currentValue, index, arr) {
+                    DynamicForm1_Class_JspClass.getField(currentValue).enable();
+                });
+        }else if(!active){
+            times.forEach(
+                function (currentValue, index, arr) {
+                    DynamicForm1_Class_JspClass.getField(currentValue).disable();
+                });
+        }
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

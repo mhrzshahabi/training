@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -61,6 +62,16 @@ public class InstituteService implements IInstituteService {
     @Override
     public InstituteDTO.Info create(InstituteDTO.Create request, HttpServletResponse response) {
         final Institute institute = modelMapper.map(request, Institute.class);
+
+        if (institute.getContactInfo().getWorkAddress().getPostalCode()!=null && addressDAO.existsByPostalCode(institute.getContactInfo().getWorkAddress().getPostalCode())) {
+            try {
+                response.sendError(405, null);
+                return null;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         if (request.getContactInfo() != null)
             contactInfoService.modify(request.getContactInfo(), institute.getContactInfo());
         if (request.getManagerId() != null)
@@ -78,6 +89,25 @@ public class InstituteService implements IInstituteService {
     @Transactional
     @Override
     public InstituteDTO.Info update(Long id, InstituteDTO.Update request, HttpServletResponse response) {
+        AddressDTO.CreateOrUpdate workAddress=request.getContactInfo().getWorkAddress();
+        String postalCode=workAddress.getPostalCode();
+        Long idAddress=workAddress.getId();
+
+        boolean status=false;
+
+        if (postalCode!=null && idAddress !=null)
+            status=addressDAO.existsByPostalCodeAndIdNot(postalCode,idAddress);
+
+        if (postalCode!=null && status)
+        {
+            try {
+                response.sendError(405,null);
+                return null;
+            } catch (IOException e){
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         final Institute institute = getInstitute(id);
         if (request.getContactInfo() != null && institute.getContactInfo() != null) {
             request.getContactInfo().setId(institute.getContactInfo().getId());
@@ -276,6 +306,14 @@ public class InstituteService implements IInstituteService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request) {
+        modelMapper.typeMap(Institute.class, InstituteDTO.Info.class).addMapping(
+                Institute::getParentInstitute,
+                (info, o) -> {
+                    if (o != null)
+                        info.setParentInstitute(modelMapper.map(o, InstituteDTO.InstituteInfoTuple.class));
+                    else
+                        info.setParentInstitute(null);
+                });
         return SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.Info.class));
     }
 
