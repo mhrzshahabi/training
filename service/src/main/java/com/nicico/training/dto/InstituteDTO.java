@@ -22,12 +22,9 @@ public class InstituteDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String titleEn;
-
     private Long contactInfoId;
-
     private Long managerId;
     private Integer teacherNumPHD;
     private Integer empNumPHD;
@@ -41,17 +38,7 @@ public class InstituteDTO {
     private Integer empNumDiploma;
     private Long instituteId;
     private String economicalId;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer einstituteTypeId;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer elicenseTypeId;
-
     private Long parentInstituteId;
-
     private Long licenseTypeId;
     private Long companyTypeId;
 
@@ -62,10 +49,8 @@ public class InstituteDTO {
     public static class Info extends InstituteDTO {
         private Long id;
         private PersonalInfoDTO.PersonalInfoCustom manager;
-        private InstituteDTO.Info parentInstitute;
-        private ParameterValueDTO.MinInfo companyType;
-        private ParameterValueDTO.MinInfo licenseType;
         private ContactInfoDTO.InstituteContactInfo contactInfo;
+        private InstituteDTO.InstituteInfoTuple parentInstitute;
     }
 
     @Getter
@@ -99,8 +84,7 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteCreateRq")
     public static class Create extends InstituteDTO {
-        private ContactInfoDTO.InstituteContactInfo contactInfo;
-        private PersonalInfoDTO.CreateOrUpdate manager;
+        private ContactInfoDTO.CreateOrUpdate contactInfo;
     }
 
     // ------------------------------
@@ -110,8 +94,7 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteUpdateRq")
     public static class Update extends InstituteDTO {
-        private ContactInfoDTO.InstituteContactInfo contactInfo;
-        private PersonalInfoDTO.CreateOrUpdate manager;
+        private ContactInfoDTO.CreateOrUpdate contactInfo;
     }
 
     // ------------------------------

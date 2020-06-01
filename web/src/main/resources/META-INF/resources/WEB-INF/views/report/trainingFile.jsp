@@ -7,7 +7,8 @@
 %>
 
 // <script>
-    
+
+
     var selectedPerson_TrainingFile = null;
     var printUrl_TrainingFile = "<spring:url value="/web/print/class-student/"/>";
 
@@ -68,12 +69,81 @@
         ],
         fetchDataURL: tclassStudentUrl + "classes-of-student/"
     });
+
+    var ToolStrip_Actions_ExportToExcel_Training_File = isc.ToolStrip.create({
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let grid=ListGrid_StudentSearch_JspTrainingFile;
+                    let size = grid.data.size();
+                    isc.Window.create({
+                        ID: "exportExcelWindow",
+                        title: "خروجی اکسل",
+                        autoSize: true,
+                        width: 400,
+                        items: [
+                            isc.DynamicForm.create({
+                                ID: "exportExcelForm",
+                                numCols: 1,
+                                padding: 10,
+                                fields: [
+                                    {
+                                        name: "maxRow",
+                                        width: "100%",
+                                        titleOrientation: "top",
+                                        title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+                                        value: size,
+                                        suppressBrowserClearIcon: true,
+                                        icons: [{
+                                            name: "clear",
+                                            src: "[SKIN]actions/close.png",
+                                            width: 10,
+                                            height: 10,
+                                            inline: true,
+                                            prompt: "پاک کردن",
+                                            click: function (form, item, icon) {
+                                                item.clearValue();
+                                                item.focusInItem();
+                                            }
+                                        }],
+                                        iconWidth: 16,
+                                        iconHeight: 16
+                                    }
+                                ]
+                            }),
+                            isc.TrHLayoutButtons.create({
+                                members: [
+                                    isc.IButton.create({
+                                        title: "تایید",
+                                        click: function () {
+                                            if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+                                                ExportToFile.DownloadExcelFormServer(grid, 'trainingFile', exportExcelForm.getValue("maxRow"), null, '', "پرونده آموزشی",JSON.stringify(grid.data.criteria));
+                                            }
+                                        }
+                                    }),
+                                    isc.IButton.create({
+                                        title: "لغو",
+                                        click: function () {
+                                            exportExcelWindow.close();
+                                        }
+                                    }),
+                                ]
+                            })
+                        ]
+                    });
+                    exportExcelWindow.show();
+                }
+            })
+        ]
+
+    })
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
         dataSource: RestDataSource_Student_JspTrainingFile,
         allowAdvancedCriteria:true,
         canSelect:false,
         selectionType: "single",
         allowFilterExpressions: true,
+        gridComponents: [ToolStrip_Actions_ExportToExcel_Training_File,"filterEditor", "header", "body"],
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -110,6 +180,11 @@
 
         }
     });
+
+
+
+
+
     var Window_StudentSearch_JspTrainingFile = isc.Window.create({
         autoSize:false,
         title:"<spring:message code="students.list"/>",
@@ -267,6 +342,7 @@
         ]
 
     });
+
 
     ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({
         <%--title: "<spring:message code='print'/>",--%>
