@@ -288,14 +288,13 @@
         dataSource: RestDataSource_Class_JspClass,
         </sec:authorize>
         contextMenu: Menu_ListGrid_Class_JspClass,
-        // dataPageSize: 50,
+        dataPageSize: 15,
         // allowAdvancedCriteria: true,
         // allowFilterExpressions: true,
         // filterOnKeypress: true,
         // selectionType: "single",
-
-// showRecordComponents: true,
-// showRecordComponentsByCell: true,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
         selectionType: "single",
         <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
         <%--groupByText: "<spring:message code='groupByText'/>",--%>

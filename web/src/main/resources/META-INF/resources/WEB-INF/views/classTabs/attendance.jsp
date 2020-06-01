@@ -197,15 +197,16 @@
             isc.ToolStripButton.create({
                 title: "چاپ فرم خام",
                 click: function () {
-                    isc.RPCManager.sendRequest(TrDSRequest(attendanceUrl + "/session-date?classId=" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
-                        if (resp.httpResponseCode == 200) {
-                            const data = JSON.parse(resp.data).response.data;
+                    // isc.RPCManager.sendRequest(TrDSRequest(attendanceUrl + "/session-date?classId=" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
+                    //     if (resp.httpResponseCode == 200) {
+                    //         const data = JSON.parse(resp.data).response.data;
                             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
                                 if(resp.httpResponseCode == 200){
                                     const sessions = JSON.parse(resp.data);
                                     let date = sessions[0].sessionDate;
                                     let sessionList = [];
                                     let i = 1;
+                                    let page = 1;
                                     for(let s of sessions){
                                         if(s.sessionDate == date){
                                             sessionList.push(s);
@@ -217,20 +218,19 @@
                                             sessionList.push(s);
                                             continue;
                                         }
-                                        printClearForm(sessionList);
+                                        page++;
+                                        i=1;
+                                        printClearForm(sessionList,page);
                                         date = s.sessionDate;
                                         sessionList.length = 0;
                                         sessionList.push(s);
                                     }
-                                    printClearForm(sessionList);
+                                    page++;
+                                    printClearForm(sessionList,page);
                                 }
                             }));
-
-                            // console.log(data)
-                            // console.log(Math.ceil(data.length/5))
-                            // printClearForm();
-                        }
-                    }));
+                    //     }
+                    // }));
                 }
             }),
             isc.ToolStripButtonExcel.create({
@@ -1343,9 +1343,7 @@
         else
             createDialog("info","تاریخ شروع کلاس " + date + " می باشد");
     }
-    function printClearForm(list) {
-        // console.log(list)
-
+    function printClearForm(list,page) {
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/attendance/clear-print/pdf"/>",
@@ -1355,10 +1353,12 @@
                 [
                     {name: "classId", type: "hidden"},
                     {name: "list", type: "hidden"},
+                    {name: "page", type: "hidden"},
                 ]
         });
         criteriaForm.setValue("classId", classGridRecordInAttendanceJsp.id);
         criteriaForm.setValue("list", JSON.stringify(list));
+        criteriaForm.setValue("page", page);
         criteriaForm.show();
         criteriaForm.submitForm();
     }
