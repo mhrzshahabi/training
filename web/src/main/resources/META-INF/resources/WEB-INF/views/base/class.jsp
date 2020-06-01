@@ -71,12 +71,20 @@
             {name: "studentCount",canFilter:false,canSort:false},
             {name: "code"},
             {name: "term.titleFa"},
-// {name: "teacher.personality.lastNameFa"},
+            // {name: "teacher.personality.lastNameFa"},
 // {name: "course.code"},
             {name: "course.titleFa"},
             {name: "course.id"},
             {name: "teacherId"},
-            {name: "teacher"},
+            {
+                name: "teacher",
+                // valueField: "teacher.personality.lastNameFa",
+            },
+            {
+                name: "teacher.personality.lastNameFa",
+                // displayField: "teacher",
+                // type: "TextItem"
+            },
             {name: "reason"},
             {name: "classStatus"},
             {name: "topology"},
@@ -398,11 +406,18 @@
             {
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
+                displayField: "teacher.personality.lastNameFa",
+                displayValueFromRecord: false,
+                type: "TextItem",
+                sortNormalizer(record){
+                    return record.teacher.personality.lastNameFa;
+                },
+
                 align: "center",
                 filterOperator: "iContains",
-                sortNormalizer(record) {
-                    return record.teacher.personality.lastNameFa;
-                }
+                // sortNormalizer(record) {
+                //     return record.teacher.personality.lastNameFa;
+                // }
             },
             {
                 name: "reason", title: "<spring:message code='training.request'/>", align: "center",
