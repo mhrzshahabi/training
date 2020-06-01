@@ -39,4 +39,6 @@
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_post_grade_id" tableName="tbl_post"/>
     </changeSet>
 
+
+
 </databaseChangeLog>
