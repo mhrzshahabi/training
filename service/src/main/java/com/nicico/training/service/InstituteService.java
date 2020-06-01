@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +38,7 @@ public class InstituteService implements IInstituteService {
     private final AddressDAO addressDAO;
     private final IPersonalInfoService personalInfoService;
     private final ContactInfoService contactInfoService;
+    private final TeacherService teacherService;
 
     @Transactional(readOnly = true)
     @Override
@@ -63,15 +67,6 @@ public class InstituteService implements IInstituteService {
     public InstituteDTO.Info create(InstituteDTO.Create request, HttpServletResponse response) {
         final Institute institute = modelMapper.map(request, Institute.class);
 
-        if (institute.getContactInfo().getWorkAddress().getPostalCode()!=null && addressDAO.existsByPostalCode(institute.getContactInfo().getWorkAddress().getPostalCode())) {
-            try {
-                response.sendError(405, null);
-                return null;
-            } catch (IOException e) {
-                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-            }
-        }
-
         if (request.getContactInfo() != null)
             contactInfoService.modify(request.getContactInfo(), institute.getContactInfo());
         if (request.getManagerId() != null)
@@ -85,29 +80,9 @@ public class InstituteService implements IInstituteService {
         }
     }
 
-
     @Transactional
     @Override
     public InstituteDTO.Info update(Long id, InstituteDTO.Update request, HttpServletResponse response) {
-        AddressDTO.CreateOrUpdate workAddress=request.getContactInfo().getWorkAddress();
-        String postalCode=workAddress.getPostalCode();
-        Long idAddress=workAddress.getId();
-
-        boolean status=false;
-
-        if (postalCode!=null && idAddress !=null)
-            status=addressDAO.existsByPostalCodeAndIdNot(postalCode,idAddress);
-
-        if (postalCode!=null && status)
-        {
-            try {
-                response.sendError(405,null);
-                return null;
-            } catch (IOException e){
-                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-            }
-        }
-
         final Institute institute = getInstitute(id);
         if (request.getContactInfo() != null && institute.getContactInfo() != null) {
             request.getContactInfo().setId(institute.getContactInfo().getId());
@@ -127,7 +102,6 @@ public class InstituteService implements IInstituteService {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
     }
-
 
     @Transactional
     @Override
@@ -290,6 +264,16 @@ public class InstituteService implements IInstituteService {
 
     @Transactional(readOnly = true)
     @Override
+    public SearchDTO.SearchRs<TeacherDTO.Info> getUnAttachedTeachers(SearchDTO.SearchRq request, Long instituteID) {
+        Institute institute = getInstitute(instituteID);
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("id", institute.getTeacherSet().stream().map(Teacher::getId).collect(Collectors.toList()), EOperator.notEqual, null));
+        if (request.getCriteria() != null)
+            criteria.getCriteria().add(request.getCriteria());
+        request.setCriteria(criteria);
+        return  teacherService.search(request);
+    }
+
     public List<TeacherDTO.Info> getUnAttachedTeachers(Long instituteID, Pageable pageable) {
         getInstitute(instituteID);
         return modelMapper.map(teacherDAO.getUnAttachedTeachersByInstituteId(instituteID, pageable), new TypeToken<List<TeacherDTO.Info>>() {

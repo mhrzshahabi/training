@@ -152,10 +152,10 @@
     var RestDataSource_Institute_Institite_UnAttachedTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "teacherCode"},
-            {name: "personality.firstNameFa"},
-            {name: "personality.lastNameFa"},
-            {name: "personality.nationalCode"},
+            {name: "teacherCode" ,filterOperator: "iContains"},
+            {name: "personality.firstNameFa", filterOperator: "iContains"},
+            {name: "personality.lastNameFa", filterOperator: "iContains"},
+            {name: "personality.nationalCode", filterOperator: "iContains"},
             {name: "economicalCode"},
             {name: "economicalRecordNumber"}
         ],
@@ -230,11 +230,11 @@
     var RestDataSource_Institute_PersonalInfo_List = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "firstNameFa"},
-            {name: "lastNameFa"},
-            {name: "nationalCode"},
-            {name: "contactInfo.mobile"},
-            {name: "contactInfo.email"}
+            {name: "firstNameFa",canSort:false},
+            {name: "lastNameFa",canSort:false},
+            {name: "nationalCode",canSort:false},
+            {name: "contactInfo.mobile",canSort:false},
+            {name: "contactInfo.email",canSort:false}
         ],
         fetchDataURL: personalInfoUrl + "spec-list"
     });
@@ -242,13 +242,15 @@
     var RestDataSource_Institute_Institute_List = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "manager.firstNameFa"},
-            {name: "manager.lastNameFa"},
-            {name: "parentInstitute.titleFa"},
-            {name: "einstituteType.titleFa"},
-            {name: "elicenseType.titleFa"}
+            {name: "titleFa",canSort:false},
+            {name: "titleEn",canSort:false},
+            {name: "manager.firstNameFa",canSort:false},
+            {name: "manager.lastNameFa",canSort:false},
+            {name: "parentInstitute.titleFa",canSort:false},
+            {name: "companyTypeId", hidden: true},
+            {name: "companyType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains",canSort:false},
+            {name: "licenseTypeId", hidden: true},
+            {name: "licenseType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains",canSort:false},
         ],
         fetchDataURL: institute_Institute_Url + "spec-list"
     });
@@ -625,17 +627,40 @@
                 filterOperator: "iContains"
             },
             {
-                name: "einstituteType.titleFa",
+                name: "companyTypeId",
                 title: "<spring:message code='institute.type'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "equals",
+                textAlign: "center",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EInstituteType,
+                addUnknownValues: false,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                },
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
             {
-                name: "elicenseType.titleFa",
+                name: "licenseTypeId",
                 title: "<spring:message code='diploma.type'/>",
                 align: "center",
-                filterOperator: "iContains"
-            }
+                filterOperator: "equals",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_ELicenseType,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
+            },
         ],
         sortDirection: "descending",
         dataPageSize: 50,
@@ -643,7 +668,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         doubleClick: function () {
             Function_Institute_InstituteList_Selected();
         }
@@ -692,7 +717,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         doubleClick: function () {
             Function_Institute_PersonalList_Selected();
         }
@@ -1076,6 +1101,36 @@
         fields: [
             {name: "contactInfo.id", hidden: true},
             {
+                name: "contactInfo.workAddress.postalCode",
+                validators: [TrValidators.PostalCodeValidate],
+                title: "<spring:message code='post.code'/>",
+                keyPressFilter: "[0-9|-| ]",
+                width: "*",
+                length: "11",
+                changed: function (form, item, value) {
+                    if (value == null || !this.validate())
+                        return;
+                    fillAddressFields(value);
+                }
+            },
+            {
+                name: "contactInfo.workAddress.phone",
+                keyPressFilter: "[0-9|-]",
+                title: "<spring:message code='telephone'/>",
+                width: "*",
+                required: true,
+                validators: [TrValidators.PhoneValidate],
+                blur: function () {
+                    var phoneCheck;
+                    phoneCheck = checkPhone(DynamicForm_Institute_Institute_Address.getValue("phone"));
+                    if (phoneCheck!==undefined && phoneCheck === false)
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("phone", "<spring:message code='msg.invalid.phone.number'/>", true);
+                    if (mobileCheck!==undefined &&  mobileCheck === true)
+                        DynamicForm_Institute_Institute_Address.clearFieldErrors("phone", true);
+                },
+                length: "12"
+            },
+            {
                 name: "contactInfo.workAddress.stateId",
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
@@ -1108,36 +1163,6 @@
                 valueField: "id",
                 filterFields: ["name"],
 
-            },
-            {
-                name: "contactInfo.workAddress.postalCode",
-                validators: [TrValidators.PostalCodeValidate],
-                title: "<spring:message code='post.code'/>",
-                keyPressFilter: "[0-9|-| ]",
-                width: "*",
-                length: "11",
-                changed: function (form, item, value) {
-                    if (value == null || !this.validate())
-                        return;
-                    fillAddressFields(value);
-                }
-            },
-            {
-                name: "contactInfo.workAddress.phone",
-                keyPressFilter: "[0-9|-]",
-                title: "<spring:message code='telephone'/>",
-                width: "*",
-                required: true,
-                validators: [TrValidators.PhoneValidate],
-                blur: function () {
-                    var phoneCheck;
-                    phoneCheck = checkPhone(DynamicForm_Institute_Institute_Address.getValue("phone"));
-                    if (phoneCheck!==undefined && phoneCheck === false)
-                        DynamicForm_Institute_Institute_Address.addFieldErrors("phone", "<spring:message code='msg.invalid.phone.number'/>", true);
-                    if (mobileCheck!==undefined &&  mobileCheck === true)
-                        DynamicForm_Institute_Institute_Address.clearFieldErrors("phone", true);
-                },
-                length: "12"
             },
             {
                 name: "contactInfo.mobile",
