@@ -357,7 +357,7 @@
                 }
 
             ],
-            gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body"],
+             gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body", "summaryRow"],
             cellClick: function (record, rowNum, colNum) {
                 show_ClassInformation(record, rowNum, colNum);
             }
