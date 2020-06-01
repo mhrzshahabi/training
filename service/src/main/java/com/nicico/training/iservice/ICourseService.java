@@ -71,7 +71,7 @@ public interface ICourseService {
 
     String getDomain(Long id);
 
-    List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> getTeachers(Long courseId);
+    List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> getTeachers(Long courseId,Long teacherId);
 
     int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
 

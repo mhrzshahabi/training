@@ -553,6 +553,7 @@
                     evalGroup();
                     if(VM_JspClass.getField("course.id").getSelectedRecord().categoryId != undefined) {
                         RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().categoryId;
+                        RestDataSource_Teacher_JspClass.invalidateCache();
                         form.getItem("teacherId").fetchData();
                     }
                     form.setValue("hduration", item.getSelectedRecord().theoryDuration);
@@ -799,10 +800,12 @@
                 sortDirection: "ascending",
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
-                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id");
+                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id")+"/0";
+                        RestDataSource_Teacher_JspClass.invalidateCache();
                         item.fetchData();
                     } else {
-                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
+                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0/0";
+                        RestDataSource_Teacher_JspClass.invalidateCache();
                         item.fetchData();
                         dialogTeacher = isc.MyOkDialog.create({
                             message: "ابتدا دوره را انتخاب کنید",
@@ -2258,6 +2261,7 @@
             getSocietiesList();
             getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
+            RestDataSource_Teacher_JspClass.invalidateCache();
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
             VM_JspClass.clearErrors(true);
             VM_JspClass.clearValues();

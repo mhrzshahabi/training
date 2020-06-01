@@ -239,7 +239,7 @@
                     align: "center",
                     filterOperator: "iContains"
                 },
-                {
+                /*{
                     name: "sessionState",
                     title: "sessionState",
                     align: "center",
@@ -251,7 +251,7 @@
                     title: "<spring:message code="session.state"/>",
                     align: "center",
                     filterOperator: "iContains"
-                }, {
+                },*/ {
                     name: "description",
                     title: "<spring:message code="description"/>",
                     align: "center",
@@ -450,19 +450,30 @@
                         type: "SpacerItem"
                     },
                     {
-                        name: "sessionTime",
-                        title: "<spring:message code="session.time"/>",
-                        type: "selectItem",
-                        textAlign: "center",
+                        name: "sessionStartHour",
+                        title: "<spring:message code="session.start.hour"/>",
                         required: true,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
-                        valueMap: {
-                            "1": "08-10",
-                            "2": "10-12",
-                            "3": "14-16"
-                        },
-                        pickListProperties: {
-                            showFilterEditor: false
+                        hint: "--:--",
+                        keyPressFilter: "[0-9:]",
+                        showHintInField: true,
+                        textAlign: "center",
+                        /*blur: function () {
+                            let val=DynamicForm_Session.getValue("sessionStartHour");
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
+                                DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
+                            }
+                        },*/
+                        editorExit:function(){
+                            let val=DynamicForm_Session.getValue("sessionStartHour");
+
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                                DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
+                            }
                         }
                     },
                     {
@@ -485,7 +496,7 @@
                     {
                         type: "SpacerItem"
                     },
-                    {
+                    /*{
                         name: "sessionState",
                         title: "<spring:message code="session.state"/>",
                         type: "selectItem",
@@ -500,6 +511,32 @@
                         defaultValue: "1",
                         pickListProperties: {
                             showFilterEditor: false
+                        }
+                    },*/
+                    {
+                        name: "sessionEndHour",
+                        title: "<spring:message code="session.end.hour"/>",
+                        required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                        hint: "--:--",
+                        keyPressFilter: "[0-9:]",
+                        showHintInField: true,
+                        textAlign: "center",
+                        /*blur: function () {
+                            let val=DynamicForm_Session.getValue("sessionEndHour");
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
+                                DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
+                            }
+                        },*/
+                        editorExit:function(){
+                            let val=DynamicForm_Session.getValue("sessionEndHour");
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                                DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
+                            }
                         }
                     },
                     {
@@ -570,10 +607,12 @@
                                 let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
                                 let courseId = ClassRecord.course.id;
 
-                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
+                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId+"/0";
+                                RestDataSource_Teacher_JspClass.invalidateCache();
                                 item.fetchData();
                             } else {
-                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
+                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0/0";
+                                RestDataSource_Teacher_JspClass.invalidateCache();
                                 item.fetchData();
                                 let dialogTeacher = isc.MyOkDialog.create({
                                     message: "<spring:message code="msg.record.select.class.ask"/>",
@@ -755,7 +794,7 @@
             //**add new property to form values**
             sessionData["classId"] = classId;
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
-            sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
+            //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
@@ -779,13 +818,15 @@
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
                     let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
                     let courseId = ClassRecord.course.id;
+                    let teacherId =ClassRecord.teacherId;
 
                     let startHour_ = record.sessionStartHour.split(':')[0].trim();
                     record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
 
                     DynamicForm_Session.getField("instituteId").fetchData();
                     RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
-                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
+                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId+"/"+teacherId;
+                    RestDataSource_Teacher_JspClass.invalidateCache();
 
                     session_method = "PUT";
                     DynamicForm_Session.clearValues();
@@ -816,7 +857,7 @@
             }
 
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
-            sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
+            //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionEditUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
@@ -882,7 +923,15 @@
 
                 let respText = JSON.parse(resp.httpResponseText);
 
-                if (resp.httpResponseCode === 406) {
+                if (resp.httpResponseCode === 409) {
+
+                    MyOkDialog_Session = isc.MyOkDialog.create({
+                        message: respText.message
+                    });
+
+                    close_MyOkDialog_Session()
+
+                } else if (resp.httpResponseCode === 406) {
 
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: respText.message
@@ -965,7 +1014,6 @@
         }
 
     }
-
     // ------------------------------------------------- Functions ------------------------------------------>>
 
 

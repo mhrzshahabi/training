@@ -479,13 +479,13 @@ public class CourseRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/get_teachers/{id}")
+    @GetMapping(value = "/get_teachers/{courseId}/{teacherId}")
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
-    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long courseId,@PathVariable Long teacherId) {
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> infoList = new ArrayList<>();
-        if (id != 0) {
-            infoList = courseService.getTeachers(id);
+        if (courseId != 0) {
+            infoList = courseService.getTeachers(courseId,teacherId);
         }
         final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
