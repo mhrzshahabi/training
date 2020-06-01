@@ -38,4 +38,5 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @EntityGraph(attributePaths = {"subCategories","categories","personality","personality.contactInfo","personality.educationLevel","personality.educationMajor"})
     @Override
     List<Teacher> findAll(@Nullable Specification<Teacher> var1);
+
 }

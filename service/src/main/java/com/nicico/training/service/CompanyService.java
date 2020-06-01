@@ -154,9 +154,13 @@ public class CompanyService implements ICompanyService {
     }
 
     public void setAddress(CompanyDTO.Create request, Company company) throws Exception {
-        Optional<Address> address1 = addressDAO.findByPostalCode(request.getAddress().getPostalCode());
-        if (address1.isPresent()) {
-            List<Company> companyList = companyDAO.findByAddressId(address1.get().getId());
+        Address address1 = null;
+        if(request.getAddress().getPostalCode() != null) {
+            Optional<Address> addressOptional = addressDAO.findByPostalCode(request.getAddress().getPostalCode());
+            address1 = addressOptional.orElse(null);
+        }
+        if (address1 != null) {
+            List<Company> companyList = companyDAO.findByAddressId(address1.getId());
             if (companyList.size() > 0) {
                 throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
             } else {
@@ -180,8 +184,6 @@ public class CompanyService implements ICompanyService {
             company.setAddressId(address2.getId());
             company.setAddress(address2);
         }
-
-
     }
 
     public void setManager(CompanyDTO.Create request, Company company) {

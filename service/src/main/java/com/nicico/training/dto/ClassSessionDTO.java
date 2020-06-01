@@ -168,9 +168,9 @@ public class ClassSessionDTO implements Serializable {
     @ApiModel("ClassSessionsUpdateRq")
     public static class Update extends ClassSessionDTO {
 
-        @NotNull
+        /*@NotNull
         @ApiModelProperty(required = true)
-        private String sessionTime;
+        private String sessionTime;*/
 
     }
 
@@ -370,6 +370,14 @@ public class ClassSessionDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionTime;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionStartHour;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionEndHour;
 
 
         @NotNull

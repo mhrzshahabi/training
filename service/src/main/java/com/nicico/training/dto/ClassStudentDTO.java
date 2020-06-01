@@ -44,11 +44,32 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusReaction;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusLearning;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusBehavior;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
         private String evaluationAudienceType;
+
+
+        public Integer getEvaluationStatusReaction() {
+            return evaluationStatusReaction == null ? 0 : evaluationStatusReaction;
+        }
+
+        public Integer getEvaluationStatusLearning() {
+            return evaluationStatusLearning == null ? 0 : evaluationStatusLearning;
+        }
+
+        public Integer getEvaluationStatusBehavior() {
+            return evaluationStatusBehavior == null ? 0 : evaluationStatusBehavior;
+        }
+
+        public Integer getEvaluationStatusResults() {
+            return evaluationStatusResults == null ? 0 : evaluationStatusResults;
+        }
     }
 
     @Getter

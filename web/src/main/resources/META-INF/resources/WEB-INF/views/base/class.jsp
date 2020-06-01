@@ -408,7 +408,8 @@
                     pickListProperties: {
                         showFilterEditor: false
                     },
-                }
+                },
+                filterOnKeypress:true,
             },
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -421,7 +422,8 @@
                     pickListProperties: {
                         showFilterEditor: false
                     },
-                }
+                },
+                filterOnKeypress:true,
             },
             {
                 name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
@@ -434,7 +436,8 @@
                     pickListProperties: {
                         showFilterEditor: false
                     },
-                }
+                },
+                filterOnKeypress:true,
             },
 // {name: "lastModifiedDate",
 // type:"time"
@@ -553,6 +556,7 @@
                     evalGroup();
                     if(VM_JspClass.getField("course.id").getSelectedRecord().categoryId != undefined) {
                         RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().categoryId;
+                        RestDataSource_Teacher_JspClass.invalidateCache();
                         form.getItem("teacherId").fetchData();
                     }
                     form.setValue("hduration", item.getSelectedRecord().theoryDuration);
@@ -799,10 +803,12 @@
                 sortDirection: "ascending",
                 click: function (form, item) {
                     if (form.getValue("course.id")) {
-                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id");
+                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id")+"/0";
+                        RestDataSource_Teacher_JspClass.invalidateCache();
                         item.fetchData();
                     } else {
-                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
+                        RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0/0";
+                        RestDataSource_Teacher_JspClass.invalidateCache();
                         item.fetchData();
                         dialogTeacher = isc.MyOkDialog.create({
                             message: "ابتدا دوره را انتخاب کنید",
@@ -2195,7 +2201,7 @@
             <sec:authorize access="hasAuthority('TclassteacherInformationTab')">
             {
                 ID: "teacherInformationTab",
-                title: "<spring:message code='teachers'/>",
+                title: "<spring:message code='teacher.information'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"}),
             },
             </sec:authorize>
@@ -2255,9 +2261,11 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            autoTimeActivation(false);
             getSocietiesList();
             getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
+            RestDataSource_Teacher_JspClass.invalidateCache();
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
             VM_JspClass.clearErrors(true);
             VM_JspClass.clearValues();
@@ -2331,6 +2339,7 @@
             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
+        autoTimeActivation(true);
         getSocietiesList();
         getOrganizers();
     }
@@ -2632,6 +2641,7 @@
     }
 
     function getOrganizers(){
+        if(userPersonInfo !== null && userPersonInfo !== undefined)
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultExecutor/DefaultClassOrganizer/" + userPersonInfo.complexTitle , "GET", null,
             function (resp) {
                 if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201)
@@ -2815,6 +2825,23 @@
                     );
                 }
             }));
+    }
+
+    function autoTimeActivation(active = true) {
+        var times = ["autoValid",
+            "first", "second", "third", "fourth", "fifth",
+            "saturday", "sunday", "monday", "tuesday" ,"wednesday", "thursday", "friday"];
+        if(active){
+            times.forEach(
+                function (currentValue, index, arr) {
+                    DynamicForm1_Class_JspClass.getField(currentValue).enable();
+                });
+        }else if(!active){
+            times.forEach(
+                function (currentValue, index, arr) {
+                    DynamicForm1_Class_JspClass.getField(currentValue).disable();
+                });
+        }
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

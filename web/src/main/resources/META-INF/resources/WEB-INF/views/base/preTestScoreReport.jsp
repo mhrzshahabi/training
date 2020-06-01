@@ -34,14 +34,49 @@
 
        // autoFetchData: true,
     });
+    var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
+        click: function () {
 
+            let rows = List_Grid_Reaport.data.getAllLoadedRows();
+            let result = ExportToFile.getAllFields(List_Grid_Reaport);
+            result.fields.splice(1, 0, {name:"titleClass",title:"عنوان کلاس"});
+            result.isValueMap.splice(1, 0, false);
+            let fields = result.fields;
+            let isValueMaps = result.isValueMap;
+            let data = [];
+            for (let i = 0; i < rows.length; i++) {
+                data[i] = {};
+                for (let j = 0; j < fields.length; j++) {
+                    if (fields[j].name == 'rowNum') {
+                        data[i][fields[j].name] = (i + 1).toString();
+                    } else {
+                        let tmpStr = ExportToFile.getData(rows[i], fields[j].name.split('.'), 0);
+                        data[i][fields[j].name] = typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? tmpStr : listGrid.getDisplayValue(fields[j].name, tmpStr));
+                    }
+                }
+            }
+            ExportToFile.exportToExcelFormClient(fields, data, '', "نمره پیش تست بیشتر از حد قبول")
+        }
+    })
     var ToolStrip_Actions = isc.ToolStrip.create({
         ID: "ToolStrip_Actions1",
        // width: "100%",
         members: [
             isc.Label.create({
                 ID: "totalsLabel_scores"
-            })]
+            }),
+
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_ExportToExcel
+                ]
+            })
+
+
+        ]
     })
     var List_Grid_Reaport = isc.TrLG.create({
       dataSource: RestDataSource_PreTestScore,
@@ -52,7 +87,7 @@
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleClass", title: "عنوان کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "firstName", title: "نام", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "firstName", title: "نام", align: "center", filterOperator: "iContains"},
             {name: "lastName",title: "نام خانوادگی",align: "center",filterOperator: "iContains"},
             {name: "nationalCode",title: "کد ملی",align: "center",filterOperator: "iContains",
                 filterEditorProperties: {
@@ -89,6 +124,7 @@
         gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
         dataArrived: function ()
         {
+            if (List_Grid_Reaport.data.localData.length >0)
             totalsLabel_scores.setContents("حد نمره پيش تست" + ":&nbsp;<b>" + List_Grid_Reaport.getRecord(0).preTestScoreParameterValue + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;")
         },
         showFilterEditor: true,
@@ -219,6 +255,7 @@
                     var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
                     RestDataSource_PreTestScore.fetchDataURL=preTestScoreReportURL + "spec-list"+"/"+strSData + "/" + strEData;
+                    totalsLabel_scores.setContents('')
                     List_Grid_Reaport.invalidateCache();
                     List_Grid_Reaport.fetchData();
                 }
@@ -241,25 +278,7 @@
                     }
 
 
-            }
-            // {
-            //     type: "button",
-            //     startRow:false,
-            //     align:"left",
-            //     title: "گزارش غیبت ناموجه",
-            //     height:"30",
-            //    click:function () {
-            //         if (endDateCheckReport == false)
-            //             return;
-            //         if (!DynamicForm_Report.validate()) {
-            //             return;
-            //         }
-            //         var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
-            //         var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-            //            Print(strSData,strEData);
-            //     }
-            //
-            // }
+            },
 
         ]
     })

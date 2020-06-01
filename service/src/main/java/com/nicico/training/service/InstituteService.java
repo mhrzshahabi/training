@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -21,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +38,7 @@ public class InstituteService implements IInstituteService {
     private final AddressDAO addressDAO;
     private final IPersonalInfoService personalInfoService;
     private final ContactInfoService contactInfoService;
+    private final TeacherService teacherService;
 
     @Transactional(readOnly = true)
     @Override
@@ -61,6 +66,7 @@ public class InstituteService implements IInstituteService {
     @Override
     public InstituteDTO.Info create(InstituteDTO.Create request, HttpServletResponse response) {
         final Institute institute = modelMapper.map(request, Institute.class);
+
         if (request.getContactInfo() != null)
             contactInfoService.modify(request.getContactInfo(), institute.getContactInfo());
         if (request.getManagerId() != null)
@@ -73,7 +79,6 @@ public class InstituteService implements IInstituteService {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
     }
-
 
     @Transactional
     @Override
@@ -97,7 +102,6 @@ public class InstituteService implements IInstituteService {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
     }
-
 
     @Transactional
     @Override
@@ -260,6 +264,16 @@ public class InstituteService implements IInstituteService {
 
     @Transactional(readOnly = true)
     @Override
+    public SearchDTO.SearchRs<TeacherDTO.Info> getUnAttachedTeachers(SearchDTO.SearchRq request, Long instituteID) {
+        Institute institute = getInstitute(instituteID);
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("id", institute.getTeacherSet().stream().map(Teacher::getId).collect(Collectors.toList()), EOperator.notEqual, null));
+        if (request.getCriteria() != null)
+            criteria.getCriteria().add(request.getCriteria());
+        request.setCriteria(criteria);
+        return  teacherService.search(request);
+    }
+
     public List<TeacherDTO.Info> getUnAttachedTeachers(Long instituteID, Pageable pageable) {
         getInstitute(instituteID);
         return modelMapper.map(teacherDAO.getUnAttachedTeachersByInstituteId(instituteID, pageable), new TypeToken<List<TeacherDTO.Info>>() {
@@ -276,6 +290,14 @@ public class InstituteService implements IInstituteService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request) {
+        modelMapper.typeMap(Institute.class, InstituteDTO.Info.class).addMapping(
+                Institute::getParentInstitute,
+                (info, o) -> {
+                    if (o != null)
+                        info.setParentInstitute(modelMapper.map(o, InstituteDTO.InstituteInfoTuple.class));
+                    else
+                        info.setParentInstitute(null);
+                });
         return SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.Info.class));
     }
 

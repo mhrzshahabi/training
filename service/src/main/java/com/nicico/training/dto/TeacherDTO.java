@@ -98,7 +98,6 @@ public class TeacherDTO {
         private String personnelCode;
         private PersonalInfoDTO.Report personality;
         private Boolean personnelStatus;
-        Set<TeachingHistoryDTO.Info> teachingHistories;
         private String numberOfCourses;
         private String evaluationGrade;
         private String lastCourse;
@@ -106,7 +105,9 @@ public class TeacherDTO {
         private String lastCourseEvaluationGrade;
         private Integer version;
         private String codes;
-        Set<TclassDTO.TclassTerm> tclasse;
+        Set<TclassDTO.TclassTeacherReport> tclasse;
+        private Set<CategoryDTO.CategoryInfoTuple> categories;
+        private Set<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
     }
 
     @Getter

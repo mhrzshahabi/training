@@ -1290,7 +1290,7 @@
                     title: "<spring:message code="evaluation.audience.type"/>",
                     filterOperator: "iContains"
                 }
-            ]
+            ],
         });
 
 
@@ -1322,41 +1322,61 @@
                 {
                     name: "evaluationStatusReaction",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
-                    }
+                    },
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {
                     name: "evaluationStatusLearning",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
                     },
-                    hidden: true
+                    hidden: true,
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {
                     name: "evaluationStatusBehavior",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
                     },
-                    hidden: true
+                    hidden: true,
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {
                     name: "evaluationStatusResults",
                     valueMap: {
-                        undefined: "صادر نشده",
                         "0": "صادر نشده",
                         "1": "صادر شده",
                         "2": "تکمیل شده"
                     },
-                    hidden: true
+                    hidden: true,
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                    },
+                    filterOnKeypress:true,
                 },
                 {name: "evaluationAudienceType",},
             ],
