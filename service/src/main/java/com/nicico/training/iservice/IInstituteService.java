@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.function.Function;
 
 public interface IInstituteService {
 
@@ -60,7 +61,7 @@ public interface IInstituteService {
 
     void addTeachers(List<Long> teacherIds, Long instituteId);
 
-    List<TeacherDTO.Info> getUnAttachedTeachers(Long instituteId, Pageable pageable);
+    SearchDTO.SearchRs<TeacherDTO.Info> getUnAttachedTeachers(SearchDTO.SearchRq request, Long instituteID);
 
     Integer getUnAttachedTeachersCount(Long instituteId);
 
@@ -68,6 +69,7 @@ public interface IInstituteService {
 
     Integer getUnAttachedEquipmentsCount(Long instituteId);
 
-    @Transactional
     TotalResponse<InstituteDTO.Info> search(NICICOCriteria request);
+
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 }

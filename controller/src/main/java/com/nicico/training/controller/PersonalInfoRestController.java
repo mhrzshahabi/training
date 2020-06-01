@@ -1,9 +1,12 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.file.FileInfo;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.InstituteDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.model.PersonalInfo;
@@ -11,6 +14,8 @@ import com.nicico.training.repository.PersonalInfoDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,8 +33,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +44,7 @@ public class PersonalInfoRestController {
 
     private final IPersonalInfoService personalInfoService;
     private final PersonalInfoDAO personalInfoDAO;
+    private final ObjectMapper objectMapper;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -138,24 +142,59 @@ public class PersonalInfoRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
-    public ResponseEntity<PersonalInfoDTO.PersonalInfoSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+    public ResponseEntity<PersonalInfoDTO.PersonalInfoSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                   @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
                                                                    @RequestParam(value = "operator", required = false) String operator,
-                                                                   @RequestParam(value = "criteria", required = false) String criteria) {
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "id", required = false) Long id,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+
+        boolean flag = true;
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
-        SearchDTO.SearchRs<PersonalInfoDTO.Info> response = personalInfoService.search(request);
-
-        final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
-
-        final PersonalInfoDTO.PersonalInfoSpecRs specRs = new PersonalInfoDTO.PersonalInfoSpecRs();
-        specRs.setResponse(specResponse);
+        SearchDTO.SearchRs<PersonalInfoDTO.Info> response;
+        PersonalInfoDTO.SpecRs specResponse;
+        PersonalInfoDTO.PersonalInfoSpecRs  specRs = null;
+        try {
+            response = personalInfoService.search(request);
+            specResponse = new PersonalInfoDTO.SpecRs();
+            specRs = new PersonalInfoDTO.PersonalInfoSpecRs ();
+            specResponse.setData(response.getList())
+                    .setStartRow(startRow)
+                    .setEndRow(startRow + response.getList().size())
+                    .setTotalRows(response.getTotalCount().intValue());
+            specRs.setResponse(specResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }

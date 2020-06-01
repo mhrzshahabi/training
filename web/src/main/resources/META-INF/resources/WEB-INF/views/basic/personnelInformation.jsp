@@ -3,110 +3,110 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
-    //*****toolStrip*****
-    var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
-        title: "<spring:message code="refresh"/>",
-        click: function () {
-            PersonnelInfoListGrid_PersonnelList.invalidateCache();
-            set_PersonnelInfo_Details();
-        }
-    });
+//*****toolStrip*****
+        var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
+            title: "<spring:message code="refresh"/>",
+            click: function () {
+                PersonnelInfoListGrid_PersonnelList.invalidateCache();
+                set_PersonnelInfo_Details();
+            }
+        });
 
-    var ToolStrip_Personnel_Info = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    ToolStripButton_Refresh_PI
-                ]
-            })
-        ]
-    });
+        var ToolStrip_Personnel_Info = isc.ToolStrip.create({
+            width: "100%",
+            membersMargin: 5,
+            members: [
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh_PI
+                    ]
+                })
+            ]
+        });
 
 
-    var ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    ExportToFile.DownloadExcelFormClient(ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
-                }
-            })/*,
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
-                    let size = ListGrid_PersonnelTraining.data.size();
+        var ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
+            width: "100%",
+            membersMargin: 5,
+            members: [
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.DownloadExcelFormClient(ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
+                    }
+                })/*,
+isc.ToolStripButtonExcel.create({
+click: function () {
+let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
+let size = ListGrid_PersonnelTraining.data.size();
 
-                    isc.Window.create({
-                        ID: "exportExcelWindow",
-                        title: "خروجی اکسل",
-                        autoSize: true,
-                        width: 400,
-                        items: [
-                            isc.DynamicForm.create({
-                                ID: "exportExcelForm",
-                                numCols: 1,
-                                padding: 10,
-                                fields: [
-                                    {
-                                        name: "maxRow",
-                                        width: "100%",
-                                        titleOrientation: "top",
-                                        title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
-                                        value: size,
-                                        suppressBrowserClearIcon: true,
-                                        icons: [{
-                                            name: "clear",
-                                            src: "[SKIN]actions/close.png",
-                                            width: 10,
-                                            height: 10,
-                                            inline: true,
-                                            prompt: "پاک کردن",
-                                            click: function (form, item, icon) {
-                                                item.clearValue();
-                                                item.focusInItem();
-                                            }
-                                        }],
-                                        iconWidth: 16,
-                                        iconHeight: 16
-                                    }
-                                ]
-                            }),
-                            isc.TrHLayoutButtons.create({
-                                members: [
-                                    isc.IButton.create({
-                                        title: "تایید",
-                                        click: function () {
-                                            if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
-                                                ExportToFile.DownloadExcelFormServer(ListGrid_PersonnelTraining, 'tclass-personnel-training', exportExcelForm.getValue("maxRow"), PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", JSON.stringify({ "value": nationalCode }));
-                                            }
-                                        }
-                                    }),
-                                    isc.IButton.create({
-                                        title: "لغو",
-                                        click: function () {
-                                            exportExcelWindow.close();
-                                        }
-                                    }),
-                                ]
-                            })
-                        ]
-                    });
-                    exportExcelWindow.show();
-                }
-            })
+isc.Window.create({
+ID: "exportExcelWindow",
+title: "خروجی اکسل",
+autoSize: true,
+width: 400,
+items: [
+isc.DynamicForm.create({
+ID: "exportExcelForm",
+numCols: 1,
+padding: 10,
+fields: [
+{
+name: "maxRow",
+width: "100%",
+titleOrientation: "top",
+title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+value: size,
+suppressBrowserClearIcon: true,
+icons: [{
+name: "clear",
+src: "[SKIN]actions/close.png",
+width: 10,
+height: 10,
+inline: true,
+prompt: "پاک کردن",
+click: function (form, item, icon) {
+item.clearValue();
+item.focusInItem();
+}
+}],
+iconWidth: 16,
+iconHeight: 16
+}
+]
+}),
+isc.TrHLayoutButtons.create({
+members: [
+isc.IButton.create({
+title: "تایید",
+click: function () {
+if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+ExportToFile.DownloadExcelFormServer(ListGrid_PersonnelTraining, 'tclass-personnel-training', exportExcelForm.getValue("maxRow"), PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", JSON.stringify({ "value": nationalCode }));
+}
+}
+}),
+isc.IButton.create({
+title: "لغو",
+click: function () {
+exportExcelWindow.close();
+}
+}),
+]
+})
+]
+});
+exportExcelWindow.show();
+}
+})
 */
-        ]
-    });
+            ]
+        });
 
     }
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
@@ -200,26 +200,30 @@
                 {name: "id", hidden: true},
                 {name: "firstName"},
                 {name: "lastName"},
-                {name: "nationalCode",
+                {
+                    name: "nationalCode",
                     filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                        keyPressFilter: "[0-9]"
                     }
                 },
                 {name: "companyName"},
-                {name: "personnelNo",
+                {
+                    name: "personnelNo",
                     filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                        keyPressFilter: "[0-9]"
                     }
                 },
-                {name: "personnelNo2",
+                {
+                    name: "personnelNo2",
                     filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                        keyPressFilter: "[0-9]"
                     }
                 },
                 {name: "postTitle"},
-                {name: "postCode",
+                {
+                    name: "postCode",
                     filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                        keyPressFilter: "[0-9]"
                     }
                 },
                 {name: "ccpArea"},
@@ -295,7 +299,7 @@
                     filterOperator: "iContains",
                     autoFitWidth: true,
                     filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                        keyPressFilter: "[0-9]"
                     }
                 },
                 {
@@ -305,7 +309,7 @@
                     filterOperator: "iContains",
                     autoFitWidth: true,
                     filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
+                        keyPressFilter: "[0-9/]"
                     }
                 },
                 {
@@ -315,7 +319,7 @@
                     filterOperator: "iContains",
                     autoFitWidth: true,
                     filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
+                        keyPressFilter: "[0-9/]"
                     }
                 },
                 {
@@ -357,7 +361,7 @@
                 }
 
             ],
-            gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body"],
+             gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body", "summaryRow"],
             cellClick: function (record, rowNum, colNum) {
                 show_ClassInformation(record, rowNum, colNum);
             }
@@ -1087,11 +1091,232 @@
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
     {
-        //*****class HLayout & VLayout*****
+//*****class HLayout & VLayout*****
+
+        <%--ClassStudentWin_student_GroupInsert = isc.Window.create({--%>
+        <%--    width: 900,--%>
+        <%--    height: 750,--%>
+        <%--    minWidth: 700,--%>
+        <%--    minHeight: 500,--%>
+        <%--    autoSize: false,--%>
+        <%--    title:"اضافه کردن گروهی",--%>
+        <%--    items: [isc.HLayout.create({--%>
+        <%--        width: "100%",--%>
+        <%--        height: "88%",--%>
+        <%--        autoDraw: false,--%>
+        <%--        align: "center",--%>
+        <%--        members: [--%>
+        <%--            isc.TrLG.create({--%>
+        <%--                ID: "GroupSelectedPersonnelsLG_student",--%>
+        <%--                showFilterEditor: false,--%>
+        <%--                editEvent: "click",--%>
+        <%--                listEndEditAction: "next",--%>
+        <%--                enterKeyEditAction: "nextRowStart",--%>
+        <%--                canSort:false,--%>
+        <%--                canEdit:true,--%>
+        <%--                filterOnKeypress: true,--%>
+        <%--                selectionType: "single",--%>
+        <%--                fields: [--%>
+        <%--                    {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true,width:"10%"},--%>
+        <%--                    {--%>
+        <%--                        name: "personnelNo",--%>
+        <%--                        title: "<spring:message code="personnel.no"/>",--%>
+        <%--                        width:"40%",--%>
+        <%--                        editorExit:function(editCompletionEvent, record, newValue, rowNum, colNum)--%>
+        <%--                        {--%>
+        <%--                            isEditing=false;--%>
+        <%--                            if(editCompletionEvent=='escape'){--%>
+        <%--                                return true;--%>
+        <%--                            }else if(editCompletionEvent=='enter'){--%>
+        <%--                                if (newValue != null) {--%>
+        <%--                                    if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {--%>
+        <%--                                        return item.personnelNo==newValue;--%>
+        <%--                                    }).length==0){--%>
+        <%--                                        return true;--%>
+        <%--                                    }--%>
+        <%--                                    else{--%>
+        <%--                                        createDialog("info", "<spring:message code="msg.record.duplicate" />", "<spring:message code="error"/>");--%>
+        <%--                                        return false;--%>
+        <%--                                    }--%>
+        <%--                                }--%>
+        <%--                                else {return true}--%>
+        <%--                            }else if(editCompletionEvent=='programmatic') {--%>
+        <%--                                if(newValue!=''||newValue!=null||typeof(newValue)=='undefined'){--%>
+        <%--                                    isEditing=true;--%>
+        <%--                                    return false;--%>
+        <%--                                }--%>
+        <%--                            }--%>
+        <%--                        },--%>
+        <%--                        change:function (form,item,value) {--%>
+        <%--                            if(!value.match(/^\d{0,10}$/)){--%>
+        <%--                                item.setValue(value.substring(0,value.length-1));--%>
+        <%--                            }--%>
+        <%--                        }--%>
+        <%--                    },--%>
+        <%--                    {name: "description", title: "توضیحات", canEdit: false ,width:"45%"},--%>
+        <%--                    {name: "error", canEdit: false ,hidden:true,width:"5%"},--%>
+        <%--                    {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}--%>
+        <%--                ],--%>
+        <%--                gridComponents: [TabSet_GroupInsert_JspStudent, "header", "body"],--%>
+        <%--                canRemoveRecords: true,--%>
+        <%--                deferRemoval:true,--%>
+        <%--                removeRecordClick:function (rowNum){--%>
+        <%--                    if(GroupSelectedPersonnelsLG_student.getAllEditRows()[0]==GroupSelectedPersonnelsLG_student.data.length){--%>
+        <%--                        GroupSelectedPersonnelsLG_student.discardEdits(GroupSelectedPersonnelsLG_student.getAllEditRows()[0]);--%>
+        <%--                    }--%>
+        <%--                    GroupSelectedPersonnelsLG_student.data.removeAt(rowNum);--%>
+        <%--                    if(GroupSelectedPersonnelsLG_student.data.length==0&&!isEditing){--%>
+        <%--                        GroupSelectedPersonnelsLG_student.addData({--%>
+        <%--                            nationalCode: ""--%>
+        <%--                        });--%>
+        <%--                    }--%>
+        <%--                }--%>
+        <%--            })--%>
+        <%--        ]--%>
+        <%--    }),--%>
+        <%--        isc.TrHLayoutButtons.create({--%>
+        <%--            members: [--%>
+        <%--                isc.IButtonSave.create({--%>
+        <%--                    top: 260,--%>
+        <%--                    title: "<spring:message code='save'/>",--%>
+        <%--                    align: "center",--%>
+        <%--                    icon: "[SKIN]/actions/save.png",--%>
+        <%--                    click: function () {--%>
+
+        <%--                        let getEditCells=GroupSelectedPersonnelsLG_student.getAllEditCells();--%>
+
+        <%--                        if(getEditCells.size()!=0){--%>
+        <%--                            let value=GroupSelectedPersonnelsLG_student.getEditValue(getEditCells[0][0],getEditCells[0][1]);--%>
+
+        <%--                            if(value == "" || value == null || typeof(value) == "undefined"){--%>
+        <%--                                GroupSelectedPersonnelsLG_student.cancelEditing(getEditCells[0][0]);--%>
+        <%--                            }else{--%>
+        <%--                                if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {--%>
+        <%--                                    return item.personnelNo==value;--%>
+        <%--                                }).length==0){--%>
+        <%--                                    GroupSelectedPersonnelsLG_student.saveAndEditNextRow();--%>
+        <%--                                }--%>
+        <%--                                else{--%>
+        <%--                                    GroupSelectedPersonnelsLG_student.cancelEditing(getEditCells[0][0]);--%>
+        <%--                                }--%>
+        <%--                            }--%>
+        <%--                        }--%>
+
+        <%--                        let len=GroupSelectedPersonnelsLG_student.data.length;--%>
+        <%--                        let list=GroupSelectedPersonnelsLG_student.data;--%>
+        <%--                        let result=[];--%>
+
+        <%--                        for (let index = 0; index < len; index++) {--%>
+        <%--                            if(list[index].personnelNo != "" && list[index].personnelNo != null && typeof(list[index].personnelNo) != "undefined")--%>
+        <%--                            {--%>
+        <%--                                result.push(list[index].personnelNo)--%>
+        <%--                            }--%>
+        <%--                        }--%>
+
+        <%--                        isc.RPCManager.sendRequest(TrDSRequest(url+"/checkPersonnelNos/", "POST", JSON.stringify(result)--%>
+        <%--                            , "callback: checkPersonnelNos(rpcResponse)"));--%>
+
+        <%--                    }--%>
+        <%--                }), isc.IButtonCancel.create({--%>
+        <%--                    top: 260,--%>
+        <%--                    title: "<spring:message code='cancel'/>",--%>
+        <%--                    align: "center",--%>
+        <%--                    icon: "[SKIN]/actions/cancel.png",--%>
+        <%--                    click: function () {--%>
+        <%--                        ClassStudentWin_student_GroupInsert.close();--%>
+        <%--                    }--%>
+        <%--                })--%>
+        <%--            ]--%>
+        <%--        })--%>
+        <%--    ]--%>
+        <%--});--%>
+
+        //roya
         var HLayout_Actions_PI = isc.HLayout.create({
             width: "100%",
             height: "1%",
-            members: [ToolStrip_Personnel_Info]
+            membersMargin: 5,
+            members: [
+                isc.ToolStripButtonAdd.create({
+                    title: 'فیلتر گروهي',
+                    click: function () {
+                        // GroupSelectedPersonnelsLG_student.discardAllEdits();
+                        // GroupSelectedPersonnelsLG_student.data.clearAll();
+                        // GroupSelectedPersonnelsLG_student.addData({
+                        //     nationalCode: ""
+                        // });
+                        // url=personnelRegUrl;
+                        // TabSet_GroupInsert_JspStudent.selectTab(0);
+                        // ClassStudentWin_student_GroupInsert.show();
+                    }
+                }),
+                isc.ToolStripButtonExcel.create({
+                    title: 'ارسال لیست فیلتر شده به اکسل',
+                    click: function () {
+                        let grid=PersonnelInfoListGrid_PersonnelList;
+                        let size = grid.data.size();
+                        isc.Window.create({
+                            ID: "exportExcelWindow",
+                            title: "خروجی اکسل",
+                            autoSize: true,
+                            width: 400,
+                            items: [
+                                isc.DynamicForm.create({
+                                    ID: "exportExcelForm",
+                                    numCols: 1,
+                                    padding: 10,
+                                    fields: [
+                                        {
+                                            name: "maxRow",
+                                            width: "100%",
+                                            titleOrientation: "top",
+                                            title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+                                            value: size,
+                                            suppressBrowserClearIcon: true,
+                                            icons: [{
+                                                name: "clear",
+                                                src: "[SKIN]actions/close.png",
+                                                width: 10,
+                                                height: 10,
+                                                inline: true,
+                                                prompt: "پاک کردن",
+                                                click: function (form, item, icon) {
+                                                    item.clearValue();
+                                                    item.focusInItem();
+                                                }
+                                            }],
+                                            iconWidth: 16,
+                                            iconHeight: 16
+                                        }
+                                    ]
+                                }),
+                                isc.TrHLayoutButtons.create({
+                                    members: [
+                                        isc.IButton.create({
+                                            title: "تایید",
+                                            click: function () {
+                                                if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+                                                    ExportToFile.DownloadExcelFormServer(grid, 'trainingFile',
+                                                        exportExcelForm.getValue("maxRow"), null, '', "گزارش پرسنل",
+                                                        JSON.stringify(grid.data.criteria));
+                                                }
+                                                exportExcelWindow.close();
+                                            }
+                                        }),
+                                        isc.IButton.create({
+                                            title: "لغو",
+                                            click: function () {
+                                                exportExcelWindow.close();
+                                            }
+                                        }),
+                                    ]
+                                })
+                            ]
+                        });
+                        exportExcelWindow.show();
+                       }
+                }),
+                ToolStrip_Personnel_Info]
         });
 
         var Hlayout_Grid_PI = isc.HLayout.create({
@@ -1189,7 +1414,7 @@
             }
         }
 
-        //*****calculate total summary*****
+//*****calculate total summary*****
 
         function totalPlanning(records) {
             let totalPlanning_ = 0;
@@ -1226,7 +1451,7 @@
             return "<spring:message code='total.sum'/> : " + totalAll_ + " <spring:message code='hour'/> ";
         }
 
-        //***********************************
+//***********************************
 
         function show_ClassInformation(record, rowNum, colNum) {
             if (colNum === 1) {
@@ -1237,9 +1462,9 @@
             }
         }
 
-        //***********************************
+//***********************************
 
-        //*****get selected course information*****
+//*****get selected course information*****
         var courseId_Tab_Course, courseId_Tab_Records, classId_Tab_Class;
 
         function set_PersonnelInfo_CourseInfo() {
