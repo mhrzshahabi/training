@@ -408,7 +408,8 @@
                     pickListProperties: {
                         showFilterEditor: false
                     },
-                }
+                },
+                filterOnKeypress:true,
             },
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -421,7 +422,8 @@
                     pickListProperties: {
                         showFilterEditor: false
                     },
-                }
+                },
+                filterOnKeypress:true,
             },
             {
                 name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
@@ -434,7 +436,8 @@
                     pickListProperties: {
                         showFilterEditor: false
                     },
-                }
+                },
+                filterOnKeypress:true,
             },
 // {name: "lastModifiedDate",
 // type:"time"
