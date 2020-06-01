@@ -709,7 +709,7 @@ public class TclassRestController {
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getList().size());
+                .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
 
