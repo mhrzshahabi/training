@@ -2195,7 +2195,7 @@
             <sec:authorize access="hasAuthority('TclassteacherInformationTab')">
             {
                 ID: "teacherInformationTab",
-                title: "<spring:message code='teachers'/>",
+                title: "<spring:message code='teacher.information'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"}),
             },
             </sec:authorize>
