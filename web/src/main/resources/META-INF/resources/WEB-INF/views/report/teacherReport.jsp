@@ -6,7 +6,7 @@
     //----------------------------------------------------Variables-----------------------------------------------------
     var nationalCodeCheck_JspTeacherReport = true;
     var isCriteriaCategoriesChanged = false;
-    var isTeachingCategoriesChanged = false;
+    // var isTeachingCategoriesChanged = false;
     var isEvaluationCategoriesChanged = false;
 
     var titr = isc.HTMLFlow.create({
@@ -169,7 +169,6 @@
         filterOnKeypress: true,
         sortField: 1,
         sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
         showFilterEditor: false,
@@ -548,83 +547,83 @@
                 showHintInField: true,
                 keyPressFilter: "[0-9]"
             },
-            {
-                name: "teachingCategories",
-                title: "مدرس در حوزه های",
-                type: "SelectItem",
-                textAlign: "center",
-                optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                changed: function () {
-                    isTeachingCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories");
-                    if (this.getSelectedRecords() == null) {
-                        subCategoryField.clearValue();
-                        subCategoryField.disable();
-                        return;
-                    }
-                    subCategoryField.enable();
-                    if (subCategoryField.getValue() === undefined)
-                        return;
-                    var subCategories = subCategoryField.getSelectedRecords();
-                    var categoryIds = this.getValue();
-                    var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
-                        if (categoryIds.contains(subCategories[i].categoryId))
-                            SubCats.add(subCategories[i].id);
-                    }
-                    subCategoryField.setValue(SubCats);
-                    subCategoryField.focus(this.form, subCategoryField);
-                }
-            },
-            {
-                name: "teachingSubCategories",
-                title: "و زیر حوزه های",
-                titleAlign: "center",
-                type: "SelectItem",
-                textAlign: "center",
-                autoFetchData: false,
-                disabled: true,
-                optionDataSource: RestDataSource_Teaching_SubCategory_JspTeacherReport,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                focus: function () {
-                    if (isTeachingCategoriesChanged) {
-                        isTeachingCategoriesChanged = false;
-                        var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue();
-                        if (ids === []) {
-                            RestDataSource_Teaching_SubCategory_JspTeacherReport.implicitCriteria = null;
-                        } else {
-                            RestDataSource_Teaching_SubCategory_JspTeacherReport.implicitCriteria = {
-                                _constructor: "AdvancedCriteria",
-                                operator: "and",
-                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
-                            };
-                        }
-                        this.fetchData();
-                    }
-                }
-            },
-            {
-                name: "temp6",
-                title: "تدریس داشته است.",
-                canEdit: false
-            },
+            // {
+            //     name: "teachingCategories",
+            //     title: "مدرس در حوزه های",
+            //     type: "SelectItem",
+            //     textAlign: "center",
+            //     optionDataSource: RestDataSource_Teaching_Category_JspTeacherReport,
+            //     valueField: "id",
+            //     displayField: "titleFa",
+            //     filterFields: ["titleFa"],
+            //     multiple: true,
+            //     filterLocally: true,
+            //     pickListProperties: {
+            //         showFilterEditor: true,
+            //         filterOperator: "iContains"
+            //     },
+            //     changed: function () {
+            //         isTeachingCategoriesChanged = true;
+            //         var subCategoryField = DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories");
+            //         if (this.getSelectedRecords() == null) {
+            //             subCategoryField.clearValue();
+            //             subCategoryField.disable();
+            //             return;
+            //         }
+            //         subCategoryField.enable();
+            //         if (subCategoryField.getValue() === undefined)
+            //             return;
+            //         var subCategories = subCategoryField.getSelectedRecords();
+            //         var categoryIds = this.getValue();
+            //         var SubCats = [];
+            //         for (var i = 0; i < subCategories.length; i++) {
+            //             if (categoryIds.contains(subCategories[i].categoryId))
+            //                 SubCats.add(subCategories[i].id);
+            //         }
+            //         subCategoryField.setValue(SubCats);
+            //         subCategoryField.focus(this.form, subCategoryField);
+            //     }
+            // },
+            // {
+            //     name: "teachingSubCategories",
+            //     title: "و زیر حوزه های",
+            //     titleAlign: "center",
+            //     type: "SelectItem",
+            //     textAlign: "center",
+            //     autoFetchData: false,
+            //     disabled: true,
+            //     optionDataSource: RestDataSource_Teaching_SubCategory_JspTeacherReport,
+            //     valueField: "id",
+            //     displayField: "titleFa",
+            //     filterFields: ["titleFa"],
+            //     multiple: true,
+            //     filterLocally: true,
+            //     pickListProperties: {
+            //         showFilterEditor: true,
+            //         filterOperator: "iContains"
+            //     },
+            //     focus: function () {
+            //         if (isTeachingCategoriesChanged) {
+            //             isTeachingCategoriesChanged = false;
+            //             var ids = DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue();
+            //             if (ids === []) {
+            //                 RestDataSource_Teaching_SubCategory_JspTeacherReport.implicitCriteria = null;
+            //             } else {
+            //                 RestDataSource_Teaching_SubCategory_JspTeacherReport.implicitCriteria = {
+            //                     _constructor: "AdvancedCriteria",
+            //                     operator: "and",
+            //                     criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+            //                 };
+            //             }
+            //             this.fetchData();
+            //         }
+            //     }
+            // },
+            // {
+            //     name: "temp6",
+            //     title: "تدریس داشته است.",
+            //     canEdit: false
+            // },
             {
                 name: "termId",
                 title: "<spring:message code='term'/>",
@@ -784,17 +783,17 @@
                 evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
                                     DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
             }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue() != undefined){
-                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس مدرس: " +"</span>";
-                teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                                            DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getDisplayValue()+ "</span>";
-                teachingInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
-            }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getValue() != undefined){
-                teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های تدریس مدرس: " +"</span>";
-                teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                                            DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getDisplayValue()+ "</span>";
-            }
+            // if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue() != undefined){
+            //     teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس مدرس: " +"</span>";
+            //     teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
+            //                                 DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getDisplayValue()+ "</span>";
+            //     teachingInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
+            // }
+            // if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getValue() != undefined){
+            //     teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیر زمینه های تدریس مدرس: " +"</span>";
+            //     teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
+            //                                 DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingSubCategories").getDisplayValue()+ "</span>";
+            // }
 
             titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش مدرسان با توجه به محدودیت های اعمال شده" +"</span>";
 
