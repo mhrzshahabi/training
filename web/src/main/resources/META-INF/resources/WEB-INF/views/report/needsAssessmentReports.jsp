@@ -695,6 +695,9 @@
                 }
             });
         },
+        filterEditorSubmit: function () {
+            return CourseDS_NABOP.fetchDataURL != null;
+        }
     });
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
