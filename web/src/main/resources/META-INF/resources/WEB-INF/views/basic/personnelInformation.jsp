@@ -1258,7 +1258,7 @@ exportExcelWindow.show();
             minWidth: 700,
             minHeight: 500,
             autoSize: false,
-            title:"اضافه کردن گروهی",
+            title:"فیلتر گروهی",
             items: [isc.HLayout.create({
                 width: "100%",
                 height: "88%",
