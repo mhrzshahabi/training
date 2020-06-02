@@ -346,6 +346,12 @@ public class ClassSessionService implements IClassSession {
         }.getType());
     }
 
+    @Transactional
+    public List<ClassSessionDTO.AttendanceClearForm> loadSessionsForClearAttendance(Long classId) {
+        return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>() {
+        }.getType());
+    }
+
 
     //*********************************
 
