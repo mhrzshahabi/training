@@ -1,6 +1,8 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -18,7 +20,8 @@ import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.StudentClassReportViewService;
 import com.nicico.training.service.TclassService;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -81,10 +84,7 @@ public class ExportToFileController {
                                       @RequestParam(value = "fileName") String fileName) throws Exception {
 
 
-
         SearchDTO.SearchRq searchRq = convertToSearchRq(req);
-
-        Integer len = Integer.parseInt(req.getParameter("_len"));
 
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
@@ -92,10 +92,6 @@ public class ExportToFileController {
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
 
         //Start Of Query
-
-        searchRq.setStartIndex(0)
-                .setCount(len);
-
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
         String jsonString = null;
         int count = 0;
@@ -128,7 +124,7 @@ public class ExportToFileController {
 
             case "studentClassReport":
 
-                List<StudentClassReportViewDTO.InfoTuple> list3= SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
+                List<StudentClassReportViewDTO.InfoTuple> list3 = SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
                 if (list3 == null) {
                     count = 0;
                 } else {
@@ -141,7 +137,7 @@ public class ExportToFileController {
             case "personnelInformationReport":
 
 
-                List<PersonnelDTO.Info> list4= SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
+                List<PersonnelDTO.Info> list4 = SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
                 if (list4 == null) {
                     count = 0;
                 } else {
@@ -215,29 +211,41 @@ public class ExportToFileController {
     public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq) throws IOException {
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-        String startRowStr = rq.getParameter("_startRow");
-        String endRowStr = rq.getParameter("_endRow");
-        String constructor = rq.getParameter("_constructor");
+        String lenStr = rq.getParameter("_len");
+        String criteriaStr = rq.getParameter("criteriaStr");
         String sortBy = rq.getParameter("_sortBy");
-        String[] criteriaList = rq.getParameterValues("criteria");
-        String operator = rq.getParameter("operator");
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
-        Integer endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 50;
+        JsonNode jsonNode = objectMapper.readTree(criteriaStr);
+        String operator = "";
 
-        searchRq.setStartIndex(startRow);
-        searchRq.setCount(endRow - startRow);
+        String constructor = "";
+
+        List<String> criteriaList = new ArrayList<>();
+
+        if (criteriaStr.compareTo("{}") != 0 && criteriaStr.compareTo("") != 0 && criteriaStr != null) {
+            operator = jsonNode.get("operator").asText();
+            constructor = jsonNode.get("_constructor").asText();
+
+            JsonNode arrNode = new ObjectMapper().readTree(criteriaStr).get("criteria");
+            if (arrNode.isArray()) {
+                for (final JsonNode objNode : arrNode) {
+                    criteriaList.add(objNode.asText());
+                }
+            }
+        }
+
+        searchRq.setStartIndex(0);
+        searchRq.setCount(Integer.parseInt(lenStr));
 
         if (StringUtils.isNotEmpty(sortBy)) {
             searchRq.setSortBy(sortBy);
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
-            for (int i = 1; i < criteriaList.length; i++) {
-                criteria.append(",").append(criteriaList[i]);
+            StringBuilder criteria = new StringBuilder("[" + criteriaList.get(0));
+            for (int i = 1; i < criteriaList.size(); i++) {
+                criteria.append(",").append(criteriaList.get(i));
             }
             criteria.append("]");
             SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
@@ -246,6 +254,7 @@ public class ExportToFileController {
                     }));
             searchRq.setCriteria(criteriaRq);
         }
+
         return searchRq;
     }
 
