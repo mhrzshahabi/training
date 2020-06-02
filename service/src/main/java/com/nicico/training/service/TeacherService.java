@@ -98,8 +98,7 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
-
-        PersonalInfo personalInfo = modelMapper.map(personalInfoService.getOneByNationalCode(request.getPersonality().getNationalCode()),PersonalInfo.class);
+        PersonalInfo personalInfo = modelMapper.map(personalInfoService.get(request.getPersonality().getId()),PersonalInfo.class);
         final Teacher teacher = getTeacher(id);
         if (personalInfo != null) {
             EducationLevel educationLevel = null;
