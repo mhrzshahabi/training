@@ -10,17 +10,21 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassSessionService;
+import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -47,6 +50,7 @@ public class ClassSessionRestController {
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
     private final TclassDAO tclassDAO;
+    private final TclassService tclassService;
 
     //*********************************
 
@@ -254,5 +258,19 @@ public class ClassSessionRestController {
         SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchRs = null;
             searchRs = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+//    @Transactional(readOnly = true)
+    @GetMapping(value = "/sessions/{classId}")
+    public ResponseEntity<List<ClassSessionDTO.AttendanceClearForm>> sessionsOfClass(@PathVariable Long classId) {
+        List<ClassSessionDTO.AttendanceClearForm> sessions = classSessionService.loadSessionsForClearAttendance(classId);
+//        Tclass tClass = tclassService.getTClass(classId);
+//        Set<ClassSession> sessions = tClass.getClassSessions();
+//        List<ClassSessionDTO.AttendanceClearForm> sessionClear = modelMapper.map(sessions, new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>() {
+//        }.getType());
+        List<ClassSessionDTO.AttendanceClearForm> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSessionDTO.AttendanceClearForm::getSessionDate)
+                .thenComparing(ClassSessionDTO.AttendanceClearForm::getSessionStartHour))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(sessionList , HttpStatus.OK);
     }
 }
