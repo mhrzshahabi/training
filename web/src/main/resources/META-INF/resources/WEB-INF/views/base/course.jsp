@@ -590,7 +590,8 @@
     var ListGrid_CourseSyllabus = isc.TrLG.create({
 
         dataSource: RestDataSource_Syllabus,
-        groupByField: "goal.titleFa", groupStartOpen: "none",
+        groupByField: "goal.titleFa",
+        groupStartOpen: "none",
         showGridSummary: true,
         showGroupSummary: true,
         fields: [
@@ -2557,7 +2558,7 @@
             <sec:authorize access="hasAuthority('Course_Syllabus')">
             {
                 ID: "tabGoal",
-                title: "<spring:message code="course_syllabus_goal"/>",
+                title: "<spring:message code="syllabus"/>",
                 pane: ListGrid_CourseSyllabus
             },
             </sec:authorize>
