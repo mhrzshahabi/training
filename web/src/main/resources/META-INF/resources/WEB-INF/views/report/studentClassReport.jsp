@@ -7,11 +7,11 @@
 %>
 
 // <script>
-    
-    var selectedPerson_TrainingFile = null;
-    var printUrl_TrainingFile = "<spring:url value="/web/print/class-student/"/>";
 
-    var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
+    var selectedPerson_StudentClass = null;
+    var printUrl_StudentClass = "<spring:url value="/web/print/class-student/"/>";
+
+    var RestDataSource_Course_JspStudentClass = isc.TrDS.create({
         fields: [
             {name: "classStudentId", primaryKey: true, hidden: true},
             {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
@@ -30,6 +30,7 @@
             {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
             {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
             {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "classEndDate", filterOperator: "greaterOrEqual", autoFitWidth: true},
         ],
         fetchDataURL: studentClassReportUrl
     });
@@ -96,7 +97,14 @@
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=termCode"
+        fetchDataURL: termUrl + "spec-list"
+    });
+    var YearDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "year", title: "<spring:message code="year"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: termUrl + "yearList"
     });
     var SectionDS_SCRV = isc.TrDS.create({
         fields: [
@@ -106,14 +114,15 @@
         fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=section"
     });
 
-    var DynamicForm_TrainingFile = isc.DynamicForm.create({
-        numCols: 10,
+    var DynamicForm_StudentClass = isc.DynamicForm.create({
+        numCols: 11,
         padding: 10,
+        readOnlyDisplay: "readOnly",
         margin:0,
         // cellPadding: 10,
         titleAlign:"left",
         wrapItemTitles: true,
-        colWidths:[50,150,50,150,50,150,50,150, 50, 150],
+        colWidths:[50,150,50,150,50,150,50,150, 50, 100, 50],
         // sectionVisibilityMode: "mutex",
         fields: [
             // {
@@ -138,7 +147,7 @@
                 name: "studentNationalCode",
                 title:"<spring:message code="national.code"/> ",
                 textAlign: "center",
-                width: "*"
+                width: "*",
             },
             {
                 name: "studentFirstName",
@@ -148,6 +157,7 @@
             },
             {
                 name: "studentLastName",
+                colSpan: 2,
                 title:"<spring:message code="lastName"/> ",
                 textAlign: "center",
                 width: "*"
@@ -235,6 +245,7 @@
                     showClippedValuesOnHover: true,
                 },
                 multiple: true,
+                colSpan: 2,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_SCRV,
@@ -312,8 +323,8 @@
                 },
             },
             {
-                name: "termCode",
-                title: "<spring:message code="term.code"/>",
+                name: "termTitleFa",
+                title: "<spring:message code="term"/>",
                 // filterFields: ["value", "value"],
                 // pickListWidth: 100,
                 type: "SelectItem",
@@ -322,132 +333,224 @@
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
+                colSpan: 2,
                 multiple: true,
-                valueField: "value",
-                displayField: "value",
+                valueField: "titleFa",
+                displayField: "titleFa",
+                initialSort: [
+                    {property: "titleFa", direction: "descending", primarySort: true}
+                ],
                 optionDataSource: TermDS_SCRV,
             },
             <%--{--%>
-                <%--name: "searchBtn",--%>
-                <%--ID: "searchBtnJspTrainingFile",--%>
-                <%--title: "<spring:message code="search"/>",--%>
-                <%--type: "ButtonItem",--%>
-                <%--width:"*",--%>
-                <%--startRow:false,--%>
-                <%--endRow:false,--%>
-                <%--click (form) {--%>
-                    <%--var advancedCriteriaStudentJspTrainingFile = {--%>
-                        <%--_constructor: "AdvancedCriteria",--%>
-                        <%--operator: "and",--%>
-                        <%--criteria: []--%>
-                    <%--};--%>
-                    <%--var items = form.getItems();--%>
-                    <%--for (let i = 0; i < items.length; i++) {--%>
-                        <%--if(items[i].getValue() != undefined){--%>
-                            <%--advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})--%>
-                        <%--}--%>
-                    <%--}--%>
-                    <%--ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);--%>
-                    <%--Window_StudentSearch_JspTrainingFile.show();--%>
-                <%--}--%>
+            <%--name: "year",--%>
+            <%--title: "<spring:message code="year"/>",--%>
+            <%--// filterFields: ["value", "value"],--%>
+            <%--// pickListWidth: 100,--%>
+            <%--type: "SelectItem",--%>
+            <%--criteriaField: "termCode",--%>
+            <%--operator: "contains",--%>
+            <%--// textMatchStyle: "substring",--%>
+            <%--pickListProperties: {--%>
+            <%--showFilterEditor: false,--%>
+            <%--showClippedValuesOnHover: true,--%>
             <%--},--%>
-            <%--{--%>
-                <%--name: "clearBtn",--%>
-                <%--title: "<spring:message code="clear"/>",--%>
-                <%--type: "ButtonItem",--%>
-                <%--width:"*",--%>
-                <%--startRow:false,--%>
-                <%--endRow:false,--%>
-                <%--click (form, item) {--%>
-                    <%--form.clearValues();--%>
-                    <%--ListGrid_TrainingFile_TrainingFileJSP.setData([]);--%>
-                <%--}--%>
+            <%--multiple: true,--%>
+            <%--valueField: "year",--%>
+            <%--displayField: "year",--%>
+            <%--optionDataSource: YearDS_SCRV,--%>
             <%--},--%>
+            // { name: "independence", editorType: "DateRangeItem", showTitle: false, allowRelativeDates: true },
+            {
+                name: "fromDate",
+                titleColSpan: 3,
+                title: "تاریخ شروع کلاس: از",
+                ID: "startDate_jspStudentClassReport",
+                hint: "--/--/----",
+                criteriaField: "classStartDate",
+                operator: "greaterOrEqual",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate_jspStudentClassReport', this, 'ymd', '/');
+                    }
+                }],
+                textAlign: "center",
+                // colSpan: 2,
+                changed: function (form, item, value) {
+                    var dateCheck;
+                    // var endDate = form.getValue("endDate");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else {
+                        form.clearFieldErrors("fromDate", true);
+                    }
+                }
+            },
+            {
+                name: "toDate",
+                titleColSpan: 1,
+                title: "تا",
+                ID: "endDate_jspStudentClassReport",
+                hint: "--/--/----",
+                criteriaField: "classStartDate",
+                operator: "lessOrEqual",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate_jspStudentClassReport', this, 'ymd', '/');
+                    }
+                }],
+                textAlign: "center",
+                // colSpan: 2,
+                changed: function (form, item, value) {
+                    let dateCheck;
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        form.clearFieldErrors("toDate", true);
+                        form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else {
+                        form.clearFieldErrors("toDate", true);
+                    }
+                }
+            },
+            {type: "SpacerItem"},
+            {
+                name: "searchBtn",
+                ID: "searchBtnJspStudentClass",
+                title: "<spring:message code="report"/>",
+                title: "<spring:message code="reporting"/>",
+                type: "ButtonItem",
+                colSpan: 1,
+                width:"*",
+                startRow:false,
+                endRow:false,
+                click (form) {
+                    let criteria = form.getValuesAsAdvancedCriteria();
+                    // console.log(criteria);
+
+                    if(criteria == null || Object.keys(criteria).length === 0) {
+                        ListGrid_StudentClass_StudentClassJSP.setData([])
+                    }
+                    else{
+                        // delete criteria.fromDate;
+                        // delete criteria.toDate;
+                        // criteria.classEndDate = DynamicForm_StudentClass.getValue("fromDate");
+
+                        ListGrid_StudentClass_StudentClassJSP.invalidateCache();
+                        RestDataSource_Course_JspStudentClass.implicitCriteria = criteria;
+                        ListGrid_StudentClass_StudentClassJSP.fetchData(criteria)
+                    }
+                }
+            },
+            // {type:"SpacerItem"},
+            {
+                name: "clearBtn",
+                title: "<spring:message code="clear"/>",
+                type: "ButtonItem",
+                width:"*",
+                colSpan: 2,
+                startRow:false,
+                endRow:false,
+                click (form, item) {
+                    form.clearValues();
+                    ListGrid_StudentClass_StudentClassJSP.setData([]);
+                }
+            },
         ],
         itemChanged (item, newValue){
-            if(Object.keys(DynamicForm_TrainingFile.getValuesAsCriteria()).length === 0) {
-                ListGrid_TrainingFile_TrainingFileJSP.setData([])
-            }
-            else{
-                ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-                RestDataSource_Course_JspTrainingFile.implicitCriteria = DynamicForm_TrainingFile.getValuesAsCriteria();
-                ListGrid_TrainingFile_TrainingFileJSP.fetchData(DynamicForm_TrainingFile.getValuesAsCriteria())
-            }
+            ListGrid_StudentClass_StudentClassJSP.setData([]);
         },
         // itemKeyPress: function(item, keyName) {
         //     if(keyName == "Enter"){
-        //         // searchBtnJspTrainingFile.click(DynamicForm_TrainingFile);
+        //         // searchBtnJspStudentClass.click(DynamicForm_StudentClass);
         //     }
         // }
     });
 
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListFields = [
+    DynamicForm_StudentClass.getField("courseCode").comboBox.pickListFields = [
         {name: "courseCode", autoFitWidth: true},
         {name: "courseTitleFa"},
     ];
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.filterFields = ["courseTitleFa", "courseCode"];
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.textMatchStyle="substring";
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListProperties= {
+    DynamicForm_StudentClass.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("courseCode").comboBox.filterFields = ["courseTitleFa", "courseCode"];
+    DynamicForm_StudentClass.getField("courseCode").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("courseCode").comboBox.pickListProperties= {
         showFilterEditor: false,
         pickListWidth: 400,
         showClippedValuesOnHover: true,
     };
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.setHint("امور مورد نظر را انتخاب کنید");
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.pickListProperties= {
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.setHint("امور مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.pickListProperties= {
         showFilterEditor: false,
         pickListWidth: 300,
         showClippedValuesOnHover: true,
     };
 
-    var Menu_Courses_TrainingFileJSP = isc.Menu.create({
+    var Menu_Courses_StudentClassJSP = isc.Menu.create({
         data: [
-            <%--{--%>
-                <%--title: "<spring:message code="global.form.print.pdf"/>",--%>
-                <%--click: function () {--%>
-                    <%--print_Training_File();--%>
-                <%--}--%>
-            <%--}, --%>
+            {
+                title: "<spring:message code="global.form.print.pdf"/>",
+                click: function () {
+                    let params = {};
+                    params.complex = "مجتمع: " + (DynamicForm_StudentClass.getValue("studentComplexTitle")?DynamicForm_StudentClass.getValue("studentComplexTitle").toString():"-");
+                    params.company = "شرکت: " + (DynamicForm_StudentClass.getValue("studentCompanyName")?DynamicForm_StudentClass.getValue("studentCompanyName").toString():"-");
+                    params.area = "حوزه: " + (DynamicForm_StudentClass.getValue("studentCcpArea")?DynamicForm_StudentClass.getValue("studentCcpArea").toString():"-");
+                    params.assistant = "معاونت: " + (DynamicForm_StudentClass.getValue("studentCcpAssistant")?DynamicForm_StudentClass.getValue("studentCcpAssistant").toString():"-");
+                    params.section = "مرکز هزينه: " + (DynamicForm_StudentClass.getValue("studentCcpSection")?DynamicForm_StudentClass.getValue("studentCcpSection").toString():"-");
+                    params.unit = "نام واحد: " + (DynamicForm_StudentClass.getValue("studentCcpUnit")?DynamicForm_StudentClass.getValue("studentCcpUnit").toString():"-");
+                    params.affairs = "امور: " + (DynamicForm_StudentClass.getValue("studentCcpAffairs")?DynamicForm_StudentClass.getValue("studentCcpAffairs").toString():"-");
+                    params.term = "کد ترم: " + (DynamicForm_StudentClass.getValue("termTitleFa")?DynamicForm_StudentClass.getValue("termTitleFa").toString():"-");
+                    params.fromDate = "تاریخ شروع کلاس: از: " + (DynamicForm_StudentClass.getValue("fromDate")?DynamicForm_StudentClass.getValue("fromDate"):"-");
+                    params.toDate = "تا: " + (DynamicForm_StudentClass.getValue("toDate")?DynamicForm_StudentClass.getValue("toDate"):"-");
+                    printWithCriteria(DynamicForm_StudentClass.getValuesAsAdvancedCriteria(), params, "personnelCourses.jasper");
+                    // printToJasper(ListGrid_StudentClass_StudentClassJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
+                }
+            },
             {
                 title: "<spring:message code="global.form.print.excel"/>",
                 click: function () {
-                    // exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
-                    // print_Training_File("excel");
-                    ExportToFile.DownloadExcelFormClient(ListGrid_TrainingFile_TrainingFileJSP,null,"","دوره های گذرانده پرسنل");
+                    // console.log(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10));
+                    // exportToExcel(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10) ,ListGrid_StudentClass_StudentClassJSP.getData().localData)
+                    ExportToFile.DownloadExcelFormClient(ListGrid_StudentClass_StudentClassJSP,null,"","دوره های گذرانده پرسنل");
                 }
             },
             <%--{--%>
-                <%--title: "<spring:message code="global.form.print.html"/>",--%>
-                <%--click: function () {--%>
-                    <%--print_Training_File("html");--%>
-                <%--}--%>
+            <%--title: "<spring:message code="global.form.print.html"/>",--%>
+            <%--click: function () {--%>
+            <%--printToJasper(ListGrid_StudentClass_StudentClassJSP.getData().localData.toArray(), params, "personnelCourses.jasper", "HTML");--%>
+            <%--}--%>
             <%--}--%>
         ]
     });
 
-    var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
-        ID: "TrainingFileGrid",
+    var ListGrid_StudentClass_StudentClassJSP = isc.TrLG.create({
+        ID: "StudentClassGrid",
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
-        contextMenu: Menu_Courses_TrainingFileJSP,
-        dataSource: RestDataSource_Course_JspTrainingFile,
+        contextMenu: Menu_Courses_StudentClassJSP,
+        dataSource: RestDataSource_Course_JspStudentClass,
+        // overflow: "scroll",
         filterOnKeypress: true,
         showFilterEditor: false,
 
-        gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
+        gridComponents: [DynamicForm_StudentClass, "header", "filterEditor", "body"],
         fields:[
             {name: "studentPersonnelNo2",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
+                keyPressFilter: "[0-9]"
             },
             {name: "studentNationalCode",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
+                keyPressFilter: "[0-9]"
             },
             {name: "studentFirstName"},
             {name: "studentLastName"},
@@ -475,39 +578,39 @@
     var VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        // overflow: "scroll",
+        overflow: "visible",
         members: [
             // ToolStrip_Actions_Training_File,
-            ListGrid_TrainingFile_TrainingFileJSP
+            ListGrid_StudentClass_StudentClassJSP
         ]
     });
 
     //*************this function calls from studentPortal page**************
     <%--function call_trainingFile(selected_person) {--%>
-        <%--selectedPerson_TrainingFile = selected_person;--%>
-        <%--DynamicForm_TrainingFile.hide();--%>
-        <%--RestDataSource_Course_JspTrainingFile.fetchDataURL = studentPortalUrl + "/class-student/classes-of-student/" + selectedPerson_TrainingFile.nationalCode;--%>
-        <%--printUrl_TrainingFile = "<spring:url value="/web/print/student-portal/"/>";--%>
-        <%--ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();--%>
-        <%--ListGrid_TrainingFile_TrainingFileJSP.fetchData();--%>
+    <%--selectedPerson_StudentClass = selected_person;--%>
+    <%--DynamicForm_StudentClass.hide();--%>
+    <%--RestDataSource_Course_JspStudentClass.fetchDataURL = studentPortalUrl + "/class-student/classes-of-student/" + selectedPerson_StudentClass.nationalCode;--%>
+    <%--printUrl_StudentClass = "<spring:url value="/web/print/student-portal/"/>";--%>
+    <%--ListGrid_StudentClass_StudentClassJSP.invalidateCache();--%>
+    <%--ListGrid_StudentClass_StudentClassJSP.fetchData();--%>
     <%--}--%>
 
     function print_Training_File(type = "pdf") {
-        if (selectedPerson_TrainingFile == null){
+        if (selectedPerson_StudentClass == null){
             createDialog("info", "<spring:message code='personnel.not.selected'/>");
             return;
         }
         let params = {};
-        params.firstName = selectedPerson_TrainingFile.firstName;
-        params.lastName = selectedPerson_TrainingFile.lastName;
-        params.nationalCode = selectedPerson_TrainingFile.nationalCode;
-        params.personnelNo = selectedPerson_TrainingFile.personnelNo;
-        params.personnelNo2 = selectedPerson_TrainingFile.personnelNo2;
-        params.companyName = selectedPerson_TrainingFile.companyName;
-        
-        let CriteriaForm_TrainingFile = isc.DynamicForm.create({
+        params.firstName = selectedPerson_StudentClass.firstName;
+        params.lastName = selectedPerson_StudentClass.lastName;
+        params.nationalCode = selectedPerson_StudentClass.nationalCode;
+        params.personnelNo = selectedPerson_StudentClass.personnelNo;
+        params.personnelNo2 = selectedPerson_StudentClass.personnelNo2;
+        params.companyName = selectedPerson_StudentClass.companyName;
+
+        let CriteriaForm_StudentClass = isc.DynamicForm.create({
             method: "POST",
-            action: printUrl_TrainingFile + type,
+            action: printUrl_StudentClass + type,
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -518,12 +621,12 @@
                     {name: "formData", type: "hidden"},
                 ]
         });
-        CriteriaForm_TrainingFile.setValue("CriteriaStr", JSON.stringify(ListGrid_TrainingFile_TrainingFileJSP.getCriteria()));
-        CriteriaForm_TrainingFile.setValue("formData", JSON.stringify(selectedPerson_TrainingFile.nationalCode));
-        CriteriaForm_TrainingFile.setValue("myToken", "<%=accessToken%>");
-        CriteriaForm_TrainingFile.setValue("params", JSON.stringify(params));
-        CriteriaForm_TrainingFile.show();
-        CriteriaForm_TrainingFile.submitForm();
+        CriteriaForm_StudentClass.setValue("CriteriaStr", JSON.stringify(ListGrid_StudentClass_StudentClassJSP.getCriteria()));
+        CriteriaForm_StudentClass.setValue("formData", JSON.stringify(selectedPerson_StudentClass.nationalCode));
+        CriteriaForm_StudentClass.setValue("myToken", "<%=accessToken%>");
+        CriteriaForm_StudentClass.setValue("params", JSON.stringify(params));
+        CriteriaForm_StudentClass.show();
+        CriteriaForm_StudentClass.submitForm();
     }
 
- //</script>
+    //</script>

@@ -250,6 +250,11 @@
                 }
             },
             {
+                name: "personnelCode",
+                title: "<spring:message code='personnel.code.six.digit'/>",
+                align: "center",
+            },
+            {
                 name: "categories",
                 title: "<spring:message code='category'/>",
                 editorType: "SelectItem",

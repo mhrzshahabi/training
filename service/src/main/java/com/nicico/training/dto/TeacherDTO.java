@@ -66,6 +66,7 @@ public class TeacherDTO {
     public static class Grid{
         private Long id;
         private String teacherCode;
+        private String personnelCode;
         private PersonalInfoDTO.Grid personality;
         private Long personalityId;
         private Boolean personnelStatus;
