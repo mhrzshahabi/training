@@ -1459,7 +1459,7 @@ exportExcelWindow.show();
                                             title: "تایید",
                                             click: function () {
                                                 if (trTrim(exportExcelForm_JspPersonnelInformation.getValue("maxRow")) != "") {
-                                                    ExportToFile.DownloadExcelFormServer(grid, 'trainingFile',
+                                                    ExportToFile.DownloadExcelFormServer(grid, 'personnelInformationReport',
                                                         exportExcelForm_JspPersonnelInformation.getValue("maxRow"), null, '', "گزارش پرسنل",
                                                         JSON.stringify(grid.data.criteria));
                                                 }
