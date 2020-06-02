@@ -230,7 +230,7 @@ public class ExportToFileController {
             JsonNode arrNode = new ObjectMapper().readTree(criteriaStr).get("criteria");
             if (arrNode.isArray()) {
                 for (final JsonNode objNode : arrNode) {
-                    criteriaList.add(objNode.asText());
+                    criteriaList.add(objNode.toString());
                 }
             }
         }
