@@ -73,21 +73,18 @@ public class ExportToFileController {
     }
 
     @PostMapping(value = {"/exportExcelFromServer"})
-    public void exportExcelFromServer(final HttpServletRequest req, final HttpServletResponse response, @RequestParam(value = "fields") String fields,
+    public void exportExcelFromServer(final HttpServletRequest req,
+                                      final HttpServletResponse response,
+                                      @RequestParam(value = "fields") String fields,
                                       @RequestParam(value = "titr") String titr,
                                       @RequestParam(value = "pageName") String pageName,
-                                      @RequestParam(value = "fileName") String fileName,/*,
-                                   @RequestParam(value = "_endRow", defaultValue = "200") Integer endRow,
-                                   @RequestParam(value = "_constructor", required = false) String constructor,
-                                   @RequestParam(value = "operator", required = false) String operator,*/
-                                      @RequestParam(value = "criteriaStr") String criteria
-            /*@RequestParam(value = "_sortBy", required = false) String sortBy*/) throws Exception {
+                                      @RequestParam(value = "fileName") String fileName) throws Exception {
 
-        //String criteria = req.getParameter("CriteriaStr");
-        criteria = criteria == null ? "{}" : criteria;
-        String sortBy = req.getParameter("_sortBy");
+
+
+        SearchDTO.SearchRq searchRq = convertToSearchRq(req);
+
         Integer len = Integer.parseInt(req.getParameter("_len"));
-
 
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
@@ -95,27 +92,8 @@ public class ExportToFileController {
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
 
         //Start Of Query
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        SearchDTO.CriteriaRq criteriaRq = null;
-        if (!criteria.equalsIgnoreCase("{}")) {
-            /*criteriaRq = objectMapper.readValue(criteria, SearchDTO.CriteriaRq.class);
-            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);*/
-
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf("and"))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-
-            request.setCriteria(criteriaRq);
-
-        }
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
-        request.setStartIndex(0)
+        searchRq.setStartIndex(0)
                 .setCount(len);
 
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
@@ -123,9 +101,9 @@ public class ExportToFileController {
         int count = 0;
 
         switch (fileName) {
-            case "tclass-personnel-training":
+            /*case "tclass-personnel-training":
 
-                List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(criteriaRq.getCriteria().get(0).getValue().get(0).toString());
+                List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(searchRq.getCriteria().getCriteria().get(0).getValue().get(0).toString());
 
                 if (list == null) {
                     count = 0;
@@ -134,10 +112,10 @@ public class ExportToFileController {
                     jsonString = mapper.writeValueAsString(list);
                     count = list.size();
                 }
-                break;
+                break;*/
             case "trainingFile":
 
-                List<StudentDTO.Info> list2 = studentService.search(request).getList();
+                List<StudentDTO.Info> list2 = studentService.search(searchRq).getList();
 
                 if (list2 == null) {
                     count = 0;
@@ -150,8 +128,7 @@ public class ExportToFileController {
 
             case "studentClassReport":
 
-
-                List<StudentClassReportViewDTO.InfoTuple> list3= SearchUtil.search(studentClassReportViewDAO, request, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
+                List<StudentClassReportViewDTO.InfoTuple> list3= SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
                 if (list3 == null) {
                     count = 0;
                 } else {
@@ -164,7 +141,7 @@ public class ExportToFileController {
             case "personnelInformationReport":
 
 
-                List<PersonnelDTO.Info> list4= SearchUtil.search(personnelDAO, request, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
+                List<PersonnelDTO.Info> list4= SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
                 if (list4 == null) {
                     count = 0;
                 } else {
@@ -234,4 +211,42 @@ public class ExportToFileController {
             return "";
         }
     }
+
+    public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq) throws IOException {
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        String startRowStr = rq.getParameter("_startRow");
+        String endRowStr = rq.getParameter("_endRow");
+        String constructor = rq.getParameter("_constructor");
+        String sortBy = rq.getParameter("_sortBy");
+        String[] criteriaList = rq.getParameterValues("criteria");
+        String operator = rq.getParameter("operator");
+
+        Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
+        Integer endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 50;
+
+        searchRq.setStartIndex(startRow);
+        searchRq.setCount(endRow - startRow);
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            searchRq.setSortBy(sortBy);
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
+            for (int i = 1; i < criteriaList.length; i++) {
+                criteria.append(",").append(criteriaList[i]);
+            }
+            criteria.append("]");
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria.toString(), new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            searchRq.setCriteria(criteriaRq);
+        }
+        return searchRq;
+    }
+
 }
