@@ -328,14 +328,14 @@
         ],
         selectionUpdated: function (record) {
 
-            <sec:authorize access="hasAuthority('TclassScoresTab')">
-            if(record.classStatus == "3")
-            {
-                TabSet_Class.enableTab("classScoresTab")
-            }
-            else{TabSet_Class.disableTab("classScoresTab");
-            }
-            </sec:authorize>
+            <%--<sec:authorize access="hasAuthority('TclassScoresTab')">--%>
+            <%--if(record.classStatus == "3")--%>
+            <%--{--%>
+                <%--TabSet_Class.enableTab("classScoresTab")--%>
+            <%--}--%>
+            <%--else{TabSet_Class.disableTab("classScoresTab");--%>
+            <%--}--%>
+            <%--</sec:authorize>--%>
 
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
