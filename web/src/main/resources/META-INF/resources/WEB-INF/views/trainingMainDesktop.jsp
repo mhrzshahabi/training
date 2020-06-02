@@ -1834,6 +1834,7 @@
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
     const termUrl = rootUrl + "/term/";
+    const unjustifiedAbsenceReport=rootUrl +"/unjustifiedAbsenceReport/"
     const preTestScoreReportURL = rootUrl + "/preTestScoreReport/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";

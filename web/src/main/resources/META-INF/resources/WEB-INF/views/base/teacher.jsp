@@ -343,7 +343,7 @@
         },
         cellHeight: 43,
         filterOperator: "iContains",
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,

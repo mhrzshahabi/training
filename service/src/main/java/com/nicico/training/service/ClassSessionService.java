@@ -130,11 +130,30 @@ public class ClassSessionService implements IClassSession {
         ClassSessionDTO.Info info = null;
 
         try {
-            if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
+            if (request.getSessionStartHour().compareTo(request.getSessionEndHour()) >= 0) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.start.hour.bigger.than.end.hour", null, locale));
+
+            } else if (!request.getSessionStartHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$") || !request.getSessionEndHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$")) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.hour.invalid", null, locale));
+            }
+            else if (classSessionDAO.checkHour(request.getClassId(),
+                    request.getSessionDate(),
+                    request.getSessionStartHour(),
+                    request.getSessionEndHour(),
+                    0L) > 0) {
+
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(409, messageSource.getMessage("session.time.interval.conflict", null, locale));
+
+            } else  if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
                     request.getClassId(),
                     request.getSessionDate(),
-                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1)
+                    request.getSessionStartHour(),
+                    request.getSessionEndHour()
+                    /*MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1)*/
             )) {
 
                 //********generated sessions list*********
@@ -151,8 +170,10 @@ public class ClassSessionService implements IClassSession {
                         daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
                         getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
                         request.getSessionDate(),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                        request.getSessionStartHour(),
+                        request.getSessionEndHour(),
+                        /*MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),*/
                         request.getSessionTypeId(),
                         request.getSessionType(),
                         request.getInstituteId(),
@@ -189,13 +210,31 @@ public class ClassSessionService implements IClassSession {
 
         try {
 
-            if (!attendanceDAO.existsBySessionId(id)) {
+            if (request.getSessionStartHour().compareTo(request.getSessionEndHour()) >= 0) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.start.hour.bigger.than.end.hour", null, locale));
 
-                if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(
+            } else if (!request.getSessionStartHour().matches("^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$") || !request.getSessionEndHour().matches("^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$")) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.hour.invalid", null, locale));
+            } else if (!attendanceDAO.existsBySessionId(id)) {
+
+                if (classSessionDAO.checkHour(request.getClassId(),
+                        request.getSessionDate(),
+                        request.getSessionStartHour(),
+                        request.getSessionEndHour(),
+                        id) > 0) {
+
+                    Locale locale = LocaleContextHolder.getLocale();
+                    response.sendError(409, messageSource.getMessage("session.time.interval.conflict", null, locale));
+
+                } else if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(
                         request.getClassId(),
                         request.getSessionDate(),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                        request.getSessionStartHour(),
+                        request.getSessionEndHour(),
+                        //MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                        //MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
                         id
                 )) {
 
@@ -206,8 +245,8 @@ public class ClassSessionService implements IClassSession {
 
                     request.setDayCode(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]);
                     request.setDayName(getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]));
-                    request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
-                    request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));
+                    /*request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
+                    request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));*/
 
                     Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
                     ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
