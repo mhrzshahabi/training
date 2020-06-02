@@ -621,7 +621,8 @@
                                                         }
                                                     }
                                                 }
-                                            } else if (value == 3) {
+                                            }
+                                            else if (value == 3) {
                                                 var sessionIds = [];
                                                 sessionIds.add(item.getFieldName().substr(2));
                                                 for (let i = 5; i < this.grid.getAllFields().length; i++) {
@@ -675,7 +676,13 @@
                                                                                         showPrompt: false,
                                                                                         serverOutputAsString: false,
                                                                                         data: JSON.stringify(data),
-                                                                                        callback: function (resp) {}
+                                                                                        callback: function (resp) {
+                                                                                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                                                                simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                                                                            } else {
+                                                                                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                                                                            }//end else
+                                                                                        }
                                                                                     });
                                                                                     return;
                                                                                 }
