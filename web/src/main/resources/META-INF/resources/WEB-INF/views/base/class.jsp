@@ -327,12 +327,15 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-            // if(record.classStatus == "3")
-            // {
-            //     TabSet_Class.enableTab("classScoresTab")
-            // }
-            // else{TabSet_Class.disableTab("classScoresTab");
-            // }
+
+            <sec:authorize access="hasAuthority('TclassScoresTab')">
+            if(record.classStatus == "3")
+            {
+                TabSet_Class.enableTab("classScoresTab")
+            }
+            else{TabSet_Class.disableTab("classScoresTab");
+            }
+            </sec:authorize>
 
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
