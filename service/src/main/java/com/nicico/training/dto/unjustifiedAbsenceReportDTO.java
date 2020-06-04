@@ -20,6 +20,7 @@ public class unjustifiedAbsenceReportDTO {
     private String titleClass;
     private String startDate;
     private String endDate;
+    private String code;
     private String endHour;
     private String startHour;
     @Getter
@@ -27,7 +28,7 @@ public class unjustifiedAbsenceReportDTO {
     @Accessors(chain = true)
     @ApiModel("preTestScoreReportSpecRs")
     public static class unjustifiedAbsenceReporSpecRs {
-        private PreTestScoreReportDTO.SpecRs response;
+        private unjustifiedAbsenceReportDTO.SpecRs response;
     }
 
     //*********************************

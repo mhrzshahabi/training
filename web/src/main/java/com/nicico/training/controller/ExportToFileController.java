@@ -1,6 +1,8 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -18,7 +20,8 @@ import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.StudentClassReportViewService;
 import com.nicico.training.service.TclassService;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -73,21 +76,15 @@ public class ExportToFileController {
     }
 
     @PostMapping(value = {"/exportExcelFromServer"})
-    public void exportExcelFromServer(final HttpServletRequest req, final HttpServletResponse response, @RequestParam(value = "fields") String fields,
+    public void exportExcelFromServer(final HttpServletRequest req,
+                                      final HttpServletResponse response,
+                                      @RequestParam(value = "fields") String fields,
                                       @RequestParam(value = "titr") String titr,
                                       @RequestParam(value = "pageName") String pageName,
-                                      @RequestParam(value = "fileName") String fileName,/*,
-                                   @RequestParam(value = "_endRow", defaultValue = "200") Integer endRow,
-                                   @RequestParam(value = "_constructor", required = false) String constructor,
-                                   @RequestParam(value = "operator", required = false) String operator,*/
-                                      @RequestParam(value = "criteriaStr") String criteria
-            /*@RequestParam(value = "_sortBy", required = false) String sortBy*/) throws Exception {
+                                      @RequestParam(value = "fileName") String fileName) throws Exception {
 
-        //String criteria = req.getParameter("CriteriaStr");
-        criteria = criteria == null ? "{}" : criteria;
-        String sortBy = req.getParameter("_sortBy");
-        Integer len = Integer.parseInt(req.getParameter("_len"));
 
+        SearchDTO.SearchRq searchRq = convertToSearchRq(req);
 
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
@@ -95,37 +92,14 @@ public class ExportToFileController {
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
 
         //Start Of Query
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        SearchDTO.CriteriaRq criteriaRq = null;
-        if (!criteria.equalsIgnoreCase("{}")) {
-            /*criteriaRq = objectMapper.readValue(criteria, SearchDTO.CriteriaRq.class);
-            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);*/
-
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf("and"))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-
-            request.setCriteria(criteriaRq);
-
-        }
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
-        request.setStartIndex(0)
-                .setCount(len);
-
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
         String jsonString = null;
         int count = 0;
 
         switch (fileName) {
-            case "tclass-personnel-training":
+            /*case "tclass-personnel-training":
 
-                List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(criteriaRq.getCriteria().get(0).getValue().get(0).toString());
+                List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(searchRq.getCriteria().getCriteria().get(0).getValue().get(0).toString());
 
                 if (list == null) {
                     count = 0;
@@ -134,10 +108,10 @@ public class ExportToFileController {
                     jsonString = mapper.writeValueAsString(list);
                     count = list.size();
                 }
-                break;
+                break;*/
             case "trainingFile":
 
-                List<StudentDTO.Info> list2 = studentService.search(request).getList();
+                List<StudentDTO.Info> list2 = studentService.search(searchRq).getList();
 
                 if (list2 == null) {
                     count = 0;
@@ -150,8 +124,7 @@ public class ExportToFileController {
 
             case "studentClassReport":
 
-
-                List<StudentClassReportViewDTO.InfoTuple> list3= SearchUtil.search(studentClassReportViewDAO, request, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
+                List<StudentClassReportViewDTO.InfoTuple> list3 = SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
                 if (list3 == null) {
                     count = 0;
                 } else {
@@ -164,7 +137,7 @@ public class ExportToFileController {
             case "personnelInformationReport":
 
 
-                List<PersonnelDTO.Info> list4= SearchUtil.search(personnelDAO, request, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
+                List<PersonnelDTO.Info> list4 = SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
                 if (list4 == null) {
                     count = 0;
                 } else {
@@ -234,4 +207,55 @@ public class ExportToFileController {
             return "";
         }
     }
+
+    public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq) throws IOException {
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        String lenStr = rq.getParameter("_len");
+        String criteriaStr = rq.getParameter("criteriaStr");
+        String sortBy = rq.getParameter("_sortBy");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode jsonNode = objectMapper.readTree(criteriaStr);
+        String operator = "";
+
+        String constructor = "";
+
+        List<String> criteriaList = new ArrayList<>();
+
+        if (criteriaStr.compareTo("{}") != 0 && criteriaStr.compareTo("") != 0 && criteriaStr != null) {
+            operator = jsonNode.get("operator").asText();
+            constructor = jsonNode.get("_constructor").asText();
+
+            JsonNode arrNode = new ObjectMapper().readTree(criteriaStr).get("criteria");
+            if (arrNode.isArray()) {
+                for (final JsonNode objNode : arrNode) {
+                    criteriaList.add(objNode.toString());
+                }
+            }
+        }
+
+        searchRq.setStartIndex(0);
+        searchRq.setCount(Integer.parseInt(lenStr));
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            searchRq.setSortBy(sortBy);
+        }
+
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            StringBuilder criteria = new StringBuilder("[" + criteriaList.get(0));
+            for (int i = 1; i < criteriaList.size(); i++) {
+                criteria.append(",").append(criteriaList.get(i));
+            }
+            criteria.append("]");
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria.toString(), new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            searchRq.setCriteria(criteriaRq);
+        }
+
+        return searchRq;
+    }
+
 }

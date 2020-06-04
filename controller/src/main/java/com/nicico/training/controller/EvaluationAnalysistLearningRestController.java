@@ -45,9 +45,15 @@ public class EvaluationAnalysistLearningRestController {
         params.put("teacher", json.getString("teacher"));
         params.put("courseCode", json.getJSONObject("course").getString("code"));
         params.put("coursetitleFa", json.getJSONObject("course").getString("titleFa"));
-        params.put("scoringMethod", map.get(json.getString("scoringMethod")));
+        if(json.has("scoringMethod"))
+            params.put("scoringMethod", map.get(json.getString("scoringMethod")));
+        else
+            params.put("scoringMethod", "");
         params.put("minScoreLearning",minScoreLearning);
-        Float[] classStudent = evaluationAnalysistLearningService.getStudents(Long.parseLong(recordId), json.getString("scoringMethod"));
+        String scoringMethod = "3";
+        if(json.has("scoringMethod"))
+            scoringMethod = json.getString("scoringMethod");
+        Float[] classStudent = evaluationAnalysistLearningService.getStudents(Long.parseLong(recordId),scoringMethod);
 
         params.put("score", classStudent[0]);
         params.put("preTestScore",classStudent[1]);

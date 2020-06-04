@@ -240,37 +240,37 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> evaluatedSearch(SearchDTO.SearchRq request) {
-        SearchDTO.CriteriaRq criteriaRq = null;
+        Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+        List<Tclass> list = all.getContent();
 
-        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        if (request.getCriteria() != null) {
-            if (request.getCriteria().getCriteria() != null)
-                request.getCriteria().getCriteria().add(criteriaRq);
-            else {
-                criteriaRqList.add(criteriaRq);
-                request.getCriteria().setCriteria(criteriaRqList);
+        Long totalCount = all.getTotalElements();
+        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> searchRs=null;
+
+        if (totalCount == 0) {
+
+            searchRs=new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TclassDTO.EvaluatedInfoGrid>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = list.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(list.get(i).getId());
             }
-        } else
-            request.setCriteria(criteriaRq);
 
-        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> searchRs = SearchUtil.search(tclassDAO, request, needAssessment -> modelMapper.map(needAssessment,
-                TclassDTO.EvaluatedInfoGrid.class));
+            request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+            request.setStartIndex(null);
 
-        List<TclassDTO.EvaluatedInfoGrid> unAcceptedClasses = new ArrayList<>();
-        for (TclassDTO.EvaluatedInfoGrid tClass : searchRs.getList()) {
-            int accepted = tClass.getNumberOfStudentCompletedEvaluation();
-            if (accepted == 0) {
-                unAcceptedClasses.add(tClass);
-                searchRs.setTotalCount(searchRs.getTotalCount() - 1);
-            }
-            tClass.setEvaluationStatus("3");
+
+            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
+                    TclassDTO.EvaluatedInfoGrid.class));
         }
 
-        for (TclassDTO.EvaluatedInfoGrid unAcceptedClass : unAcceptedClasses) {
-            searchRs.getList().remove(unAcceptedClass);
-        }
+        searchRs.setTotalCount(totalCount);
 
         return searchRs;
+
     }
 
     @Transactional(readOnly = true)

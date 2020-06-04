@@ -360,7 +360,7 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple institute;
         private Long instituteId;
         private String classStatus;
-        private String evaluationStatus;
+//        private String evaluationStatus;
         private String titleClass;
         private String scoringMethod;
 

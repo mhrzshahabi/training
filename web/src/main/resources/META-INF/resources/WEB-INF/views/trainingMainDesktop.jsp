@@ -282,7 +282,7 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
-    const teacherInformation = rootUrl + "/teacherInformation"
+    const teacherInformation = rootUrl + "/teacherInformation";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
@@ -715,20 +715,6 @@
                     }
                 },
                 </sec:authorize>
-
-                /*{isSeparator: true},
-                {
-                    title: "<spring:message code="polisAndprovince"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/polis_and_province/show-form"/>");
-                    }
-                },*/
-                <%--{--%>
-                <%--    title: "<spring:message code="department"/>",--%>
-                <%--    click: function () {--%>
-                <%--        createTab(this.title, '<spring:url value="/department/show-form"/>');--%>
-                <%--    }--%>
-                <%--},--%>
             ]
         }),
     });
@@ -1835,6 +1821,7 @@
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
     const termUrl = rootUrl + "/term/";
+    const unjustifiedAbsenceReport=rootUrl +"/unjustifiedAbsenceReport/"
     const preTestScoreReportURL = rootUrl + "/preTestScoreReport/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
