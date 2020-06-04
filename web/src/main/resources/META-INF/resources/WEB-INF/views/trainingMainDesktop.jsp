@@ -251,6 +251,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
+    const trainingMainUrl = rootUrl + "/main"
     const oauthUserUrl = rootUrl + "/oauth/users";
     const oauthRoleUrl = rootUrl + "/oauth/app-roles";
     const oauthGroupUrl = rootUrl + "/oauth/groups";
@@ -538,7 +539,7 @@
         width: 350,
         height: "100%",
         styleName: "header-logo",
-        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/></h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
+        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/> ${trainingVersion}</h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
     });
 
     <%--var headerFlow = isc.HTMLFlow.create({--%>
@@ -2162,6 +2163,10 @@
             userPersonInfo = (JSON.parse(resp.data));
         }
     }
+
+    isc.RPCManager.sendRequest(TrDSRequest(trainingMainUrl + "/getMainData", "GET", null, null));
+
+
 
     <%--isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});--%>
     <%--loadingMessage: "<spring:message code="loading"/>",--%>

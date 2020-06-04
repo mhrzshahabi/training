@@ -45,6 +45,7 @@ server:
     session:
       cookie:
         name: App_${spring.application.name}
+      timeout: 180m
 
 management:
   endpoint:
@@ -69,6 +70,8 @@ nicico:
   workflow:
     update:
       mode: false
+  training:
+    version: 1.6
 ---
 
 spring:
