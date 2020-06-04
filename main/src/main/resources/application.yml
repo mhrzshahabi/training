@@ -6,6 +6,8 @@ spring:
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
+      maximum-pool-size: 50
+      connection-timeout: 60000
   jpa:
     hibernate:
       ddl-auto: validate
