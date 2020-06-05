@@ -199,15 +199,19 @@
         numCols: 7,
         padding: 10,
         titleAlign:"left",
-        colWidths:[100,150,100,150,100,150,100],
+        colWidths:[100,250,100,250,100,150,100],
         fields: [
             {
                 name: "personnelNo2",
                 title:"<spring:message code="personnel.no.6.digits"/>",
                 textAlign: "center",
                 width: "*",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9, ]",
+                // supportsCutPasteEvents: true,
+                // changeOnKeypress:true,
+                changed (form, item, value){
+                    let res = value.split(" ");
+                    item.setValue(res.toString())
                 }
             },
             {
@@ -215,9 +219,7 @@
                 title:"<spring:message code="personnel.no"/> ",
                 textAlign: "center",
                 width: "*",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
+                keyPressFilter: "[0-9, ]"
             },
             {
                 name: "nationalCode",
@@ -237,15 +239,24 @@
                 startRow:false,
                 endRow:false,
                 click (form) {
-                    var advancedCriteriaStudentJspTrainingFile = {
+                    let advancedCriteriaStudentJspTrainingFile = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: []
                     };
-                    var items = form.getItems();
+                    let items = form.getItems();
                     for (let i = 0; i < items.length; i++) {
                         if(items[i].getValue() != undefined){
-                            advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})
+                            if(items[i].name == "personnelNo2"){
+                                advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "inSet", value: items[i].getValue().split(',').toArray()})
+                            }
+                            else {
+                                advancedCriteriaStudentJspTrainingFile.criteria.add({
+                                    fieldName: items[i].name,
+                                    operator: "iContains",
+                                    value: items[i].getValue()
+                                })
+                            }
                         }
                     }
                     ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);
