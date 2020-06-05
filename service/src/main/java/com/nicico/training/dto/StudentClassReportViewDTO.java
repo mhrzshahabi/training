@@ -70,6 +70,7 @@ public class StudentClassReportViewDTO {
         private String courseCode;
         private String courseTitleFa;
         private String categoryTitleFa;
+        private Long classHDuration;
     }
 
     @Getter
