@@ -1258,7 +1258,7 @@ exportExcelWindow.show();
             minWidth: 700,
             minHeight: 500,
             autoSize: false,
-            title:"اضافه کردن گروهی",
+            title:"فیلتر گروهی",
             items: [isc.HLayout.create({
                 width: "100%",
                 height: "88%",
@@ -1459,7 +1459,7 @@ exportExcelWindow.show();
                                             title: "تایید",
                                             click: function () {
                                                 if (trTrim(exportExcelForm_JspPersonnelInformation.getValue("maxRow")) != "") {
-                                                    ExportToFile.DownloadExcelFormServer(grid, 'trainingFile',
+                                                    ExportToFile.DownloadExcelFormServer(grid, 'personnelInformationReport',
                                                         exportExcelForm_JspPersonnelInformation.getValue("maxRow"), null, '', "گزارش پرسنل",
                                                         JSON.stringify(grid.data.criteria));
                                                 }

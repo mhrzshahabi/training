@@ -216,7 +216,8 @@
                 },
                 sortNormalizer: function (record) {
                     return record.studentStatus;
-                }
+                },
+                canFilter: false
             },
             {
                 name: "studentPresentStatus",
