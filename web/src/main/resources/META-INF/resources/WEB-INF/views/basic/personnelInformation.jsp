@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-var url = '';
+    var url = '';
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
 //*****toolStrip*****
@@ -237,6 +237,16 @@ exportExcelWindow.show();
             }
         });
 
+        let criteriaActivePersonnel = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "active", operator: "equals", value: 1}
+            ]
+        };
+
+        PersonnelInfoListGrid_PersonnelList.implicitCriteria = criteriaActivePersonnel;
+
         var RestDataSource_PersonnelTraining = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
@@ -361,7 +371,7 @@ exportExcelWindow.show();
                 }
 
             ],
-             gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body", "summaryRow"],
+            gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body", "summaryRow"],
             cellClick: function (record, rowNum, colNum) {
                 show_ClassInformation(record, rowNum, colNum);
             }
@@ -1092,165 +1102,161 @@ exportExcelWindow.show();
     // <<------------------------------------------- Create - Layout ------------------------------------------
     {
 //*****class HLayout & VLayout*****
-    TabSet_GroupInsert_JspPersonnelInformation=isc.TabSet.create({
-        ID:"leftTabSet_JspPersonnelInformation",
-        autoDraw:false,
-        tabBarPosition: "top",
-        width: "100%",
-        height: 105,
-        tabs: [
-            { title: "ورود  مستقیم",
-                pane: isc.DynamicForm.create({
-                    height: "6%",
-                    width:"100%",
-                    left:0,
-                    align:"left",
-                    numCols: 5,
-                    colWidths: ["0%","50%","10%","30%"],
-                    fields: [
-                        {
-                            ID:"DynamicForm_GroupInsert_Textbox_JspPersonnelInformation",
-                            title:""
+        TabSet_GroupInsert_JspPersonnelInformation = isc.TabSet.create({
+            ID: "leftTabSet_JspPersonnelInformation",
+            autoDraw: false,
+            tabBarPosition: "top",
+            width: "100%",
+            height: 105,
+            tabs: [
+                {
+                    title: "ورود  مستقیم",
+                    pane: isc.DynamicForm.create({
+                        height: "6%",
+                        width: "100%",
+                        left: 0,
+                        align: "left",
+                        numCols: 5,
+                        colWidths: ["0%", "50%", "10%", "30%"],
+                        fields: [
+                            {
+                                ID: "DynamicForm_GroupInsert_Textbox_JspPersonnelInformation",
+                                title: ""
 
-                        },
-                        {
-                            type: "button",
-                            title: "اضافه کردن به لیست",
-                            startRow: false,
-                            click:function () {
-                                let value=DynamicForm_GroupInsert_Textbox_JspPersonnelInformation.getValue();
-                                if(value != null&& value != "" && typeof(value) != "undefined")
-                                {
-                                    let personnels=value.split(',');
-                                    let len=personnels.size();
+                            },
+                            {
+                                type: "button",
+                                title: "اضافه کردن به لیست",
+                                startRow: false,
+                                click: function () {
+                                    let value = DynamicForm_GroupInsert_Textbox_JspPersonnelInformation.getValue();
+                                    if (value != null && value != "" && typeof (value) != "undefined") {
+                                        let personnels = value.split(',');
+                                        let len = personnels.size();
 
-                                    for (let i=0;i<len;i++){
-                                        if(isNaN(personnels[i])){
-                                            continue;
+                                        for (let i = 0; i < len; i++) {
+                                            if (isNaN(personnels[i])) {
+                                                continue;
+                                            } else if (GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(
+                                                function (item) {
+                                                    return item.personnelNo == personnels[i];
+                                                }
+                                            ).length == 0) {
+                                                let current = {personnelNo: personnels[i]};
+                                                GroupSelectedPersonnelsLG_JspPersonnelInformation.setData(GroupSelectedPersonnelsLG_JspPersonnelInformation.data.concat([current]));
+                                                GroupSelectedPersonnelsLG_JspPersonnelInformation.invalidateCache();
+                                                GroupSelectedPersonnelsLG_JspPersonnelInformation.fetchData();
+                                                continue;
+                                            } else {
+                                                continue;
+                                            }
                                         }
-                                        else if(GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(
-                                            function (item) {
-                                                return item.personnelNo==personnels[i];
-                                        }
-                                        ).length==0){
-                                            let current={personnelNo:personnels[i]};
-                                            GroupSelectedPersonnelsLG_JspPersonnelInformation.setData(GroupSelectedPersonnelsLG_JspPersonnelInformation.data.concat([current]));
-                                            GroupSelectedPersonnelsLG_JspPersonnelInformation.invalidateCache();
-                                            GroupSelectedPersonnelsLG_JspPersonnelInformation.fetchData();
-                                            continue;
-                                        }
-                                        else{
-                                            continue;
-                                        }
+
+                                        DynamicForm_GroupInsert_Textbox_JspPersonnelInformation.setValue('');
+                                        createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
                                     }
-
-                                    DynamicForm_GroupInsert_Textbox_JspPersonnelInformation.setValue('');
-                                    createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
                                 }
                             }
-                        }
-                    ]
-                })
-            },
-            {title: "فایل اکسل", width:200, overflow:"hidden",
-                pane: isc.DynamicForm.create({
-                    height: "100%",
-                    width:"100%",
-                    left:0,
-                    align:"left",
-                    numCols: 5,
-                    colWidths: ["0%","50%","10%","30%"],
-                    fields: [
+                        ]
+                    })
+                },
+                {
+                    title: "فایل اکسل", width: 200, overflow: "hidden",
+                    pane: isc.DynamicForm.create({
+                        height: "100%",
+                        width: "100%",
+                        left: 0,
+                        align: "left",
+                        numCols: 5,
+                        colWidths: ["0%", "50%", "10%", "30%"],
+                        fields: [
 
-                        {
-                            ID:"DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation",
-                            name:"DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation",
-                            type:"imageFile",
-                            title:""
-                        },
-                        {
-                            type: "button",
-                            title: "آپلود فايل",
-                            startRow: false,
-                            click:function () {
-                                let address=DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation.getValue();
+                            {
+                                ID: "DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation",
+                                name: "DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation",
+                                type: "imageFile",
+                                title: ""
+                            },
+                            {
+                                type: "button",
+                                title: "آپلود فايل",
+                                startRow: false,
+                                click: function () {
+                                    let address = DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation.getValue();
 
-                                if(address==null){
-                                    createDialog("info", "فايل خود را انتخاب نماييد.");
-                                }else{
-                                    var ExcelToJSON = function() {
+                                    if (address == null) {
+                                        createDialog("info", "فايل خود را انتخاب نماييد.");
+                                    } else {
+                                        var ExcelToJSON = function () {
 
-                                        this.parseExcel = function(file) {
-                                            var reader = new FileReader();
-                                            var records = [];
+                                            this.parseExcel = function (file) {
+                                                var reader = new FileReader();
+                                                var records = [];
 
-                                            reader.onload = function(e) {
-                                                var data = e.target.result;
-                                                var workbook = XLSX.read(data, {
-                                                    type: 'binary'
-                                                });
+                                                reader.onload = function (e) {
+                                                    var data = e.target.result;
+                                                    var workbook = XLSX.read(data, {
+                                                        type: 'binary'
+                                                    });
 
-                                                workbook.SheetNames.forEach(function(sheetName) {
-                                                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-                                                    for(let i=0;i<XL_row_object.length;i++){
-                                                        if(isNaN(Object.values(XL_row_object[i])[0])){
-                                                            continue;
+                                                    workbook.SheetNames.forEach(function (sheetName) {
+                                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                                        for (let i = 0; i < XL_row_object.length; i++) {
+                                                            if (isNaN(Object.values(XL_row_object[i])[0])) {
+                                                                continue;
+                                                            } else if (GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(function (item) {
+                                                                return item.personnelNo == Object.values(XL_row_object[i])[0];
+                                                            }).length == 0) {
+                                                                let current = {personnelNo: Object.values(XL_row_object[i])[0]};
+                                                                records.add(current);
+
+                                                                continue;
+                                                            } else {
+                                                                continue;
+                                                            }
                                                         }
-                                                        else if(GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(function (item) {
-                                                            return item.personnelNo==Object.values(XL_row_object[i])[0];
-                                                        }).length==0){
-                                                            let current={personnelNo:Object.values(XL_row_object[i])[0]};
-                                                            records.add(current);
 
-                                                            continue;
-                                                        }
-                                                        else{
-                                                            continue;
-                                                        }
+                                                        DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation.setValue('');
+                                                        createDialog("info", "فایل به لیست اضافه شد.");
+
+                                                    });
+
+                                                    if (records.length > 0) {
+                                                        GroupSelectedPersonnelsLG_JspPersonnelInformation.setData(records);
+                                                        GroupSelectedPersonnelsLG_JspPersonnelInformation.invalidateCache();
+                                                        GroupSelectedPersonnelsLG_JspPersonnelInformation.fetchData();
+                                                    } else {
+                                                        createDialog("info", "خطا در محتویات فایل");
                                                     }
 
-                                                    DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation.setValue('');
-                                                    createDialog("info", "فایل به لیست اضافه شد.");
+                                                };
 
-                                                });
+                                                reader.onerror = function (ex) {
+                                                    createDialog("info", "خطا در باز کردن فایل");
+                                                };
 
-                                                if(records.length > 0){
-                                                    GroupSelectedPersonnelsLG_JspPersonnelInformation.setData(records);
-                                                    GroupSelectedPersonnelsLG_JspPersonnelInformation.invalidateCache();
-                                                    GroupSelectedPersonnelsLG_JspPersonnelInformation.fetchData();
-                                                }else{
-                                                    createDialog("info", "خطا در محتویات فایل");
-                                                }
-
+                                                reader.readAsBinaryString(file);
                                             };
-
-                                            reader.onerror = function(ex) {
-                                                createDialog("info", "خطا در باز کردن فایل");
-                                            };
-
-                                            reader.readAsBinaryString(file);
                                         };
-                                    };
-                                    let split=$('[name="DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation"]')[0].files[0].name.split('.');
+                                        let split = $('[name="DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation"]')[0].files[0].name.split('.');
 
-                                    if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
-                                        var xl2json = new ExcelToJSON();
-                                        xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation"]')[0].files[0]);
-                                    }else{
-                                        createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                                        if (split[split.length - 1] == 'xls' || split[split.length - 1] == 'csv' || split[split.length - 1] == 'xlsx') {
+                                            var xl2json = new ExcelToJSON();
+                                            xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspPersonnelInformation"]')[0].files[0]);
+                                        } else {
+                                            createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                                        }
+
                                     }
-
                                 }
                             }
-                        }
-                    ]
-                })
+                        ]
+                    })
 
 
-
-            }
-        ]
-    });
+                }
+            ]
+        });
 
         ClassStudentWin_GroupInsert_JspPersonnelInformation = isc.Window.create({
             width: 900,
@@ -1258,7 +1264,7 @@ exportExcelWindow.show();
             minWidth: 700,
             minHeight: 500,
             autoSize: false,
-            title:"فیلتر گروهی",
+            title: "فیلتر گروهی",
             items: [isc.HLayout.create({
                 width: "100%",
                 height: "88%",
@@ -1271,60 +1277,72 @@ exportExcelWindow.show();
                         editEvent: "click",
                         listEndEditAction: "next",
                         enterKeyEditAction: "nextRowStart",
-                        canSort:false,
-                        canEdit:true,
+                        canSort: false,
+                        canEdit: true,
                         filterOnKeypress: true,
                         selectionType: "single",
                         fields: [
-                            {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true,width:"10%"},
+                            {
+                                name: "remove",
+                                tile: "<spring:message code="remove"/>",
+                                isRemoveField: true,
+                                width: "10%"
+                            },
                             {
                                 name: "personnelNo",
                                 title: "<spring:message code="personnel.no"/>",
-                                width:"40%",
-                                editorExit:function(editCompletionEvent, record, newValue, rowNum, colNum)
-                                {
-                                    isEditing=false;
-                                    if(editCompletionEvent=='escape'){
+                                width: "40%",
+                                editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum) {
+                                    isEditing = false;
+                                    if (editCompletionEvent == 'escape') {
                                         return true;
-                                    }else if(editCompletionEvent=='enter'){
+                                    } else if (editCompletionEvent == 'enter') {
                                         if (newValue != null) {
-                                            if(GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(function (item) {
-                                                return item.personnelNo==newValue;
-                                            }).length==0){
+                                            if (GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(function (item) {
+                                                return item.personnelNo == newValue;
+                                            }).length == 0) {
                                                 return true;
-                                            }
-                                            else{
+                                            } else {
                                                 createDialog("info", "<spring:message code="msg.record.duplicate" />", "<spring:message code="error"/>");
                                                 return false;
                                             }
+                                        } else {
+                                            return true
                                         }
-                                        else {return true}
-                                    }else if(editCompletionEvent=='programmatic') {
-                                        if(newValue!=''||newValue!=null||typeof(newValue)=='undefined'){
-                                            isEditing=true;
+                                    } else if (editCompletionEvent == 'programmatic') {
+                                        if (newValue != '' || newValue != null || typeof (newValue) == 'undefined') {
+                                            isEditing = true;
                                             return false;
                                         }
                                     }
                                 },
-                                change:function (form,item,value) {
-                                    if(!value.match(/^\d{0,10}$/)){
-                                        item.setValue(value.substring(0,value.length-1));
+                                change: function (form, item, value) {
+                                    if (!value.match(/^\d{0,10}$/)) {
+                                        item.setValue(value.substring(0, value.length - 1));
                                     }
                                 }
                             },
-                            {name: "description", title: "توضیحات", canEdit: false ,width:"45%"},
-                            {name: "error", canEdit: false ,hidden:true,width:"5%"},
-                            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
+                            {name: "description", title: "توضیحات", canEdit: false, width: "45%"},
+                            {name: "error", canEdit: false, hidden: true, width: "5%"},
+                            {
+                                name: "hasWarning",
+                                title: " ",
+                                width: 40,
+                                type: "image",
+                                imageURLPrefix: "",
+                                imageURLSuffix: ".png",
+                                canEdit: false
+                            }
                         ],
                         gridComponents: [TabSet_GroupInsert_JspPersonnelInformation, "header", "body"],
                         canRemoveRecords: true,
-                        deferRemoval:true,
-                        removeRecordClick:function (rowNum){
-                            if(GroupSelectedPersonnelsLG_JspPersonnelInformation.getAllEditRows()[0]==GroupSelectedPersonnelsLG_JspPersonnelInformation.data.length){
+                        deferRemoval: true,
+                        removeRecordClick: function (rowNum) {
+                            if (GroupSelectedPersonnelsLG_JspPersonnelInformation.getAllEditRows()[0] == GroupSelectedPersonnelsLG_JspPersonnelInformation.data.length) {
                                 GroupSelectedPersonnelsLG_JspPersonnelInformation.discardEdits(GroupSelectedPersonnelsLG_JspPersonnelInformation.getAllEditRows()[0]);
                             }
                             GroupSelectedPersonnelsLG_JspPersonnelInformation.data.removeAt(rowNum);
-                            if(GroupSelectedPersonnelsLG_JspPersonnelInformation.data.length==0&&!isEditing){
+                            if (GroupSelectedPersonnelsLG_JspPersonnelInformation.data.length == 0 && !isEditing) {
                                 GroupSelectedPersonnelsLG_JspPersonnelInformation.addData({
                                     nationalCode: ""
                                 });
@@ -1341,37 +1359,35 @@ exportExcelWindow.show();
                             align: "center",
                             click: function () {
 
-                                let getEditCells=GroupSelectedPersonnelsLG_JspPersonnelInformation.getAllEditCells();
+                                let getEditCells = GroupSelectedPersonnelsLG_JspPersonnelInformation.getAllEditCells();
 
-                                if(getEditCells.size()!=0){
-                                    let value=GroupSelectedPersonnelsLG_JspPersonnelInformation.getEditValue(getEditCells[0][0],getEditCells[0][1]);
+                                if (getEditCells.size() != 0) {
+                                    let value = GroupSelectedPersonnelsLG_JspPersonnelInformation.getEditValue(getEditCells[0][0], getEditCells[0][1]);
 
-                                    if(value == "" || value == null || typeof(value) == "undefined"){
+                                    if (value == "" || value == null || typeof (value) == "undefined") {
                                         GroupSelectedPersonnelsLG_JspPersonnelInformation.cancelEditing(getEditCells[0][0]);
-                                    }else{
-                                        if(GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(function (item) {
-                                            return item.personnelNo==value;
-                                        }).length==0){
+                                    } else {
+                                        if (GroupSelectedPersonnelsLG_JspPersonnelInformation.data.filter(function (item) {
+                                            return item.personnelNo == value;
+                                        }).length == 0) {
                                             GroupSelectedPersonnelsLG_JspPersonnelInformation.saveAndEditNextRow();
-                                        }
-                                        else{
+                                        } else {
                                             GroupSelectedPersonnelsLG_JspPersonnelInformation.cancelEditing(getEditCells[0][0]);
                                         }
                                     }
                                 }
 
-                                let len=GroupSelectedPersonnelsLG_JspPersonnelInformation.data.length;
-                                let list=GroupSelectedPersonnelsLG_JspPersonnelInformation.data;
-                                let result=[];
+                                let len = GroupSelectedPersonnelsLG_JspPersonnelInformation.data.length;
+                                let list = GroupSelectedPersonnelsLG_JspPersonnelInformation.data;
+                                let result = [];
 
                                 for (let index = 0; index < len; index++) {
-                                    if(list[index].personnelNo != "" && list[index].personnelNo != null && typeof(list[index].personnelNo) != "undefined")
-                                    {
+                                    if (list[index].personnelNo != "" && list[index].personnelNo != null && typeof (list[index].personnelNo) != "undefined") {
                                         result.push(list[index].personnelNo)
                                     }
                                 }
 
-                                advancedCriteriaPersonnelInformation= {
+                                advancedCriteriaPersonnelInformation = {
                                     _constructor: "AdvancedCriteria",
                                     operator: "and",
                                     criteria: [
@@ -1408,7 +1424,7 @@ exportExcelWindow.show();
                         GroupSelectedPersonnelsLG_JspPersonnelInformation.addData({
                             nationalCode: ""
                         });
-                        url=personnelRegUrl;
+                        url = personnelRegUrl;
                         TabSet_GroupInsert_JspPersonnelInformation.selectTab(0);
                         ClassStudentWin_GroupInsert_JspPersonnelInformation.show();
                     }
@@ -1416,7 +1432,7 @@ exportExcelWindow.show();
                 isc.ToolStripButtonExcel.create({
                     title: 'ارسال لیست فیلتر شده به اکسل',
                     click: function () {
-                        let grid=PersonnelInfoListGrid_PersonnelList;
+                        let grid = PersonnelInfoListGrid_PersonnelList;
                         let size = grid.data.size();
                         isc.Window.create({
                             ID: "exportExcelWindow_JspPersonnelInformation",
@@ -1477,7 +1493,7 @@ exportExcelWindow.show();
                             ]
                         });
                         exportExcelWindow_JspPersonnelInformation.show();
-                       }
+                    }
                 }),
                 ToolStrip_Personnel_Info]
         });
