@@ -29,10 +29,9 @@
             {name: "institute.titleFa"},
             {name: "classStatus"},
             {name: "course.evaluation"},
-            {name: "evaluationStatus"},
+            // {name: "evaluationStatus"},
             {name: "course.id"},
             {name: "instituteId"},
-            {name: "titleClass"},
             {name: "scoringMethod"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
@@ -49,9 +48,8 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         sortField: 0,
-
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -112,7 +110,8 @@
                 autoFitWidth: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                canFilter: false
             },
             {
                 name: "institute.titleFa",
@@ -134,19 +133,20 @@
                     }
                 }
             },
-            {
-                name: "evaluationStatus", title: "<spring:message code='evaluation.status'/>", align: "center",
-                valueMap: {
-                    "1": "ارزیابی نشده",
-                    "2": "در حال ارزیابی",
-                    "3": "ارزیابی شده"
-                },
-                filterEditorProperties:{
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
-                }
-            },
+            <%--{--%>
+            <%--    name: "evaluationStatus", title: "<spring:message code='evaluation.status'/>", align: "center",--%>
+            <%--    valueMap: {--%>
+            <%--        "1": "ارزیابی نشده",--%>
+            <%--        "2": "در حال ارزیابی",--%>
+            <%--        "3": "ارزیابی شده"--%>
+            <%--    },--%>
+            <%--    filterEditorProperties:{--%>
+            <%--        pickListProperties: {--%>
+            <%--            showFilterEditor: false--%>
+            <%--        }--%>
+            <%--    },--%>
+            <%--    canFilter: false--%>
+            <%--},--%>
             {
                 name: "course.evaluation",
                 title: "<spring:message code='evaluation.type'/>",
@@ -164,8 +164,7 @@
                         showFilterEditor: false
                     }
                 }
-            },
-            {name: "titleClass", hidden: true}
+            }
         ],
         selectionUpdated: function (record) {
             listGrid_record = ListGrid_evaluationAnalysis_class.getSelectedRecord();

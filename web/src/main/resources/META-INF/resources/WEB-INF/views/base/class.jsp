@@ -71,12 +71,20 @@
             {name: "studentCount",canFilter:false,canSort:false},
             {name: "code"},
             {name: "term.titleFa"},
-// {name: "teacher.personality.lastNameFa"},
+            // {name: "teacher.personality.lastNameFa"},
 // {name: "course.code"},
             {name: "course.titleFa"},
             {name: "course.id"},
             {name: "teacherId"},
-            {name: "teacher"},
+            {
+                name: "teacher",
+                // valueField: "teacher.personality.lastNameFa",
+            },
+            {
+                name: "teacher.personality.lastNameFa",
+                // displayField: "teacher",
+                // type: "TextItem"
+            },
             {name: "reason"},
             {name: "classStatus"},
             {name: "topology"},
@@ -288,14 +296,13 @@
         dataSource: RestDataSource_Class_JspClass,
         </sec:authorize>
         contextMenu: Menu_ListGrid_Class_JspClass,
-        // dataPageSize: 50,
+        dataPageSize: 15,
         // allowAdvancedCriteria: true,
         // allowFilterExpressions: true,
         // filterOnKeypress: true,
         // selectionType: "single",
-
-// showRecordComponents: true,
-// showRecordComponentsByCell: true,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
         selectionType: "single",
         <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
         <%--groupByText: "<spring:message code='groupByText'/>",--%>
@@ -320,12 +327,15 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-            // if(record.classStatus == "3")
-            // {
-            //     TabSet_Class.enableTab("classScoresTab")
-            // }
-            // else{TabSet_Class.disableTab("classScoresTab");
-            // }
+
+            <%--<sec:authorize access="hasAuthority('TclassScoresTab')">--%>
+            <%--if(record.classStatus == "3")--%>
+            <%--{--%>
+                <%--TabSet_Class.enableTab("classScoresTab")--%>
+            <%--}--%>
+            <%--else{TabSet_Class.disableTab("classScoresTab");--%>
+            <%--}--%>
+            <%--</sec:authorize>--%>
 
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
@@ -396,7 +406,22 @@
                 autoFitWidth: true
             },
             <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
+            {
+                name: "teacher",
+                title: "<spring:message code='teacher'/>",
+                displayField: "teacher.personality.lastNameFa",
+                displayValueFromRecord: false,
+                type: "TextItem",
+                sortNormalizer(record){
+                    return record.teacher.personality.lastNameFa;
+                },
+
+                align: "center",
+                filterOperator: "iContains",
+                // sortNormalizer(record) {
+                //     return record.teacher.personality.lastNameFa;
+                // }
+            },
             {
                 name: "reason", title: "<spring:message code='training.request'/>", align: "center",
                 valueMap: {
@@ -463,17 +488,23 @@
             {name: "course.theoryDuration" , title: "", hidden:true}
 
         ],
-
-        // getCellCSSText: function (record, rowNum, colNum) {
-        //     if (this.isSelected(record)) {
-        //         return "background-color: #fe9d2a;";
-        //     } else {
-        //         if (record.classStatus === "1")
-        //             return "background-color: #a5a5a5;";
-        //         else if (record.classStatus === "3")
-        //             return "background-color: #C7E1FF;";
-        //     }
-        // },
+        getCellCSSText: function (record, rowNum, colNum) {
+            if (this.isSelected(record)) {
+                return "background-color: #fe9d2a;";
+            }
+            else if(record.workflowEndingStatusCode === "2")
+            {
+                return "background-color: #bef5b8;";
+            }
+            else {
+                if (record.classStatus === "1")
+                    return "background-color: #ffffff;";
+                else if (record.classStatus === "2")
+                    return "background-color: #fff9c4;";
+                else if (record.classStatus === "3")
+                    return "background-color: #cdedf5;";
+            }
+        },
         dataArrived: function () {
             selectWorkflowRecord();
         },

@@ -39,6 +39,8 @@ public class CourseService implements ICourseService {
     private final TclassDAO tclassDAO;
     private final JobDAO jobDAO;
     private final PostDAO postDAO;
+    private final CategoryDAO categoryDAO;
+    private final SubcategoryDAO subCategoryDAO;
     private final TclassService tclassService;
     private final TeacherService teacherService;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
@@ -583,10 +585,13 @@ public class CourseService implements ICourseService {
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> sendingList = new ArrayList<>();
         Comparator<Tclass> tclassComparator = Comparator.comparing(Tclass::getEndDate);
 
+        Category category=categoryDAO.findById(course.getCategoryId()).orElse(null);
+        Subcategory subCategory=subCategoryDAO.findById(course.getSubCategoryId()).orElse(null);
+
         if (!teachers.isEmpty()) {
 
             for (Teacher teacher : teachers) {
-                Map<String, Object> map = teacherService.evaluateTeacher(teacher.getId(), course.getCategoryId().toString(), course.getSubCategoryId().toString());
+                Map<String, Object> map = teacherService.evaluateTeacher(teacher, category,subCategory);
                 if (map.get("pass_status").equals("رد")) {
                     continue;
                 }

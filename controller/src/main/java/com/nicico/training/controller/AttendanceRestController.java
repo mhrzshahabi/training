@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
@@ -11,8 +12,12 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IAttendanceService;
+import com.nicico.training.model.ParameterValue;
 import com.nicico.training.service.ClassSessionService;
+import com.nicico.training.service.ParameterService;
+import com.nicico.training.service.ParameterValueService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +49,7 @@ public class AttendanceRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
+    private final ParameterService parameterService;
 
     // ------------------------------
 
@@ -103,7 +109,11 @@ public class AttendanceRestController {
         for (ClassSessionDTO.Info classSession : classSessions) {
             sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
         }
-        Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, 0.2);
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+
+        Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, Double.valueOf(parameterValues.get(0).getValue())/100);
         return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
     }
 
