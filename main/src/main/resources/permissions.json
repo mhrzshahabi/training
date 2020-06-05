@@ -615,7 +615,7 @@
     {"code": "QuestionnaireQuestion_R","title": "مشاهده پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_U","title": "ویرایش پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_D","title": "حذف پرسشنامه - پرسشنامه - مقدار"},
-    {"code": "QuestionnaireQuestion_P","title": "چاپ پرسشنامه - پرسشنامه - مقدار"}
+    {"code": "QuestionnaireQuestion_P","title": "چاپ پرسشنامه - پرسشنامه - مقدار"},
     {"code": "TclassSessionsTab", "title": "کلاس - تب جلسات"},
     {"code": "TclassCheckListTab", "title": "کلاس - تب چک لیست"},
     {"code": "TclassStudentsTab", "title": "کلاس - تب فراگیران"},
