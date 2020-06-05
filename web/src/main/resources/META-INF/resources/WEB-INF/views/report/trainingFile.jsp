@@ -239,12 +239,12 @@
                 startRow:false,
                 endRow:false,
                 click (form) {
-                    var advancedCriteriaStudentJspTrainingFile = {
+                    let advancedCriteriaStudentJspTrainingFile = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: []
                     };
-                    var items = form.getItems();
+                    let items = form.getItems();
                     for (let i = 0; i < items.length; i++) {
                         if(items[i].getValue() != undefined){
                             if(items[i].name == "personnelNo2"){
