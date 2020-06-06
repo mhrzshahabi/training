@@ -77,6 +77,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
             ],
@@ -88,7 +89,8 @@
             [
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true}
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+                {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
             ],
         fetchDataURL: jobUrl + "/iscList"
     });
@@ -97,6 +99,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
             ],
@@ -106,8 +109,9 @@
     PostGradeDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
@@ -115,7 +119,8 @@
     PostGradeGroupDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code='post.grade.group.titleFa'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true}
         ],
         fetchDataURL: postGradeGroupUrl + "spec-list"
@@ -158,6 +163,7 @@
         fields: [
             {name: "code"},
             {name: "titleFa"},
+            {name: "description"}
         ],
         rowDoubleClick: "Select_Post_NABOP()"
     });
@@ -170,6 +176,7 @@
         fields: [
             {name: "code"},
             {name: "titleFa"},
+            {name: "description"}
         ],
         rowDoubleClick: "Select_Post_NABOP()"
     });
@@ -180,6 +187,7 @@
         selectionType: "single",
         autoFetchData: true,
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "description"}
         ],
@@ -192,6 +200,7 @@
         selectionType: "single",
         autoFetchData: true,
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "description"}
         ],
@@ -204,6 +213,7 @@
         selectionType: "single",
         autoFetchData: true,
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "description"}
         ],

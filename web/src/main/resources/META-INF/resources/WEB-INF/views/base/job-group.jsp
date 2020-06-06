@@ -13,6 +13,7 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
             {name: "titleEn", title: "نام لاتین گروه شغل ", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
@@ -690,6 +691,10 @@
                 length: "250",
                 width: "*",
                 height: "40"
+            },
+            {
+                name: "code",
+                title: "<spring:message code='code'/>"
             },
             {
                 name: "titleEn",
