@@ -39,6 +39,330 @@
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
 
     <script>
+        function groupFilter(title,inputURL,func){
+            TabSet_GroupInsert_JspStudent=isc.TabSet.create({
+                ID:"leftTabSet",
+                autoDraw:false,
+                tabBarPosition: "top",
+                width: "100%",
+                height: 115,
+                tabs: [
+                    { title: "ورود  مستقیم",
+                        pane: isc.DynamicForm.create({
+                            height: "6%",
+                            width:"100%",
+                            left:0,
+                            align:"left",
+                            numCols: 5,
+                            colWidths: ["0%","50%","10%","30%"],
+                            fields: [
+                                /*{
+                                    title: "",
+                                    type: "select",
+                                    padding:50,
+                                    margin:5,
+                                    defaultValue: "کد پرسنلی 6 رقمی",
+                                    valueMap: ["کد پرسنلی 6 رقمی", "کد پرسنلی 10 رقمی"]
+                                },*/
+                                {
+                                    ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
+                                    title:"",
+                                    /*direction:""*/
+
+                                },
+                                {
+                                    type: "button",
+                                    title: "اضافه کردن به لیست",
+                                    startRow: false,
+                                    click:function () {
+                                        let value=DynamicForm_GroupInsert_Textbox_JspStudent.getValue();
+                                        if(value != null&& value != "" && typeof(value) != "undefined")
+                                        {
+                                            let personnels=value.split(',');
+                                            let len=personnels.size();
+
+                                            for (let i=0;i<len;i++){
+                                                if(isNaN(personnels[i])){
+                                                    continue;
+                                                }
+                                                else if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
+                                                    return item.personnelNo==personnels[i];
+                                                }).length==0){
+
+                                                    let current={personnelNo:personnels[i]};
+
+                                                    GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat([current]));
+
+                                                    GroupSelectedPersonnelsLG_student.invalidateCache();
+                                                    GroupSelectedPersonnelsLG_student.fetchData();
+                                                    continue;
+                                                }
+                                                else{
+                                                    continue;
+                                                }
+                                            }
+
+                                            DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
+                                            createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                        }
+                                    }
+                                }
+                            ]
+                        })
+                    },
+                    {title: "فایل اکسل", width:200, overflow:"hidden",
+                        pane: isc.DynamicForm.create({
+                            height: "100%",
+                            width:"100%",
+                            numCols: 4,
+                            colWidths: ["10%","40%","20%","20%"],
+                            fields: [
+                                {
+                                    ID:"DynamicForm_GroupInsert_FileUploader_JspStudent",
+                                    name:"DynamicForm_GroupInsert_FileUploader_JspStudent",
+                                    type:"imageFile",
+                                    title:"مسیر فایل",
+                                },
+                                {
+                                    type: "button",
+                                    startRow:false,
+                                    title: "آپلود فايل",
+                                    click:function () {
+                                        let address=DynamicForm_GroupInsert_FileUploader_JspStudent.getValue();
+
+                                        if(address==null){
+                                            createDialog("info", "فايل خود را انتخاب نماييد.");
+                                        }else{
+                                            var ExcelToJSON = function() {
+
+                                                this.parseExcel = function(file) {
+                                                    var reader = new FileReader();
+                                                    var records = [];
+
+                                                    reader.onload = function(e) {
+                                                        var data = e.target.result;
+                                                        var workbook = XLSX.read(data, {
+                                                            type: 'binary'
+                                                        });
+
+                                                        workbook.SheetNames.forEach(function(sheetName) {
+                                                            // Here is your object
+                                                            var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                                            //var json_object = JSON.stringify(XL_row_object);
+
+                                                            for(let i=0;i<XL_row_object.length;i++){
+                                                                if(isNaN(Object.values(XL_row_object[i])[0])){
+                                                                    continue;
+                                                                }
+                                                                else if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
+                                                                    return item.personnelNo==Object.values(XL_row_object[i])[0];
+                                                                }).length==0){
+                                                                    let current={personnelNo:Object.values(XL_row_object[i])[0]};
+                                                                    records.add(current);
+
+                                                                    continue;
+                                                                }
+                                                                else{
+                                                                    continue;
+                                                                }
+                                                            }
+
+                                                            DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
+                                                        });
+
+                                                        if(records.length > 0){
+                                                            GroupSelectedPersonnelsLG_student.setData(records);
+                                                            GroupSelectedPersonnelsLG_student.invalidateCache();
+                                                            GroupSelectedPersonnelsLG_student.fetchData();
+                                                            createDialog("info", "فایل به لیست اضافه شد.");
+                                                        }else{
+                                                            createDialog("info", "خطا در محتویات فایل");
+                                                        }
+
+                                                    };
+
+                                                    reader.onerror = function(ex) {
+                                                        createDialog("info", "خطا در باز کردن فایل");
+                                                    };
+
+                                                    reader.readAsBinaryString(file);
+                                                };
+                                            };
+                                            let split=$('[name="DynamicForm_GroupInsert_FileUploader_JspStudent"]')[0].files[0].name.split('.');
+
+                                            if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
+                                                var xl2json = new ExcelToJSON();
+                                                xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspStudent"]')[0].files[0]);
+                                            }else{
+                                                createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                                            }
+
+                                        }
+                                    }
+                                },
+                                {
+                                    type: "button",
+                                    title: "فرمت فايل ورودی",
+                                    click:function () {
+                                        window.open("excel/sample-excel.xlsx");
+                                    }
+                                },
+                            ]
+                        })
+                    }
+                ]
+            });
+
+            ClassStudentWin_student_GroupInsert = isc.Window.create({
+                width: 900,
+                height: 750,
+                minWidth: 700,
+                minHeight: 500,
+                autoSize: false,
+                title:title,
+                items: [isc.HLayout.create({
+                    width: "100%",
+                    height: "88%",
+                    autoDraw: false,
+                    align: "center",
+                    members: [
+                        isc.TrLG.create({
+                            ID: "GroupSelectedPersonnelsLG_student",
+                            showFilterEditor: false,
+                            editEvent: "click",
+                            listEndEditAction: "next",
+                            enterKeyEditAction: "nextRowStart",
+                            canSort:false,
+                            canEdit:true,
+                            filterOnKeypress: true,
+                            selectionType: "single",
+                            fields: [
+                                {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true,width:"10%"},
+                                {
+                                    name: "personnelNo",
+                                    title: "<spring:message code="personnel.no"/>",
+                                    width:"40%",
+                                    editorExit:function(editCompletionEvent, record, newValue, rowNum, colNum)
+                                    {
+                                        isEditing=false;
+                                        if(editCompletionEvent=='escape'){
+                                            return true;
+                                        }else if(editCompletionEvent=='enter'){
+                                            if (newValue != null) {
+                                                if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
+                                                    return item.personnelNo==newValue;
+                                                }).length==0){
+                                                    return true;
+                                                }
+                                                else{
+                                                    createDialog("info", "<spring:message code="msg.record.duplicate" />", "<spring:message code="error"/>");
+                                                    return false;
+                                                }
+                                            }
+                                            else {return true}
+                                        }else if(editCompletionEvent=='programmatic') {
+                                            if(newValue!=''||newValue!=null||typeof(newValue)=='undefined'){
+                                                isEditing=true;
+                                                return false;
+                                            }
+                                        }
+                                    },
+                                    change:function (form,item,value) {
+                                        if(!value.match(/^\d{0,10}$/)){
+                                            item.setValue(value.substring(0,value.length-1));
+                                        }
+                                    }
+                                },
+                                {name: "description", title: "توضیحات", canEdit: false ,width:"45%"},
+                                {name: "error", canEdit: false ,hidden:true,width:"5%"},
+                                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
+                            ],
+                            gridComponents: [TabSet_GroupInsert_JspStudent, "header", "body"],
+                            canRemoveRecords: true,
+                            deferRemoval:true,
+                            removeRecordClick:function (rowNum){
+                                if(GroupSelectedPersonnelsLG_student.getAllEditRows()[0]==GroupSelectedPersonnelsLG_student.data.length){
+                                    GroupSelectedPersonnelsLG_student.discardEdits(GroupSelectedPersonnelsLG_student.getAllEditRows()[0]);
+                                }
+                                GroupSelectedPersonnelsLG_student.data.removeAt(rowNum);
+                                if(GroupSelectedPersonnelsLG_student.data.length==0&&!isEditing){
+                                    GroupSelectedPersonnelsLG_student.addData({
+                                        nationalCode: ""
+                                    });
+                                }
+                            }
+                        })
+                    ]
+                }),
+                    isc.TrHLayoutButtons.create({
+                        members: [
+                            isc.IButtonSave.create({
+                                top: 260,
+                                title: "<spring:message code='save'/>",
+                                align: "center",
+                                icon: "[SKIN]/actions/save.png",
+                                click: function () {
+
+                                    let getEditCells=GroupSelectedPersonnelsLG_student.getAllEditCells();
+
+                                    if(getEditCells.size()!=0){
+                                        let value=GroupSelectedPersonnelsLG_student.getEditValue(getEditCells[0][0],getEditCells[0][1]);
+
+                                        if(value == "" || value == null || typeof(value) == "undefined"){
+                                            GroupSelectedPersonnelsLG_student.cancelEditing(getEditCells[0][0]);
+                                        }else{
+                                            if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
+                                                return item.personnelNo==value;
+                                            }).length==0){
+                                                GroupSelectedPersonnelsLG_student.saveAndEditNextRow();
+                                            }
+                                            else{
+                                                GroupSelectedPersonnelsLG_student.cancelEditing(getEditCells[0][0]);
+                                            }
+                                        }
+                                    }
+
+                                    let len=GroupSelectedPersonnelsLG_student.data.length;
+                                    let list=GroupSelectedPersonnelsLG_student.data;
+                                    let result=[];
+
+                                    for (let index = 0; index < len; index++) {
+                                        if(list[index].personnelNo != "" && list[index].personnelNo != null && typeof(list[index].personnelNo) != "undefined")
+                                        {
+                                            result.push(list[index].personnelNo)
+                                        }
+                                    }
+
+                                    if (func) {
+                                        func(inputURL,result);
+                                    }
+                                }
+                            }), isc.IButtonCancel.create({
+                                top: 260,
+                                title: "<spring:message code='cancel'/>",
+                                align: "center",
+                                icon: "[SKIN]/actions/cancel.png",
+                                click: function () {
+                                    ClassStudentWin_student_GroupInsert.close();
+                                }
+                            })
+                        ]
+                    })
+                ]
+            });
+
+            TabSet_GroupInsert_JspStudent.selectTab(0);
+                GroupSelectedPersonnelsLG_student.discardAllEdits();
+                GroupSelectedPersonnelsLG_student.data.clearAll();
+                /*GroupSelectedPersonnelsLG_student.addData({
+                    nationalCode: ""
+                });*/
+
+                DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
+                DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
+                ClassStudentWin_student_GroupInsert.show();
+        }
+
         class ExportToFile {
 
             constructor() {
@@ -1936,7 +2260,6 @@
     //     defaultTimeout: 60000,
     //     willHandleError: true,
     //     handleError: function (response, request) {
-    //         alert('ViewLoader Error');
     //         console.log(response);
     //         // if (response.httpResponseCode == 401) {
     //         //     logout();

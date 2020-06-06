@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
@@ -34,6 +35,7 @@ public class TeacherService implements ITeacherService {
     private final CustomModelMapper modelMapper;
     private final TeacherDAO teacherDAO;
     private final TclassDAO tclassDAO;
+    private final ParameterService parameterService;
     private final IPersonalInfoService personalInfoService;
     private final IAttachmentService attachmentService;
     private final TclassService tclassService;
@@ -546,20 +548,25 @@ public class TeacherService implements ITeacherService {
         }
         //total grade
         evaluationGrade = table_1_grade + table_2_grade + table_3_grade + table_4_grade;
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+
+
         if (teacher_educationLevel == 1) {
-            if (evaluationGrade >= 25)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankDiploma")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()) )
                 pass = true;
         } else if (teacher_educationLevel == 2) {
-            if (evaluationGrade >= 40)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankAD")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         } else if (teacher_educationLevel == 3) {
-            if (evaluationGrade >= 55)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankBachelor")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         } else if (teacher_educationLevel == 4) {
-            if (evaluationGrade >= 60)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankMaster")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         } else if (teacher_educationLevel == 5) {
-            if (evaluationGrade >= 75)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankPhd")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         }
 
@@ -592,7 +599,7 @@ public class TeacherService implements ITeacherService {
 
     @Override
     @Transactional(readOnly = true)
-    public Map<String, Object> evaluateTeacher(Teacher teacher, Category category, Subcategory subcategory) {
+    public Map<String, Object> evaluateTeacher(Teacher teacher, Category category, Subcategory subcategory,List<ParameterValueDTO.Info> parameterValues) {
         Map<String, Object> resultSet = new HashMap<>();
         float evaluationGrade = 0;
         boolean pass = false;
@@ -835,20 +842,21 @@ public class TeacherService implements ITeacherService {
         }
         //total grade
         evaluationGrade = table_1_grade + table_2_grade + table_3_grade + table_4_grade;
+
         if (teacher_educationLevel == 1) {
-            if (evaluationGrade >= 25)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankDiploma")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()) )
                 pass = true;
         } else if (teacher_educationLevel == 2) {
-            if (evaluationGrade >= 40)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankAD")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         } else if (teacher_educationLevel == 3) {
-            if (evaluationGrade >= 55)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankBachelor")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         } else if (teacher_educationLevel == 4) {
-            if (evaluationGrade >= 60)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankMaster")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         } else if (teacher_educationLevel == 5) {
-            if (evaluationGrade >= 75)
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankPhd")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         }
 

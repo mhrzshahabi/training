@@ -9,4 +9,6 @@ public interface IPersonnelCoursePassedNAReportViewService {
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
     SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchCourseList(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchMinList(SearchDTO.SearchRq request);
 }

@@ -13,6 +13,7 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام گروه پست", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
             {name: "titleEn", title: "نام لاتین گروه پست ", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
@@ -31,7 +32,6 @@
             }
         }, {
             title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
-// alert(ListGrid_Post_Group_Competence.getData().size());
                 ListGrid_Post_Group_edit();
             }
         }, {
@@ -144,7 +144,6 @@
                         });
                     } else {
 
-                        // alert(record.id);
                         // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";
                         // RestDataSource_All_Posts.invalidateCache();
                         // RestDataSource_All_Posts.fetchData();
@@ -372,7 +371,6 @@
 
             var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
             var postGroupId = postGroupRecord.id;
-            //  alert(postGroupId);
             // var postId=dropRecords[0].id;
             var postIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -486,12 +484,10 @@
 
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
 
-            // alert(dropRecords[0].titleFa);
 
 
             var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
             var postGroupId = postGroupRecord.id;
-            //  alert(postGroupId);
             // var postId=dropRecords[0].id;
             var postIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -830,6 +826,11 @@
                 height: "40"
             },
             {
+                name: "code",
+                title: "<spring:message code='code'/>",
+                type: "text",
+            },
+            {
                 name: "titleEn",
                 type: "text",
                 length: "250",
@@ -1088,8 +1089,6 @@
         title: "لیست پست ها",
         click: function () {
             var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            //  alert(Window_Add_Post_to_PostGroup.DynamicForm[0].fields[0]);
-            // alert(DynamicForm_thisPostGroupHeader_Jsp.getItem("titleFa"));
 
             if (record == null || record.id == null) {
 

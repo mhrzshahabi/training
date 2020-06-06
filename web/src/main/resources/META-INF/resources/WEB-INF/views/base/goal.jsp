@@ -205,12 +205,11 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
                         simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
                         ListGrid_Goal_refresh();
-                        ToolStripButton_Goal_Print.click();
                         setTimeout(function () {
                             ListGrid_Goal.setSelectedState(gridState);
                         }, 0);

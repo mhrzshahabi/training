@@ -94,7 +94,7 @@ public class ClassSessionDTO implements Serializable {
             String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
             String startingDate = getSessionDate();
 
-            return todayDate.compareTo(startingDate) > 0 && getSessionState() == 3 ? false : true;
+            return todayDate.compareTo(startingDate) >= 0 ? false : true;
         }
     }
 

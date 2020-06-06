@@ -13,6 +13,7 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
             {name: "titleEn", title: "نام لاتین گروه شغل ", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
@@ -139,7 +140,6 @@
                         });
                     } else {
 
-                        // alert(record.id);
                         // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
                         // RestDataSource_All_Jobs.invalidateCache();
                         // RestDataSource_All_Jobs.fetchData();
@@ -320,7 +320,6 @@
 
             var jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
             var jobGroupId = jobGroupRecord.id;
-            //  alert(jobGroupId);
             // var jobId=dropRecords[0].id;
             var jobIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -435,12 +434,10 @@
 
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
 
-            // alert(dropRecords[0].titleFa);
 
 
             var jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
             var jobGroupId = jobGroupRecord.id;
-            //  alert(jobGroupId);
             // var jobId=dropRecords[0].id;
             var jobIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -696,6 +693,10 @@
                 height: "40"
             },
             {
+                name: "code",
+                title: "<spring:message code='code'/>"
+            },
+            {
                 name: "titleEn",
                 type: "text",
                 length: "250",
@@ -824,13 +825,10 @@
             //  yesNoDialog("taeed","salam???",0,"stop",xx);
             //
             // if(parseInt(xx)==0){
-            //     alert("yes selected");
             // }
             // else{
-            //     alert("noSelected");
             //     }
 
-// alert("abcdef");
 
             ListGrid_Job_Group_refresh();
             //ListGrid_Job_Group_Competence_refresh();
@@ -905,8 +903,6 @@
         title: "لیست شغل ها",
         click: function () {
             var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            //  alert(Window_Add_Job_to_JobGroup.DynamicForm[0].fields[0]);
-            // alert(DynamicForm_thisJobGroupHeader_Jsp.getItem("titleFa"));
 
             if (record == null || record.id == null) {
 

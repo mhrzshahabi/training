@@ -8,6 +8,8 @@ import com.nicico.training.iservice.IPersonnelCoursePassedNAReportViewService;
 import com.nicico.training.model.PersonnelCoursePassedNAReportView;
 import com.nicico.training.repository.PersonnelCoursePassedNAReportViewDAO;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class PersonnelCoursePassedNAReportViewService implements IPersonnelCoursePassedNAReportViewService {
 
     private final PersonnelCoursePassedNAReportViewDAO personnelCoursePassedNAReportViewDAO;
+    private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -50,6 +53,16 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
         SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setList(result);
         searchRs.setTotalCount((long) personnelCourseMap.keySet().size());
+        return searchRs;
+    }
+
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchMinList(SearchDTO.SearchRq request) {
+        List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
+        List<PersonnelCoursePassedNAReportViewDTO.MinInfo> result = modelMapper.map(personnelCourseList, new TypeToken<List<PersonnelCoursePassedNAReportViewDTO.MinInfo>>(){}.getType());
+        SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(result);
+        searchRs.setTotalCount(new Long(result.size()));
         return searchRs;
     }
 }

@@ -3008,7 +3008,6 @@
             },
         ],
         itemChanged: function (item, newValue) {
-// alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
             if (item.name == "bank") {
                 if (newValue == undefined) {
                     DynamicForm_Institute_Institute_Account.clearValue("bankBranch");
