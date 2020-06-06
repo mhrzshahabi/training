@@ -2042,7 +2042,9 @@
                 title: "<spring:message code='term'/>",
                 width: "100%",
                 textAlign: "center",
-                editorType: "ComboBoxItem",
+                type: "SelectItem",
+                multiple: true,
+                filterLocally: true,
                 displayField: "code",
                 valueField: "id",
                 optionDataSource: RestDataSource_Term_Filter,
@@ -2080,6 +2082,47 @@
                         }
                     }
                 ],
+                pickListProperties: {
+                    gridComponents: [
+                        isc.ToolStrip.create({
+                            autoDraw: false,
+                            height: 30,
+                            width: "100%",
+                            members: [
+                                isc.ToolStripButton.create({
+                                    width: "50%",
+                                    icon: "[SKIN]/actions/approve.png",
+                                    title: "انتخاب همه",
+                                    click: function () {
+                                        var item = DynamicForm_Term_Filter.getField("termFilter"),
+                                            fullData = item.pickList.data,
+                                            cache = fullData.localData,
+                                            values = [];
+
+                                        for (var i = 0; i < cache.length; i++) {
+                                            values[i] = cache[i].id;
+                                        }
+                                        item.setValue(values);
+                                        item.pickList.hide();
+                                        load_classes_by_term(values);
+                                    }
+                                }),
+                                isc.ToolStripButton.create({
+                                    width: "50%",
+                                    icon: "[SKIN]/actions/close.png",
+                                    title: "حذف همه",
+                                    click: function () {
+                                        var item = DynamicForm_Term_Filter.getField("termFilter");
+                                        item.setValue([]);
+                                        item.pickList.hide();
+                                        load_classes_by_term([]);
+                                    }
+                                })
+                            ]
+                        }),
+                        "header", "body"
+                    ]
+                },
                 changed: function (form, item, value) {
                     load_classes_by_term(value);
                 },
@@ -2921,7 +2964,7 @@
                 _constructor:"AdvancedCriteria",
                 operator:"or",
                 criteria:[
-                    { fieldName:"term.id", operator:"equals", value: value},
+                    { fieldName:"term.id", operator:"inSet", value: value},
                     { fieldName:"classStatus", operator:"notEqual", value: "3"}
                 ]
             };
