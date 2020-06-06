@@ -18,74 +18,144 @@ import java.io.Serializable;
 @Subselect("select * from view_student_classstudent_class_term_course")
 public class StudentClassReportView implements Serializable {
 
-    ///////////////////////////////////////////////////student///////////////////////////////////////
-    @Column(name = "student_id")
+//    ///////////////////////////////////////////////////student///////////////////////////////////////
+//    @Column(name = "student_id")
+//    private Long studentId;
+//
+//    @Column(name = "student_personnel_no")
+//    private String studentPersonnelNo;
+//
+//    @Column(name = "student_first_name")
+//    private String studentFirstName;
+//
+//    @Column(name = "student_last_name")
+//    private String studentLastName;
+//
+//    @Column(name = "student_national_code")
+//    private String studentNationalCode;
+//
+//    @Column(name = "student_active")
+//    private Integer studentActive;
+//
+//    @Column(name = "student_post_title")
+//    private String studentPostTitle;
+//
+//    @Column(name = "student_post_code")
+//    private String studentPostCode;
+//
+//    @Column(name = "student_complex_title")
+//    private String studentComplexTitle;
+//
+//    @Column(name = "student_education_level_title")
+//    private String studentEducationLevelTitle;
+//
+//    @Column(name = "student_job_no")
+//    private String studentJobNo;
+//
+//    @Column(name = "student_job_title")
+//    private String studentJobTitle;
+//
+//    @Column(name = "student_company_name")
+//    private String studentCompanyName;
+//
+//    @Column(name = "student_emp_no")
+//    private String studentPersonnelNo2;
+//
+//    @Column(name = "student_post_grade_title")
+//    private String studentPostGradeTitle;
+//
+//    @Column(name = "student_post_grade_code")
+//    private String studentPostGradeCode;
+//
+//    @Column(name = "student_cpp_code")
+//    private String studentCcpCode;
+//
+//    @Column(name = "student_cpp_area")
+//    private String studentCcpArea;
+//
+//    @Column(name = "student_cpp_assistant")
+//    private String studentCcpAssistant;
+//
+//    @Column(name = "student_cpp_affairs")
+//    private String studentCcpAffairs;
+//
+//    @Column(name = "student_cpp_section")
+//    private String studentCcpSection;
+//
+//    @Column(name = "student_cpp_unit")
+//    private String studentCcpUnit;
+//
+//    @Column(name = "student_cpp_title")
+//    private String studentCcpTitle;
+
+    ///////////////////////////////////////////////////personnel///////////////////////////////////////
+    @Column(name = "personnel_id")
     private Long studentId;
 
-    @Column(name = "student_personnel_no")
+    @Column(name = "personnel_personnel_no")
     private String studentPersonnelNo;
 
-    @Column(name = "student_first_name")
+    @Column(name = "personnel_first_name")
     private String studentFirstName;
 
-    @Column(name = "student_last_name")
+    @Column(name = "personnel_last_name")
     private String studentLastName;
 
-    @Column(name = "student_national_code")
+    @Column(name = "personnel_national_code")
     private String studentNationalCode;
 
-    @Column(name = "student_active")
+    @Column(name = "personnel_active")
     private Integer studentActive;
 
-    @Column(name = "student_post_title")
+    @Column(name = "personnel_post_title")
     private String studentPostTitle;
 
-    @Column(name = "student_post_code")
+    @Column(name = "personnel_post_code")
     private String studentPostCode;
 
-    @Column(name = "student_complex_title")
+    @Column(name = "personnel_complex_title")
     private String studentComplexTitle;
 
-    @Column(name = "student_education_level_title")
+    @Column(name = "personnel_education_level_title")
     private String studentEducationLevelTitle;
 
-    @Column(name = "student_job_no")
+    @Column(name = "personnel_job_no")
     private String studentJobNo;
 
-    @Column(name = "student_job_title")
+    @Column(name = "personnel_job_title")
     private String studentJobTitle;
 
-    @Column(name = "student_company_name")
+    @Column(name = "personnel_company_name")
     private String studentCompanyName;
 
-    @Column(name = "student_emp_no")
+    @Column(name = "personnel_emp_no")
     private String studentPersonnelNo2;
 
-    @Column(name = "student_post_grade_title")
+    @Column(name = "personnel_post_grade_title")
     private String studentPostGradeTitle;
 
-    @Column(name = "student_post_grade_code")
+    @Column(name = "personnel_post_grade_code")
     private String studentPostGradeCode;
 
-    @Column(name = "student_cpp_code")
+    @Column(name = "personnel_cpp_code")
     private String studentCcpCode;
 
-    @Column(name = "student_cpp_area")
+    @Column(name = "personnel_cpp_area")
     private String studentCcpArea;
 
-    @Column(name = "student_cpp_assistant")
+    @Column(name = "personnel_cpp_assistant")
     private String studentCcpAssistant;
 
-    @Column(name = "student_cpp_affairs")
+    @Column(name = "personnel_cpp_affairs")
     private String studentCcpAffairs;
 
-    @Column(name = "student_cpp_section")
+    @Column(name = "personnel_cpp_section")
     private String studentCcpSection;
 
-    @Column(name = "student_cpp_unit")
+    @Column(name = "personnel_cpp_unit")
     private String studentCcpUnit;
 
-    @Column(name = "student_cpp_title")
+    @Column(name = "personnel_cpp_title")
     private String studentCcpTitle;
 
     ///////////////////////////////////////////////////term///////////////////////////////////////
