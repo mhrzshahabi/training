@@ -31,7 +31,6 @@
         "4": "غیبت با مجوز",
     };
     var readOnlySession;
-    var sessionState;
     var DataSource_SessionInOneDate = isc.DataSource.create({
         ID: "attendanceDS",
         clientOnly: true,
@@ -433,7 +432,6 @@
                             callback: function (resp) {
                                 wait.close();
                                 readOnlySession = JSON.parse(resp.data)[0].readOnly;
-                                sessionState = JSON.parse(resp.data)[0].sessionState;
                                 let fields1 = [
                                     {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true},
                                     {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true},
@@ -504,7 +502,7 @@
                                     attendanceGrid.setFieldProperties(i, {
                                         change(form, item, value, oldValue) {
                                             if(readOnlySession){
-                                                attendanceWarn(sessionState,DynamicForm_Attendance.values.sessionDate);
+                                                createDialog("info","تاریخ شروع کلاس " + DynamicForm_Attendance.values.sessionDate + " می باشد");
                                                 value = oldValue;
                                                 return false;
                                             }
@@ -765,9 +763,8 @@
                                         },
                                         change(form, item, value, oldValue) {
                                             readOnlySession = item.record.readOnly == "true";
-                                            sessionState = parseInt(item.record.sessionState);
                                             if(readOnlySession){
-                                                attendanceWarn(sessionState,item.record.sessionDate);
+                                                createDialog("info","تاریخ شروع کلاس " + item.record.sessionDate + " می باشد");
                                                 value = oldValue;
                                                 return false;
                                             }
@@ -1335,12 +1332,6 @@
         }
     }
 
-    function attendanceWarn(state, date) {
-        if(state !== 3 )
-            createDialog("info","کلاس پایان نیافته است");
-        else
-            createDialog("info","تاریخ شروع کلاس " + date + " می باشد");
-    }
     function printClearForm(list,page) {
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",

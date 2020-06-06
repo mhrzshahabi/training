@@ -19,6 +19,17 @@
         fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
     });
 
+    isPassedDS_PCNR = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
+    });
+
     PersonnelDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "personnelId", primaryKey: true, hidden: true},
@@ -586,7 +597,21 @@
                     {name: "title", width: "30%"}
                 ],
             },
-            {name: "isPassed", canFilter: false},
+            {
+                name: "isPassed",
+                filterOnKeypress: true,
+                editorType: "ComboBoxItem",
+                displayField: "title",
+                valueField: "code",
+                optionDataSource: isPassedDS_PCNR,
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both",
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
         ],
     });
 
