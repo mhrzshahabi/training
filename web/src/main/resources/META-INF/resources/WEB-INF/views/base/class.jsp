@@ -788,7 +788,6 @@
                         // showHover: true,
                         // showHoverComponents: true,
                         <%--getCellHoverComponent : function (record, rowNum, colNum) {--%>
-                            <%--alert(1)--%>
                             <%--if(record.grade != null) {--%>
                                 <%--RestDataSource_StudentGradeToTeacher_JspClass.fetchDataURL = teacherUrl + "all-students-grade-to-teacher?teacherId=" + record.id + "&courseId=" + DynamicForm_Class_JspClass.getValue("courseId");--%>
                                 <%--this.rowHoverComponent = isc.TrLG.create({--%>

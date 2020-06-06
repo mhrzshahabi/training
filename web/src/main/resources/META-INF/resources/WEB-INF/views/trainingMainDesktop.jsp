@@ -1936,7 +1936,6 @@
     //     defaultTimeout: 60000,
     //     willHandleError: true,
     //     handleError: function (response, request) {
-    //         alert('ViewLoader Error');
     //         console.log(response);
     //         // if (response.httpResponseCode == 401) {
     //         //     logout();

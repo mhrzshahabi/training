@@ -435,7 +435,6 @@
 <%--    }--%>
 
     function test(resp) {
-// alert('hi');
     }
 
     <%--function trPrintWithCriteria(url, advancedCriteria) {--%>
