@@ -9,17 +9,11 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.StudentClassReportViewDTO;
-import com.nicico.training.dto.StudentDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
-import com.nicico.training.service.ExportToFileService;
-import com.nicico.training.service.NeedsAssessmentService;
-import com.nicico.training.service.StudentClassReportViewService;
-import com.nicico.training.service.TclassService;
+import com.nicico.training.service.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import net.minidev.json.JSONArray;
@@ -53,7 +47,7 @@ public class ExportToFileController {
     private final StudentClassReportViewService studentClassReportViewService;
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
-
+    private final ClassStudentService classStudentService;
     private final TclassService tClassService;
     private final IStudentService studentService;
     private final ModelMapper modelMapper;
@@ -111,14 +105,14 @@ public class ExportToFileController {
                 break;*/
             case "trainingFile":
 
-                List<StudentDTO.Info> list2 = studentService.search(searchRq).getList();
+                SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> list2 = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));//SearchUtil.search(classStudentDAO, searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList();
 
-                if (list2 == null) {
+                if (list2.getList() == null) {
                     count = 0;
                 } else {
                     ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list2);
-                    count = list2.size();
+                    jsonString = mapper.writeValueAsString(list2.getList());
+                    count = list2.getList().size();
                 }
                 break;
 
@@ -162,7 +156,7 @@ public class ExportToFileController {
             HashMap<String, String> tmpData = new HashMap<String, String>();
 
             for (int j = 0; j < sizeOfFields; j++) {
-                String[] list = fields1.get(j).get("name").split(".");
+                String[] list = fields1.get(j).get("name").split("\\.");
 
                 List<String> aList = null;
 
@@ -200,6 +194,9 @@ public class ExportToFileController {
 
     private String getData(JSONObject row, List<String> array, int index) {
         if (array.size() - 1 > index) {
+            if (row.get(array.get(index)) == null) {
+                return "";
+            }
             return getData((JSONObject) row.get(array.get(index)), array, ++index);
         } else if (array.size() - 1 == index) {
             return row.getAsString(array.get(index));
