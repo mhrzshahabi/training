@@ -67,7 +67,6 @@ public class AttendanceService implements IAttendanceService {
             Map<String, String> map = new HashMap<>();
             map.put("studentId", studentId.toString());
             map.put("sessionId", s.getId().toString());
-//            map.put("sessionState",s.getSessionState().toString());
             map.put("sessionType", s.getSessionType());
             map.put("sessionDate", s.getSessionDate());
             map.put("startHour", s.getSessionStartHour());
