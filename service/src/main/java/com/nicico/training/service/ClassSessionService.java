@@ -542,12 +542,14 @@ public class ClassSessionService implements IClassSession {
             for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
                 classSession.setStudentStatus("ثبت نام نشده");
                 for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
-                    if (attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
-                        studentId = attendanceInfo.getStudent().getId();
-                        classSession.setStudentStatus("ثبت نام شده");
+                    if(attendanceInfo.getNationalCodeStudent() != null && attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)){
+                            studentId = attendanceInfo.getStudent().getId();
+                            classSession.setStudentStatus("ثبت نام شده");
                     }
                 }
-                List<Attendance> attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                List<Attendance> attendance = null;
+                if(studentId != null)
+                    attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
                 if (attendance != null && attendance.size() != 0)
                     classSession.setStudentPresentStatus(attendance.get(0).getState());
             }
