@@ -458,7 +458,6 @@
 <%--            //     required: true,--%>
 <%--            //     defaultToFirstOption: true,--%>
 <%--            //     changed: function (form, item, value) {--%>
-<%--            //         alert('1');--%>
 <%--            //         // form.getItem("objectId").clearValue();--%>
 <%--            //         // switch (value) {--%>
 <%--            //         //     case 'Job':--%>
@@ -1041,7 +1040,6 @@ fetchDataURL: parameterValueUrl + "/iscList/102",
     function config() {
 
         // isc.DataSource.get("NeedsAssessmentDomainDS_needsAssessment").fetchData(null, function (dsResponse, data) {
-        //     alert('1');
         // });
 
         // NeedsAssesmentLG_needsAssessment.getFieldByName("needsAssessmentDomain.title").emptyCellValue = NeedsAssessmentDomainDS_needsAssessment.cacheResultSet.allRows[0].title;

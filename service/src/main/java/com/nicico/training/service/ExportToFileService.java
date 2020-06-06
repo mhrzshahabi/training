@@ -163,7 +163,6 @@ public class ExportToFileService implements IExportToFileService {
             workbook.close();
 
         } catch (Exception ex) {
-            System.out.println(ex);
             throw new Exception("خطا در سرور");
         }
     }

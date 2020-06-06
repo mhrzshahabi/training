@@ -459,9 +459,7 @@
                                     serverOutputAsString: false,
                                     callback: function (resp1) {
                                         var data1 = JSON.parse(resp1.data);
-                                        // alert(JSON.parse(resp1.data).length);
                                         // sessionInOneDate.addList(JSON.parse(resp1.data));
-                                        // alert(sessionInOneDate[0].getPropertyName())
                                         // sessionInOneDate = [];
                                         // if(attendanceGrid.fields.size() != 0) {
                                         //     delete attendanceGrid.fields;
@@ -588,8 +586,6 @@
                                                                                 update = true;
                                                                             }
                                                                             absenceWindow.close();
-                                                                            // alert(item.getFieldName())
-                                                                            // alert(attendanceGrid.getSelectedRecord().studentId)
                                                                         }
                                                                     }
                                                                 }),
@@ -854,8 +850,6 @@
                                                                                 causeOfAbsence.add(data);
                                                                             }
                                                                             absenceWindow.close();
-                                                                            // alert(item.getFieldName())
-                                                                            // alert(attendanceGrid.getSelectedRecord().studentId)
                                                                         }
                                                                     }
                                                                 }),
@@ -882,7 +876,6 @@
                                                     }
                                                 }
                                                 // isc.askForValue("لطفاً علت غیبت را وارد کنید:",function (value1) {
-                                                //     // alert(value1);
                                                 //     if(value1 == null){
                                                 //         item.setValue(oldValue);
                                                 //     }
@@ -897,11 +890,9 @@
                                                 //     defaultValue: "123",
                                                 //     // buttonClick: function (button, index) {
                                                 //     //     if(index === 1){
-                                                //     //         // alert("2");
                                                 //     //         item.setValue(oldValue);
                                                 //     //     }
                                                 //     //     else {
-                                                //     //         // alert(value1)
                                                 //     //         // if(value == ""){
                                                 //     //         //     item.setValue(oldValue);
                                                 //     //         // }

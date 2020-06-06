@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.Subcategory;
@@ -45,9 +46,9 @@ public interface ITeacherService {
     void changeBlackListStatus(String reason, Boolean inBlackList, Long id);
 
     @Transactional(readOnly = true)
-    Map<String,Object> evaluateTeacher(Long id, String catId, String subCatId);
+    Map<String, Object> evaluateTeacher(Long id, String catId, String subCatId);
 
     @Transactional(readOnly = true)
-    Map<String,Object> evaluateTeacher(Teacher teacher, Category category, Subcategory subcategory);
+    Map<String, Object> evaluateTeacher(Teacher teacher, Category category, Subcategory subcategory, List<ParameterValueDTO.Info> parameterValues);
 
 }
