@@ -50,7 +50,7 @@ public class EvaluationAnalysisFormController {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap();
         params.add("code",object.get("code").toString());
-        params.add("titleClass",object.get("titleClass").toString());
+        params.add("titleClass",((JSONObject)object.get("course")).get("titleFa").toString());
         params.add("term",object.getJSONObject("term").get("titleFa").toString());
         params.add("studentCount", object.get("studentCount").toString());
         params.add("classStatus", object.get("classStatus").toString());
