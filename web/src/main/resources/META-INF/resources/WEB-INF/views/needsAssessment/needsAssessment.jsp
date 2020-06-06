@@ -202,7 +202,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
         // groupStartOpen: "all",
         dataArrived: function () {
-            // alert("here")
             // groupStartOpen: "all"
 
             // console.log(ListGrid_NeedsAssessment_JspNeedAssessment.getRecord(0));

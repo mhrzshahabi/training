@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-var url = '';
+    var url = '';
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
 //*****toolStrip*****
@@ -237,6 +237,16 @@ exportExcelWindow.show();
             }
         });
 
+        let criteriaActivePersonnel = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "active", operator: "equals", value: 1}
+            ]
+        };
+
+        PersonnelInfoListGrid_PersonnelList.implicitCriteria = criteriaActivePersonnel;
+
         var RestDataSource_PersonnelTraining = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
@@ -361,7 +371,7 @@ exportExcelWindow.show();
                 }
 
             ],
-             gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body", "summaryRow"],
+            gridComponents: [ToolStrip_Personnel_Info_Training_Action, "filterEditor", "header", "body", "summaryRow"],
             cellClick: function (record, rowNum, colNum) {
                 show_ClassInformation(record, rowNum, colNum);
             }
@@ -1106,7 +1116,7 @@ exportExcelWindow.show();
                 isc.ToolStripButtonExcel.create({
                     title: 'ارسال لیست فیلتر شده به اکسل',
                     click: function () {
-                        let grid=PersonnelInfoListGrid_PersonnelList;
+                        let grid = PersonnelInfoListGrid_PersonnelList;
                         let size = grid.data.size();
                         isc.Window.create({
                             ID: "exportExcelWindow_JspPersonnelInformation",
@@ -1167,7 +1177,7 @@ exportExcelWindow.show();
                             ]
                         });
                         exportExcelWindow_JspPersonnelInformation.show();
-                       }
+                    }
                 }),
                 ToolStrip_Personnel_Info]
         });

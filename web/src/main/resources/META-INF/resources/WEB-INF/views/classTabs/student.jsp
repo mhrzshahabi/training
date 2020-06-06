@@ -487,6 +487,16 @@
         }
     });
 
+    let criteria_ActivePersonnel = {
+        _constructor: "AdvancedCriteria",
+        operator: "and",
+        criteria: [
+            {fieldName: "active", operator: "equals", value: 1}
+        ]
+    };
+
+    PersonnelsLG_student.implicitCriteria = criteria_ActivePersonnel;
+
     function nationalCodeExists(nationalCode) {
         return StudentsLG_student.data.localData.some(function(el) {
             return el.student.nationalCode === nationalCode;

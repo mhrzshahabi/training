@@ -542,12 +542,14 @@ public class ClassSessionService implements IClassSession {
             for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
                 classSession.setStudentStatus("ثبت نام نشده");
                 for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
-                    if (attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
-                        studentId = attendanceInfo.getStudent().getId();
-                        classSession.setStudentStatus("ثبت نام شده");
+                    if(attendanceInfo.getNationalCodeStudent() != null && attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)){
+                            studentId = attendanceInfo.getStudent().getId();
+                            classSession.setStudentStatus("ثبت نام شده");
                     }
                 }
-                List<Attendance> attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                List<Attendance> attendance = null;
+                if(studentId != null)
+                    attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
                 if (attendance != null && attendance.size() != 0)
                     classSession.setStudentPresentStatus(attendance.get(0).getState());
             }
@@ -614,7 +616,6 @@ public class ClassSessionService implements IClassSession {
         double j_days_of_year = Math
                 .floor(((d_j / len) - Math.floor(d_j / len)) * 365) + 1;
 
-        // System.out.println(j_days_of_year);
         StringBuffer result = new StringBuffer();
 
         if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)

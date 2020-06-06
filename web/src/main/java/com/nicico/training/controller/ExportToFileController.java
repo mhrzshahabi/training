@@ -1,24 +1,21 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.StudentClassReportViewDTO;
-import com.nicico.training.dto.StudentDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
-import com.nicico.training.service.ExportToFileService;
-import com.nicico.training.service.NeedsAssessmentService;
-import com.nicico.training.service.StudentClassReportViewService;
-import com.nicico.training.service.TclassService;
-import lombok.RequiredArgsConstructor;
+import com.nicico.training.service.*;
+import lombok.*;
+import lombok.experimental.Accessors;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -50,7 +47,7 @@ public class ExportToFileController {
     private final StudentClassReportViewService studentClassReportViewService;
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
-
+    private final ClassStudentService classStudentService;
     private final TclassService tClassService;
     private final IStudentService studentService;
     private final ModelMapper modelMapper;
@@ -81,10 +78,7 @@ public class ExportToFileController {
                                       @RequestParam(value = "fileName") String fileName) throws Exception {
 
 
-
         SearchDTO.SearchRq searchRq = convertToSearchRq(req);
-
-        Integer len = Integer.parseInt(req.getParameter("_len"));
 
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
@@ -92,10 +86,6 @@ public class ExportToFileController {
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
 
         //Start Of Query
-
-        searchRq.setStartIndex(0)
-                .setCount(len);
-
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
         String jsonString = null;
         int count = 0;
@@ -115,20 +105,20 @@ public class ExportToFileController {
                 break;*/
             case "trainingFile":
 
-                List<StudentDTO.Info> list2 = studentService.search(searchRq).getList();
+                SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> list2 = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));//SearchUtil.search(classStudentDAO, searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList();
 
-                if (list2 == null) {
+                if (list2.getList() == null) {
                     count = 0;
                 } else {
                     ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list2);
-                    count = list2.size();
+                    jsonString = mapper.writeValueAsString(list2.getList());
+                    count = list2.getList().size();
                 }
                 break;
 
             case "studentClassReport":
 
-                List<StudentClassReportViewDTO.InfoTuple> list3= SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
+                List<StudentClassReportViewDTO.InfoTuple> list3 = SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.InfoTuple.class)).getList();
                 if (list3 == null) {
                     count = 0;
                 } else {
@@ -141,7 +131,7 @@ public class ExportToFileController {
             case "personnelInformationReport":
 
 
-                List<PersonnelDTO.Info> list4= SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
+                List<PersonnelDTO.Info> list4 = SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
                 if (list4 == null) {
                     count = 0;
                 } else {
@@ -166,7 +156,7 @@ public class ExportToFileController {
             HashMap<String, String> tmpData = new HashMap<String, String>();
 
             for (int j = 0; j < sizeOfFields; j++) {
-                String[] list = fields1.get(j).get("name").split(".");
+                String[] list = fields1.get(j).get("name").split("\\.");
 
                 List<String> aList = null;
 
@@ -204,6 +194,9 @@ public class ExportToFileController {
 
     private String getData(JSONObject row, List<String> array, int index) {
         if (array.size() - 1 > index) {
+            if (row.get(array.get(index)) == null) {
+                return "";
+            }
             return getData((JSONObject) row.get(array.get(index)), array, ++index);
         } else if (array.size() - 1 == index) {
             return row.getAsString(array.get(index));
@@ -215,29 +208,41 @@ public class ExportToFileController {
     public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq) throws IOException {
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-        String startRowStr = rq.getParameter("_startRow");
-        String endRowStr = rq.getParameter("_endRow");
-        String constructor = rq.getParameter("_constructor");
+        String lenStr = rq.getParameter("_len");
+        String criteriaStr = rq.getParameter("criteriaStr");
         String sortBy = rq.getParameter("_sortBy");
-        String[] criteriaList = rq.getParameterValues("criteria");
-        String operator = rq.getParameter("operator");
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
-        Integer endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 50;
+        JsonNode jsonNode = objectMapper.readTree(criteriaStr);
+        String operator = "";
 
-        searchRq.setStartIndex(startRow);
-        searchRq.setCount(endRow - startRow);
+        String constructor = "";
+
+        List<String> criteriaList = new ArrayList<>();
+
+        if (criteriaStr.compareTo("{}") != 0 && criteriaStr.compareTo("") != 0 && criteriaStr != null) {
+            operator = jsonNode.get("operator").asText();
+            constructor = jsonNode.get("_constructor").asText();
+
+            JsonNode arrNode = new ObjectMapper().readTree(criteriaStr).get("criteria");
+            if (arrNode.isArray()) {
+                for (final JsonNode objNode : arrNode) {
+                    criteriaList.add(objNode.toString());
+                }
+            }
+        }
+
+        searchRq.setStartIndex(0);
+        searchRq.setCount(Integer.parseInt(lenStr));
 
         if (StringUtils.isNotEmpty(sortBy)) {
             searchRq.setSortBy(sortBy);
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
-            for (int i = 1; i < criteriaList.length; i++) {
-                criteria.append(",").append(criteriaList[i]);
+            StringBuilder criteria = new StringBuilder("[" + criteriaList.get(0));
+            for (int i = 1; i < criteriaList.size(); i++) {
+                criteria.append(",").append(criteriaList.get(i));
             }
             criteria.append("]");
             SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
@@ -246,6 +251,7 @@ public class ExportToFileController {
                     }));
             searchRq.setCriteria(criteriaRq);
         }
+
         return searchRq;
     }
 

@@ -196,7 +196,7 @@ public class MainFormController {
 
     @RequestMapping("/personnel-course-NA-report")
     public String showPersonnelCourseNAReportForm() {
-        return "report/personnelCourseNAReport";
+        return "report/personnelCourseNAReportV2";
     }
 
     @PostMapping("/personnel-needs-assessment-report-print/{type}")

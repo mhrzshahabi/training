@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.google.common.base.Joiner;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -39,8 +40,11 @@ public class CourseService implements ICourseService {
     private final TclassDAO tclassDAO;
     private final JobDAO jobDAO;
     private final PostDAO postDAO;
+    private final CategoryDAO categoryDAO;
+    private final SubcategoryDAO subCategoryDAO;
     private final TclassService tclassService;
     private final TeacherService teacherService;
+    private final ParameterService parameterService;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
@@ -583,10 +587,15 @@ public class CourseService implements ICourseService {
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> sendingList = new ArrayList<>();
         Comparator<Tclass> tclassComparator = Comparator.comparing(Tclass::getEndDate);
 
+        Category category = categoryDAO.findById(course.getCategoryId()).orElse(null);
+        Subcategory subCategory = subCategoryDAO.findById(course.getSubCategoryId()).orElse(null);
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+
         if (!teachers.isEmpty()) {
 
             for (Teacher teacher : teachers) {
-                Map<String, Object> map = teacherService.evaluateTeacher(teacher.getId(), course.getCategoryId().toString(), course.getSubCategoryId().toString());
+                Map<String, Object> map = teacherService.evaluateTeacher(teacher, category, subCategory, parameterValues);
                 if (map.get("pass_status").equals("رد")) {
                     continue;
                 }

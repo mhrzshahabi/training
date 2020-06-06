@@ -212,9 +212,16 @@ public class EvaluationAnalysisRestController {
                 minScoreFECR = Double.parseDouble(parameterValue.getValue());
         }
 
-        float postTestMeanGrade = result[0];
-        float preTestMeanGrade = result[1];
-        float felGrade = result[3];
+        float postTestMeanGrade = 0;
+        float preTestMeanGrade = 0;
+        float felGrade = 0;
+
+        if(result != null && result.length > 0)
+            postTestMeanGrade = result[0];
+        if(result != null && result.length > 1)
+            preTestMeanGrade = result[1];
+        if(result != null && result.length > 2)
+            felGrade = result[3];
         Double ferGrade = tclassService.getJustFERGrade(classId);
         Double feclGrade = felGrade * FECLZ2 + ferGrade * FECLZ1;
 

@@ -327,12 +327,15 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-            // if(record.classStatus == "3")
-            // {
-            //     TabSet_Class.enableTab("classScoresTab")
-            // }
-            // else{TabSet_Class.disableTab("classScoresTab");
-            // }
+
+            <%--<sec:authorize access="hasAuthority('TclassScoresTab')">--%>
+            <%--if(record.classStatus == "3")--%>
+            <%--{--%>
+                <%--TabSet_Class.enableTab("classScoresTab")--%>
+            <%--}--%>
+            <%--else{TabSet_Class.disableTab("classScoresTab");--%>
+            <%--}--%>
+            <%--</sec:authorize>--%>
 
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
@@ -485,17 +488,23 @@
             {name: "course.theoryDuration" , title: "", hidden:true}
 
         ],
-
-        // getCellCSSText: function (record, rowNum, colNum) {
-        //     if (this.isSelected(record)) {
-        //         return "background-color: #fe9d2a;";
-        //     } else {
-        //         if (record.classStatus === "1")
-        //             return "background-color: #a5a5a5;";
-        //         else if (record.classStatus === "3")
-        //             return "background-color: #C7E1FF;";
-        //     }
-        // },
+        getCellCSSText: function (record, rowNum, colNum) {
+            if (this.isSelected(record)) {
+                return "background-color: #fe9d2a;";
+            }
+            else if(record.workflowEndingStatusCode === "2")
+            {
+                return "background-color: #bef5b8;";
+            }
+            else {
+                if (record.classStatus === "1")
+                    return "background-color: #ffffff;";
+                else if (record.classStatus === "2")
+                    return "background-color: #fff9c4;";
+                else if (record.classStatus === "3")
+                    return "background-color: #cdedf5;";
+            }
+        },
         dataArrived: function () {
             selectWorkflowRecord();
         },
@@ -779,7 +788,6 @@
                         // showHover: true,
                         // showHoverComponents: true,
                         <%--getCellHoverComponent : function (record, rowNum, colNum) {--%>
-                            <%--alert(1)--%>
                             <%--if(record.grade != null) {--%>
                                 <%--RestDataSource_StudentGradeToTeacher_JspClass.fetchDataURL = teacherUrl + "all-students-grade-to-teacher?teacherId=" + record.id + "&courseId=" + DynamicForm_Class_JspClass.getValue("courseId");--%>
                                 <%--this.rowHoverComponent = isc.TrLG.create({--%>
