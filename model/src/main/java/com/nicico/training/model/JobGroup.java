@@ -23,8 +23,11 @@ public class JobGroup extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @Column(name = "c_title_fa", nullable = false, unique = true)
     private String titleFa;
+
+    @Column(name = "c_code", unique = true)
+    private String code;
 
     @Column(name = "c_title_en")
     private String titleEn;

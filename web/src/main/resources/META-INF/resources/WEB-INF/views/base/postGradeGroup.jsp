@@ -14,21 +14,10 @@
     var RestDataSource_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {
-                name: "titleFa",
-                title: "<spring:message code='post.grade.group.titleFa'/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "titleEn",
-                title: "<spring:message code='post.grade.group.titleEn'/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "description",
-                title: "<spring:message code='description'/>",
-                filterOperator: "iContains"
-            }
+            {name: "titleFa", title: "<spring:message code='post.grade.group.titleFa'/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains"},
+            {name: "titleEn", title: "<spring:message code='post.grade.group.titleEn'/>", filterOperator: "iContains"},
+            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"}
         ],
         fetchDataURL: postGradeGroupUrl + "spec-list"
     });
@@ -338,6 +327,10 @@
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+            },
+            {
+                name: "code",
+                title: "<spring:message code='code'/>"
             },
             {
                 name: "titleEn",

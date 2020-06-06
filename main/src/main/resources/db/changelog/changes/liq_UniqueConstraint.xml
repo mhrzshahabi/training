@@ -114,4 +114,19 @@
         <addUniqueConstraint columnNames="f_evaluation_question, f_questionnaire" constraintName="UKq95pxvc8f8y9uh4ph44hoal45" tableName="tbl_questionnaire_question"/>
     </changeSet>
 
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-451">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_JOB_GROUPC_CODE_COL" tableName="tbl_job_group"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-452">
+        <addUniqueConstraint columnNames="c_title_fa" constraintName="UC_TBL_JOB_GROUPC_TITLE_FA_COL" tableName="tbl_job_group"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-453">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_POST_GRADE_GROUPC_CODE_COL" tableName="tbl_post_grade_group"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-454">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_POST_GROUPC_CODE_COL" tableName="tbl_post_group"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-455">
+        <addUniqueConstraint columnNames="c_title_fa" constraintName="UC_TBL_POST_GROUPC_TITLE_FA_COL" tableName="tbl_post_group"/>
+    </changeSet>
 </databaseChangeLog>

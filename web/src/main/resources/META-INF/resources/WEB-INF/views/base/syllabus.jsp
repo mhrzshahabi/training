@@ -74,8 +74,6 @@
         top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
 
             DynamicForm_syllabus.validate();
-            <%--alert(method);--%>
-            <%--alert(url);--%>
             if (DynamicForm_syllabus.hasErrors()) {
                 return;
             }
@@ -212,7 +210,6 @@
         } else {
             method = "PUT";
             url = "${restApiUrl}/api/syllabus/" + record.id;
-            <%--alert(url);--%>
             DynamicForm_syllabus.editRecord(record);
             Window_syllabus.show();
         }

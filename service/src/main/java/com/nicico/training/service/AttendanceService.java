@@ -67,7 +67,6 @@ public class AttendanceService implements IAttendanceService {
             Map<String, String> map = new HashMap<>();
             map.put("studentId", studentId.toString());
             map.put("sessionId", s.getId().toString());
-            map.put("sessionState",s.getSessionState().toString());
             map.put("sessionType", s.getSessionType());
             map.put("sessionDate", s.getSessionDate());
             map.put("startHour", s.getSessionStartHour());
@@ -284,6 +283,6 @@ public class AttendanceService implements IAttendanceService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
-        return todayDate.compareTo(startingDate) > 0 && sessionState == 3 ? "false" : "true";
+        return todayDate.compareTo(startingDate) >= 0 ? "false" : "true";
     }
 }

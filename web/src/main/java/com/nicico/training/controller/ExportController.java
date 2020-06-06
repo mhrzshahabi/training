@@ -135,7 +135,6 @@ public class ExportController {
             in.close();
 
         } catch (Exception ex) {
-            System.out.println(ex);
         }
     }
 

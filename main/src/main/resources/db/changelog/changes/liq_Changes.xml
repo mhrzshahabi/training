@@ -39,6 +39,22 @@
         <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_post_grade_id" tableName="tbl_post"/>
     </changeSet>
 
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-438">
+        <addColumn tableName="tbl_job_group">
+            <column name="c_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-439">
+        <addColumn tableName="tbl_post_grade_group">
+            <column name="c_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591413875292-440">
+        <addColumn tableName="tbl_post_group">
+            <column name="c_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 
 
 </databaseChangeLog>

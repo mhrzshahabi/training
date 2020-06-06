@@ -104,10 +104,8 @@ public class ExcelUtil {
                     ResponseEntity<String> result = null;
                     try {
                         result = restTemplate.postForEntity(uri, object, String.class);
-                        System.out.println(result.getStatusCode());
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        System.out.println(result);
                     }
                 }
             }

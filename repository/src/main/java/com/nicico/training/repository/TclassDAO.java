@@ -68,6 +68,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     Tclass findTclassByIdEquals(Long classId);
 
+    @EntityGraph(attributePaths = {"institute", "organizer", "course", "term", "classStudents", "classStudents.student", "course.category", "course.subCategory", "trainingPlaceSet", "teacher", "teacher.personality"})
     List<Tclass> findTclassesByCourseIdEquals(Long courseId);
 
     @Modifying
@@ -89,7 +90,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     Long getTermIdByClassId(Long classId);
 
 
-    @EntityGraph(attributePaths = {"institute","course","term","course.category","course.subCategory","classStudents","classStudents.student","teacher","teacher.personality","trainingPlaceSet"})
+    @EntityGraph(attributePaths = {"institute", "course", "term", "course.category", "course.subCategory", "classStudents", "classStudents.student", "teacher", "teacher.personality", "trainingPlaceSet"})
     @Override
     List<Tclass> findAll(@Nullable Specification<Tclass> var1);
 

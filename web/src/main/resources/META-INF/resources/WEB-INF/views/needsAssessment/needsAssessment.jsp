@@ -19,6 +19,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     };
     var skillData = [];
     var competenceData = [];
+
     var RestDataSourceNeedsAssessment = isc.TrDS.create({
         // autoCacheAllData:true,
         fields: [
@@ -125,43 +126,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             </sec:authorize>
         ]
     });
-    var ToolStrip_NeedsAssessmentTree_JspNeedAssessment = isc.ToolStrip.create({
-        members: [
-            <sec:authorize access="hasAuthority('NeedAssessment_C')">
-            isc.ToolStripButtonPrint.create({
-                click: function () {
-                    // isc.Canvas.showPrintPreview(printContainer)
-                    let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
-                    let advancedCriteria = {
-                        _constructor:"AdvancedCriteria",
-                        operator:"and",
-                        criteria:[
-                            { fieldName:"objectId", operator:"equals", value:rec.objectId },
-                            { fieldName:"objectType", operator:"equals", value:rec.objectType }
-                        ]
-                    };
-                    let params = {};
-                    params.title = priorityList[rec.objectType] + ": " + rec.objectName + "        " +(rec.objectCode ? "کد: " + rec.objectCode : "");
-                    printWithCriteria(advancedCriteria, params, "oneNeedsAssessment.jasper")
-                }
-            }),
-            </sec:authorize>
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    isc.ToolStripButtonRefresh.create({
-                        click: function () {
-                        }
-                    })
-                ]
-            })
-        ]
-    });
-    var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
-        contents:"",
-        customEdges: ["R","L","T", "B"]});
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
         // groupByField:["objectType"],
         // groupByField:["objectType", "objectName"],
@@ -202,7 +166,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
         // groupStartOpen: "all",
         dataArrived: function () {
-            // alert("here")
             // groupStartOpen: "all"
 
             // console.log(ListGrid_NeedsAssessment_JspNeedAssessment.getRecord(0));
@@ -234,6 +197,46 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             EditSkill_Skill();
         },
     });
+
+
+    var ToolStrip_NeedsAssessmentTree_JspNeedAssessment = isc.ToolStrip.create({
+        members: [
+            <sec:authorize access="hasAuthority('NeedAssessment_C')">
+            isc.ToolStripButtonPrint.create({
+                click: function () {
+                    // isc.Canvas.showPrintPreview(printContainer)
+                    let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
+                    let advancedCriteria = {
+                        _constructor:"AdvancedCriteria",
+                        operator:"and",
+                        criteria:[
+                            { fieldName:"objectId", operator:"equals", value:rec.objectId },
+                            { fieldName:"objectType", operator:"equals", value:rec.objectType }
+                        ]
+                    };
+                    let params = {};
+                    params.title = priorityList[rec.objectType] + ": " + rec.objectName + "        " +(rec.objectCode ? "کد: " + rec.objectCode : "");
+                    printWithCriteria(advancedCriteria, params, "oneNeedsAssessment.jasper")
+                }
+            }),
+            </sec:authorize>
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                        }
+                    })
+                ]
+            })
+        ]
+    });
+    var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
+        contents:"",
+        customEdges: ["R","L","T", "B"]});
+
     var ListGrid_MoreInformation_JspNeedAssessment = isc.ListGrid.create({
         // groupByField:["objectType"],
         groupByField:["competence.competenceType.title", "needsAssessmentDomain.title", "needsAssessmentPriority.title", "competence.title", "skill.titleFa"],
@@ -299,6 +302,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: jobGroupUrl + "iscList"
     });
@@ -323,6 +327,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: postGroupUrl + "/spec-list"
     });
@@ -338,6 +343,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: postGradeGroupUrl + "spec-list"
     });
@@ -1146,7 +1152,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 break;
             case 'JobGroup':
                 form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
+                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}, {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}];
                 break;
             case 'Post':
                 form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
@@ -1159,7 +1165,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
-                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}];
+                form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}, {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}];
                 break;
             case 'PostGrade':
                 form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
@@ -1171,7 +1177,8 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             case 'PostGradeGroup':
                 form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [
-                    {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
+                    {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false},
+                    {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}
                     ];
                 break;
         }
