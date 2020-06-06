@@ -98,7 +98,6 @@
                 //     // }
                 // },
                 // tabDeselected: function (tabSet, tabNum, tabPane, ID, tab, newTab) {
-                //     alert('tab deselected');
                 //     // if (!tabPane.getValue("useISCTabs")) {
                 //     //     return false;
                 //     // }

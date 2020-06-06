@@ -334,9 +334,7 @@
 
 
             // if (ListGrid_Course.getSelectedRecord() != null) {
-            //     alert("Yes");
             // } else {
-            //     alert("No");
             // }
         },
         //working
