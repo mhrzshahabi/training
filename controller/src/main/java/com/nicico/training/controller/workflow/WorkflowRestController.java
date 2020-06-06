@@ -369,8 +369,6 @@ public class WorkflowRestController {
             try {
                 data.add(entityList.get(j));
             } catch (Exception ex) {
-
-                System.out.println(ex.getMessage());
             }
         }
 

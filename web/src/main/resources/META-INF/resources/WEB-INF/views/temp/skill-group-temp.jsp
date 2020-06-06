@@ -70,5 +70,3 @@
 <%--},--%>
 <%--fetchDataURL: "${restApiUrl}/api/course/spec-list"--%>
 <%--});--%>
-
-// alert(getFormulaMessage("salam","10","red"))

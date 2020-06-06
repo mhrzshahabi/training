@@ -33,7 +33,6 @@
         }, {
             icon: "[SKIN]/actions/edit.png",
             title: "<spring:message code="edit"/>", click: function () {
-// alert(ListGrid_Skill_Group_Competence.getData().size());
                 ListGrid_Skill_Group_edit();
             }
         }, {
@@ -492,7 +491,6 @@
 
             var skillGroupRecord = ListGrid_Skill_Group_Jsp.getSelectedRecord();
             var skillGroupId = skillGroupRecord.id;
-            //  alert(skillGroupId);
             // var skillId=dropRecords[0].id;
             var skillIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -500,7 +498,6 @@
             }
             ;
 
-            //  alert("${restApiUrl}/api/skill-group/addSkills/"+skillGroupId+"/"+skillIds);
 
             var JSONObj = {"ids": skillIds};
             isc.RPCManager.sendRequest({
@@ -607,12 +604,10 @@
 
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
 
-            // alert(dropRecords[0].titleFa);
 
 
             var skillGroupRecord = ListGrid_Skill_Group_Jsp.getSelectedRecord();
             var skillGroupId = skillGroupRecord.id;
-            //  alert(skillGroupId);
             // var skillId=dropRecords[0].id;
             var skillIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -1169,13 +1164,10 @@
             //  yesNoDialog("taeed","salam???",0,"stop",xx);
             //
             // if(parseInt(xx)==0){
-            //     alert("yes selected");
             // }
             // else{
-            //     alert("noSelected");
             //     }
 
-// alert("abcdef");
 
             ListGrid_Skill_Group_refresh();
             //ListGrid_Skill_Group_Competence_refresh();
@@ -1466,8 +1458,6 @@
         title: "<spring:message code="skill.plural.list"/>",
         click: function () {
             var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
-            //  alert(Window_Add_Skill_to_SkillGroup.DynamicForm[0].fields[0]);
-            // alert(DynamicForm_thisSkillGroupHeader_Jsp.getItem("titleFa"));
 
             if (record == null || record.id == null) {
 

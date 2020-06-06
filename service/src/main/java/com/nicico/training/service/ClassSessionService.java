@@ -616,7 +616,6 @@ public class ClassSessionService implements IClassSession {
         double j_days_of_year = Math
                 .floor(((d_j / len) - Math.floor(d_j / len)) * 365) + 1;
 
-        // System.out.println(j_days_of_year);
         StringBuffer result = new StringBuffer();
 
         if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)

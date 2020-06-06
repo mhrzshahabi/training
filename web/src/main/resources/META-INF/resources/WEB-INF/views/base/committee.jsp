@@ -492,7 +492,6 @@
         layoutMargin: 5,
         align: "center",
         onCreate: function () {
-// alert("man toye hlayout hastam");
 
         },
         members: [

@@ -223,7 +223,6 @@ public class TclassService implements ITclassService {
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
 
-        System.out.println((timeElapsed * 1.0) / 1_000_000);
 
         return searchRs;
 

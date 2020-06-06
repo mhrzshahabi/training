@@ -93,7 +93,6 @@ public class NeedsAssessmentDTO implements Serializable {
                 Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
                 field.set(this,value);
             } catch (Exception e) {
-                System.out.println("failed");
             }
         }
 
@@ -104,7 +103,6 @@ public class NeedsAssessmentDTO implements Serializable {
                 Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
                 result = field.get(this).toString();
             } catch (Exception e) {
-                System.out.println("failed");
             }
             return result == null ? "" : result;
         }
