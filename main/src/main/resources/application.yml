@@ -6,6 +6,8 @@ spring:
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
+      maximum-pool-size: 50
+      connection-timeout: 60000
   jpa:
     hibernate:
       ddl-auto: validate
@@ -45,6 +47,7 @@ server:
     session:
       cookie:
         name: App_${spring.application.name}
+      timeout: 180m
 
 management:
   endpoint:
@@ -69,6 +72,8 @@ nicico:
   workflow:
     update:
       mode: false
+  training:
+    version: 1.6
 ---
 
 spring:

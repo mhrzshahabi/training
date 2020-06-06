@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -31,13 +32,13 @@ public class EmploymentHistory extends Auditable {
     @JoinTable(name = "tbl_employment_history_category",
             joinColumns = {@JoinColumn(name = "f_employment_history", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
-    private List<Category> categories;
+    private Set<Category> categories;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_employment_history_subcategory",
             joinColumns = {@JoinColumn(name = "f_employment_history", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
-    private List<Subcategory> subCategories;
+    private Set<Subcategory> subCategories;
 
     @Column(name = "c_start_date")
     private String startDate;
