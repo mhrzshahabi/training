@@ -14,23 +14,27 @@
     var RestDataSource_Course_JspStudentClass = isc.TrDS.create({
         fields: [
             {name: "classStudentId", primaryKey: true, hidden: true},
-            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "studentCcpArea", title:"<spring:message code='area'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentPostCode", title:"<spring:message code='post.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentPostTitle", title:"<spring:message code='post.title'/>", filterOperator: "equals"},
             {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "equals"},
             {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
             {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
             {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classEndDate", filterOperator: "greaterOrEqual", autoFitWidth: true},
+            {name: "classHDuration", title:"<spring:message code="duration"/>", autoFitWidth: true},
         ],
         fetchDataURL: studentClassReportUrl
     });
@@ -135,7 +139,13 @@
                 title:"پرسنلی 6رقمی",
                 <%--title:"<spring:message code="personnel.no.6.digits"/>",--%>
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                keyPressFilter: "[0-9, ]",
+                operator: "inSet",
+                changed (form, item, value){
+                    let res = value.split(" ");
+                    item.setValue(res.toString())
+                }
             },
             {
                 name: "studentPersonnelNo",
@@ -425,7 +435,7 @@
             {
                 name: "searchBtn",
                 ID: "searchBtnJspStudentClass",
-                title: "<spring:message code="report"/>",
+                <%--title: "<spring:message code="report"/>",--%>
                 title: "<spring:message code="reporting"/>",
                 type: "ButtonItem",
                 colSpan: 1,
@@ -443,7 +453,16 @@
                         // delete criteria.fromDate;
                         // delete criteria.toDate;
                         // criteria.classEndDate = DynamicForm_StudentClass.getValue("fromDate");
-
+                        if(form.getValue("studentPersonnelNo2") != undefined){
+                            let cr = [];
+                            for (let i = 0; i < criteria.criteria.length; i++) {
+                                if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
+                                    cr.push(criteria.criteria[i])
+                                }
+                            }
+                            cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: form.getValue("studentPersonnelNo2").split(',').toArray()})
+                            criteria.criteria = cr;
+                        }
                         ListGrid_StudentClass_StudentClassJSP.invalidateCache();
                         RestDataSource_Course_JspStudentClass.implicitCriteria = criteria;
                         ListGrid_StudentClass_StudentClassJSP.fetchData(criteria)
@@ -546,8 +565,8 @@
 
         gridComponents: [DynamicForm_StudentClass, "header", "filterEditor", "body"],
         fields:[
-            {name: "studentPersonnelNo2",
-                keyPressFilter: "[0-9]"
+            {
+                name: "studentPersonnelNo2",
             },
             {name: "studentNationalCode",
                 keyPressFilter: "[0-9]"
@@ -555,8 +574,13 @@
             {name: "studentFirstName"},
             {name: "studentLastName"},
             {name: "studentCcpUnit"},
+            {name: "studentPostCode"},
+            {name: "studentPostTitle"},
             {name: "courseCode"},
             {name: "courseTitleFa"},
+            {name: "classHDuration"},
+            {name: "classStartDate"},
+            {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classStudentScore"},
             {name: "classStudentScoresState"},
         ]
