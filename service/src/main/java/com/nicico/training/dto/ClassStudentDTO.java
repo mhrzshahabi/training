@@ -212,8 +212,10 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private StudentDTO.ScoresInfo student;
         private TclassDTO.ScoreInfo tclass;
-        private String scoresState;
-        private String failureReason;
+        private ParameterValueDTO.TupleInfo scoresState;
+        private ParameterValueDTO.TupleInfo failureReason;
+        Long scoresStateId;
+        Long failureReasonId;
         private Float score;
         private String valence;
     }
