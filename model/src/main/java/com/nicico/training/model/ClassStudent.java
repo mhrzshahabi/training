@@ -22,8 +22,12 @@ public class ClassStudent extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "scores_state")
-    private String scoresState;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scores_state_id", insertable = false, updatable = false)
+    private ParameterValue scoresState;
+
+    @Column(name = "scores_state_id")
+    private Long scoresStateId;
 
     @Column(name = "failure_reason")
     private String failureReason;

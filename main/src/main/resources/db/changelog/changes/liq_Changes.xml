@@ -54,7 +54,17 @@
             <column name="c_code" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet author="razmnoosh (generated)" id="1591500872119-512">
+        <dropColumn columnName="SCORES_STATE" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591500872119-443">
+        <addColumn tableName="tbl_class_student">
+            <column name="scores_state_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591500872119-454">
+        <addForeignKeyConstraint baseColumnNames="scores_state_id" baseTableName="tbl_class_student" constraintName="FKi20ys074wah6o8u0qd58fnrog" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 
 
 </databaseChangeLog>
