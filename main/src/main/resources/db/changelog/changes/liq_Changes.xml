@@ -65,6 +65,20 @@
     <changeSet author="razmnoosh (generated)" id="1591500872119-454">
         <addForeignKeyConstraint baseColumnNames="scores_state_id" baseTableName="tbl_class_student" constraintName="FKi20ys074wah6o8u0qd58fnrog" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591505253286-513">
+        <dropColumn columnName="FAILURE_REASON" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591505253286-444">
+        <addColumn tableName="tbl_class_student">
+            <column name="failure_reason_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591505253286-455">
+        <addForeignKeyConstraint baseColumnNames="failure_reason_id" baseTableName="tbl_class_student" constraintName="FK1or54xgtirawjuvxh0vtgqqxv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+<!--    <changeSet author="razmnoosh (generated)" id="1591506188197-402">-->
+<!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
+<!--    </changeSet>-->
 
 
 </databaseChangeLog>
