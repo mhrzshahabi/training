@@ -76,6 +76,6 @@ public class PersonnelCoursePassedNAReportViewDTO {
         private String personnelCcpUnit;
         private String personnelPostCode;
         private Long priorityId;
-        private Boolean isPassed;
+        private Long isPassed;
     }
 }
