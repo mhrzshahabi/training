@@ -23,6 +23,9 @@ public class PostGroupDTO {
     @ApiModelProperty(required = true)
     private String titleFa;
 
+    @ApiModelProperty
+    private String code;
+
     @ApiModelProperty()
     private String titleEn;
 

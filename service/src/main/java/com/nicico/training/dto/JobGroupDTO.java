@@ -27,6 +27,9 @@ public class JobGroupDTO {
     @ApiModelProperty(required = true)
     private String titleFa;
 
+    @ApiModelProperty
+    private String code;
+
     @ApiModelProperty()
     private String titleEn;
 

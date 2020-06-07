@@ -40,82 +40,84 @@
     });
     var ScoresStateDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
         autoCacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=scoreState"
+        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
     });
 
     var CompanyDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=company"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
     });
     var AreaDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=area"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
     });
     var ComplexDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=complex"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
     });
     var AssistantDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=assistant"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
     });
     var AffairsDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=affairs"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
     });
     var CourseDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "courseId", primaryKey: true},
-            {name: "courseCode", title: "<spring:message code="corse_code"/>"},
-            {name: "courseTitleFa", title: "<spring:message code="course_fa_name"/>"},
+            {name: "id", primaryKey: true},
+            {name: "code", title: "<spring:message code="corse_code"/>"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>"},
         ],
-        fetchDataURL: studentClassReportUrl + "/all-courses",
+        fetchDataURL: courseUrl + "spec-list"
     });
     var UnitDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=unit"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
     });
     var TermDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach:true},
         ],
-        cacheAllData: true,
+        // cacheAllData: true,
         fetchDataURL: termUrl + "spec-list"
     });
     var YearDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "year", title: "<spring:message code="year"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        cacheAllData: true,
+        // cacheAllData: true,
         fetchDataURL: termUrl + "yearList"
     });
     var SectionDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=section"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
     });
 
     var DynamicForm_StudentClass = isc.DynamicForm.create({
@@ -185,15 +187,19 @@
             {
                 name: "classStudentScoresState",
                 title: "<spring:message code="score.state"/>",
-                type: "SelectItem",
                 optionDataSource: ScoresStateDS_SCRV,
-                multiple: true,
-                valueField: "value",
-                displayField: "value",
+                type: "SelectItem",
+                // criteriaField: "value",
                 pickListProperties: {
                     showFilterEditor: false,
-                    showClippedValuesOnHover: true,
+                    // showClippedValuesOnHover: true,
                 },
+                pickListFields: [
+                    {name: "title"}
+                ],
+                // multiple: true,
+                valueField: "title",
+                displayField: "title",
             },
             {
                 name: "studentComplexTitle",
@@ -316,8 +322,8 @@
                 name: "courseCode",
                 title: "<spring:message code="course"/>",
                 optionDataSource: CourseDS_SCRV,
-                valueField: "courseCode",
-                displayField: "courseCode",
+                valueField: "code",
+                displayField: "code",
                 // comboBoxFields: [
                 //     {name: "code", autoFitWidth: true},
                 //     {name: "titleFa"},
@@ -495,11 +501,11 @@
     });
 
     DynamicForm_StudentClass.getField("courseCode").comboBox.pickListFields = [
-        {name: "courseCode", autoFitWidth: true},
-        {name: "courseTitleFa"},
+        {name: "code", autoFitWidth: true},
+        {name: "titleFa"},
     ];
     DynamicForm_StudentClass.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_StudentClass.getField("courseCode").comboBox.filterFields = ["courseTitleFa", "courseCode"];
+    DynamicForm_StudentClass.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
     DynamicForm_StudentClass.getField("courseCode").comboBox.textMatchStyle="substring";
     DynamicForm_StudentClass.getField("courseCode").comboBox.pickListProperties= {
         showFilterEditor: false,
