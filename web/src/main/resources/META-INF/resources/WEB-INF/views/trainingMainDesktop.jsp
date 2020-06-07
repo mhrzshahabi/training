@@ -30,6 +30,7 @@
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
     <link rel="stylesheet" href="<spring:url value='/css/training.css' />"/>
+    <link rel="stylesheet" href='<spring:url value="/static/css/OAManagementUsers.css"/>'/>
     <script src="<spring:url value='/js/calendar.js'/>"></script>
     <script src="<spring:url value='/js/jalali.js'/>"></script>
     <script src="<spring:url value='/js/training_function.js'/>"></script>
@@ -444,7 +445,7 @@
             }
 
             //Send Data Methods
-            static exportToExcelFormClient(fields, data, titr, pageName) {
+            static exportToExcelFromClient(fields, data, titr, pageName) {
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
                     action: "/training/export-to-file/exportExcelFromClient/",
@@ -468,7 +469,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFormServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -501,7 +502,7 @@
             }
 
             //Get Data For Send
-            static DownloadExcelFormClient(listGrid, parentListGrid, titr, pageName) {
+            static downloadExcelFromClient(listGrid, parentListGrid, titr, pageName) {
 
                 let tmptitr = '';
 
@@ -513,10 +514,10 @@
 
                 let result = this.getAllData(listGrid);
 
-                this.exportToExcelFormClient(result.fields, result.data, tmptitr, pageName);
+                this.exportToExcelFromClient(result.fields, result.data, tmptitr, pageName);
             }
 
-            static DownloadExcelFormServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
 
                 let tmptitr = '';
 
@@ -536,8 +537,87 @@
                     sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
                 }
 
-                this.exportToExcelFormServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
             }
+
+            static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
+                let size = listgrid.data.size();
+
+                if(isValidate==null){
+                    isValidate=function (len) {
+                        return true;
+                    }
+                }
+
+                if(title==null){
+                    title = "خروجی اکسل";
+                }
+
+                isc.Window.create({
+                    ID: "exportExcelWindow",
+                    title: title,
+                    autoSize: true,
+                    width: 400,
+                    items: [
+                        isc.DynamicForm.create({
+                            ID: "exportExcelForm",
+                            numCols: 1,
+                            padding: 10,
+                            fields: [
+                                {
+                                    name: "maxRow",
+                                    width: "100%",
+                                    titleOrientation: "top",
+                                    title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+                                    value: size,
+                                    suppressBrowserClearIcon: true,
+                                    icons: [{
+                                        name: "clear",
+                                        src: "[SKIN]actions/close.png",
+                                        width: 10,
+                                        height: 10,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }],
+                                    iconWidth: 16,
+                                    iconHeight: 16
+                                }
+                            ]
+                        }),
+                        isc.TrHLayoutButtons.create({
+                            members: [
+                                isc.IButton.create({
+                                    title: "تایید",
+                                    click: function () {
+                                        if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+
+                                            if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
+
+                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
+                                                exportExcelWindow.close();
+
+                                            }
+                                        }
+                                    }
+                                }),
+                                isc.IButton.create({
+                                    title: "لغو",
+                                    click: function () {
+                                        exportExcelWindow.close();
+                                    }
+                                }),
+                            ]
+                        })
+                    ]
+                });
+
+                exportExcelWindow.show();
+            }
+
         }
 
         function generalGetResp(resp) {
@@ -1632,6 +1712,12 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                {
+                    title: "مدیریت کاربران",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/oauth/landing/show-form" />", false);
+                    }
+                },
                 <%--{--%>
                 <%--    title: "<spring:message code="user.plural"/>",--%>
                 <%--    click: function () {--%>
@@ -1773,20 +1859,20 @@
         width: 100,
         title: "<spring:message code="close.all"/>",
         click: function () {
-            if (trainingTabSet.tabs.length == 0) return;
+            if (mainTabSet.tabs.length == 0) return;
             var dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        trainingTabSet.removeTabs(trainingTabSet.tabs);
+                        mainTabSet.removeTabs(mainTabSet.tabs);
                     }
                 }
             });
         }
     });
 
-    trainingTabSet = isc.TabSet.create({
+    mainTabSet = isc.TabSet.create({
         minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton],
@@ -1831,7 +1917,7 @@
         members: [
             headerLayout,
             MainDesktopMenuH,
-            trainingTabSet,
+            mainTabSet,
         ]
     });
 
@@ -1888,14 +1974,14 @@
     }
 
     function createTab(title, url, autoRefresh) {
-        tab = trainingTabSet.getTabObject(title);
+        tab = mainTabSet.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true)) {
-                trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
+            if ((autoRefresh !== undefined) && (autoRefresh == true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
+                mainTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
-            trainingTabSet.selectTab(tab);
+            mainTabSet.selectTab(tab);
         } else {
-            trainingTabSet.addTab({
+            mainTabSet.addTab({
                 title: title,
                 ID: title,
                 pane: isc.ViewLoader.create({
@@ -1908,7 +1994,7 @@
                 }),
                 canClose: true,
             });
-            createTab(title, url);
+            createTab(title, url,true);
         }
     }
 

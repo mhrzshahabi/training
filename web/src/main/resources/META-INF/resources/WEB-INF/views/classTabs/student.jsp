@@ -80,7 +80,7 @@
             <sec:authorize access="hasAuthority('TclassStudentsTab_P')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    ExportToFile.DownloadExcelFormClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
+                    ExportToFile.downloadExcelFromClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
                 }
             }),
             isc.ToolStripButton.create({

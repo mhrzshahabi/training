@@ -51,11 +51,7 @@ public class PersonnelCoursePassedNAReportViewRestController {
     @Loggable
     @GetMapping("/minList")
     public ResponseEntity<ISC<PersonnelCoursePassedNAReportViewDTO.MinInfo>> minlist(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(personnelCoursePassedNAReportViewService.searchMinList(searchRq), startRow), HttpStatus.OK);
+        return search(iscRq, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class));
     }
 
 }

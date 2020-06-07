@@ -273,7 +273,20 @@
                     click: function () {
                         searchResult();
                     }
-                }
+                },
+                {
+                    type: "button",
+                    width: "100%",
+                    height: 30,
+                    colSpan: 2,
+                    align: "left",
+                    title: "<spring:message code="global.form.print.excel"/>",
+                    click: function () {
+                        // console.log(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10));
+                        // exportToExcel(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10) ,ListGrid_StudentClass_StudentClassJSP.getData().localData)
+                        ExportToFile.downloadExcelFromClient(ListGrid_MSReport,null,"","گزارش آماری ماهیانه");
+                    }
+                },
             ]
         });
 
