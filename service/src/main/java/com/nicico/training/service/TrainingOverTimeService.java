@@ -65,7 +65,17 @@ public class TrainingOverTimeService implements ITrainingOverTimeService {
 
             for (int i = 0; i < tOTReportList.size(); i++) {
                 Object[] totReport = (Object[]) tOTReportList.get(i);
-                overTimeDTOList.add(new TrainingOverTimeDTO(totReport[0].toString(), totReport[1].toString(), totReport[2].toString(), totReport[3].toString(), totReport[4].toString(), totReport[5].toString(), totReport[6].toString(), totReport[7].toString()));
+                overTimeDTOList.add(new TrainingOverTimeDTO(
+                        totReport[0] != null ? totReport[0].toString() : null,
+                        totReport[1] != null ? totReport[1].toString() : null,
+                        totReport[2] != null ? totReport[2].toString() : null,
+                        totReport[3] != null ? totReport[3].toString() : null,
+                        totReport[4] != null ? totReport[4].toString() : null,
+                        totReport[5] != null ? totReport[5].toString() : null,
+                        totReport[6] != null ? totReport[6].toString() : null,
+                        totReport[7] != null ? totReport[7].toString() : null,
+                        totReport[8] != null ? totReport[8].toString() : null
+                ));
 
             }
         }

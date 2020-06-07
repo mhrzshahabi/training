@@ -15,11 +15,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TrainingOverTimeDTO implements Serializable {
     String personalNum;
-    String getPersonalNum2;
+    String personalNum2;
     String nationalCode;
     String name;
     String ccpArea;
     String classCode;
     String className;
     String date;
+    String time;
 }

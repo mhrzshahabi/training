@@ -155,21 +155,6 @@
                 name: "time",
                 title: "<spring:message code="time"/>",
                 includeInRecordSummary:false,
-                // summaryFunction:"sum",
-                // type:"summary",
-                // recordSummaryFunction:"multiplier",
-                // summaryFunction:"sum",
-                // showGridSummary:true,
-                // showGroupSummary:true,
-                // getGridSummary:function (records, summaryField) {
-                //     return "base";
-                // }
-                // showGridSummary:true,
-                // summaryFunction:"sum",
-                // format: "#.## ساعت",
-                formatCellValue (value, record, rowNum, colNum, grid){
-                    return (parseInt(value,10)+" ساعت "+(((value)%1)*60).toFixed(0)+" دقیقه ");
-                }
             },
         ]
     });
