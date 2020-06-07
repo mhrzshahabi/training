@@ -6,18 +6,38 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 //<script>
-    var score_value = null //بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
-    var classRecord_acceptancelimit = null
-    var scoresState_value = null
-    var failureReason_value = null
-    var scoringMethodPrint=null
-    var acceptancelimitPrint=null
-    var valence_value = null
-    var valence_value_failureReason = null
-    var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"}
+    var score_value = null;//بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
+    var classRecord_acceptancelimit = null;
+    var scoresState_value = null;
+    var failureReason_value = null;
+    var scoringMethodPrint=null;
+    var acceptancelimitPrint=null;
+    var valence_value = null;
+    var valence_value_failureReason = null;
+    var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"};
     var myMap = new Map(Object.entries(map));
-    var map1 = {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"}
+    var map1 = {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"};
     var myMap1 = new Map(Object.entries(map1));
+
+        let RestDataSource_ScoreState_JSPScores = isc.TrDS.create({
+fields: [
+{name: "id", primaryKey: true, hidden: true},
+{name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+{name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+],
+fetchDataURL: parameterValueUrl + "/iscList/317"
+});
+
+let RestDataSource_FailureReason_JSPScores = isc.TrDS.create({
+fields: [
+{name: "id", primaryKey: true, hidden: true},
+{name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+{name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+],
+fetchDataURL: parameterValueUrl + "/iscList/317"
+});
+
+
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -48,7 +68,7 @@
                 autoFitWidth: true
             },
 
-            {name: "scoresState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
+            {name: "scoresStateId", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
             {name: "failureReason", title: "<spring:message code="faild.reason"/>", filterOperator: "iContains"},
             {name: "valence", title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains",canFilter:false},
@@ -106,7 +126,6 @@
 
                 isc.IButton.create({
                 name: "Button",
-               // disabled: true,
                 title: "<spring:message code="print"/>",
                 width: "14%",
                 click: function () {
@@ -131,13 +150,10 @@
         selectionType: "single",
         editOnFocus: true,
         showRowNumbers: false,
-//------------
         editByCell: true,
         editEvent: "click",
         modalEditing: true,
         autoSaveEdits: false,
-
-//------
         canSelectCells: true,
          sortField: 0,
         dataSource: RestDataSource_ClassStudent,
@@ -176,12 +192,19 @@
             },
 
             {
-                name: "scoresState",
+                name: "scoresStateId",
                 title: "<spring:message code="pass.mode"/>",
                 filterOperator: "iContains",
                 canEdit: false,
-                editorType: "SelectItem",
-                valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
+            type: "SelectItem",
+            valueField: "id",
+            displayField: "title",
+            optionDataSource: RestDataSource_ScoreState_JSPScores,
+                filterEditorProperties:{
+                pickListProperties: {
+                showFilterEditor: false,
+                autoFitWidthApproach: "both"}
+                },
                 changed: function (form, item, value) {
 
                     scoresState_value = value
@@ -202,8 +225,15 @@
                 title: "<spring:message code="faild.reason"/>",
                 filterOperator: "iContains",
                 canEdit: false,
-                editorType: "SelectItem",
-                valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
+type: "SelectItem",
+valueField: "id",
+displayField: "title",
+optionDataSource: RestDataSource_FailureReason_JSPScores,
+filterEditorProperties:{
+pickListProperties: {
+showFilterEditor: false,
+autoFitWidthApproach: "both"}
+},
                 changed: function (form, item, value) {
                     if (value === "غیبت بیش از حد مجاز" && scoresState_value === "مردود" && this.grid.getRecord(this.rowNum).tclass.scoringMethod === "4") {
                         ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value)
@@ -316,12 +346,8 @@
                                 } else if (failureReason_value != null && record.scoresState == "مردود") {
                                     ListGrid_Cell_score_Update(record, newValue, 4);
                                 } else {
-
-                                   // createDialog("info", "<spring:message code="choose.failure.failureReason"/>", "<spring:message code="message"/>")
                                     ListGrid_Cell_score_Update(record,newValue, 2);
                                     ListGrid_Class_Student.refreshFields();
-                                   // ListGrid_Class_Student.invalidateCache();
-
                                 }
 
                             } else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue !== null || newValue != null) && (editCompletionEvent == "enter" || editCompletionEvent == "click_outside")) {
@@ -342,7 +368,7 @@
                     } else {
                        return true
                     }
-                },// end editor Exit
+                },
                 sortField: 0,
 
             },
@@ -351,11 +377,6 @@
 
         dataArrived: function () {
             var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-        <%--    return (myMap.get(classRecord.scoringMethod) === "ارزشی") ? totalsLabel_scores.setContents("<spring:message--%>
-        <%--code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message--%>
-        <%--code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>") : totalsLabel_scores.setContents("<spring:message--%>
-        <%--code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message--%>
-        <%--code="acceptance.limit"/>" + ":&nbsp;<b>" + (classRecord.acceptancelimit) + "</b>");--%>
       if( myMap.get(classRecord.scoringMethod) === "ارزشی")
         {
          totalsLabel_scores.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classRecord.scoringMethod) + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classRecord.acceptancelimit) + "</b>")
@@ -383,11 +404,10 @@
         gridComponents: [ToolStrip_Actions, "filterEditor", "header", "body"],
 
         canEditCell: function (rowNum, colNum) {
-// var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             var record = this.getRecord(rowNum);
             var fieldName = this.getFieldName(colNum);
 
-            if (fieldName === "scoresState") {
+            if (fieldName === "scoresStateId") {
                 return !(classRecord.scoringMethod == "1")
             }
 
@@ -592,19 +612,15 @@
 
 
     function loadPage_Scores() {
-           // isc.MyOkDialog.create({
-            // message: "کاربر گرامي توجه کنيد اگر نمره بالاتر از حد قبولي باشد کافي است که فقط فيلد نمره را وارد کنيد در غير اين صورت<br/> اگر نمره کمتر از حد قبولي باشد ابتدا وضعيت قبولي و سپس دلايل مردودي و در نهايت نمره را وارد و Enter کنيد",
-            // });
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         console.log(classRecord)
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
-//===========================================
             if (classRecord.scoringMethod == "1") {
                 ListGrid_Class_Student.showField('valence')
                 ListGrid_Class_Student.hideField('score')
-                ListGrid_Class_Student.getField('scoresState').valueMap = ["مردود", "قبول"]
+                // ListGrid_Class_Student.getField('scoresState').valueMap = ["مردود", "قبول"]
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["عدم کسب حد نصاب نمره", "غیبت در جلسات"]
                 Button1.setDisabled(true)
                 Button2.setDisabled(true)
@@ -613,7 +629,7 @@
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
-                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
+                // ListGrid_Class_Student.getField("scoresStateId").valueMap = ["قبول با نمره", "مردود"]
                 Button1.setDisabled(true)
                 Button2.setDisabled(false)
             } else if (classRecord.scoringMethod == "2") {
@@ -621,18 +637,17 @@
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"]
-                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
+                // ListGrid_Class_Student.getField("scoresStateId").valueMap = ["قبول با نمره", "مردود"]
                 Button1.setDisabled(true)
                 Button2.setDisabled(false)
             } else if (classRecord.scoringMethod == "4") {
                 ListGrid_Class_Student.hideField('score')
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.getField('failureReason').valueMap = ["غیبت بیش از حد مجاز"]
-                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول بدون نمره", "مردود"]
+                // ListGrid_Class_Student.getField("scoresStateId").valueMap = ["قبول بدون نمره", "مردود"]
                 Button1.setDisabled(false)
                 Button2.setDisabled(true)
             }
-//=================================================
             ListGrid_Class_Student.invalidateCache()
             ListGrid_Class_Student.fetchData()
         } else {
