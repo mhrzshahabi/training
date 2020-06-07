@@ -23,7 +23,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidthApproach: "both", autoFitWidth: true},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
             ],
         autoCacheAllData: true,
@@ -67,10 +67,6 @@
             {name: "personnelNationalCode"},
             {name: "personnelFirstName"},
             {name: "personnelLastName"},
-            {name: "personnelPostTitle"},
-            {name: "personnelCcpAffairs"},
-            {name: "personnelCcpSection"},
-            {name: "personnelCcpUnit"},
             {
                 name: "priorityId",
                 filterOnKeypress: true,
@@ -86,6 +82,10 @@
                     {name: "title", width: "30%"}
                 ],
             },
+            {name: "personnelPostTitle"},
+            {name: "personnelCcpAffairs"},
+            {name: "personnelCcpSection"},
+            {name: "personnelCcpUnit"},
         ],
     });
 
@@ -126,7 +126,7 @@
     NAMinCourseDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "courseId", primaryKey: true, hidden: true},
-            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelFirstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelLastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -148,7 +148,7 @@
     NACourseDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "courseId", primaryKey: true, hidden: true},
-            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "totalEssentialPersonnelCount", title: "تعداد کل پرسنل در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
             {name: "notPassedEssentialPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
@@ -293,7 +293,7 @@
                 vertical: false,
                 endRow: true,
                 fillHorizontalSpace: true,
-                defaultValue: "1",
+                defaultValue: "2",
                 valueMap: {
                     "1": "آماری",
                     "2": "لیستی",
@@ -495,31 +495,28 @@
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
-        hidden:true,
-        // contextMenu: Menu_Courses_PCNR,
         dataSource: NACourseDS_PCNR,
-        filterOnKeypress: true,
-        showFilterEditor: false,
+        filterLocally: true,
+        filterOnKeypress: false,
+        showFilterEditor: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         useClientFiltering: true,
         gridComponents: [ "header", "filterEditor", "body"],
-        // FilterDF_PCNR
         fields:[
             {name: "courseCode"},
             {name: "courseTitleFa"},
-            {name: "totalEssentialPersonnelCount", canFilter: false},
-            {name: "notPassedEssentialPersonnelCount", canFilter: false},
-            {name: "totalImprovingPersonnelCount", canFilter: false},
-            {name: "notPassedImprovingPersonnelCount", canFilter: false},
-            {name: "totalDevelopmentalPersonnelCount", canFilter: false},
-            {name: "notPassedDevelopmentalPersonnelCount", canFilter: false},
+            {name: "totalEssentialPersonnelCount"},
+            {name: "notPassedEssentialPersonnelCount"},
+            {name: "totalImprovingPersonnelCount"},
+            {name: "notPassedImprovingPersonnelCount"},
+            {name: "totalDevelopmentalPersonnelCount"},
+            {name: "notPassedDevelopmentalPersonnelCount"},
             {
                 name: "totalNotPassed",
                 title: "جمع کل پرسنل نگذرانده",
                 filterOperator: "equals",
                 autoFitWidth: true,
-                canFilter: false,
                 formatCellValue: function (value, record) {
                     return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
                 },
@@ -544,7 +541,7 @@
 
                         PersonnelsLG_PCNR.implicitCriteria = criteria;
                         PersonnelsLG_PCNR.implicitCriteria.criteria.addAll([
-                            {fieldName: "isPassed" ,operator: "equals", value: false},
+                            {fieldName: "isPassed" ,operator: "equals", value: isPassedDS_PCNR.cacheResultSet.allRows.find({code:"false"}).id},
                             {fieldName: "courseId", operator: "equals", value: record.courseId}
                         ]);
                         PersonnelsLG_PCNR.invalidateCache();
@@ -561,27 +558,23 @@
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
+        hidden:true,
         dataSource: NAMinCourseDS_PCNR,
-        filterOnKeypress: true,
-        showFilterEditor: false,
+        filterOnKeypress: false,
+        showFilterEditor: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         useClientFiltering: true,
         gridComponents: [ "header", "filterEditor", "body"],
         // FilterDF_PCNR
         fields:[
-            {name: "personnelPersonnelNo", canFilter: false},
-            {name: "personnelPersonnelNo2", canFilter: false},
-            {name: "personnelNationalCode", canFilter: false},
-            {name: "personnelFirstName", canFilter: false},
-            {name: "personnelLastName", canFilter: false},
-            {name: "personnelPostCode", canFilter: false},
-            {name: "personnelPostTitle", canFilter: false},
-            {name: "personnelCcpAffairs", canFilter: false},
-            {name: "personnelCcpSection", canFilter: false},
-            {name: "personnelCcpUnit", canFilter: false},
+            {name: "personnelPersonnelNo"},
+            {name: "personnelPersonnelNo2"},
+            {name: "personnelNationalCode"},
+            {name: "personnelFirstName"},
+            {name: "personnelLastName"},
             {name: "courseCode"},
-            {name: "courseTitleFa", canFilter: false},
+            {name: "courseTitleFa"},
             {
                 name: "priorityId",
                 filterOnKeypress: true,
@@ -590,7 +583,6 @@
                 valueField: "id",
                 optionDataSource: PriorityDS_PCNR,
                 pickListProperties: {
-                    showFilterEditor: false,
                     autoFitWidthApproach: "both",
                 },
                 pickListFields: [
@@ -602,16 +594,21 @@
                 filterOnKeypress: true,
                 editorType: "ComboBoxItem",
                 displayField: "title",
-                valueField: "code",
+                valueField: "id",
                 optionDataSource: isPassedDS_PCNR,
                 pickListProperties: {
-                    showFilterEditor: false,
                     autoFitWidthApproach: "both",
+                    autoFitWidth: true,
                 },
                 pickListFields: [
                     {name: "title", width: "30%"}
                 ],
             },
+            {name: "personnelPostCode"},
+            {name: "personnelPostTitle"},
+            {name: "personnelCcpAffairs"},
+            {name: "personnelCcpSection"},
+            {name: "personnelCcpUnit"},
         ],
     });
 
@@ -620,7 +617,7 @@
         height: "100%",
         members: [
             FilterDF_PCNR,
-            CourseLG_PCNR,
+            CourseLG_MinPCNR,
         ]
     });
 

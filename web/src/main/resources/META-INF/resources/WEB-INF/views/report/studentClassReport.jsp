@@ -44,43 +44,43 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        autoCacheAllData: true,
-        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
+        cacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/StudentScoreState"
     });
 
     var CompanyDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
         ],
-        // cacheAllData: true,
+        cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
     });
     var AreaDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        // cacheAllData: true,
+        cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
     });
     var ComplexDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        // cacheAllData: true,
+        cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
     });
     var AssistantDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        // cacheAllData: true,
+        cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
     });
     var AffairsDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        // cacheAllData: true,
+        cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
     });
     var CourseDS_SCRV = isc.TrDS.create({
@@ -95,7 +95,7 @@
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        // cacheAllData: true,
+        cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
     });
     var TermDS_SCRV = isc.TrDS.create({
@@ -195,40 +195,27 @@
                     // showClippedValuesOnHover: true,
                 },
                 pickListFields: [
-                    {name: "title"}
+                    {name: "title"},
+                    // {name: "id", hidden: true}
                 ],
-                // multiple: true,
-                valueField: "title",
+                multiple: true,
+                valueField: "id",
                 displayField: "title",
             },
             {
                 name: "studentComplexTitle",
                 title: "<spring:message code="complex"/>",
                 optionDataSource: ComplexDS_SCRV,
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
             },
             {
                 name: "studentCompanyName",
                 title: "<spring:message code="company"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: CompanyDS_SCRV,
@@ -236,15 +223,8 @@
             {
                 name: "studentCcpArea",
                 title: "<spring:message code="area"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AreaDS_SCRV,
@@ -252,16 +232,8 @@
             {
                 name: "studentCcpAssistant",
                 title: "<spring:message code="assistance"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
-                colSpan: 2,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_SCRV,
@@ -269,15 +241,8 @@
             {
                 name: "studentCcpSection",
                 title: "<spring:message code="section.cost"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: SectionDS_SCRV,
@@ -285,38 +250,29 @@
             {
                 name: "studentCcpUnit",
                 title: "<spring:message code="unitName"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                optionDataSource: UnitDS_SCRV,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
-                optionDataSource: UnitDS_SCRV,
             },
             {
                 name: "studentCcpAffairs",
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_SCRV,
-                // filterFields: ["value", "value"],
-                // pickListWidth: 300,
                 type: "MultiComboBoxItem",
-                textMatchStyle: "substring",
                 comboBoxWidth: 155,
-                layoutStyle: "verticalReverse",
-                comboBoxProperties: {
-                    pickListWidth: 300,
-                },
+                valueField: "value",
+                displayField: "value",
+                // comboBoxWidth: 155,
+                // layoutStyle: "verticalReverse",
+                // comboBoxProperties: {
+                //     pickListWidth: 300,
+                // },
                 // pickListProperties: {
                 //     showFilterEditor: false,
                 //     showClippedValuesOnHover: true,
                 // },
-                valueField: "value",
-                displayField: "value",
             },
             {
                 name: "courseCode",
@@ -324,11 +280,6 @@
                 optionDataSource: CourseDS_SCRV,
                 valueField: "code",
                 displayField: "code",
-                // comboBoxFields: [
-                //     {name: "code", autoFitWidth: true},
-                //     {name: "titleFa"},
-                // ],
-                // filterFields: ["titleFa", "code"],
                 type: "MultiComboBoxItem",
                 textMatchStyle: "substring",
                 comboBoxWidth: 155,
@@ -450,15 +401,10 @@
                 endRow:false,
                 click (form) {
                     let criteria = form.getValuesAsAdvancedCriteria();
-                    // console.log(criteria);
-
                     if(criteria == null || Object.keys(criteria).length === 0) {
                         ListGrid_StudentClass_StudentClassJSP.setData([])
                     }
                     else{
-                        // delete criteria.fromDate;
-                        // delete criteria.toDate;
-                        // criteria.classEndDate = DynamicForm_StudentClass.getValue("fromDate");
                         if(form.getValue("studentPersonnelNo2") != undefined){
                             let cr = [];
                             for (let i = 0; i < criteria.criteria.length; i++) {
@@ -514,10 +460,51 @@
     };
     DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
     DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.setHint("امور مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.setHint("امورهای مورد نظر را انتخاب کنید");
     DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.pickListProperties= {
         showFilterEditor: false,
-        pickListWidth: 300,
+        pickListWidth: 400,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.setHint("واحدهای مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        pickListWidth: 400,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.setHint("مرکز هزینه های مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        pickListWidth: 400,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.setHint("معاونت های مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.pickListProperties= {
+        showFilterEditor: false,
         showClippedValuesOnHover: true,
     };
 

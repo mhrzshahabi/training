@@ -173,8 +173,8 @@ public class StudentClassReportView implements Serializable {
     @Column(name = "class_student_id")
     private Long classStudentId;
 
-    @Column(name = "class_student_scores_state")
-    private String classStudentScoresState;
+    @Column(name = "class_student_scores_state_id")
+    private Long classStudentScoresState;
 
     @Column(name = "class_student_failure_reason")
     private String classStudentFailureReason;
