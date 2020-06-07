@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.nicico.copper</groupId>
         <artifactId>copper-starter-parent</artifactId>
-        <version>2.3.1</version>
+        <version>2.2.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -44,11 +44,11 @@
 
             <distributionManagement>
                 <snapshotRepository>
-                    <id>nexus-dist</id>
+                    <id>nexus-dift</id>
                     <url>http://devops01.icico.net.ir/nexus/repository/maven-snapshots/</url>
                 </snapshotRepository>
                 <repository>
-                    <id>nexus-dist</id>
+                    <id>nexus-dift</id>
                     <url>http://devops01.icico.net.ir/nexus/repository/maven-releases/</url>
                 </repository>
             </distributionManagement>
