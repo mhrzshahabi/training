@@ -453,100 +453,99 @@
                 title: "",
                 canEdit: false
             },
-            {
-                name: "evaluationCategory",
-                title: " حداقل نمره ی ارزیابی مدرس در گروه",
-                textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                defaultValue: null,
-                changeOnKeypress: true,
-                prompt: "در صورت انتخاب گروه زیرگروه هم باید انتخاب شود",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Category_Evaluation_JspTeacherReport,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                changed: function (form,item,value) {
-                    isEvaluationCategoriesChanged = true;
-
-                    if (value == null || value == undefined) {
-                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").disable();
-                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").clearValue();
-                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").clearValue();
-                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();
-                    } else{
-                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").enable();
-                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").enable();
-                    }
-                }
-            },
-            {
-                name: "evaluationSubCategory",
-                title: "و زیرگروه",
-                textAlign: "center",
-                width: "*",
-                titleAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultValue: null,
-                displayField: "titleFa",
-                valueField: "id",
-                disabled: true,
-                optionDataSource: RestDataSource_SubCategory_Evaluation_JspTeacherReport,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                focus: function () {
-                    if (isEvaluationCategoriesChanged) {
-                        isEvaluationCategoriesChanged = false;
-                        var id = DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue();
-                        if (id == null || id == undefined) {
-                            RestDataSource_SubCategory_Evaluation_JspTeacherReport.implicitCriteria = null;
-                        } else {
-                            RestDataSource_SubCategory_Evaluation_JspTeacherReport.implicitCriteria = {
-                                _constructor: "AdvancedCriteria",
-                                operator: "and",
-                                criteria: [{fieldName: "categoryId", operator: "inSet", value: id}]
-                            };
-                        }
-                        this.fetchData();
-                    }
-                }
-            },
-            {
-                name: "evaluationGrade",
-                title: "=",
-                hint: "100",
-                length: 3,
-                disabled: true,
-                titleAlign: "center",
-                formatOnBlur: true,
-                textAlign: "center",
-                showHintInField: true,
-                keyPressFilter: "[0-9]"
-            },
+            // {
+            //     name: "evaluationCategory",
+            //     title: " حداقل نمره ی ارزیابی مدرس در گروه",
+            //     textAlign: "center",
+            //     width: "*",
+            //     editorType: "ComboBoxItem",
+            //     defaultValue: null,
+            //     changeOnKeypress: true,
+            //     prompt: "در صورت انتخاب گروه زیرگروه هم باید انتخاب شود",
+            //     displayField: "titleFa",
+            //     valueField: "id",
+            //     optionDataSource: RestDataSource_Category_Evaluation_JspTeacherReport,
+            //     autoFetchData: false,
+            //     addUnknownValues: false,
+            //     cachePickListResults: false,
+            //     useClientFiltering: true,
+            //     filterFields: ["titleFa"],
+            //     sortField: ["id"],
+            //     textMatchStyle: "startsWith",
+            //     generateExactMatchCriteria: true,
+            //     pickListProperties: {
+            //         showFilterEditor: true
+            //     },
+            //     pickListFields: [
+            //         {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            //     changed: function (form,item,value) {
+            //         isEvaluationCategoriesChanged = true;
+            //         DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").clearValue();
+            //         if (value == null || value == undefined) {
+            //             DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").disable();
+            //             DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").clearValue();
+            //             DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").disable();
+            //         } else{
+            //             DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").enable();
+            //             DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").enable();
+            //         }
+            //     }
+            // },
+            // {
+            //     name: "evaluationSubCategory",
+            //     title: "و زیرگروه",
+            //     textAlign: "center",
+            //     width: "*",
+            //     titleAlign: "center",
+            //     editorType: "ComboBoxItem",
+            //     changeOnKeypress: true,
+            //     defaultValue: null,
+            //     displayField: "titleFa",
+            //     valueField: "id",
+            //     disabled: true,
+            //     optionDataSource: RestDataSource_SubCategory_Evaluation_JspTeacherReport,
+            //     autoFetchData: false,
+            //     addUnknownValues: false,
+            //     cachePickListResults: false,
+            //     useClientFiltering: true,
+            //     filterFields: ["titleFa"],
+            //     sortField: ["id"],
+            //     textMatchStyle: "startsWith",
+            //     generateExactMatchCriteria: true,
+            //     pickListProperties: {
+            //         showFilterEditor: true
+            //     },
+            //     pickListFields: [
+            //         {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            //     focus: function () {
+            //         if (isEvaluationCategoriesChanged) {
+            //             isEvaluationCategoriesChanged = false;
+            //             var id = DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue();
+            //             if (id == null || id == undefined) {
+            //                 RestDataSource_SubCategory_Evaluation_JspTeacherReport.implicitCriteria = null;
+            //             } else {
+            //                 RestDataSource_SubCategory_Evaluation_JspTeacherReport.implicitCriteria = {
+            //                     _constructor: "AdvancedCriteria",
+            //                     operator: "and",
+            //                     criteria: [{fieldName: "categoryId", operator: "inSet", value: id}]
+            //                 };
+            //             }
+            //             this.fetchData();
+            //         }
+            //     }
+            // },
+            // {
+            //     name: "evaluationGrade",
+            //     title: "=",
+            //     hint: "100",
+            //     length: 3,
+            //     disabled: true,
+            //     titleAlign: "center",
+            //     formatOnBlur: true,
+            //     textAlign: "center",
+            //     showHintInField: true,
+            //     keyPressFilter: "[0-9]"
+            // },
             // {
             //     name: "teachingCategories",
             //     title: "مدرس در حوزه های",
@@ -767,22 +766,22 @@
                                         DynamicForm_CriteriaForm_JspTeacherReport.getField("subCategories").getDisplayValue()+ "</span>";
                 teacherInfo.contents +=  "<span style='color:#050505; font-size:12px;'>" + ", " +"</span>";
             }
-            if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined &&
-                DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() != undefined &&
-                DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() != undefined){
-
-                evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی مدرس در گروه: " +"</span>";
-                evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue()+ "</span>";
-
-                evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "و زیرگروه: " +"</span>";
-                evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                                        DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getDisplayValue()+ "</span>";
-
-                evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مساوی: " +"</span>";
-                evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
-                                    DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
-            }
+            // if(DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getValue() != undefined &&
+            //     DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue() != undefined &&
+            //     DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getValue() != undefined){
+            //
+            //     evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "حداقل نمره ی ارزیابی مدرس در گروه: " +"</span>";
+            //     evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
+            //                             DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationCategory").getDisplayValue()+ "</span>";
+            //
+            //     evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "و زیرگروه: " +"</span>";
+            //     evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
+            //                             DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationSubCategory").getDisplayValue()+ "</span>";
+            //
+            //     evalInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مساوی: " +"</span>";
+            //     evalInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
+            //                         DynamicForm_CriteriaForm_JspTeacherReport.getField("evaluationGrade").getValue()+ "</span>";
+            // }
             // if(DynamicForm_CriteriaForm_JspTeacherReport.getField("teachingCategories").getValue() != undefined){
             //     teachingInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زمینه های تدریس مدرس: " +"</span>";
             //     teachingInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>"+
