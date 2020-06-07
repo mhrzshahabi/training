@@ -27,7 +27,7 @@ public class PersonnelCoursePassedNAReportView implements Serializable {
     private Long priorityId;
 
     @Column(name = "is_passed")
-    private Boolean isPassed;
+    private Long isPassed;
 
     ///////////////////////////////////////////////////personnel///////////////////////////////////////
 
