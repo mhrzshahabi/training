@@ -202,6 +202,15 @@
             ToolStripButton_Print_UCReport,
             isc.ToolStrip.create({
                 width: "100%",
+                align: "right",
+                members: [isc.ToolStripButtonExcel.create({
+                    click: function() {
+                        ExportToFile.showDialog(null, ListGrid_UCReport, 'unfinishedClassesReport', 0, null, '',  "کلاس هاي پايان نيافته", ListGrid_UCReport.data.criteria, null);
+                    }
+                })]
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
                 align: "left",
                 members: [ToolStripButton_Refresh_UCReport]
             })

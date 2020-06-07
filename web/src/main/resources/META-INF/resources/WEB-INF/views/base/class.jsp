@@ -2140,7 +2140,7 @@
 
     var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.DownloadExcelFormClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
+            ExportToFile.downloadExcelFromClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
         }
     });
 

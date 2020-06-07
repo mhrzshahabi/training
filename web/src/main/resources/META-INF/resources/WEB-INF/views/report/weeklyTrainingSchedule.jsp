@@ -258,6 +258,27 @@
     VLayout_Body_JspWeeklyTrainingSchedule = isc.TrVLayout.create({
         members: [
             HLayout_CriteriaForm_JspWeeklyTrainingSchedule,
+            isc.ToolStripButtonExcel.create({
+                margin:5,
+                click: function() {
+
+                    let criteria=DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+
+                    if(criteria==null){
+                        criteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule}
+                            ]
+                        };
+                    }else{
+                        criteria.criteria.splice(0,0,{fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule});
+                    }
+
+                    ExportToFile.showDialog(null, ListGrid_Result_JspWeeklyTrainingSchedule, 'weeklyTrainingSchedule', 0, null, '',  "برنامه ريزي آموزشي هفته", criteria, null);
+                }
+            }),
             HLayout_ListGrid_JspWeeklyTrainingSchedule
         ]
     });

@@ -364,7 +364,7 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.DownloadExcelFormClient(ListGrid_session, ListGrid_Class_JspClass, '', "کلاس - جلسات");
+                        ExportToFile.downloadExcelFromClient(ListGrid_session, ListGrid_Class_JspClass, '', "کلاس - جلسات");
                     }
                 })]
         });

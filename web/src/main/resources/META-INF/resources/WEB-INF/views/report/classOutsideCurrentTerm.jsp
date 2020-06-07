@@ -87,7 +87,34 @@
                 totalRecords_COCT.setContents("&nbsp;");
             }
         },
-        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
+        gridComponents: [
+            isc.ToolStripButtonExcel.create({
+                margin:5,
+                click: function() {
+                    if (endDateCheckReportCOCT == false)
+                        return;
+
+                    if (!DynamicForm_Report_COCT.validate()) {
+                        return;
+                    }
+
+                    let cat=DynamicForm_Report_COCT.getField("category.Id").getValue();
+                    let subCat=DynamicForm_Report_COCT.getField("subCategory.id").getValue();
+                    var strSData=DynamicForm_Report_COCT.getItem("termId").getSelectedRecord().startDate;
+
+                    let criteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "startDate", operator: "equals", value: strSData},
+                            {fieldName: "course.category.id", operator: "equals", value: cat},
+                            { operator:"or", criteria:[  {fieldName: "course.subCategory.id", operator: "equals", value: subCat?subCat:subCat=[]}]}
+                        ]
+                    };
+
+                    ExportToFile.showDialog(null, List_Grid_Reaport_classOutsideCurrentTerm, 'classOutsideCurrentTerm', 0, null, '',  "کلاس هاي برگزار شده خارج از تقويم جاري", criteria, null);
+                }
+            }),ToolStrip_Actions,"filterEditor", "header", "body"],
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,

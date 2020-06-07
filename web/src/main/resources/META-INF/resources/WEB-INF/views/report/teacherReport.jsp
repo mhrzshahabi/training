@@ -194,6 +194,12 @@
                     teacherInfo,
                     evalInfo,
                     teachingInfo,
+                    isc.ToolStripButtonExcel.create({
+                        margin:5,
+                        click: function() {
+                            ExportToFile.showDialog(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
+                        }
+                    }),
                     ListGrid_Result_JspTeacherReport
                     ]
             })

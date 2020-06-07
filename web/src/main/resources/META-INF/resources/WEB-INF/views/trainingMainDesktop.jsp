@@ -444,7 +444,7 @@
             }
 
             //Send Data Methods
-            static exportToExcelFormClient(fields, data, titr, pageName) {
+            static exportToExcelFromClient(fields, data, titr, pageName) {
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
                     action: "/training/export-to-file/exportExcelFromClient/",
@@ -468,7 +468,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFormServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -501,7 +501,7 @@
             }
 
             //Get Data For Send
-            static DownloadExcelFormClient(listGrid, parentListGrid, titr, pageName) {
+            static downloadExcelFromClient(listGrid, parentListGrid, titr, pageName) {
 
                 let tmptitr = '';
 
@@ -513,10 +513,10 @@
 
                 let result = this.getAllData(listGrid);
 
-                this.exportToExcelFormClient(result.fields, result.data, tmptitr, pageName);
+                this.exportToExcelFromClient(result.fields, result.data, tmptitr, pageName);
             }
 
-            static DownloadExcelFormServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
 
                 let tmptitr = '';
 
@@ -536,8 +536,87 @@
                     sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
                 }
 
-                this.exportToExcelFormServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
             }
+
+            static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
+                let size = listgrid.data.size();
+
+                if(isValidate==null){
+                    isValidate=function (len) {
+                        return true;
+                    }
+                }
+
+                if(title==null){
+                    title = "خروجی اکسل";
+                }
+
+                isc.Window.create({
+                    ID: "exportExcelWindow",
+                    title: title,
+                    autoSize: true,
+                    width: 400,
+                    items: [
+                        isc.DynamicForm.create({
+                            ID: "exportExcelForm",
+                            numCols: 1,
+                            padding: 10,
+                            fields: [
+                                {
+                                    name: "maxRow",
+                                    width: "100%",
+                                    titleOrientation: "top",
+                                    title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+                                    value: size,
+                                    suppressBrowserClearIcon: true,
+                                    icons: [{
+                                        name: "clear",
+                                        src: "[SKIN]actions/close.png",
+                                        width: 10,
+                                        height: 10,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }],
+                                    iconWidth: 16,
+                                    iconHeight: 16
+                                }
+                            ]
+                        }),
+                        isc.TrHLayoutButtons.create({
+                            members: [
+                                isc.IButton.create({
+                                    title: "تایید",
+                                    click: function () {
+                                        if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+
+                                            if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
+
+                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
+                                                exportExcelWindow.close();
+
+                                            }
+                                        }
+                                    }
+                                }),
+                                isc.IButton.create({
+                                    title: "لغو",
+                                    click: function () {
+                                        exportExcelWindow.close();
+                                    }
+                                }),
+                            ]
+                        })
+                    ]
+                });
+
+                exportExcelWindow.show();
+            }
+
         }
 
         function generalGetResp(resp) {

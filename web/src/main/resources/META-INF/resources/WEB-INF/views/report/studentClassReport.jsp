@@ -488,7 +488,7 @@
                     form.clearValues();
                     ListGrid_StudentClass_StudentClassJSP.setData([]);
                 }
-            },
+            }
         ],
         itemChanged (item, newValue){
             ListGrid_StudentClass_StudentClassJSP.setData([]);
@@ -546,7 +546,7 @@
                 click: function () {
                     // console.log(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10));
                     // exportToExcel(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10) ,ListGrid_StudentClass_StudentClassJSP.getData().localData)
-                    ExportToFile.DownloadExcelFormClient(ListGrid_StudentClass_StudentClassJSP,null,"","دوره های گذرانده پرسنل");
+                    ExportToFile.downloadExcelFromClient(ListGrid_StudentClass_StudentClassJSP,null,"","دوره های گذرانده پرسنل");
                 }
             },
             <%--{--%>
@@ -569,7 +569,32 @@
         filterOnKeypress: true,
         showFilterEditor: false,
 
-        gridComponents: [DynamicForm_StudentClass, "header", "filterEditor", "body"],
+        gridComponents: [DynamicForm_StudentClass,
+            isc.ToolStripButtonExcel.create({
+                margin:5,
+            click: function() {
+
+                let criteria = DynamicForm_StudentClass.getValuesAsAdvancedCriteria();
+
+                if(criteria != null && Object.keys(criteria).length != 0) {
+
+                    if(DynamicForm_StudentClass.getValue("studentPersonnelNo2") != undefined){
+                        let cr = [];
+                        for (let i = 0; i < criteria.criteria.length; i++) {
+                            if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
+                                cr.push(criteria.criteria[i])
+                            }
+                        }
+                        cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: DynamicForm_StudentClass.getValue("studentPersonnelNo2").split(',').toArray()})
+                        criteria.criteria = cr;
+                    }
+                }else{
+                    return ;
+                }
+
+                ExportToFile.showDialog(null, ListGrid_StudentClass_StudentClassJSP, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
+            }
+        }), "header", "filterEditor", "body"],
         fields:[
             {
                 name: "studentPersonnelNo2",
@@ -592,17 +617,17 @@
         ]
     });
 
-    var ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({
+    var ToolStripButton_studentClassReport = isc.ToolStripButtonPrint.create({
         <%--title: "<spring:message code='print'/>",--%>
         click: function () {
             print_Training_File();
         }
     });
 
-    var ToolStrip_Actions_Training_File = isc.ToolStrip.create({
+    var ToolStrip_Actions_studentClassReport = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_Training_File]
+        members: [ToolStripButton_studentClassReport]
     });
 
     var VLayout_Body_Training_File = isc.VLayout.create({
@@ -610,7 +635,7 @@
         height: "100%",
         overflow: "visible",
         members: [
-            // ToolStrip_Actions_Training_File,
+            //ToolStrip_Actions_studentClassReport,
             ListGrid_StudentClass_StudentClassJSP
         ]
     });

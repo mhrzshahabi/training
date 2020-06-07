@@ -663,7 +663,7 @@
     <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.DownloadExcelFormClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
+            ExportToFile.downloadExcelFromClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
         }
     });
     </sec:authorize>
