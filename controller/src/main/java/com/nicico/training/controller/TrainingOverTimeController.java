@@ -8,10 +8,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.Attendance;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Student;
-import com.nicico.training.service.AttendanceService;
-import com.nicico.training.service.ClassSessionService;
-import com.nicico.training.service.StudentService;
-import com.nicico.training.service.TclassService;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.websocket.Session;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +36,7 @@ public class TrainingOverTimeController {
     private final DateUtil dateUtil;
     private final AttendanceService attendanceService;
     private final ClassSessionService classSessionService;
+    private final TrainingOverTimeService trainingOverTimeService;
 
     // ------------------------------
 
@@ -47,6 +48,7 @@ public class TrainingOverTimeController {
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate) {
         List<ClassSession> sessions = classSessionService.findBySessionDateBetween(startDate, endDate);
+        trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
         List<Attendance> attendances = attendanceService.findBySessionInAndState(sessions, "2");
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         List<Map<String, String>> list = new ArrayList<>();

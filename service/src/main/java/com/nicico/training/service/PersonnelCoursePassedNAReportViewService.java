@@ -56,13 +56,14 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
         return searchRs;
     }
 
-    @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchMinList(SearchDTO.SearchRq request) {
-        List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
-        List<PersonnelCoursePassedNAReportViewDTO.MinInfo> result = modelMapper.map(personnelCourseList, new TypeToken<List<PersonnelCoursePassedNAReportViewDTO.MinInfo>>(){}.getType());
-        SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setList(result);
-        searchRs.setTotalCount(new Long(result.size()));
-        return searchRs;
-    }
+//    @Transactional(readOnly = true)
+//    public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchMinList(SearchDTO.SearchRq request) {
+//        return search(request, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class));
+//        List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
+//        List<PersonnelCoursePassedNAReportViewDTO.MinInfo> result = modelMapper.map(personnelCourseList, new TypeToken<List<PersonnelCoursePassedNAReportViewDTO.MinInfo>>(){}.getType());
+//        SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchRs = new SearchDTO.SearchRs<>();
+//        searchRs.setList(result);
+//        searchRs.setTotalCount(new Long(result.size()));
+//        return searchRs;
+//    }
 }
