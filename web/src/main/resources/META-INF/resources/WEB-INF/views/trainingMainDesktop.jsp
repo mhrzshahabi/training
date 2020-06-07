@@ -978,7 +978,7 @@
                 }),
                 canClose: true,
             });
-            createTab(title, url);
+            createTab(title, url,true);
         }
     }
 
