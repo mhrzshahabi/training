@@ -57,7 +57,7 @@ public class StudentClassReportViewDTO {
         private String termCode;
         private String termTitleFa;
         private String classStudentFailureReason;
-        private String classStudentScoresState;
+        private Long classStudentScoresState;
         private Float classStudentScore;
         private String classStudentApplicantCompanyName;
         private String classStudentPresenceTypeId;
@@ -93,7 +93,7 @@ public class StudentClassReportViewDTO {
     public static class InfoTuple extends StudentClassReportViewDTO {
         private String studentPersonnelNo;
         private String studentNationalCode;
-        private String classStudentScoresState;
+        private Long classStudentScoresState;
         private String courseCode;
     }
 

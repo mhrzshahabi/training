@@ -45,7 +45,7 @@
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
         cacheAllData: true,
-        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
+        fetchDataURL: parameterUrl + "/iscList/StudentScoreState"
     });
 
     var CompanyDS_SCRV = isc.TrDS.create({
@@ -195,10 +195,11 @@
                     // showClippedValuesOnHover: true,
                 },
                 pickListFields: [
-                    {name: "title"}
+                    {name: "title"},
+                    // {name: "id", hidden: true}
                 ],
-                // multiple: true,
-                valueField: "title",
+                multiple: true,
+                valueField: "id",
                 displayField: "title",
             },
             {
@@ -400,15 +401,10 @@
                 endRow:false,
                 click (form) {
                     let criteria = form.getValuesAsAdvancedCriteria();
-                    // console.log(criteria);
-
                     if(criteria == null || Object.keys(criteria).length === 0) {
                         ListGrid_StudentClass_StudentClassJSP.setData([])
                     }
                     else{
-                        // delete criteria.fromDate;
-                        // delete criteria.toDate;
-                        // criteria.classEndDate = DynamicForm_StudentClass.getValue("fromDate");
                         if(form.getValue("studentPersonnelNo2") != undefined){
                             let cr = [];
                             for (let i = 0; i < criteria.criteria.length; i++) {
