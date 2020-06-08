@@ -223,6 +223,7 @@
                 name: "studentPresentStatus",
                 title: "وضعیت حضور و غیاب شما",
                 align: "center",
+                canFilter: false,
                 valueMap: {
                     "0": "نامشخص",
                     "1": "حاضر",

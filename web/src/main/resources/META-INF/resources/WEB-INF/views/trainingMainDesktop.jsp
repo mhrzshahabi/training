@@ -1679,7 +1679,17 @@
                                     createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+<%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
+                            {
+                                title:  "<spring:message code="evaluation.statical.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
+                                }
+                            },
+<%--                            </sec:authorize>--%>
                         ]
                 },
                 {isSeparator: true},
@@ -2097,7 +2107,7 @@
                 if (respCode === 409) {
                     msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
                 } else if (respCode === 401) {
-                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + resp.httpResponseText;
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + JSON.parse(resp.httpResponseText).message;
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
