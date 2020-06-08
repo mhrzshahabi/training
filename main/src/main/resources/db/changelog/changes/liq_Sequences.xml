@@ -225,4 +225,8 @@
         <createSequence sequenceName="seq_work_group_id"/>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1591591181879-446">
+        <createSequence sequenceName="seq_evaluation_analysis_id"/>
+    </changeSet>
+
 </databaseChangeLog>

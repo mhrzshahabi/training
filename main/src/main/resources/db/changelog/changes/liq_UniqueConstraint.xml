@@ -129,4 +129,18 @@
     <changeSet author="poursalehi_mos (generated)" id="1591413875292-455">
         <addUniqueConstraint columnNames="c_title_fa" constraintName="UC_TBL_POST_GROUPC_TITLE_FA_COL" tableName="tbl_post_group"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591589590264-453">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_JOBC_CODE_COL" tableName="tbl_job"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591589590264-454">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_POSTC_CODE_COL" tableName="tbl_post"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591589590264-455">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_POST_GRADEC_CODE_COL" tableName="tbl_post_grade"/>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1591591181879-458">
+        <addUniqueConstraint columnNames="f_tclass" constraintName="UC_TBL_EVALUATION_ANALYSISF_TCLASS_COL" tableName="tbl_evaluation_analysis"/>
+    </changeSet>
+    
 </databaseChangeLog>

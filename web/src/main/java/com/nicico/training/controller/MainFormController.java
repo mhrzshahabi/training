@@ -126,6 +126,11 @@ public class MainFormController {
         return "report/monthlyStatisticalReport";
     }
 
+    @RequestMapping("/evaluationStaticalReport")
+    public String showEvaluationStaticalReportForm() {
+        return "report/evaluationStaticalReport";
+    }
+
     @RequestMapping("class-contract")
     public String showClassContractForm() {
         return "run/class-contract";
