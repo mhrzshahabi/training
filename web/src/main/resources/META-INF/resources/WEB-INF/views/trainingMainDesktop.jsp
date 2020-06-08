@@ -534,7 +534,17 @@
                 let sortStr='';
 
                 if (sort != null && sort.size() != 0){
-                    sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+
+                    //if(sort.size() != 1){
+                        sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+                    /*}else{
+                        let sort=[];
+                        for (var i = 0; i <sort.size() ; i++) {
+                            sort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
+                        }
+
+                        sortStr=JSON.stringify(sort);
+                    }*/
                 }
 
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
