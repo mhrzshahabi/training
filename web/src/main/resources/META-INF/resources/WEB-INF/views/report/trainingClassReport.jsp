@@ -223,6 +223,8 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
+        sortField: 6,
+        sortDirection: "descending",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
@@ -250,6 +252,7 @@
                     isc.ToolStripButtonExcel.create({
                         margin:5,
                         click: function() {
+                            ListGrid_Result_JspTClassReport.sortFieldNum=6;
                             ExportToFile.showDialog(null, ListGrid_Result_JspTClassReport, 'trainingClassReport', 0, null, '',  "گزارش کلاس هاي آموزشي", ListGrid_Result_JspTClassReport.data.criteria, null);
                         }
                     }),
