@@ -36,6 +36,16 @@ public class ParameterValueDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("ParameterValue - Tuple - Info")
+    public static class TupleInfo {
+        private Long id;
+        private String title;
+        private String code;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ParameterValue - Info")
     public static class Info extends ParameterValueDTO {
         private Long id;

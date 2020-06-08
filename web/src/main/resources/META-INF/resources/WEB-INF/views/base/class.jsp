@@ -385,7 +385,8 @@
                 filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
-                }
+                },
+                autoFitWidth: true
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains",
                 filterEditorProperties: {
@@ -418,6 +419,7 @@
 
                 align: "center",
                 filterOperator: "iContains",
+                autoFitWidth: true,
                 // sortNormalizer(record) {
                 //     return record.teacher.personality.lastNameFa;
                 // }
@@ -435,6 +437,7 @@
                     },
                 },
                 filterOnKeypress:true,
+                autoFitWidth: true,
             },
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -449,6 +452,7 @@
                     },
                 },
                 filterOnKeypress:true,
+                autoFitWidth: true,
             },
             {
                 name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
@@ -463,6 +467,7 @@
                     },
                 },
                 filterOnKeypress:true,
+                autoFitWidth: true,
             },
 // {name: "lastModifiedDate",
 // type:"time"
@@ -481,7 +486,8 @@
                 name: "workflowEndingStatus",
                 title: "<spring:message code="ending.class.status"/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                autoFitWidth: true
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "course.code", title:"", hidden:true},
@@ -1991,8 +1997,8 @@
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "100%",
-        height: "100%",
+        width: "400",
+        height: 30,
         // wrapItemTitles: true,
         numCols: 4,
         colWidths: ["2%", "28%", "2%", "68%"],
@@ -2002,7 +2008,8 @@
             {
                 name: "yearFilter",
                 title: "<spring:message code='year'/>",
-                width: "100%",
+                width: "100",
+                height: 30,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "year",
@@ -2040,7 +2047,8 @@
             {
                 name: "termFilter",
                 title: "<spring:message code='term'/>",
-                width: "100%",
+                width: "300",
+                height: 30,
                 textAlign: "center",
                 type: "SelectItem",
                 multiple: true,
@@ -2301,6 +2309,9 @@
     });
 
     var VLayout_Body_Class_JspClass = isc.TrVLayout.create({
+        width: "100%",
+        height: "100%",
+        overflow: "scroll",
         members: [
             HLayout_Actions_Class_JspClass,
             HLayout_Grid_Class_JspClass,

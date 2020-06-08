@@ -1911,7 +1911,7 @@
     isc.TrVLayout.create({
         autoDraw: true,
         //styleName: "relativePosition",
-        // overflow: "auto",
+        overflow: "auto",
         width: "100%",
         height: "100%",
         members: [
