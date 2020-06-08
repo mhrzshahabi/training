@@ -2602,23 +2602,23 @@
 
     function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
-            if (!checkDate(classStart)) {
+            if (!checkDate(classStart.trim())) {
                 createDialog("info", "فرمت تاریخ شروع صحیح نیست.", "<spring:message code='message'/>");
                 return false;
             }
-            if (!checkDate(classEnd)) {
+            if (!checkDate(classEnd.trim())) {
                 createDialog("info", "فرمت تاریخ پایان صحیح نیست.", "<spring:message code='message'/>");
                 return false;
             }
-            if (classEnd < classStart) {
+            if (classEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (termStart > classStart) {
+            if (termStart.trim() > classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (termEnd < classStart) {
+            if (termEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
