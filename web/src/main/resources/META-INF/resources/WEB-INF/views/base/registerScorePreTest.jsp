@@ -70,7 +70,7 @@
         editEvent: "click",
         modalEditing: true,
         autoSaveEdits: false,
-
+        canHover:true,
 //------
         canSelectCells: true,
 // sortField: 0,
@@ -108,7 +108,7 @@
             },
                 {
                 name: "preTestScore",
-                title: "نمره پيش تست",
+                title: "نمره پيش آزمون",
                 filterOperator: "iContains",
                 canEdit: true,
                 validateOnChange: false,
@@ -151,9 +151,10 @@
                             }
                         }
                         change_value=false;
+                    },
+                    hoverHTML:function (record, rowNum, colNum, grid) {
+                        return"نمره پیش آزمون بین 0 تا 100 می باشد"
                     }
-
-
              },
 
         ],

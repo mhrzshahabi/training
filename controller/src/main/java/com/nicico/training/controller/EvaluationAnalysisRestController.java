@@ -13,6 +13,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.ClassStudentDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public class EvaluationAnalysisRestController {
     private final ParameterService parameterService;
     private final ITclassService tclassService;
     private final ClassStudentDAO classStudentDAO;
+    private final TclassDAO tclassDAO;
     private final ModelMapper mapper;
 
     @Loggable
@@ -238,8 +240,14 @@ public class EvaluationAnalysisRestController {
             resultSet.setFeclpass("true");
         else
             resultSet.setFeclpass("false");
-        resultSet.setHavePostTest("true");
-        resultSet.setHavePreTest("true");
+
+        Integer classHasPreTest = tclassDAO.checkIfClassHasPreTest(classId);
+        if(classHasPreTest != null && classHasPreTest.equals(new Integer(1)))
+            resultSet.setHavePreTest("true");
+        else
+            resultSet.setHavePreTest("false");
+
+        resultSet.setHavePostTest("false");
 
         List<ClassStudent> classStudents = classStudentDAO.findByTclassId(classId);
         HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -254,6 +262,8 @@ public class EvaluationAnalysisRestController {
         List<Double> postScores = new ArrayList<>();
 
         for (ClassStudent classStudent : classStudents) {
+            if(classStudent.getScore() != null || classStudent.getValence() != null)
+                resultSet.setHavePostTest("true");
             if (classStudent.getScore() == null)
             {
                 classStudent.setScore((float) 0.0);
