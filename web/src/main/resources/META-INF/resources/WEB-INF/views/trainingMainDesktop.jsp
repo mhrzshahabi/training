@@ -1697,6 +1697,16 @@
                                     createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                                 }
                             },
+                            {isSeparator: true},
+                            </sec:authorize>
+
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            {
+                                title: "<spring:message code="course.performance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
+                                }
+                            },
                             </sec:authorize>
                         ]
                 },
