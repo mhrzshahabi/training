@@ -1744,14 +1744,16 @@
                 {isSeparator: true},
                 </sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">
-                {
-                    title: "گروه دسترسی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+
+                <%--<sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">--%>
+                <%--{--%>
+                    <%--title: "گروه دسترسی",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
+
 
                 <sec:authorize access="hasAuthority('Menu_Security_WorkGroup')">
                 {
@@ -1766,24 +1768,24 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_Security_Roles')">
-                {
-                    title: "نقش ها",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_Roles')">--%>
+                <%--{--%>
+                    <%--title: "نقش ها",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{isSeparator: true},--%>
+                <%--</sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">
-                {
-                    title: "تخصیص نقش",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">--%>
+                <%--{--%>
+                    <%--title: "تخصیص نقش",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_BlackList')">
                 {
