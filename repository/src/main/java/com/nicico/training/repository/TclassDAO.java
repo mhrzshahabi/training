@@ -89,9 +89,9 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "select max(f_term) from tbl_class where id = :classId", nativeQuery = true)
     Long getTermIdByClassId(Long classId);
 
-
     @EntityGraph(attributePaths = {"institute", "course", "term", "course.category", "course.subCategory", "classStudents", "classStudents.student", "teacher", "teacher.personality", "trainingPlaceSet"})
     @Override
     List<Tclass> findAll(@Nullable Specification<Tclass> var1);
 
+    boolean existsByTermId(Long termId);
 }

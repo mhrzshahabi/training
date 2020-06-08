@@ -492,10 +492,8 @@
                     DynamicForm_Term.setValue("code", termYear + "-" + (parseInt(termCode) + 1));
 
                 } else {
-                    simpleDialog("<spring:message code="warning"/>", "<spring:message
-        code="msg.error.connecting.to.server"/>", 3000, "error");
+                    simpleDialog("<spring:message code="warning"/>", "<spring:message code="msg.error.connecting.to.server"/>", 3000, "error");
                 }
-
             },
         });
     };
@@ -540,6 +538,7 @@
                     var jobRecord = ListGrid_Term.getSelectedRecord();
                     termSaveUrl += jobRecord.id;
                 }
+
                 isc.RPCManager.sendRequest(TrDSRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
             }
         }
@@ -582,7 +581,12 @@
 
             Window_term.close();
 
-        } else {
+        }
+        else if(respCode==405){
+            createDialog("info", "<spring:message code="term.usage"/>", "<spring:message code="message"/>");
+        }
+
+        else {
             if (respCode == 400) {
                 var OK = isc.Dialog.create({
                     message: "<spring:message code="msg.delete.childRecord"/>",
@@ -597,10 +601,7 @@
         }
     };
 
-
-
     function term_delete_result(resp) {
-
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_Term.invalidateCache();
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
@@ -608,7 +609,13 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        } else {
+        }
+
+        else if(resp.httpResponseCode===405){
+            createDialog("info", "<spring:message code="term.usage"/>", "<spring:message code="message"/>");
+            }
+
+        else {
             let respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
                 createDialog("info", "<spring:message code='msg.record.fk-class-term-cannot.deleted'/>");
@@ -617,7 +624,6 @@
             }
         }
     }
-
 
     function print_TermListGrid(type) {
 

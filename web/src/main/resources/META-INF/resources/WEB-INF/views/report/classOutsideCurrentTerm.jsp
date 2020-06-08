@@ -16,7 +16,7 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: termUrl + "spec-list"
     });
     var RestDataSource_subCategory_COCT = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
@@ -142,10 +142,13 @@
 //                 cachePickListResults: true,
                  useClientFiltering: true,
                 filterFields: ["code","startDate"],
-                sortDirection: "descending",
-                // textMatchStyle: "startsWith",
+                 // textMatchStyle: "startsWith",
                 // generateExactMatchCriteria: true,
                 colSpan: 1,
+                initialSort: [
+
+                    {property: "code", direction: "descending", primarySort: true}
+                ],
                 pickListFields: [
                     {
                         name: "code",

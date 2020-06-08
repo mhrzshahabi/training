@@ -10,6 +10,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.iservice.ITermService;
 import com.nicico.training.model.Term;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TermDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,6 +18,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,7 @@ import java.util.Optional;
 public class TermService implements ITermService {
     private final TermDAO termDAO;
     private final ModelMapper mapper;
+    private final TclassDAO tclassDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -47,12 +51,23 @@ public class TermService implements ITermService {
     @Override
     public TermDTO.Info create(TermDTO.Create request) {
         Term term = mapper.map(request, Term.class);
+
         return mapper.map(termDAO.saveAndFlush(term), TermDTO.Info.class);
     }
 
     @Transactional
     @Override
-    public TermDTO.Info update(Long id, TermDTO.Update request) {
+    public TermDTO.Info update(Long id, TermDTO.Update request, HttpServletResponse response) {
+        if (tclassDAO.existsByTermId(request.getId()))
+        {
+            try {
+                response.sendError(405, null);
+                return null;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         Optional<Term> optionalTerm = termDAO.findById(id);
         Term currentTerm = optionalTerm.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
         Term term = new Term();
@@ -63,7 +78,17 @@ public class TermService implements ITermService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void delete(Long id,HttpServletResponse response) {
+        if (tclassDAO.existsByTermId(id))
+        {
+            try {
+                response.sendError(405, null);
+                return;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
+
         termDAO.deleteById(id);
     }
 
