@@ -233,33 +233,33 @@
                 name: "applicantCompanyName",
                 textAlign: "center",
                 width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "titleFa",
-                <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
-                optionDataSource: RestDataSource_company_Student,
-                </sec:authorize>
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                canEdit: true,
-                // filterEditorType: "TextItem",
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
-                    }
-                ],
-                changed: function (form, item, value) {
-                    ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
-                }
+                <%--editorType: "ComboBoxItem",--%>
+                <%--changeOnKeypress: true,--%>
+                <%--displayField: "titleFa",--%>
+                <%--valueField: "titleFa",--%>
+                <%--<sec:authorize access="hasAuthority('TclassStudentsTab_R')">--%>
+                <%--optionDataSource: RestDataSource_company_Student,--%>
+                <%--</sec:authorize>--%>
+                <%--autoFetchData: true,--%>
+                <%--addUnknownValues: false,--%>
+                <%--cachePickListResults: false,--%>
+                <%--useClientFiltering: true,--%>
+                <%--filterFields: ["titleFa"],--%>
+                <%--sortField: ["id"],--%>
+                <%--textMatchStyle: "startsWith",--%>
+                <%--generateExactMatchCriteria: true,--%>
+                <%--canEdit: true,--%>
+                <%--// filterEditorType: "TextItem",--%>
+                <%--pickListFields: [--%>
+                    <%--{--%>
+                        <%--name: "titleFa",--%>
+                        <%--width: "70%",--%>
+                        <%--filterOperator: "iContains"--%>
+                    <%--}--%>
+                <%--],--%>
+                <%--changed: function (form, item, value) {--%>
+                    <%--ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);--%>
+                <%--}--%>
             },
             {
                 name: "presenceTypeId",

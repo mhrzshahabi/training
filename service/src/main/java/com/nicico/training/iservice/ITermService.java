@@ -8,6 +8,7 @@ import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TermDTO;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface ITermService {
@@ -18,9 +19,9 @@ public interface ITermService {
 
     TermDTO.Info create(TermDTO.Create request);
 
-    TermDTO.Info update(Long id, TermDTO.Update request);
+    TermDTO.Info update(Long id, TermDTO.Update request, HttpServletResponse response);
 
-    void delete(Long id);
+    void delete(Long id,HttpServletResponse response);
 
     void delete(TermDTO.Delete request);
 

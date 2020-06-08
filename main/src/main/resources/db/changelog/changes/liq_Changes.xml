@@ -79,6 +79,12 @@
 <!--    <changeSet author="razmnoosh (generated)" id="1591506188197-402">-->
 <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
 <!--    </changeSet>-->
+    <changeSet author="poursalehi_mos (generated)" id="1591589590264-473">
+        <dropUniqueConstraint constraintName="UC_TBL_JOB_GROUPC_TITLE_FA_COL" tableName="TBL_JOB_GROUP"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591589590264-474">
+        <dropUniqueConstraint constraintName="UC_TBL_POST_GRADE_GROUPC_TITLE_FA_COL" tableName="TBL_POST_GRADE_GROUP"/>
+    </changeSet>
 
 
 </databaseChangeLog>
