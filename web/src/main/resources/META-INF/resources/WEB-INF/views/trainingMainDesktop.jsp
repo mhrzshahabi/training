@@ -1679,7 +1679,17 @@
                                     createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+<%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
+                            {
+                                title:  "<spring:message code="evaluation.statical.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
+                                }
+                            },
+<%--                            </sec:authorize>--%>
                         ]
                 },
                 {isSeparator: true},
