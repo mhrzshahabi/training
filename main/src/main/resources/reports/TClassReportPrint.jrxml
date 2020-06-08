@@ -330,7 +330,7 @@
 			<textField>
 				<reportElement x="1" y="41" width="439" height="39" uuid="9db46821-6d1a-4561-9653-cbb820743fcd"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="B Nazanin" size="10"/>
+					<font fontName="Shabnam-FD" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{courseInfo}]]></textFieldExpression>
 			</textField>

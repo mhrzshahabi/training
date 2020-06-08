@@ -21,7 +21,7 @@ public class TrainingOverTimeService implements ITrainingOverTimeService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<TrainingOverTimeDTO> getTrainingOverTimeReportList(String startDate, String endDate) {
+    public List<TrainingOverTimeDTO.Info> getTrainingOverTimeReportList(String startDate, String endDate) {
 
         List<?> tOTReportList = null;
         List<TrainingOverTimeDTO> overTimeDTOList = null;
@@ -80,7 +80,7 @@ public class TrainingOverTimeService implements ITrainingOverTimeService {
             }
         }
 
-        return (overTimeDTOList != null ? modelMapper.map(overTimeDTOList, new TypeToken<List<TrainingOverTimeDTO>>() {
+        return (overTimeDTOList != null ? modelMapper.map(overTimeDTOList, new TypeToken<List<TrainingOverTimeDTO.Info>>() {
         }.getType()) : null);
     }
 }
