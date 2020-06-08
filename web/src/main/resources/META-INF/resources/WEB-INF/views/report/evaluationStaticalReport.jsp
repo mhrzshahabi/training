@@ -14,11 +14,6 @@
 
     var data_values = null;
 
-    var courseInfo_print = "";
-    var classTimeInfo_print = "";
-    var executionInfo_print = "";
-    var evaluationInfo_print = "";
-
     var titr = isc.HTMLFlow.create({
         align: "center",
         border: "1px solid black",
@@ -118,56 +113,10 @@
         fetchDataURL: instituteUrl + "iscList"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    var Menu_ListGrid_JspTClassReport= isc.Menu.create({
-        width: 150,
-        data: [
-         {
-            title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
-                 Reporting();
-
-                 var dataParams = new Object();
-                 dataParams.courseInfo = courseInfo_print;
-                 dataParams.classTimeInfo = classTimeInfo_print;
-                 dataParams.executionInfo = executionInfo_print;
-                 dataParams.evaluationInfo = evaluationInfo_print;
-
-                 trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "pdf", data_values,JSON.stringify(dataParams));
-         }
-        },
-        {
-            title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
-                Reporting();
-
-                var dataParams = new Object();
-                dataParams.courseInfo = courseInfo_print;
-                dataParams.classTimeInfo = classTimeInfo_print;
-                dataParams.executionInfo = executionInfo_print;
-                dataParams.evaluationInfo = evaluationInfo_print;
-
-                trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "excel", data_values,JSON.stringify(dataParams));
-            }
-        },
-        {
-            title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
-                Reporting();
-
-                var dataParams = new Object();
-                dataParams.courseInfo = courseInfo_print;
-                dataParams.classTimeInfo = classTimeInfo_print;
-                dataParams.executionInfo = executionInfo_print;
-                dataParams.evaluationInfo = evaluationInfo_print;
-
-                trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "html", data_values,JSON.stringify(dataParams));
-            }
-        }
-        ]
-    });
-
     var ListGrid_Result_JspTClassReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Class_JspClassResult,
-        contextMenu: Menu_ListGrid_JspTClassReport,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
@@ -1121,81 +1070,6 @@
             Window_Result_JspTClassReport.show();
         }
     });
-
-    IButton_Print_JspTClassReport = isc.IButtonSave.create({
-        top: 260,
-        title: "چاپ گزارش",
-        width: 300,
-        icon: "<spring:url value="pdf.png"/>",
-        click: function () {
-            DynamicForm_CriteriaForm_JspTClassReport.validate();
-            if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
-                return;
-            var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");
-            var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");
-            if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
-                return;
-            }
-            if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
-                startDateCheck_Order_JspTClassReport == false ||
-                startDate2Check_JspTClassReport == false ||
-                startDate1Check_JspTClassReport == false ||
-                endDateCheck_Order_JspTClassReport == false ||
-                endDate2Check_JspTClassReport == false ||
-                endDate1Check_JspTClassReport == false) {
-
-                if (startDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                }
-                if (startDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                }
-                if (startDate2Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
-        code='msg.correct.date'/>", true);
-                }
-                if (startDate1Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
-        code='msg.correct.date'/>", true);
-                }
-
-                if (endDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                }
-                if (endDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                }
-                if (endDate2Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
-                }
-                if (endDate1Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
-                }
-                return;
-            }
-            Reporting();
-
-            var dataParams = new Object();
-            dataParams.courseInfo = courseInfo_print;
-            dataParams.classTimeInfo = classTimeInfo_print;
-            dataParams.executionInfo = executionInfo_print;
-            dataParams.evaluationInfo = evaluationInfo_print;
-
-            trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "pdf", data_values,JSON.stringify(dataParams));
-        }
-    });
     //----------------------------------- functions --------------------------------------------------------------------
     function Reporting(){
         data_values = null;
@@ -1309,70 +1183,41 @@
         behavioralEvaluationInfo.contents = "";
         evaluationInfo.contents = "";
 
-        courseInfo_print = "";
-        classTimeInfo_print = "";
-        executionInfo_print = "";
-        evaluationInfo_print = "";
-
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "کد دوره: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print +=  "کد دوره: " ;
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getDisplayValue();
-            courseInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.titleFa").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نام دوره: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("course.titleFa").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print +=  "نام دوره: " ;
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("course.titleFa").getValue();
-            courseInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.categoryId").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "گروه های کاری: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("course.categoryId").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print  += "گروه های کاری: " ;
-            courseInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("course.categoryId").getDisplayValue() ;
-            courseInfo_print  +=   ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.subCategoryId").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیرگروه های کاری: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("course.subCategoryId").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print +=   "زیرگروه های کاری: " ;
-            courseInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("course.subCategoryId").getDisplayValue() ;
-            courseInfo_print  += ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع دوره: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print += "نوع دوره: ";
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() ;
-            courseInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("classStatus").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت کلاس: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("classStatus").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print +=  "وضعیت کلاس: " ;
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("classStatus").getDisplayValue();
-            courseInfo_print += ", ";
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("hDurationStart").getValue() != undefined) {
@@ -1380,80 +1225,48 @@
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("hDurationStart").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "ساعت، " + "</span>";
-
-            classTimeInfo_print +=  "مدت کلاس: از ";
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("hDurationStart").getDisplayValue();
-            classTimeInfo_print += "ساعت، " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("hDurationEnd").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "مدت کلاس: تا " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("hDurationEnd").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "ساعت، " + "</span>";
-
-            classTimeInfo_print += "مدت کلاس: تا " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("hDurationEnd").getDisplayValue();
-            classTimeInfo_print +=  "ساعت، " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("startDate1").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ شروع کلاس: از " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("startDate1").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print += "تاریخ شروع کلاس: از " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("startDate1").getDisplayValue();
-            classTimeInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("startDate2").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ شروع کلاس: تا " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("startDate2").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print +=   "تاریخ شروع کلاس: تا ";
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("startDate2");
-            classTimeInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("endDate1").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ پایان کلاس: از " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("endDate1").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print +=  "تاریخ پایان کلاس: از " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("endDate1") ;
-            classTimeInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ پایان کلاس: تا " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print += "تاریخ پایان کلاس: تا " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getDisplayValue();
-            classTimeInfo_print += ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("workYear").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "سال کاری: " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("workYear").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print +=  "سال کاری: " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("workYear").getValue();
-            classTimeInfo_print += ", ";
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "ترم کاری: " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print  +=  "ترم کاری: " ;
-            classTimeInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getDisplayValue();
-            classTimeInfo_print  +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getValue() != undefined) {
@@ -1461,30 +1274,18 @@
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            executionInfo_print +="مدرس: " ;
-            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue();
-            executionInfo_print += ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getValue() != undefined) {
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی مدرس: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            executionInfo_print  +=  "وضعیت هزینه ی مدرس: ";
-            executionInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue();
-            executionInfo_print  += ", ";
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getValue() != undefined) {
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "برگزار کننده: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            executionInfo_print +=  "برگزار کننده: " ;
-            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() ;
-            executionInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getValue() != undefined &&
@@ -1494,11 +1295,6 @@
                 DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getDisplayValue() + "</span>";
             reactionEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationGrade").getValue() + "</span>";
-
-            evaluationInfo_print += "نمره ارزیابی واکنشی کلاس: " ;
-            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getDisplayValue();
-            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationGrade").getDisplayValue();
-            evaluationInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationOperator").getValue() != undefined &&
@@ -1507,12 +1303,7 @@
             learningEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationOperator").getDisplayValue() + "</span>";
             learningEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationGrade").getDisplayValue() + "</span>";
-
-            evaluationInfo_print += "نمره ارزیابی یادگیری کلاس: " ;
-            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationOperator").getDisplayValue();
-            evaluationInfo_print +=  DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationGrade").getValue();
-            evaluationInfo_print +=  ", " ;
+                DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationGrade").getDisplayValue() + "</span>";;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationOperator").getValue() != undefined &&
@@ -1522,11 +1313,6 @@
                 DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationOperator").getDisplayValue() + "</span>";
             behavioralEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationGrade").getDisplayValue() + "</span>";
-
-            evaluationInfo_print += "نمره ارزیابی رفتاری کلاس: " ;
-            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationOperator").getDisplayValue();
-            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationGrade").getDisplayValue();
-            evaluationInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getValue() != undefined &&
@@ -1536,11 +1322,6 @@
                 DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getDisplayValue() + "</span>";
             evaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationGrade").getDisplayValue() + "</span>";
-
-            evaluationInfo_print += "نمره اثربخشی کلاس: " ;
-            evaluationInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getDisplayValue() ;
-            evaluationInfo_print  +=  DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationGrade").getDisplayValue();
-            evaluationInfo_print +=  ", " ;
         }
 
         titr.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش کلاس های آموزشی با توجه به محدودیت های اعمال شده:" + "</span>";
@@ -1588,8 +1369,7 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_Confirm_JspTClassReport,
-            IButton_Print_JspTClassReport
+            IButton_Confirm_JspTClassReport
         ]
     });
 
