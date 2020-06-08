@@ -10,6 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.ClassStudentDAO;
@@ -47,7 +48,7 @@ public class EvaluationAnalysisRestController {
     private final ITclassService tclassService;
     private final ClassStudentDAO classStudentDAO;
     private final TclassDAO tclassDAO;
-    private final ModelMapper mapper;
+    private final IEvaluationAnalysisService evaluationAnalysisService;
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
@@ -172,6 +173,11 @@ public class EvaluationAnalysisRestController {
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/BehavioralEvaluationResult.jasper", params, jsonDataSource, response);
+    }
+
+    @GetMapping("/updateLearningEvaluation/{classId}/{scoringMethod}")
+    public void updateLearningEvaluation(@PathVariable Long classId, @PathVariable String scoringMethod) {
+        evaluationAnalysisService.updateLearningEvaluation(classId,scoringMethod);
     }
 
     @GetMapping("/evaluationAnalysistLearningResult/{classId}/{scoringMethod}")

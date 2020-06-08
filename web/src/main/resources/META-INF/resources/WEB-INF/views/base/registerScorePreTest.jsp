@@ -22,6 +22,7 @@
             {name: "endDate"},
             {name: "teacher"},
             {name: "group"},
+            {name: "scoringMethod"},
             {name: "preCourseTest", type: "boolean"},
 
            ],
@@ -233,10 +234,10 @@
             },
 
             {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
-           ],
+            {name: "scoringMethod", hidden: true}
+        ],
 
-        selectionUpdated: function ()
-        {
+        selectionUpdated: function () {
             var classRecord = ListGrid_RegisterScorePreTtest.getSelectedRecord();
             RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id
             ListGrid_Class_Student_RegisterScorePreTest.invalidateCache()
@@ -250,19 +251,28 @@
         sortField: 0,
     });
 
-   function ListGrid_Cell_ScorePreTest_Update(record,newValue)
-   {
-       record.preTestScore=newValue
-       isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/score-pre-test"+"/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
-   }
+    function ListGrid_Cell_ScorePreTest_Update(record, newValue) {
+        record.preTestScore = newValue;
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/score-pre-test" + "/" + record.id,
+            "PUT", JSON.stringify(record), "callback: Edit_score_Update(rpcResponse)"));
+    }
+
+    function Edit_score_Update(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateLearningEvaluation" + "/" + ListGrid_RegisterScorePreTtest.getSelectedRecord().id +
+                "/" + ListGrid_RegisterScorePreTtest.getSelectedRecord().scoringMethod,
+                "GET", null, null));
+            Edit_Cell_score_Update(resp);
+        }
+    }
 
     function validators_ScorePreTest(value) {
 
-            if (value.match(/^(100|[1-9]?\d)$/)) {
-                return true
-            } else {
-                return false
-            }
+        if (value.match(/^(100|[1-9]?\d)$/)) {
+            return true
+        } else {
+            return false
+        }
     }
 
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
