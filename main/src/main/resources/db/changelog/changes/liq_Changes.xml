@@ -86,5 +86,8 @@
         <dropUniqueConstraint constraintName="UC_TBL_POST_GRADE_GROUPC_TITLE_FA_COL" tableName="TBL_POST_GRADE_GROUP"/>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1591591181879-479">
+        <dropUniqueConstraint constraintName="UC_TBL_POST_GROUPC_TITLE_FA_COL" tableName="TBL_POST_GROUP"/>
+    </changeSet>
 
 </databaseChangeLog>
