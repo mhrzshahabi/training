@@ -518,6 +518,7 @@
         showGroupSummary: true,
         groupStartOpen: "all",
         groupByField: 'checkListItem.group',
+        groupByMaxRecords:1000,
         nullGroupTitle: "",
         dataSource: RestDataSource_Class_Item,
         canEdit: true,
