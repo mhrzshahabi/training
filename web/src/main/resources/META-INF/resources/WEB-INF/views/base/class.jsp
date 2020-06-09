@@ -2433,9 +2433,17 @@
         if(ListGrid_Class_JspClass.getSort()[0]["direction"] == "descending"){
             direction = "-";
         }
-        let criteria = ListGrid_Class_JspClass.getCriteria();
-        criteria.criteria.push();
-        printWithCriteria(, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
+        let cr = {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[
+                // { fieldName:"term.code", operator:"inSet", value: DynamicForm_Term_Filter.getValue("termFilter")}
+            ]
+        };
+        cr = ListGrid_Class_JspClass.getCriteria() == undefined ? cr : ListGrid_Class_JspClass.getCriteria();
+        cr.criteria.add({ fieldName:"term.code", operator:"inSet", value: DynamicForm_Term_Filter.getValue("termFilter")});
+        // console.log(criteria);
+        printWithCriteria(cr, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
     }
 
     function classCode() {
