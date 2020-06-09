@@ -364,15 +364,15 @@
             }
             return false;
         },
-        getCellCSSText: function (record) {
-            switch (record.needsAssessmentPriorityId) {
-                case 111:
-                    return "background-color : " + "#994530";
-                case 112:
-                    return "background-color : yellow";
-                case 113:
-                    return "background-color : green";
-            }
+        getCellCSSText: function (record, colNum) {
+                switch (record.needsAssessmentPriorityId) {
+                    case 111:
+                        return "background-color : " + "#ff8abc";
+                    case 112:
+                        return "background-color : " + "#fff7bf";
+                    case 113:
+                        return "background-color : " + "#afffbe";
+                }
         }
     });
     var ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
@@ -447,11 +447,11 @@
         getCellCSSText: function (record) {
             switch (record.needsAssessmentPriorityId) {
                 case 111:
-                    return "background-color : " + "#994530";
+                    return "background-color : " + "#ff8abc";
                 case 112:
-                    return "background-color : yellow";
+                    return "background-color : " + "#fff7bf";
                 case 113:
-                    return "background-color : green";
+                    return "background-color : " + "#afffbe";
             }
         }
     });
@@ -527,11 +527,11 @@
         getCellCSSText: function (record) {
             switch (record.needsAssessmentPriorityId) {
                 case 111:
-                    return "background-color : " + "#994530";
+                    return "background-color : " + "#ff8abc";
                 case 112:
-                    return "background-color : yellow";
+                    return "background-color : " + "#fff7bf";
                 case 113:
-                    return "background-color : green";
+                    return "background-color : " + "#afffbe";
             }
         }
     });
