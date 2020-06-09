@@ -44,11 +44,11 @@
 
             <distributionManagement>
                 <snapshotRepository>
-                    <id>nexus-dift</id>
+                    <id>nexus-dist</id>
                     <url>http://devops01.icico.net.ir/nexus/repository/maven-snapshots/</url>
                 </snapshotRepository>
                 <repository>
-                    <id>nexus-dift</id>
+                    <id>nexus-dist</id>
                     <url>http://devops01.icico.net.ir/nexus/repository/maven-releases/</url>
                 </repository>
             </distributionManagement>

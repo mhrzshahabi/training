@@ -13,8 +13,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -56,7 +54,7 @@ public class StudentClassReportViewDTO {
         private String studentCcpTitle;
         private String termCode;
         private String termTitleFa;
-        private String classStudentFailureReason;
+        private Long classStudentFailureReason;
         private Long classStudentScoresState;
         private Float classStudentScore;
         private String classStudentApplicantCompanyName;

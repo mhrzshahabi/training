@@ -139,7 +139,7 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: termUrl + "spec-list"
     });
     var RestDataSource_Institute_JspClass = isc.TrDS.create({
         fields: [
@@ -2418,7 +2418,13 @@
     }
 
     function ListGrid_class_print(type) {
-        printWithCriteria(ListGrid_Class_JspClass.getCriteria(), {}, "ClassByCriteria.jasper", type);
+        let direction =  "";
+        if(ListGrid_Class_JspClass.getSort()[0]["direction"] == "descending"){
+            direction = "-";
+        }
+        let criteria = ListGrid_Class_JspClass.getCriteria();
+        criteria.criteria.push();
+        printWithCriteria(, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
     }
 
     function classCode() {

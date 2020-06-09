@@ -2191,7 +2191,7 @@
         criteriaForm.submitForm();
     }
 
-    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
+    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf", sortBy = null) {
         // var advancedCriteria = LG.getCriteria();
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -2203,10 +2203,12 @@
                     {name: "CriteriaStr", type: "hidden"},
                     {name: "fileName", type: "hidden"},
                     {name: "params", type: "hidden"},
+                    {name: "sortBy", type: "hidden"},
                 ]
         });
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("sortBy", sortBy);
         criteriaForm.setValue("params", JSON.stringify(params));
         criteriaForm.show();
         criteriaForm.submitForm();
