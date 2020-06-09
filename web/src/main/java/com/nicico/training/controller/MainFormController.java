@@ -131,6 +131,11 @@ public class MainFormController {
         return "report/evaluationStaticalReport";
     }
 
+    @RequestMapping("/categoriesPerformanceReport")
+    public String showCategoriesPerformanceReportForm() {
+        return "report/categoriesPerformanceReport";
+    }
+
     @RequestMapping("class-contract")
     public String showClassContractForm() {
         return "run/class-contract";
@@ -182,6 +187,11 @@ public class MainFormController {
     @GetMapping("/needsAssessment")
     public String showNeedsAssessmentForm() {
         return "needsAssessment/needsAssessment";
+    }
+
+    @GetMapping("/edit-needs-assessment")
+    public String showEditNeedsAssessmentForm() {
+        return "needsAssessment/edit-needs-assessment";
     }
 
     @RequestMapping("/work-group")

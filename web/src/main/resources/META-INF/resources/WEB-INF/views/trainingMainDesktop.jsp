@@ -1693,12 +1693,12 @@
                             </sec:authorize>
 
 <%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
-                            {
-                                title:  "<spring:message code="evaluation.statical.report"/>",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
-                                }
-                            },
+<%--                            {--%>
+<%--                                title:  "<spring:message code="evaluation.statical.report"/>",--%>
+<%--                                click: function () {--%>
+<%--                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");--%>
+<%--                                }--%>
+<%--                            },--%>
 <%--                            </sec:authorize>--%>
                         ]
                 },
@@ -1717,7 +1717,17 @@
                                     createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            {
+                                title: "<spring:message code="course.performance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
+                                }
+                            },
+                            </sec:authorize>--%>
                         ]
                 },
                 </sec:authorize>
@@ -2276,6 +2286,7 @@
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
+    const viewPostGroupUrl = rootUrl + "/view-post-group";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
