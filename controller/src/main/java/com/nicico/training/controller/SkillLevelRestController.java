@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Slf4j
@@ -40,15 +41,15 @@ public class SkillLevelRestController {
     @Loggable
     @PostMapping
 //	@PreAuthorize("hasAuthority('c_skillLevel')")
-    public ResponseEntity<SkillLevelDTO.Info> create(@Validated @RequestBody SkillLevelDTO.Create request) {
-        return new ResponseEntity<>(skillLevelService.create(request), HttpStatus.CREATED);
+    public ResponseEntity<SkillLevelDTO.Info> create(@Validated @RequestBody SkillLevelDTO.Create request, HttpServletResponse response) {
+        return new ResponseEntity<>(skillLevelService.create(request,response), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //	@PreAuthorize("hasAuthority('u_skillLevel')")
-    public ResponseEntity<SkillLevelDTO.Info> update(@PathVariable Long id, @Validated @RequestBody SkillLevelDTO.Update request) {
-        return new ResponseEntity<>(skillLevelService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<SkillLevelDTO.Info> update(@PathVariable Long id, @Validated @RequestBody SkillLevelDTO.Update request,HttpServletResponse response) {
+        return new ResponseEntity<>(skillLevelService.update(id, request,response), HttpStatus.OK);
     }
 
     @Loggable
