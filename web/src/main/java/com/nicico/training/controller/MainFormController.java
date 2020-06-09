@@ -184,6 +184,11 @@ public class MainFormController {
         return "needsAssessment/needsAssessment";
     }
 
+    @GetMapping("/edit-needs-assessment")
+    public String showEditNeedsAssessmentForm() {
+        return "needsAssessment/edit-needs-assessment";
+    }
+
     @RequestMapping("/work-group")
     public String showWorkGroupForm() {
         return "security/workGroup";
