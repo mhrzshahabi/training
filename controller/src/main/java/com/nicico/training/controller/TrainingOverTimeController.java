@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
@@ -45,55 +46,22 @@ public class TrainingOverTimeController {
     @GetMapping(value = "/list")
     @Transactional(readOnly = true)
 //	@PreAuthorize("hasAuthority('r_syllabus')")
-    public ResponseEntity<List> list(
+    public ResponseEntity<TrainingOverTimeDTO.TrainingOverTimeSpecRs> list(
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate) {
-//        List<ClassSession> sessions = classSessionService.findBySessionDateBetween(startDate, endDate);
-        List<TrainingOverTimeDTO> list = trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
-//        List<Attendance> attendances = attendanceService.findBySessionInAndState(sessions, "2");
-//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-//        List<Map<String, String>> list = new ArrayList<>();
-//        Map<String,Map<String, String>> filterMap = new HashMap<>();
-//        for (Attendance a : attendances) {
-////            ClassSessionDTO.Info session = classSessionService.get(a.getSessionId());
-////            Student student = studentService.getStudent(a.getStudentId());
-////            TclassDTO.Info tclassDTO = tclassService.get(session.getClassId());
-//            String key = a.getStudent().getNationalCode() + a.getSession().getSessionDate();
-//            if(filterMap.containsKey(key)){
-//                try {
-//                    Float time = (float)(sdf.parse(a.getSession().getSessionEndHour()).getTime() - sdf.parse(a.getSession().getSessionStartHour()).getTime())/3600000;
-//                    Float totalTime = Float.parseFloat(filterMap.get(key).get("time")) + time;
-//                    filterMap.get(key).put("time",String.format("%.2f",totalTime));
-//                }catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//            }else{
-//                HashMap<String, String> map = new HashMap<>();
-//                map.put("personalNum", a.getStudent().getPersonnelNo());
-//                map.put("personalNum2", a.getStudent().getPersonnelNo2());
-//                map.put("nationalCode", a.getStudent().getNationalCode());
-//                map.put("name", a.getStudent().getFirstName() + " " + a.getStudent().getLastName());
-//                map.put("ccpArea", a.getStudent().getCcpArea());
-//                map.put("classCode", a.getSession().getTclass().getCode());
-//                map.put("className", a.getSession().getTclass().getTitleClass());
-//                map.put("date", a.getSession().getSessionDate());
-//                try {
-//                    Float time = (float)(sdf.parse(a.getSession().getSessionEndHour()).getTime() - sdf.parse(a.getSession().getSessionStartHour()).getTime())/3600000;//60000
-//                    map.put("time", time.toString());
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                filterMap.put(key,map);
-//            }
-//        }
-//        Iterator it = filterMap.entrySet().iterator();
-//        while (it.hasNext()) {
-//            Map.Entry pair = (Map.Entry)it.next();
-//            list.add((Map<String, String>) pair.getValue());
-//            it.remove(); // avoids a ConcurrentModificationException
-//        }
-//        return new ResponseEntity<>(list, HttpStatus.OK);
-        return new ResponseEntity<>(list, HttpStatus.OK);
+
+        List<TrainingOverTimeDTO.Info> response = trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
+
+        final TrainingOverTimeDTO.SpecRs specResponse = new TrainingOverTimeDTO.SpecRs();
+        final TrainingOverTimeDTO.TrainingOverTimeSpecRs specRs = new TrainingOverTimeDTO.TrainingOverTimeSpecRs();
+        specResponse.setData(response)
+                .setStartRow(0)
+                .setEndRow(response.size())
+                .setTotalRows(response.size());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 

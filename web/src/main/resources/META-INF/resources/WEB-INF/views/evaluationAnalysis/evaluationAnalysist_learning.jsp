@@ -190,18 +190,16 @@
         }
     });
 
-    var IButton_Evaluate_LearningEvaluation_Evaluation_Analysis = isc.IButton.create({
-        top: 260,
-        width: "300",
-        height: "25",
-        margin: 2,
-        title: "تحلیل ارزیابی یادگیری",
-        click: function () {
-            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/evaluationAnalysistLearningResult/"
-                + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().scoringMethod ,
-                "GET", null, "callback: fill_learning_evaluation_result_resp(rpcResponse)"));
-        }
-    });
+    // var IButton_Evaluate_LearningEvaluation_Evaluation_Analysis = isc.IButton.create({
+    //     top: 260,
+    //     width: "300",
+    //     height: "25",
+    //     margin: 2,
+    //     title: "تحلیل ارزیابی یادگیری",
+    //     click: function () {
+    //
+    //     }
+    // });
 
     function fill_learning_evaluation_result_resp(resp) {
         load_learning_evluation_analysis_data(JSON.parse(resp.data));
@@ -276,7 +274,7 @@
                 name: "preTestScore",
                 title: "نمره پيش آزمون",
                 filterOperator: "iContains",
-                canEdit: true,
+                // canEdit: true,
                 validateOnChange: false,
                 autoFitWidth:true,
                 editEvent: "click",
@@ -319,9 +317,9 @@
                     }
                     change_value=false;
                 },
-                hoverHTML:function (record, rowNum, colNum, grid) {
-                    return"نمره پیش آزمون بین 0 تا 100 می باشد"
-                }
+                // hoverHTML:function (record, rowNum, colNum, grid) {
+                //     return"نمره پیش آزمون بین 0 تا 100 می باشد"
+                // }
             },
             {
                 name:"score", title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true,
@@ -343,7 +341,7 @@
         defaultLayoutAlign: "center",
         width: "37%",
         height: "400",
-        members: [ListGrid_evaluationAnalysist_learning,IButton_Evaluate_LearningEvaluation_Evaluation_Analysis]
+        members: [ListGrid_evaluationAnalysist_learning]
     });
 
     var Hlayout_LearningEvaluationResult = isc.HLayout.create({
@@ -396,6 +394,9 @@
                 ListGrid_evaluationAnalysist_learning.hideField('score');
             }
         }
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/evaluationAnalysistLearningResult/"
+            + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().scoringMethod ,
+            "GET", null, "callback: fill_learning_evaluation_result_resp(rpcResponse)"));
     }
 
     function printEvaluationAnalysistLearning(a) {

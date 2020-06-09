@@ -314,27 +314,27 @@ public class TeacherRestController {
        SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
 
-        List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
-
-        Float min_evalGrade = null;
-        if(evaluationGrade != null)
-           min_evalGrade = Float.parseFloat(evaluationGrade.toString());
-
-        if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
-            for (TeacherDTO.Report datum : response.getList()) {
-                if (evaluationGrade != null) {
-                    ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
-                    Float teacher_evalGrade = t.getBody();
-                    datum.setEvaluationGrade(""+teacher_evalGrade);
-                    if (teacher_evalGrade < min_evalGrade)
-                        listRemovedObjects.add(datum);
-                }
-            }
-        }
-
-        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            response.getList().remove(listRemovedObject);
-        listRemovedObjects.clear();
+//        List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
+//
+//        Float min_evalGrade = null;
+//        if(evaluationGrade != null)
+//           min_evalGrade = Float.parseFloat(evaluationGrade.toString());
+//
+//        if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
+//            for (TeacherDTO.Report datum : response.getList()) {
+//                if (evaluationGrade != null) {
+//                    ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
+//                    Float teacher_evalGrade = t.getBody();
+//                    datum.setEvaluationGrade(""+teacher_evalGrade);
+//                    if (teacher_evalGrade < min_evalGrade)
+//                        listRemovedObjects.add(datum);
+//                }
+//            }
+//        }
+//
+//        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
+//            response.getList().remove(listRemovedObject);
+//        listRemovedObjects.clear();
 
         for (TeacherDTO.Report datum : response.getList()) {
             Long tId = datum.getId();

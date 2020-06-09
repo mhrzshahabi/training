@@ -69,16 +69,16 @@ public class TermRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<TermDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<TermDTO.Info> update(@PathVariable Long id, @RequestBody Object request,HttpServletResponse response) {
         TermDTO.Update update = modelMapper.map(request, TermDTO.Update.class);
-        return new ResponseEntity<>(termService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(termService.update(id, update,response), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id,HttpServletResponse response) {
         try {
-            termService.delete(id);
+            termService.delete(id,response);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
