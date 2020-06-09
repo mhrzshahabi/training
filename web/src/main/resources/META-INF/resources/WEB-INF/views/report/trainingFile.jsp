@@ -110,7 +110,7 @@
             ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
             ListGrid_TrainingFile_TrainingFileJSP.fetchData();
             Window_StudentSearch_JspTrainingFile.close();
-
+            excelBtn.setDisabled(false);
         }
     });
 
@@ -224,6 +224,7 @@
                 click (form, item) {
                     form.clearValues();
                     ListGrid_TrainingFile_TrainingFileJSP.setData([]);
+                    excelBtn.setDisabled(true);
                 }
             },
         ],
@@ -254,6 +255,24 @@
         }]
     });
 
+    var excelBtn= isc.ToolStripButtonExcel.create({
+        click: function() {
+            let criteria = ListGrid_TrainingFile_TrainingFileJSP.getCriteria();
+
+            if(typeof(criteria.operator)=='undefined'){
+                criteria._constructor="AdvancedCriteria";
+                criteria.operator="and";
+            }
+
+            if(typeof(criteria.criteria)=='undefined'){
+                criteria.criteria=[];
+            }
+            criteria.criteria.push({fieldName:'student.nationalCode',operator:'equals',value:DynamicForm_TrainingFile.getField("nationalCode").getValue()});
+
+            ExportToFile.showDialog(null, ListGrid_TrainingFile_TrainingFileJSP, 'trainingFile', 0, null, '',  "پرونده آموزشی", criteria, null);
+        }
+    });
+
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
@@ -262,24 +281,7 @@
         filterOnKeypress: true,
         gridComponents: [DynamicForm_TrainingFile,isc.ToolStrip.create({
             members: [
-                isc.ToolStripButtonExcel.create({
-                    click: function() {
-                        let criteria = ListGrid_TrainingFile_TrainingFileJSP.getCriteria();
-
-                        if(typeof(criteria.operator)=='undefined'){
-                            criteria._constructor="AdvancedCriteria";
-                            criteria.operator="and";
-                        }
-
-                        if(typeof(criteria.criteria)=='undefined'){
-                            criteria.criteria=[];
-                        }
-                        criteria.criteria.push({fieldName:'student.nationalCode',operator:'equals',value:DynamicForm_TrainingFile.getField("nationalCode").getValue()});
-
-
-                        ExportToFile.showDialog(null, ListGrid_TrainingFile_TrainingFileJSP, 'trainingFile', 0, null, '',  "پرونده آموزشی", criteria, null);
-                    }
-                })
+              excelBtn
             ]
 
         }), "header", "filterEditor", "body"],
@@ -361,5 +363,7 @@
         CriteriaForm_TrainingFile.show();
         CriteriaForm_TrainingFile.submitForm();
     }
+
+    excelBtn.setDisabled(true);
 
  //</script>
