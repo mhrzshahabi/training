@@ -14,7 +14,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Subselect("select * from view_post_group")
-@DiscriminatorValue("PostGroupView")
+@DiscriminatorValue("ViewPostGroup")
 public class ViewPostGroup extends Auditable {
 
     @Id
