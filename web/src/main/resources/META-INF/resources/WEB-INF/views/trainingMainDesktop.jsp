@@ -2287,6 +2287,7 @@
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
     const viewPostGroupUrl = rootUrl + "/view-post-group";
+    const viewPostUrl = rootUrl + "/view-post";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
