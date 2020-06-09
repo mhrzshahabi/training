@@ -1191,7 +1191,9 @@
                     name: "numberOfStudentEvaluation",
                     title: "<spring:message code='evaluated'/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    canFilter: false,
+                    canSort: false
                 },
                 {
                     name: "institute.titleFa",
