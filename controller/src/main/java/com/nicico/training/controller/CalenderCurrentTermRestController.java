@@ -8,7 +8,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
-import com.nicico.training.NeedsAssessmentReportsDTO;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;

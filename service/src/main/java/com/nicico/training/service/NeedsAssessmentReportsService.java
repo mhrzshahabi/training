@@ -3,7 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.NeedsAssessmentReportsDTO;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
