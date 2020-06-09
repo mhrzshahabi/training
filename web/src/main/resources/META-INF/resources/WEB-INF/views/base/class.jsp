@@ -391,7 +391,8 @@
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
-                }
+                },
+                autoFitWidth: true
             },
             {
                 name: "studentCount",

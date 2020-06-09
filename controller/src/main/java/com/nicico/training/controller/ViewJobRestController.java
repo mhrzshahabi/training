@@ -1,8 +1,8 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.ViewPostGroupDTO;
-import com.nicico.training.service.ViewPostGroupService;
+import com.nicico.training.dto.ViewjobDTO;
+import com.nicico.training.service.ViewJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,18 +17,18 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/view-post-group")
-public class ViewPostGroupRestController {
+@RequestMapping(value = "/api/view-job")
+public class ViewJobRestController {
 
-    private final ViewPostGroupService viewPostGroupService;
+    private final ViewJobService viewJobService;
 
     @GetMapping(value = "/iscList")
-    public ResponseEntity<ISC<ViewPostGroupDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<ViewjobDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ViewPostGroupDTO.Info> searchRs = viewPostGroupService.search(searchRq);
+        SearchDTO.SearchRs<ViewjobDTO.Info> searchRs = viewJobService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 }

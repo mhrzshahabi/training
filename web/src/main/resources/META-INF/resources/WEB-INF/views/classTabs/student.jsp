@@ -88,13 +88,18 @@
                 title: "<spring:message code='print'/>",
                 click: function () {
                     var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+
+                    let startDateStr=[...classRecord.startDate.split("/").reverse()].join("/");
+                    let endDateStr=[...classRecord.endDate.split("/").reverse()].join("/");
+
                     var titr = "گزارش فراگیران کلاس " + classRecord.course.titleFa +
                         " دارای کد دوره: " + classRecord.course.code +
                         " و کد کلاس: " +  classRecord.code +
                         " و استاد: " + classRecord.teacher +
-                        " و مدت: " + classRecord.course.theoryDuration +
-                        " ساعت و تاریخ شروع: " +  classRecord.startDate +
-                        " و تاریخ پایان: " +  classRecord.endDate;
+                        " و مدت: " + classRecord.hduration +
+                        " ساعت و تاریخ شروع: " +  startDateStr +
+                        " و تاریخ پایان: " +  endDateStr;
+
                     let params = {};
                     params.titr = titr;
 

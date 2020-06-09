@@ -4,7 +4,10 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Getter
 @Setter
@@ -13,9 +16,9 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_post_group")
-@DiscriminatorValue("ViewPostGroup")
-public class ViewPostGroup extends Auditable {
+@Subselect("select * from view_post_grade_group")
+@DiscriminatorValue("ViewPostGradeGroup")
+public class ViewPostGradeGroup extends Auditable {
 
     @Id
     @Column(name = "id")

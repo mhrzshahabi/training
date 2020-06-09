@@ -1717,7 +1717,17 @@
                                     createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            {
+                                title: "<spring:message code="course.performance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
+                                }
+                            },
+                            </sec:authorize>--%>
                         ]
                 },
                 </sec:authorize>
@@ -2279,6 +2289,11 @@
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
     const viewPostGroupUrl = rootUrl + "/view-post-group";
+    const viewPostUrl = rootUrl + "/view-post";
+    const viewJobUrl = rootUrl + "/view-job";
+    const viewJobGroupUrl = rootUrl + "/view-job-group";
+    const viewPostGradeUrl = rootUrl + "/view-post-grade";
+    const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
