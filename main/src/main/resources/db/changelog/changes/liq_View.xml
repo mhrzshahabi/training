@@ -782,7 +782,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE-004">
+    <changeSet author="NICICO" id="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE-005">
         <createView viewName="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE" replaceIfExists="true">
             <![CDATA[
     SELECT
@@ -838,10 +838,10 @@ GROUP BY
     tbl_term.id                                AS term_id,
     tbl_class_student.id                       AS class_student_id,
     tbl_class_student.applicant_company_name   AS class_student_applicant_company_name,
-    tbl_class_student.failure_reason           AS class_student_failure_reason,
+    tbl_class_student.failure_reason_id        AS class_student_failure_reason_id,
     tbl_class_student.presence_type_id         AS class_student_presence_type_id,
     tbl_class_student.score                    AS class_student_score,
-    tbl_class_student.scores_state             AS class_student_scores_state,
+    tbl_class_student.scores_state_id          AS class_student_scores_state_id,
     tbl_class.id                               AS class_id,
     tbl_class.c_status                         AS class_status,
     tbl_class.c_code                           AS class_code,
@@ -921,10 +921,10 @@ SELECT
     tbl_term.id                                      AS term_id,
     tbl_class_student.id                             AS class_student_id,
     tbl_class_student.applicant_company_name         AS class_student_applicant_company_name,
-    tbl_class_student.failure_reason                 AS class_student_failure_reason,
+    tbl_class_student.failure_reason_id              AS class_student_failure_reason_id,
     tbl_class_student.presence_type_id               AS class_student_presence_type_id,
     tbl_class_student.score                          AS class_student_score,
-    tbl_class_student.scores_state                   AS class_student_scores_state,
+    tbl_class_student.scores_state_id                AS class_student_scores_state_id,
     tbl_class.id                                     AS class_id,
     tbl_class.c_status                               AS class_status,
     tbl_class.c_code                                 AS class_code,
@@ -954,7 +954,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT-004">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT-005">
         <createView viewName="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT" replaceIfExists="true">
             <![CDATA[
     SELECT
@@ -985,16 +985,16 @@ FROM
     na."PERSONNEL_POST_GRADE_TITLE",
     na."PERSONNEL_POST_TITLE",
     CASE
-        WHEN passed.class_student_scores_state LIKE '%قبول%' THEN
-            1
+        WHEN passed.class_student_scores_state_id IN (400, 401) THEN
+            216
         ELSE
-            0
+            399
     END AS is_passed
 FROM
     view_personnel_course_na_report               na
     LEFT JOIN view_student_classstudent_class_term_course   passed ON na.personnel_national_code = passed.student_national_code
                                                                     AND na.course_id = passed.course_id
-                                                                    AND passed.class_student_scores_state LIKE '%قبول%'
+                                                                    AND passed.class_student_scores_state_id IN (400, 401)
     			]]>
         </createView>
     </changeSet>
@@ -1294,7 +1294,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT-005">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT-006">
         <createView viewName="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT" replaceIfExists="true">
             <![CDATA[
     SELECT
@@ -1325,22 +1325,16 @@ GROUP BY
     prs.post_grade_title        AS personnel_post_grade_title,
     prs.post_title              AS personnel_post_title
 FROM
-    tbl_personnel   prs
-    INNER JOIN tbl_course      crs ON prs.active = 1
-                                 AND prs.employment_status_id = 5
-WHERE
-    NOT EXISTS (
-        SELECT
-            v.course_id
-        FROM
-            view_student_classstudent_class_term_course v
-        WHERE
-            (prs.national_code = v.student_national_code
-            OR prs.personnel_no = v.student_personnel_no)
-            AND crs.id = v.course_id
-            AND ( v.class_student_scores_state LIKE '%قبول%'
-                  OR v.class_student_scores_state IS NULL )
-    )
+    tbl_class_student   cs
+    INNER JOIN tbl_class           cl ON cs.class_id = cl.id
+                               AND cs.scores_state_id IN (400,401,410)
+    INNER JOIN tbl_student         st ON cs.student_id = st.id
+    RIGHT JOIN tbl_course          crs ON cl.f_course = crs.id
+    INNER JOIN tbl_personnel       prs ON prs.active = 1
+                                    AND prs.employment_status_id = 5
+                                    AND ( st.personnel_no IS NULL
+                                          OR ( st.personnel_no <> prs.personnel_no
+                                               AND st.national_code <> prs.national_code ) )
     			]]>
         </createView>
     </changeSet>

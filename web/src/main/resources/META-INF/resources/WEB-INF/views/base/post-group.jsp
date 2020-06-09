@@ -9,8 +9,9 @@
 
 // <script>
 
+    var postGroupPostList_Post_Group_Jsp = null;
+
     window_unGroupedPosts_PostGroup = isc.Window.create({
-        title: "پست های فاقد گروه پستی",
         minWidth: 1024,
         autoCenter: true,
         showMaximizeButton: false,
@@ -22,10 +23,6 @@
         close(){
             closeToShowUnGroupedPosts_POST();
             this.Super("close",arguments)
-        },
-        show(){
-            callToShowUnGroupedPosts_POST();
-            this.Super("show",arguments)
         },
     });
 
@@ -203,21 +200,9 @@
         contextMenu: Menu_ListGrid_Post_Group_Jsp,
         sortField: 5,
         autoFetchData: true,
-        selectionChange: function (record, state) {
-            record = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            if (record == null || record.id == null) {
-            } else {
-                // RestDataSource_Post_Group_Competencies_Jsp.fetchDataURL = postGroupUrl + "/" + record.id + "/getCompetences"
-                RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts";
-                ListGrid_Post_Group_Posts.fetchData();
-                ListGrid_Post_Group_Posts.invalidateCache();
-                // RestDataSource_Post_Group_Competencies_Jsp.invalidateCache();
-                // RestDataSource_Post_Group_Competencies_Jsp.fetchData();
-                // RestDataSource_Post_Group_Posts_Jsp.invalidateCache();
-                // RestDataSource_Post_Group_Posts_Jsp.fetchData();
-                // ListGrid_Post_Group_Competence.invalidateCache();
-                // ListGrid_Post_Group_Competence.fetchData();
-            }
+        selectionUpdated: function() {
+            postGroupPostList_Post_Group_Jsp = null;
+            selectionUpdated_Post_Group_Jsp();
         },
         doubleClick: function () {
             ListGrid_Post_Group_edit();
@@ -669,6 +654,10 @@
         doubleClick: function () {
             //    ListGrid_Post_Group_edit();
         },
+        dataArrived: function () {
+            postGroupPostList_Post_Group_Jsp = ListGrid_Post_Group_Posts.data.localData;
+            fetchPersonnelData_Post_Group_Jsp();
+        },
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -886,6 +875,55 @@
         })]
     });
 
+    ToolStripButton_unGroupedPosts_Jsp = isc.ToolStripButton.create({
+        title: "پست های فاقد گروه پستی",
+        click: function () {
+            window_unGroupedPosts_PostGroup.addProperties({show: function(){
+                    callToShowUnGroupedPosts_POST({
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
+                    });
+                    this.Super("show",arguments)
+                },});
+            window_unGroupedPosts_PostGroup.setTitle(this.title);
+            window_unGroupedPosts_PostGroup.show();
+        }
+    });
+    ToolStripButton_newPosts_Jsp = isc.ToolStripButton.create({
+        title: "پست های جدید",
+        click: function () {
+            window_unGroupedPosts_PostGroup.addProperties({show: function(){
+                    callToShowUnGroupedPosts_POST({
+                        _constructor: "AdvancedCriteria",
+                        operator: "or",
+                        criteria: [
+                            {fieldName: "createdDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()},
+                            {fieldName: "lastModifiedDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()}
+                        ]
+                    });
+                    this.Super("show",arguments)
+                },});
+            window_unGroupedPosts_PostGroup.setTitle(this.title);
+            window_unGroupedPosts_PostGroup.show();
+        }
+    });
+    ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی",
+        click: function () {
+            Window_NeedsAssessment_Edit.show();
+        }
+    });
+    ToolStrip_NA_Post_Group_Jsp = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            ToolStripButton_unGroupedPosts_Jsp,
+            ToolStripButton_newPosts_Jsp,
+            ToolStripButton_EditNA_Jsp
+        ]
+    });
+
     var ToolStripButton_Refresh_Post_Group_Jsp = isc.ToolStripButtonRefresh.create({
         // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
@@ -955,19 +993,6 @@
             }
         }
     });
-    var ToolStripButton_unGroupedPosts_Jsp = isc.ToolStripButton.create({
-        title: "پست های فاقد گروه پستی",
-        click: function () {
-            unGroupedPosts_PostGroup();
-        }
-    });
-    var ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
-        title: "ویرایش نیازسنجی",
-        click: function () {
-            Window_NeedsAssessment_Edit.show();
-            // let view = isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/", viewLoaded() {aaaaaaaaaa(view)}});
-        }
-    });
     var ToolStrip_Actions_Post_Group_Jsp = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -976,8 +1001,6 @@
             ToolStripButton_Edit_Post_Group_Jsp,
             ToolStripButton_Remove_Post_Group_Jsp,
             ToolStripButton_Add_Post_Group_AddPost_Jsp,
-            ToolStripButton_unGroupedPosts_Jsp,
-            ToolStripButton_EditNA_Jsp,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -989,9 +1012,75 @@
         ]
     });
 
-    var HLayout_Actions_Post_Group_Jsp = isc.HLayout.create({
+    var HLayout_Actions_Post_Group_Jsp = isc.VLayout.create({
         width: "100%",
-        members: [ToolStrip_Actions_Post_Group_Jsp]
+        members: [ToolStrip_Actions_Post_Group_Jsp, ToolStrip_NA_Post_Group_Jsp]
+    });
+
+    ////////////////////////////////////////////////////////////personnel/////////////////////////////////////////////////
+    PersonnelDS_Post_Group_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpSection", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+    });
+
+    PersonnelLG_Post_Group_Jsp = isc.TrLG.create({
+        dataSource: PersonnelDS_Post_Group_Jsp,
+        selectionType: "single",
+        alternateRecordStyles: true,
+        fields: [
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postCode"},
+            {name: "postTitle"},
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"},
+        ]
     });
 
     var Detail_Tab_Post_Group = isc.TabSet.create({
@@ -999,25 +1088,12 @@
         width: "100%",
         height: "100%",
         tabs: [
-            {
-                id: "TabPane_Post_Group_Post",
-                title: "لیست پست ها",
-                pane: ListGrid_Post_Group_Posts
-
-            },
-            // {
-            //     id: "TabPane_Post_Group_Competence",
-            //     title: "لیست شایستگی ها",
-            //     visable:false,
-            //     pane: ListGrid_Post_Group_Competence
-            // }
-            // ,{
-            //     id: "TabPane_Post_Group_Competence",
-            //     title: "لیست پستهای این گروه پست",
-            //     visable:false,
-            //     pane: ListGrid_Post_Group_Competence
-            // }
-        ]
+            {name: "TabPane_Post_Post_Group_Jsp", title: "لیست پست ها", pane: ListGrid_Post_Group_Posts},
+            {name: "TabPane_Personnel_Post_Group_Jsp", title: "لیست پرسنل", pane: PersonnelLG_Post_Group_Jsp}
+        ],
+        tabSelected: function (){
+            selectionUpdated_Post_Group_Jsp();
+        }
     });
 
     var HLayout_Tab_Post_Group = isc.HLayout.create({
@@ -1049,6 +1125,7 @@
             ListGrid_Post_Group_Posts.setData([]);
         else
             ListGrid_Post_Group_Posts.invalidateCache();
+        PersonnelLG_Post_Group_Jsp.setData([]);
     }
 
     function ListGrid_Post_Group_Competence_refresh() {
@@ -1197,8 +1274,33 @@
         });
     }
 
-    function unGroupedPosts_PostGroup(){
-        window_unGroupedPosts_PostGroup.show();
+    function selectionUpdated_Post_Group_Jsp(){
+        let postGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+        let tab = Detail_Tab_Post_Group.getSelectedTab();
+        if (postGroup == null && tab.pane != null){
+            tab.pane.setData([]);
+            return;
+        }
+        RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPosts";
+        if (postGroupPostList_Post_Group_Jsp == null)
+            refreshLG(ListGrid_Post_Group_Posts);
+        fetchPersonnelData_Post_Group_Jsp();
+    }
+
+    function fetchPersonnelData_Post_Group_Jsp() {
+        if (Detail_Tab_Post_Group.getSelectedTab().name !== "TabPane_Personnel_Post_Group_Jsp")
+            return;
+        if (postGroupPostList_Post_Group_Jsp == null) {
+            PersonnelLG_Post_Group_Jsp.setData([]);
+            return;
+        }
+        PersonnelLG_Post_Group_Jsp.implicitCriteria = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "postCode", operator: "equals", value: postGroupPostList_Post_Group_Jsp.map(p => p.code)}]
+        };
+        PersonnelLG_Post_Group_Jsp.invalidateCache();
+        PersonnelLG_Post_Group_Jsp.fetchData();
     }
 
     // </script>

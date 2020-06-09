@@ -399,15 +399,10 @@
         DetailViewer_Personnel.fetchData();
     }
 
-    function callToShowUnGroupedPosts_POST(){
-        PostLG_post.implicitCriteria = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [
-                {fieldName: "postGroupSet", operator: "isNull"},
-            ]
-        };
-        refreshLG(PostLG_post);
+    function callToShowUnGroupedPosts_POST(criteria){
+        PostLG_post.implicitCriteria = criteria;
+        PostLG_post.invalidateCache();
+        PostLG_post.fetchData();
     }
 
     function closeToShowUnGroupedPosts_POST(){

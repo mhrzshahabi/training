@@ -665,7 +665,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
-    const trainingMainUrl = rootUrl + "/main"
+    const trainingMainUrl = rootUrl + "/main";
     const oauthUserUrl = rootUrl + "/oauth/users";
     const oauthRoleUrl = rootUrl + "/oauth/app-roles";
     const oauthGroupUrl = rootUrl + "/oauth/groups";
@@ -711,6 +711,12 @@
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
     const classOutsideCurrentTerm = rootUrl + "/class-outside-current-term";
+    const viewPostGroupUrl = rootUrl + "/view-post-group";
+    const viewPostUrl = rootUrl + "/view-post";
+    const viewJobUrl = rootUrl + "/view-job";
+    const viewJobGroupUrl = rootUrl + "/view-job-group";
+    const viewPostGradeUrl = rootUrl + "/view-post-grade";
+    const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2288,12 +2294,6 @@
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
-    const viewPostGroupUrl = rootUrl + "/view-post-group";
-    const viewPostUrl = rootUrl + "/view-post";
-    const viewJobUrl = rootUrl + "/view-job";
-    const viewJobGroupUrl = rootUrl + "/view-job-group";
-    const viewPostGradeUrl = rootUrl + "/view-post-grade";
-    const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
