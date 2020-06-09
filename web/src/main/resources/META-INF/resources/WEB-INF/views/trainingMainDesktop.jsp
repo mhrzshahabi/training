@@ -2276,6 +2276,7 @@
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
+    const viewPostGroupUrl = rootUrl + "/view-post-group";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

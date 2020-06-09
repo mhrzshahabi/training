@@ -1,7 +1,5 @@
-package com.nicico.training;
+package com.nicico.training.dto;
 
-import com.nicico.training.dto.CompetenceDTO;
-import com.nicico.training.dto.SkillDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;

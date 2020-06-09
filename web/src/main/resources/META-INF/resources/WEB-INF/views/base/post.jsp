@@ -399,22 +399,18 @@
         DetailViewer_Personnel.fetchData();
     }
 
-    <%--function print_PostListGrid(type) {--%>
-    <%--    let advancedCriteria_post = PostLG_post.getCriteria();--%>
-    <%--    let print_form_post = isc.DynamicForm.create({--%>
-    <%--        method: "POST",--%>
-    <%--        action: "<spring:url value="/web/print/post/"/>" + type,--%>
-    <%--        target: "_Blank",--%>
-    <%--        canSubmit: true,--%>
-    <%--        fields: [--%>
-    <%--            {name: "CriteriaStr", type: "hidden"},--%>
-    <%--            {name: "myToken", type: "hidden"}--%>
-    <%--        ]--%>
-    <%--    });--%>
-    <%--    print_form_post.setValue("CriteriaStr", JSON.stringify(advancedCriteria_post));--%>
-    <%--    print_form_post.setValue("myToken", "<%=accessToken%>");--%>
-    <%--    print_form_post.show();--%>
-    <%--    print_form_post.submitForm();--%>
-    <%--}--%>
+    function callToShowUnGroupedPosts_POST(){
+        PostLG_post.implicitCriteria = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "postGroupSet", operator: "isNull"},
+            ]
+        };
+        refreshLG(PostLG_post);
+    }
 
+    function closeToShowUnGroupedPosts_POST(){
+        PostLG_post.implicitCriteria = null;
+    }
     // </script>
