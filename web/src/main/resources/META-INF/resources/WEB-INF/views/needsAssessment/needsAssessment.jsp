@@ -127,7 +127,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
         ]
     });
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
-        // groupByField:["objectType"],
+        // groupByField:["objectName"],
         // groupByField:["objectType", "objectName"],
         // groupStartOpen: "none",
         allowAdvancedCriteria:true,
@@ -1361,8 +1361,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             item.grid.endEditing();
         }));
     }
-
-
 
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------

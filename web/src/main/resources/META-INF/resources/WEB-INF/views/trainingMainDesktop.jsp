@@ -534,7 +534,17 @@
                 let sortStr='';
 
                 if (sort != null && sort.size() != 0){
-                    sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+
+                    //if(sort.size() != 1){
+                        sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+                    /*}else{
+                        let sort=[];
+                        for (var i = 0; i <sort.size() ; i++) {
+                            sort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
+                        }
+
+                        sortStr=JSON.stringify(sort);
+                    }*/
                 }
 
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
@@ -1679,7 +1689,17 @@
                                     createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+<%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
+<%--                            {--%>
+<%--                                title:  "<spring:message code="evaluation.statical.report"/>",--%>
+<%--                                click: function () {--%>
+<%--                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");--%>
+<%--                                }--%>
+<%--                            },--%>
+<%--                            </sec:authorize>--%>
                         ]
                 },
                 {isSeparator: true},
@@ -1744,14 +1764,16 @@
                 {isSeparator: true},
                 </sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">
-                {
-                    title: "گروه دسترسی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+
+                <%--<sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">--%>
+                <%--{--%>
+                    <%--title: "گروه دسترسی",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
+
 
                 <sec:authorize access="hasAuthority('Menu_Security_WorkGroup')">
                 {
@@ -1766,24 +1788,24 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_Security_Roles')">
-                {
-                    title: "نقش ها",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_Roles')">--%>
+                <%--{--%>
+                    <%--title: "نقش ها",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{isSeparator: true},--%>
+                <%--</sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">
-                {
-                    title: "تخصیص نقش",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">--%>
+                <%--{--%>
+                    <%--title: "تخصیص نقش",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_BlackList')">
                 {
@@ -2264,6 +2286,7 @@
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
+    const viewPostGroupUrl = rootUrl + "/view-post-group";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

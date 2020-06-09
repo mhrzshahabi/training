@@ -5,7 +5,7 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.NeedsAssessmentReportsDTO;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.service.NeedsAssessmentReportsService;
 import lombok.RequiredArgsConstructor;

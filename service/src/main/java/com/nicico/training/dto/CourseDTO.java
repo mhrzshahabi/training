@@ -77,6 +77,21 @@ public class CourseDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("CourseTupleInfo")
+    public static class TupleInfo {
+        private Long id;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String code;
+
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String titleFa;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("CourseInfo")
     public static class Info extends CourseDTO {
         private Long id;

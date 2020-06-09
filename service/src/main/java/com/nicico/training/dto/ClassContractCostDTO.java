@@ -1,6 +1,5 @@
-package com.nicico.training;
+package com.nicico.training.dto;
 
-import com.nicico.training.dto.TclassDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
