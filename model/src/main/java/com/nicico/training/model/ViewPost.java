@@ -18,7 +18,7 @@ import javax.persistence.Id;
 @Entity
 @Subselect("select * from view_post")
 @DiscriminatorValue("ViewPost")
-public class ViewPost {
+public class ViewPost extends Auditable {
     @Id
     @Column(name = "id")
     private Long id;

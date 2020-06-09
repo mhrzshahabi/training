@@ -2288,6 +2288,7 @@
     const polisUrl = rootUrl + "/polis/";
     const viewPostGroupUrl = rootUrl + "/view-post-group";
     const viewPostUrl = rootUrl + "/view-post";
+    const viewJobUrl = rootUrl + "/view-job";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

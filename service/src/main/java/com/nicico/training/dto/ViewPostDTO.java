@@ -7,11 +7,12 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ViewPostDTO {
+public class ViewPostDTO implements Serializable {
 
     @NotEmpty
     @ApiModelProperty(required = true)
