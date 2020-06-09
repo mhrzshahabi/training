@@ -2289,6 +2289,7 @@
     const viewPostGroupUrl = rootUrl + "/view-post-group";
     const viewPostUrl = rootUrl + "/view-post";
     const viewJobUrl = rootUrl + "/view-job";
+    const viewJobGroupUrl = rootUrl + "/view-job-group";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

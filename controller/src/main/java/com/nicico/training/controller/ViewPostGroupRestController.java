@@ -23,7 +23,7 @@ public class ViewPostGroupRestController {
     private final ViewPostGroupService viewPostGroupService;
 
     @GetMapping(value = "/iscList")
-    public ResponseEntity<ISC<ViewPostGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<ViewPostGroupDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));

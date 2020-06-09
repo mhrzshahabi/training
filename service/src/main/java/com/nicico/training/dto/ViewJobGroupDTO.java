@@ -1,27 +1,33 @@
 package com.nicico.training.dto;
 
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ViewjobDTO implements Serializable {
+
+public class ViewJobGroupDTO implements Serializable {
 
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
 
-    @NotEmpty
-    @ApiModelProperty(required = true)
+    @ApiModelProperty
     private String code;
+
+    @ApiModelProperty()
+    private String titleEn;
+
+    @ApiModelProperty()
+    private String description;
 
     @ApiModelProperty()
     private Integer competenceCount;
@@ -32,8 +38,8 @@ public class ViewjobDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("JobInfo")
-    public static class Info extends ViewjobDTO {
+    @ApiModel("JobGroupInfo")
+    public static class Info extends ViewJobGroupDTO {
         private Long id;
     }
 }
