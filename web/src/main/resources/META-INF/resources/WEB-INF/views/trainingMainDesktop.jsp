@@ -2290,6 +2290,7 @@
     const viewPostUrl = rootUrl + "/view-post";
     const viewJobUrl = rootUrl + "/view-job";
     const viewJobGroupUrl = rootUrl + "/view-job-group";
+    const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
 
