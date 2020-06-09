@@ -139,7 +139,7 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: termUrl + "spec-list"
     });
     var RestDataSource_Institute_JspClass = isc.TrDS.create({
         fields: [
@@ -2430,7 +2430,21 @@
     }
 
     function ListGrid_class_print(type) {
-        printWithCriteria(ListGrid_Class_JspClass.getCriteria(), {}, "ClassByCriteria.jasper", type);
+        let direction =  "";
+        if(ListGrid_Class_JspClass.getSort()[0]["direction"] == "descending"){
+            direction = "-";
+        }
+        var cr = {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[
+            ]
+        };
+        if(ListGrid_Class_JspClass.getCriteria().criteria !== undefined){
+            cr = ListGrid_Class_JspClass.getCriteria();
+        }
+        cr.criteria.add({ fieldName:"term.code", operator:"inSet", value: DynamicForm_Term_Filter.getValue("termFilter")});
+        printWithCriteria(cr, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
     }
 
     function classCode() {

@@ -3,6 +3,7 @@ package com.nicico.training.service;
 @Author:roya
 */
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -182,6 +183,12 @@ public class TclassService implements ITclassService {
         for (AttachmentDTO.Info attachment : attachmentInfoList) {
             attachmentService.delete(attachment.getId());
         }
+    }
+
+    @Transactional
+//    @Override
+    public SearchDTO.SearchRs<TclassDTO.Info> mainSearch(SearchDTO.SearchRq request) {
+        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
 
     @Transactional(readOnly = true)
