@@ -1053,8 +1053,8 @@
                 textMatchStyle: "substring",
 
                 changed: function () {
-                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
+
                 },
                 change: function (form, item, value) {
                     if (value == "1") {
@@ -1102,6 +1102,9 @@
                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
+                    let record = ListGrid_Class_JspClass.getSelectedRecord();
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
                 },
             },
             {
@@ -2547,9 +2550,15 @@
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(false)
+
         } else if (resp.httpResponseCode === 406) {
-                createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(true)
+            DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(true);
+            DynamicForm_Class_JspClass.getItem("acceptancelimit_a").setDisabled(true);
+               // createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
            }
+
 
     }
 
