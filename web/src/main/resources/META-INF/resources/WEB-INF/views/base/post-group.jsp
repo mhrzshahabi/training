@@ -29,6 +29,17 @@
         },
     });
 
+    var Window_NeedsAssessment_Edit = isc.Window.create({
+        title: "<spring:message code="needs.assessment"/>",
+        placement: "fillScreen",
+        minWidth: 1024,
+        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+        show() {
+            loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
+            this.Super("show", arguments);
+        }
+    });
+
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -953,7 +964,8 @@
     var ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی",
         click: function () {
-            let view = isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/", viewLoaded() {aaaaaaaaaa(view)}});
+            Window_NeedsAssessment_Edit.show();
+            // let view = isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/", viewLoaded() {aaaaaaaaaa(view)}});
         }
     });
     var ToolStrip_Actions_Post_Group_Jsp = isc.ToolStrip.create({
