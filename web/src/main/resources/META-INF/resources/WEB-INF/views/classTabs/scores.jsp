@@ -112,9 +112,10 @@
                     if (record == null || record == "undefined") {
                         createDialog("info", "<spring:message code="msg.not.selected.record"/>", "<spring:message code="message"/>")
                     } else {
-                        setTimeout(function () {
-                            ListGrid_Remove_All_Cell(record)
-                        }, 500);
+                        // setTimeout(function () {
+                        //     ListGrid_Remove_All_Cell(record)
+                        // }, 500);
+                        ListGrid_Remove_All_Cell(record)
 
                     }
                 }
@@ -152,7 +153,9 @@
         modalEditing: true,
         autoSaveEdits: false,
         canSelectCells: true,
-        sortField: 0,
+        initialSort: [
+            {property: "student.firstName", direction: "descending", primarySort: true}
+        ],
         dataSource: RestDataSource_ClassStudent,
         fields: [
 
@@ -209,10 +212,12 @@
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[5].masterIndex)
                     } else if (value === 400) {
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[7].masterIndex)
-                    } else {
+                    } else{
+
                         ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
                         this.grid.endEditing();
-                        ListGrid_Class_Student.refreshFields();
+                        ListGrid_Class_Student.refreshCells()
+
                     }
                 }
             },
@@ -236,10 +241,11 @@
                         ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
                         this.grid.endEditing();
                         ListGrid_Class_Student.refreshFields();
-                    } else if (value === 407) {
+                    } else if (value === 407 || value === 453) {
                         ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
                         this.grid.endEditing();
                         ListGrid_Class_Student.refreshFields();
+
                     } else if (classRecord.scoringMethod == "1") {
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student.completeFields[6].masterIndex)
                     } else {
@@ -311,59 +317,62 @@
                     }
                 },
 
-                editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
+                editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid,item) {
+                    // if ((record.scoresStateId == 403 || record.scoresStateId == 400) && (newValue !== null || newValue != null)) {
+                    //     alert('1')
+                    // } else
 
-                    if ((record.scoresStateId == 403 || record.scoresStateId == 400) && (newValue !== null || newValue != null)) {
-
-                    } else if ((record.scoresStateId == 403 || record.scoresStateId == 400) && (newValue == null)) {
-                        createDialog("info", "لطفا نمره را وارد کنید", "<spring:message code="message"/>");
-                        return false;
-                    }
-
+                        <%--if ((record.scoresStateId == 403 || record.scoresStateId == 400) && (newValue == null)) {--%>
+                        <%--createDialog("info", "لطفا نمره را وارد کنید", "<spring:message code="message"/>");--%>
+                        <%--return false;--%>
+                    <%--}--%>
                     if (newValue != null) {
                         if (validators_score(newValue)) {
 
+                            if (scoresState_value== 403 && failureReason_value == 408)
+                            {
+                                ListGrid_Cell_score_Update(record, newValue,5);
+                                return;
+                            }
                             if (parseFloat(newValue) >= classRecord_acceptancelimit && parseFloat(newValue) <= score_value) {
                                 ListGrid_Cell_score_Update(record, newValue, 1);
-                                ListGrid_Class_Student.refreshFields();
+                                return;
                             } else if ((parseFloat(newValue) >= 0 && parseFloat(newValue) < classRecord.acceptancelimit)) {
-
                                 if (record.scoresStateId == 403 && (record.failureReasonId == 409 || record.failureReasonId == 408) && failureReason_value == null) {
                                     ListGrid_Cell_score_Update(record, newValue, 0);
-                                    ListGrid_Class_Student.refreshFields();
+                                    return;
                                 } else if (scoresState_value == 403 && failureReason_value != null) {
                                     ListGrid_Cell_score_Update(record, newValue, 3);
-                                    ListGrid_Class_Student.refreshFields();
+                                    return;
                                 } else if (failureReason_value != null && record.scoresStateId == 403) {
                                     ListGrid_Cell_score_Update(record, newValue, 4);
+                                    return;
                                 } else {
                                     record.scoresStateId = scoresState_value;
                                     ListGrid_Cell_score_Update(record, newValue, 2);
-                                    ListGrid_Class_Student.refreshFields();
+                                    return;
                                 }
 
                             } else if ((record.scoresStateId == 403 || record.scoresStateId == 400) && (newValue !== null || newValue != null) && (editCompletionEvent == "enter" || editCompletionEvent == "click_outside")) {
+
 
                             } else if (newValue === null && record.scoresStateId === undefined || record.scoresStateId == null || record.scoresStateId === "undefined" && record.failureReasonId === null) {
 
                                 ListGrid_Class_Student.invalidateCache();
                                 ListGrid_Class_Student.refreshFields();
                             }
-                            ListGrid_Class_Student.refreshFields();
+                            ListGrid_Class_Student.refreshCells()
 
                         } else {
                             createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>");
                             return false;
                         }
-
-
                     } else {
                         return true
                     }
                 },
-                sortField: 0
 
-            }
+        }
 
         ],
 
@@ -404,15 +413,26 @@
                 return !(classRecord.scoringMethod == "2" || classRecord.scoringMethod == "3" || classRecord.scoringMethod == "4")
             }
 
-
-            if (fieldName === "score") {
+           if (fieldName === "score") {
+                if(scoresState_value === 403 || scoresState_value === 400)
+                {return true}
                 if (failureReason_value != null && record.scoresStateId == 403) {
                     return true
                 } else if (classRecord.scoringMethod == "1" || classRecord.scoringMethod == "4") {
                     return false
                 }
-                return !(record.scoresStateId === 403 && record.failureReasonId === 407)
+                let arr=[448,410,405,449,406,404,401,450]
+                return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) ||arr.includes(record.scoresStateId))
             }
+
+           if (fieldName === "failureReasonId")
+           {    if(scoresState_value === 403 )
+               return true
+               let arr=[448,410,405,449,406,404,401,450]
+               return !(arr.includes(record.scoresStateId))
+           }
+
+
 
             if (fieldName === "student.firstName" || fieldName === "student.lastName" || fieldName === "student.nationalCode" || fieldName === "student.personnelNo") {
                 return false
@@ -430,6 +450,7 @@
     function ListGrid_Cell_scoresState_Update(record, newValue) {
         record.scoresStateId = newValue;
         record.failureReasonId = null;
+        record.score=null
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
 
     }
@@ -460,10 +481,15 @@
         } else if (a == 4) {
             record.failureReasonId = failureReason_value;
         }
+        else if (a==5)
+        {
+            record.scoresStateId =403
+            record.failureReasonId =408
+        }
         scoresState_value = null;
         failureReason_value = null;
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
-        ListGrid_Class_Student.refreshFields();
+
     }
 
     function ListGrid_Cell_valence_Update(record, newValue, a) {
@@ -494,13 +520,21 @@
     }
 
     function Remove_All_Cell_Action(rpcResponse) {
-        ListGrid_Class_Student.invalidateCache();
+    // ListGrid_Class_Student.invalidateCache();
+       // this.grid.endEditing();
+        ListGrid_Class_Student.refreshFields();
+        ListGrid_Class_Student.refreshCells();
+        ListGrid_Class_Student.redraw()
+        ListGrid_Class_Student.refreshFields();
+        ListGrid_Class_Student.refreshCells();
     }
 
     function Edit_Cell_scoresState_Update(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
+            this.grid.endEditing();
             ListGrid_Class_Student.refreshFields();
+            ListGrid_Class_Student.refreshCells()
         }
     }
 
@@ -521,7 +555,9 @@
 
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
+            this.grid.endEditing();
             ListGrid_Class_Student.refreshFields();
+            ListGrid_Class_Student.refreshCells()
         }
     }
 
@@ -529,7 +565,9 @@
 
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
+            this.grid.endEditing();
             ListGrid_Class_Student.refreshFields();
+            ListGrid_Class_Student.refreshCells()
         }
     }
 
