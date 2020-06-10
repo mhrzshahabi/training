@@ -619,6 +619,9 @@
                                 data.classId = ListGrid_evaluation_class.getSelectedRecord().id;
                                 isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                            ListGrid_evaluation_class.getSelectedRecord().id,
+                                            "GET", null, null));
                                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                         setTimeout(() => {
                                             msg.close()
@@ -1096,7 +1099,8 @@
                 {name: "trainingPlaceIds"},
                 {name: "instituteId"},
                 {name: "workflowEndingStatusCode"},
-                {name: "workflowEndingStatus"}
+                {name: "workflowEndingStatus"},
+                {name: "scoringMethod"}
             ],
             fetchDataURL: evaluationUrl + "/class-spec-list"
         });
@@ -1238,8 +1242,8 @@
                     align: "center",
                     filterOperator: "iContains"
                 },
-                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
-
+                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+                {name: "scoringMethod", hidden: true}
             ],
             selectionUpdated: function () {
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
