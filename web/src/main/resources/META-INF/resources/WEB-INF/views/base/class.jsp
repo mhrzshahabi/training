@@ -2926,6 +2926,7 @@
             TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.addData(currentValue);
