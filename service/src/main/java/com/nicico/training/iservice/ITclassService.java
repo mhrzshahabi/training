@@ -70,7 +70,7 @@ public interface ITclassService {
     double getJustFERGrade(Long classId);
 
     @Transactional
-    public Map<String, Object> getJustFERGradeResult(Long classId);
+    public Map<String, Object> getFERAndFETGradeResult(Long classId);
 
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 

@@ -643,7 +643,7 @@ public class TclassService implements ITclassService {
 
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId, Long teacherId) {
         double result = 0.0;
-        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacher(teacherId, classId, trainingId);
+        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacherCustomized(teacherId, classId);
         if (evaluation != null) {
             List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
             double totalGrade = 0.0;
@@ -691,7 +691,7 @@ public class TclassService implements ITclassService {
 
     @Override
     @Transactional
-    public Map<String, Object> getJustFERGradeResult(Long classId) {
+    public Map<String, Object> getFERAndFETGradeResult(Long classId) {
         Tclass tclass = getTClass(classId);
         Map<String, Object> result = new HashMap<>();
         Set<ClassStudent> classStudents = tclass.getClassStudents();
@@ -708,6 +708,12 @@ public class TclassService implements ITclassService {
                 teacherGradeToClass);
         result.put("FERGrade",FERGradeResult.get("FERGrade"));
         result.put("FERPass",FERGradeResult.get("FERPass"));
+
+        double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, null, tclass.getTeacherId());
+        Map<String,Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,trainingGradeToTeacher,percenetOfFilledReactionEvaluationForms);
+        result.put("FETGrade", FETGradeResult.get("FETGrade"));
+        result.put("FETPass", FETGradeResult.get("FETPass"));
+
         return result;
     }
 

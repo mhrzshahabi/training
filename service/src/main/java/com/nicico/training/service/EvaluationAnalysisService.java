@@ -123,12 +123,14 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     @Override
     public void updateReactionEvaluation(Long classId) {
         List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
-        Map<String,Object> reactionResult = tclassService.getJustFERGradeResult(classId);
+        Map<String,Object> reactionResult = tclassService.getFERAndFETGradeResult(classId);
         EvaluationAnalysis evaluationAnalysis = new EvaluationAnalysis();
         if(evaluationAnalyses != null && evaluationAnalyses.size() > 0){
             evaluationAnalysis = evaluationAnalyses.get(0);
             evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
             evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
+            evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
+            evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
             Map<String,Object> effectivenessResult = updateEffectivenessEvaluation(evaluationAnalysis);
@@ -141,6 +143,8 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         else{
             evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
             evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
+            evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
+            evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
             Map<String,Object> effectivenessResult = updateEffectivenessEvaluation(evaluationAnalysis);
