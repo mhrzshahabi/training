@@ -2523,6 +2523,9 @@
         autoCenter: false,
         showMaximizeButton: false,
         autoSize: false,
+        canDragResize:false,
+        canDragReposition:false,
+        placement: "fillScreen",
         closeClick: function () {
             // formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
             // formEqualCourse.reset();

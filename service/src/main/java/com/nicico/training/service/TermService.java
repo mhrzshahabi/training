@@ -128,7 +128,6 @@ public class TermService implements ITermService {
     @Transactional
     @Override
     public String LastCreatedCode(String code) {
-
         List<Term> termList = termDAO.findByCodeStartingWith(code);
         int max = 0;
         if (termList.size() == 0)
@@ -169,11 +168,9 @@ public class TermService implements ITermService {
         List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
         criteriaRqList.add(criteriaRq1);
         criteriaRqList.add(criteriaRq2);
-
         request.setCriteria(new SearchDTO.CriteriaRq());
         request.getCriteria().setCriteria(criteriaRqList);
         request.getCriteria().setOperator(EOperator.or);
-
         return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Info.class));
     }
 

@@ -739,7 +739,7 @@
             ListGrid_Goal_Remove();
         }
     });
-    var ToolStripButton_Goal_Print = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Goal_ADD = isc.ToolStripButtonAdd.create({
         //icon: "[SKIN]/actions/plus.png",
         prompt: "افزودن اهداف انتخاب شده به دوره مذکور و یا گرفتن اهداف انتخاب شده از دوره مذکور",
         hoverWidth: "12%",
@@ -776,10 +776,9 @@
         width: "100%",
         membersMargin: 5,
         members: [
-            // ToolStripButton_Goal_Add,
+            ToolStripButton_Goal_ADD,
             ToolStripButton_Goal_Edit,
             ToolStripButton_Goal_Remove,
-            ToolStripButton_Goal_Print,
             "separator",
             ToolStripButton_Goal_Refresh,
         ]

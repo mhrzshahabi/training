@@ -667,7 +667,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
-    const trainingMainUrl = rootUrl + "/main"
+    const trainingMainUrl = rootUrl + "/main";
     const oauthUserUrl = rootUrl + "/oauth/users";
     const oauthRoleUrl = rootUrl + "/oauth/app-roles";
     const oauthGroupUrl = rootUrl + "/oauth/groups";
@@ -713,6 +713,12 @@
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
     const classOutsideCurrentTerm = rootUrl + "/class-outside-current-term";
+    const viewPostGroupUrl = rootUrl + "/view-post-group";
+    const viewPostUrl = rootUrl + "/view-post";
+    const viewJobUrl = rootUrl + "/view-job";
+    const viewJobGroupUrl = rootUrl + "/view-job-group";
+    const viewPostGradeUrl = rootUrl + "/view-post-grade";
+    const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1695,12 +1701,12 @@
                             </sec:authorize>
 
 <%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
-                            {
-                                title:  "<spring:message code="evaluation.statical.report"/>",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
-                                }
-                            },
+<%--                            {--%>
+<%--                                title:  "<spring:message code="evaluation.statical.report"/>",--%>
+<%--                                click: function () {--%>
+<%--                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");--%>
+<%--                                }--%>
+<%--                            },--%>
 <%--                            </sec:authorize>--%>
                         ]
                 },
@@ -1719,7 +1725,17 @@
                                     createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            {
+                                title: "<spring:message code="course.performance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
+                                }
+                            },
+                            </sec:authorize>--%>
                         ]
                 },
                 </sec:authorize>
@@ -1756,14 +1772,16 @@
                 {isSeparator: true},
                 </sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">
-                {
-                    title: "گروه دسترسی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+
+                <%--<sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">--%>
+                <%--{--%>
+                    <%--title: "گروه دسترسی",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
+
 
                 <sec:authorize access="hasAuthority('Menu_Security_WorkGroup')">
                 {
@@ -1778,24 +1796,24 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_Security_Roles')">
-                {
-                    title: "نقش ها",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_Roles')">--%>
+                <%--{--%>
+                    <%--title: "نقش ها",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{isSeparator: true},--%>
+                <%--</sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">
-                {
-                    title: "تخصیص نقش",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">--%>
+                <%--{--%>
+                    <%--title: "تخصیص نقش",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_BlackList')">
                 {
@@ -1995,13 +2013,14 @@
         document.location.href = "logout";
     }
 
-    function createTab(title, url, autoRefresh) {
-        tab = mainTabSet.getTabObject(title);
+    function createTab(title, url, callFunction, autoRefresh) {
+        let tab = mainTabSet.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
+            if ((autoRefresh !== undefined) && (autoRefresh === true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
                 mainTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             mainTabSet.selectTab(tab);
+            if (callFunction != null) eval(callFunction);
         } else {
             mainTabSet.addTab({
                 title: title,
@@ -2012,11 +2031,12 @@
                         console.log(rpcResponse);
                         console.log('*****************************************************************************************************');
                         createDialog("info", "خطا در ایجاد تب")
-                    }
+                    },
+                    viewLoaded() {eval(callFunction)}
                 }),
                 canClose: true,
             });
-            createTab(title, url,true);
+            createTab(title, url, null, true);
         }
     }
 
@@ -2213,7 +2233,7 @@
         criteriaForm.submitForm();
     }
 
-    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
+    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf", sortBy = null) {
         // var advancedCriteria = LG.getCriteria();
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -2225,10 +2245,12 @@
                     {name: "CriteriaStr", type: "hidden"},
                     {name: "fileName", type: "hidden"},
                     {name: "params", type: "hidden"},
+                    {name: "sortBy", type: "hidden"},
                 ]
         });
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("sortBy", sortBy);
         criteriaForm.setValue("params", JSON.stringify(params));
         criteriaForm.show();
         criteriaForm.submitForm();

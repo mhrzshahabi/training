@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-//<script>
+// <script>
 
     var term_method = "POST";
     var startDateCheckTerm = true;
@@ -636,12 +636,13 @@
             fields:
                 [
                     {name: "CriteriaStr", type: "hidden"},
+                    {name: "sortBy", type: "hidden"},
                     {name: "token", type: "hidden"}
                 ]
-
         })
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.setValue("sortBy", JSON.stringify(ListGrid_Term.getSort()[0]));
+        criteriaForm.setValue("token", "<%= accessToken %>");
         criteriaForm.show();
         criteriaForm.submitForm();
     };

@@ -94,4 +94,9 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     List<Tclass> findAll(@Nullable Specification<Tclass> var1);
 
     boolean existsByTermId(Long termId);
+
+    @Query(value = "select pre_course_test from tbl_class where ID = :classId", nativeQuery = true)
+    Integer checkIfClassHasPreTest(Long classId);
+
+
 }

@@ -1,5 +1,25 @@
 package com.nicico.training.iservice;
 
-public interface IEvaluationAnalysisService {
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.EvaluationAnalysisDTO;
+import com.nicico.training.model.EvaluationAnalysis;
 
+import java.util.List;
+
+public interface IEvaluationAnalysisService {
+    EvaluationAnalysisDTO.Info get(Long id);
+
+    List<EvaluationAnalysisDTO.Info> list();
+
+    EvaluationAnalysisDTO.Info create(EvaluationAnalysis request);
+
+    EvaluationAnalysisDTO.Info update(Long id, EvaluationAnalysisDTO.Update request);
+
+    void delete(Long id);
+
+    void delete(EvaluationAnalysisDTO.Delete request);
+
+    SearchDTO.SearchRs<EvaluationAnalysisDTO.Info> search(SearchDTO.SearchRq request);
+
+    void updateLearningEvaluation(Long classId, String scoringMethod);
 }

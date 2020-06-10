@@ -163,6 +163,7 @@ public class ExportController {
                                   @PathVariable String type,
                                   @RequestParam(value = "fileName") String fileName,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr,
+                                  @RequestParam(value = "sortBy") String sortBy,
                                   @RequestParam(value = "params") String receiveParams
     ) throws Exception {
         //-------------------------------------
@@ -185,7 +186,8 @@ public class ExportController {
                 list = searchSCRVS.getList();
                 break;
             case "ClassByCriteria.jasper":
-                SearchDTO.SearchRs<TclassDTO.Info> searchTC = tclassService.search(searchRq);
+                searchRq.setSortBy(sortBy);
+                SearchDTO.SearchRs<TclassDTO.Info> searchTC = tclassService.mainSearch(searchRq);
                 list = searchTC.getList();
                 break;
             case "Skill_Report.jasper":

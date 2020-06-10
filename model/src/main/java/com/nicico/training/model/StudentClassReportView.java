@@ -176,8 +176,8 @@ public class StudentClassReportView implements Serializable {
     @Column(name = "class_student_scores_state_id")
     private Long classStudentScoresState;
 
-    @Column(name = "class_student_failure_reason")
-    private String classStudentFailureReason;
+    @Column(name = "class_student_failure_reason_id")
+    private Long classStudentFailureReason;
 
     @Column(name = "class_student_score")
     private Float classStudentScore;

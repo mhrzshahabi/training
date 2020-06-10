@@ -20,4 +20,22 @@
         </createIndex>
     </changeSet>
 
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_COL_POST_CODE-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_COL_POST_CODE" tableName="TBL_PERSONNEL" unique="false">
+            <column name="POST_CODE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_STUDENT_COL_POST_CODE-001">
+        <createIndex indexName="INDEX_TBL_STUDENT_COL_POST_CODE" tableName="TBL_STUDENT" unique="false">
+            <column name="POST_CODE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_REGISTERED_COL_POST_CODE-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_REGISTERED_COL_POST_CODE" tableName="TBL_PERSONNEL_REGISTERED" unique="false">
+            <column name="POST_CODE"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

@@ -139,7 +139,7 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: termUrl + "spec-list"
     });
     var RestDataSource_Institute_JspClass = isc.TrDS.create({
         fields: [
@@ -391,7 +391,8 @@
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
-                }
+                },
+                autoFitWidth: true
             },
             {
                 name: "studentCount",
@@ -1052,8 +1053,8 @@
                 textMatchStyle: "substring",
 
                 changed: function () {
-                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
+
                 },
                 change: function (form, item, value) {
                     if (value == "1") {
@@ -1101,6 +1102,9 @@
                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
+                    let record = ListGrid_Class_JspClass.getSelectedRecord();
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
                 },
             },
             {
@@ -2429,7 +2433,21 @@
     }
 
     function ListGrid_class_print(type) {
-        printWithCriteria(ListGrid_Class_JspClass.getCriteria(), {}, "ClassByCriteria.jasper", type);
+        let direction =  "";
+        if(ListGrid_Class_JspClass.getSort()[0]["direction"] == "descending"){
+            direction = "-";
+        }
+        var cr = {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[
+            ]
+        };
+        if(ListGrid_Class_JspClass.getCriteria().criteria !== undefined){
+            cr = ListGrid_Class_JspClass.getCriteria();
+        }
+        cr.criteria.add({ fieldName:"term.code", operator:"inSet", value: DynamicForm_Term_Filter.getValue("termFilter")});
+        printWithCriteria(cr, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
     }
 
     function classCode() {
@@ -2532,9 +2550,15 @@
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(false)
+
         } else if (resp.httpResponseCode === 406) {
-                createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(true)
+            DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(true);
+            DynamicForm_Class_JspClass.getItem("acceptancelimit_a").setDisabled(true);
+               // createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
            }
+
 
     }
 
