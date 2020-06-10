@@ -575,9 +575,10 @@
     }
 
     function Edit_Cell_score_Update(resp) {
-
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateLearningEvaluation" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id +
+                "/" + ListGrid_Class_JspClass.getSelectedRecord().scoringMethod,
+                "GET", null, null));
             this.grid.endEditing();
             ListGrid_Class_Student.refreshFields();
             ListGrid_Class_Student.refreshCells()

@@ -94,7 +94,8 @@
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
-            {name: "course.theoryDuration"}
+            {name: "course.theoryDuration"},
+            {name: "scoringMethod"}
         ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
@@ -492,7 +493,8 @@
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "course.code", title:"", hidden:true},
-            {name: "course.theoryDuration" , title: "", hidden:true}
+            {name: "course.theoryDuration" , title: "", hidden:true},
+            {name: "scoringMethod", hidden: true},
 
         ],
         getCellCSSText: function (record, rowNum, colNum) {
@@ -2926,6 +2928,7 @@
             TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.addData(currentValue);
