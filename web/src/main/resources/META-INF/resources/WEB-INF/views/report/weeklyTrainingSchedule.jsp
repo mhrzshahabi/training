@@ -188,6 +188,9 @@
                 displayField:"sessionStartHour",
                 displayValueFromRecord: false,
                 type: "TextItem",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
             {
                 name: "sessionStateFa",
