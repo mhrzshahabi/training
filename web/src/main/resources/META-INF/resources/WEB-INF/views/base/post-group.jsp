@@ -12,33 +12,36 @@
     var postGroupPostList_Post_Group_Jsp = null;
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
-    var record_Post_Group_Jsp;
 
-    window_unGroupedPosts_PostGroup = isc.Window.create({
-        minWidth: 1024,
-        autoCenter: true,
-        showMaximizeButton: false,
-        autoSize: false,
-        keepInParentRect: true,
-        isModal:false,
-        placement:"fillScreen",
-        items:[isc.ViewLoader.create({autoDraw: true, viewURL: "web/post/"})],
-        close(){
-            closeToShowUnGroupedPosts_POST();
-            this.Super("close",arguments)
-        },
-    });
+    if(window_unGroupedPosts_PostGroup === undefined) {
+        var window_unGroupedPosts_PostGroup = isc.Window.create({
+            minWidth: 1024,
+            autoCenter: true,
+            showMaximizeButton: false,
+            autoSize: false,
+            keepInParentRect: true,
+            isModal: false,
+            placement: "fillScreen",
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/post/"})],
+            close() {
+                closeToShowUnGroupedPosts_POST();
+                this.Super("close", arguments)
+            },
+        });
+    }
 
-    <%--Window_NeedsAssessment_Edit = isc.Window.create({--%>
-    <%--    title: "<spring:message code="needs.assessment"/>",--%>
-    <%--    placement: "fillScreen",--%>
-    <%--    minWidth: 1024,--%>
-    <%--    items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
-    <%--    show() {--%>
-    <%--        loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");--%>
-    <%--        this.Super("show", arguments);--%>
-    <%--    }--%>
-    <%--});--%>
+    if(Window_NeedsAssessment_Edit === undefined) {
+        var Window_NeedsAssessment_Edit = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            showUs(record, objectType) {
+                loadEditNeedsAssessment(record, objectType);
+                this.Super("show", arguments);
+            }
+        });
+    }
 
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -113,6 +116,50 @@
             <%--    title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",--%>
             <%--    click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"--%>
             <%--},--%>
+            {isSeparator: true},
+            {
+                title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
+                    var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
+
+
+                    if (record == null || record.id == null) {
+
+                        isc.Dialog.create({
+
+                            message: "<spring:message code="msg.no.records.selected"/>",
+                            icon: "[SKIN]ask.png",
+                            title: "پیام",
+                            buttons: [isc.IButtonSave.create({title: "تائید"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                    } else {
+
+
+                        var Dialog_Delete = isc.Dialog.create({
+                            message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                            icon: "[SKIN]ask.png",
+                            title: "تائید حذف",
+                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                                title: "خیر"
+                            })],
+                            buttonClick: function (button, index) {
+                                this.close();
+
+                                if (index == 0) {
+                                    deletePostGroupFromAllCompetence(record.id);
+                                    simpleDialog("پیغام", "حذف با موفقیت انجام گردید.", 0, "confirm");
+                                }
+                            }
+                        });
+
+
+                        // ListGrid_Post_Group_Competence.invalidateCache();
+
+                    }
+                }
+            },
             {isSeparator: true},
             {
                 title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
@@ -870,14 +917,11 @@
     ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی",
         click: function () {
-            record_Post_Group_Jsp = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            if (record_Post_Group_Jsp == null){
+            if (ListGrid_Post_Group_Jsp.getSelectedRecord() == null){
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            console.log (record_Post_Group_Jsp);
-            createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(record_Post_Group_Jsp, 'PostGroup')");
-            // Window_NeedsAssessment_Edit.show();
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
         }
     });
     ToolStrip_NA_Post_Group_Jsp = isc.ToolStrip.create({
