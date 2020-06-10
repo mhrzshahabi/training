@@ -23,7 +23,7 @@ public interface IPersonnelService {
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
 
-    HashMap<String, PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos);
+    List<PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos);
 
     List<PersonnelDTO.Info> getByPostCode(Long postId);
 

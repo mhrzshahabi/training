@@ -4,10 +4,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -56,9 +54,24 @@ public class ViewPost extends Auditable {
     @Column(name = "f_job_id")
     private Long jobId;
 
+    @Column(name = "job_c_title_fa", nullable = false)
+    private String jobTitleFa;
+
+    @Column(name = "job_c_code", unique = true, nullable = false)
+    private String jobCode;
+
+    @Column(name = "post_grade_c_title_fa", nullable = false)
+    private String postGradeTitleFa;
+
+    @Column(name = "post_grade_c_code", unique = true, nullable = false)
+    private String postGradeCode;
+
     @Column(name = "n_competence_count")
     private Integer competenceCount;
 
     @Column(name = "n_personnel_count")
     private Integer personnelCount;
+
+    @ManyToMany(mappedBy = "postSet")
+    private Set<PostGroup> postGroupSet;
 }

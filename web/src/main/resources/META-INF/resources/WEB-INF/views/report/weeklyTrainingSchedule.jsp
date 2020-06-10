@@ -121,9 +121,9 @@
                     ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
                     ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
 
-                    ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    /*ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
                     ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
-                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();*/
 
                 }
             }
@@ -184,7 +184,10 @@
             {
                 name: "sessionHour",
                 title: "ساعت",
-                filterOperator: "equals"
+                filterOperator: "iContains",
+                displayField:"sessionStartHour",
+                displayValueFromRecord: false,
+                type: "TextItem",
             },
             {
                 name: "sessionStateFa",

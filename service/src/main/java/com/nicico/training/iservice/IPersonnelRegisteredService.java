@@ -27,7 +27,7 @@ public interface IPersonnelRegisteredService {
 
     SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request);
 
-    HashMap<String, PersonnelRegisteredDTO.Info> checkPersonnelNos(List<String> personnelNos);
+    List<PersonnelRegisteredDTO.Info> checkPersonnelNos(List<String> personnelNos);
 
     TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request);
 

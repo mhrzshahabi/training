@@ -151,9 +151,10 @@
             {name: "objectId", filterOperator: "iContains", hidden:true},
             {name: "objectType", title: "<spring:message code="reference"/>", primaryKey: true, filterOperator: "iContains", valueMap: priorityList, autoFitWidth:true,
                 showHover:true,
+                canEdit: false,
                 hoverHTML(record) {
                     return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
-                }
+                },
             },
             {name: "objectName"},
             {name: "objectCode"}
@@ -355,16 +356,16 @@
             editing = true;
             this.Super("dataChanged",arguments);
         },
-        canEditCell(rowNum, colNum){
-            if(colNum === 1) {
-                let record = this.getRecord(rowNum);
-                if (record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
-                    return true;
-                }
-            }
-            return false;
-        },
-        getCellCSSText: function (record, colNum) {
+        // canEditCell(rowNum, colNum){
+        //     if(colNum === 1) {
+        //         let record = this.getRecord(rowNum);
+        //         if (record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // },
+        getCellCSSText(record) {
                 switch (record.needsAssessmentPriorityId) {
                     case 111:
                         return "background-color : " + "#ff8abc";
@@ -373,6 +374,27 @@
                     case 113:
                         return "background-color : " + "#afffbe";
                 }
+        },
+        rowDoubleClick (record){
+            switch(record.needsAssessmentPriorityId){
+                case 111:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                case 112:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                default:
+                    record.needsAssessmentPriorityId = 111;
+                    break;
+            }
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {
+                if(resp.httpResponseCode !== 200){
+                    createDialog("info", "<spring:message code='error'/>");
+                    return;
+                }
+                DataSource_Skill_JspNeedsAssessment.updateData(record);
+                this.grid.endEditing();
+            }));
         }
     });
     var ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
@@ -435,15 +457,15 @@
             editing = true;
             this.Super("dataChanged",arguments);
         },
-        canEditCell(rowNum, colNum){
-            if(colNum == 1) {
-                let record = this.getRecord(rowNum);
-                if (record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
-                    return true;
-                }
-            }
-            return false;
-        },
+        // canEditCell(rowNum, colNum){
+        //     if(colNum == 1) {
+        //         let record = this.getRecord(rowNum);
+        //         if (record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // },
         getCellCSSText: function (record) {
             switch (record.needsAssessmentPriorityId) {
                 case 111:
@@ -453,6 +475,27 @@
                 case 113:
                     return "background-color : " + "#afffbe";
             }
+        },
+        rowDoubleClick (record){
+            switch(record.needsAssessmentPriorityId){
+                case 111:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                case 112:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                default:
+                    record.needsAssessmentPriorityId = 111;
+                    break;
+            }
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {
+                if(resp.httpResponseCode !== 200){
+                    createDialog("info", "<spring:message code='error'/>");
+                    return;
+                }
+                DataSource_Skill_JspNeedsAssessment.updateData(record);
+                this.grid.endEditing();
+            }));
         }
     });
     var ListGrid_Attitude_JspNeedsAssessment = isc.TrLG.create({
@@ -515,15 +558,15 @@
             editing = true;
             this.Super("dataChanged",arguments);
         },
-        canEditCell(rowNum, colNum){
-            if(colNum == 1) {
-                let record = this.getRecord(rowNum);
-                if (record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
-                    return true;
-                }
-            }
-            return false;
-        },
+        // canEditCell(rowNum, colNum){
+        //     if(colNum == 1) {
+        //         let record = this.getRecord(rowNum);
+        //         if (record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // },
         getCellCSSText: function (record) {
             switch (record.needsAssessmentPriorityId) {
                 case 111:
@@ -533,6 +576,27 @@
                 case 113:
                     return "background-color : " + "#afffbe";
             }
+        },
+        rowDoubleClick (record){
+            switch(record.needsAssessmentPriorityId){
+                case 111:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                case 112:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                default:
+                    record.needsAssessmentPriorityId = 111;
+                    break;
+            }
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {
+                if(resp.httpResponseCode !== 200){
+                    createDialog("info", "<spring:message code='error'/>");
+                    return;
+                }
+                DataSource_Skill_JspNeedsAssessment.updateData(record);
+                this.grid.endEditing();
+            }));
         }
     });
     let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({
@@ -664,7 +728,7 @@
     });
 
     function updateObjectIdLG(form, value) {
-        form.getItem("objectId").canEdit = true;
+        // form.getItem("objectId").canEdit = true;
         switch (value) {
             case 'Job':
                 form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
@@ -683,7 +747,7 @@
                     {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
-                form.getItem("objectId").canEdit = false;
+                // form.getItem("objectId").canEdit = false;
                 // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
                 break;
             case 'PostGroup':
@@ -792,7 +856,6 @@
                 return;
             }
             let data = JSON.parse(resp.data).list;
-                console.log(data);
             let flags  = [];
             for (let i = 0; i < data.length; i++) {
                 let skill = {};
@@ -835,7 +898,6 @@
         }));
     }
     function createNeedsAssessmentRecords(data) {
-        // fetchDataDomainsGrid();
         if(!checkSaveData(data, DataSource_Skill_JspNeedsAssessment)){
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
@@ -865,7 +927,6 @@
         return data;
     }
 
-
     const changeDirection=(status)=>{
         let classes=".cellAltCol,.cellDarkAltCol, .cellOverAltCol, .cellOverDarkAltCol, .cellSelectedAltCol, .cellSelectedDarkAltCol," +
             " .cellSelectedOverAltCol, .cellSelectedOverDarkAltCol, .cellPendingSelectedAltCol, .cellPendingSelectedDarkAltCol," +
@@ -890,16 +951,14 @@
         refreshPersonnelLG(objectId);
         if(type === "Post") {
             Label_PlusData_JspNeedsAssessment.setContents(
-                "عنوان پست: " + record.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + record.postGrade.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                "عنوان پست: " + objectId.titleFa
+                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
+                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
+                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
+                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
             );
         } else
             Label_PlusData_JspNeedsAssessment.setContents("");
     }
-    // function aaaaaaaaaa(view){
-    //     view_ENA = view;
-    // }
+
     // </script>
