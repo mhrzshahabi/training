@@ -54,6 +54,18 @@ public class ViewPost extends Auditable {
     @Column(name = "f_job_id")
     private Long jobId;
 
+    @Column(name = "job_c_title_fa", nullable = false)
+    private String jobTitleFa;
+
+    @Column(name = "job_c_code", unique = true, nullable = false)
+    private String jobCode;
+
+    @Column(name = "post_grade_c_title_fa", nullable = false)
+    private String postGradeTitleFa;
+
+    @Column(name = "post_grade_c_code", unique = true, nullable = false)
+    private String postGradeCode;
+
     @Column(name = "n_competence_count")
     private Integer competenceCount;
 

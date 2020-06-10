@@ -1340,7 +1340,7 @@ FROM
     </changeSet>
 
 
-    <changeSet author="NICICO" id="VIEW_POST-001">
+    <changeSet author="NICICO" id="VIEW_POST-002">
         <createView viewName="VIEW_POST" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1363,6 +1363,10 @@ SELECT
     p.c_unit,
     p.f_post_grade_id,
     p.f_job_id,
+    j.c_title_fa AS job_c_title_fa,
+    j.c_code AS job_c_code,
+    pg.c_title_fa AS post_grade_c_title_fa,
+    pg.c_code AS post_grade_c_code,
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
@@ -1372,6 +1376,8 @@ FROM
     LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
                                    AND prs.active = 1
                                    AND prs.employment_status_id = 5
+    INNER JOIN tbl_job j ON j.id = p.f_job_id
+    INNER JOIN tbl_post_grade pg ON pg.id = p.f_post_grade_id
 GROUP BY
     p.id,
     p.c_created_by,
@@ -1380,9 +1386,9 @@ GROUP BY
     p.e_enabled,
     p.c_last_modified_by,
     p.d_last_modified_date,
-    p.c_title_fa,
-    p.c_code,
     p.n_version,
+    p.c_code,
+    p.c_title_fa,
     p.c_affairs,
     p.c_area,
     p.c_assistance,
@@ -1391,7 +1397,11 @@ GROUP BY
     p.c_section,
     p.c_unit,
     p.f_post_grade_id,
-    p.f_job_id
+    p.f_job_id,
+    j.c_title_fa,
+    j.c_code,
+    pg.c_code,
+    pg.c_title_fa
             ]]>
         </createView>
     </changeSet>
