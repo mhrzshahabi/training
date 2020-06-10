@@ -22,4 +22,6 @@ public interface IEvaluationAnalysisService {
     SearchDTO.SearchRs<EvaluationAnalysisDTO.Info> search(SearchDTO.SearchRq request);
 
     void updateLearningEvaluation(Long classId, String scoringMethod);
+
+    void updateReactionEvaluation(Long classId);
 }

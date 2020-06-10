@@ -170,6 +170,27 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
+    public Evaluation getTrainingEvaluationForTeacherCustomized(Long teacherId, Long classId) {
+        Long evaluatorTypeId = null;
+        Long evaluatedTypeId = null;
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("EvaluatorType");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("4"))
+                evaluatorTypeId = parameterValue.getId();
+            if (parameterValue.getCode().equalsIgnoreCase("11"))
+                evaluatedTypeId = parameterValue.getId();
+        }
+        List<Evaluation> evaluations = evaluationDAO.findEvaluationByClassIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(
+                classId, evaluatorTypeId, teacherId, evaluatedTypeId);
+        if (evaluations.size() != 0)
+            return evaluations.get(0);
+        else
+            return null;
+    }
+
+
+    @Override
     public Evaluation getBehavioralEvaluationByStudent(Long studentId, Long classId) {
         Long evaluationLevelId = Long.parseLong(156 + "");
         Long questionnaireTypeId = Long.parseLong(139 + "");

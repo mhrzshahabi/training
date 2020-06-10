@@ -94,7 +94,8 @@
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
-            {name: "course.theoryDuration"}
+            {name: "course.theoryDuration"},
+            {name: "scoringMethod"}
         ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
@@ -492,7 +493,8 @@
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "course.code", title:"", hidden:true},
-            {name: "course.theoryDuration" , title: "", hidden:true}
+            {name: "course.theoryDuration" , title: "", hidden:true},
+            {name: "scoringMethod", hidden: true},
 
         ],
         getCellCSSText: function (record, rowNum, colNum) {

@@ -1339,6 +1339,54 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-002">
+        <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
+            <![CDATA[
+			SELECT
+        tclass.ID as tclass_id,
+        evaluationanalysis.ID as evaluationanalysis_id,
+        unit.ID as unit_id,
+        tclass.C_CODE as tclass_c_code,
+        tclass.F_INSTITUTE as institute_id,
+        tclass.F_TEACHER as teacher_id,
+        tclass.F_TERM as term_id,
+        tclass.C_START_DATE as tclass_c_start_date,
+        tclass.C_END_DATE as tclass_c_end_date,
+        SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
+        course.C_CODE as course_c_code,
+        course.CATEGORY_ID as course_category_id,
+        course.SUBCATEGORY_ID as course_subcategory_id,
+        course.C_TITLE_FA as course_c_title_fa,
+        CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END AS tclass_students_count,
+        evaluationanalysis.C_BEHAVIORAL_GRADE as evaluationanalysis_c_behavioral_grade,
+        evaluationanalysis.B_BEHAVIORAL_PASS as evaluationanalysis_c_behavioral_pass,
+        evaluationanalysis.C_EFFECTIVENESS_GRADE as evaluationanalysis_c_effectiveness_grade,
+        evaluationanalysis.B_EFFECTIVENESS_PASS as evaluationanalysis_c_effectiveness_pass,
+        evaluationanalysis.C_LEARNING_GRADE as evaluationanalysis_c_learning_grade,
+        evaluationanalysis.B_LEARNING_PASS as evaluationanalysis_c_learning_pass,
+        evaluationanalysis.C_REACTION_GRADE as evaluationanalysis_c_reaction_grade,
+        evaluationanalysis.B_REACTION_PASS as evaluationanalysis_c_reaction_pass,
+        evaluationanalysis.C_RESULTS_GRADE as evaluationanalysis_c_results_grade,
+        evaluationanalysis.B_RESULTS_PASS as evaluationanalysis_c_results_pass,
+        evaluationanalysis.C_TEACHER_GRADE as evaluationanalysis_c_teacher_grade,
+        evaluationanalysis.B_TEACHER_PASS as evaluationanalysis_c_teacher_pass
+
+        FROM TBL_CLASS tclass INNER JOIN TBL_COURSE course
+        ON tclass.F_COURSE = course.ID
+        LEFT JOIN TBL_TARGET_SOCIETY unit
+        ON unit.F_CLASS_ID = tclass.ID
+        LEFT JOIN (SELECT
+            TBL_CLASS_STUDENT.CLASS_ID,
+            count(TBL_CLASS_STUDENT.ID) as counts
+        FROM
+            TBL_CLASS_STUDENT
+            GROUP BY TBL_CLASS_STUDENT.CLASS_ID) students ON students.CLASS_ID = tclass.ID
+        LEFT JOIN TBL_EVALUATION_ANALYSIS evaluationanalysis
+        ON evaluationanalysis.F_TCLASS = tclass.ID
+    			]]>
+        </createView>
+    </changeSet>
+
 
     <changeSet author="NICICO" id="VIEW_POST-002">
         <createView viewName="VIEW_POST" replaceIfExists="true">

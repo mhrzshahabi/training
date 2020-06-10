@@ -1248,10 +1248,10 @@
 
     function checkPersonnelNosResponse(url,result){
         advancedCriteriaPersonnelInformation= {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
+            operator: "or",
             criteria: [
-                {fieldName: "personnelNo", operator: "inSet", value: result}
+                {fieldName: "personnelNo", operator: "inSet", value: result},
+                {fieldName: "personnelNo2", operator: "inSet", value: result}
             ]
         };
         PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
