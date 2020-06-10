@@ -2,6 +2,7 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -82,6 +83,48 @@
             ListGrid_Class_Student.invalidateCache();
         }
     });
+    <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore','TclassScoresTab_classStatus')">
+    var  Button1= isc.IButton.create({
+        disabled: true,
+        title: "<spring:message code="change.all.to.pass.with.out.score"/>",
+        width: "14%",
+        click: function () {
+            var record = ListGrid_Class_JspClass.getSelectedRecord();
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setTotalStudentWithOutScore/" + record.id, "PUT", null, "callback: setTotalStudentWithOutScore(rpcResponse)"));
+            ListGrid_Class_Student.invalidateCache()
+        }
+    })
+    </sec:authorize>
+
+    <sec:authorize access="hasAnyAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore','TclassScoresTab_classStatus')">
+   var Button2= isc.IButton.create({
+        disabled: true,
+        title: "<spring:message code="delete.scoreState.failureReason.score"/>",
+        width: "20%",
+        click: function () {
+            var record = ListGrid_Class_Student.getSelectedRecord();
+            if (record == null || record == "undefined") {
+                createDialog("info", "<spring:message code="msg.not.selected.record"/>", "<spring:message code="message"/>")
+            } else {
+
+                ListGrid_Remove_All_Cell(record)
+
+            }
+        }
+
+    })
+    </sec:authorize>
+
+    <sec:authorize access="hasAnyAuthority('TclassScoresTab_P','TclassScoresTab_classStatus')">
+  var print_score= isc.IButton.create({
+        title: "<spring:message code="print"/>",
+        width: "14%",
+        click: function () {
+            printScore();
+        }
+    })
+    </sec:authorize>
+
     var ToolStrip_Actions = isc.ToolStrip.create({
         ID: "ToolStrip_Actions1",
         width: "100%",
@@ -89,48 +132,19 @@
             isc.Label.create({
                 ID: "totalsLabel_scores"
             }),
-            isc.IButton.create({
-                name: "Button",
-                ID: "Button1",
-                disabled: true,
-                title: "<spring:message code="change.all.to.pass.with.out.score"/>",
-                width: "14%",
-                click: function () {
-                    var record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setTotalStudentWithOutScore/" + record.id, "PUT", null, "callback: setTotalStudentWithOutScore(rpcResponse)"));
-                    ListGrid_Class_Student.invalidateCache()
-                }
-            }),
-            isc.IButton.create({
-                name: "Button",
-                ID: "Button2",
-                disabled: true,
-                title: "<spring:message code="delete.scoreState.failureReason.score"/>",
-                width: "20%",
-                click: function () {
-                    var record = ListGrid_Class_Student.getSelectedRecord();
-                    if (record == null || record == "undefined") {
-                        createDialog("info", "<spring:message code="msg.not.selected.record"/>", "<spring:message code="message"/>")
-                    } else {
-                        // setTimeout(function () {
-                        //     ListGrid_Remove_All_Cell(record)
-                        // }, 500);
-                        ListGrid_Remove_All_Cell(record)
+            <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore','TclassScoresTab_classStatus')">
+            Button1,
+            </sec:authorize>
 
-                    }
-                }
+            <sec:authorize access="hasAnyAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore','TclassScoresTab_classStatus')">
+            Button2,
+            </sec:authorize>
 
-            }),
+            <sec:authorize access="hasAnyAuthority('TclassScoresTab_P','TclassScoresTab_classStatus')">
+            print_score,
+            </sec:authorize>
 
-            isc.IButton.create({
-                name: "Button",
-                title: "<spring:message code="print"/>",
-                width: "14%",
-                click: function () {
-                    printScore();
-                }
-            }),
-
+            <sec:authorize access="hasAnyAuthority('TclassScoresTab_R','TclassScoresTab_classStatus')">
             isc.ToolStrip.create({
                 width: "50%",
                 align: "left",
@@ -139,6 +153,7 @@
                     ToolStripButton_Refresh
                 ]
             })
+            </sec:authorize>
 
         ]
     });
@@ -525,8 +540,6 @@
         ListGrid_Class_Student.refreshFields();
         ListGrid_Class_Student.refreshCells();
         ListGrid_Class_Student.redraw()
-        ListGrid_Class_Student.refreshFields();
-        ListGrid_Class_Student.refreshCells();
     }
 
     function Edit_Cell_scoresState_Update(resp) {
@@ -625,8 +638,7 @@
 
 
     function loadPage_Scores() {
-        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-        console.log(classRecord);
+     var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit);
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id;
@@ -653,6 +665,27 @@
                 Button1.setDisabled(false);
                 Button2.setDisabled(true);
             }
+
+            if(classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_R','TclassScoresTab_P','TclassScoresTab_deleteScoreStateFailureReasonScore','TclassScoresTab_changeAlltoPassWithOutScore')">
+                ToolStrip_Actions.setVisibility(false)
+                </sec:authorize>
+            }
+            else
+            {
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_R','TclassScoresTab_P','TclassScoresTab_deleteScoreStateFailureReasonScore','TclassScoresTab_changeAlltoPassWithOutScore')">
+                ToolStrip_Actions.setVisibility(true)
+                </sec:authorize>
+            }
+
+            if (classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAuthority('TclassScoresTab_classStatus')">
+                ToolStrip_Actions.setVisibility(true)
+                </sec:authorize>
+            }
+
             ListGrid_Class_Student.invalidateCache();
             ListGrid_Class_Student.fetchData();
         } else {

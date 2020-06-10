@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 // <script>
 
     let method_PCTQ = "GET";
@@ -167,14 +167,19 @@
             loadPage_preCourseTestQuestions(classId_PCTQ);
         }
     });
-
+    <sec:authorize access="hasAnyAuthority('TclassPreCourseTestQuestionsTab_ShowOption','TclassPreCourseTestQuestionsTab_classStatus')">
     HLayout_SaveOrExit_PCTQ = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_PCTQ, IButton_Cancel_PCTQ]
+        members: [
+
+            IButton_Save_PCTQ, IButton_Cancel_PCTQ
+
+        ]
     });
+    </sec:authorize>
 
     Menu_ReadOnly_PCTQ = isc.Menu.create({
         data: [{
@@ -307,6 +312,7 @@
         membersMargin: 5,
         members:
             [
+                <sec:authorize access="hasAnyAuthority('TclassPreCourseTestQuestionsTab_ShowOption','TclassPreCourseTestQuestionsTab_classStatus')">
                 ToolStripButton_Add_PCTQ,
                 ToolStripButton_Edit_PCTQ,
                 ToolStripButton_Remove_PCTQ,
@@ -319,11 +325,13 @@
                         ToolStripButton_Refresh_PCTQ
                     ]
                 })
+                </sec:authorize>
             ]
     });
 
+
     VLayout_Body_PCTQ = isc.TrVLayout.create({
-        members: [ToolStrip_Actions_PCTQ, questionsLG_PCTQ, HLayout_SaveOrExit_PCTQ]
+        members: [ToolStrip_Actions_PCTQ, questionsLG_PCTQ, HLayout_SaveOrExit_PCTQ ]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -404,19 +412,20 @@
     }
 
     function loadPage_preCourseTestQuestions(id, readOnly) {
-        if (readOnly) {
-            ToolStripButton_Edit_PCTQ.hide();
-            ToolStripButton_Add_PCTQ.hide();
-            ToolStripButton_Remove_PCTQ.hide();
-            ToolStripButton_ShowClass_PCTQ.hide();
-            questionsLG_PCTQ.contextMenu = Menu_ReadOnly_PCTQ;
-        } else {
-            ToolStripButton_Edit_PCTQ.show();
-            ToolStripButton_Add_PCTQ.show();
-            ToolStripButton_Remove_PCTQ.show();
-            ToolStripButton_ShowClass_PCTQ.show();
-            questionsLG_PCTQ.contextMenu = Menu_PCTQ;
-        }
+        // if (readOnly) {
+        //     ToolStripButton_Edit_PCTQ.hide();
+        //     ToolStripButton_Add_PCTQ.hide();
+        //     ToolStripButton_Remove_PCTQ.hide();
+        //     ToolStripButton_ShowClass_PCTQ.hide();
+        //     questionsLG_PCTQ.contextMenu = Menu_ReadOnly_PCTQ;
+        // } else {
+        //     ToolStripButton_Edit_PCTQ.show();
+        //     ToolStripButton_Add_PCTQ.show();
+        //     ToolStripButton_Remove_PCTQ.show();
+        //     ToolStripButton_ShowClass_PCTQ.show();
+        //     questionsLG_PCTQ.contextMenu = Menu_PCTQ;
+        // }
+        var  classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (id != null) {
             classId_PCTQ = id;
             oldQuestionsNum_PCTQ = 0;
@@ -424,6 +433,31 @@
         } else {
             classId_PCTQ = null;
             questionsLG_PCTQ.setData([]);
+        }
+
+        if(classRecord.classStatus === "3")
+        {
+            <sec:authorize access="hasAnyAuthority('TclassPreCourseTestQuestionsTab_classStatus','TclassPreCourseTestQuestionsTab_ShowOption')">
+            ToolStrip_Actions_PCTQ.setVisibility(false)
+            HLayout_SaveOrExit_PCTQ.setVisibility(false)
+            questionsLG_PCTQ.contextMenu = null;
+            </sec:authorize>
+        }
+        else
+        {
+            <sec:authorize access="hasAnyAuthority('TclassPreCourseTestQuestionsTab_classStatus','TclassPreCourseTestQuestionsTab_ShowOption')">
+            ToolStrip_Actions_PCTQ.setVisibility(true)
+            HLayout_SaveOrExit_PCTQ.setVisibility(true)
+            questionsLG_PCTQ.contextMenu = Menu_PCTQ;
+            </sec:authorize>
+        }
+        if (classRecord.classStatus === "3")
+        {
+            <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab_classStatus')">
+            ToolStrip_Actions_PCTQ.setVisibility(true)
+            HLayout_SaveOrExit_PCTQ.setVisibility(true)
+            questionsLG_PCTQ.contextMenu = Menu_PCTQ;
+            </sec:authorize>
         }
     }
 
