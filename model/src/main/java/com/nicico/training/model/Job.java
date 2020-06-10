@@ -20,7 +20,7 @@ public class Job extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code", nullable = false)
+    @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_title_fa", nullable = false)

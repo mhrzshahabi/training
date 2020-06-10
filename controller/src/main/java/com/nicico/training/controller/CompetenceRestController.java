@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,16 +48,16 @@ public class CompetenceRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<CompetenceDTO.Info> create(@RequestBody Object rq) {
+    public ResponseEntity<CompetenceDTO.Info> create(@RequestBody Object rq, HttpServletResponse response) {
         CompetenceDTO.Create create = modelMapper.map(rq, CompetenceDTO.Create.class);
-        return new ResponseEntity<>(competenceService.checkAndCreate(create), HttpStatus.OK);
+        return new ResponseEntity<>(competenceService.checkAndCreate(create, response), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<CompetenceDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
+    public ResponseEntity<CompetenceDTO.Info> update(@PathVariable Long id, @RequestBody Object rq, HttpServletResponse response) {
         CompetenceDTO.Update update = modelMapper.map(rq, CompetenceDTO.Update.class);
-        return new ResponseEntity<>(competenceService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(competenceService.checkAndUpdate(id, update, response), HttpStatus.OK);
     }
 
     @Loggable

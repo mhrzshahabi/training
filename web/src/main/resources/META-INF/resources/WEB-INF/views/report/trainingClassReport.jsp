@@ -80,7 +80,7 @@
             {name: "code"},
             {name: "titleFa"}
         ],
-        fetchDataURL: courseUrl + "spec-list"
+        fetchDataURL: courseUrl + "spec-safe-list"
     });
 
     var RestDataSource_Term_JspTClassReport = isc.TrDS.create({
@@ -223,6 +223,8 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
+        sortField: 6,
+        sortDirection: "descending",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
@@ -250,6 +252,7 @@
                     isc.ToolStripButtonExcel.create({
                         margin:5,
                         click: function() {
+                            ListGrid_Result_JspTClassReport.sortFieldNum=6;
                             ExportToFile.showDialog(null, ListGrid_Result_JspTClassReport, 'trainingClassReport', 0, null, '',  "گزارش کلاس هاي آموزشي", ListGrid_Result_JspTClassReport.data.criteria, null);
                         }
                     }),
@@ -277,7 +280,7 @@
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
-                        DynamicForm_SelectCourses_JspTClassReport.clearValues();
+                       // DynamicForm_SelectCourses_JspTClassReport.clearValues();
                         Window_SelectCourses_JspTClassReport.show();
                     }
                 }],
@@ -1012,7 +1015,7 @@
             var selectorDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getItem("course.code").getValue();
             if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getValue() != undefined
                 && DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getValue();
+                criteriaDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getField("course.code").getValue().join(";");
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -1024,6 +1027,18 @@
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(";"), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(";");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+
             DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspTClassReport.close();
         }

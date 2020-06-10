@@ -639,7 +639,20 @@
     {"code": "TclassAttachmentsTab_U", "title": "کلاس - تب ضمائم - ویرایش"},
     {"code": "TclassAttachmentsTab_D", "title": "کلاس - تب ضمائم - حذف"},
     {"code": "TclassAttachmentsTab_R", "title": "کلاس - تب ضمائم - مشاهده"},
-    {"code": "TclassAttachmentsTab_Download", "title": "کلاس - تب ضمائم - دانلود"}
+    {"code": "TclassAttachmentsTab_Download", "title": "کلاس - تب ضمائم - دانلود"},
+
+    {"code": "TclassSessionsTab_classStatus", "title": "کلاس - تب جلسات - کلاس پایان یافته"},
+    {"code": "TclassCheckListTab_classStatus", "title": "کلاس - تب چک لیست - کلاس پایان یافته"},
+    {"code": "TclassStudentsTab_classStatus", "title": "کلاس - تب فراگیران - کلاس پایان یافته"},
+    {"code": "TclassAttachmentsTab_classStatus", "title": "کلاس - ضمائم -کلاس پایان یافته"},
+    {"code": "TclassAttendanceTab_classStatus", "title": "کلاس- حضور غیاب -کلاس پایان یافته"},
+    {"code": "TclassScoresTab_classStatus", "title": "کلاس - ثبت نمرات - کلاس پایان یافته"},
+    {"code": "TclassAlarmsTab_classStatus", "title": "کلاس - هشدار ها - کلاس پایان یافته"},
+    {"code": "TclassPreCourseTestQuestionsTab_classStatus", "title": "کلاس - سوالات پیش آزمون - کلاس پایان یافته"},
+    {"code": "TclassScoresTab_changeAlltoPassWithOutScore", "title": "کلاس - ثبت نمرات - تبدیل همه به قبول بدون نمره"},
+    {"code": "TclassScoresTab_deleteScoreStateFailureReasonScore", "title": "کلاس - ثبت نمرات -حذف وضعیت قبولی/دلایل مردودی/نمره"},
+    {"code": "TclassScoresTab_P", "title": "کلاس - ثبت نمرات - چاپ"},
+    {"code": "TclassScoresTab_R", "title": "کلاس - ثبت نمرات - مشاهده"}
       ]
 }
 

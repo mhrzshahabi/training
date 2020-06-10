@@ -125,8 +125,9 @@
             action = '<spring:message code="edit"/>';
         }
         let data = CompetenceDF_competence.getValues();
+        let entityTitle = data.title
         isc.RPCManager.sendRequest(
-            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence)")
+            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence,'" + entityTitle + "')")
         );
     }
 

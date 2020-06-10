@@ -61,6 +61,7 @@ public class ExportToFileController {
     private final ClassSessionService classSessionService;
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final UnfinishedClassesReportService unfinishedClassesReportService;
+    private final TrainingOverTimeService trainingOverTimeService;
 
     private final CourseDAO courseDAO;
 
@@ -503,6 +504,24 @@ public class ExportToFileController {
                     ObjectMapper mapper = new ObjectMapper();
                     jsonString = mapper.writeValueAsString(list9);
                     count = list9.size();
+                }
+                break;
+            case "trainingOverTime":
+
+                String startDate= ((String)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                searchRq.getCriteria().getCriteria().remove(0);
+                String endDate= ((String)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                List<TrainingOverTimeDTO.Info> list10 =trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
+
+
+                if (list10 == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list10);
+                    count = list10.size();
                 }
                 break;
 

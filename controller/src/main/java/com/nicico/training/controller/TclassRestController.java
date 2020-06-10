@@ -555,7 +555,6 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-
         List<Object> removedObjects = new ArrayList<>();
         Object courseStatus = null;
         Object reactionEvaluationOperator = null;
@@ -729,7 +728,7 @@ public class TclassRestController {
             request = new SearchDTO.SearchRq();
         } else {
             criteriaRq = objectMapper.readValue(CriteriaStr, SearchDTO.CriteriaRq.class);
-            request = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+            request = new SearchDTO.SearchRq().setCriteria(criteriaRq).setSortBy("-startDate");
         }
 
             SearchDTO.CriteriaRq addedObject = null;

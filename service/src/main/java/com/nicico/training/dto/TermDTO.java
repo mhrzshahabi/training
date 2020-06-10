@@ -61,7 +61,7 @@ public class TermDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("TermUpdateRq")
     public static class Update extends TermDTO {
-
+        private Long id;
     }
 
     @Getter

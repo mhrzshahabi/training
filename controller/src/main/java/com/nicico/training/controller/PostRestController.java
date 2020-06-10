@@ -25,10 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,8 +51,19 @@ public class PostRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        convertDate(searchRq.getCriteria());
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    private void convertDate(SearchDTO.CriteriaRq criteria) {
+        if (criteria == null)
+            return;
+        if ("createdDate".equals(criteria.getFieldName()) || "lastModifiedDate".equals(criteria.getFieldName())) {
+            criteria.setValue(new Date(criteria.getValue().get(0).toString()));
+        }
+        if (criteria.getCriteria() != null)
+            criteria.getCriteria().forEach(this::convertDate);
     }
 
     @GetMapping(value = "/wpIscList")

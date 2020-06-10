@@ -39,6 +39,7 @@ public class TermFormController {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        map.add("_sortBy", request.getParameter("sortBy"));
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
