@@ -2011,13 +2011,14 @@
         document.location.href = "logout";
     }
 
-    function createTab(title, url, autoRefresh) {
-        tab = mainTabSet.getTabObject(title);
+    function createTab(title, url, callFunction, autoRefresh) {
+        let tab = mainTabSet.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
+            if ((autoRefresh !== undefined) && (autoRefresh === true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
                 mainTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             mainTabSet.selectTab(tab);
+            if (callFunction != null) eval(callFunction);
         } else {
             mainTabSet.addTab({
                 title: title,
@@ -2028,11 +2029,12 @@
                         console.log(rpcResponse);
                         console.log('*****************************************************************************************************');
                         createDialog("info", "خطا در ایجاد تب")
-                    }
+                    },
+                    viewLoaded() {eval(callFunction)}
                 }),
                 canClose: true,
             });
-            createTab(title, url,true);
+            createTab(title, url, null, true);
         }
     }
 
