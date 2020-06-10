@@ -1340,5 +1340,281 @@ FROM
     </changeSet>
 
 
+    <changeSet author="NICICO" id="VIEW_POST-002">
+        <createView viewName="VIEW_POST" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    p.id,
+    p.c_created_by,
+    p.d_created_date,
+    p.e_deleted,
+    p.e_enabled,
+    p.c_last_modified_by,
+    p.d_last_modified_date,
+    p.n_version,
+    p.c_code,
+    p.c_title_fa,
+    p.c_affairs,
+    p.c_area,
+    p.c_assistance,
+    p.c_cost_center_title_fa,
+    p.c_cost_center_code,
+    p.c_section,
+    p.c_unit,
+    p.f_post_grade_id,
+    p.f_job_id,
+    j.c_title_fa AS job_c_title_fa,
+    j.c_code AS job_c_code,
+    pg.c_title_fa AS post_grade_c_title_fa,
+    pg.c_code AS post_grade_c_code,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
+FROM
+    tbl_post p
+    LEFT JOIN tbl_needs_assessment na ON p.id = na.f_object
+                                         AND na.c_object_type = 'Post'
+    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+                                   AND prs.active = 1
+                                   AND prs.employment_status_id = 5
+    INNER JOIN tbl_job j ON j.id = p.f_job_id
+    INNER JOIN tbl_post_grade pg ON pg.id = p.f_post_grade_id
+GROUP BY
+    p.id,
+    p.c_created_by,
+    p.d_created_date,
+    p.e_deleted,
+    p.e_enabled,
+    p.c_last_modified_by,
+    p.d_last_modified_date,
+    p.n_version,
+    p.c_code,
+    p.c_title_fa,
+    p.c_affairs,
+    p.c_area,
+    p.c_assistance,
+    p.c_cost_center_title_fa,
+    p.c_cost_center_code,
+    p.c_section,
+    p.c_unit,
+    p.f_post_grade_id,
+    p.f_job_id,
+    j.c_title_fa,
+    j.c_code,
+    pg.c_code,
+    pg.c_title_fa
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_POST_GROUP-001">
+        <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    pg.id,
+    pg.c_created_by,
+    pg.d_created_date,
+    pg.e_deleted,
+    pg.e_enabled,
+    pg.c_last_modified_by,
+    pg.d_last_modified_date,
+    pg.n_version,
+    pg.c_description,
+    pg.c_title_fa,
+    pg.c_title_en,
+    pg.c_code,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
+FROM
+    tbl_post_group         pg
+    LEFT JOIN tbl_needs_assessment   na ON pg.id = na.f_object
+                                                     AND na.c_object_type = 'PostGroup'
+    LEFT JOIN tbl_post_postgroup ON pg.id = tbl_post_postgroup.f_postgroup_id
+    LEFT JOIN tbl_post               p ON tbl_post_postgroup.f_post_id = p.id
+    LEFT JOIN tbl_personnel          prs ON p.c_code = prs.post_code
+                                                AND prs.active = 1
+                                                AND prs.employment_status_id = 5
+GROUP BY
+    pg.id,
+    pg.c_created_by,
+    pg.d_created_date,
+    pg.e_deleted,
+    pg.e_enabled,
+    pg.c_last_modified_by,
+    pg.d_last_modified_date,
+    pg.n_version,
+    pg.c_description,
+    pg.c_title_fa,
+    pg.c_title_en,
+    pg.c_code
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_JOB-001">
+        <createView viewName="VIEW_JOB" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    j.id,
+    j.c_created_by,
+    j.e_deleted,
+    j.d_created_date,
+    j.e_enabled,
+    j.c_last_modified_by,
+    j.d_last_modified_date,
+    j.c_code,
+    j.n_version,
+    j.C_TITLE_FA,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
+FROM
+    tbl_job j
+    LEFT JOIN tbl_needs_assessment na ON j.id = na.f_object
+                                         AND na.c_object_type = 'Job'
+    LEFT JOIN tbl_post               p ON j.id = p.f_job_id
+    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+                                   AND prs.active = 1
+                                   AND prs.employment_status_id = 5
+GROUP BY
+    j.id,
+    j.c_created_by,
+    j.e_deleted,
+    j.d_created_date,
+    j.e_enabled,
+    j.c_last_modified_by,
+    j.d_last_modified_date,
+    j.c_code,
+    j.n_version,
+    j.c_title_fa
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_JOB_GROUP-001">
+        <createView viewName="VIEW_JOB_GROUP" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    jg.id,
+    jg.c_created_by,
+    jg.d_created_date,
+    jg.e_deleted,
+    jg.e_enabled,
+    jg.c_last_modified_by,
+    jg.d_last_modified_date,
+    jg.n_version,
+    jg.c_description,
+    jg.c_title_fa,
+    jg.c_title_en,
+    jg.c_code,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
+FROM
+    tbl_job_group jg
+    LEFT JOIN tbl_needs_assessment na ON jg.id = na.f_object
+                                         AND na.c_object_type = 'JobGroup'
+    LEFT JOIN tbl_job_jobgroup ON jg.id = tbl_job_jobgroup.f_jobgroup_id
+    LEFT JOIN tbl_post p ON tbl_job_jobgroup.f_job_id = p.f_job_id
+    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+                                   AND prs.active = 1
+                                   AND prs.employment_status_id = 5
+GROUP BY
+    jg.id,
+    jg.c_created_by,
+    jg.d_created_date,
+    jg.e_deleted,
+    jg.e_enabled,
+    jg.c_last_modified_by,
+    jg.d_last_modified_date,
+    jg.n_version,
+    jg.c_description,
+    jg.c_title_fa,
+    jg.c_title_en,
+    jg.c_code
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-001">
+        <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    pg.id,
+    pg.c_created_by,
+    pg.e_deleted,
+    pg.d_created_date,
+    pg.e_enabled,
+    pg.c_last_modified_by,
+    pg.d_last_modified_date,
+    pg.c_code,
+    pg.n_version,
+    pg.c_title_fa,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
+FROM
+    tbl_post_grade pg
+    LEFT JOIN tbl_needs_assessment na ON pg.id = na.f_object
+                                         AND na.c_object_type = 'PostGrade'
+    LEFT JOIN tbl_post p ON pg.id = p.f_post_grade_id
+    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+                                   AND prs.active = 1
+                                   AND prs.employment_status_id = 5
+GROUP BY
+    pg.id,
+    pg.c_created_by,
+    pg.e_deleted,
+    pg.d_created_date,
+    pg.e_enabled,
+    pg.c_last_modified_by,
+    pg.d_last_modified_date,
+    pg.c_code,
+    pg.n_version,
+    pg.c_title_fa
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_POST_GRADE_GROUP-001">
+        <createView viewName="VIEW_POST_GRADE_GROUP" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    pgg.id,
+    pgg.c_created_by,
+    pgg.d_created_date,
+    pgg.e_deleted,
+    pgg.e_enabled,
+    pgg.c_last_modified_by,
+    pgg.d_last_modified_date,
+    pgg.n_version,
+    pgg.c_description,
+    pgg.c_title_fa,
+    pgg.c_title_en,
+    pgg.c_code,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
+FROM
+    tbl_post_grade_group pgg
+    LEFT JOIN tbl_needs_assessment na ON pgg.id = na.f_object
+                                         AND na.c_object_type = 'PostGradeGroup'
+    LEFT JOIN tbl_post_grade_post_grade_group ON pgg.id = tbl_post_grade_post_grade_group.f_post_grade_group_id
+    LEFT JOIN tbl_post p ON tbl_post_grade_post_grade_group.f_post_grade_id = p.f_post_grade_id
+    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+                                   AND prs.active = 1
+                                   AND prs.employment_status_id = 5
+GROUP BY
+    pgg.id,
+    pgg.c_created_by,
+    pgg.d_created_date,
+    pgg.e_deleted,
+    pgg.e_enabled,
+    pgg.c_last_modified_by,
+    pgg.d_last_modified_date,
+    pgg.n_version,
+    pgg.c_description,
+    pgg.c_title_fa,
+    pgg.c_title_en,
+    pgg.c_code
+            ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>
