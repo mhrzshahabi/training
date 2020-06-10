@@ -681,13 +681,13 @@
                     {name: "code"},
                     {name: "titleFa"}
                 ],
-                click: function(form){
-                    // updateObjectIdLG(form, form.getValue("objectType"));
-                    if(form.getValue("objectType") === "Post"){
-                        PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList";
-                        Window_AddPost_JspNeedsAssessment.show();
-                    }
-                },
+                // click: function(form){
+                //     // updateObjectIdLG(form, form.getValue("objectType"));
+                //     if(form.getValue("objectType") === "Post"){
+                //         PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList";
+                //         Window_AddPost_JspNeedsAssessment.show();
+                //     }
+                // },
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue){
                         editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
