@@ -10,6 +10,8 @@
 // <script>
 
     var postGroupPostList_Post_Group_Jsp = null;
+    var naPostGroup_Post_Group_Jsp = null;
+    var PersonnelPostGroup_Post_Group_Jsp = null;
 
     window_unGroupedPosts_PostGroup = isc.Window.create({
         minWidth: 1024,
@@ -26,7 +28,7 @@
         },
     });
 
-    var Window_NeedsAssessment_Edit = isc.Window.create({
+    Window_NeedsAssessment_Edit = isc.Window.create({
         title: "<spring:message code="needs.assessment"/>",
         placement: "fillScreen",
         minWidth: 1024,
@@ -911,6 +913,10 @@
     ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی",
         click: function () {
+            if (ListGrid_Post_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
             Window_NeedsAssessment_Edit.show();
         }
     });
@@ -1083,13 +1089,123 @@
         ]
     });
 
+    ///////////////////////////////////////////////////////////needs assessment/////////////////////////////////////////
+    PriorityDS_Post_Group_Jsp = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
+    });
+
+    DomainDS_Post_Group_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentDomain"
+    });
+
+    CompetenceTypeDS_Post_Group_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/competenceType"
+    });
+
+    CourseDS_Post_Group_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "needsAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "needsAssessmentDomainId", title: "<spring:message code='domain'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="competence"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: null
+    });
+
+    CourseLG_Post_Group_Jsp = isc.TrLG.create({
+        dataSource: CourseDS_Post_Group_Jsp,
+        selectionType: "none",
+        autoFetchData: false,
+        alternateRecordStyles: true,
+        showAllRecords: true,
+        fields: [
+            {name: "competence.title"},
+            {
+                name: "competence.competenceTypeId",
+                type: "SelectItem",
+                filterOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: CompetenceTypeDS_Post_Group_Jsp,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentPriorityId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: PriorityDS_Post_Group_Jsp,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentDomainId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: DomainDS_Post_Group_Jsp,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {name: "skill.code"},
+            {name: "skill.titleFa"},
+            {name: "skill.course.code"},
+            {name: "skill.course.titleFa"}
+        ],
+    });
+
+    //////////////////////////////////////////////////////////Form///////////////////////////////////////////////////////
     var Detail_Tab_Post_Group = isc.TabSet.create({
         tabBarPosition: "top",
         width: "100%",
         height: "100%",
         tabs: [
             {name: "TabPane_Post_Post_Group_Jsp", title: "لیست پست ها", pane: ListGrid_Post_Group_Posts},
-            {name: "TabPane_Personnel_Post_Group_Jsp", title: "لیست پرسنل", pane: PersonnelLG_Post_Group_Jsp}
+            {name: "TabPane_Personnel_Post_Group_Jsp", title: "لیست پرسنل", pane: PersonnelLG_Post_Group_Jsp},
+            {name: "TabPane_NA_Post_Group_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_Post_Group_Jsp}
         ],
         tabSelected: function (){
             selectionUpdated_Post_Group_Jsp();
@@ -1108,6 +1224,7 @@
         height: "100%",
         members: [ListGrid_Post_Group_Jsp]
     });
+
     var VLayout_Body_Post_Group_Jsp = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -1281,10 +1398,37 @@
             tab.pane.setData([]);
             return;
         }
-        RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPosts";
-        if (postGroupPostList_Post_Group_Jsp == null)
-            refreshLG(ListGrid_Post_Group_Posts);
-        fetchPersonnelData_Post_Group_Jsp();
+        
+        switch (tab.name) {
+            case "TabPane_Post_Post_Group_Jsp":{
+                RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPosts";
+                if (postGroupPostList_Post_Group_Jsp == null)
+                    refreshLG(ListGrid_Post_Group_Posts);
+                break;
+            }
+            case "TabPane_Personnel_Post_Group_Jsp":{
+                if (PersonnelPostGroup_Post_Group_Jsp === postGroup.id)
+                    return;
+                PersonnelPostGroup_Post_Group_Jsp = postGroup.id;
+                RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPosts";
+                if (postGroupPostList_Post_Group_Jsp == null)
+                    refreshLG(ListGrid_Post_Group_Posts);
+                else
+                    fetchPersonnelData_Post_Group_Jsp();
+                break;
+            }
+            case "TabPane_NA_Post_Group_Jsp":{
+                if (naPostGroup_Post_Group_Jsp === postGroup.id)
+                    return;
+                naPostGroup_Post_Group_Jsp = postGroup.id;
+                CourseDS_Post_Group_Jsp.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + postGroup.id + "&objectType=PostGroup";
+                CourseDS_Post_Group_Jsp.invalidateCache();
+                CourseDS_Post_Group_Jsp.fetchData();
+                CourseLG_Post_Group_Jsp.invalidateCache();
+                CourseLG_Post_Group_Jsp.fetchData();
+                break;
+            }
+        }
     }
 
     function fetchPersonnelData_Post_Group_Jsp() {
