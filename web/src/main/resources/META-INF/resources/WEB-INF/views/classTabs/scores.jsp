@@ -126,7 +126,6 @@
     </sec:authorize>
 
     var ToolStrip_Actions = isc.ToolStrip.create({
-        ID: "ToolStrip_Actions1",
         width: "100%",
         members: [
             isc.Label.create({
