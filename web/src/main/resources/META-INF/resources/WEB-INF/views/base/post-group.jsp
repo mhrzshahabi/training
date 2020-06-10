@@ -13,31 +13,35 @@
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
 
-    window_unGroupedPosts_PostGroup = isc.Window.create({
-        minWidth: 1024,
-        autoCenter: true,
-        showMaximizeButton: false,
-        autoSize: false,
-        keepInParentRect: true,
-        isModal:false,
-        placement:"fillScreen",
-        items:[isc.ViewLoader.create({autoDraw: true, viewURL: "web/post/"})],
-        close(){
-            closeToShowUnGroupedPosts_POST();
-            this.Super("close",arguments)
-        },
-    });
+    if(window_unGroupedPosts_PostGroup === undefined) {
+        var window_unGroupedPosts_PostGroup = isc.Window.create({
+            minWidth: 1024,
+            autoCenter: true,
+            showMaximizeButton: false,
+            autoSize: false,
+            keepInParentRect: true,
+            isModal: false,
+            placement: "fillScreen",
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/post/"})],
+            close() {
+                closeToShowUnGroupedPosts_POST();
+                this.Super("close", arguments)
+            },
+        });
+    }
 
-    Window_NeedsAssessment_Edit = isc.Window.create({
-        title: "<spring:message code="needs.assessment"/>",
-        placement: "fillScreen",
-        minWidth: 1024,
-        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-        show() {
-            loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
-            this.Super("show", arguments);
-        }
-    });
+    if(Window_NeedsAssessment_Edit === undefined) {
+        var Window_NeedsAssessment_Edit = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            showUs(record, objectType) {
+                loadEditNeedsAssessment(record, objectType);
+                this.Super("show", arguments);
+            }
+        });
+    }
 
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -917,7 +921,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.show();
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
         }
     });
     ToolStrip_NA_Post_Group_Jsp = isc.ToolStrip.create({

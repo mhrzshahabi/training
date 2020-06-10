@@ -5,6 +5,20 @@
 
 // <script>
 
+    if(Window_NeedsAssessment_Edit === undefined) {
+        var Window_NeedsAssessment_Edit = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            showUs(a, b) {
+                console.log(a)
+                loadEditNeedsAssessment(a, b);
+                this.Super("show", arguments);
+            }
+        });
+    }
+
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
         data: [
@@ -122,11 +136,16 @@
             }
         },
         selectionUpdated: function (record) {
+                // alert(2)
             CourseDS_POST.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + record.id + "&objectType=Post";
             CourseDS_POST.invalidateCache();
             CourseDS_POST.fetchData();
             CoursesLG_POST.invalidateCache();
             CoursesLG_POST.fetchData();
+        },
+        recordDoubleClick (viewer, record, recordNum, field, fieldNum, value, rawValue){
+            console.log(record);
+            Window_NeedsAssessment_Edit.showUs(record, "Post");
         }
     });
 
@@ -408,4 +427,7 @@
     function closeToShowUnGroupedPosts_POST(){
         PostLG_post.implicitCriteria = null;
     }
+
+    //--------------------jafari---------------
+
     // </script>
