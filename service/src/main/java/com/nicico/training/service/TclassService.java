@@ -643,7 +643,7 @@ public class TclassService implements ITclassService {
 
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId, Long teacherId) {
         double result = 0.0;
-        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacher(teacherId, classId, trainingId);
+        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacherCustomized(teacherId, classId);
         if (evaluation != null) {
             List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
             double totalGrade = 0.0;
@@ -687,7 +687,34 @@ public class TclassService implements ITclassService {
                 percenetOfFilledReactionEvaluationForms,
                 teacherGradeToClass);
         return (double) FERGradeResult.get("FERGrade");
+    }
 
+    @Override
+    @Transactional
+    public Map<String, Object> getFERAndFETGradeResult(Long classId) {
+        Tclass tclass = getTClass(classId);
+        Map<String, Object> result = new HashMap<>();
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
+        double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
+        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
+        double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
+        double teacherGradeToClass = getTeacherGradeToClass(classId, tclass.getTeacherId());
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+                studentsGradeToGoals,
+                studentsGradeToFacility,
+                percenetOfFilledReactionEvaluationForms,
+                teacherGradeToClass);
+        result.put("FERGrade",FERGradeResult.get("FERGrade"));
+        result.put("FERPass",FERGradeResult.get("FERPass"));
+
+        double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, null, tclass.getTeacherId());
+        Map<String,Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,trainingGradeToTeacher,percenetOfFilledReactionEvaluationForms);
+        result.put("FETGrade", FETGradeResult.get("FETGrade"));
+        result.put("FETPass", FETGradeResult.get("FETPass"));
+
+        return result;
     }
 
     public Map<String, Object> getFERGrade(double studentsGradeToTeacher,
@@ -871,6 +898,7 @@ public class TclassService implements ITclassService {
         double result = (r1 / r2) * 100;
         return result;
     }
+
     ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
 
     //----------------------------------------------- Behavioral Evaluation --------------------------------------------

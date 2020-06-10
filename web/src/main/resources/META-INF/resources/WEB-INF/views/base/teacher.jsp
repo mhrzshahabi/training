@@ -844,7 +844,11 @@
     }
 
     function Teacher_Save_Button_Click_JspTeacher() {
+        nationalCodeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
         if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            if(nationalCodeCheck == false)
+                DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
+        code='msg.national.code.validation'/>", true);
             return;
         }
         vm.validate();
@@ -880,7 +884,11 @@
     }
 
     function Teacher_Save_Close_Button_Click_JspTeacher() {
+        nationalCodeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
         if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            if(nationalCodeCheck == false)
+                DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
+        code='msg.national.code.validation'/>", true);
             return;
         }
         vm.validate();

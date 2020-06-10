@@ -22,11 +22,14 @@ public class EvaluationAnalysisDTO implements Serializable {
     private String behavioralGrade;
     private String resultsGrade;
     private String effectivenessGrade;
+    private String teacherGrade;
     private Boolean reactionPass;
     private Boolean learningPass;
     private Boolean behavioralPass;
     private Boolean resultsPass;
     private Boolean effectivenessPass;
+    private Boolean teacherPass;
+
 
     @Getter
     @Setter

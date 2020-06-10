@@ -262,7 +262,6 @@
             isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateLearningEvaluation" + "/" + ListGrid_RegisterScorePreTtest.getSelectedRecord().id +
                 "/" + ListGrid_RegisterScorePreTtest.getSelectedRecord().scoringMethod,
                 "GET", null, null));
-            Edit_Cell_score_Update(resp);
         }
     }
 

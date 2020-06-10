@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -160,6 +161,7 @@
                 DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
             }
     });
+    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var ToolStrip_Attendance_JspAttendance = isc.ToolStrip.create({
         members: [
             isc.ToolStripButton.create({
@@ -328,6 +330,9 @@
             })
         ]
     });
+    </sec:authorize>
+
+    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
         numCols: 8,
@@ -987,6 +992,36 @@
             },
         ],
     });
+    </sec:authorize>
+
+ <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
+  var TrHLayoutButtons= isc.TrHLayoutButtons.create({
+       members: [
+            isc.IButtonSave.create({
+                ID: "saveBtn",
+                click: function () {
+                    if(attendanceGrid.getAllEditRows().length <= 0){
+                        createDialog("[SKIN]error","تغییری رخ نداده است.","خطا");
+                        return;
+                    }
+                    attendanceGrid.endEditing();
+                    attendanceGrid.saveAllEdits();
+                    // attendanceGrid.endEditing();
+                }
+            }),
+            isc.IButtonCancel.create({
+                ID: "cancelBtn",
+                click: function () {
+                    attendanceGrid.discardAllEdits()
+                    // attendanceForm.getItem("sessionDate").changed(attendanceForm,attendanceForm.getItem("sessionDate"),attendanceForm.getValue("sessionDate"));
+                }
+            })
+        ]
+
+    })
+    </sec:authorize>
+
+
     var ListGrid_Attendance_AttendanceJSP = isc.TrLG.create({
         ID: "attendanceGrid",
         dynamicTitle: true,
@@ -1005,29 +1040,7 @@
         editOnFocus: true,
         editByCell: true,
         showHeaderContextMenu:false,
-        gridComponents: [DynamicForm_Attendance, ToolStrip_Attendance_JspAttendance, "header", "filterEditor", "body", isc.TrHLayoutButtons.create({
-            members: [
-                isc.IButtonSave.create({
-                    ID: "saveBtn",
-                    click: function () {
-                        if(attendanceGrid.getAllEditRows().length <= 0){
-                            createDialog("[SKIN]error","تغییری رخ نداده است.","خطا");
-                            return;
-                        }
-                        attendanceGrid.endEditing();
-                        attendanceGrid.saveAllEdits();
-                        // attendanceGrid.endEditing();
-                    }
-                }),
-                isc.IButtonCancel.create({
-                    ID: "cancelBtn",
-                    click: function () {
-                        attendanceGrid.discardAllEdits()
-                        // attendanceForm.getItem("sessionDate").changed(attendanceForm,attendanceForm.getItem("sessionDate"),attendanceForm.getValue("sessionDate"));
-                    }
-                })
-            ]
-        })],
+        gridComponents: [DynamicForm_Attendance, ToolStrip_Attendance_JspAttendance, "header", "filterEditor", "body",TrHLayoutButtons ],
         canHover:true,
         canEditCell(rowNum, colNum){
             return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh";
@@ -1156,6 +1169,8 @@
         // if(ListGrid_Class_JspClass.getSelectedRecord() === classGridRecordInAttendanceJsp){
         //     return;
         // }
+        classGridRecordInAttendanceJsp == ListGrid_Class_JspClass.getSelectedRecord()
+
         if(attendanceGrid.getAllEditRows().length>0){
             createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
             return;
@@ -1180,6 +1195,28 @@
             sessionInOneDate.length = 0;
             sessionsForStudent.length = 0;
             ListGrid_Attendance_AttendanceJSP.invalidateCache();
+        }
+
+        if(classGridRecordInAttendanceJsp.classStatus === "3")
+        {
+            <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_ShowOption')">
+            ToolStrip_Attendance_JspAttendance.setVisibility(false)
+            TrHLayoutButtons.setVisibility(false)
+            </sec:authorize>
+        }
+        else
+        {
+            <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_ShowOption')">
+            ToolStrip_Attendance_JspAttendance.setVisibility(true)
+            TrHLayoutButtons.setVisibility(true)
+            </sec:authorize>
+        }
+        if (classGridRecordInAttendanceJsp.classStatus === "3")
+        {
+            <sec:authorize access="hasAuthority('TclassAttendanceTab_classStatus')">
+            ToolStrip_Attendance_JspAttendance.setVisibility(true)
+            TrHLayoutButtons.setVisibility(true)
+            </sec:authorize>
         }
     }
 

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 
@@ -61,6 +62,7 @@ public class ISC<T> {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria.toString(), new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
+            convertDate(criteriaRq);
             searchRq.setCriteria(criteriaRq);
         }
         return searchRq;
@@ -80,6 +82,16 @@ public class ISC<T> {
                 .setEndRow(startRow + page.getNumberOfElements())
                 .setTotalRows((int) page.getTotalElements());
         return new ISC(response);
+    }
+
+    public static void convertDate(SearchDTO.CriteriaRq criteria) {
+        if (criteria == null)
+            return;
+        if ("createdDate".equals(criteria.getFieldName()) || "lastModifiedDate".equals(criteria.getFieldName())) {
+            criteria.setValue(new Date(criteria.getValue().get(0).toString()));
+        }
+        if (criteria.getCriteria() != null)
+            criteria.getCriteria().forEach(ISC::convertDate);
     }
 
     @Getter

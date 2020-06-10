@@ -94,7 +94,8 @@
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
-            {name: "course.theoryDuration"}
+            {name: "course.theoryDuration"},
+            {name: "scoringMethod"}
         ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
@@ -492,7 +493,8 @@
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "course.code", title:"", hidden:true},
-            {name: "course.theoryDuration" , title: "", hidden:true}
+            {name: "course.theoryDuration" , title: "", hidden:true},
+            {name: "scoringMethod", hidden: true},
 
         ],
         getCellCSSText: function (record, rowNum, colNum) {
@@ -1053,8 +1055,8 @@
                 textMatchStyle: "substring",
 
                 changed: function () {
-                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
+
                 },
                 change: function (form, item, value) {
                     if (value == "1") {
@@ -1102,6 +1104,9 @@
                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
+                    let record = ListGrid_Class_JspClass.getSelectedRecord();
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
                 },
             },
             {
@@ -2547,9 +2552,15 @@
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(false)
+
         } else if (resp.httpResponseCode === 406) {
-                createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(true)
+            DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(true);
+            DynamicForm_Class_JspClass.getItem("acceptancelimit_a").setDisabled(true);
+               // createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
            }
+
 
     }
 
@@ -2917,6 +2928,7 @@
             TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.addData(currentValue);

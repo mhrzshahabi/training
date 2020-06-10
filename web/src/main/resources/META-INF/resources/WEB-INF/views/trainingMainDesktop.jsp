@@ -391,7 +391,9 @@
 
             static getData(row, array, index) {
                 if (array.length - 1 > index) {
-
+                    if (row[array[index]] == null) {
+                        return "";
+                    }
                     return this.getData(row[array[index]], array, ++index);
                 } else if (array.length - 1 == index) {
 
@@ -535,16 +537,16 @@
 
                 if (sort != null && sort.size() != 0){
 
-                    //if(sort.size() != 1){
+                    if(sort.size() == 1){
                         sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
-                    /*}else{
-                        let sort=[];
+                    }else{
+                        let listSort=[];
                         for (var i = 0; i <sort.size() ; i++) {
-                            sort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
+                            listSort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
                         }
 
-                        sortStr=JSON.stringify(sort);
-                    }*/
+                        sortStr=JSON.stringify(listSort);
+                    }
                 }
 
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
@@ -665,7 +667,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
-    const trainingMainUrl = rootUrl + "/main"
+    const trainingMainUrl = rootUrl + "/main";
     const oauthUserUrl = rootUrl + "/oauth/users";
     const oauthRoleUrl = rootUrl + "/oauth/app-roles";
     const oauthGroupUrl = rootUrl + "/oauth/groups";
@@ -711,6 +713,12 @@
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
     const classOutsideCurrentTerm = rootUrl + "/class-outside-current-term";
+    const viewPostGroupUrl = rootUrl + "/view-post-group";
+    const viewPostUrl = rootUrl + "/view-post";
+    const viewJobUrl = rootUrl + "/view-job";
+    const viewJobGroupUrl = rootUrl + "/view-job-group";
+    const viewPostGradeUrl = rootUrl + "/view-post-grade";
+    const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2005,13 +2013,14 @@
         document.location.href = "logout";
     }
 
-    function createTab(title, url, autoRefresh) {
-        tab = mainTabSet.getTabObject(title);
+    function createTab(title, url, callFunction, autoRefresh) {
+        let tab = mainTabSet.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
+            if ((autoRefresh !== undefined) && (autoRefresh === true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
                 mainTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             mainTabSet.selectTab(tab);
+            if (callFunction != null) eval(callFunction);
         } else {
             mainTabSet.addTab({
                 title: title,
@@ -2022,11 +2031,12 @@
                         console.log(rpcResponse);
                         console.log('*****************************************************************************************************');
                         createDialog("info", "خطا در ایجاد تب")
-                    }
+                    },
+                    viewLoaded() {eval(callFunction)}
                 }),
                 canClose: true,
             });
-            createTab(title, url,true);
+            createTab(title, url, null, true);
         }
     }
 
@@ -2288,12 +2298,6 @@
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
-    const viewPostGroupUrl = rootUrl + "/view-post-group";
-    const viewPostUrl = rootUrl + "/view-post";
-    const viewJobUrl = rootUrl + "/view-job";
-    const viewJobGroupUrl = rootUrl + "/view-job-group";
-    const viewPostGradeUrl = rootUrl + "/view-post-grade";
-    const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

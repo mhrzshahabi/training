@@ -1,9 +1,20 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
 // <script>
+
+    if(Window_NeedsAssessment_Edit === undefined) {
+        var Window_NeedsAssessment_Edit = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            showUs(record, objectType) {
+                loadEditNeedsAssessment(record, objectType);
+                this.Super("show", arguments);
+            }
+        });
+    }
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -12,6 +23,7 @@
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
+                    closeToShowUnGroupedPosts_POST();
                     refreshLG(PostLG_post);
                 }
             },
@@ -19,6 +31,50 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
+    ToolStripButton_unGroupedPosts_POST = isc.ToolStripButton.create({
+        title: "پست های فاقد گروه پستی",
+        click: function () {
+            callToShowUnGroupedPosts_POST({
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
+            });
+        }
+    });
+    ToolStripButton_newPosts_POST = isc.ToolStripButton.create({
+        title: "پست های جدید",
+        click: function () {
+            callToShowUnGroupedPosts_POST({
+                _constructor: "AdvancedCriteria",
+                operator: "or",
+                criteria: [
+                    {fieldName: "createdDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()},
+                    {fieldName: "lastModifiedDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()}
+                ]
+            });
+        }
+    });
+    ToolStripButton_EditNA_POST = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی",
+        click: function () {
+            if (PostLG_post.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post");
+            // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(PostLG_post.getSelectedRecord(), 'Post')");
+        }
+    });
+    ToolStrip_NA_POST = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            ToolStripButton_unGroupedPosts_POST,
+            ToolStripButton_newPosts_POST,
+            ToolStripButton_EditNA_POST
+        ]
+    });
+
     PostTS_post = isc.ToolStrip.create({
         membersMargin: 5,
         members: [
@@ -56,6 +112,7 @@
                     }),
                     isc.ToolStripButtonRefresh.create({
                         click: function () {
+                            closeToShowUnGroupedPosts_POST();
                             refreshLG(PostLG_post);
                         }
                     }),
@@ -79,9 +136,11 @@
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
 
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: viewPostUrl + "/iscList"
     });
 
     PostLG_post = isc.TrLG.create({
@@ -105,10 +164,12 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "costCenterTitleFa",},
+            {name: "costCenterTitleFa"},
+            {name: "competenceCount"},
+            {name: "personnelCount"}
         ],
         autoFetchData: true,
-        gridComponents: [PostTS_post, "filterEditor", "header", "body",],
+        gridComponents: [PostTS_post, ToolStrip_NA_POST, "filterEditor", "header", "body",],
         contextMenu: PostMenu_post,
         showResizeBar: true,
         sortField: 0,
@@ -127,24 +188,12 @@
             CourseDS_POST.fetchData();
             CoursesLG_POST.invalidateCache();
             CoursesLG_POST.fetchData();
-        }
+        },
+        getCellCSSText: function (record) {
+            if (record.competenceCount === 0)
+                return "color:red;font-size: 12px;";
+        },
     });
-
-    // ------------------------------------------- DynamicForm -------------------------------------------
-    <%--isc.DynamicForm.create({--%>
-    <%--    ID: "postFilterForm_post",--%>
-    <%--    saveOnEnter: true,--%>
-    <%--    dataSource: PostDS_post,--%>
-    <%--    numCols: 2,--%>
-    <%--    submit: function () {--%>
-    <%--        PostLG_post.filterData(postFilterForm_post.getValuesAsCriteria());--%>
-    <%--    },--%>
-    <%--    fields: [--%>
-    <%--        {name: "departmentArea", title: "<spring:message code="area"/>", operator: "iContains",},--%>
-    <%--        {name: "departmentAssistance", title: "<spring:message code="assistance"/>", operator: "iContains",},--%>
-    <%--        {name: "departmentAffairs", title: "<spring:message code="affairs"/>", operator: "iContains",},--%>
-    <%--    ]--%>
-    <%--});--%>
 
     // ------------------------------------------- Page UI -------------------------------------------
 
@@ -264,7 +313,7 @@
         ]
     });
 
-    //////////////////////////////////////////////////////////////detailTab///////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////detailTab/////////////////////////////////////////////
 
     PriorityDS_POST = isc.TrDS.create({
         fields:
@@ -377,15 +426,11 @@
         height: "40%",
         tabBarPosition: "top",
         tabs: [
-            {
-                title: "<spring:message code='need.assessment'/>",
-                pane: CoursesLG_POST
-
-            }
+            {title: "<spring:message code='need.assessment'/>", pane: CoursesLG_POST}
         ]
     });
 
-    //////////////////////////////////////////////////////////////detailTab///////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////detailTab/////////////////////////////////////////////
 
     isc.TrVLayout.create({
         members: [PostLG_post, DetailTS_Post],
@@ -399,18 +444,14 @@
         DetailViewer_Personnel.fetchData();
     }
 
-    function callToShowUnGroupedPosts_POST(){
-        PostLG_post.implicitCriteria = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [
-                {fieldName: "postGroupSet", operator: "isNull"},
-            ]
-        };
-        refreshLG(PostLG_post);
+    function callToShowUnGroupedPosts_POST(criteria){
+        CoursesLG_POST.setData([]);
+        PostLG_post.implicitCriteria = criteria;
+        PostLG_post.invalidateCache();
+        PostLG_post.fetchData();
     }
 
     function closeToShowUnGroupedPosts_POST(){
-        PostLG_post.implicitCriteria = null;
+        PostLG_post.setImplicitCriteria(null);
     }
     // </script>
