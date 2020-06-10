@@ -391,7 +391,9 @@
 
             static getData(row, array, index) {
                 if (array.length - 1 > index) {
-
+                    if (row[array[index]] == null) {
+                        return "";
+                    }
                     return this.getData(row[array[index]], array, ++index);
                 } else if (array.length - 1 == index) {
 
@@ -535,16 +537,16 @@
 
                 if (sort != null && sort.size() != 0){
 
-                    //if(sort.size() != 1){
+                    if(sort.size() == 1){
                         sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
-                    /*}else{
-                        let sort=[];
+                    }else{
+                        let listSort=[];
                         for (var i = 0; i <sort.size() ; i++) {
-                            sort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
+                            listSort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
                         }
 
-                        sortStr=JSON.stringify(sort);
-                    }*/
+                        sortStr=JSON.stringify(listSort);
+                    }
                 }
 
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
@@ -2011,13 +2013,14 @@
         document.location.href = "logout";
     }
 
-    function createTab(title, url, autoRefresh) {
-        tab = mainTabSet.getTabObject(title);
+    function createTab(title, url, callFunction, autoRefresh) {
+        let tab = mainTabSet.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
+            if ((autoRefresh !== undefined) && (autoRefresh === true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
                 mainTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             mainTabSet.selectTab(tab);
+            if (callFunction != null) eval(callFunction);
         } else {
             mainTabSet.addTab({
                 title: title,
@@ -2028,11 +2031,12 @@
                         console.log(rpcResponse);
                         console.log('*****************************************************************************************************');
                         createDialog("info", "خطا در ایجاد تب")
-                    }
+                    },
+                    viewLoaded() {eval(callFunction)}
                 }),
                 canClose: true,
             });
-            createTab(title, url,true);
+            createTab(title, url, null, true);
         }
     }
 

@@ -120,7 +120,7 @@ public class CourseRestController {
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
 //		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        CourseDTO.Update update = (new ModelMapper()).map(request, CourseDTO.Update.class);
+        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
         return new ResponseEntity<>(courseService.update(id, update), HttpStatus.OK);
     }
 
