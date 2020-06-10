@@ -4,10 +4,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -61,4 +59,7 @@ public class ViewPost extends Auditable {
 
     @Column(name = "n_personnel_count")
     private Integer personnelCount;
+
+    @ManyToMany(mappedBy = "postSet")
+    private Set<PostGroup> postGroupSet;
 }

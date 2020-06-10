@@ -74,21 +74,21 @@ public class PersonnelService implements IPersonnelService {
 
     @Transactional
     @Override
-    public HashMap<String, PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos) {
-        HashMap<String, PersonnelDTO.Info> result = new HashMap<>();
+    public List<PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos) {
+        List<PersonnelDTO.Info> result = new ArrayList<>();
 
         List<Personnel> list = personnelDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos , personnelNos);
         Personnel prs = null;
 
         for (String personnelNo : personnelNos) {
 
-            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo)).collect(Collectors.toList()).size()==0)
+            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) ||  p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).size()==0)
             {
-                result.put(personnelNo,new PersonnelDTO.Info());
+                result.add(new PersonnelDTO.Info());
 
             } else {
-                prs =list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo)).collect(Collectors.toList()).get(0);
-                result.put(prs.getPersonnelNo(),modelMapper.map(prs,PersonnelDTO.Info.class));
+                prs =list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) ||  p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).get(0);
+                result.add(modelMapper.map(prs,PersonnelDTO.Info.class));
             }
         }
 

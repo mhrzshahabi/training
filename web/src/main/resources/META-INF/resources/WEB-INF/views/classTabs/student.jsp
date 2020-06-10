@@ -1066,13 +1066,17 @@
 
                     if(personnelNo != "" && personnelNo != null && typeof(personnelNo) != "undefined")
                     {
-                        if(typeof(data[personnelNo].personnelNo)=="undefined"){
+                        if(data.filter(function (item) {
+                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                        }).length==0){
                             allRowsOK=false;
                             list[i].error=true;
                             list[i].hasWarning="warning";
                             list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
                         }
-                        else if(nationalCodeExists(data[personnelNo].nationalCode))
+                        else if(nationalCodeExists(data.filter(function (item) {
+                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                        })[0].nationalCode))
                         {
                             allRowsOK=false;
                             list[i].error=true;
@@ -1089,8 +1093,8 @@
                 if(allRowsOK){
                     var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                     var students = [];
-                    for (var person in data) {
-                        let current = data[person];
+                    for (var i=0;i<data.length;i++) {
+                        let current = data[i];
 
                         if (!checkIfAlreadyExist(current)) {
                             students.add({
