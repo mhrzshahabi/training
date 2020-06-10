@@ -10,6 +10,7 @@ import com.nicico.training.model.Tclass;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITclassService {
 
@@ -67,6 +68,9 @@ public interface ITclassService {
 
     @Transactional
     double getJustFERGrade(Long classId);
+
+    @Transactional
+    public Map<String, Object> getFERAndFETGradeResult(Long classId);
 
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 

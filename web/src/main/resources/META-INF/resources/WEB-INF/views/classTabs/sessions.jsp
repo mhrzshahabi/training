@@ -326,32 +326,41 @@
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
             click: function () {
                 ListGrid_session.invalidateCache();
             }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_C','TclassSessionsTab_classStatus')">
         var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
             title: "<spring:message code="create" />",
             click:
                 function () {
                     create_Session();
                 }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_U','TclassSessionsTab_classStatus')">
         var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
             click: function () {
                 show_SessionEditForm();
             }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_D','TclassSessionsTab_classStatus')">
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
             click: function () {
                 remove_Session();
             }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_P','TclassSessionsTab_classStatus')">
         var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
             click: function () {
                 print_SessionListGrid("pdf");
@@ -368,28 +377,23 @@
                     }
                 })]
         });
+        </sec:authorize>
 
         var ToolStrip_session = isc.ToolStrip.create({
             width: "100%",
             members: [
-                <sec:authorize access="hasAnyAuthority('TclassSessionsTab_C','TclassSessionsTab_classStatus')">
+
                 ToolStripButton_Add,
-                </sec:authorize>
-
-                <sec:authorize access="hasAnyAuthority('TclassSessionsTab_U','TclassSessionsTab_classStatus')">
                 ToolStripButton_Edit,
-                </sec:authorize>
-
-                <sec:authorize access="hasAnyAuthority('TclassSessionsTab_D','TclassSessionsTab_classStatus')">
                 ToolStripButton_Remove,
-                </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassSessionsTab_P','TclassSessionsTab_classStatus')">
+
+
                 ToolStripButton_Print,
                 ToolStrip_Excel_JspClass,
-                </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
+
+
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -398,7 +402,7 @@
                         ToolStripButton_Refresh
                     ]
                 })
-                </sec:authorize>
+
             ]
         });
     }
@@ -1004,10 +1008,11 @@
 
 
         function loadPage_session() {
-            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+           let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (!(classRecord == undefined || classRecord == null)) {
                 //RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
                 RestDataSource_session.fetchDataURL = sessionServiceUrl + "iscList/" + classRecord.id;
+
                 if(classRecord.classStatus === "3")
                 {
                     <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_C','TclassSessionsTab_U','TclassSessionsTab_D','TclassSessionsTab_P')">

@@ -90,4 +90,15 @@
         <dropUniqueConstraint constraintName="UC_TBL_POST_GROUPC_TITLE_FA_COL" tableName="TBL_POST_GROUP"/>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1591782765031-451">
+        <addColumn tableName="tbl_evaluation_analysis">
+            <column name="b_teacher_pass" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591782765031-452">
+        <addColumn tableName="tbl_evaluation_analysis">
+            <column name="c_teacher_grade" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

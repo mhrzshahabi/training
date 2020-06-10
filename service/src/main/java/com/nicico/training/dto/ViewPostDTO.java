@@ -49,6 +49,22 @@ public class ViewPostDTO implements Serializable {
     @ApiModelProperty
     private Long jobId;
 
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private String jobTitleFa;
+
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private String jobCode;
+
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private String postGradeTitleFa;
+
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private String postGradeCode;
+
     @ApiModelProperty
     private Integer competenceCount;
 

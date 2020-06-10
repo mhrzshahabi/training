@@ -43,6 +43,9 @@ public class EvaluationAnalysis extends Auditable {
     @Column(name = "c_effectiveness_grade")
     private String effectivenessGrade;
 
+    @Column(name = "c_teacher_grade")
+    private String teacherGrade;
+
     @Column(name = "b_reaction_pass")
     private Boolean reactionPass;
 
@@ -57,5 +60,8 @@ public class EvaluationAnalysis extends Auditable {
 
     @Column(name = "b_effectiveness_pass")
     private Boolean effectivenessPass;
+
+    @Column(name = "b_teacher_pass")
+    private Boolean teacherPass;
 
 }

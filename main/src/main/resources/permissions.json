@@ -652,7 +652,11 @@
     {"code": "TclassScoresTab_changeAlltoPassWithOutScore", "title": "کلاس - ثبت نمرات - تبدیل همه به قبول بدون نمره"},
     {"code": "TclassScoresTab_deleteScoreStateFailureReasonScore", "title": "کلاس - ثبت نمرات -حذف وضعیت قبولی/دلایل مردودی/نمره"},
     {"code": "TclassScoresTab_P", "title": "کلاس - ثبت نمرات - چاپ"},
-    {"code": "TclassScoresTab_R", "title": "کلاس - ثبت نمرات - مشاهده"}
+    {"code": "TclassScoresTab_R", "title": "کلاس - ثبت نمرات - مشاهده"},
+
+    {"code": "TclassAttendanceTab_ShowOption", "title": "کلاس - تب حضور غیاب - نمایش گزینه ها"},
+    {"code": "TclassCheckListTab_classStatus_ShowOption", "title": "کلاس - تب چک لیست - نمایش گزینه ها"},
+    {"code": "TclassPreCourseTestQuestionsTab_ShowOption", "title": "کلاس - سوالات پیش آزمون - نمایش گزینه ها"}
       ]
 }
 
