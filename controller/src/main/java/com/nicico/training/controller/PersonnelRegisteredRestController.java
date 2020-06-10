@@ -166,8 +166,8 @@ public class PersonnelRegisteredRestController {
 
     @Loggable
     @PostMapping(value = "checkPersonnelNos")
-    public ResponseEntity<HashMap<String, PersonnelRegisteredDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
-        HashMap<String, PersonnelRegisteredDTO.Info> list=personnelRegisteredService.checkPersonnelNos(personnelNos);
+    public ResponseEntity<List<PersonnelRegisteredDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
+        List<PersonnelRegisteredDTO.Info> list=personnelRegisteredService.checkPersonnelNos(personnelNos);
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
 

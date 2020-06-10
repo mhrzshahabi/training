@@ -118,50 +118,6 @@
             <%--},--%>
             {isSeparator: true},
             {
-                title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
-                    var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
-
-
-                    if (record == null || record.id == null) {
-
-                        isc.Dialog.create({
-
-                            message: "<spring:message code="msg.no.records.selected"/>",
-                            icon: "[SKIN]ask.png",
-                            title: "پیام",
-                            buttons: [isc.IButtonSave.create({title: "تائید"})],
-                            buttonClick: function (button, index) {
-                                this.close();
-                            }
-                        });
-                    } else {
-
-
-                        var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                            icon: "[SKIN]ask.png",
-                            title: "تائید حذف",
-                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
-
-                                if (index == 0) {
-                                    deletePostGroupFromAllCompetence(record.id);
-                                    simpleDialog("پیغام", "حذف با موفقیت انجام گردید.", 0, "confirm");
-                                }
-                            }
-                        });
-
-
-                        // ListGrid_Post_Group_Competence.invalidateCache();
-
-                    }
-                }
-            },
-            {isSeparator: true},
-            {
                 title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
                     var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
 
@@ -884,34 +840,36 @@
     ToolStripButton_unGroupedPosts_Jsp = isc.ToolStripButton.create({
         title: "پست های فاقد گروه پستی",
         click: function () {
-            window_unGroupedPosts_PostGroup.addProperties({show: function(){
-                    callToShowUnGroupedPosts_POST({
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
-                    });
-                    this.Super("show",arguments)
-                },});
+            // window_unGroupedPosts_PostGroup.addProperties({show: function(){
+            //         callToShowUnGroupedPosts_POST({
+            //             _constructor: "AdvancedCriteria",
+            //             operator: "and",
+            //             criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
+            //         });
+            //         this.Super("show",arguments)
+            //     },});
             window_unGroupedPosts_PostGroup.setTitle(this.title);
             window_unGroupedPosts_PostGroup.show();
+            ToolStripButton_unGroupedPosts_POST.click();
         }
     });
     ToolStripButton_newPosts_Jsp = isc.ToolStripButton.create({
         title: "پست های جدید",
         click: function () {
-            window_unGroupedPosts_PostGroup.addProperties({show: function(){
-                    callToShowUnGroupedPosts_POST({
-                        _constructor: "AdvancedCriteria",
-                        operator: "or",
-                        criteria: [
-                            {fieldName: "createdDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()},
-                            {fieldName: "lastModifiedDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()}
-                        ]
-                    });
-                    this.Super("show",arguments)
-                },});
+            // window_unGroupedPosts_PostGroup.addProperties({show: function(){
+            //         callToShowUnGroupedPosts_POST({
+            //             _constructor: "AdvancedCriteria",
+            //             operator: "or",
+            //             criteria: [
+            //                 {fieldName: "createdDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()},
+            //                 {fieldName: "lastModifiedDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()}
+            //             ]
+            //         });
+            //         this.Super("show",arguments)
+            //     },});
             window_unGroupedPosts_PostGroup.setTitle(this.title);
             window_unGroupedPosts_PostGroup.show();
+            ToolStripButton_newPosts_POST.click();
         }
     });
     ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
@@ -922,6 +880,8 @@
                 return;
             }
             Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
+            // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), 'PostGroup')");
+            // Window_NeedsAssessment_Edit.show();
         }
     });
     ToolStrip_NA_Post_Group_Jsp = isc.ToolStrip.create({
@@ -1246,6 +1206,7 @@
             ListGrid_Post_Group_Posts.setData([]);
         else
             ListGrid_Post_Group_Posts.invalidateCache();
+        CourseLG_Post_Group_Jsp.setData([]);
         PersonnelLG_Post_Group_Jsp.setData([]);
     }
 

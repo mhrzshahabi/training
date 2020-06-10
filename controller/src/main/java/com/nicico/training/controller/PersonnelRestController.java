@@ -61,8 +61,8 @@ public class PersonnelRestController {
 
     @Loggable
     @PostMapping(value = "checkPersonnelNos")
-    public ResponseEntity<HashMap<String, PersonnelDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
-        HashMap<String, PersonnelDTO.Info> list=personnelService.checkPersonnelNos(personnelNos);
+    public ResponseEntity<List<PersonnelDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
+        List<PersonnelDTO.Info> list=personnelService.checkPersonnelNos(personnelNos);
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
