@@ -4,8 +4,6 @@ ghazanfari_f, 8/29/2019, 11:41 AM
 package com.nicico.training.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
@@ -16,10 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,4 +49,5 @@ public class JobRestController {
         SearchDTO.SearchRs<JobDTO.Info> searchRs = jobService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
 }

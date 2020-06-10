@@ -127,8 +127,8 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -152,8 +152,8 @@
                 }
             },
             {name: "titleFa",},
-            {name: "job.titleFa",},
-            {name: "postGrade.titleFa",},
+            {name: "jobTitleFa",},
+            {name: "postGradeTitleFa",},
             {name: "area",},
             {name: "assistance",},
             {name: "affairs",},
@@ -446,7 +446,7 @@
 
     function callToShowUnGroupedPosts_POST(criteria){
         CoursesLG_POST.setData([]);
-        PostLG_post.implicitCriteria = criteria;
+        PostLG_post.setImplicitCriteria(criteria);
         PostLG_post.invalidateCache();
         PostLG_post.fetchData();
     }

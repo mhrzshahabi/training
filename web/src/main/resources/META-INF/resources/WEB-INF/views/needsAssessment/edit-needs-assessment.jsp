@@ -676,13 +676,13 @@
                     {name: "code"},
                     {name: "titleFa"}
                 ],
-                click: function(form){
-                    // updateObjectIdLG(form, form.getValue("objectType"));
-                    if(form.getValue("objectType") === "Post"){
-                        PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList";
-                        Window_AddPost_JspNeedsAssessment.show();
-                    }
-                },
+                // click: function(form){
+                //     // updateObjectIdLG(form, form.getValue("objectType"));
+                //     if(form.getValue("objectType") === "Post"){
+                //         PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList";
+                //         Window_AddPost_JspNeedsAssessment.show();
+                //     }
+                // },
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue){
                         editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
@@ -952,7 +952,7 @@
         if(type === "Post") {
             Label_PlusData_JspNeedsAssessment.setContents(
                 "عنوان پست: " + objectId.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
+                // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
