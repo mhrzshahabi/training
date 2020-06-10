@@ -31,7 +31,6 @@ public class AttendanceService implements IAttendanceService {
     private final TclassService tclassService;
     private final ClassSessionService classSessionService;
 
-
     @Transactional(readOnly = true)
     @Override
     public AttendanceDTO.Info get(Long id) {
@@ -284,5 +283,36 @@ public class AttendanceService implements IAttendanceService {
         Date date = new Date();
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
         return todayDate.compareTo(startingDate) >= 0 ? "false" : "true";
+    }
+
+    //Amin Haeri-------------------
+    @Transactional()
+    @Override
+    public String studentUnknownSessionsInClass(Long classId) {
+        List<ClassSessionDTO.Info> sessions = classSessionService.getSessions(classId);
+        Tclass tclassOfSession = tclassService.getEntity(classId);
+        int numStudents=tclassOfSession.getClassStudents().size();
+
+        Collections.sort(sessions, (ClassSessionDTO.Info s1, ClassSessionDTO.Info s2) -> {
+                    if (s1.getSessionDate() != null && s2.getSessionDate() != null)
+                        return s1.getSessionDate().compareTo(s2.getSessionDate());
+                    return (s1.getSessionDate() != null) ? 1 : -1;
+                }
+        );
+
+        for (ClassSessionDTO.Info s:sessions) {
+            List<Attendance> attendanceList = attendanceDAO.findBySessionId(s.getId());
+            if (attendanceList.size() != numStudents) {
+                return s.getSessionDate();
+            }
+
+            for (Attendance a : attendanceList) {
+                if (a.getState().equals("0")) {
+                    return s.getSessionDate();
+                }
+            }
+        }
+
+        return new String();
     }
 }

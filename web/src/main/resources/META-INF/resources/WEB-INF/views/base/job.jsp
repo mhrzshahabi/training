@@ -3,63 +3,31 @@
 
 // <script>
 
-    // ------------------------------------------- Menu -------------------------------------------
+    var naJob_Job = null;
+    var personnelJob_Job = null;
+    var postJob_Job = null;
+
+    ///////////////////////////////////////////////////Menu/////////////////////////////////////////////////////////////
     JobMenu_job = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    refreshJobLG_job();
+                    refreshLG(JobLG_job);
+                    PostLG_Job.setData([]);
+                    PersonnelLG_Job.setData([]);
+                    NALG_Job.setData([]);
                 }
             },
         ]
     });
 
-    // ------------------------------------------- ToolStrip -------------------------------------------
+    ///////////////////////////////////////////////ToolStrip////////////////////////////////////////////////////////////
     JobTS_job = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
-            <%--isc.ToolStripButtonPrint.create({--%>
-            <%--    menu: isc.Menu.create({--%>
-            <%--        data: [--%>
-            <%--            {--%>
-            <%--                title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
-            <%--                    printJobLG_job("pdf");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--            {--%>
-            <%--                title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {--%>
-            <%--                    printJobLG_job("excel");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--            {--%>
-            <%--                title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>", click: function () {--%>
-            <%--                    printJobLG_job("html");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--        ]--%>
-            <%--    })--%>
-            <%--}),--%>
-
-
-            isc.ToolStripButton.create({
-                top: 260,
-                align: "center",
-                title: "<spring:message code='job.person.assign'/>",
-                click: function () {
-                    if (!(JobLG_job.getSelectedRecord() == undefined || JobLG_job.getSelectedRecord() == null)) {
-                        setListGrid_PersonnelJob(JobLG_job.getSelectedRecord().code);
-                        Window_ListGrid_Personnel_Job.show();
-                    }else{
-                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                    }
-
-                }
-            }),
-
-
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -73,81 +41,28 @@
                     }),
                     isc.ToolStripButtonRefresh.create({
                         click: function () {
-                            refreshJobLG_job();
+                            refreshLG(JobLG_job);
+                            PostLG_Job.setData([]);
+                            PersonnelLG_Job.setData([]);
+                            NALG_Job.setData([]);
                         }
                     }),
                 ]
             })
         ]
-    })
-    ;
-
-    // ------------------------------------------- TabSet -------------------------------------------
-
-    let JobTabs_job = isc.TabSet.create({
-        tabs: [
-            {
-                title: "<spring:message code="job.group.plural.list"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
-            },
-            {
-                title: "<spring:message code="post.plural.list"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
-            },
-            {
-                title: "<spring:message code="need.assessment.plural.list"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
-            },
-            {
-                title: "<spring:message code="competence.plural.list"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
-            },
-            {
-                title: "<spring:message code="skill.plural.list"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
-            },
-            {
-                title: "<spring:message code="course.plural.list"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
-            },
-            {
-                title: "<spring:message code="class.plural.list"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
-            },
-            <%--{--%>
-            <%--    title: "<spring:message code="all.persons"/>",--%>
-            <%--    pane: isc.TrVLayout.create({--%>
-            <%--        members: []--%>
-            <%--    }),--%>
-            <%--},--%>
-        ]
     });
 
-
-    // ------------------------------------------- DataSource & ListGrid -------------------------------------------
+    //////////////////////////////////////////////DataSource & ListGrid/////////////////////////////////////////////////
     JobDS_job = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: jobUrl + "/iscList"
+        fetchDataURL: viewJobUrl + "/iscList"
     });
-
 
     JobLG_job = isc.TrLG.create({
         dataSource: JobDS_job,
@@ -158,6 +73,8 @@
                 }
             },
             {name: "titleFa",},
+            {name: "competenceCount"},
+            {name: "personnelCount"}
         ],
         autoFetchData: true,
         gridComponents: [JobTS_job, "filterEditor", "header", "body"],
@@ -172,286 +89,314 @@
                 totalsLabel_job.setContents("&nbsp;");
             }
         },
+        selectionUpdated: function (){
+            selectionUpdated_Job(true);
+        },
+        getCellCSSText: function (record) {
+            if (record.competenceCount === 0)
+                return "color:red;font-size: 12px;";
+        },
     });
 
-
-    var PersonnelDS_personnel_Job_JSP = isc.TrDS.create({
+    ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
+    PersonnelDS_Job = isc.TrDS.create({
         fields: [
-            {name: "id", hidden: true},
-            {
-                name: "firstName",
-                title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
-            {
-                name: "lastName",
-                title: "<spring:message code="lastName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
-            {
-                name: "nationalCode",
-                title: "<spring:message code="national.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
-            {
-                name: "personnelNo",
-                title: "<spring:message code="personnel.no"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "personnelNo2",
-                title: "<spring:message code="personnel.no.6.digits"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "workPlace",
-                title: "<spring:message code="work.place"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                width: "*"
-            },
-            {
-                name: "employmentStatus",
-                title: "<spring:message code="employment.status"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                // detail: true
-            },
-            {
-                name: "complexTitle",
-                title: "<spring:message code="complex"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                // detail: true
-            },
-            {
-                name: "workPlaceTitle",
-                title: "<spring:message code="work.place"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                // detail: true
-            },
-            {
-                name: "workTurnTitle",
-                title: "<spring:message code="work.turn"/>",
-                filterOperator: "iContains",
-                // detail: true,
-                autoFitWidth: true
-            },
-            {
-                name: "postTitle",
-                title: "<spring:message code="post.title"/>",
-                filterOperator: "iContains",
-                // detail: true,
-                autoFitWidth: true
-            },
-            {
-                name: "postCode",
-                title: "<spring:message code="post.code"/>",
-                filterOperator: "iContains",
-                // detail: true,
-                autoFitWidth: true
-            },
-            {
-                name: "workYears",
-                title: "<spring:message code="work.years"/>",
-                filterOperator: "iContains",
-                // detail: true,
-                autoFitWidth: true
-            },
-            {
-                name: "educationLevelTitle",
-                title: "<spring:message code="education.degree"/>",
-                filterOperator: "iContains",
-                // detail: true,
-                autoFitWidth: true
-            },
-            {
-                name: "educationMajorTitle",
-                title: "<spring:message code="education.major"/>",
-                filterOperator: "iContains",
-                // detail: true,
-                autoFitWidth: true
-            },
-            {
-                name: "jobTitle",
-                title: "<spring:message code="job.title"/>",
-                filterOperator: "iContains",
-                // detail: true,
-                autoFitWidth: true
-            },
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpSection", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        canAddFormulaFields: false,
-        filterOnKeypress: true,
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        // filterOnKeypress: false,
-        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
-        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
-        configureSortText: "<spring:message code='configureSortText'/>",
-        autoFitAllText: "<spring:message code='autoFitAllText'/>",
-        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
+        fetchDataURL: personnelUrl + "/iscList",
     });
 
-    var ListGrid_Personnel_Job_JSP = isc.TrLG.create({
-        width: "90%",
-        height: "90%",
-        autoDraw: false,
-        border: "2px solid black",
-        layoutMargin: 5,
-        autoFetchData: false,
-        dataSource: PersonnelDS_personnel_Job_JSP,
+    PersonnelLG_Job = isc.TrLG.create({
+        dataSource: PersonnelDS_Job,
+        selectionType: "single",
+        alternateRecordStyles: true,
         fields: [
-
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
-            {name: "jobTitle"},
-            {name: "employmentStatus"},
-            // {name: "complexTitle"},
-            {name: "workPlaceTitle"},
-            {name: "workTurnTitle"},
-            {name: "postTitle"},
-            {name: "postCode"},
-            {name: "educationLevelTitle"},
-            {name: "educationMajorTitle"},
-            {name: "workYears"}
-        ]
-    });
-
-    function setListGrid_PersonnelJob(jobNo) {
-        PersonnelDS_personnel_Job_JSP.fetchDataURL = personnelUrl + "/byJobNo/" + jobNo;
-        ListGrid_Personnel_Job_JSP.invalidateCache();
-        ListGrid_Personnel_Job_JSP.fetchData();
-    };
-
-
-    var ListGrid_Personnel_Job_HLayout = isc.HLayout.create({
-        width: "100%",
-        height: "90%",
-        autoDraw: false,
-        border: "0px solid red",
-        align: "center",
-        valign: "center",
-        layoutMargin: 5,
-        membersMargin: 7,
-        members: [
-            ListGrid_Personnel_Job_JSP
-        ]
-    });
-
-
-    var ListGrid_Personnel_Job_closeButton_HLayout = isc.HLayout.create({
-        width: "100%",
-        height: "6%",
-        autoDraw: false,
-        align: "center",
-        members: [
-            isc.IButton.create({
-                title: "<spring:message code='close'/>",
-                icon: "[SKIN]/actions/cancel.png",
-                width: "70",
-                align: "center",
-                click: function () {
-                    try {
-                        Window_ListGrid_Personnel_Job.close();
-
-                    } catch (e) {
-                    }
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
                 }
-            })
+            },
+            {name: "companyName"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postCode"},
+            {name: "postTitle"},
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"},
         ]
     });
 
-
-    var Window_ListGrid_Personnel_Job = isc.Window.create({
-        title: "<spring:message code='personal'/>",
-        width: 950,
-        height: 600,
-        autoSize: false,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
-        valign: "center",
-        autoDraw: false,
-        dismissOnEscape: true,
-        layoutMargin: 5,
-        membersMargin: 7,
-        items: [
-            ListGrid_Personnel_Job_HLayout,
-            ListGrid_Personnel_Job_closeButton_HLayout
-
-        ]
+    ///////////////////////////////////////////////////////////needs assessment/////////////////////////////////////////
+    PriorityDS_Job = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
     });
 
-
-    // ------------------------------------------- Page UI -------------------------------------------
-    isc.TrVLayout.create({
-        members: [
-            JobLG_job,
-            // isc.HLayout.create({members: [JobTabs_job]})
+    DomainDS_Job = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        // members: [JobLG_job],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentDomain"
     });
 
+    CompetenceTypeDS_Job = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/competenceType"
+    });
 
+    NADS_Job = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "needsAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "needsAssessmentDomainId", title: "<spring:message code='domain'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="competence"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: null
+    });
 
-    // ------------------------------------------- Functions -------------------------------------------
-    function refreshJobLG_job() {
-        JobLG_job.filterByEditor();
-        JobLG_job.invalidateCache();
+    NALG_Job = isc.TrLG.create({
+        dataSource: NADS_Job,
+        selectionType: "none",
+        autoFetchData: false,
+        alternateRecordStyles: true,
+        showAllRecords: true,
+        fields: [
+            {name: "competence.title"},
+            {
+                name: "competence.competenceTypeId",
+                type: "SelectItem",
+                filterOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: CompetenceTypeDS_Job,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentPriorityId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: PriorityDS_Job,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentDomainId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: DomainDS_Job,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {name: "skill.code"},
+            {name: "skill.titleFa"},
+            {name: "skill.course.code"},
+            {name: "skill.course.titleFa"}
+        ],
+    });
+    
+    //////////////////////////////////////////////////////////posts/////////////////////////////////////////////////////
+    PostDS_Job = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+
+        ],
+        fetchDataURL: viewPostUrl + "/iscList"
+    });
+
+    PostLG_Job = isc.TrLG.create({
+        dataSource: PostDS_Job,
+        fields: [
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "titleFa",},
+            {name: "jobTitleFa",},
+            {name: "postGradeTitleFa",},
+            {name: "area",},
+            {name: "assistance",},
+            {name: "affairs",},
+            {name: "section",},
+            {name: "unit",},
+            {name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "costCenterTitleFa"},
+            {name: "competenceCount"},
+            {name: "personnelCount"}
+        ],
+        autoFetchData: false,
+        showResizeBar: true,
+        sortField: 0,
+    });
+
+    //////////////////////////////////////////////////////////TabSet////////////////////////////////////////////////////
+    DetailTab_Job = isc.TabSet.create({
+        tabBarPosition: "top",
+        width: "100%",
+        height: "40%",
+        tabs: [
+            {name: "TabPane_Post_Job", title: "لیست پست ها", pane: PostLG_Job},
+            {name: "TabPane_Personnel_Job", title: "لیست پرسنل", pane: PersonnelLG_Job},
+            {name: "TabPane_NA_Job", title: "<spring:message code='need.assessment'/>", pane: NALG_Job}
+        ],
+        tabSelected: function (){
+            selectionUpdated_Job(false);
+        }
+    });
+
+    //////////////////////////////////////////////////////////Form//////////////////////////////////////////////////////
+    isc.TrVLayout.create({
+        members: [JobLG_job, DetailTab_Job],
+    });
+
+    /////////////////////////////////////////////////////////Functions//////////////////////////////////////////////////
+    function selectionUpdated_Job(){
+        let job = JobLG_job.getSelectedRecord();
+        let tab = DetailTab_Job.getSelectedTab();
+        if (job == null && tab.pane != null){
+            tab.pane.setData([]);
+            return;
+        }
+
+        switch (tab.name) {
+            case "TabPane_Post_Job":{
+                if (postJob_Job === job.id)
+                    return;
+                postJob_Job = job.id;
+                PostLG_Job.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "jobCode", operator: "equals", value: job.code}]
+                });
+                PostLG_Job.invalidateCache();
+                PostLG_Job.fetchData();
+                break;
+            }
+            case "TabPane_Personnel_Job":{
+                if (personnelJob_Job === job.id)
+                    return;
+                personnelJob_Job = job.id;
+                PersonnelLG_Job.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [
+                        {fieldName: "jobNo", operator: "equals", value: job.code},
+                        {fieldName: "active", operator: "equals", value: 1},
+                        {fieldName: "employmentStatusId", operator: "equals", value: 5}
+                    ]
+                });
+                PersonnelLG_Job.invalidateCache();
+                PersonnelLG_Job.fetchData();
+                break;
+            }
+            case "TabPane_NA_Job":{
+                if (naJob_Job === job.id)
+                    return;
+                naJob_Job = job.id;
+                NADS_Job.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + job.id + "&objectType=Job";
+                NADS_Job.invalidateCache();
+                NADS_Job.fetchData();
+                NALG_Job.invalidateCache();
+                NALG_Job.fetchData();
+                break;
+            }
+        }
     }
 
-<%--    function printJobLG_job(type) {--%>
-<%--        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/pdf", "POST", null, "callback:test(rpcResponse)"));--%>
-
-<%--// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));--%>
-
-
-<%--// isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));--%>
-
-<%--// isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));--%>
-
-<%--// trPrintWithCriteria("<spring:url value="educationOrientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());--%>
-<%--// trPrintWithCriteria(,--%>
-<%--// JobLG_job.getCriteria());--%>
-<%--// isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));--%>
-<%--    }--%>
-
-    function test(resp) {
-    }
-
-    <%--function trPrintWithCriteria(url, advancedCriteria) {--%>
-    <%--    let trCriteriaForm = isc.DynamicForm.create({--%>
-    <%--        method: "POST",--%>
-    <%--        action: url,--%>
-    <%--        target: "_Blank",--%>
-    <%--        canSubmit: true,--%>
-    <%--        fields:--%>
-    <%--            [--%>
-    <%--                {name: "CriteriaStr", type: "hidden"},--%>
-    <%--                {name: "token", type: "hidden"}--%>
-    <%--            ]--%>
-    <%--    });--%>
-    <%--    trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
-    <%--    trCriteriaForm.setValue("token", "<%=accessToken%>");--%>
-    <%--    trCriteriaForm.show();--%>
-    <%--    trCriteriaForm.submitForm();--%>
-    <%--}--%>
+    // </script>
 

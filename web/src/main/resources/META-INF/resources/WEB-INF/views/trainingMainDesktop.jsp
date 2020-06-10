@@ -2026,13 +2026,14 @@
                 title: title,
                 ID: title,
                 pane: isc.ViewLoader.create({
-                    viewURL: url, handleError(rpcRequest, rpcResponse) {
+                    viewURL: url,
+                    viewLoaded() {eval(callFunction)},
+                    handleError(rpcRequest, rpcResponse) {
                         console.log('******************************************* Add Tab Error *******************************************');
                         console.log(rpcResponse);
                         console.log('*****************************************************************************************************');
                         createDialog("info", "خطا در ایجاد تب")
-                    },
-                    viewLoaded() {eval(callFunction)}
+                    }
                 }),
                 canClose: true,
             });

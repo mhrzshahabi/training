@@ -35,5 +35,4 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     ClassSession getClassSessionById(Long sessionId);
 
-
 }
