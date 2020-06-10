@@ -195,7 +195,7 @@
     var Label_Help_JspNeedsAssessment = isc.LgLabel.create({
         align:"left",
         contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
-        contents:"اولویت ضروری با رنگ " + getFormulaMessage("قرمز", "2", "#ff8abc")+"، اواویت بهبود با رنگ "+getFormulaMessage("زرد", "2", "#fff669")+" و اولویت توسعه با رنگ "+getFormulaMessage("سبز", "2", "#afffbe")+" مشخص شده است.",
+        contents:"اولویت ضروری با رنگ " + getFormulaMessage("قرمز", "2", "#ff8abc")+"، اواویت بهبود با رنگ "+getFormulaMessage("زرد", "2", "#fff669")+" و اولویت توسعه با رنگ "+getFormulaMessage("سبز", "2", "#61ff55")+" مشخص شده است.",
         customEdges: []});
 
     var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
