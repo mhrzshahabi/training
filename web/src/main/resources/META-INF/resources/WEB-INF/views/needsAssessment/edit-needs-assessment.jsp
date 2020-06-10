@@ -375,7 +375,7 @@
                         return "background-color : " + "#afffbe";
                 }
         },
-        rowDoubleClick (record){
+        recordDoubleClick(viewer, record){
             switch(record.needsAssessmentPriorityId){
                 case 111:
                     record.needsAssessmentPriorityId++;
@@ -393,7 +393,7 @@
                     return;
                 }
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
-                this.grid.endEditing();
+                viewer.endEditing();
             }));
         }
     });
@@ -476,7 +476,7 @@
                     return "background-color : " + "#afffbe";
             }
         },
-        rowDoubleClick (record){
+        recordDoubleClick(viewer, record){
             switch(record.needsAssessmentPriorityId){
                 case 111:
                     record.needsAssessmentPriorityId++;
@@ -494,7 +494,7 @@
                     return;
                 }
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
-                this.grid.endEditing();
+                viewer.endEditing();
             }));
         }
     });
@@ -577,7 +577,7 @@
                     return "background-color : " + "#afffbe";
             }
         },
-        rowDoubleClick (record){
+        recordDoubleClick(viewer, record){
             switch(record.needsAssessmentPriorityId){
                 case 111:
                     record.needsAssessmentPriorityId++;
@@ -595,7 +595,7 @@
                     return;
                 }
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
-                this.grid.endEditing();
+                viewer.endEditing();
             }));
         }
     });
