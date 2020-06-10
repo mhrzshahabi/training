@@ -7,6 +7,7 @@
 %>
 // <script>
 
+    let isAttendanceDate=true;
     var classGridRecordInAttendanceJsp = null;
     var causeOfAbsence = [];
     var sessionInOneDate = [];
@@ -372,6 +373,7 @@
                       form.getItem("sessionDate").valueField = "sessionDate";
                       form.getItem("sessionDate").optionDataSource = RestData_SessionDate_AttendanceJSP;
                       form.getItem("sessionDate").pickListWidth = 200;
+                      isAttendanceDate=true;
                   }
                   if(value == 2){
                       form.getItem("sessionDate").pickListFields = [
@@ -386,6 +388,7 @@
                       form.getItem("sessionDate").valueField = "id";
                       form.getItem("sessionDate").optionDataSource = RestData_Student_AttendanceJSP;
                       form.getItem("sessionDate").pickListWidth = 600;
+                      isAttendanceDate=false;
                   }
                   sessionsForStudent.length = 0;
                   sessionInOneDate.length = 0;
@@ -443,10 +446,10 @@
                                 wait.close();
                                 readOnlySession = JSON.parse(resp.data)[0].readOnly;
                                 let fields1 = [
-                                    {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true},
-                                    {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true},
-                                    {name: "nationalCode", title: "کد ملی"},
-                                    {name: "company", title: "شرکت"},
+                                    {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true,width:"20%"},
+                                    {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true,width:"20%"},
+                                    {name: "nationalCode", title: "کد ملی",width:"10%"},
+                                    {name: "personalNum", title: "شماره پرسنلي",width:"10%"},
                                 ];
                                 for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                                     let field1 = {};
@@ -719,6 +722,7 @@
                         });
                     }
                     if (form.getValue("filterType") == 2) {
+                        isAttendanceDate=false;
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().studentId,
                             httpMethod: "GET",
@@ -1124,6 +1128,31 @@
     }
 
     function loadPage_Attendance() {
+        if (isAttendanceDate)
+        {
+                let wait = createDialog("wait");
+
+                isc.RPCManager.sendRequest({
+                    actionURL: attendanceUrl + "/studentUnknownSessionsInClass?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id,
+                    httpMethod: "GET",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.httpResponseText) {
+                            DynamicForm_Attendance.getItem("sessionDate").changed(DynamicForm_Attendance, DynamicForm_Attendance.getItem("sessionDate"), resp.httpResponseText);
+                            DynamicForm_Attendance.setValue("sessionDate", resp.httpResponseText);
+                        }
+                        else{
+                            ListGrid_Attendance_AttendanceJSP.setData([]);
+                        }
+                        wait.close();
+                    }
+                });
+        }
+
         // if(ListGrid_Class_JspClass.getSelectedRecord() === classGridRecordInAttendanceJsp){
         //     return;
         // }
