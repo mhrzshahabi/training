@@ -192,6 +192,11 @@
         align:"left",
         contents:"",
         customEdges: []});
+    var Label_Help_JspNeedsAssessment = isc.LgLabel.create({
+        align:"left",
+        contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
+        contents:"اولویت ضروری با رنگ " + getFormulaMessage("قرمز", "2", "#ff8abc")+"، اواویت بهبود با رنگ "+getFormulaMessage("زرد", "2", "#fff669")+" و اولویت توسعه با رنگ "+getFormulaMessage("سبز", "2", "#61ff55")+" مشخص شده است.",
+        customEdges: []});
 
     var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_AllCompetence_JspNeedsAssessment",
@@ -375,7 +380,7 @@
                         return "background-color : " + "#afffbe";
                 }
         },
-        rowDoubleClick (record){
+        recordDoubleClick(viewer, record){
             switch(record.needsAssessmentPriorityId){
                 case 111:
                     record.needsAssessmentPriorityId++;
@@ -393,7 +398,7 @@
                     return;
                 }
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
-                this.grid.endEditing();
+                viewer.endEditing();
             }));
         }
     });
@@ -476,7 +481,7 @@
                     return "background-color : " + "#afffbe";
             }
         },
-        rowDoubleClick (record){
+        recordDoubleClick(viewer, record){
             switch(record.needsAssessmentPriorityId){
                 case 111:
                     record.needsAssessmentPriorityId++;
@@ -494,7 +499,7 @@
                     return;
                 }
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
-                this.grid.endEditing();
+                viewer.endEditing();
             }));
         }
     });
@@ -577,7 +582,7 @@
                     return "background-color : " + "#afffbe";
             }
         },
-        rowDoubleClick (record){
+        recordDoubleClick(viewer, record){
             switch(record.needsAssessmentPriorityId){
                 case 111:
                     record.needsAssessmentPriorityId++;
@@ -595,7 +600,7 @@
                     return;
                 }
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
-                this.grid.endEditing();
+                viewer.endEditing();
             }));
         }
     });
@@ -692,9 +697,10 @@
             },
         ]
     });
-    var HLayout_Label_PlusData_JspNeedsAssessment = isc.TrHLayout.create({
+    var HLayout_Label_PlusData_JspNeedsAssessment = isc.TrVLayout.create({
         height: "1%",
         members: [
+            Label_Help_JspNeedsAssessment,
             Label_PlusData_JspNeedsAssessment,
         ]
     });
