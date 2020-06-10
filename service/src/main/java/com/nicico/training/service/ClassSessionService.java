@@ -44,9 +44,7 @@ public class ClassSessionService implements IClassSession {
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
     private final MessageSource messageSource;
-  /*  private final AttendanceService attendanceService;
-    private final ClassSessionService classSessionService;
-    private final TclassService tclassService;*/
+
 
     //*********************************
 
