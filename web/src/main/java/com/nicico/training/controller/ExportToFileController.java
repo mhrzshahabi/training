@@ -622,7 +622,13 @@ public class ExportToFileController {
         searchRq.setCount(Integer.parseInt(lenStr));
 
         if (StringUtils.isNotEmpty(sortBy)) {
-            searchRq.setSortBy(objectMapper.readValue(sortBy, Collection.class));
+
+            if (sortBy.indexOf('[') > -1) {
+                searchRq.setSortBy(objectMapper.readValue(sortBy, Collection.class));
+            } else {
+                searchRq.setSortBy(sortBy);
+            }
+
         }
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
