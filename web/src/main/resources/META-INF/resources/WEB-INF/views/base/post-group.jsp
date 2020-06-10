@@ -13,22 +13,68 @@
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
 
-    if(window_unGroupedPosts_PostGroup === undefined) {
-        var window_unGroupedPosts_PostGroup = isc.Window.create({
-            minWidth: 1024,
-            autoCenter: true,
-            showMaximizeButton: false,
-            autoSize: false,
-            keepInParentRect: true,
-            isModal: false,
-            placement: "fillScreen",
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/post/"})],
-            close() {
-                closeToShowUnGroupedPosts_POST();
-                this.Super("close", arguments)
+
+    PostDS_PostGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+
+        ],
+        fetchDataURL: viewPostUrl + "/iscList"
+    });
+
+    PostLG_PostGroup = isc.TrLG.create({
+        dataSource: PostDS_PostGroup,
+        fields: [
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
-        });
-    }
+            {name: "titleFa",},
+            {name: "jobTitleFa",},
+            {name: "postGradeTitleFa",},
+            {name: "area",},
+            {name: "assistance",},
+            {name: "affairs",},
+            {name: "section",},
+            {name: "unit",},
+            {name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "costCenterTitleFa"},
+            {name: "competenceCount"},
+            {name: "personnelCount"}
+        ],
+        autoFetchData: true,
+        showResizeBar: true,
+        sortField: 0,
+    });
+
+    window_unGroupedPosts_PostGroup = isc.Window.create({
+        minWidth: 1024,
+        autoCenter: true,
+        showMaximizeButton: false,
+        autoSize: false,
+        keepInParentRect: true,
+        isModal: false,
+        placement: "fillScreen",
+        items: [PostLG_PostGroup],
+    });
 
     if(Window_NeedsAssessment_Edit === undefined) {
         var Window_NeedsAssessment_Edit = isc.Window.create({
@@ -840,36 +886,24 @@
     ToolStripButton_unGroupedPosts_Jsp = isc.ToolStripButton.create({
         title: "پست های فاقد گروه پستی",
         click: function () {
-            // window_unGroupedPosts_PostGroup.addProperties({show: function(){
-            //         callToShowUnGroupedPosts_POST({
-            //             _constructor: "AdvancedCriteria",
-            //             operator: "and",
-            //             criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
-            //         });
-            //         this.Super("show",arguments)
-            //     },});
-            window_unGroupedPosts_PostGroup.setTitle(this.title);
-            window_unGroupedPosts_PostGroup.show();
-            ToolStripButton_unGroupedPosts_POST.click();
+            loadPostData({
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
+            }, this.title);
         }
     });
     ToolStripButton_newPosts_Jsp = isc.ToolStripButton.create({
         title: "پست های جدید",
         click: function () {
-            // window_unGroupedPosts_PostGroup.addProperties({show: function(){
-            //         callToShowUnGroupedPosts_POST({
-            //             _constructor: "AdvancedCriteria",
-            //             operator: "or",
-            //             criteria: [
-            //                 {fieldName: "createdDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()},
-            //                 {fieldName: "lastModifiedDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()}
-            //             ]
-            //         });
-            //         this.Super("show",arguments)
-            //     },});
-            window_unGroupedPosts_PostGroup.setTitle(this.title);
-            window_unGroupedPosts_PostGroup.show();
-            ToolStripButton_newPosts_POST.click();
+            loadPostData({
+                _constructor: "AdvancedCriteria",
+                operator: "or",
+                criteria: [
+                    {fieldName: "createdDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()},
+                    {fieldName: "lastModifiedDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()}
+                ]
+            }, this.title);
         }
     });
     ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
@@ -1410,6 +1444,14 @@
         };
         PersonnelLG_Post_Group_Jsp.invalidateCache();
         PersonnelLG_Post_Group_Jsp.fetchData();
+    }
+
+    function loadPostData(criteria, title){
+        PostLG_PostGroup.setImplicitCriteria(criteria);
+        PostLG_PostGroup.invalidateCache();
+        PostLG_PostGroup.fetchData();
+        window_unGroupedPosts_PostGroup.setTitle(title);
+        window_unGroupedPosts_PostGroup.show();
     }
 
     // </script>
