@@ -144,31 +144,30 @@ public class ExportToFileController {
                 Object evaluationGrade = null;
                 Object teachingCategories = null;
                 Object teachingSubCategories = null;
-                Object term=null;
+                Object term = null;
                 for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                    if(criterion.getFieldName().equalsIgnoreCase("evaluationCategory")){
+                    if (criterion.getFieldName().equalsIgnoreCase("evaluationCategory")) {
                         evaluationCategory = criterion.getValue().get(0);
                         removedObjects.add(criterion);
                     }
-                    if(criterion.getFieldName().equalsIgnoreCase("evaluationSubCategory")){
+                    if (criterion.getFieldName().equalsIgnoreCase("evaluationSubCategory")) {
                         evaluationSubCategory = criterion.getValue().get(0);
                         removedObjects.add(criterion);
                     }
-                    if(criterion.getFieldName().equalsIgnoreCase("evaluationGrade")){
+                    if (criterion.getFieldName().equalsIgnoreCase("evaluationGrade")) {
                         evaluationGrade = criterion.getValue().get(0);
                         removedObjects.add(criterion);
                     }
-                    if(criterion.getFieldName().equalsIgnoreCase("teachingCategories")){
+                    if (criterion.getFieldName().equalsIgnoreCase("teachingCategories")) {
                         teachingCategories = criterion.getValue();
                         removedObjects.add(criterion);
                     }
-                    if(criterion.getFieldName().equalsIgnoreCase("teachingSubCategories")){
+                    if (criterion.getFieldName().equalsIgnoreCase("teachingSubCategories")) {
                         teachingSubCategories = criterion.getValue();
                         removedObjects.add(criterion);
                     }
 
-                    if (criterion.getFieldName().equalsIgnoreCase("termId"))
-                    {
+                    if (criterion.getFieldName().equalsIgnoreCase("termId")) {
                         criterion.setFieldName("tclasse.term.id");
                         criterion.setOperator(EOperator.inSet);
                     }
@@ -178,21 +177,21 @@ public class ExportToFileController {
                     searchRq.getCriteria().getCriteria().remove(removedObject);
                 }
 
-                Set<TeacherDTO.Report> set=new HashSet<>();
+                Set<TeacherDTO.Report> set = new HashSet<>();
                 SearchDTO.SearchRs<TeacherDTO.Report> tmpresponse = teacherService.deepSearchReport(searchRq);
 
 
                 List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
 
                 Float min_evalGrade = null;
-                if(evaluationGrade != null)
+                if (evaluationGrade != null)
                     min_evalGrade = Float.parseFloat(evaluationGrade.toString());
 
-                if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
+                if (evaluationGrade != null && evaluationCategory != null && evaluationSubCategory != null) {
                     for (TeacherDTO.Report datum : tmpresponse.getList()) {
                         if (evaluationGrade != null) {
                             Float teacher_evalGrade = (Float) teacherService.evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString()).get("evaluationGrade");
-                            datum.setEvaluationGrade(""+teacher_evalGrade);
+                            datum.setEvaluationGrade("" + teacher_evalGrade);
                             if (teacher_evalGrade < min_evalGrade)
                                 listRemovedObjects.add(datum);
                         }
@@ -214,15 +213,15 @@ public class ExportToFileController {
                     List<?> result3 = null;
                     String classCount = null;
 
-                    String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" +  tId + ") AND ROWNUM = 1";
+                    String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" + tId + ") AND ROWNUM = 1";
                     result1 = (List<?>) entityManager.createNativeQuery(sql1).getResultList();
-                    if(result1.size() > 0) {
+                    if (result1.size() > 0) {
                         res1 = (Object[]) result1.get(0);
                         courseId = res1[0].toString();
                         classId = res1[1].toString();
                     }
 
-                    if(courseId != null) {
+                    if (courseId != null) {
                         String sql2 = "select c_title_fa from tbl_course where id =" + courseId;
                         result2 = (List<?>) entityManager.createNativeQuery(sql2).getResultList();
                         courseTitle = (String) result2.get(0);
@@ -234,13 +233,13 @@ public class ExportToFileController {
 
                     datum.setLastCourse(courseTitle);
                     datum.setNumberOfCourses(classCount);
-                    if(datum.getLastCourse() != null)
-                        datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(Long.parseLong(classId),tId));
+                    if (datum.getLastCourse() != null)
+                        datum.setLastCourseEvaluationGrade("" + tclassService.getClassReactionEvaluationGrade(Long.parseLong(classId), tId));
                 }
 
-                if(tmpresponse.getList()==null||tmpresponse.getList().size()==0){
+                if (tmpresponse.getList() == null || tmpresponse.getList().size() == 0) {
                     count = 0;
-                }else{
+                } else {
                     ObjectMapper mapper = new ObjectMapper();
                     jsonString = mapper.writeValueAsString(tmpresponse.getList());
                     count = tmpresponse.getList().size();
@@ -287,7 +286,7 @@ public class ExportToFileController {
 
 
                 SearchDTO.SearchRs<PersonnelCourseNotPassedReportViewDTO.Info> list5 = personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class));
-                List<PersonnelCourseNotPassedReportViewDTO.Info> list51=list5.getList();
+                List<PersonnelCourseNotPassedReportViewDTO.Info> list51 = list5.getList();
 
                 if (list51 == null) {
                     count = 0;
@@ -300,17 +299,17 @@ public class ExportToFileController {
 
             case "classOutsideCurrentTerm":
 
-                String str= DateUtil.convertKhToMi1(((String)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim()).replaceAll("[\\s\\-]", "");
+                String str = DateUtil.convertKhToMi1(((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim()).replaceAll("[\\s\\-]", "");
                 searchRq.getCriteria().getCriteria().remove(0);
 
                 SearchDTO.SearchRs<TclassDTO.Info> list6 = tclassService.search(searchRq);
-                List<TclassDTO.Info> list61=list6.getList();
+                List<TclassDTO.Info> list61 = list6.getList();
 
-                List<Long> longList=list61.stream().filter(x->Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0,10).replaceAll("[\\s\\-]", ""))>Long.valueOf(str))
-                        .map(x->x.getId()).collect(Collectors.toList());
+                List<Long> longList = list61.stream().filter(x -> Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0, 10).replaceAll("[\\s\\-]", "")) > Long.valueOf(str))
+                        .map(x -> x.getId()).collect(Collectors.toList());
 
 
-                List<TclassDTO.Info>infoList= list61.stream().filter(x->!longList.contains(x.getId())).collect(Collectors.toList());
+                List<TclassDTO.Info> infoList = list61.stream().filter(x -> !longList.contains(x.getId())).collect(Collectors.toList());
                 list6.getList().removeAll(infoList);
 
 
@@ -324,11 +323,11 @@ public class ExportToFileController {
                 break;
             case "weeklyTrainingSchedule":
 
-                String userNationalCode= ((String)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                String userNationalCode = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
 
-                SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> list7 =classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);;
-                List<ClassSessionDTO.WeeklySchedule> list71=list7.getList();
+                SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> list7 = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
+                List<ClassSessionDTO.WeeklySchedule> list71 = list7.getList();
 
 
                 if (list71 == null) {
@@ -484,7 +483,6 @@ public class ExportToFileController {
                 trainingClassReportlistRemovedObjects.clear();
 
 
-
                 if (list8.getList() == null) {
                     count = 0;
                 } else {
@@ -495,7 +493,7 @@ public class ExportToFileController {
                 break;
             case "unfinishedClassesReport":
 
-                List<UnfinishedClassesReportDTO> list9 =unfinishedClassesReportService.UnfinishedClassesList();
+                List<UnfinishedClassesReportDTO> list9 = unfinishedClassesReportService.UnfinishedClassesList();
 
 
                 if (list9 == null) {
@@ -508,12 +506,12 @@ public class ExportToFileController {
                 break;
             case "trainingOverTime":
 
-                String startDate= ((String)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                String startDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-                String endDate= ((String)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                String endDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
 
-                List<TrainingOverTimeDTO.Info> list10 =trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
+                List<TrainingOverTimeDTO.Info> list10 = trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
 
 
                 if (list10 == null) {
@@ -595,8 +593,11 @@ public class ExportToFileController {
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
         String lenStr = rq.getParameter("_len");
         String criteriaStr = rq.getParameter("criteriaStr");
-        String sortBy = rq.getParameter("_sortBy");
+
         ObjectMapper objectMapper = new ObjectMapper();
+
+        String sortBy = rq.getParameter("_sortBy");
+
 
         JsonNode jsonNode = objectMapper.readTree(criteriaStr);
         String operator = "";
@@ -621,7 +622,7 @@ public class ExportToFileController {
         searchRq.setCount(Integer.parseInt(lenStr));
 
         if (StringUtils.isNotEmpty(sortBy)) {
-            searchRq.setSortBy(sortBy);
+            searchRq.setSortBy(objectMapper.readValue(sortBy, Collection.class));
         }
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
