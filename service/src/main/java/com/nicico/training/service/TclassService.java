@@ -1217,7 +1217,9 @@ public class TclassService implements ITclassService {
                         (classInfo[9] != null ? classInfo[9].toString() : null),
                         (classInfo[10] != null ? classInfo[10].toString() : null),
                         (classInfo[11] != null ? Long.parseLong(classInfo[11].toString()) : null),
-                        (classInfo[12] != null ? classInfo[12].toString() : null)));
+                        (classInfo[12] != null ? classInfo[12].toString() : null),
+                        (classInfo[13] != null ? Long.parseLong(classInfo[13].toString()) : null),
+                        (classInfo[14] != null ? classInfo[14].toString() : null)));
             }
         }
 

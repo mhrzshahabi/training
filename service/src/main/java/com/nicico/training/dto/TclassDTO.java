@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
+
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
@@ -155,7 +156,7 @@ public class TclassDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherInfo")
-    public static class teacherInfo{
+    public static class teacherInfo {
         private TeacherDTO.TeacherInformation teacher;
     }
 
@@ -163,7 +164,7 @@ public class TclassDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("teacherInfoCustom")
-    public static class teacherInfoCustom{
+    public static class teacherInfoCustom {
         private String firstName;
         private String lastName;
         private String nationalCode;
@@ -189,13 +190,13 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> gettargetSocieties() {
-            if(targetSocieties == null)
+            if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;
-            for (Object society : targetSocieties){
-                if(targetSocietyTypeId == 371 && society instanceof Integer)
+            for (Object society : targetSocieties) {
+                if (targetSocietyTypeId == 371 && society instanceof Integer)
                     continue;
-                else if(targetSocietyTypeId == 372 && society instanceof String)
+                else if (targetSocietyTypeId == 372 && society instanceof String)
                     continue;
                 accept = false;
                 break;
@@ -251,13 +252,13 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> gettargetSocieties() {
-            if(targetSocieties == null)
+            if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;
-            for (Object society : targetSocieties){
-                if(targetSocietyTypeId == 371 && society instanceof Integer)
+            for (Object society : targetSocieties) {
+                if (targetSocietyTypeId == 371 && society instanceof Integer)
                     continue;
-                else if(targetSocietyTypeId == 372 && society instanceof String)
+                else if (targetSocietyTypeId == 372 && society instanceof String)
                     continue;
                 accept = false;
                 break;
@@ -360,7 +361,7 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple institute;
         private Long instituteId;
         private String classStatus;
-//        private String evaluationStatus;
+        //        private String evaluationStatus;
         private String titleClass;
         private String scoringMethod;
 
@@ -508,6 +509,8 @@ public class TclassDTO {
         private String ERunType;
         private Long courseId;
         private String courseTitle;
+        private Long failureReasonId;
+        private String failureReason;
     }
 
     @Getter
@@ -565,20 +568,23 @@ public class TclassDTO {
         private String endDate;
         private String classStatus;
         private String scoringMethod;
+
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
         }
+
         public Integer getStudentsCount() {
             if (classStudents != null)
                 return classStudents.size();
             else
                 return 0;
         }
-        public String getYear(){
-            return startDate.substring(0,4);
+
+        public String getYear() {
+            return startDate.substring(0, 4);
         }
     }
 
