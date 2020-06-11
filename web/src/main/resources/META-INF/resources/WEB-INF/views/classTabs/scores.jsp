@@ -638,7 +638,7 @@
 
 
     function loadPage_Scores() {
-     var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+      classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit);
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id;
