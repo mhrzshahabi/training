@@ -1176,7 +1176,7 @@
         function totalRejected(records) {
             let totalRejected_ = 0;
             for (let i = 0; i < records.length; i++) {
-                if (records[i].scoreStateId === 0)
+                if (records[i].scoreStateId === 403 || records[i].scoreStateId === 405 || records[i].scoreStateId === 449)
                     totalRejected_ += records[i].hduration;
             }
             return "<spring:message code='missing.or.absent.sum'/> : " + totalRejected_ + " <spring:message code='hour'/> ";
