@@ -62,7 +62,13 @@
                 return;
             }
             Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post");
-            // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(PostLG_post.getSelectedRecord(), 'Post')");
+            Window_NeedsAssessment_Edit.setProperties({
+                close() {
+                    PostLG_post.invalidateCache()
+                    this.Super("close", arguments)
+                }
+            })
+// createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(PostLG_post.getSelectedRecord(), 'Post')");
         }
     });
     ToolStrip_NA_POST = isc.ToolStrip.create({

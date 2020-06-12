@@ -58,7 +58,7 @@
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: postUrl + "/spec-list"
     });
     let PostGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
@@ -647,7 +647,7 @@
     var NeedsAssessmentTargetDF_needsAssessment = isc.DynamicForm.create({
         ID: "NeedsAssessmentTargetDF_needsAssessment",
         numCols: 2,
-        readOnlyDisplay: "readOnly",
+        // readOnlyDisplay: "readOnly",
         fields: [
             {
                 name: "objectType",
@@ -676,22 +676,24 @@
                 type: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
-                // autoFetchData: false,
+                autoFetchData: false,
                 pickListFields: [
                     {name: "code"},
                     {name: "titleFa"}
                 ],
-                // click: function(form){
-                //     // updateObjectIdLG(form, form.getValue("objectType"));
-                //     if(form.getValue("objectType") === "Post"){
-                //         PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList";
-                //         Window_AddPost_JspNeedsAssessment.show();
-                //     }
-                // },
+                click: function(form, item){
+                    item.fetchData();
+                    // updateObjectIdLG(form, form.getValue("objectType"));
+                    // if(form.getValue("objectType") === "Post"){
+                        // PostDs_needsAssessment.fetchDataURL = postUrl + "/spec-list";
+                        // Window_AddPost_JspNeedsAssessment.show();
+                    // }
+                },
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue){
                         editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
                         refreshPersonnelLG();
+                        updateLabelEditNeedsAssessment(item.getSelectedRecord());
                     }
                 },
             },
@@ -754,7 +756,7 @@
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
                 // form.getItem("objectId").canEdit = false;
-                // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList";
+                // PostDs_needsAssessment.fetchDataURL = postUrl + "/spec-list";
                 break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
@@ -849,6 +851,18 @@
             ListGrid_Attitude_JspNeedsAssessment.invalidateCache();
         }
     }
+    function removeRecord_JspNeedsAssessment(record) {
+        if(record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")){
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null, function (resp) {
+                if (resp.httpResponseCode != 200) {
+                    return true;
+                }
+                DataSource_Skill_JspNeedsAssessment.removeData(record);
+                // return false;
+            }));
+        }
+    }
+
     function editNeedsAssessmentRecord(objectId, objectType) {
         // let criteria = [
         //     '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
@@ -913,7 +927,7 @@
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
-            data.id = JSON.parse(resp.data).id
+            data.id = JSON.parse(resp.data).id;
             DataSource_Skill_JspNeedsAssessment.addData(data);
             fetchDataDomainsGrid();
         }))
@@ -947,15 +961,9 @@
         },10);
     };
 
-    function loadEditNeedsAssessment(objectId, type) {
-        updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, type);
-        NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", type);
-        NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId.id);
-        clearAllGrid();
+    function updateLabelEditNeedsAssessment(objectId) {
         Label_PlusData_JspNeedsAssessment.setContents("");
-        editNeedsAssessmentRecord(objectId.id, type);
-        refreshPersonnelLG(objectId);
-        if(type === "Post") {
+        if(NeedsAssessmentTargetDF_needsAssessment.getValue("objectType") === "Post") {
             Label_PlusData_JspNeedsAssessment.setContents(
                 "عنوان پست: " + objectId.titleFa
                 // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
@@ -963,8 +971,18 @@
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
             );
-        } else
-            Label_PlusData_JspNeedsAssessment.setContents("");
+        }
+    }
+
+
+    function loadEditNeedsAssessment(objectId, type) {
+        updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, type);
+        NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", type);
+        NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId.id);
+        clearAllGrid();
+        editNeedsAssessmentRecord(objectId.id, type);
+        refreshPersonnelLG(objectId);
+        updateLabelEditNeedsAssessment(objectId);
     }
 
     // </script>

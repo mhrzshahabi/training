@@ -85,7 +85,7 @@
             showUs(record, objectType) {
                 loadEditNeedsAssessment(record, objectType);
                 this.Super("show", arguments);
-            }
+            },
         });
     }
 
@@ -914,6 +914,12 @@
                 return;
             }
             Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
+            Window_NeedsAssessment_Edit.setProperties({
+                close() {
+                    ListGrid_Post_Group_Jsp.invalidateCache()
+                    this.Super("close", arguments)
+                }
+            })
             // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), 'PostGroup')");
             // Window_NeedsAssessment_Edit.show();
         }
