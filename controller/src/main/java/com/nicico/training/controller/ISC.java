@@ -16,8 +16,11 @@ import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 
 @Getter
@@ -64,6 +67,19 @@ public class ISC<T> {
                     }));
             convertDate(criteriaRq);
             searchRq.setCriteria(criteriaRq);
+        }
+        return searchRq;
+    }
+
+    public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq, Long id, String fieldName, EOperator operator) throws IOException {
+
+        SearchDTO.SearchRq searchRq = convertToSearchRq(rq);
+        if (id != null) {
+            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            criteria.getCriteria().add(makeNewCriteria(fieldName, id, operator, null));
+            if (searchRq.getCriteria() != null)
+                criteria.getCriteria().add(searchRq.getCriteria());
+            searchRq.setCriteria(criteria);
         }
         return searchRq;
     }
