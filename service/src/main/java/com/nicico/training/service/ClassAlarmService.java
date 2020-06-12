@@ -1799,9 +1799,9 @@ public class ClassAlarmService implements IClassAlarm {
                     "    tbl_class_student " +
                     " WHERE " +
                     "    tbl_class_student.class_id = :class_id " +
-                    "    AND   tbl_class_student.failure_reason IS NULL " +
+                    "    AND   tbl_class_student.failure_reason_id IS NULL " +
                     "    AND   tbl_class_student.score IS NULL " +
-                    "    AND   tbl_class_student.scores_state IS NULL " +
+                    "    AND   (tbl_class_student.scores_state_id IS NULL OR  tbl_class_student.scores_state_id = 410) " +
                     "    AND   rownum = 1 AND :todaydat = :todaydat ";
 
             List<?> Alarm = (List<?>) entityManager.createNativeQuery(alarmLastScripts)
