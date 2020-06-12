@@ -58,11 +58,10 @@ public class JobGroupRestController {
     }
 
     @GetMapping(value = "/iscList")
-    public ResponseEntity<ISC<JobGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
-        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+    public ResponseEntity<ISC<JobGroupDTO.Info>> list(HttpServletRequest iscRq, @RequestParam(value = "id", required = false) Long id) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, id, "id", EOperator.equals);
         SearchDTO.SearchRs<JobGroupDTO.Info> searchRs = jobGroupService.searchWithoutPermission(searchRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable
