@@ -43,12 +43,12 @@ public class PersonnelInformationRestController {
 
     @Loggable
     @GetMapping(value = "/findClassByCourseId/{courseId}")
-    public ResponseEntity<TclassDTO.TclassSpecRs> findClassByCourseId(@PathVariable Long courseId) {
-        List<TclassDTO.Info> list = personnelInformationService.findClassesByCourseId(courseId);
+    public ResponseEntity<TclassDTO.TclassSpecRsHistory> findClassByCourseId(@PathVariable Long courseId) {
+        List<TclassDTO.TclassHistory> list = personnelInformationService.findClassesByCourseId(courseId);
 
 
-        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
-        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        final TclassDTO.SpecRsHistory specResponse = new TclassDTO.SpecRsHistory();
+        final TclassDTO.TclassSpecRsHistory specRs = new TclassDTO.TclassSpecRsHistory();
 
         if (list != null) {
             specResponse.setData(list)

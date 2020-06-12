@@ -91,9 +91,9 @@ public class PersonnelInformationService implements IPersonnelInformationService
 
     @Transactional
     @Override
-    public List<TclassDTO.Info> findClassesByCourseId(Long courseId)
+    public List<TclassDTO.TclassHistory> findClassesByCourseId(Long courseId)
     {
-        return  modelMapper.map(tclassDAO.findTclassesByCourseIdEquals(courseId), new TypeToken<List<TclassDTO.Info>>(){}.getType());
+        return  modelMapper.map(tclassDAO.getTclassByCourseIdEquals(courseId), new TypeToken<List<TclassDTO.TclassHistory>>(){}.getType());
     }
 
 }

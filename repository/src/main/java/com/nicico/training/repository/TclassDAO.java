@@ -72,7 +72,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     Tclass findTclassByIdEquals(Long classId);
 
     @EntityGraph(attributePaths = {"institute", "organizer", "course", "term", "classStudents", "classStudents.student", "course.category", "course.subCategory", "trainingPlaceSet", "teacher", "teacher.personality"})
-    List<Tclass> findTclassesByCourseIdEquals(Long courseId);
+    List<Tclass> getTclassByCourseIdEquals(Long courseId);
 
     @Modifying
     @Query(value = "update tbl_class set C_HAS_WARNING = :hasWarning where ID = :classId", nativeQuery = true)
