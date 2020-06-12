@@ -640,6 +640,10 @@
     function loadPage_Scores() {
       classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit);
+        if (typeof classRecord.scoringMethod === 'undefined' || classRecord.scoringMethod ==undefined)
+        {
+            createDialog("info","کاربر گرامی توجه کنید که روش نمره دهی برای این کلاس نامشخص (undefined)است  لطفا فبل از ثبت نمرات روش نمره دهی را مشخص کنید", "<spring:message code="message"/>")
+            }
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id;
             if (classRecord.scoringMethod == "1") {
