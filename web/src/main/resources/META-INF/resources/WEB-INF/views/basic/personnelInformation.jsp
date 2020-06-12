@@ -11,8 +11,16 @@
         var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
             click: function () {
-                PersonnelInfoListGrid_PersonnelList.invalidateCache();
-                set_PersonnelInfo_Details();
+                if(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" )
+                {
+                    PersonnelInfoListGrid_PersonnelList.invalidateCache();
+                    set_PersonnelInfo_Details(PersonnelInfoListGrid_PersonnelList);
+                }
+                else
+                {
+                    PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
+                    set_PersonnelInfo_Details(PersonnelInfoListGrid_RegisteredPersonnelList);
+                }
             }
         });
 
