@@ -1322,6 +1322,9 @@
     }
 
     function ListGrid_Post_Group_refresh() {
+        postGroupPostList_Post_Group_Jsp = null;
+        naPostGroup_Post_Group_Jsp = null;
+        PersonnelPostGroup_Post_Group_Jsp = null;
         ListGrid_Post_Group_Jsp.invalidateCache();
         ListGrid_Post_Group_Posts_refresh();
         ListGrid_Post_Group_Competence_refresh();
