@@ -14,15 +14,16 @@
     StudentMenu_student = isc.Menu.create({
         data: [
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+
                     refreshStudentsLG_student();
                 }
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_ADD')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="add"/>", icon: "<spring:url value="create.png"/>", click: function () {
                     addStudent_student();
@@ -30,7 +31,7 @@
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_D')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     removeStudent_student();
@@ -38,7 +39,7 @@
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_E')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="evaluation"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     evaluationStudent_student();
@@ -52,7 +53,7 @@
     StudentTS_student = isc.ToolStrip.create({
         members: [
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_ADD')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonAdd.create({
                 click: function () {
                     addStudent_student();
@@ -60,7 +61,7 @@
             }),
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_D')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     removeStudent_student();
@@ -68,7 +69,7 @@
             }),
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_E')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
             isc.ToolStripButton.create({
                 title: "<spring:message code="evaluation"/>",
                 click: function () {
@@ -77,10 +78,10 @@
             }),
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_P')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    ExportToFile.DownloadExcelFormClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
+                    ExportToFile.downloadExcelFromClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
                 }
             }),
             isc.ToolStripButton.create({
@@ -88,13 +89,18 @@
                 title: "<spring:message code='print'/>",
                 click: function () {
                     var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+
+                    let startDateStr=[...classRecord.startDate.split("/").reverse()].join("/");
+                    let endDateStr=[...classRecord.endDate.split("/").reverse()].join("/");
+
                     var titr = "گزارش فراگیران کلاس " + classRecord.course.titleFa +
                         " دارای کد دوره: " + classRecord.course.code +
                         " و کد کلاس: " +  classRecord.code +
                         " و استاد: " + classRecord.teacher +
-                        " و مدت: " + classRecord.course.theoryDuration +
-                        " ساعت و تاریخ شروع: " +  classRecord.startDate +
-                        " و تاریخ پایان: " +  classRecord.endDate;
+                        " و مدت: " + classRecord.hduration +
+                        " ساعت و تاریخ شروع: " +  startDateStr +
+                        " و تاریخ پایان: " +  endDateStr;
+
                     let params = {};
                     params.titr = titr;
 
@@ -123,7 +129,7 @@
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "StudentsCount_student"}),
 
-            <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refreshStudentsLG_student();
@@ -217,7 +223,9 @@
     });
 
     StudentsLG_student = isc.TrLG.create({
+        <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
         dataSource: StudentsDS_student,
+        </sec:authorize>
        // selectionType: "single",
         selectionType: "multiple",
         fields: [
@@ -233,33 +241,33 @@
                 name: "applicantCompanyName",
                 textAlign: "center",
                 width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "titleFa",
-                <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
-                optionDataSource: RestDataSource_company_Student,
-                </sec:authorize>
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                canEdit: true,
-                // filterEditorType: "TextItem",
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
-                    }
-                ],
-                changed: function (form, item, value) {
-                    ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
-                }
+                <%--editorType: "ComboBoxItem",--%>
+                <%--changeOnKeypress: true,--%>
+                <%--displayField: "titleFa",--%>
+                <%--valueField: "titleFa",--%>
+                <%--<sec:authorize access="hasAuthority('TclassStudentsTab_R')">--%>
+                <%--optionDataSource: RestDataSource_company_Student,--%>
+                <%--</sec:authorize>--%>
+                <%--autoFetchData: true,--%>
+                <%--addUnknownValues: false,--%>
+                <%--cachePickListResults: false,--%>
+                <%--useClientFiltering: true,--%>
+                <%--filterFields: ["titleFa"],--%>
+                <%--sortField: ["id"],--%>
+                <%--textMatchStyle: "startsWith",--%>
+                <%--generateExactMatchCriteria: true,--%>
+                <%--canEdit: true,--%>
+                <%--// filterEditorType: "TextItem",--%>
+                <%--pickListFields: [--%>
+                    <%--{--%>
+                        <%--name: "titleFa",--%>
+                        <%--width: "70%",--%>
+                        <%--filterOperator: "iContains"--%>
+                    <%--}--%>
+                <%--],--%>
+                <%--changed: function (form, item, value) {--%>
+                    <%--ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);--%>
+                <%--}--%>
             },
             {
                 name: "presenceTypeId",
@@ -291,7 +299,7 @@
             {name: "student.ccpUnit"}
         ],
         gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
-        contextMenu: StudentMenu_student,
+       // contextMenu: StudentMenu_student,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -913,6 +921,28 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord === undefined || classRecord == null)) {
             StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+            if(classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
+                StudentTS_student.setVisibility(false)
+
+                </sec:authorize>
+            }
+            else
+            {
+                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
+                StudentTS_student.setVisibility(true)
+
+                </sec:authorize>
+            }
+
+            if (classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAuthority('TclassStudentsTab_classStatus')">
+                StudentTS_student.setVisibility(true)
+
+                </sec:authorize>
+            }
             StudentsLG_student.invalidateCache();
             StudentsLG_student.fetchData();
         }
@@ -1036,13 +1066,17 @@
 
                     if(personnelNo != "" && personnelNo != null && typeof(personnelNo) != "undefined")
                     {
-                        if(typeof(data[personnelNo].personnelNo)=="undefined"){
+                        if(data.filter(function (item) {
+                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                        }).length==0){
                             allRowsOK=false;
                             list[i].error=true;
                             list[i].hasWarning="warning";
                             list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
                         }
-                        else if(nationalCodeExists(data[personnelNo].nationalCode))
+                        else if(nationalCodeExists(data.filter(function (item) {
+                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                        })[0].nationalCode))
                         {
                             allRowsOK=false;
                             list[i].error=true;
@@ -1059,8 +1093,8 @@
                 if(allRowsOK){
                     var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                     var students = [];
-                    for (var person in data) {
-                        let current = data[person];
+                    for (var i=0;i<data.length;i++) {
+                        let current = data[i];
 
                         if (!checkIfAlreadyExist(current)) {
                             students.add({

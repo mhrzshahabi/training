@@ -38,73 +38,9 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.DownloadExcelFormClient(ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
+                        ExportToFile.downloadExcelFromClient(ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
                     }
-                })/*,
-isc.ToolStripButtonExcel.create({
-click: function () {
-let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
-let size = ListGrid_PersonnelTraining.data.size();
-
-isc.Window.create({
-ID: "exportExcelWindow",
-title: "خروجی اکسل",
-autoSize: true,
-width: 400,
-items: [
-isc.DynamicForm.create({
-ID: "exportExcelForm",
-numCols: 1,
-padding: 10,
-fields: [
-{
-name: "maxRow",
-width: "100%",
-titleOrientation: "top",
-title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
-value: size,
-suppressBrowserClearIcon: true,
-icons: [{
-name: "clear",
-src: "[SKIN]actions/close.png",
-width: 10,
-height: 10,
-inline: true,
-prompt: "پاک کردن",
-click: function (form, item, icon) {
-item.clearValue();
-item.focusInItem();
-}
-}],
-iconWidth: 16,
-iconHeight: 16
-}
-]
-}),
-isc.TrHLayoutButtons.create({
-members: [
-isc.IButton.create({
-title: "تایید",
-click: function () {
-if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
-ExportToFile.DownloadExcelFormServer(ListGrid_PersonnelTraining, 'tclass-personnel-training', exportExcelForm.getValue("maxRow"), PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", JSON.stringify({ "value": nationalCode }));
-}
-}
-}),
-isc.IButton.create({
-title: "لغو",
-click: function () {
-exportExcelWindow.close();
-}
-}),
-]
-})
-]
-});
-exportExcelWindow.show();
-}
-})
-*/
+                })
             ]
         });
 
@@ -1115,68 +1051,8 @@ exportExcelWindow.show();
                 }),
                 isc.ToolStripButtonExcel.create({
                     title: 'ارسال لیست فیلتر شده به اکسل',
-                    click: function () {
-                        let grid = PersonnelInfoListGrid_PersonnelList;
-                        let size = grid.data.size();
-                        isc.Window.create({
-                            ID: "exportExcelWindow_JspPersonnelInformation",
-                            title: "خروجی اکسل",
-                            autoSize: true,
-                            width: 400,
-                            items: [
-                                isc.DynamicForm.create({
-                                    ID: "exportExcelForm_JspPersonnelInformation",
-                                    numCols: 1,
-                                    padding: 10,
-                                    fields: [
-                                        {
-                                            name: "maxRow",
-                                            width: "100%",
-                                            titleOrientation: "top",
-                                            title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
-                                            value: size,
-                                            suppressBrowserClearIcon: true,
-                                            icons: [{
-                                                name: "clear",
-                                                src: "[SKIN]actions/close.png",
-                                                width: 10,
-                                                height: 10,
-                                                inline: true,
-                                                prompt: "پاک کردن",
-                                                click: function (form, item, icon) {
-                                                    item.clearValue();
-                                                    item.focusInItem();
-                                                }
-                                            }],
-                                            iconWidth: 16,
-                                            iconHeight: 16
-                                        }
-                                    ]
-                                }),
-                                isc.TrHLayoutButtons.create({
-                                    members: [
-                                        isc.IButton.create({
-                                            title: "تایید",
-                                            click: function () {
-                                                if (trTrim(exportExcelForm_JspPersonnelInformation.getValue("maxRow")) != "") {
-                                                    ExportToFile.DownloadExcelFormServer(grid, 'personnelInformationReport',
-                                                        exportExcelForm_JspPersonnelInformation.getValue("maxRow"), null, '', "گزارش پرسنل",
-                                                        JSON.stringify(grid.data.criteria));
-                                                }
-                                                exportExcelWindow_JspPersonnelInformation.close();
-                                            }
-                                        }),
-                                        isc.IButton.create({
-                                            title: "لغو",
-                                            click: function () {
-                                                exportExcelWindow_JspPersonnelInformation.close();
-                                            }
-                                        }),
-                                    ]
-                                })
-                            ]
-                        });
-                        exportExcelWindow_JspPersonnelInformation.show();
+                    click: function() {
+                        ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '',  "گزارش پرسنل", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
                     }
                 }),
                 ToolStrip_Personnel_Info]
@@ -1300,7 +1176,7 @@ exportExcelWindow.show();
         function totalRejected(records) {
             let totalRejected_ = 0;
             for (let i = 0; i < records.length; i++) {
-                if (records[i].scoreStateId === 0)
+                if (records[i].scoreStateId === 403 || records[i].scoreStateId === 405 || records[i].scoreStateId === 449)
                     totalRejected_ += records[i].hduration;
             }
             return "<spring:message code='missing.or.absent.sum'/> : " + totalRejected_ + " <spring:message code='hour'/> ";
@@ -1372,10 +1248,10 @@ exportExcelWindow.show();
 
     function checkPersonnelNosResponse(url,result){
         advancedCriteriaPersonnelInformation= {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
+            operator: "or",
             criteria: [
-                {fieldName: "personnelNo", operator: "inSet", value: result}
+                {fieldName: "personnelNo", operator: "inSet", value: result},
+                {fieldName: "personnelNo2", operator: "inSet", value: result}
             ]
         };
         PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);

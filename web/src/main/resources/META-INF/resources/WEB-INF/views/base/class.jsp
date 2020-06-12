@@ -94,7 +94,8 @@
             {name: "workflowEndingStatus"},
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
-            {name: "course.theoryDuration"}
+            {name: "course.theoryDuration"},
+            {name: "scoringMethod"}
         ]
     });
     var RestDataSource_StudentGradeToTeacher_JspClass = isc.TrDS.create({
@@ -139,7 +140,7 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: termUrl + "spec-list"
     });
     var RestDataSource_Institute_JspClass = isc.TrDS.create({
         fields: [
@@ -385,12 +386,14 @@
                 filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
-                }
+                },
+                autoFitWidth: true
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
-                }
+                },
+                autoFitWidth: true
             },
             {
                 name: "studentCount",
@@ -418,6 +421,7 @@
 
                 align: "center",
                 filterOperator: "iContains",
+                autoFitWidth: true,
                 // sortNormalizer(record) {
                 //     return record.teacher.personality.lastNameFa;
                 // }
@@ -435,6 +439,7 @@
                     },
                 },
                 filterOnKeypress:true,
+                autoFitWidth: true,
             },
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -449,6 +454,7 @@
                     },
                 },
                 filterOnKeypress:true,
+                autoFitWidth: true,
             },
             {
                 name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
@@ -463,6 +469,7 @@
                     },
                 },
                 filterOnKeypress:true,
+                autoFitWidth: true,
             },
 // {name: "lastModifiedDate",
 // type:"time"
@@ -481,11 +488,13 @@
                 name: "workflowEndingStatus",
                 title: "<spring:message code="ending.class.status"/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                autoFitWidth: true
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "course.code", title:"", hidden:true},
-            {name: "course.theoryDuration" , title: "", hidden:true}
+            {name: "course.theoryDuration" , title: "", hidden:true},
+            {name: "scoringMethod", hidden: true},
 
         ],
         getCellCSSText: function (record, rowNum, colNum) {
@@ -1046,8 +1055,8 @@
                 textMatchStyle: "substring",
 
                 changed: function () {
-                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
+
                 },
                 change: function (form, item, value) {
                     if (value == "1") {
@@ -1095,6 +1104,9 @@
                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
+                    let record = ListGrid_Class_JspClass.getSelectedRecord();
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+
                 },
             },
             {
@@ -1991,8 +2003,8 @@
     });
 
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "100%",
-        height: "100%",
+        width: "400",
+        height: 30,
         // wrapItemTitles: true,
         numCols: 4,
         colWidths: ["2%", "28%", "2%", "68%"],
@@ -2002,7 +2014,8 @@
             {
                 name: "yearFilter",
                 title: "<spring:message code='year'/>",
-                width: "100%",
+                width: "100",
+                height: 30,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 displayField: "year",
@@ -2040,7 +2053,8 @@
             {
                 name: "termFilter",
                 title: "<spring:message code='term'/>",
-                width: "100%",
+                width: "300",
+                height: 30,
                 textAlign: "center",
                 type: "SelectItem",
                 multiple: true,
@@ -2140,7 +2154,7 @@
 
     var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.DownloadExcelFormClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
+            ExportToFile.downloadExcelFromClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
         }
     });
 
@@ -2301,6 +2315,9 @@
     });
 
     var VLayout_Body_Class_JspClass = isc.TrVLayout.create({
+        width: "100%",
+        height: "100%",
+        overflow: "scroll",
         members: [
             HLayout_Actions_Class_JspClass,
             HLayout_Grid_Class_JspClass,
@@ -2418,7 +2435,21 @@
     }
 
     function ListGrid_class_print(type) {
-        printWithCriteria(ListGrid_Class_JspClass.getCriteria(), {}, "ClassByCriteria.jasper", type);
+        let direction =  "";
+        if(ListGrid_Class_JspClass.getSort()[0]["direction"] == "descending"){
+            direction = "-";
+        }
+        var cr = {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[
+            ]
+        };
+        if(ListGrid_Class_JspClass.getCriteria().criteria !== undefined){
+            cr = ListGrid_Class_JspClass.getCriteria();
+        }
+        cr.criteria.add({ fieldName:"term.code", operator:"inSet", value: DynamicForm_Term_Filter.getValue("termFilter")});
+        printWithCriteria(cr, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
     }
 
     function classCode() {
@@ -2521,9 +2552,15 @@
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(false)
+
         } else if (resp.httpResponseCode === 406) {
-                createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(true)
+            DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(true);
+            DynamicForm_Class_JspClass.getItem("acceptancelimit_a").setDisabled(true);
+               // createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
            }
+
 
     }
 
@@ -2602,23 +2639,23 @@
 
     function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
-            if (!checkDate(classStart)) {
+            if (!checkDate(classStart.trim())) {
                 createDialog("info", "فرمت تاریخ شروع صحیح نیست.", "<spring:message code='message'/>");
                 return false;
             }
-            if (!checkDate(classEnd)) {
+            if (!checkDate(classEnd.trim())) {
                 createDialog("info", "فرمت تاریخ پایان صحیح نیست.", "<spring:message code='message'/>");
                 return false;
             }
-            if (classEnd < classStart) {
+            if (classEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (termStart > classStart) {
+            if (termStart.trim() > classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (termEnd < classStart) {
+            if (termEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
@@ -2891,6 +2928,7 @@
             TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.addData(currentValue);

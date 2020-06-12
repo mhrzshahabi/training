@@ -30,6 +30,7 @@
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
     <link rel="stylesheet" href="<spring:url value='/css/training.css' />"/>
+    <link rel="stylesheet" href='<spring:url value="/static/css/OAManagementUsers.css"/>'/>
     <script src="<spring:url value='/js/calendar.js'/>"></script>
     <script src="<spring:url value='/js/jalali.js'/>"></script>
     <script src="<spring:url value='/js/training_function.js'/>"></script>
@@ -390,7 +391,9 @@
 
             static getData(row, array, index) {
                 if (array.length - 1 > index) {
-
+                    if (row[array[index]] == null) {
+                        return "";
+                    }
                     return this.getData(row[array[index]], array, ++index);
                 } else if (array.length - 1 == index) {
 
@@ -444,7 +447,7 @@
             }
 
             //Send Data Methods
-            static exportToExcelFormClient(fields, data, titr, pageName) {
+            static exportToExcelFromClient(fields, data, titr, pageName) {
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
                     action: "/training/export-to-file/exportExcelFromClient/",
@@ -468,7 +471,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFormServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -501,7 +504,7 @@
             }
 
             //Get Data For Send
-            static DownloadExcelFormClient(listGrid, parentListGrid, titr, pageName) {
+            static downloadExcelFromClient(listGrid, parentListGrid, titr, pageName) {
 
                 let tmptitr = '';
 
@@ -513,10 +516,10 @@
 
                 let result = this.getAllData(listGrid);
 
-                this.exportToExcelFormClient(result.fields, result.data, tmptitr, pageName);
+                this.exportToExcelFromClient(result.fields, result.data, tmptitr, pageName);
             }
 
-            static DownloadExcelFormServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
 
                 let tmptitr = '';
 
@@ -533,11 +536,100 @@
                 let sortStr='';
 
                 if (sort != null && sort.size() != 0){
-                    sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+
+                    if(sort.size() == 1){
+                        sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+                    }else{
+                        let listSort=[];
+                        for (var i = 0; i <sort.size() ; i++) {
+                            listSort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
+                        }
+
+                        sortStr=JSON.stringify(listSort);
+                    }
                 }
 
-                this.exportToExcelFormServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
             }
+
+            static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
+                let size = listgrid.data.size();
+
+                if(isValidate==null){
+                    isValidate=function (len) {
+                        return true;
+                    }
+                }
+
+                if(title==null){
+                    title = "خروجی اکسل";
+                }
+
+                isc.Window.create({
+                    ID: "exportExcelWindow",
+                    title: title,
+                    autoSize: true,
+                    width: 400,
+                    items: [
+                        isc.DynamicForm.create({
+                            ID: "exportExcelForm",
+                            numCols: 1,
+                            padding: 10,
+                            fields: [
+                                {
+                                    name: "maxRow",
+                                    width: "100%",
+                                    titleOrientation: "top",
+                                    title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+                                    value: size,
+                                    suppressBrowserClearIcon: true,
+                                    icons: [{
+                                        name: "clear",
+                                        src: "[SKIN]actions/close.png",
+                                        width: 10,
+                                        height: 10,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }],
+                                    iconWidth: 16,
+                                    iconHeight: 16
+                                }
+                            ]
+                        }),
+                        isc.TrHLayoutButtons.create({
+                            members: [
+                                isc.IButton.create({
+                                    title: "تایید",
+                                    click: function () {
+                                        if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+
+                                            if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
+
+                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
+                                                exportExcelWindow.close();
+
+                                            }
+                                        }
+                                    }
+                                }),
+                                isc.IButton.create({
+                                    title: "لغو",
+                                    click: function () {
+                                        exportExcelWindow.close();
+                                    }
+                                }),
+                            ]
+                        })
+                    ]
+                });
+
+                exportExcelWindow.show();
+            }
+
         }
 
         function generalGetResp(resp) {
@@ -575,7 +667,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
-    const trainingMainUrl = rootUrl + "/main"
+    const trainingMainUrl = rootUrl + "/main";
     const oauthUserUrl = rootUrl + "/oauth/users";
     const oauthRoleUrl = rootUrl + "/oauth/app-roles";
     const oauthGroupUrl = rootUrl + "/oauth/groups";
@@ -621,6 +713,12 @@
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
     const classOutsideCurrentTerm = rootUrl + "/class-outside-current-term";
+    const viewPostGroupUrl = rootUrl + "/view-post-group";
+    const viewPostUrl = rootUrl + "/view-post";
+    const viewJobUrl = rootUrl + "/view-job";
+    const viewJobGroupUrl = rootUrl + "/view-job-group";
+    const viewPostGradeUrl = rootUrl + "/view-post-grade";
+    const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1599,7 +1697,17 @@
                                     createTab(this.title, "<spring:url value="/preTestScoreReport/show-form"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+<%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
+<%--                            {--%>
+<%--                                title:  "<spring:message code="evaluation.statical.report"/>",--%>
+<%--                                click: function () {--%>
+<%--                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");--%>
+<%--                                }--%>
+<%--                            },--%>
+<%--                            </sec:authorize>--%>
                         ]
                 },
                 {isSeparator: true},
@@ -1617,7 +1725,17 @@
                                     createTab(this.title, "<spring:url value="web/monthlyStatisticalReport"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            {
+                                title: "<spring:message code="course.performance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
+                                }
+                            },
+                            </sec:authorize>--%>
                         ]
                 },
                 </sec:authorize>
@@ -1632,6 +1750,12 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                {
+                    title: "مدیریت کاربران",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/oauth/landing/show-form" />", false);
+                    }
+                },
                 <%--{--%>
                 <%--    title: "<spring:message code="user.plural"/>",--%>
                 <%--    click: function () {--%>
@@ -1648,14 +1772,16 @@
                 {isSeparator: true},
                 </sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">
-                {
-                    title: "گروه دسترسی",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+
+                <%--<sec:authorize access="hasAuthority('Menu_Security_PermissionGroup')">--%>
+                <%--{--%>
+                    <%--title: "گروه دسترسی",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
+
 
                 <sec:authorize access="hasAuthority('Menu_Security_WorkGroup')">
                 {
@@ -1670,24 +1796,24 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_Security_Roles')">
-                {
-                    title: "نقش ها",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_Roles')">--%>
+                <%--{--%>
+                    <%--title: "نقش ها",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{isSeparator: true},--%>
+                <%--</sec:authorize>--%>
 
-                <sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">
-                {
-                    title: "تخصیص نقش",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_Security_RoleSpecialized')">--%>
+                <%--{--%>
+                    <%--title: "تخصیص نقش",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_BlackList')">
                 {
@@ -1773,20 +1899,20 @@
         width: 100,
         title: "<spring:message code="close.all"/>",
         click: function () {
-            if (trainingTabSet.tabs.length == 0) return;
+            if (mainTabSet.tabs.length == 0) return;
             var dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        trainingTabSet.removeTabs(trainingTabSet.tabs);
+                        mainTabSet.removeTabs(mainTabSet.tabs);
                     }
                 }
             });
         }
     });
 
-    trainingTabSet = isc.TabSet.create({
+    mainTabSet = isc.TabSet.create({
         minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton],
@@ -1825,13 +1951,13 @@
     isc.TrVLayout.create({
         autoDraw: true,
         //styleName: "relativePosition",
-        // overflow: "auto",
+        overflow: "auto",
         width: "100%",
         height: "100%",
         members: [
             headerLayout,
             MainDesktopMenuH,
-            trainingTabSet,
+            mainTabSet,
         ]
     });
 
@@ -1887,19 +2013,22 @@
         document.location.href = "logout";
     }
 
-    function createTab(title, url, autoRefresh) {
-        tab = trainingTabSet.getTabObject(title);
+    function createTab(title, url, callFunction, autoRefresh) {
+        let tab = mainTabSet.getTabObject(title);
         if (tab !== undefined) {
-            if ((autoRefresh !== undefined) && (autoRefresh == true)) {
-                trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
+            if ((autoRefresh !== undefined) && (autoRefresh === true) || (url.includes("oauth") && mainTabSet.getTab(i).pane.viewURL.includes("oauth"))) {
+                mainTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
-            trainingTabSet.selectTab(tab);
+            mainTabSet.selectTab(tab);
+            if (callFunction != null) eval(callFunction);
         } else {
-            trainingTabSet.addTab({
+            mainTabSet.addTab({
                 title: title,
                 ID: title,
                 pane: isc.ViewLoader.create({
-                    viewURL: url, handleError(rpcRequest, rpcResponse) {
+                    viewURL: url,
+                    viewLoaded() {eval(callFunction)},
+                    handleError(rpcRequest, rpcResponse) {
                         console.log('******************************************* Add Tab Error *******************************************');
                         console.log(rpcResponse);
                         console.log('*****************************************************************************************************');
@@ -1908,7 +2037,7 @@
                 }),
                 canClose: true,
             });
-            createTab(title, url);
+            createTab(title, url, null, true);
         }
     }
 
@@ -2011,7 +2140,7 @@
                 if (respCode === 409) {
                     msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
                 } else if (respCode === 401) {
-                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + resp.httpResponseText;
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + JSON.parse(resp.httpResponseText).message;
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
@@ -2105,7 +2234,7 @@
         criteriaForm.submitForm();
     }
 
-    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf") {
+    function printWithCriteria(advancedCriteria, params, fileName, type = "pdf", sortBy = null) {
         // var advancedCriteria = LG.getCriteria();
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -2117,10 +2246,12 @@
                     {name: "CriteriaStr", type: "hidden"},
                     {name: "fileName", type: "hidden"},
                     {name: "params", type: "hidden"},
+                    {name: "sortBy", type: "hidden"},
                 ]
         });
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("sortBy", sortBy);
         criteriaForm.setValue("params", JSON.stringify(params));
         criteriaForm.show();
         criteriaForm.submitForm();

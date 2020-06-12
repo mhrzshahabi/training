@@ -8,6 +8,20 @@
 
 // <script>
 
+    RestDataSource_Class_JspTrainingOverTime = isc.TrDS.create({
+        fields: [
+            {name: "personalNum"},
+            {name: "personalNum2"},
+            {name: "nationalCode"},
+            {name: "name"},
+            {name: "ccpArea"},
+            {name: "classCode"},
+            {name: "className"},
+            {name: "date"},
+            {name: "time"},
+        ]
+    });
+
     var DynamicForm_TrainingOverTime = isc.DynamicForm.create({
         numCols: 6,
         padding: 10,
@@ -87,14 +101,30 @@
                         return
                     }
                     var wait = createDialog("wait");
-                    ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
+                    setTimeout(function () {
+                        let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
+                        RestDataSource_Class_JspTrainingOverTime.fetchDataURL = url;
+
+                        ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
+                        ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData();
+                        wait.close();
+
+                    }, 100);
+
+
+
+                    /*ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
                     let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
                     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData(JSON.parse(resp.data));
                         }
-                    }))
+                    }))*/
+
+                    //ListGrid_TrainingOverTime_TrainingOverTimeJSP.implicitCriteria = DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria();
+
+
                 }
             },
             {
@@ -121,11 +151,33 @@
         ID: "TrainingOverTimeGrid",
         dynamicTitle: true,
         filterOnKeypress: true,
-        gridComponents: [DynamicForm_TrainingOverTime, "header", "filterEditor", "body"],
+        gridComponents: [DynamicForm_TrainingOverTime,
+            isc.ToolStripButtonExcel.create({
+                margin:5,
+                click:function() {
+                    /*let criteria = ListGrid_TrainingOverTime_TrainingOverTimeJSP.getValuesAsAdvancedCriteria();
+
+                    if(criteria != null && Object.keys(criteria).length != 0) {
+                        criteria.criteria.push(0,0,{ fieldName: "endDate", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("endDate").getValue() });
+                        criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
+
+                    }else{
+                        criteria={ operator: "and", _constructor: "AdvancedCriteria", criteria: [] };
+
+                        criteria.criteria.splice(0,0,{ fieldName: "endDate", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("endDate").getValue() });
+                        criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
+                    }*/
+
+                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '',  "گزارش اضافه کاری آموزشی", DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
+                }
+            })
+            , "header", "filterEditor", "body"],
         groupByField:"name",
         groupStartOpen:"none",
+        groupByMaxRecords:5000000,
         showGridSummary:true,
         showGroupSummary:true,
+        dataSource: RestDataSource_Class_JspTrainingOverTime,
         fields: [
             {name: "personalNum", title: "<spring:message code='personnel.no'/>",
                 filterEditorProperties: {
@@ -155,21 +207,6 @@
                 name: "time",
                 title: "<spring:message code="time"/>",
                 includeInRecordSummary:false,
-                // summaryFunction:"sum",
-                // type:"summary",
-                // recordSummaryFunction:"multiplier",
-                // summaryFunction:"sum",
-                // showGridSummary:true,
-                // showGroupSummary:true,
-                // getGridSummary:function (records, summaryField) {
-                //     return "base";
-                // }
-                // showGridSummary:true,
-                // summaryFunction:"sum",
-                // format: "#.## ساعت",
-                formatCellValue (value, record, rowNum, colNum, grid){
-                    return (parseInt(value,10)+" ساعت "+(((value)%1)*60).toFixed(0)+" دقیقه ");
-                }
             },
         ]
     });

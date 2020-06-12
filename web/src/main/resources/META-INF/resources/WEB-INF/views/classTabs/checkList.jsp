@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     var CheckList_method = "POST";
@@ -518,6 +518,7 @@
         showGroupSummary: true,
         groupStartOpen: "all",
         groupByField: 'checkListItem.group',
+        groupByMaxRecords:1000,
         nullGroupTitle: "",
         dataSource: RestDataSource_Class_Item,
         canEdit: true,
@@ -654,7 +655,7 @@
 
 
     })
-
+    <sec:authorize access="hasAnyAuthority('TclassCheckListTab_classStatus','TclassCheckListTab_classStatus_ShowOption')">
     var DynamicForm_ClassCheckList = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
@@ -738,7 +739,7 @@
             },
         ]
     })
-
+    </sec:authorize>
 
     var HLayout_Body_Top = isc.HLayout.create({
         width: "100%",
@@ -1156,10 +1157,29 @@
     // };
 
     function loadPage_checkList() {
-        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+      var  classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + classRecord.id;
             <%--ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});--%>
+
+            if(classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAnyAuthority('TclassCheckListTab_classStatus_ShowOption')">
+                DynamicForm_ClassCheckList.setVisibility(false)
+                </sec:authorize>
+            }
+            else
+            {
+                <sec:authorize access="hasAnyAuthority('TclassCheckListTab_classStatus_ShowOption')">
+                DynamicForm_ClassCheckList.setVisibility(true)
+                </sec:authorize>
+            }
+            if (classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAuthority('TclassCheckListTab_classStatus')">
+                DynamicForm_ClassCheckList.setVisibility(true)
+                </sec:authorize>
+            }
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();
         } else {

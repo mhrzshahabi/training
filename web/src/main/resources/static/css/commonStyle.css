@@ -50,6 +50,12 @@
     box-shadow: 0px 6px 5px -1px rgba(0,0,0,0.85);
     -webkit-box-shadow: 10px 0px 5px rgba(0, 0, 0, 0.3) inset, 35px -24px 13px rgba(0,0,0,0.1) inset
 }
+@media only screen and (max-width: 1024px) {
+    .header-logo:before{
+        width: 480px;
+    }
+}
+
 .header-logo img {
     right: 16px;
     position: absolute;

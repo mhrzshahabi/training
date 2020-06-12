@@ -44,9 +44,10 @@
     })
 
     var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
+        margin:5,
         click: function () {
 
-            ExportToFile.DownloadExcelFormClient(List_Grid_Reaport, null, '', "غیبت ناموجه")
+            ExportToFile.downloadExcelFromClient(List_Grid_Reaport, null, '', "غیبت ناموجه")
         }
     })
 

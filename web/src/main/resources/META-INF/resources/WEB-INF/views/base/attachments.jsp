@@ -162,7 +162,7 @@
 
     Menu_ListGrid_JspAttachments = isc.Menu.create({
         data: [
-            <sec:authorize access="hasAuthority('TclassAttachmentsTab_R')">
+            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_R','TclassAttachmentsTab_classStatus')">
             {
             title: "<spring:message code='refresh'/>", click: function () {
                 ListGrid_Attachments_refresh();
@@ -170,7 +170,7 @@
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassAttachmentsTab_C')">
+            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_classStatus')">
             {
             title: "<spring:message code='create'/>", click: function () {
                 ListGrid_Attachments_Add();
@@ -179,7 +179,7 @@
             </sec:authorize>
 
 
-            <sec:authorize access="hasAuthority('TclassAttachmentsTab_U')">
+            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_U','TclassAttachmentsTab_classStatus')">
             {
             title: "<spring:message code='edit'/>", click: function () {
                 ListGrid_Attachments_Edit();
@@ -187,7 +187,7 @@
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassAttachmentsTab_D')">
+            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_D','TclassAttachmentsTab_classStatus')">
             {
             title: "<spring:message code='remove'/>", click: function () {
                 ListGrid_Attachments_Remove();
@@ -195,7 +195,7 @@
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('TclassAttachmentsTab_Download')">
+            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_Download','TclassAttachmentsTab_classStatus')">
             {
             title: "<spring:message code='download'/>", click: function () {
                 Show_Attachment_Attachments(ListGrid_JspAttachment.getSelectedRecord());
@@ -222,7 +222,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Attachments_JspAttachments,
-        <sec:authorize access="hasAuthority('TclassAttachmentsTab_R')">
+        <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_R','TclassAttachmentsTab_classStatus')">
         contextMenu: Menu_ListGrid_JspAttachments,
         </sec:authorize>
         selectionType: "single",
@@ -287,19 +287,19 @@
         membersMargin: 5,
         members:
             [
-                <sec:authorize access="hasAuthority('TclassAttachmentsTab_C')">
+                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_classStatus')">
                 ToolStripButton_Add_JspAttachment,
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('TclassAttachmentsTab_U')">
+                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_U','TclassAttachmentsTab_classStatus')">
                 ToolStripButton_Edit_JspAttachment,
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('TclassAttachmentsTab_D')">
+                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_D','TclassAttachmentsTab_classStatus')">
                 ToolStripButton_Remove_JspAttachment,
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('TclassAttachmentsTab_R')">
+                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_R','TclassAttachmentsTab_classStatus')">
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -458,6 +458,7 @@
     }
 
     function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, readOnly = false, criteria = null) {
+        var  classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         VLayout_Body_JspAttachment.redraw();
         objectTypeAttachment = inputObjectType;
         objectIdAttachment = inputObjectId;
@@ -473,16 +474,37 @@
         ListGrid_JspAttachment.setImplicitCriteria(criteria);
         ListGrid_JspAttachment.fetchData(criteria);
         ListGrid_Attachments_refresh();
-        if (readOnly) {
-            ToolStripButton_Edit_JspAttachment.hide();
-            ToolStripButton_Add_JspAttachment.hide();
-            ToolStripButton_Remove_JspAttachment.hide();
-            ListGrid_JspAttachment.contextMenu = Menu_ListGrid_ReadOnly_JspAttachments;
-        } else {
-            ToolStripButton_Edit_JspAttachment.show();
-            ToolStripButton_Add_JspAttachment.show();
-            ToolStripButton_Remove_JspAttachment.show();
+        // if (readOnly) {
+        //     ToolStripButton_Edit_JspAttachment.hide();
+        //     ToolStripButton_Add_JspAttachment.hide();
+        //     ToolStripButton_Remove_JspAttachment.hide();
+        //     ListGrid_JspAttachment.contextMenu = Menu_ListGrid_ReadOnly_JspAttachments;
+        // } else {
+        //     ToolStripButton_Edit_JspAttachment.show();
+        //     ToolStripButton_Add_JspAttachment.show();
+        //     ToolStripButton_Remove_JspAttachment.show();
+        //     ListGrid_JspAttachment.contextMenu = Menu_ListGrid_JspAttachments;
+        // }
+        if(classRecord.classStatus === "3")
+        {
+            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_R','TclassAttachmentsTab_U','TclassAttachmentsTab_D')">
+            ToolStrip_Actions_JspAttachment.setVisibility(false)
+            ListGrid_JspAttachment.contextMenu = null;
+            </sec:authorize>
+        }
+        else
+        {
+            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_R','TclassAttachmentsTab_U','TclassAttachmentsTab_D')">
+            ToolStrip_Actions_JspAttachment.setVisibility(true)
             ListGrid_JspAttachment.contextMenu = Menu_ListGrid_JspAttachments;
+            </sec:authorize>
+        }
+        if (classRecord.classStatus === "3")
+        {
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab_classStatus')">
+            ToolStrip_Actions_JspAttachment.setVisibility(true)
+            ListGrid_JspAttachment.contextMenu = Menu_ListGrid_JspAttachments;
+            </sec:authorize>
         }
     }
 

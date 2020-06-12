@@ -48,7 +48,12 @@
         recordDoubleClick: function () {
 
         },
-        gridComponents: ["filterEditor", "header", "body"],
+        gridComponents: [isc.ToolStripButtonExcel.create({
+            margin:5,
+            click: function () {
+                ExportToFile.downloadExcelFromClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
+            }
+        }),"filterEditor", "header", "body"],
         dataArrived: function ()
         {
             modalDialog.close();
@@ -214,12 +219,8 @@
     var ToolStrip_ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
         width: "30%",
         padding:16,
-        members: [ToolStrip_Actions,
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    ExportToFile.DownloadExcelFormClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
-                }
-            })
+        members: [
+            ToolStrip_Actions
         ]
     });
 

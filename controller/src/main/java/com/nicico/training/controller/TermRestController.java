@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,16 +69,16 @@ public class TermRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<TermDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<TermDTO.Info> update(@PathVariable Long id, @RequestBody Object request,HttpServletResponse response) {
         TermDTO.Update update = modelMapper.map(request, TermDTO.Update.class);
-        return new ResponseEntity<>(termService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(termService.update(id, update,response), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id,HttpServletResponse response) {
         try {
-            termService.delete(id);
+            termService.delete(id,response);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
@@ -153,6 +154,7 @@ public class TermRestController {
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
+                                  @RequestParam(value = "_sortBy") String sortBy,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
 
         final SearchDTO.CriteriaRq criteriaRq;
@@ -163,15 +165,18 @@ public class TermRestController {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
-
+        JSONObject jsonObject = new JSONObject(sortBy);
+        String field = jsonObject.getString("property");
+        String direction = jsonObject.getString("direction");
+        if(direction.equals("descending")){
+            field = "-" + field;
+        }
+        searchRq.setSortBy(field);
         final SearchDTO.SearchRs<TermDTO.Info> searchRs = termService.search(searchRq);
-
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
-
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/TermByCriteria.jasper", params, jsonDataSource, response);
     }

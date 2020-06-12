@@ -54,7 +54,51 @@
             <column name="c_code" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591500872119-512">
+        <dropColumn columnName="SCORES_STATE" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591500872119-443">
+        <addColumn tableName="tbl_class_student">
+            <column name="scores_state_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591500872119-454">
+        <addForeignKeyConstraint baseColumnNames="scores_state_id" baseTableName="tbl_class_student" constraintName="FKi20ys074wah6o8u0qd58fnrog" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591505253286-513">
+        <dropColumn columnName="FAILURE_REASON" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591505253286-444">
+        <addColumn tableName="tbl_class_student">
+            <column name="failure_reason_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591505253286-455">
+        <addForeignKeyConstraint baseColumnNames="failure_reason_id" baseTableName="tbl_class_student" constraintName="FK1or54xgtirawjuvxh0vtgqqxv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+<!--    <changeSet author="razmnoosh (generated)" id="1591506188197-402">-->
+<!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
+<!--    </changeSet>-->
+    <changeSet author="poursalehi_mos (generated)" id="1591589590264-473">
+        <dropUniqueConstraint constraintName="UC_TBL_JOB_GROUPC_TITLE_FA_COL" tableName="TBL_JOB_GROUP"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1591589590264-474">
+        <dropUniqueConstraint constraintName="UC_TBL_POST_GRADE_GROUPC_TITLE_FA_COL" tableName="TBL_POST_GRADE_GROUP"/>
+    </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1591591181879-479">
+        <dropUniqueConstraint constraintName="UC_TBL_POST_GROUPC_TITLE_FA_COL" tableName="TBL_POST_GROUP"/>
+    </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1591782765031-451">
+        <addColumn tableName="tbl_evaluation_analysis">
+            <column name="b_teacher_pass" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591782765031-452">
+        <addColumn tableName="tbl_evaluation_analysis">
+            <column name="c_teacher_grade" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

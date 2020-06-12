@@ -138,6 +138,7 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    console.log(resp.httpResponseCode);
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "عملیات با موفقیت انجام شد.",
@@ -149,7 +150,13 @@
                         }, 2000);
                         ListGrid_skill_level_refresh();
                         Window_skill_level.close();
-                    } else {
+                    }
+
+                    else if(resp.httpResponseCode===405){
+                        createDialog("info", "<spring:message code="skill.level.duplicate"/>", "<spring:message code="message"/>");
+                    }
+
+                    else {
                         var ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
                             icon: "[SKIN]stop.png",

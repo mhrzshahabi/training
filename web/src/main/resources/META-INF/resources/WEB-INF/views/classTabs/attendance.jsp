@@ -2,11 +2,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
 
+    let isAttendanceDate=true;
     var classGridRecordInAttendanceJsp = null;
     var causeOfAbsence = [];
     var sessionInOneDate = [];
@@ -159,6 +161,7 @@
                 DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
             }
     });
+    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var ToolStrip_Attendance_JspAttendance = isc.ToolStrip.create({
         members: [
             isc.ToolStripButton.create({
@@ -262,14 +265,14 @@
                                 allRows[i][sessionKeys[j]] = attendanceState[allRows[i][sessionKeys[j]]];
                             }
                         }
-                        ExportToFile.exportToExcelFormClient(sendFields,allRows,"لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - در تاریخ: " + DynamicForm_Attendance.getValue("sessionDate"),"کلاس - حضور و غیاب");
+                        ExportToFile.exportToExcelFromClient(sendFields,allRows,"لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - در تاریخ: " + DynamicForm_Attendance.getValue("sessionDate"),"کلاس - حضور و غیاب");
                     }
                     else{
                         for (let i = 0; i < allRows.length; i++) {
                             allRows[i]["state"] = attendanceState[allRows[i]["state"]];
                         }
 
-                        ExportToFile.exportToExcelFormClient(sendFields,allRows,  "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
+                        ExportToFile.exportToExcelFromClient(sendFields,allRows,  "لیست حضور و غیاب کلاس: " + classGridRecordInAttendanceJsp.titleClass + " - برای فراگیر: " +
                             DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().firstName + " " + DynamicForm_Attendance.getItem("sessionDate").getSelectedRecord().lastName,"کلاس - حضور و غیاب");
 
                     }
@@ -327,6 +330,9 @@
             })
         ]
     });
+    </sec:authorize>
+
+    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
         numCols: 8,
@@ -372,6 +378,7 @@
                       form.getItem("sessionDate").valueField = "sessionDate";
                       form.getItem("sessionDate").optionDataSource = RestData_SessionDate_AttendanceJSP;
                       form.getItem("sessionDate").pickListWidth = 200;
+                      isAttendanceDate=true;
                   }
                   if(value == 2){
                       form.getItem("sessionDate").pickListFields = [
@@ -386,6 +393,7 @@
                       form.getItem("sessionDate").valueField = "id";
                       form.getItem("sessionDate").optionDataSource = RestData_Student_AttendanceJSP;
                       form.getItem("sessionDate").pickListWidth = 600;
+                      isAttendanceDate=false;
                   }
                   sessionsForStudent.length = 0;
                   sessionInOneDate.length = 0;
@@ -443,10 +451,10 @@
                                 wait.close();
                                 readOnlySession = JSON.parse(resp.data)[0].readOnly;
                                 let fields1 = [
-                                    {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true},
-                                    {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true},
-                                    {name: "nationalCode", title: "کد ملی"},
-                                    {name: "company", title: "شرکت"},
+                                    {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true,width:"20%"},
+                                    {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true,width:"20%"},
+                                    {name: "nationalCode", title: "کد ملی",width:"10%"},
+                                    {name: "personalNum", title: "شماره پرسنلي",width:"10%"},
                                 ];
                                 for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                                     let field1 = {};
@@ -719,6 +727,7 @@
                         });
                     }
                     if (form.getValue("filterType") == 2) {
+                        isAttendanceDate=false;
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().studentId,
                             httpMethod: "GET",
@@ -983,6 +992,36 @@
             },
         ],
     });
+    </sec:authorize>
+
+ <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
+  var TrHLayoutButtons= isc.TrHLayoutButtons.create({
+       members: [
+            isc.IButtonSave.create({
+                ID: "saveBtn",
+                click: function () {
+                    if(attendanceGrid.getAllEditRows().length <= 0){
+                        createDialog("[SKIN]error","تغییری رخ نداده است.","خطا");
+                        return;
+                    }
+                    attendanceGrid.endEditing();
+                    attendanceGrid.saveAllEdits();
+                    // attendanceGrid.endEditing();
+                }
+            }),
+            isc.IButtonCancel.create({
+                ID: "cancelBtn",
+                click: function () {
+                    attendanceGrid.discardAllEdits()
+                    // attendanceForm.getItem("sessionDate").changed(attendanceForm,attendanceForm.getItem("sessionDate"),attendanceForm.getValue("sessionDate"));
+                }
+            })
+        ]
+
+    })
+    </sec:authorize>
+
+
     var ListGrid_Attendance_AttendanceJSP = isc.TrLG.create({
         ID: "attendanceGrid",
         dynamicTitle: true,
@@ -1001,29 +1040,7 @@
         editOnFocus: true,
         editByCell: true,
         showHeaderContextMenu:false,
-        gridComponents: [DynamicForm_Attendance, ToolStrip_Attendance_JspAttendance, "header", "filterEditor", "body", isc.TrHLayoutButtons.create({
-            members: [
-                isc.IButtonSave.create({
-                    ID: "saveBtn",
-                    click: function () {
-                        if(attendanceGrid.getAllEditRows().length <= 0){
-                            createDialog("[SKIN]error","تغییری رخ نداده است.","خطا");
-                            return;
-                        }
-                        attendanceGrid.endEditing();
-                        attendanceGrid.saveAllEdits();
-                        // attendanceGrid.endEditing();
-                    }
-                }),
-                isc.IButtonCancel.create({
-                    ID: "cancelBtn",
-                    click: function () {
-                        attendanceGrid.discardAllEdits()
-                        // attendanceForm.getItem("sessionDate").changed(attendanceForm,attendanceForm.getItem("sessionDate"),attendanceForm.getValue("sessionDate"));
-                    }
-                })
-            ]
-        })],
+        gridComponents: [DynamicForm_Attendance, ToolStrip_Attendance_JspAttendance, "header", "filterEditor", "body",TrHLayoutButtons ],
         canHover:true,
         canEditCell(rowNum, colNum){
             return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh";
@@ -1124,9 +1141,36 @@
     }
 
     function loadPage_Attendance() {
+        if (isAttendanceDate)
+        {
+                let wait = createDialog("wait");
+
+                isc.RPCManager.sendRequest({
+                    actionURL: attendanceUrl + "/studentUnknownSessionsInClass?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id,
+                    httpMethod: "GET",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.httpResponseText) {
+                            DynamicForm_Attendance.getItem("sessionDate").changed(DynamicForm_Attendance, DynamicForm_Attendance.getItem("sessionDate"), resp.httpResponseText);
+                            DynamicForm_Attendance.setValue("sessionDate", resp.httpResponseText);
+                        }
+                        else{
+                            ListGrid_Attendance_AttendanceJSP.setData([]);
+                        }
+                        wait.close();
+                    }
+                });
+        }
+
         // if(ListGrid_Class_JspClass.getSelectedRecord() === classGridRecordInAttendanceJsp){
         //     return;
         // }
+        classGridRecordInAttendanceJsp == ListGrid_Class_JspClass.getSelectedRecord()
+
         if(attendanceGrid.getAllEditRows().length>0){
             createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
             return;
@@ -1151,6 +1195,28 @@
             sessionInOneDate.length = 0;
             sessionsForStudent.length = 0;
             ListGrid_Attendance_AttendanceJSP.invalidateCache();
+        }
+
+        if(classGridRecordInAttendanceJsp.classStatus === "3")
+        {
+            <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_ShowOption')">
+            ToolStrip_Attendance_JspAttendance.setVisibility(false)
+            TrHLayoutButtons.setVisibility(false)
+            </sec:authorize>
+        }
+        else
+        {
+            <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_ShowOption')">
+            ToolStrip_Attendance_JspAttendance.setVisibility(true)
+            TrHLayoutButtons.setVisibility(true)
+            </sec:authorize>
+        }
+        if (classGridRecordInAttendanceJsp.classStatus === "3")
+        {
+            <sec:authorize access="hasAuthority('TclassAttendanceTab_classStatus')">
+            ToolStrip_Attendance_JspAttendance.setVisibility(true)
+            TrHLayoutButtons.setVisibility(true)
+            </sec:authorize>
         }
     }
 

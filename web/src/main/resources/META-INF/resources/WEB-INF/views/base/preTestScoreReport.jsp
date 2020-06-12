@@ -55,7 +55,7 @@
                     }
                 }
             }
-            ExportToFile.exportToExcelFormClient(fields, data, '', "نمره پیش تست بیشتر از حد قبول")
+            ExportToFile.exportToExcelFromClient(fields, data, '', "نمره پیش تست بیشتر از حد قبول")
         }
     })
     var ToolStrip_Actions = isc.ToolStrip.create({

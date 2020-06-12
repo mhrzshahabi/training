@@ -109,7 +109,7 @@
 
         var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
             click: function () {
-                ExportToFile.DownloadExcelFormClient(ListGrid_alarm, ListGrid_Class_JspClass, '', "کلاس - هشدارها");
+                ExportToFile.downloadExcelFromClient(ListGrid_alarm, ListGrid_Class_JspClass, '', "کلاس - هشدارها");
             }
         })
 

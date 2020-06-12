@@ -974,4 +974,15 @@
     <changeSet author="rastegari_h (generated)" id="1590549151993-544">
         <addForeignKeyConstraint baseColumnNames="dep_parent_id" baseTableName="tbl_department" constraintName="fk_department2Department" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
     </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1591591181879-459">
+        <addForeignKeyConstraint baseColumnNames="f_tclass" baseTableName="tbl_evaluation_analysis" constraintName="FK35h2wl8lkfebmxmasdh3qswew" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591591181879-460">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_evaluation_analysis" constraintName="FKcp6081miw2wwhpyw7mh36fpf9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1591591181879-461">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_evaluation_analysis" constraintName="FKrk55lb4wloh92c4hc5vai97tn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

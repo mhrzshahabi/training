@@ -70,80 +70,13 @@
         fetchDataURL: tclassStudentUrl + "classes-of-student/"
     });
 
-    var ToolStrip_Actions_ExportToExcel_Training_File = isc.ToolStrip.create({
-        members: [
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    let grid=ListGrid_StudentSearch_JspTrainingFile;
-                    let size = grid.data.size();
-                    isc.Window.create({
-                        ID: "exportExcelWindow",
-                        title: "خروجی اکسل",
-                        autoSize: true,
-                        width: 400,
-                        items: [
-                            isc.DynamicForm.create({
-                                ID: "exportExcelForm",
-                                numCols: 1,
-                                padding: 10,
-                                fields: [
-                                    {
-                                        name: "maxRow",
-                                        width: "100%",
-                                        titleOrientation: "top",
-                                        title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
-                                        value: size,
-                                        suppressBrowserClearIcon: true,
-                                        icons: [{
-                                            name: "clear",
-                                            src: "[SKIN]actions/close.png",
-                                            width: 10,
-                                            height: 10,
-                                            inline: true,
-                                            prompt: "پاک کردن",
-                                            click: function (form, item, icon) {
-                                                item.clearValue();
-                                                item.focusInItem();
-                                            }
-                                        }],
-                                        iconWidth: 16,
-                                        iconHeight: 16
-                                    }
-                                ]
-                            }),
-                            isc.TrHLayoutButtons.create({
-                                members: [
-                                    isc.IButton.create({
-                                        title: "تایید",
-                                        click: function () {
-                                            if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
-                                                ExportToFile.DownloadExcelFormServer(grid, 'trainingFile', exportExcelForm.getValue("maxRow"), null, '', "پرونده آموزشی",JSON.stringify(grid.data.criteria));
-                                            }
-                                        }
-                                    }),
-                                    isc.IButton.create({
-                                        title: "لغو",
-                                        click: function () {
-                                            exportExcelWindow.close();
-                                        }
-                                    }),
-                                ]
-                            })
-                        ]
-                    });
-                    exportExcelWindow.show();
-                }
-            })
-        ]
-
-    })
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
         dataSource: RestDataSource_Student_JspTrainingFile,
         allowAdvancedCriteria:true,
         canSelect:false,
         selectionType: "single",
         allowFilterExpressions: true,
-        gridComponents: [ToolStrip_Actions_ExportToExcel_Training_File,"filterEditor", "header", "body"],
+        gridComponents: ["filterEditor", "header", "body"],
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -177,7 +110,7 @@
             ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
             ListGrid_TrainingFile_TrainingFileJSP.fetchData();
             Window_StudentSearch_JspTrainingFile.close();
-
+            excelBtn.setDisabled(false);
         }
     });
 
@@ -291,6 +224,7 @@
                 click (form, item) {
                     form.clearValues();
                     ListGrid_TrainingFile_TrainingFileJSP.setData([]);
+                    excelBtn.setDisabled(true);
                 }
             },
         ],
@@ -321,13 +255,36 @@
         }]
     });
 
+    var excelBtn= isc.ToolStripButtonExcel.create({
+        click: function() {
+            let criteria = ListGrid_TrainingFile_TrainingFileJSP.getCriteria();
+
+            if(typeof(criteria.operator)=='undefined'){
+                criteria._constructor="AdvancedCriteria";
+                criteria.operator="and";
+            }
+
+            if(typeof(criteria.criteria)=='undefined'){
+                criteria.criteria=[];
+            }
+            criteria.criteria.push({fieldName:'student.nationalCode',operator:'equals',value:DynamicForm_TrainingFile.getField("nationalCode").getValue()});
+
+            ExportToFile.showDialog(null, ListGrid_TrainingFile_TrainingFileJSP, 'trainingFile', 0, null, '',  "پرونده آموزشی", criteria, null);
+        }
+    });
+
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
         contextMenu: Menu_Courses_TrainingFileJSP,
         dataSource: RestDataSource_Course_JspTrainingFile,
         filterOnKeypress: true,
-        gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
+        gridComponents: [DynamicForm_TrainingFile,isc.ToolStrip.create({
+            members: [
+              excelBtn
+            ]
+
+        }), "header", "filterEditor", "body"],
         fields:[
             {name: "tclass.code"},
             {name: "tclass.course.code"},
@@ -354,103 +311,11 @@
 
     });
 
-
-    ToolStripButton_Training_File = isc.ToolStrip.create({
-        members: [
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    let grid=ListGrid_TrainingFile_TrainingFileJSP;
-                    let size = grid.data.size();
-                    isc.Window.create({
-                        ID: "exportExcelWindow",
-                        title: "خروجی اکسل",
-                        autoSize: true,
-                        width: 400,
-                        items: [
-                            isc.DynamicForm.create({
-                                ID: "exportExcelForm",
-                                numCols: 1,
-                                padding: 10,
-                                fields: [
-                                    {
-                                        name: "maxRow",
-                                        width: "100%",
-                                        titleOrientation: "top",
-                                        title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
-                                        value: size,
-                                        suppressBrowserClearIcon: true,
-                                        icons: [{
-                                            name: "clear",
-                                            src: "[SKIN]actions/close.png",
-                                            width: 10,
-                                            height: 10,
-                                            inline: true,
-                                            prompt: "پاک کردن",
-                                            click: function (form, item, icon) {
-                                                item.clearValue();
-                                                item.focusInItem();
-                                            }
-                                        }],
-                                        iconWidth: 16,
-                                        iconHeight: 16
-                                    }
-                                ]
-                            }),
-                            isc.TrHLayoutButtons.create({
-                                members: [
-                                    isc.IButton.create({
-                                        title: "تایید",
-                                        click: function () {
-                                            if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
-                                                let criteria = grid.getCriteria();
-
-                                                if(typeof(criteria.operator)=='undefined'){
-                                                    criteria._constructor="AdvancedCriteria";
-                                                    criteria.operator="and";
-                                                }
-
-                                                if(typeof(criteria.criteria)=='undefined'){
-                                                    criteria.criteria=[];
-                                                }
-                                                criteria.criteria.push({fieldName:'student.nationalCode',operator:'equals',value:DynamicForm_TrainingFile.getField("nationalCode").getValue()});
-
-                                                ExportToFile.DownloadExcelFormServer(grid, 'trainingFile', exportExcelForm.getValue("maxRow"), null, '', "پرونده آموزشی",JSON.stringify(criteria));
-                                            }
-                                        }
-                                    }),
-                                    isc.IButton.create({
-                                        title: "لغو",
-                                        click: function () {
-                                            exportExcelWindow.close();
-                                        }
-                                    }),
-                                ]
-                            })
-                        ]
-                    });
-                    exportExcelWindow.show();
-                }
-            })
-        ]
-
-    });/*isc.ToolStripButtonPrint.create({
-        <%--title: "<spring:message code='print'/>",--%>
-        click: function () {
-            print_Training_File();
-        }
-    });*/
-
-    ToolStrip_Actions_Training_File = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [ToolStripButton_Training_File]
-    });
-
     VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
-            ToolStrip_Actions_Training_File,
+
             ListGrid_TrainingFile_TrainingFileJSP
         ]
     });
@@ -498,5 +363,7 @@
         CriteriaForm_TrainingFile.show();
         CriteriaForm_TrainingFile.submitForm();
     }
+
+    excelBtn.setDisabled(true);
 
  //</script>

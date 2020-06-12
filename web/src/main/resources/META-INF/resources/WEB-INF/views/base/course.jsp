@@ -663,7 +663,7 @@
     <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.DownloadExcelFormClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
+            ExportToFile.downloadExcelFromClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
         }
     });
     </sec:authorize>
@@ -2523,6 +2523,9 @@
         autoCenter: false,
         showMaximizeButton: false,
         autoSize: false,
+        canDragResize:false,
+        canDragReposition:false,
+        placement: "fillScreen",
         closeClick: function () {
             // formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
             // formEqualCourse.reset();

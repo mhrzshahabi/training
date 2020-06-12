@@ -12,6 +12,7 @@ import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.Attendance;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
+import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
@@ -43,6 +44,7 @@ public class ClassSessionService implements IClassSession {
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
     private final MessageSource messageSource;
+
 
     //*********************************
 
@@ -362,6 +364,12 @@ public class ClassSessionService implements IClassSession {
         }.getType());
     }
 
+    @Transactional
+    public List<ClassSessionDTO.Info> getSessions(Long classId) {
+        return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.Info>>() {
+        }.getType());
+    }
+
 //    public List<ClassSessionDTO.Info> getSessionsForStudent(Long classId, Long studentId) {
 //        classSessionDAO.findByClassIdAndStudent
 //        return null;
@@ -372,6 +380,27 @@ public class ClassSessionService implements IClassSession {
     @Transactional
     public List<ClassSessionDTO.ClassSessionsDateForOneClass> getDateForOneClass(Long classId) {
         List<IClassSessionDTO> dateByClassId = classSessionDAO.findSessionDateDistinctByClassId(classId);
+   /*     List<ClassSessionDTO.ClassSessionsDateForOneClass> exitList = new ArrayList<>();
+
+        Tclass tclassOfSession = tclassService.getEntity(classId);
+        int numStudents=tclassOfSession.getClassStudents().size();
+        for (IClassSessionDTO sessionDate : dateByClassId) {
+            List<ClassSession> sessions = classSessionDAO.findBySessionDateAndClassId(sessionDate.getSessionDate(), classId);
+            for (ClassSession session : sessions) {
+                List<Attendance> attendanceList = attendanceDAO.findBySessionId(session.getId());
+                if (attendanceList.size() != numStudents) {
+                    continue;
+                }
+
+                for (Attendance a : attendanceList) {
+                    if (a.getState().equals("0")) {
+                        continue;
+                    }
+
+                }
+            }
+        }
+*/
         return modelMapper.map(dateByClassId, new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
         }.getType());
     }
@@ -672,5 +701,4 @@ public class ClassSessionService implements IClassSession {
         ClassSession classSession = classSessionDAO.getClassSessionById(sessionId);
         return classSession.getClassId();
     }
-
 }

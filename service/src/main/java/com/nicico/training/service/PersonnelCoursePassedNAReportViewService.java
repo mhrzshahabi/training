@@ -25,6 +25,7 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
 
     private final PersonnelCoursePassedNAReportViewDAO personnelCoursePassedNAReportViewDAO;
     private final ModelMapper modelMapper;
+    private final ParameterValueService parameterValueService;
 
     @Transactional(readOnly = true)
     @Override
@@ -36,6 +37,7 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
     @Override
     public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchCourseList(SearchDTO.SearchRq request) {
         List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
+        Long isPassed = parameterValueService.get(parameterValueService.getId("Passed")).getId();
         List<PersonnelCoursePassedNAReportViewDTO.Grid> result = new ArrayList<>();
         Map<Long, List<PersonnelCoursePassedNAReportView>> personnelCourseMap = personnelCourseList.stream().collect(Collectors.groupingBy(PersonnelCoursePassedNAReportView::getCourseId));
         personnelCourseMap.forEach((courseId, personnelCourse) -> {
@@ -43,11 +45,11 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
                     .setCourseId(courseId).setCourseCode(personnelCourse.get(0).getCourseCode())
                     .setCourseTitleFa(personnelCourse.get(0).getCourseTitleFa())
                     .setTotalEssentialPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 111L).count())
-                    .setNotPassedEssentialPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 111L && !pc.getIsPassed()).count())
+                    .setNotPassedEssentialPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 111L && pc.getIsPassed() != isPassed).count())
                     .setTotalImprovingPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 112L).count())
-                    .setNotPassedImprovingPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 112L && !pc.getIsPassed()).count())
+                    .setNotPassedImprovingPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 112L && pc.getIsPassed() != isPassed).count())
                     .setTotalDevelopmentalPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 113L).count())
-                    .setNotPassedDevelopmentalPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 113L && !pc.getIsPassed()).count());
+                    .setNotPassedDevelopmentalPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 113L && pc.getIsPassed() != isPassed).count());
             result.add(course);
         });
         SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchRs = new SearchDTO.SearchRs<>();
@@ -56,13 +58,14 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
         return searchRs;
     }
 
-    @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchMinList(SearchDTO.SearchRq request) {
-        List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
-        List<PersonnelCoursePassedNAReportViewDTO.MinInfo> result = modelMapper.map(personnelCourseList, new TypeToken<List<PersonnelCoursePassedNAReportViewDTO.MinInfo>>(){}.getType());
-        SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setList(result);
-        searchRs.setTotalCount(new Long(result.size()));
-        return searchRs;
-    }
+//    @Transactional(readOnly = true)
+//    public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchMinList(SearchDTO.SearchRq request) {
+//        return search(request, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class));
+//        List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
+//        List<PersonnelCoursePassedNAReportViewDTO.MinInfo> result = modelMapper.map(personnelCourseList, new TypeToken<List<PersonnelCoursePassedNAReportViewDTO.MinInfo>>(){}.getType());
+//        SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> searchRs = new SearchDTO.SearchRs<>();
+//        searchRs.setList(result);
+//        searchRs.setTotalCount(new Long(result.size()));
+//        return searchRs;
+//    }
 }

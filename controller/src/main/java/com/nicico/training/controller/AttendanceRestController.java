@@ -15,10 +15,7 @@ import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.model.ParameterValue;
-import com.nicico.training.service.ClassSessionService;
-import com.nicico.training.service.ParameterService;
-import com.nicico.training.service.ParameterValueService;
-import com.nicico.training.service.TclassService;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -42,7 +39,7 @@ import java.util.*;
 @RequestMapping(value = "/api/attendance")
 public class AttendanceRestController {
 
-    private final IAttendanceService attendanceService;
+    private final AttendanceService attendanceService;
     private final ClassSessionService classSessionService;
     private final TclassService tclassService;
     //    private final ClassStudent classStudent;
@@ -101,6 +98,7 @@ public class AttendanceRestController {
 //		ClassSessionDTO.Info sessionInfo = ;
 //		List<ClassSessionDTO.Info> classSessions = attendanceService.studentAbsentSessionsInClass(classId, studentId);
         Set<ClassSessionDTO.Info> classSessions = new HashSet<>(attendanceService.studentAbsentSessionsInClass(classId, studentId));
+
         for (Long aLong : sessionId) {
             classSessions.add(classSessionService.get(aLong));
         }
@@ -276,5 +274,12 @@ public class AttendanceRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Attendance.jasper", params, response);
+    }
+
+    @Loggable
+    @GetMapping(value = "/studentUnknownSessionsInClass")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<String> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
+        return new ResponseEntity<>(attendanceService.studentUnknownSessionsInClass(classId), HttpStatus.OK);
     }
 }

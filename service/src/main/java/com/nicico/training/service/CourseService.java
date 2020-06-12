@@ -278,16 +278,15 @@ public class CourseService implements ICourseService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request) {
-        SearchDTO.SearchRs<Course> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, Course.class));
-        SearchDTO.SearchRs<CourseDTO.Info> exitList = new SearchDTO.SearchRs<>();
-        exitList.setTotalCount(search.getTotalCount());
-        List<CourseDTO.Info> infoList = new ArrayList<>();
-        List<Course> list = search.getList();
-        for (Course course : list) {
-            CourseDTO.Info map = modelMapper.map(course, CourseDTO.Info.class);
-            infoList.add(map);
-        }
-        exitList.setList(infoList);
+        SearchDTO.SearchRs<CourseDTO.Info> exitList = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.Info.class));
+        return exitList;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<CourseDTO.TupleInfo> safeSearch(SearchDTO.SearchRq request) {
+        SearchDTO.SearchRs<CourseDTO.TupleInfo> exitList = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.TupleInfo.class));
+
         return exitList;
     }
 
