@@ -11,8 +11,16 @@
         var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
             click: function () {
-                PersonnelInfoListGrid_PersonnelList.invalidateCache();
-                set_PersonnelInfo_Details();
+                if(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" )
+                {
+                    PersonnelInfoListGrid_PersonnelList.invalidateCache();
+                    set_PersonnelInfo_Details(PersonnelInfoListGrid_PersonnelList);
+                }
+                else
+                {
+                    PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
+                    set_PersonnelInfo_Details(PersonnelInfoListGrid_RegisteredPersonnelList);
+                }
             }
         });
 
@@ -169,7 +177,7 @@
                 {name: "ccpUnit"}
             ],
             recordClick: function () {
-                set_PersonnelInfo_Details();
+                set_PersonnelInfo_Details(this);
             }
         });
 
@@ -182,6 +190,115 @@
         };
 
         PersonnelInfoListGrid_PersonnelList.implicitCriteria = criteriaActivePersonnel;
+
+
+        PersonnelInfoDS_RegisteredPersonnelList = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "companyName",
+                    title: "<spring:message code="company.name"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "postTitle",
+                    title: "<spring:message code="post"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpArea",
+                    title: "<spring:message code="reward.cost.center.area"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAssistant",
+                    title: "<spring:message code="reward.cost.center.assistant"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAffairs",
+                    title: "<spring:message code="reward.cost.center.affairs"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpSection",
+                    title: "<spring:message code="reward.cost.center.section"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpUnit",
+                    title: "<spring:message code="reward.cost.center.unit"/>",
+                    filterOperator: "iContains"
+                }
+            ],
+            fetchDataURL: personnelRegUrl + "/spec-list"
+        });
+
+
+        PersonnelInfoListGrid_RegisteredPersonnelList = isc.TrLG.create({
+            dataSource: PersonnelInfoDS_RegisteredPersonnelList,
+            selectionType: "single",
+            autoFetchData: true,
+            fields: [
+                {name: "id", hidden: true},
+                {name: "firstName"},
+                {name: "lastName"},
+                {
+                    name: "nationalCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "companyName", hidden: true},
+                {
+                    name: "personnelNo",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {
+                    name: "personnelNo2",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "postTitle"},
+                {name: "ccpArea"},
+                {name: "ccpAssistant", hidden: true},
+                {name: "ccpAffairs", hidden: true},
+                {name: "ccpSection", hidden: true},
+                {name: "ccpUnit", hidden: true}
+            ],
+            recordClick: function () {
+                set_PersonnelInfo_Details(this);
+            }
+        });
+
 
         var RestDataSource_PersonnelTraining = isc.TrDS.create({
             fields: [
@@ -327,7 +444,6 @@
                 {name: "course.evaluation"},
                 {name: "institute.titleFa"},
                 {name: "studentCount"},
-                {name: "numberOfStudentEvaluation"},
                 {name: "classStatus"},
                 {name: "trainingPlaceIds"},
                 {name: "instituteId"},
@@ -970,6 +1086,26 @@
             members: [DynamicForm_PersonnelInfo]
         });
 
+        var PersonnelList_Tab = isc.TabSet.create({
+            ID: "PersonnelList_Tab",
+            tabBarPosition: "top",
+            tabs: [
+                {
+                    id: "PersonnelList_Tab_Personnel",
+                    title: "<spring:message code='personnel.tab.persone'/>",
+                    pane: PersonnelInfoListGrid_PersonnelList
+                },
+                {
+                    id: "PersonnelList_Tab_RegisteredPersonnel",
+                    title: "<spring:message code='personnel.tab.registered'/>",
+                    pane: PersonnelInfoListGrid_RegisteredPersonnelList
+                }
+            ],
+            tabSelected: function () {
+                set_PersonnelInfo_Details(this.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? PersonnelInfoListGrid_PersonnelList : PersonnelInfoListGrid_RegisteredPersonnelList);
+            }
+        });
+
         var PersonnelInfo_Tab = isc.TabSet.create({
             ID: "PersonnelInfo_Tab",
             tabBarPosition: "top",
@@ -993,7 +1129,7 @@
 
             ],
             tabSelected: function () {
-                set_PersonnelInfo_Details();
+                set_PersonnelInfo_Details(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? PersonnelInfoListGrid_PersonnelList : PersonnelInfoListGrid_RegisteredPersonnelList);
             }
         });
 
@@ -1046,13 +1182,13 @@
                 isc.ToolStripButtonAdd.create({
                     title: 'فیلتر گروهي',
                     click: function () {
-                        groupFilter("فیلتر گروهی",personnelRegUrl,checkPersonnelNosResponse);
+                        groupFilter("فیلتر گروهی", personnelRegUrl, checkPersonnelNosResponse);
                     }
                 }),
                 isc.ToolStripButtonExcel.create({
                     title: 'ارسال لیست فیلتر شده به اکسل',
-                    click: function() {
-                        ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '',  "گزارش پرسنل", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
+                    click: function () {
+                        ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '', "گزارش پرسنل", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
                     }
                 }),
                 ToolStrip_Personnel_Info]
@@ -1061,7 +1197,7 @@
         var Hlayout_Grid_PI = isc.HLayout.create({
             width: "100%",
             height: "99%",
-            members: [PersonnelInfoListGrid_PersonnelList]
+            members: [PersonnelList_Tab]
         });
 
         var VLayout_PersonnelInfo_List = isc.VLayout.create({
@@ -1087,19 +1223,20 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
-        var nationalCode_Info, nationalCode_Training, nationalCode_Need;
+        var nationalCode_Info, personnelNo_Info, nationalCode_Training, personnelNo_Training, nationalCode_Need;
 
-        function set_PersonnelInfo_Details() {
+        function set_PersonnelInfo_Details(selectedPersonnelListGrid) {
 
-            if (PersonnelInfoListGrid_PersonnelList.getSelectedRecord() !== null) {
+            if (selectedPersonnelListGrid !== undefined && selectedPersonnelListGrid.getSelectedRecord() !== null) {
 
-                let personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
-                let nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
+                let personnelNo = selectedPersonnelListGrid.getSelectedRecord().personnelNo;
+                let nationalCode = selectedPersonnelListGrid.getSelectedRecord().nationalCode;
 
                 if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
-                    if (personnelNo !== null && nationalCode_Info !== nationalCode) {
+                    if (personnelNo !== null && (nationalCode_Info !== nationalCode || personnelNo_Info !== personnelNo)) {
                         DynamicForm_PersonnelInfo.clearValues();
                         nationalCode_Info = nationalCode;
+                        personnelNo_Info = personnelNo;
                         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
 
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -1132,16 +1269,17 @@
                         }));
                     }
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Training") {
-                    if (nationalCode !== null && nationalCode_Training !== nationalCode) {
+                    if (nationalCode !== null && (nationalCode_Training !== nationalCode || personnelNo_Training !== personnelNo)) {
                         nationalCode_Training = nationalCode;
-                        RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode;
+                        personnelNo_Training = personnelNo;
+                        RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
                         ListGrid_PersonnelTraining.invalidateCache();
                         ListGrid_PersonnelTraining.fetchData();
                     }
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
                     if (nationalCode_Need !== nationalCode) {
                         nationalCode_Need = nationalCode;
-                        call_needsAssessmentReports("0", true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                        call_needsAssessmentReports("0", true, selectedPersonnelListGrid.getSelectedRecord());
                     }
                 }
             } else {
@@ -1246,17 +1384,17 @@
             }
         }
 
-    function checkPersonnelNosResponse(url,result){
-        advancedCriteriaPersonnelInformation= {
-            operator: "or",
-            criteria: [
-                {fieldName: "personnelNo", operator: "inSet", value: result},
-                {fieldName: "personnelNo2", operator: "inSet", value: result}
-            ]
-        };
-        PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
-        ClassStudentWin_student_GroupInsert.close();
-    }
+        function checkPersonnelNosResponse(url, result) {
+            advancedCriteriaPersonnelInformation = {
+                operator: "or",
+                criteria: [
+                    {fieldName: "personnelNo", operator: "inSet", value: result},
+                    {fieldName: "personnelNo2", operator: "inSet", value: result}
+                ]
+            };
+            PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+            ClassStudentWin_student_GroupInsert.close();
+        }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

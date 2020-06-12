@@ -1192,11 +1192,11 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code) {
+    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code, String personnel_no) {
 
         List<TclassDTO.PersonnelClassInfo> personnelClassInfo = null;
 
-        List<?> personnelClassInfoList = tclassDAO.findAllPersonnelClass(national_code);
+        List<?> personnelClassInfoList = tclassDAO.findAllPersonnelClass(national_code, personnel_no);
 
         if (personnelClassInfoList != null) {
 

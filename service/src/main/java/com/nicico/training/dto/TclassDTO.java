@@ -627,4 +627,61 @@ public class TclassDTO {
     public static class TclassTeacherReport {
         private TermDTO.TermDTOTuple term;
     }
+
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassHistory")
+    public static class TclassHistory {
+        private Long id;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private String code;
+        private TermDTO.TermDTOTuple term;
+        private CourseDTO.CourseInfoTuple course;
+        private InstituteDTO.InstituteInfoTuple institute;
+        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+        public Integer getStudentCount() {
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
+        }
+        private String classStatus;
+        private List<Long> trainingPlaceIds;
+        private Long instituteId;
+        private String workflowEndingStatus;
+        private Integer workflowEndingStatusCode;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsHistory {
+        private List<TclassDTO.TclassHistory> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassSpecRsHistory")
+    public static class TclassSpecRsHistory {
+        private SpecRsHistory response;
+    }
+
+
+
 }

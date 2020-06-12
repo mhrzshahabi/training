@@ -7,6 +7,19 @@
     var personnelJob_Job = null;
     var postJob_Job = null;
 
+    if(Window_NeedsAssessment_Edit === undefined) {
+        var Window_NeedsAssessment_Edit = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            showUs(record, objectType) {
+                loadEditNeedsAssessment(record, objectType);
+                this.Super("show", arguments);
+            }
+        });
+    }
+
     ///////////////////////////////////////////////////Menu/////////////////////////////////////////////////////////////
     JobMenu_job = isc.Menu.create({
         data: [
@@ -14,16 +27,29 @@
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    refreshLG(JobLG_job);
-                    PostLG_Job.setData([]);
-                    PersonnelLG_Job.setData([]);
-                    NALG_Job.setData([]);
+                    refresh_Job();
                 }
             },
         ]
     });
 
     ///////////////////////////////////////////////ToolStrip////////////////////////////////////////////////////////////
+    ToolStripButton_EditNA_Job = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی",
+        click: function () {
+            if (JobLG_job.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(JobLG_job.getSelectedRecord(), "Job");
+        }
+    });
+    ToolStrip_NA_Job = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [ToolStripButton_EditNA_Job]
+    });
+    
     JobTS_job = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -41,10 +67,7 @@
                     }),
                     isc.ToolStripButtonRefresh.create({
                         click: function () {
-                            refreshLG(JobLG_job);
-                            PostLG_Job.setData([]);
-                            PersonnelLG_Job.setData([]);
-                            NALG_Job.setData([]);
+                            refresh_Job();
                         }
                     }),
                 ]
@@ -77,9 +100,10 @@
             {name: "personnelCount"}
         ],
         autoFetchData: true,
-        gridComponents: [JobTS_job, "filterEditor", "header", "body"],
+        gridComponents: [JobTS_job, ToolStrip_NA_Job, "filterEditor", "header", "body"],
         contextMenu: JobMenu_job,
         showResizeBar: true,
+        sortField: 2,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
@@ -90,7 +114,7 @@
             }
         },
         selectionUpdated: function (){
-            selectionUpdated_Job(true);
+            selectionUpdated_Job();
         },
         getCellCSSText: function (record) {
             if (record.competenceCount === 0)
@@ -335,7 +359,7 @@
             {name: "TabPane_NA_Job", title: "<spring:message code='need.assessment'/>", pane: NALG_Job}
         ],
         tabSelected: function (){
-            selectionUpdated_Job(false);
+            selectionUpdated_Job();
         }
     });
 
@@ -396,6 +420,16 @@
                 break;
             }
         }
+    }
+
+    function refresh_Job (){
+        refreshLG(JobLG_job);
+        PostLG_Job.setData([]);
+        PersonnelLG_Job.setData([]);
+        NALG_Job.setData([]);
+        naJob_Job = null;
+        personnelJob_Job = null;
+        postJob_Job = null;
     }
 
     // </script>
