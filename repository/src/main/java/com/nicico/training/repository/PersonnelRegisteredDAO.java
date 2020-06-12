@@ -20,6 +20,8 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
     Optional<PersonnelRegistered[]> findOneByNationalCode(String nationalCode);
 
     List<PersonnelRegistered> findByPersonnelNoInOrPersonnelNo2In(List<String> personnelNos,List<String> personnelNos2);
+
+    PersonnelRegistered findPersonnelRegisteredByPersonnelNo(String personnelNo);
 }
 
 

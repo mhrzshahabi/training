@@ -35,8 +35,8 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "select * from TBL_CLASS where F_TEACHER = :tID", nativeQuery = true)
     public List<Tclass> getTeacherClasses(Long tID);
 
-    @Query(value = "SELECT SUM(C.n_h_duration) as TrainingTime FROM tbl_class_student CS INNER JOIN tbl_class C ON C.id = CS.class_id INNER JOIN tbl_student S ON S.id = CS.student_id WHERE S.national_code =:national_code AND INSTR(C.c_start_date, :year) > 0", nativeQuery = true)
-    public Long getStudentTrainingTime(String national_code, String year);
+    @Query(value = "SELECT SUM(C.n_h_duration) as TrainingTime FROM tbl_class_student CS INNER JOIN tbl_class C ON C.id = CS.class_id INNER JOIN tbl_student S ON S.id = CS.student_id WHERE (S.national_code =:national_code OR S.personnel_no = :personnel_no) AND INSTR(C.c_start_date, :year) > 0", nativeQuery = true)
+    public Long getStudentTrainingTime(String national_code, String personnel_no, String year);
 
     @Query(value = " SELECT  " +
             "    c.id, '<b class=\"clickableCell\">' || c.c_code || '</b>', c.c_title_class, c.n_h_duration , c.c_start_date, c.c_end_date, c.c_status as classStatus_id,  " +
@@ -56,8 +56,8 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "    LEFT JOIN tbl_parameter_value pa ON cs.scores_state_id = pa.id " +
             "    LEFT JOIN tbl_parameter_value pa2 ON cs.failure_reason_id = pa2.id " +
             " WHERE  " +
-            "    s.national_code =:national_code ", nativeQuery = true)
-    public List<?> findAllPersonnelClass(String national_code);
+            "    s.national_code =:national_code OR s.personnel_no = :personnel_no ", nativeQuery = true)
+    public List<?> findAllPersonnelClass(String national_code, String personnel_no);
 
     public List<?> findAllTclassByCourseId(Long id);
 

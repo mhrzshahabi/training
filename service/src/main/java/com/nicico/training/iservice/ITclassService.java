@@ -74,7 +74,7 @@ public interface ITclassService {
 
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 
-    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code);
+    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code, String personnel_no);
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId);

@@ -287,7 +287,7 @@
                 {name: "ccpUnit", hidden: true}
             ],
             recordClick: function () {
-                   set_PersonnelInfo_Details(this);
+                set_PersonnelInfo_Details(this);
             }
         });
 
@@ -1092,7 +1092,10 @@
                     title: "<spring:message code='personnel.tab.registered'/>",
                     pane: PersonnelInfoListGrid_RegisteredPersonnelList
                 }
-            ]
+            ],
+            tabSelected: function () {
+                set_PersonnelInfo_Details(this.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? PersonnelInfoListGrid_PersonnelList : PersonnelInfoListGrid_RegisteredPersonnelList);
+            }
         });
 
         var PersonnelInfo_Tab = isc.TabSet.create({
@@ -1118,7 +1121,7 @@
 
             ],
             tabSelected: function () {
-                set_PersonnelInfo_Details();
+                set_PersonnelInfo_Details(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? PersonnelInfoListGrid_PersonnelList : PersonnelInfoListGrid_RegisteredPersonnelList);
             }
         });
 
@@ -1212,22 +1215,20 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
-        var nationalCode_Info, nationalCode_Training, nationalCode_Need;
+        var nationalCode_Info, personnelNo_Info, nationalCode_Training, personnelNo_Training, nationalCode_Need;
 
         function set_PersonnelInfo_Details(selectedPersonnelListGrid) {
 
-            if (selectedPersonnelListGrid !== undefined &&  selectedPersonnelListGrid.getSelectedRecord() !== null) {
+            if (selectedPersonnelListGrid !== undefined && selectedPersonnelListGrid.getSelectedRecord() !== null) {
 
                 let personnelNo = selectedPersonnelListGrid.getSelectedRecord().personnelNo;
                 let nationalCode = selectedPersonnelListGrid.getSelectedRecord().nationalCode;
 
-                alert(personnelNo);
-                alert(nationalCode);
-
                 if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
-                    if (personnelNo !== null && nationalCode_Info !== nationalCode) {
+                    if (personnelNo !== null && (nationalCode_Info !== nationalCode || personnelNo_Info !== personnelNo)) {
                         DynamicForm_PersonnelInfo.clearValues();
                         nationalCode_Info = nationalCode;
+                        personnelNo_Info = personnelNo;
                         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
 
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -1260,16 +1261,17 @@
                         }));
                     }
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Training") {
-                    if (nationalCode !== null && nationalCode_Training !== nationalCode) {
+                    if (nationalCode !== null && (nationalCode_Training !== nationalCode || personnelNo_Training !== personnelNo)) {
                         nationalCode_Training = nationalCode;
-                        RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode;
+                        personnelNo_Training = personnelNo;
+                        RestDataSource_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
                         ListGrid_PersonnelTraining.invalidateCache();
                         ListGrid_PersonnelTraining.fetchData();
                     }
                 } else if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
                     if (nationalCode_Need !== nationalCode) {
                         nationalCode_Need = nationalCode;
-                        call_needsAssessmentReports("0", true, PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                        call_needsAssessmentReports("0", true, selectedPersonnelListGrid.getSelectedRecord());
                     }
                 }
             } else {

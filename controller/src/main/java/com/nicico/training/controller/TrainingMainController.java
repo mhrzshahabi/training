@@ -28,7 +28,6 @@ public class TrainingMainController {
         String version = "1.0.0";
         //*****************************
 
-
         //**********get training version**********
         if (environment.getProperty("nicico.training.version") != null) {
             version = environment.getProperty("nicico.training.version").toString();

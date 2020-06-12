@@ -663,6 +663,7 @@
 </c:otherwise>
 </c:choose>
 <script type="application/javascript">
+
     // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
@@ -810,6 +811,10 @@
         }
     });
 
+    // -------------------------------------------  SET DEFAULT SESSIONS  -----------------------------------------------
+    isc.RPCManager.sendRequest(TrDSRequest(trainingMainUrl + "/getMainData", "GET", null, null));
+    // -------------------------------------------  SET DEFAULT SESSIONS  -----------------------------------------------
+
     isc.defineClass("LgLabel", Label);
     isc.LgLabel.addProperties({height: "27", align: "center", showEdges: true, edgeSize: 2, customEdges: []});
 
@@ -956,12 +961,14 @@
     isc.IButtonSave.addProperties({title: "<spring:message code="save"/>",});
     isc.IButtonCancel.addProperties({title: "<spring:message code="cancel"/>",});
 
+
+
     // -------------------------------------------  Page UI - Header  -----------------------------------------------
     var headerLogo = isc.HTMLFlow.create({
         width: 350,
         height: "100%",
         styleName: "header-logo",
-        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/> ${trainingVersion}</h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
+        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/>1.11</h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
     });
 
     <%--var headerFlow = isc.HTMLFlow.create({--%>
@@ -2604,8 +2611,6 @@
             userPersonInfo = (JSON.parse(resp.data));
         }
     }
-
-    isc.RPCManager.sendRequest(TrDSRequest(trainingMainUrl + "/getMainData", "GET", null, null));
 
 
 
