@@ -5,6 +5,9 @@
 // <script>
 
     // var view_ENA = null;
+    const yellow ="#d6d216";
+    const red = "#ff8abc";
+    const green = "#5dd851";
     var editing = false;
     var priorityList = {
         "Post": "پست",
@@ -194,8 +197,8 @@
         customEdges: []});
     var Label_Help_JspNeedsAssessment = isc.LgLabel.create({
         align:"left",
-        contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
-        contents:"اولویت ضروری با رنگ " + getFormulaMessage("قرمز", "2", "#ff8abc")+"، اواویت بهبود با رنگ "+getFormulaMessage("زرد", "2", "#fff669")+" و اولویت توسعه با رنگ "+getFormulaMessage("سبز", "2", "#61ff55")+" مشخص شده است.",
+        // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
+        contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
         customEdges: []});
 
     var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
@@ -277,7 +280,7 @@
             {name: "skillLevel.titleFa"}
         ],
         gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["B"]}),
+            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["T"]}),
             "filterEditor", "header", "body"
         ],
         // canHover: true,
@@ -371,14 +374,7 @@
         //     return false;
         // },
         getCellCSSText(record) {
-                switch (record.needsAssessmentPriorityId) {
-                    case 111:
-                        return "background-color : " + "#ff8abc";
-                    case 112:
-                        return "background-color : " + "#fff7bf";
-                    case 113:
-                        return "background-color : " + "#afffbe";
-                }
+            return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
@@ -454,14 +450,7 @@
         //     return false;
         // },
         getCellCSSText: function (record) {
-            switch (record.needsAssessmentPriorityId) {
-                case 111:
-                    return "background-color : " + "#ff8abc";
-                case 112:
-                    return "background-color : " + "#fff7bf";
-                case 113:
-                    return "background-color : " + "#afffbe";
-            }
+            return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
@@ -537,14 +526,7 @@
         //     return false;
         // },
         getCellCSSText: function (record) {
-            switch (record.needsAssessmentPriorityId) {
-                case 111:
-                    return "background-color : " + "#ff8abc";
-                case 112:
-                    return "background-color : " + "#fff7bf";
-                case 113:
-                    return "background-color : " + "#afffbe";
-            }
+            return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
@@ -611,7 +593,7 @@
                         clearAllGrid();
                         form.getItem("objectId").clearValue();
                         Label_PlusData_JspNeedsAssessment.setContents("");
-                        refreshPersonnelLG();
+                        // refreshPersonnelLG();
                     }
                 },
             },
@@ -638,7 +620,7 @@
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue){
                         editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
-                        refreshPersonnelLG();
+                        // refreshPersonnelLG();
                         updateLabelEditNeedsAssessment(item.getSelectedRecord());
                     }
                 },
@@ -648,7 +630,6 @@
     var HLayout_Label_PlusData_JspNeedsAssessment = isc.TrVLayout.create({
         height: "1%",
         members: [
-            Label_Help_JspNeedsAssessment,
             Label_PlusData_JspNeedsAssessment,
         ]
     });
@@ -671,6 +652,7 @@
                                 ListGrid_Attitude_JspNeedsAssessment
                             ]
                         }),
+                        Label_Help_JspNeedsAssessment,
                         ListGrid_SkillAll_JspNeedsAssessment
                     ]
                 }),
@@ -732,44 +714,44 @@
         ListGrid_Attitude_JspNeedsAssessment.setData([]);
         ListGrid_Ability_JspNeedsAssessment.setData([]);
     }
-    function refreshPersonnelLG(pickListRecord) {
-        if (pickListRecord == null)
-            pickListRecord = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
-        if (pickListRecord == null){
-            ListGrid_Personnel_JspNeedsAssessment.setData([]);
-            return;
-        }
-        let crt = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: []
-        };
-        switch (NeedsAssessmentTargetDF_needsAssessment.getItem("objectType").getValue()) {
-            case 'Job':
-                crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
-                break;
-            case 'JobGroup':
-                crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
-                break;
-            case 'Post':
-                crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
-                break;
-            case 'PostGroup':
-                // crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
-                crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.code});
-                break;
-            case 'PostGrade':
-                crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
-                break;
-            case 'PostGradeGroup':
-                crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
-                break;
-        }
-        ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
-        // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
-        ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
-        ListGrid_Personnel_JspNeedsAssessment.fetchData();
-    }
+    // function refreshPersonnelLG(pickListRecord) {
+    //     if (pickListRecord == null)
+    //         pickListRecord = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
+    //     if (pickListRecord == null){
+    //         ListGrid_Personnel_JspNeedsAssessment.setData([]);
+    //         return;
+    //     }
+    //     let crt = {
+    //         _constructor: "AdvancedCriteria",
+    //         operator: "and",
+    //         criteria: []
+    //     };
+    //     switch (NeedsAssessmentTargetDF_needsAssessment.getItem("objectType").getValue()) {
+    //         case 'Job':
+    //             crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
+    //             break;
+    //         case 'JobGroup':
+    //             crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
+    //             break;
+    //         case 'Post':
+    //             crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
+    //             break;
+    //         case 'PostGroup':
+    //             // crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
+    //             crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.code});
+    //             break;
+    //         case 'PostGrade':
+    //             crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
+    //             break;
+    //         case 'PostGradeGroup':
+    //             crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
+    //             break;
+    //     }
+    //     ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
+    //     // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
+    //     ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
+    //     ListGrid_Personnel_JspNeedsAssessment.fetchData();
+    // }
     function checkSaveData(data, dataSource, field = "skillId", objectType = null) {
         if(!objectType) {
             if(dataSource.testData.find(f => f[field] === data[field]) != null) {
@@ -948,6 +930,16 @@
             createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")]+" قابل تغییر است.")
         }
     }
+    function priorityColor(record){
+        switch (record.needsAssessmentPriorityId) {
+            case 111:
+                return "background-color : " + red;
+            case 112:
+                return "background-color : " + yellow;
+            case 113:
+                return "background-color : " + green;
+        }
+    }
 
 
     function loadEditNeedsAssessment(objectId, type) {
@@ -956,7 +948,7 @@
         NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId.id);
         clearAllGrid();
         editNeedsAssessmentRecord(objectId.id, type);
-        refreshPersonnelLG(objectId);
+        // refreshPersonnelLG(objectId);
         updateLabelEditNeedsAssessment(objectId);
     }
 

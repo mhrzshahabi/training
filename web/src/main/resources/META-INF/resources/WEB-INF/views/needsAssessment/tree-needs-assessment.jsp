@@ -108,7 +108,6 @@
     function loadNeedsAssessmentTree(rec, type) {
         console.log(rec)
         recJspTreeNeedsAssessment = rec;
-        Label_Title_JspTreeNeedsAssessment.setContents(priorityList[type] + ": " + rec.titleFa + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.code ? " کد: " + rec.code : ""));
         // this.setTitle(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
         ACriteriaJspTreeNeedsAssessment = {
             _constructor: "AdvancedCriteria",
@@ -124,7 +123,9 @@
         //     '{"fieldName":"objectType","operator":"equals","value":"' + rec.objectType + '"}';
 
         ListGrid_MoreInformation_JspTreeNeedAssessment.invalidateCache();
-        ListGrid_MoreInformation_JspTreeNeedAssessment.fetchData(ACriteriaJspTreeNeedsAssessment);
+        ListGrid_MoreInformation_JspTreeNeedAssessment.fetchData(ACriteriaJspTreeNeedsAssessment,(resp)=>{
+            Label_Title_JspTreeNeedsAssessment.setContents(priorityList[type] + ": " + rec.titleFa + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.code ? " کد: " + rec.code : ""));
+        });
 
         // var url = needsAssessmentUrl + "/iscTree?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria;
         // isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {

@@ -803,21 +803,21 @@
         })]
     });
 
-    <%--ToolStripButton_EditNA_JobGroup = isc.ToolStripButton.create({--%>
-    <%--    title: "ویرایش نیازسنجی",--%>
-    <%--    click: function () {--%>
-    <%--        if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){--%>
-    <%--            createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--            return;--%>
-    <%--        }--%>
-    <%--        Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");--%>
-    <%--    }--%>
-    <%--});--%>
-    <%--ToolStrip_NA_JobGroup = isc.ToolStrip.create({--%>
-    <%--    width: "100%",--%>
-    <%--    membersMargin: 5,--%>
-    <%--    members: [ToolStripButton_EditNA_JobGroup]--%>
-    <%--});--%>
+    ToolStripButton_EditNA_JobGroup = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی",
+        click: function () {
+            if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");
+        }
+    });
+    ToolStrip_NA_JobGroup = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [ToolStripButton_EditNA_JobGroup]
+    });
 
     var ToolStripButton_Refresh_Job_Group_Jsp = isc.ToolStripButtonRefresh.create({
         // icon: "<spring:url value="refresh.png"/>",
@@ -929,9 +929,7 @@
 
     var HLayout_Actions_Job_Group_Jsp = isc.VLayout.create({
         width: "100%",
-        members: [ToolStrip_Actions_Job_Group_Jsp
-            // , ToolStrip_NA_JobGroup
-        ]
+        members: [ToolStrip_Actions_Job_Group_Jsp, ToolStrip_NA_JobGroup]
     });
 
     ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
