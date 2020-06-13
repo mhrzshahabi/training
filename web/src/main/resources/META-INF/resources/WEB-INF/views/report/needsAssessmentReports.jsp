@@ -5,7 +5,7 @@
 // <script>
 
     var postCode_NABOP = null;
-    var passedStatusId_NABOP = "216";
+    var passedStatusId_NABOP = 216;
     var priorities_NABOP;
     var wait_NABOP;
     var selectedPerson_NABOP = null;

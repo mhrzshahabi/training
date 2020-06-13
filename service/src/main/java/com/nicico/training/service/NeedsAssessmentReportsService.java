@@ -29,7 +29,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequiredArgsConstructor
 public class NeedsAssessmentReportsService {
 
-    private final List<String> needsAssessmentPriorityCodes = Arrays.asList(new String[]{"AZ", "AB", "AT"});
+    private final List<String> needsAssessmentPriorityCodes = Arrays.asList("AZ", "AB", "AT");
 
     private final ModelMapper modelMapper;
 
@@ -60,6 +60,7 @@ public class NeedsAssessmentReportsService {
     public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, String personnelNo) {
 
         Long passedCodeId = parameterValueService.getId("Passed");
+        Long notPassedCodeId = parameterValueService.getId("false");
 
         List<NeedsAssessment> needsAssessmentList = getNeedsAssessmentList(objectId, objectType);
         needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
@@ -84,12 +85,14 @@ public class NeedsAssessmentReportsService {
             if (student == null) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
-            Set<Long> passedCourseIds = classStudentReportService.getPassedCourseAndEQSIdsByNationalCode(student.getNationalCode());
+            Set<Long> passedCourseIds = classStudentReportService.getPassedCoursesIdsOfStudentByNationalCode(student.getNationalCode());
             Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
 
             for (int i = 0; i < mustPass.size(); i++) {
                 if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed))
-                    mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId.toString());
+                    mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
+                else
+                    mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);
             }
         }
         return mustPass;
@@ -184,8 +187,7 @@ public class NeedsAssessmentReportsService {
 //    @Override
     public SearchDTO.SearchRs<PostDTO.Info> getSkillNAPostList(SearchDTO.SearchRq request, Long skillId) {
         Skill skill = skillService.getSkill(skillId);
-        List<NeedsAssessment> needsAssessments = new ArrayList<>();
-        needsAssessments.addAll(skill.getNeedsAssessments());
+        List<NeedsAssessment> needsAssessments = new ArrayList<>(skill.getNeedsAssessments());
         MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setTotalCount((long) postsGByPriority.values().size());
