@@ -30,7 +30,7 @@ public class ClassStudentReportService {
         if (nationalCode != null) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             criteria.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
-            criteria.getCriteria().add(makeNewCriteria("scoresState", "مردود", EOperator.notEqual, null));
+            criteria.getCriteria().add(makeNewCriteria("scoresState", Arrays.asList(400L,401L), EOperator.equals, null));
             return classStudentDAO.findAll(NICICOSpecification.of(criteria));
         }
         return null;
