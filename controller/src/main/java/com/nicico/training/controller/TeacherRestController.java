@@ -430,18 +430,40 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
         SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
-
         final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
-        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+        return new ResponseEntity<>( specRs, HttpStatus.OK);
     }
 
 
@@ -954,6 +976,55 @@ public class TeacherRestController {
     public void changeBlackListStatus(HttpServletRequest req, @PathVariable Boolean inBlackList, @PathVariable Long id) {
         String reason=req.getParameter("reason");
         teacherService.changeBlackListStatus(reason,inBlackList,id);
+    }
+
+    @Loggable
+    @GetMapping(value = "/info-tuple-list")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherInfoTupleSpecRs> infoTupleList(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                                         @RequestParam(value = "_endRow", required = false, defaultValue = "50") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "id", required = false) Long id,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<TeacherDTO.TeacherInfoTuple> response = teacherService.infoTupleSearch(request);
+        final TeacherDTO.InfoTupleSpecRs specResponse = new TeacherDTO.InfoTupleSpecRs<>();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        final TeacherDTO.TeacherInfoTupleSpecRs specRs = new TeacherDTO.TeacherInfoTupleSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>( specRs, HttpStatus.OK);
     }
 
 }

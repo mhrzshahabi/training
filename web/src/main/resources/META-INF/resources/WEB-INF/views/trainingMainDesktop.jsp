@@ -1708,12 +1708,12 @@
                             </sec:authorize>
 
 <%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
-<%--                            {--%>
-<%--                                title:  "<spring:message code="evaluation.statical.report"/>",--%>
-<%--                                click: function () {--%>
-<%--                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");--%>
-<%--                                }--%>
-<%--                            },--%>
+                            {
+                                title:  "<spring:message code="evaluation.statical.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
+                                }
+                            },
 <%--                            </sec:authorize>--%>
                         ]
                 },

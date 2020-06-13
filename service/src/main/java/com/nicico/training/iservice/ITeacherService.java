@@ -33,6 +33,9 @@ public interface ITeacherService {
     SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request);
 
     @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TeacherDTO.TeacherInfoTuple> infoTupleSearch(SearchDTO.SearchRq request);
+
+    @Transactional(readOnly = true)
     SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request);
 
     SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request);
