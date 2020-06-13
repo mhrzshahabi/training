@@ -381,25 +381,7 @@
                 }
         },
         recordDoubleClick(viewer, record){
-            switch(record.needsAssessmentPriorityId){
-                case 111:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                case 112:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                default:
-                    record.needsAssessmentPriorityId = 111;
-                    break;
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {
-                if(resp.httpResponseCode !== 200){
-                    createDialog("info", "<spring:message code='error'/>");
-                    return;
-                }
-                DataSource_Skill_JspNeedsAssessment.updateData(record);
-                viewer.endEditing();
-            }));
+            updatePriority_JspEditNeedsAssessment(viewer, record);
         }
     });
     var ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
@@ -482,25 +464,7 @@
             }
         },
         recordDoubleClick(viewer, record){
-            switch(record.needsAssessmentPriorityId){
-                case 111:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                case 112:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                default:
-                    record.needsAssessmentPriorityId = 111;
-                    break;
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {
-                if(resp.httpResponseCode !== 200){
-                    createDialog("info", "<spring:message code='error'/>");
-                    return;
-                }
-                DataSource_Skill_JspNeedsAssessment.updateData(record);
-                viewer.endEditing();
-            }));
+            updatePriority_JspEditNeedsAssessment(viewer, record);
         }
     });
     var ListGrid_Attitude_JspNeedsAssessment = isc.TrLG.create({
@@ -583,25 +547,7 @@
             }
         },
         recordDoubleClick(viewer, record){
-            switch(record.needsAssessmentPriorityId){
-                case 111:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                case 112:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                default:
-                    record.needsAssessmentPriorityId = 111;
-                    break;
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {
-                if(resp.httpResponseCode !== 200){
-                    createDialog("info", "<spring:message code='error'/>");
-                    return;
-                }
-                DataSource_Skill_JspNeedsAssessment.updateData(record);
-                viewer.endEditing();
-            }));
+            updatePriority_JspEditNeedsAssessment(viewer, record);
         }
     });
     let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({
@@ -673,7 +619,7 @@
                 name: "objectId",
                 showTitle: false,
                 optionDataSource: JobDs_needsAssessment,
-                type: "SelectItem",
+                editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
                 autoFetchData: false,
@@ -852,7 +798,7 @@
         }
     }
     function removeRecord_JspNeedsAssessment(record) {
-        if(record.objectType == NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")){
+        if(record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")){
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null, function (resp) {
                 if (resp.httpResponseCode != 200) {
                     return true;
@@ -860,6 +806,9 @@
                 DataSource_Skill_JspNeedsAssessment.removeData(record);
                 // return false;
             }));
+        }
+        else{
+            createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")]+" قابل حذف است.")
         }
     }
 
@@ -971,6 +920,32 @@
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
             );
+        }
+    }
+    function updatePriority_JspEditNeedsAssessment(viewer, record) {
+        if(record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
+            switch (record.needsAssessmentPriorityId) {
+                case 111:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                case 112:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                default:
+                    record.needsAssessmentPriorityId = 111;
+                    break;
+            }
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function (resp) {
+                if (resp.httpResponseCode !== 200) {
+                    createDialog("info", "<spring:message code='error'/>");
+                    return;
+                }
+                DataSource_Skill_JspNeedsAssessment.updateData(record);
+                viewer.endEditing();
+            }));
+        }
+        else{
+            createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")]+" قابل تغییر است.")
         }
     }
 

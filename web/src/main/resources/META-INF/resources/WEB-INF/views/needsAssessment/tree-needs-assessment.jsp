@@ -57,7 +57,7 @@
             })
         ]
     });
-    var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
+    var Label_Title_JspTreeNeedsAssessment = isc.LgLabel.create({
         contents:"",
         customEdges: ["R","L","T", "B"]});
     var ListGrid_MoreInformation_JspTreeNeedAssessment = isc.ListGrid.create({
@@ -82,7 +82,7 @@
         ],
         showClippedValuesOnHover: true,
         dataSource: RestDataSource_JspTreeNeedsAssessment,
-        gridComponents: [ToolStrip_NeedsAssessmentTree_JspTreeNeedAssessment, Label_Title_JspNeedsAssessment ,"header", "body"],
+        gridComponents: [ToolStrip_NeedsAssessmentTree_JspTreeNeedAssessment, Label_Title_JspTreeNeedsAssessment ,"header", "body"],
         groupStartOpen: "all",
         getCellCSSText: function (record, rowNum, colNum) {
 
@@ -108,7 +108,7 @@
     function loadNeedsAssessmentTree(rec, type) {
         console.log(rec)
         recJspTreeNeedsAssessment = rec;
-        Label_Title_JspNeedsAssessment.setContents(priorityList[type] + ": " + rec.titleFa + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.code ? " کد: " + rec.code : ""));
+        Label_Title_JspTreeNeedsAssessment.setContents(priorityList[type] + ": " + rec.titleFa + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.code ? " کد: " + rec.code : ""));
         // this.setTitle(priorityList[rec.objectType] + ": " + rec.objectName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.objectCode ? " کد: " + rec.objectCode : ""));
         ACriteriaJspTreeNeedsAssessment = {
             _constructor: "AdvancedCriteria",
