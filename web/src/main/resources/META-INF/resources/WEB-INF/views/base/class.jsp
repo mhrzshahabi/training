@@ -8,6 +8,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
+    var etcTargetSociety = [];
     var classMethod = "POST";
     var autoValid = false;
     var classWait;
@@ -1189,6 +1190,8 @@
                         DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                         form.getItem("targetSocieties").valueField = "title";
                         form.getItem("targetSocieties").clearValue();
+                        // form.getItem("targetSocieties").setValue(etcTargetSociety);
+                        etcTargetSociety.forEach(function (currentValue, index, arr) {DataSource_TargetSociety_List.addData({societyId: index, title: currentValue});});
                     }
                     else
                         return false;
@@ -1223,8 +1226,10 @@
                 click: function() {
                     isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
                         function (value) {
-                            DataSource_TargetSociety_List.addData({societyId:i, title: value}),
-                                i +=1;
+                            DataSource_TargetSociety_List.addData({societyId:i, title: value});
+                            etcTargetSociety.add(value);
+                            DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
+                            i +=1;
                         });
                 }
             },
@@ -1288,7 +1293,6 @@
         fields: [
             {
                 name: "termId",
-// titleColSpan: 1,
                 title: "<spring:message code='term'/>",
                 textAlign: "center",
                 required: true,
@@ -1296,16 +1300,10 @@
                 displayField: "code",
                 valueField: "id",
                 optionDataSource: RestDataSource_Term_JspClass,
-// autoFetchData: true,
-//                 cachePickListResults: true,
-//                 useClientFiltering: true,
                 filterFields: ["code"],
                 sortField: ["code"],
                 sortDirection: "descending",
-                // textMatchStyle: "startsWith",
-                // generateExactMatchCriteria: true,
                 colSpan: 2,
-// endRow:true,
                 pickListFields: [
                     {
                         name: "code",
@@ -2068,7 +2066,7 @@
                 defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                    keyPressFilter: "[0-9]",
                 },
                 pickListFields: [
                     {
@@ -2352,6 +2350,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             autoTimeActivation(false);
+            etcTargetSociety = [];
             getSocietiesList();
             getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
@@ -2430,6 +2429,7 @@
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
         autoTimeActivation(true);
+        etcTargetSociety = [];
         getSocietiesList();
         getOrganizers();
     }
@@ -2912,6 +2912,7 @@
                                 societies.add(currentValue.title);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
                                 DataSource_TargetSociety_List.addData({societyId: item, title: currentValue.title});
+                                etcTargetSociety.add(currentValue.title);
                                 item += 1;
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
                                 DynamicForm_Class_JspClass.getItem("addtargetSociety").show();
