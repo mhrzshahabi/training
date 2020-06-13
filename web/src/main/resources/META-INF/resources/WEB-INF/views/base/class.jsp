@@ -8,6 +8,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
+    var etcTargetSociety = [];
     var classMethod = "POST";
     var autoValid = false;
     var classWait;
@@ -608,9 +609,8 @@
                     } else
                         form.getItem("preCourseTest").show();
                 },
-                click(form){
+                click : function(form){
                     Window_AddCourse_JspClass.show();
-
                 }
             },
             {
@@ -1104,8 +1104,10 @@
                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
-                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+                    if(classMethod ==="PUT"){
+                        let record = ListGrid_Class_JspClass.getSelectedRecord();
+                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+                    }
 
                 },
             },
@@ -1189,6 +1191,8 @@
                         DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                         form.getItem("targetSocieties").valueField = "title";
                         form.getItem("targetSocieties").clearValue();
+                        // form.getItem("targetSocieties").setValue(etcTargetSociety);
+                        etcTargetSociety.forEach(function (currentValue, index, arr) {DataSource_TargetSociety_List.addData({societyId: index, title: currentValue});});
                     }
                     else
                         return false;
@@ -1223,8 +1227,10 @@
                 click: function() {
                     isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
                         function (value) {
-                            DataSource_TargetSociety_List.addData({societyId:i, title: value}),
-                                i +=1;
+                            DataSource_TargetSociety_List.addData({societyId:i, title: value});
+                            etcTargetSociety.add(value);
+                            DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
+                            i +=1;
                         });
                 }
             },
@@ -1288,7 +1294,6 @@
         fields: [
             {
                 name: "termId",
-// titleColSpan: 1,
                 title: "<spring:message code='term'/>",
                 textAlign: "center",
                 required: true,
@@ -1296,16 +1301,10 @@
                 displayField: "code",
                 valueField: "id",
                 optionDataSource: RestDataSource_Term_JspClass,
-// autoFetchData: true,
-//                 cachePickListResults: true,
-//                 useClientFiltering: true,
                 filterFields: ["code"],
                 sortField: ["code"],
                 sortDirection: "descending",
-                // textMatchStyle: "startsWith",
-                // generateExactMatchCriteria: true,
                 colSpan: 2,
-// endRow:true,
                 pickListFields: [
                     {
                         name: "code",
@@ -1878,12 +1877,12 @@
                             },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
-                        recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
+                        recordDoubleClick: function(viewer, record, recordNum, field, fieldNum, value, rawValue){
                             DynamicForm_Class_JspClass.setValue("course.id", record.id);
                             setTimeout(function () {
                                 DynamicForm_Class_JspClass.getItem("course.id").changed(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("course.id"));
                                 Window_AddCourse_JspClass.close();
-                            },1000)
+                            },1000);
                             // var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
                             // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
                             // DynamicForm_Class_JspClass.getItem("course.id").fetchData(function () {
@@ -2068,7 +2067,7 @@
                 defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
+                    keyPressFilter: "[0-9]",
                 },
                 pickListFields: [
                     {
@@ -2352,6 +2351,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             autoTimeActivation(false);
+            etcTargetSociety = [];
             getSocietiesList();
             getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
@@ -2430,6 +2430,7 @@
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
         autoTimeActivation(true);
+        etcTargetSociety = [];
         getSocietiesList();
         getOrganizers();
     }
@@ -2912,6 +2913,7 @@
                                 societies.add(currentValue.title);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
                                 DataSource_TargetSociety_List.addData({societyId: item, title: currentValue.title});
+                                etcTargetSociety.add(currentValue.title);
                                 item += 1;
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
                                 DynamicForm_Class_JspClass.getItem("addtargetSociety").show();

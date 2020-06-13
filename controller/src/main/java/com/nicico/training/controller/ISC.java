@@ -71,12 +71,12 @@ public class ISC<T> {
         return searchRq;
     }
 
-    public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq, Long id, String fieldName, EOperator operator) throws IOException {
+    public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq, Object value, String fieldName, EOperator operator) throws IOException {
 
         SearchDTO.SearchRq searchRq = convertToSearchRq(rq);
-        if (id != null) {
+        if (value != null) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-            criteria.getCriteria().add(makeNewCriteria(fieldName, id, operator, null));
+            criteria.getCriteria().add(makeNewCriteria(fieldName, value, operator, null));
             if (searchRq.getCriteria() != null)
                 criteria.getCriteria().add(searchRq.getCriteria());
             searchRq.setCriteria(criteria);
