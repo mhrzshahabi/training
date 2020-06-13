@@ -177,7 +177,7 @@
                 {name: "ccpUnit"}
             ],
             recordClick: function () {
-                set_PersonnelInfo_Details(this);
+                set_PersonnelInfo_Details();
             }
         });
 
@@ -444,6 +444,7 @@
                 {name: "course.evaluation"},
                 {name: "institute.titleFa"},
                 {name: "studentCount"},
+                {name: "numberOfStudentEvaluation"},
                 {name: "classStatus"},
                 {name: "trainingPlaceIds"},
                 {name: "instituteId"},
@@ -1182,13 +1183,28 @@
                 isc.ToolStripButtonAdd.create({
                     title: 'فیلتر گروهي',
                     click: function () {
-                        groupFilter("فیلتر گروهی", personnelRegUrl, checkPersonnelNosResponse);
+                        if(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" )
+                        {
+                            groupFilter("فیلتر گروهی", personnelRegUrl, checkPersonnelNosResponse);
+                        }
+                        else
+                        {
+                            groupFilter("فیلتر گروهی", personnelRegUrl, checkRegisterPersonnelNosResponse);
+                        }
+
                     }
                 }),
                 isc.ToolStripButtonExcel.create({
                     title: 'ارسال لیست فیلتر شده به اکسل',
                     click: function () {
-                        ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '', "گزارش پرسنل", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
+                        if(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" )
+                        {
+                            ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '', "گزارش پرسنل شرکتي", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
+                        }
+                        else
+                        {
+                            ExportToFile.showDialog(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
+                        }
                     }
                 }),
                 ToolStrip_Personnel_Info]
@@ -1393,6 +1409,18 @@
                 ]
             };
             PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+            ClassStudentWin_student_GroupInsert.close();
+        }
+
+        function checkRegisterPersonnelNosResponse(url, result) {
+            advancedCriteriaPersonnelInformation = {
+                operator: "or",
+                criteria: [
+                    {fieldName: "personnelNo", operator: "inSet", value: result},
+                    {fieldName: "personnelNo2", operator: "inSet", value: result}
+                ]
+            };
+            PersonnelInfoListGrid_RegisteredPersonnelList.fetchData(advancedCriteriaPersonnelInformation);
             ClassStudentWin_student_GroupInsert.close();
         }
     }
