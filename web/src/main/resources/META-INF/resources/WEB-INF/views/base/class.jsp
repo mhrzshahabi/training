@@ -609,9 +609,8 @@
                     } else
                         form.getItem("preCourseTest").show();
                 },
-                click(form){
+                click : function(form){
                     Window_AddCourse_JspClass.show();
-
                 }
             },
             {
@@ -1105,8 +1104,10 @@
                         form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
-                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+                    if(classMethod ==="PUT"){
+                        let record = ListGrid_Class_JspClass.getSelectedRecord();
+                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+                    }
 
                 },
             },
@@ -1876,12 +1877,12 @@
                             },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
-                        recordDoubleClick(viewer, record, recordNum, field, fieldNum, value, rawValue){
+                        recordDoubleClick: function(viewer, record, recordNum, field, fieldNum, value, rawValue){
                             DynamicForm_Class_JspClass.setValue("course.id", record.id);
                             setTimeout(function () {
                                 DynamicForm_Class_JspClass.getItem("course.id").changed(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("course.id"));
                                 Window_AddCourse_JspClass.close();
-                            },1000)
+                            },1000);
                             // var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
                             // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
                             // DynamicForm_Class_JspClass.getItem("course.id").fetchData(function () {
