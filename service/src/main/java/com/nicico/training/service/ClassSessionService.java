@@ -16,6 +16,7 @@ import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
+import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTimeComparator;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.html.Option;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,7 +46,7 @@ public class ClassSessionService implements IClassSession {
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
     private final MessageSource messageSource;
-
+    private final TclassDAO tclassDAO;
 
     //*********************************
 
@@ -376,33 +378,54 @@ public class ClassSessionService implements IClassSession {
 //    }
     //*********************************
 
+    //Amin Haeri-------------------
     @Override
     @Transactional
     public List<ClassSessionDTO.ClassSessionsDateForOneClass> getDateForOneClass(Long classId) {
         List<IClassSessionDTO> dateByClassId = classSessionDAO.findSessionDateDistinctByClassId(classId);
-   /*     List<ClassSessionDTO.ClassSessionsDateForOneClass> exitList = new ArrayList<>();
+        List<ClassSessionDTO.ClassSessionsDateForOneClass> exitList = new ArrayList<>();
 
-        Tclass tclassOfSession = tclassService.getEntity(classId);
-        int numStudents=tclassOfSession.getClassStudents().size();
+        Optional<Tclass> tclassExist = tclassDAO.findById(classId);
+        final Tclass tclass = tclassExist.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        int numStudents=tclass.getClassStudents().size();
+
+        int idx=0;
+
         for (IClassSessionDTO sessionDate : dateByClassId) {
             List<ClassSession> sessions = classSessionDAO.findBySessionDateAndClassId(sessionDate.getSessionDate(), classId);
+            boolean outerCheck=true;
+            ClassSessionDTO.ClassSessionsDateForOneClass classSessionsDateForOneClass= new ClassSessionDTO.ClassSessionsDateForOneClass();
+            classSessionsDateForOneClass.setDayName(sessionDate.getDayName());
+            classSessionsDateForOneClass.setSessionDate(sessionDate.getSessionDate());
+            exitList.add(classSessionsDateForOneClass);
+            idx++;
+
             for (ClassSession session : sessions) {
+                if (!outerCheck) {
+                    break;
+                }
+
                 List<Attendance> attendanceList = attendanceDAO.findBySessionId(session.getId());
-                if (attendanceList.size() != numStudents) {
-                    continue;
+
+                if (numStudents == 0 || attendanceList.size() == 0 || attendanceList.size() != numStudents) {
+                    exitList.get(idx-1).setHasWarning("alarm");
+                    break;
                 }
 
-                for (Attendance a : attendanceList) {
-                    if (a.getState().equals("0")) {
-                        continue;
-                    }
-
-                }
+                for (Attendance attendance : attendanceList) {
+                    if (attendance.getState().equals("0")) {
+                        exitList.get(idx-1).setHasWarning("alarm");
+                        outerCheck=false;
+                        break;
+                    }//end if
+                }//end for
             }
         }
-*/
-        return modelMapper.map(dateByClassId, new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
+
+        return modelMapper.map(exitList, new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
         }.getType());
+
     }
 
     //*********************************

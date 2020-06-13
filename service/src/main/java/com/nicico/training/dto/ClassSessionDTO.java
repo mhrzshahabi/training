@@ -206,6 +206,7 @@ public class ClassSessionDTO implements Serializable {
     public static class ClassSessionsDateForOneClass {
         private String dayName;
         private String sessionDate;
+        private String hasWarning="";
     }
 
     @Getter
