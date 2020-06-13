@@ -1131,7 +1131,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                     moreInfoTree.getData().openAll();
                 }
             }));
-
             this.Super("show", arguments)
         }
     });
