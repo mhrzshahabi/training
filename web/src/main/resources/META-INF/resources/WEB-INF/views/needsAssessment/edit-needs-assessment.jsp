@@ -33,7 +33,7 @@
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: jobUrl + "/iscList"
+        fetchDataURL: jobUrl + "/spec-list"
     });
     let JobGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
