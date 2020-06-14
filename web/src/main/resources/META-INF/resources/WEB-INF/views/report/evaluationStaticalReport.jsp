@@ -13,6 +13,8 @@
     var endDateCheck_Order_JspEvaluationStaticalReport = true;
 
     var data_values = null;
+
+    var societies = [];
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     var RestDataSource_Class_JspClassResult = isc.TrDS.create({
         fields: [
@@ -89,14 +91,28 @@
         fetchDataURL: teacherUrl + "info-tuple-list"
     });
 
+    var RestDataSource_TargetSociety_JspEvaluationStaticalReport =  isc.DataSource.create({
+        clientOnly: true,
+        testData: societies,
+        fields: [
+            {name: "societyId", primaryKey: true},
+            {name: "title", type: "text"}
+        ]
+    });
+
+
     var RestDataSource_Institute_JspEvaluationStaticalReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa"},
-            {name: "manager.firstNameFa"},
-            {name: "manager.lastNameFa"}
+            {name: "titleFa", title: "نام موسسه"},
+            {name: "manager.firstNameFa", title: "نام مدیر"},
+            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
+            {name: "mobile", title: "موبایل"},
+            {name: "restAddress", title: "آدرس"},
+            {name: "phone", title: "تلفن"}
         ],
-        fetchDataURL: instituteUrl + "iscList"
+        fetchDataURL: instituteUrl + "spec-list",
+        allowAdvancedCriteria: true,
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_Result_JspEvaluationStaticalReport = isc.TrLG.create({
@@ -207,14 +223,38 @@
             {
                 name: "UnitId",
                 title: "واحد",
-                length: 100,
-                filterOperator: "iContains"
+                type: "SelectItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                textAlign: "center",
+                wrapTitle: false,
+                optionDataSource: RestDataSource_TargetSociety_JspEvaluationStaticalReport,
+                displayField: "title",
+                valueField: "societyId"
             },
             {
                 name: "InstituteId",
                 title: "محل برگزاری",
-                length: 100,
-                filterOperator: "iContains"
+                editorType: "TrComboAutoRefresh",
+                optionDataSource: RestDataSource_Institute_JspEvaluationStaticalReport,
+                displayField: "titleFa",
+                valueField: "id",
+                textAlign: "center",
+                filterFields: ["titleFa", "titleFa"],
+                showHintInField: true,
+                hint: "موسسه",
+                pickListWidth: 500,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", filterOperator: "iContains"}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
             },
             {
                 name: "TeacherId",
@@ -623,7 +663,7 @@
                 }
             },
             {
-                name: "evaluationType",
+                name: "Evaluation",
                 title: "نوع ارزیابی",
                 type: "SelectItem",
                 multiple: true,

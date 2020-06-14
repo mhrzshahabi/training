@@ -1339,7 +1339,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-002">
+    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-003">
         <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
             <![CDATA[
 			SELECT
@@ -1357,6 +1357,7 @@ FROM
         course.CATEGORY_ID as course_category_id,
         course.SUBCATEGORY_ID as course_subcategory_id,
         course.C_TITLE_FA as course_c_title_fa,
+        course.C_EVALUATION as course_c_evaluation,
         CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END AS tclass_students_count,
         evaluationanalysis.C_BEHAVIORAL_GRADE as evaluationanalysis_c_behavioral_grade,
         evaluationanalysis.B_BEHAVIORAL_PASS as evaluationanalysis_c_behavioral_pass,
