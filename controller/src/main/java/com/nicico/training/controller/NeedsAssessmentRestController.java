@@ -12,6 +12,8 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
+import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.service.NeedsAssessmentReportsService;
 import com.nicico.training.service.NeedsAssessmentService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class NeedsAssessmentRestController {
 
     private final NeedsAssessmentService needsAssessmentService;
     private final ModelMapper modelMapper;
-    private final NeedsAssessmentReportsService needsAssessmentReportsService;
+
 
     @Loggable
     @GetMapping("/list")
@@ -51,10 +53,8 @@ public class NeedsAssessmentRestController {
     @Loggable
 //    @Transactional(readOnly = true)
     @GetMapping("/editList/{objectType}/{objectId}")
-    public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String objectType, @PathVariable Long objectId) {
-        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
-        needsAssessmentReportsService.addCriteria(criteriaRq, objectType, objectId);
-        return new ResponseEntity<>(needsAssessmentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq)), HttpStatus.OK);
+    public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscList(@PathVariable String objectType, @PathVariable Long objectId) {
+        return new ResponseEntity<>(needsAssessmentService.fullSearch(objectId, objectType), HttpStatus.OK);
     }
 
     @Loggable

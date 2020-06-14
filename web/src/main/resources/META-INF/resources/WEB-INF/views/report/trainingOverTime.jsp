@@ -149,8 +149,9 @@
     });
     var ListGrid_TrainingOverTime_TrainingOverTimeJSP = isc.TrLG.create({
         ID: "TrainingOverTimeGrid",
-        dynamicTitle: true,
-        filterOnKeypress: true,
+        //dynamicTitle: true,
+        filterOnKeypress: false,
+        showFilterEditor:true,
         gridComponents: [DynamicForm_TrainingOverTime,
             isc.ToolStripButtonExcel.create({
                 margin:5,
@@ -168,16 +169,18 @@
                         criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
                     }*/
 
-                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '',  "گزارش اضافه کاری آموزشی", DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
+                    //ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '',  "گزارش اضافه کاری آموزشی", DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
+                   ExportToFile.downloadExcelFromClient(ListGrid_TrainingOverTime_TrainingOverTimeJSP, null, '', "گزارش اضافه کاری آموزشی")
                 }
             })
             , "header", "filterEditor", "body"],
-        groupByField:"name",
-        groupStartOpen:"none",
-        groupByMaxRecords:5000000,
-        showGridSummary:true,
-        showGroupSummary:true,
+        // groupByField:"name",
+        // groupStartOpen:"none",
+        // groupByMaxRecords:5000000,
+        // showGridSummary:true,
+        // showGroupSummary:true,
         dataSource: RestDataSource_Class_JspTrainingOverTime,
+
         fields: [
             {name: "personalNum", title: "<spring:message code='personnel.no'/>",
                 filterEditorProperties: {
