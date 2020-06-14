@@ -1513,7 +1513,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB-001">
+    <changeSet author="NICICO" id="VIEW_JOB-002">
         <createView viewName="VIEW_JOB" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1533,8 +1533,7 @@ FROM
     tbl_job j
     LEFT JOIN tbl_needs_assessment na ON j.id = na.f_object
                                          AND na.c_object_type = 'Job'
-    LEFT JOIN tbl_post               p ON j.id = p.f_job_id
-    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+    LEFT JOIN tbl_personnel prs ON j.c_code = prs.job_no
                                    AND prs.active = 1
                                    AND prs.employment_status_id = 5
 GROUP BY
@@ -1596,7 +1595,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE-001">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-002">
         <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1616,8 +1615,7 @@ FROM
     tbl_post_grade pg
     LEFT JOIN tbl_needs_assessment na ON pg.id = na.f_object
                                          AND na.c_object_type = 'PostGrade'
-    LEFT JOIN tbl_post p ON pg.id = p.f_post_grade_id
-    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+    LEFT JOIN tbl_personnel prs ON pg.c_code = prs.post_grade_code
                                    AND prs.active = 1
                                    AND prs.employment_status_id = 5
 GROUP BY
