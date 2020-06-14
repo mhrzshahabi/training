@@ -16,6 +16,7 @@ import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
 import com.nicico.training.service.*;
 import lombok.*;
@@ -52,8 +53,6 @@ import static net.minidev.json.parser.JSONParser.DEFAULT_PERMISSIVE_MODE;
 @RequestMapping("/export-to-file")
 public class ExportToFileController {
 
-    private final StudentClassReportViewDAO studentClassReportViewDAO;
-    private final PersonnelDAO personnelDAO;
     private final ClassStudentService classStudentService;
     private final TeacherService teacherService;
     private final ITclassService tclassService;
@@ -63,8 +62,10 @@ public class ExportToFileController {
     private final UnfinishedClassesReportService unfinishedClassesReportService;
     private final TrainingOverTimeService trainingOverTimeService;
 
+    private final StudentClassReportViewDAO studentClassReportViewDAO;
+    private final PersonnelDAO personnelDAO;
     private final CourseDAO courseDAO;
-
+    private final PersonnelRegisteredDAO personnelRegisteredDAO;
 
     private final ExportToFileService exportToFileService;
 
@@ -280,6 +281,18 @@ public class ExportToFileController {
                     ObjectMapper mapper = new ObjectMapper();
                     jsonString = mapper.writeValueAsString(list4);
                     count = list4.size();
+                }
+                break;
+            case "registeredPersonnelInformationReport":
+
+
+                List<PersonnelRegisteredDTO.Info> list11 = SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList();
+                if (list11 == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list11);
+                    count = list11.size();
                 }
                 break;
             case "personnelCourseNotPassed":

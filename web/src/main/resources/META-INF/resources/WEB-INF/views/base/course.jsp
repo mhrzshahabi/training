@@ -405,7 +405,7 @@
             },
             {
                 name: "theoryDuration", title: "<spring:message
-                code="course_theoryDuration"/>", align: "center", filterOperator: "iContains",
+                code="course_theoryDuration"/>", align: "center", filterOperator: "equals",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }

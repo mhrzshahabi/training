@@ -136,6 +136,86 @@
             fetchDataURL: personnelUrl + "/iscList"
         });
 
+
+        var PersonnelInfoDS_WebService_PersonnelList = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "companyName",
+                    title: "<spring:message code="company.name"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "postTitle",
+                    title: "<spring:message code="post"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "postCode",
+                    title: "<spring:message code="post.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "ccpArea",
+                    title: "<spring:message code="reward.cost.center.area"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAssistant",
+                    title: "<spring:message code="reward.cost.center.assistant"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAffairs",
+                    title: "<spring:message code="reward.cost.center.affairs"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpSection",
+                    title: "<spring:message code="reward.cost.center.section"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpUnit",
+                    title: "<spring:message code="reward.cost.center.unit"/>",
+                    filterOperator: "iContains"
+                }
+            ],
+            fetchDataURL: masterDataUrl + "/personnel/iscList"
+        });
+
         var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
             dataSource: PersonnelInfoDS_PersonnelList,
             selectionType: "single",
@@ -177,7 +257,7 @@
                 {name: "ccpUnit"}
             ],
             recordClick: function () {
-                set_PersonnelInfo_Details(this);
+                set_PersonnelInfo_Details();
             }
         });
 
@@ -190,6 +270,47 @@
         };
 
         PersonnelInfoListGrid_PersonnelList.implicitCriteria = criteriaActivePersonnel;
+
+        var PersonnelInfoListGrid_WebService_PersonnelList = isc.TrLG.create({
+            dataSource: PersonnelInfoDS_WebService_PersonnelList,
+            selectionType: "single",
+            autoFetchData: true,
+            fields: [
+                {name: "id", hidden: true},
+                {name: "firstName"},
+                {name: "lastName"},
+                {
+                    name: "nationalCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "companyName" , canFilter:false,canSort:false},
+                {
+                    name: "personnelNo"
+
+                },
+                {
+                    name: "personnelNo2", canFilter:false,canSort:false
+                },
+                {name: "postTitle"},
+                {
+                    name: "postCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "ccpArea", canFilter:false,canSort:false},
+                {name: "ccpAssistant", canFilter:false,canSort:false},
+                {name: "ccpAffairs", canFilter:false,canSort:false},
+                {name: "ccpSection"},
+                {name: "ccpUnit"}
+            ],
+            recordClick: function () {
+                set_PersonnelInfo_Details();
+            }
+        });
+
 
 
         PersonnelInfoDS_RegisteredPersonnelList = isc.TrDS.create({
@@ -444,6 +565,7 @@
                 {name: "course.evaluation"},
                 {name: "institute.titleFa"},
                 {name: "studentCount"},
+                {name: "numberOfStudentEvaluation"},
                 {name: "classStatus"},
                 {name: "trainingPlaceIds"},
                 {name: "instituteId"},
@@ -1074,6 +1196,39 @@
                     }
                 ]
         });
+
+
+        var Window_WebService_PersonnelInformation = isc.Window.create({
+            title: "<spring:message code='personal'/>",
+            width: "100%",
+            height: "100%",
+            minWidth: "100%",
+            minHeight: "100%",
+            autoSize: false,
+            items: [
+                PersonnelInfoListGrid_WebService_PersonnelList,
+                isc.HLayout.create({
+                    width: "100%",
+                    height: "6%",
+                    autoDraw: false,
+                    align: "center",
+                    members: [
+                        isc.IButton.create({
+                            title: "<spring:message code='close'/>",
+                            icon: "[SKIN]/actions/cancel.png",
+                            width: "70",
+                            align: "center",
+                            click: function () {
+                                Window_WebService_PersonnelInformation.close();
+                            }
+                        })
+                    ]
+                })
+
+            ]
+        });
+
+
     }
     // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>
 
@@ -1179,16 +1334,48 @@
             height: "1%",
             membersMargin: 5,
             members: [
+                isc.ToolStripButton.create({
+                    title: 'نمايش پرسنل از وبسرويس',
+                    click: function () {
+                        let criteriaActive_WebServicePersonnel = {/*
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: "active", operator: "equals", value: 1}
+                            ]*/
+                        };
+
+                        //PersonnelInfoListGrid_WebService_PersonnelList.implicitCriteria = criteriaActive_WebServicePersonnel;
+                        PersonnelInfoListGrid_WebService_PersonnelList.invalidateCache();
+                        PersonnelInfoListGrid_WebService_PersonnelList.fetchData();
+                        Window_WebService_PersonnelInformation.show();
+                    }
+                }),
                 isc.ToolStripButtonAdd.create({
                     title: 'فیلتر گروهي',
                     click: function () {
-                        groupFilter("فیلتر گروهی", personnelRegUrl, checkPersonnelNosResponse);
+                        if(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" )
+                        {
+                            groupFilter("فیلتر گروهی", personnelRegUrl, checkPersonnelNosResponse);
+                        }
+                        else
+                        {
+                            groupFilter("فیلتر گروهی", personnelRegUrl, checkRegisterPersonnelNosResponse);
+                        }
+
                     }
                 }),
                 isc.ToolStripButtonExcel.create({
                     title: 'ارسال لیست فیلتر شده به اکسل',
                     click: function () {
-                        ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '', "گزارش پرسنل", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
+                        if(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" )
+                        {
+                            ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '', "گزارش پرسنل شرکتي", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
+                        }
+                        else
+                        {
+                            ExportToFile.showDialog(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
+                        }
                     }
                 }),
                 ToolStrip_Personnel_Info]
@@ -1393,6 +1580,18 @@
                 ]
             };
             PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+            ClassStudentWin_student_GroupInsert.close();
+        }
+
+        function checkRegisterPersonnelNosResponse(url, result) {
+            advancedCriteriaPersonnelInformation = {
+                operator: "or",
+                criteria: [
+                    {fieldName: "personnelNo", operator: "inSet", value: result},
+                    {fieldName: "personnelNo2", operator: "inSet", value: result}
+                ]
+            };
+            PersonnelInfoListGrid_RegisteredPersonnelList.fetchData(advancedCriteriaPersonnelInformation);
             ClassStudentWin_student_GroupInsert.close();
         }
     }
