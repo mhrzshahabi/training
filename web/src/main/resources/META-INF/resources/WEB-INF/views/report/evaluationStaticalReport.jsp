@@ -147,7 +147,7 @@
             {name: "tclassCode", title: "کد کلاس"},
             {name: "courseCode", title: "کد دوره"},
             {name: "courseTitleFa", title: "نام دوره"},
-            {name: "tclassStudentsCount", title: "تعداد فراگیران"},
+            {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals"},
             {name: "evaluationReactionStatus",title: "ارزیابی واکنشی",valueMap: {true: "انجام شده", false: "انجام نشده"},
                 filterEditorProperties:{
                     pickListProperties: {
