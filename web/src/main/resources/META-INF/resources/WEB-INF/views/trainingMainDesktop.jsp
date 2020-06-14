@@ -720,6 +720,8 @@
     const viewJobGroupUrl = rootUrl + "/view-job-group";
     const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
+    const masterDataUrl = rootUrl + "/masterData";
+    const viewEvaluationStaticalReport = rootUrl + "/view-evaluation-statical-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -968,7 +970,7 @@
         width: 350,
         height: "100%",
         styleName: "header-logo",
-        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/>1.11</h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
+        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/> 1.14 </h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
     });
 
     <%--var headerFlow = isc.HTMLFlow.create({--%>
@@ -1708,12 +1710,12 @@
                             </sec:authorize>
 
 <%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_StaticalEvaluation')">--%>
-<%--                            {--%>
-<%--                                title:  "<spring:message code="evaluation.statical.report"/>",--%>
-<%--                                click: function () {--%>
-<%--                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");--%>
-<%--                                }--%>
-<%--                            },--%>
+                            {
+                                title:  "<spring:message code="evaluation.statical.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
+                                }
+                            },
 <%--                            </sec:authorize>--%>
                         ]
                 },

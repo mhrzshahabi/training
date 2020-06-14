@@ -6,7 +6,7 @@ spring:
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
-      maximum-pool-size: 50
+      maximum-pool-size: 60
       connection-timeout: 60000
   jpa:
     hibernate:
@@ -73,7 +73,7 @@ nicico:
     update:
       mode: false
   training:
-    version: '1.11'
+    version: '1.14'
 ---
 
 spring:

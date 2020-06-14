@@ -30,10 +30,19 @@ public class ClassStudentReportService {
         if (nationalCode != null) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             criteria.getCriteria().add(makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null));
-            criteria.getCriteria().add(makeNewCriteria("scoresState", "مردود", EOperator.notEqual, null));
+            criteria.getCriteria().add(makeNewCriteria("scoresState", Arrays.asList(400L, 401L), EOperator.equals, null));
             return classStudentDAO.findAll(NICICOSpecification.of(criteria));
         }
         return null;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public Set<Long> getPassedCoursesIdsOfStudentByNationalCode(String nationalCode) {
+        if (nationalCode == null)
+            return null;
+        return searchPassedCoursesOfStudentByNationalCode(nationalCode).stream().map(classStudent -> classStudent.getTclass().getCourse().getId()).collect(Collectors.toSet());
+
     }
 
     @Transactional(readOnly = true)
@@ -66,7 +75,6 @@ public class ClassStudentReportService {
             for (Long courseId : equalCourses.getEqualAndList())
                 getEqualCourseIds(courseDAO.getOne(courseId), equalCourseIds);
         }
-
     }
 
 
@@ -87,7 +95,7 @@ public class ClassStudentReportService {
     @Transactional(readOnly = true)
 //    @Override
     public Boolean isPassed(Course course, String nationalCode) {
-        Set<Long> passedCourseIds = getPassedCourseAndEQSIdsByNationalCode(nationalCode);
+        Set<Long> passedCourseIds = getPassedCoursesIdsOfStudentByNationalCode(nationalCode);
         Map<Long, Boolean> Passed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
         return isPassed(course, Passed);
     }

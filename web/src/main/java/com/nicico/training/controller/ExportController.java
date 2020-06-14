@@ -178,7 +178,7 @@ public class ExportController {
         List list = null;
         switch (fileName) {
             case "oneNeedsAssessment.jasper":
-                final SearchDTO.SearchRs<NeedsAssessmentDTO.Info> searchNAS = needsAssessmentService.search(searchRq);
+                final SearchDTO.SearchRs<NeedsAssessmentDTO.Info> searchNAS = needsAssessmentService.fullSearch(searchRq);
                 list = searchNAS.getList();
                 break;
             case "personnelCourses.jasper":

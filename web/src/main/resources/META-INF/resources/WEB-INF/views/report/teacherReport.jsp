@@ -172,6 +172,7 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         showFilterEditor: false,
+        canSort:false,
         allowFilterExpressions: true,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",

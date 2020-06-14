@@ -372,12 +372,13 @@
                   if(value == 1){
                       form.getItem("sessionDate").pickListFields = [
                           {name: "dayName", title: "روز هفته"},
-                          {name: "sessionDate", title: "تاریخ"}
+                          {name: "sessionDate", title: "تاریخ"},
+                          {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
                       ];
                       form.getItem("sessionDate").displayField = "sessionDate";
                       form.getItem("sessionDate").valueField = "sessionDate";
                       form.getItem("sessionDate").optionDataSource = RestData_SessionDate_AttendanceJSP;
-                      form.getItem("sessionDate").pickListWidth = 200;
+                      form.getItem("sessionDate").pickListWidth = 250;
                       isAttendanceDate=true;
                   }
                   if(value == 2){
@@ -404,7 +405,7 @@
             {
                 name: "sessionDate",
                 autoFetchData: false,
-                width:200,
+                width:250,
                 type: "SelectItem",
                 showTitle:false,
                 optionDataSource: RestData_SessionDate_AttendanceJSP,
@@ -413,7 +414,8 @@
                 sortDirection: "descending",
                 pickListFields: [
                     {name: "dayName", title: "روز هفته"},
-                    {name: "sessionDate", title: "تاریخ"}
+                    {name: "sessionDate", title: "تاریخ"},
+                    {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
                 ],
                 click: function (form, item) {
                     attendanceGrid.endEditing();
@@ -703,11 +705,11 @@
                                                     }
                                                 });
                                             }
-                                            if (this.colNum == 5 && (value == 1 || value == 2)) {
-                                                for (let i = 6; i < this.grid.getAllFields().length; i++) {
-                                                    this.grid.setEditValue(this.rowNum, i, value);
-                                                }
-                                            }
+                                            // if (this.colNum == 5 && (value == 1 || value == 2)) {
+                                            //     for (let i = 6; i < this.grid.getAllFields().length; i++) {
+                                            //         this.grid.setEditValue(this.rowNum, i, value);
+                                            //     }
+                                            // }
                                         },
                                         hoverHTML(record, value, rowNum, colNum, grid) {
                                             if (value == "غیبت موجه") {
