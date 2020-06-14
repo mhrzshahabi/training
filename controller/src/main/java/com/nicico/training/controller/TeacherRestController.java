@@ -587,20 +587,20 @@ public class TeacherRestController {
         params.put("birthLocation", teacherDTO.getPersonality().getBirthLocation());
         Integer genderId = teacherDTO.getPersonality().getGenderId();
         String gender = null;
-        if(genderId == 1)
+        if(genderId.equals("1"))
             gender = "مرد";
-        if(genderId == 2)
+        if(genderId.equals("2"))
             gender = "زن";
         params.put("gender", gender);
         Integer militaryId = teacherDTO.getPersonality().getMilitaryId();
         String military = null;
-        if(militaryId == 1)
+        if(militaryId != null && militaryId.equals(1))
             military = "گذرانده";
-        if(militaryId == 2)
+        if(militaryId != null && militaryId.equals(2))
             military = "معاف";
-        if(militaryId == 3)
+        if(militaryId != null && militaryId.equals(3))
             military = "مشمول";
-        if(genderId == 2)
+        if(genderId != null && genderId.equals(2))
             military = null;
         params.put("military", military);
         params.put("otherActivity", teacherDTO.getOtherActivities());
@@ -643,8 +643,8 @@ public class TeacherRestController {
         params.put("address", address);
         params.put("connectionInfo", connection);
         String categories = null;
-        List<Category> categoryList = (List<Category>) teacher.getCategories();
-        List<Subcategory> subCategoryList = (List<Subcategory>) teacher.getSubCategories();
+        Set<Category> categoryList = teacher.getCategories();
+        Set<Subcategory> subCategoryList = teacher.getSubCategories();
         for (Category category : categoryList) {
             categories += category.getTitleFa() + " ";
             for (Subcategory subCategory : subCategoryList) {

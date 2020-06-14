@@ -1212,6 +1212,14 @@
                     align: "center",
                     filterOperator: "iContains",
                     autoFitWidth: true,
+                    filterEditorProperties:{
+                     click:function () {
+                         setTimeout(()=> {
+                             $('.comboBoxItemPickerrtl').eq(4).remove();
+                             $('.comboBoxItemPickerrtl').eq(5).remove();
+                         },0);
+                     }
+                    },
                     valueMap: {
                         "1": "واکنشی",
                         "2": "یادگیری",
@@ -1221,6 +1229,14 @@
                 },
                 {
                     name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                    filterEditorProperties:{
+                        click:function () {
+                            setTimeout(()=> {
+                                $('.comboBoxItemPickerrtl').eq(5).remove();
+                                $('.comboBoxItemPickerrtl').eq(4).remove();
+                            },0);
+                        }
+                    },
                     valueMap: {
                         "1": "برنامه ریزی",
                         "2": "در حال اجرا",

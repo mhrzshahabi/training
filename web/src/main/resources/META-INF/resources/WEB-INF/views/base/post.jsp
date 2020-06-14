@@ -15,6 +15,18 @@
             }
         });
     }
+    if(Window_NeedsAssessment_Tree === undefined) {
+        var Window_NeedsAssessment_Tree = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],
+            showUs(record, objectType) {
+                loadNeedsAssessmentTree(record, objectType);
+                this.Super("show", arguments);
+            },
+        });
+    }
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -71,13 +83,24 @@
 // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(PostLG_post.getSelectedRecord(), 'Post')");
         }
     });
+    ToolStripButton_TreeNA_JspPost = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (PostLG_post.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(PostLG_post.getSelectedRecord(), "Post");
+        }
+    });
     ToolStrip_NA_POST = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
             ToolStripButton_unGroupedPosts_POST,
             ToolStripButton_newPosts_POST,
-            ToolStripButton_EditNA_POST
+            ToolStripButton_EditNA_POST,
+            ToolStripButton_TreeNA_JspPost
         ]
     });
 

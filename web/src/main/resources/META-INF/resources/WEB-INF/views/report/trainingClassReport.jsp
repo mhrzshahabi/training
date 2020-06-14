@@ -52,13 +52,13 @@
             {name: "code"},
             {name: "course.code"},
             {name: "course.titleFa"},
-            {name: "hduration"},
+            {name: "hduration",canSort:false,canFilter:false},
             {name: "teacher"},
             {name: "startDate"},
             {name: "endDate"},
-            {name: "year"},
+            {name: "year",canSort:false,canFilter:false},
             {name: "classStatus"},
-            {name: "studentsCount"}
+            {name: "studentsCount",canSort:false,canFilter:false}
         ],
         fetchDataURL: classUrl + "list-training-report"
     });

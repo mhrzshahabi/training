@@ -46,10 +46,11 @@
     var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
         margin:5,
         click: function () {
-
             ExportToFile.downloadExcelFromClient(List_Grid_Reaport, null, '', "غیبت ناموجه")
         }
     })
+
+    ToolStripButton_ExportToExcel.setDisabled(true);
 
     var List_Grid_Reaport = isc.TrLG.create({
         dataSource: RestDataSource_unjustifiedAbsenceReport,
@@ -66,9 +67,6 @@
             {name: "startHour",title: "ساعت شروع",align: "center",filterOperator: "iContains"},
             {name: "endHour",title: "ساعت پایان",align: "center",filterOperator: "iContains"},
             {name: "sessionDate",title: "جلسه",align: "center",filterOperator: "iContains"},
-
-
-
         ],
 
         showFilterEditor: true,
@@ -76,8 +74,6 @@
         allowFilterExpressions: true,
         filterOnKeypress: true,
         sortField: 0,    });
-
-
 
     var DynamicForm_Report = isc.DynamicForm.create({
         numCols: 9,
@@ -106,7 +102,6 @@
                         displayDatePicker('startDate_jspReport', this, 'ymd', '/');
                     }
                 }],
-
 
                 blur: function () {
                     var dateCheck;
@@ -197,6 +192,7 @@
                         return;
                     }
 
+                    ToolStripButton_ExportToExcel.setDisabled(false);
                     var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
                     RestDataSource_unjustifiedAbsenceReport.fetchDataURL=unjustifiedAbsenceReport +"unjustifiedAbsenceReport"+"/"+strSData + "/" + strEData;
@@ -205,30 +201,30 @@
                     List_Grid_Reaport.fetchData();
                 }
             },
-            {
-                type: "button",
-                startRow:false,
-                align:"center",
-                title: "چاپ گزارش",
-                height:"25",
-                click:function () {
-                    if (endDateCheckReport == false)
-                        return;
-                    if (!DynamicForm_Report.validate()) {
-                        return;
-                    }
-                    var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
-                    var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-                    Print(strSData,strEData);
-                }
-
-
-            },
+            // {
+            //     type: "button",
+            //     startRow:false,
+            //     align:"center",
+            //     title: "چاپ گزارش",
+            //     height:"25",
+            //     click:function () {
+            //         if (endDateCheckReport == false)
+            //             return;
+            //         if (!DynamicForm_Report.validate()) {
+            //             return;
+            //         }
+            //         var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
+            //         var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
+            //         Print(strSData,strEData);
+            //     }
+            //
+            //
+            // },
         ]
     })
 
     var Hlayout_Reaport_body = isc.HLayout.create({
-        height:"10%",
+        height:"5%",
         members: [DynamicForm_Report]
     })
 
