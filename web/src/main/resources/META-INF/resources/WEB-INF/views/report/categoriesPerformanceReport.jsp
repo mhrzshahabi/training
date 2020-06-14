@@ -35,6 +35,13 @@
             // fetchDataURL:
         });
 
+        var RestDataSource_Term = isc.TrDS.create({
+            fields: [
+                {name: "term", title: "<spring:message code="term"/>"}
+            ],
+            // fetchDataURL:
+        });
+
 
         var RestDataSource_CPReport = isc.TrDS.create({
             fields:
@@ -63,29 +70,30 @@
     {
         //*****report main dynamic form*****
         var DynamicForm_CPReport = isc.DynamicForm.create({
-            numCols: 11,
+            numCols: 16,
             padding: 10,
             readOnlyDisplay: "readOnly",
             margin:0,
             titleAlign:"left",
             wrapItemTitles: true,
-            colWidths:[50,150,50,150,50,150,150,50, 150, 150, 50],
+            colWidths:[100, 100, 100, 100, 25, 100, 100, 100, 150, 100, 100, 100, 25, 100, 100, 100],
             fields: [
                 {
-                    name: "sessionStartDate",
-                    title: "<spring:message code="start.date"/>",
-                    ID: "sessionStartDate",
-                    colSpan: 2,
+                    name: "firstStartDate",
+                    title: "<spring:message code="start.date"/> " + "<spring:message code="from"/> : ",
+                    ID: "firstStartDate",
+                    colSpan: 3,
                     width: "*",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
                     required: true,
+                    wrapTitle : false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
                             closeCalendarWindow();
-                            displayDatePicker('sessionStartDate', this, 'ymd', '/');
+                            displayDatePicker('firstStartDate', this, 'ymd', '/');
                         }
                     }],
                     textAlign: "center",
@@ -95,10 +103,10 @@
                     }
                 },
                 {
-                    name: "sessionFinishDate",
-                    title: "<spring:message code="end.date"/>",
-                    ID: "sessionFinishDate",
-                    colSpan: 2,
+                    name: "secondStartDate",
+                    title: "<spring:message code="till"/>",
+                    ID: "secondStartDate",
+                    colSpan: 3,
                     width: "*",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
@@ -108,7 +116,55 @@
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
                             closeCalendarWindow();
-                            displayDatePicker('sessionFinishDate', this, 'ymd', '/');
+                            displayDatePicker('secondStartDate', this, 'ymd', '/');
+                        }
+                    }],
+                    textAlign: "center",
+                    blur: function (form, item, value) {
+                        checkStartDate();
+                        CPReport_check_date();
+                    }
+                },
+                {
+                    name: "firstFinishDate",
+                    title: "<spring:message code="end.date"/> " + "<spring:message code="from"/> : ",
+                    ID: "firstFinishDate",
+                    colSpan: 3,
+                    width: "*",
+                    hint: "----/--/--",
+                    keyPressFilter: "[0-9/]",
+                    showHintInField: true,
+                    required: true,
+                    wrapTitle: false,
+                    icons: [{
+                        src: "<spring:url value="calendar.png"/>",
+                        click: function (form) {
+                            closeCalendarWindow();
+                            displayDatePicker('firstFinishDate', this, 'ymd', '/');
+                        }
+                    }],
+                    textAlign: "center",
+                    blur: function (form, item, value) {
+                        checkFinishDate();
+                        CPReport_check_date();
+                    }
+
+                },
+                {
+                    name: "secondFinishDate",
+                    title: "<spring:message code="till"/>",
+                    ID: "secondFinishDate",
+                    colSpan: 3,
+                    width: "*",
+                    hint: "----/--/--",
+                    keyPressFilter: "[0-9/]",
+                    showHintInField: true,
+                    required: true,
+                    icons: [{
+                        src: "<spring:url value="calendar.png"/>",
+                        click: function (form) {
+                            closeCalendarWindow();
+                            displayDatePicker('secondFinishDate', this, 'ymd', '/');
                         }
                     }],
                     textAlign: "center",
@@ -124,7 +180,7 @@
                     emptyDisplayValue: "همه",
                     multiple: true,
                     title: "<spring:message code="institute"/>",
-                    colSpan: 2,
+                    colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
@@ -143,7 +199,7 @@
                     emptyDisplayValue: "همه",
                     multiple: true,
                     title: "<spring:message code="course_category"/>",
-                    colSpan: 2,
+                    colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
@@ -162,7 +218,7 @@
                     emptyDisplayValue: "همه",
                     multiple: true,
                     title: "<spring:message code="course_subcategory"/>",
-                    colSpan: 2,
+                    colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
@@ -181,7 +237,26 @@
                     emptyDisplayValue: "همه",
                     multiple: true,
                     title: "<spring:message code="course"/>",
-                    colSpan: 2,
+                    colSpan: 3,
+                    width: "*",
+                    autoFetchData: false,
+                    useClientFiltering: true,
+                    optionDataSource: RestDataSource_Course,
+                    displayField: "",
+                    valueField: "",
+                    textAlign: "center",
+                    pickListFields: [
+                        {name: ""}
+                    ],
+                    filterFields: [""]
+                },
+                {
+                    name: "term",
+                    ID: "term",
+                    emptyDisplayValue: "همه",
+                    multiple: true,
+                    title: "<spring:message code="term"/>",
+                    colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
@@ -198,7 +273,7 @@
                     name: "searchBtn",
                     ID: "searchBtnJspCPReport",
                     type: "ButtonItem",
-                    colSpan: 1,
+                    colSpan: 4,
                     width:"*",
                     startRow:false,
                     endRow:false,
