@@ -601,7 +601,7 @@
                 name: "objectId",
                 showTitle: false,
                 optionDataSource: JobDs_needsAssessment,
-                editorType: "SelectItem",
+                // editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
                 autoFetchData: false,
