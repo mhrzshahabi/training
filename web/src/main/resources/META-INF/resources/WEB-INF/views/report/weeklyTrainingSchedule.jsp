@@ -20,8 +20,8 @@
             {name: "tclass.course.titleFa"},
             {name: "tclass.course.categoryId"},
             {name: "tclass.course.subCategoryId"},
-            {name: "studentStatus"},
-            {name: "studentPresentStatus"}
+            {name: "studentStatus",canSort:false},
+            {name: "studentPresentStatus",canSort: false}
         ],
         fetchDataURL: studentPortalUrl + "/sessionService/specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
