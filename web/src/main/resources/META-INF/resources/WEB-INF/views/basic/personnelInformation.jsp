@@ -1334,23 +1334,23 @@
             height: "1%",
             membersMargin: 5,
             members: [
-                isc.ToolStripButton.create({
-                    title: 'نمايش پرسنل از وبسرويس',
-                    click: function () {
-                        let criteriaActive_WebServicePersonnel = {/*
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: "active", operator: "equals", value: 1}
-                            ]*/
-                        };
-
-                        //PersonnelInfoListGrid_WebService_PersonnelList.implicitCriteria = criteriaActive_WebServicePersonnel;
-                        PersonnelInfoListGrid_WebService_PersonnelList.invalidateCache();
-                        PersonnelInfoListGrid_WebService_PersonnelList.fetchData();
-                        Window_WebService_PersonnelInformation.show();
-                    }
-                }),
+                // isc.ToolStripButton.create({
+                //     title: 'نمايش پرسنل از وبسرويس',
+                //     click: function () {
+                //         let criteriaActive_WebServicePersonnel = {/*
+                //             _constructor: "AdvancedCriteria",
+                //             operator: "and",
+                //             criteria: [
+                //                 {fieldName: "active", operator: "equals", value: 1}
+                //             ]*/
+                //         };
+                //
+                //         //PersonnelInfoListGrid_WebService_PersonnelList.implicitCriteria = criteriaActive_WebServicePersonnel;
+                //         PersonnelInfoListGrid_WebService_PersonnelList.invalidateCache();
+                //         PersonnelInfoListGrid_WebService_PersonnelList.fetchData();
+                //         Window_WebService_PersonnelInformation.show();
+                //     }
+                // }),
                 isc.ToolStripButtonAdd.create({
                     title: 'فیلتر گروهي',
                     click: function () {
