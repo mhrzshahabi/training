@@ -16,7 +16,7 @@
 
     var societies = [];
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    var RestDataSource_Class_JspClassResult = isc.TrDS.create({
+    var RestDataSource_StaticalResult_JspEvaluationStaticalReport = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -31,6 +31,29 @@
             {name: "studentsCount"}
         ],
         fetchDataURL: classUrl + "list-training-report"
+    });
+
+    var RestDataSource_ListResult_JspEvaluationStaticalReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "tclassCode"},
+            {name: "courseCode"},
+            {name: "courseTitleFa"},
+            {name: "tclassStudentsCount"},
+            {name: "evaluationReactionStatus"},
+            {name: "evaluationReactionPass"},
+            {name: "evaluationLearningStatus"},
+            {name: "evaluationLearningPass"},
+            {name: "evaluationBehavioralStatus"},
+            {name: "evaluationBehavioralPass"},
+            {name: "evaluationResultsStatus"},
+            {name: "evaluationResultsPass"},
+            {name: "evaluationEffectivenessStatus"},
+            {name: "evaluationEffectivenessPass"},
+            {name: "evaluationTeacherStatus"},
+            {name: "evaluationTeacherPass"}
+        ],
+        fetchDataURL: viewEvaluationStaticalReport + "/iscList"
     });
 
     var RestDataSource_Category_JspEvaluationStaticalReport = isc.TrDS.create({
@@ -112,62 +135,94 @@
             {name: "phone", title: "تلفن"}
         ],
         fetchDataURL: instituteUrl + "spec-list",
-        allowAdvancedCriteria: true,
+        allowAdvancedCriteria: true
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    var ListGrid_Result_JspEvaluationStaticalReport = isc.TrLG.create({
+    var ListGrid_ListResult_JspEvaluationStaticalReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_Class_JspClassResult,
+        dataSource: RestDataSource_ListResult_JspEvaluationStaticalReport,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
-            {
-                name: "code",
-                title: "کد کلاس"
-            },
-            {
-                name: "course.code",
-                title: "کد دوره"
-            },
-            {
-                name: "course.titleFa",
-                title: "نام دوره"
-            },
-            {
-                name: "hduration",
-                title: "مدت به ساعت"
-            },
-            {
-                name: "teacher",
-                title: "مدرس"
-            },
-            {
-                name: "startDate",
-                title: "تاریخ شروع"
-            },
-            {
-                name: "endDate",
-                title: "تاریخ خاتمه"
-            },
-            {
-                name: "year",
-                title: "سال"
-            },
-            {
-                name: "classStatus",
-                title: "وضعیت کلاس",
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته"
-                }
-            },
-            {
-                name: "studentsCount",
-                title: "تعداد فراگیران"
-            }
+            {name: "tclassCode", title: "کد کلاس"},
+            {name: "courseCode", title: "کد دوره"},
+            {name: "courseTitleFa", title: "نام دوره"},
+            {name: "tclassStudentsCount", title: "تعداد فراگیران"},
+            {name: "evaluationReactionStatus",title: "ارزیابی واکنشی",valueMap: {true: "انجام شده", false: "انجام نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationReactionPass", title: "وضعیت ارزیابی واکنشی",valueMap: {true: "تائید شده", false: "تائید نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationLearningStatus", title:  "ارزیابی یادگیری" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationLearningPass", title: "وضعیت ارزیابی یادگیری" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationBehavioralStatus", title: "ارزیابی رفتاری" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationBehavioralPass", title:"وضعیت ارزیابی رفتاری" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationEffectivenessStatus", title: "اثربخشی" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationEffectivenessPass", title: "وضعیت اثربخشی" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationTeacherStatus",title: "ارزیابی مدرس" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationTeacherPass",title: "وضعیت ارزیابی مدرس",valueMap: {true: "تائید شده", false: "تائید نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"},
+            {name: "evaluationResultsStatus", title:"ارزیابی نتایج",valueMap: {true: "انجام شده", false: "انجام نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals" },
+            {name: "evaluationResultsPass", title: "وضعیت ارزیابی نتایج" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },filterOperator: "equals"}
         ],
         cellHeight: 43,
+        sortField: 1,
         filterOperator: "iContains",
         filterOnKeypress: true,
         autoFetchData: true,
@@ -190,7 +245,7 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    ListGrid_Result_JspEvaluationStaticalReport
+                    ListGrid_ListResult_JspEvaluationStaticalReport
                 ]
             })
         ]
@@ -206,7 +261,7 @@
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
-                name: "TclassCode",
+                name: "tclassCode",
                 title: "کد کلاس",
                 hint: "کدهای کلاس را با ; از یکدیگر جدا کنید",
                 prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
@@ -221,7 +276,7 @@
                 keyPressFilter: "[A-Z|0-9|;-]"
             },
             {
-                name: "UnitId",
+                name: "unitId",
                 title: "واحد",
                 type: "SelectItem",
                 pickListProperties: {
@@ -229,16 +284,18 @@
                 },
                 textAlign: "center",
                 wrapTitle: false,
+                filterOperator: "equals",
                 optionDataSource: RestDataSource_TargetSociety_JspEvaluationStaticalReport,
                 displayField: "title",
                 valueField: "societyId"
             },
             {
-                name: "InstituteId",
+                name: "instituteId",
                 title: "محل برگزاری",
                 editorType: "TrComboAutoRefresh",
                 optionDataSource: RestDataSource_Institute_JspEvaluationStaticalReport,
                 displayField: "titleFa",
+                filterOperator: "equals",
                 valueField: "id",
                 textAlign: "center",
                 filterFields: ["titleFa", "titleFa"],
@@ -257,7 +314,7 @@
                 }
             },
             {
-                name: "TeacherId",
+                name: "teacherId",
                 title: "مدرس",
                 type: "ComboBoxItem",
                 optionDataSource: RestDataSource_Teacher_JspEvaluationStaticalReport,
@@ -281,7 +338,7 @@
                 }
             },
             {
-                name: "TclassYear",
+                name: "tclassYear",
                 title: "سال کاری",
                 type: "SelectItem",
                 multiple: true,
@@ -334,17 +391,17 @@
                 changed: function (form, item, value) {
                     if (value != null && value != undefined && value.size() == 1) {
                         RestDataSource_Term_JspEvaluationStaticalReport.fetchDataURL = termUrl + "listByYear/" + value[0];
-                        DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TermId").optionDataSource = RestDataSource_Term_JspEvaluationStaticalReport;
-                        DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TermId").fetchData();
-                        DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TermId").enable();
+                        DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("termId").optionDataSource = RestDataSource_Term_JspEvaluationStaticalReport;
+                        DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("termId").fetchData();
+                        DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("termId").enable();
                     } else {
-                        form.getField("TermId").disabled = true;
-                        form.getField("TermId").clearValue();
+                        form.getField("termId").disabled = true;
+                        form.getField("termId").clearValue();
                     }
                 }
             },
             {
-                name: "TermId",
+                name: "termId",
                 title: "ترم",
                 type: "SelectItem",
                 multiple: true,
@@ -365,7 +422,7 @@
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "انتخاب همه",
                                     click: function () {
-                                        var item = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TermId"),
+                                        var item = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("termId"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
                                             values = [];
@@ -382,7 +439,7 @@
                                     icon: "[SKIN]/actions/close.png",
                                     title: "حذف همه",
                                     click: function () {
-                                        var item = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TermId");
+                                        var item = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("termId");
                                         item.setValue([]);
                                         item.pickList.hide();
                                     }
@@ -577,7 +634,7 @@
                 canEdit: false
             },
             {
-                name: "CourseCode",
+                name: "courseCode",
                 title: "کد دوره",
                 hint: "کدهای دوره را با ; از یکدیگر جدا کنید",
                 prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
@@ -592,7 +649,7 @@
                 keyPressFilter: "[A-Z|0-9|;-]"
             },
             {
-                name: "CourseCategory",
+                name: "courseCategory",
                 title: "گروه کاری",
                 type: "SelectItem",
                 textAlign: "center",
@@ -608,7 +665,7 @@
                 },
                 changed: function () {
                     isCriteriaCategoriesChanged_JspEvaluationStaticalReport = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("CourseSubCategory");
+                    var subCategoryField = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseSubCategory");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -629,7 +686,7 @@
                 }
             },
             {
-                name: "CourseSubCategory",
+                name: "courseSubCategory",
                 title: "زیرگروه کاری",
                 type: "SelectItem",
                 textAlign: "center",
@@ -648,7 +705,7 @@
                 focus: function () {
                     if (isCriteriaCategoriesChanged_JspEvaluationStaticalReport) {
                         isCriteriaCategoriesChanged_JspEvaluationStaticalReport = false;
-                        var ids = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("CourseCategory").getValue();
+                        var ids = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCategory").getValue();
                         if (ids === []) {
                             RestDataSource_SubCategory_JspEvaluationStaticalReport.implicitCriteria = null;
                         } else {
@@ -663,7 +720,7 @@
                 }
             },
             {
-                name: "Evaluation",
+                name: "evaluation",
                 title: "نوع ارزیابی",
                 type: "SelectItem",
                 multiple: true,
@@ -721,9 +778,9 @@
         click: function () {
             var criteriaDisplayValues = "";
             var selectorDisplayValues = DynamicForm_SelectCourses_JspEvaluationStaticalReport.getItem("course.code").getValue();
-            if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("CourseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("CourseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("CourseCode").getValue();
+            if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").getValue();
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -735,7 +792,7 @@
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
-            DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("CourseCode").setValue(criteriaDisplayValues);
+            DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspEvaluationStaticalReport.close();
         }
     });
@@ -799,9 +856,9 @@
         click: function () {
             var criteriaDisplayValues = "";
             var selectorDisplayValues = DynamicForm_SelectClasses_JspEvaluationStaticalReport.getItem("class.code").getValue();
-            if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TclassCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TclassCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TclassCode").getValue();
+            if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").getValue();
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -813,7 +870,7 @@
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
-            DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("TclassCode").setValue(criteriaDisplayValues);
+            DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspEvaluationStaticalReport.close();
         }
     });
@@ -842,22 +899,17 @@
         title: "گزارش آماری",
         width: 300,
         click: function () {
+        }
+    });
+
+    IButton_ListReport_JspEvaluationStaticalReport = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش لیستی",
+        width: 300,
+        click: function () {
             DynamicForm_CriteriaForm_JspEvaluationStaticalReport.validate();
             if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.hasErrors())
                 return;
-            var startDuratiorn = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getValue("hDurationStart");
-            var endDuratiorn = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getValue("hDurationEnd");
-            if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){
-                DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("hDurationEnd", true);
-                DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("hDurationStart", true);
-                DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
-                DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
-                return;
-            }
-            else{
-                DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("hDurationEnd", true);
-                DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("hDurationStart", true);
-            }
             if (!DynamicForm_CriteriaForm_JspEvaluationStaticalReport.validate() ||
                 startDateCheck_Order_JspEvaluationStaticalReport == false ||
                 startDate2Check_JspEvaluationStaticalReport == false ||
@@ -905,27 +957,18 @@
             }
             Reporting();
 
-            ListGrid_Result_JspEvaluationStaticalReport.invalidateCache();
-            ListGrid_Result_JspEvaluationStaticalReport.fetchData(data_values);
+            ListGrid_ListResult_JspEvaluationStaticalReport.invalidateCache();
+            ListGrid_ListResult_JspEvaluationStaticalReport.fetchData(data_values);
             Window_Result_JspEvaluationStaticalReport.show();
-        }
-    });
-
-    IButton_ListReport_JspEvaluationStaticalReport = isc.IButtonSave.create({
-        top: 260,
-        title: "گزارش لیستی",
-        width: 300,
-        click: function () {}});
+        }});
 
 
     //----------------------------------- functions --------------------------------------------------------------------
     function Reporting(){
         data_values = null;
         data_values = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getValuesAsAdvancedCriteria();
-        var removedObjects = [];
         for (var i = 0; i < data_values.criteria.size(); i++) {
-
-            if (data_values.criteria[i].fieldName == "course.code") {
+            if (data_values.criteria[i].fieldName == "courseCode") {
                 var codesString = data_values.criteria[i].value;
                 var codesArray;
                 codesArray = codesString.split(";");
@@ -937,90 +980,50 @@
                 data_values.criteria[i].operator = "equals";
                 data_values.criteria[i].value = codesArray;
             }
-
-            else if (data_values.criteria[i].fieldName == "course.titleFa") {
-                data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseFilterOperator").getValue();
-            }
-            else if (data_values.criteria[i].fieldName == "hDurationStart") {
-                data_values.criteria[i].fieldName = "hDuration";
-                data_values.criteria[i].operator = "greaterOrEqual";
-            }
-            else if (data_values.criteria[i].fieldName == "hDurationEnd") {
-                data_values.criteria[i].fieldName = "hDuration";
-                data_values.criteria[i].operator = "lessOrEqual";
+            else if (data_values.criteria[i].fieldName == "tclassCode") {
+                var codesString = data_values.criteria[i].value;
+                var codesArray;
+                codesArray = codesString.split(";");
+                for (var j = 0; j < codesArray.length; j++) {
+                    if (codesArray[j] == "" || codesArray[j] == " ") {
+                        codesArray.remove(codesArray[j]);
+                    }
+                }
+                data_values.criteria[i].operator = "equals";
+                data_values.criteria[i].value = codesArray;
             }
             else if (data_values.criteria[i].fieldName == "startDate1") {
-                data_values.criteria[i].fieldName = "startDate";
+                data_values.criteria[i].fieldName = "tclassStartDate";
                 data_values.criteria[i].operator = "greaterThan";
             }
             else if (data_values.criteria[i].fieldName == "startDate2") {
-                data_values.criteria[i].fieldName = "startDate";
+                data_values.criteria[i].fieldName = "tclassStartDate";
                 data_values.criteria[i].operator = "lessThan";
             }
             else if (data_values.criteria[i].fieldName == "endDate1") {
-                data_values.criteria[i].fieldName = "endDate";
+                data_values.criteria[i].fieldName = "tclassEndDate";
                 data_values.criteria[i].operator = "greaterThan";
             }
             else if (data_values.criteria[i].fieldName == "endDate2") {
-                data_values.criteria[i].fieldName = "endDate";
+                data_values.criteria[i].fieldName = "tclassEndDate";
                 data_values.criteria[i].operator = "lessThan";
             }
             else if (data_values.criteria[i].fieldName == "workYear") {
-                data_values.criteria[i].fieldName = "startDate";
+                data_values.criteria[i].fieldName = "tclassYear";
                 data_values.criteria[i].operator = "inSet";
             }
-            else if(data_values.criteria[i].fieldName == "course.categoryId"){
+            else if(data_values.criteria[i].fieldName == "courseCategory"){
                 data_values.criteria[i].operator = "inSet";
             }
-            else if(data_values.criteria[i].fieldName == "course.subCategoryId"){
+            else if(data_values.criteria[i].fieldName == "courseSubCategory"){
                 data_values.criteria[i].operator = "inSet";
             }
-            else if (data_values.criteria[i].fieldName == "courseFilterOperator") {
-                removedObjects.add(data_values.criteria[i]);
+            else if(data_values.criteria[i].fieldName == "evaluation"){
+                data_values.criteria[i].operator = "inSet";
             }
-            else if (data_values.criteria[i].fieldName == "reactionEvaluation") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "learningEvaluation") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "behavioralEvaluation") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            else if (data_values.criteria[i].fieldName == "evaluation") {
-                removedObjects.add(data_values.criteria[i]);
-            }
-            //-----------------------------------TEMP----------------------------
-            // else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "learningEvaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "evaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "evaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            //-----------------------------------TEMP----------------------------
-            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
-                removedObjects.add(data_values.criteria[i]);
-            }
+            else
+                data_values.criteria[i].operator = "equals";
         }
-        data_values.criteria.removeList(removedObjects);
     }
 
     let Window_CriteriaForm_JspEvaluationStaticalReport = isc.Window.create({
