@@ -15,24 +15,69 @@
     var data_values = null;
 
     var societies = [];
-    //----------------------------------------------------Rest DataSource-----------------------------------------------
-    var RestDataSource_StaticalResult_JspEvaluationStaticalReport = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "code"},
-            {name: "course.code"},
-            {name: "course.titleFa"},
-            {name: "hduration"},
-            {name: "teacher"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "year"},
-            {name: "classStatus"},
-            {name: "studentsCount"}
-        ],
-        fetchDataURL: classUrl + "list-training-report"
-    });
 
+    var classCount_reaction = 0;
+    var classCount_learning = 0;
+    var classCount_behavioral = 0;
+    var classCount_results = 0;
+    var classCount_teacher = 0;
+    var classCount_effectiveness = 0;
+
+    var passed_reaction = 0;
+    var passed_learning = 0;
+    var passed_behavioral = 0;
+    var passed_results = 0;
+    var passed_teacher = 0;
+    var passed_effectiveness = 0;
+
+    var failed_reaction = 0;
+    var failed_learning = 0;
+    var failed_behavioral = 0;
+    var failed_results = 0;
+    var failed_teacher = 0;
+    var failed_effectiveness = 0;
+
+    var RestDataSource_StaticalResult_JspEvaluationStaticalReport = [
+        {
+            evaluationType:"واکنشی",
+            classCount: classCount_reaction,
+            passedCount: passed_reaction,
+            failedCount:failed_reaction
+        },
+        {
+            evaluationType:"یادگیری",
+            classCount: classCount_learning,
+            passedCount: passed_learning,
+            failedCount:failed_learning
+        },
+        {
+            evaluationType:"رفتاری",
+            classCount: classCount_behavioral,
+            passedCount: passed_behavioral,
+            failedCount:failed_behavioral
+        },
+        {
+            evaluationType:"نتایج",
+            classCount: classCount_results,
+            passedCount: passed_results,
+            failedCount:failed_results
+        },
+        {
+            evaluationType:"مدرس",
+            classCount: classCount_teacher,
+            passedCount: passed_teacher,
+            failedCount:failed_teacher
+        },
+        {
+            evaluationType:"اثربخشی",
+            classCount: classCount_effectiveness,
+            passedCount: passed_effectiveness,
+            failedCount:failed_effectiveness
+        }
+
+    ];
+
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
     var RestDataSource_ListResult_JspEvaluationStaticalReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -53,7 +98,7 @@
             {name: "evaluationTeacherStatus"},
             {name: "evaluationTeacherPass"}
         ],
-        fetchDataURL: viewEvaluationStaticalReport + "/iscList"
+        fetchDataURL: viewEvaluationStaticalReportUrl + "/iscList"
     });
 
     var RestDataSource_Category_JspEvaluationStaticalReport = isc.TrDS.create({
@@ -231,10 +276,10 @@
         selectionType: "single",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
     });
 
-    var Window_Result_JspEvaluationStaticalReport = isc.Window.create({
+    var Window_ListResult_JspEvaluationStaticalReport = isc.Window.create({
         placement: "fillScreen",
         title: "گزارش آمار اثربخشی کلاسهای آموزشی",
         canDragReposition: true,
@@ -246,6 +291,39 @@
             isc.TrVLayout.create({
                 members: [
                     ListGrid_ListResult_JspEvaluationStaticalReport
+                ]
+            })
+        ]
+    });
+
+    var ListGrid_StaticalResult_JspEvaluationStaticalReport = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        data: RestDataSource_StaticalResult_JspEvaluationStaticalReport,
+        fields: [
+            {name: "evaluationType", title: "نوع ارزیابی"},
+            {name: "classCount", title: "تعداد کلاس"},
+            {name: "passedCount", title: "تعداد تائید شده"},
+            {name: "failedCount", title: "تعداد تائید نشده"}
+        ],
+        cellHeight: 43,
+        sortField: 1,
+        showFilterEditor: false,
+        selectionType: "single"
+    });
+
+    var Window_StaticalResult_JspEvaluationStaticalReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "گزارش آمار اثربخشی کلاسهای آموزشی",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    ListGrid_StaticalResult_JspEvaluationStaticalReport
                 ]
             })
         ]
@@ -723,6 +801,7 @@
                 name: "evaluation",
                 title: "نوع ارزیابی",
                 type: "SelectItem",
+                required: true,
                 multiple: true,
                 valueMap: {
                     "1": "واکنشی",
@@ -899,8 +978,129 @@
         title: "گزارش آماری",
         width: 300,
         click: function () {
+            DynamicForm_CriteriaForm_JspEvaluationStaticalReport.validate();
+            if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.hasErrors())
+                return;
+            if (!DynamicForm_CriteriaForm_JspEvaluationStaticalReport.validate() ||
+                startDateCheck_Order_JspEvaluationStaticalReport == false ||
+                startDate2Check_JspEvaluationStaticalReport == false ||
+                startDate1Check_JspEvaluationStaticalReport == false ||
+                endDateCheck_Order_JspEvaluationStaticalReport == false ||
+                endDate2Check_JspEvaluationStaticalReport == false ||
+                endDate1Check_JspEvaluationStaticalReport == false) {
+
+                if (startDateCheck_Order_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (startDateCheck_Order_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (startDate2Check_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("startDate2", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("startDate2", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+                if (startDate1Check_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("startDate1", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("startDate1", "<spring:message
+        code='msg.correct.date'/>", true);
+                }
+
+                if (endDateCheck_Order_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                }
+                if (endDateCheck_Order_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                }
+                if (endDate2Check_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("endDate2", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                }
+                if (endDate1Check_JspEvaluationStaticalReport == false) {
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.clearFieldErrors("endDate1", true);
+                    DynamicForm_CriteriaForm_JspEvaluationStaticalReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                }
+                return;
+            }
+            data_values = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getValues();
+            isc.RPCManager.sendRequest(TrDSRequest(viewEvaluationStaticalReportUrl + "/staticalResult" ,"POST", JSON.stringify(data_values), "callback: fill_statical_result(rpcResponse)"));
         }
     });
+
+    function fill_statical_result(resp) {
+        if (resp.httpResponseCode === 200) {
+            classCount_reaction = JSON.parse(resp.httpResponseText).classCount_reaction;
+            classCount_learning = JSON.parse(resp.httpResponseText).classCount_learning;
+            classCount_behavioral = JSON.parse(resp.httpResponseText).classCount_behavioral;
+            classCount_results = JSON.parse(resp.httpResponseText).classCount_results;
+            classCount_teacher = JSON.parse(resp.httpResponseText).classCount_teacher;
+            classCount_effectiveness = JSON.parse(resp.httpResponseText).classCount_effectiveness;
+
+            passed_reaction = JSON.parse(resp.httpResponseText).passed_reaction;
+            passed_learning = JSON.parse(resp.httpResponseText).passed_learning;
+            passed_behavioral = JSON.parse(resp.httpResponseText).passed_behavioral;
+            passed_results = JSON.parse(resp.httpResponseText).passed_results;
+            passed_teacher = JSON.parse(resp.httpResponseText).passed_teacher;
+            passed_effectiveness = JSON.parse(resp.httpResponseText).passed_effectiveness;
+
+            failed_reaction = JSON.parse(resp.httpResponseText).failed_reaction;
+            failed_learning = JSON.parse(resp.httpResponseText).failed_learning;
+            failed_behavioral = JSON.parse(resp.httpResponseText).failed_behavioral;
+            failed_results = JSON.parse(resp.httpResponseText).failed_results;
+            failed_teacher = JSON.parse(resp.httpResponseText).failed_teacher;
+            failed_effectiveness = JSON.parse(resp.httpResponseText).failed_effectiveness;
+
+            var RestDataSource_StaticalResult_JspEvaluationStaticalReport = [
+                {
+                    evaluationType:"واکنشی",
+                    classCount: classCount_reaction,
+                    passedCount: passed_reaction,
+                    failedCount:failed_reaction
+                },
+                {
+                    evaluationType:"یادگیری",
+                    classCount: classCount_learning,
+                    passedCount: passed_learning,
+                    failedCount:failed_learning
+                },
+                {
+                    evaluationType:"رفتاری",
+                    classCount: classCount_behavioral,
+                    passedCount: passed_behavioral,
+                    failedCount:failed_behavioral
+                },
+                {
+                    evaluationType:"نتایج",
+                    classCount: classCount_results,
+                    passedCount: passed_results,
+                    failedCount:failed_results
+                },
+                {
+                    evaluationType:"مدرس",
+                    classCount: classCount_teacher,
+                    passedCount: passed_teacher,
+                    failedCount:failed_teacher
+                },
+                {
+                    evaluationType:"اثربخشی",
+                    classCount: classCount_effectiveness,
+                    passedCount: passed_effectiveness,
+                    failedCount:failed_effectiveness
+                }
+
+            ];
+
+            ListGrid_StaticalResult_JspEvaluationStaticalReport.data = RestDataSource_StaticalResult_JspEvaluationStaticalReport;
+            ListGrid_StaticalResult_JspEvaluationStaticalReport.invalidateCache();
+            ListGrid_StaticalResult_JspEvaluationStaticalReport.fetchData();
+            Window_StaticalResult_JspEvaluationStaticalReport.show();
+        }
+    }
+
 
     IButton_ListReport_JspEvaluationStaticalReport = isc.IButtonSave.create({
         top: 260,
@@ -959,7 +1159,7 @@
 
             ListGrid_ListResult_JspEvaluationStaticalReport.invalidateCache();
             ListGrid_ListResult_JspEvaluationStaticalReport.fetchData(data_values);
-            Window_Result_JspEvaluationStaticalReport.show();
+            Window_ListResult_JspEvaluationStaticalReport.show();
         }});
 
 
@@ -1072,4 +1272,5 @@
         ]
     });
     //----------------------------------------------------End-----------------------------------------------------------
-    Window_Result_JspEvaluationStaticalReport.hide();
+    Window_ListResult_JspEvaluationStaticalReport.hide();
+    Window_StaticalResult_JspEvaluationStaticalReport.hide();
