@@ -151,7 +151,7 @@ public class SkillService implements ISkillService {
     @Transactional(readOnly = true)
     @Override
     public String getMaxSkillCode(String skillCodeStart) {
-        return skillDAO.findMaxSkillCode(skillCodeStart);
+        return skillCodeStart + skillDAO.findMaxSkillCode(skillCodeStart);
     }
 
 
