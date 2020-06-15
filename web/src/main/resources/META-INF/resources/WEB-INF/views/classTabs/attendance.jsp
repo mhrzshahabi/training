@@ -705,11 +705,11 @@
                                                     }
                                                 });
                                             }
-                                            if (this.colNum == 5 && (value == 1 || value == 2)) {
-                                                for (let i = 6; i < this.grid.getAllFields().length; i++) {
-                                                    this.grid.setEditValue(this.rowNum, i, value);
-                                                }
-                                            }
+                                            // if (this.colNum == 5 && (value == 1 || value == 2)) {
+                                            //     for (let i = 6; i < this.grid.getAllFields().length; i++) {
+                                            //         this.grid.setEditValue(this.rowNum, i, value);
+                                            //     }
+                                            // }
                                         },
                                         hoverHTML(record, value, rowNum, colNum, grid) {
                                             if (value == "غیبت موجه") {
