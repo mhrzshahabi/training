@@ -1551,7 +1551,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB_GROUP-001">
+    <changeSet author="NICICO" id="VIEW_JOB_GROUP-002">
         <createView viewName="VIEW_JOB_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1574,8 +1574,8 @@ FROM
     LEFT JOIN tbl_needs_assessment na ON jg.id = na.f_object
                                          AND na.c_object_type = 'JobGroup'
     LEFT JOIN tbl_job_jobgroup ON jg.id = tbl_job_jobgroup.f_jobgroup_id
-    LEFT JOIN tbl_post p ON tbl_job_jobgroup.f_job_id = p.f_job_id
-    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+    LEFT JOIN tbl_job j ON tbl_job_jobgroup.f_job_id = j.id
+    LEFT JOIN tbl_personnel prs ON j.c_code = prs.job_no
                                    AND prs.active = 1
                                    AND prs.employment_status_id = 5
 GROUP BY
@@ -1633,7 +1633,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE_GROUP-001">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE_GROUP-002">
         <createView viewName="VIEW_POST_GRADE_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1656,8 +1656,8 @@ FROM
     LEFT JOIN tbl_needs_assessment na ON pgg.id = na.f_object
                                          AND na.c_object_type = 'PostGradeGroup'
     LEFT JOIN tbl_post_grade_post_grade_group ON pgg.id = tbl_post_grade_post_grade_group.f_post_grade_group_id
-    LEFT JOIN tbl_post p ON tbl_post_grade_post_grade_group.f_post_grade_id = p.f_post_grade_id
-    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+    LEFT JOIN tbl_post_grade p ON tbl_post_grade_post_grade_group.f_post_grade_id = p.id
+    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_grade_code
                                    AND prs.active = 1
                                    AND prs.employment_status_id = 5
 GROUP BY
