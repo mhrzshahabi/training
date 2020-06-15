@@ -232,7 +232,6 @@
         dataSource: DataSource_Competence_JspNeedsAssessment,
         autoFetchData: true,
         selectionType:"single",
-
         // selectionAppearance: "checkbox",
         showHeaderContextMenu: false,
         showRowNumbers: false,
@@ -246,15 +245,31 @@
         canDragRecordsOut: true,
         dragDataAction: "none",
         removeRecordClick(rowNum){
-            let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
-            data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
-            data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
-            for (let i = 0; i < data.length; i++) {
-                if(removeRecord_JspNeedsAssessment(data[i])){
-                    return;
+            let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Competence_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
+                        data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
+                        data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
+                        let hasFather = false;
+                        for (let i = 0; i < data.length; i++) {
+                            let state = removeRecord_JspNeedsAssessment(data[i], 1);
+                            if(state===0){
+                                return;
+                            }
+                            else if(state===2){
+                                hasFather = true;
+                            }
+                        }
+                        if(hasFather===false) {
+                            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
+                        }
+                    }
                 }
-            }
-            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
+            });
         },
         dataChanged(){
             editing = true;
@@ -779,18 +794,22 @@
             ListGrid_Attitude_JspNeedsAssessment.invalidateCache();
         }
     }
-    function removeRecord_JspNeedsAssessment(record) {
+    function removeRecord_JspNeedsAssessment(record, state=0) {
         if(record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")){
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null, function (resp) {
-                if (resp.httpResponseCode != 200) {
-                    return true;
+                if (resp.httpResponseCode !== 200) {
+                    createDialog("info","خطا در حذف مهارت");
+                    return 0;
                 }
                 DataSource_Skill_JspNeedsAssessment.removeData(record);
-                // return false;
+                return 1;
             }));
         }
         else{
-            createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")]+" قابل حذف است.")
+            if(state === 0) {
+                createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")] + " قابل حذف است.")
+            }
+            return 2;
         }
     }
 
