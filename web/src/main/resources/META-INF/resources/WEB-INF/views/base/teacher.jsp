@@ -860,9 +860,9 @@
 
         if (selected_record != null) {
             DynamicForm_BasicInfo_JspTeacher.getField("personality.id").setValue(selected_record.personality.id);
-            if (selected_record.personality.contactInfo.homeAddress != undefined)
+            if (selected_record.personality.contactInfo != null && selected_record.personality.contactInfo.homeAddress != undefined)
                 DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.id").setValue(selected_record.personality.contactInfo.homeAddress.id);
-            if (selected_record.personality.contactInfo.workAddress != undefined)
+            if (selected_record.personality.contactInfo != null && selected_record.personality.contactInfo.workAddress != undefined)
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.id").setValue(selected_record.personality.contactInfo.workAddress.id);
             if (selected_record.personality.accountInfo != undefined)
                 DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);

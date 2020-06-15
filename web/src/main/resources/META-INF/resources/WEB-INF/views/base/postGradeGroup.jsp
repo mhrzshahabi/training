@@ -9,6 +9,24 @@
     var url;
     var wait;
 
+    var postGrade_PGG = null;
+    var naJob_PGG = null;
+    var personnelJob_PGG = null;
+    var post_PGG = null;
+
+    if(Window_NeedsAssessment_Edit === undefined) {
+        var Window_NeedsAssessment_Edit = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            showUs(record, objectType) {
+                loadEditNeedsAssessment(record, objectType);
+                this.Super("show", arguments);
+            }
+        });
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     var RestDataSource_PostGradeGroup_Jsp = isc.TrDS.create({
@@ -17,9 +35,11 @@
             {name: "titleFa", title: "<spring:message code='post.grade.group.titleFa'/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains"},
             {name: "titleEn", title: "<spring:message code='post.grade.group.titleEn'/>", filterOperator: "iContains"},
-            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"}
+            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
-        fetchDataURL: postGradeGroupUrl + "spec-list"
+        fetchDataURL: viewPostGradeGroupUrl + "/iscList"
     });
 
     var RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp = isc.TrDS.create({
@@ -27,7 +47,8 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "code"},
             {name: "titleFa"}
-        ]
+        ],
+        fetchDataURL: postGradeUrl + "/iscList"
     });
     var RestDataSource_All_PostGrades_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
@@ -85,16 +106,15 @@
     var ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
         selectionType: "multiple",
         autoFetchData: true,
-        sortField: 1,
+        sortField: 2,
         dataSource: RestDataSource_PostGradeGroup_Jsp,
         contextMenu: Menu_ListGrid_Post_Grade_Group_Jsp,
-        selectionChange: function (record) {
-            record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
-            if (record !== null) {
-                RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp.fetchDataURL = postGradeGroupUrl + record.id + "/getPostGrades";
-                ListGrid_Grades_Post_Grade_Group_Jsp.fetchData();
-                ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();
-            }
+        getCellCSSText: function (record) {
+            if (record.competenceCount === 0)
+                return "color:red;font-size: 12px;";
+        },
+        selectionUpdated: function () {
+            selectionUpdated_PostGrade();
         },
         doubleClick: function () {
             ListGrid_Post_Grade_Group_edit();
@@ -248,7 +268,6 @@
         ]
     });
 
-
     var HLayOut_thisPostGradeGroup_AddPostGrade_Jsp = isc.TrHLayout.create({
         height: "10%",
         border: "0px solid yellow",
@@ -259,7 +278,6 @@
             DynamicForm_thisPostGradeGroupHeader_Jsp
         ]
     });
-
 
     var VLayOut_PostGradeGroup_PostGrades_Jsp = isc.TrVLayout.create({
         border: "3px solid gray",
@@ -383,6 +401,22 @@
         })]
     });
 
+    ToolStripButton_EditNA_PGG = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی",
+        click: function () {
+            if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
+        }
+    });
+    ToolStrip_NA_PGG = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [ToolStripButton_EditNA_PGG]
+    });
+
     var ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Post_Grade_Group_refresh();
@@ -434,22 +468,253 @@
         ]
     });
 
-
-    var HLayout_Actions_Post_Grade_Group_Jsp = isc.HLayout.create({
+    var HLayout_Actions_Post_Grade_Group_Jsp = isc.VLayout.create({
         width: "100%",
-        members: [ToolStrip_Actions_Post_Grade_Group_Jsp]
+        members: [ToolStrip_Actions_Post_Grade_Group_Jsp, ToolStrip_NA_PGG]
     });
+
+    ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
+    PersonnelDS_PGG = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitle", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpSection", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+    });
+
+    PersonnelLG_PGG = isc.TrLG.create({
+        dataSource: PersonnelDS_PGG,
+        selectionType: "single",
+        alternateRecordStyles: true,
+        groupByField: "postGradeTitle",
+        fields: [
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postCode"},
+            {name: "postTitle"},
+            {name: "jobTitle"},
+            {name: "postGradeTitle"},
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"},
+        ]
+    });
+
+    ///////////////////////////////////////////////////////////needs assessment/////////////////////////////////////////
+    PriorityDS_PGG = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
+    });
+
+    DomainDS_PGG = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentDomain"
+    });
+
+    CompetenceTypeDS_PGG = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/competenceType"
+    });
+
+    NADS_PGG = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "needsAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "needsAssessmentDomainId", title: "<spring:message code='domain'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="competence"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: null
+    });
+
+    NALG_PGG = isc.TrLG.create({
+        dataSource: NADS_PGG,
+        selectionType: "none",
+        autoFetchData: false,
+        alternateRecordStyles: true,
+        showAllRecords: true,
+        fields: [
+            {name: "competence.title"},
+            {
+                name: "competence.competenceTypeId",
+                type: "SelectItem",
+                filterOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: CompetenceTypeDS_PGG,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentPriorityId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: PriorityDS_PGG,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentDomainId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: DomainDS_PGG,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {name: "skill.code"},
+            {name: "skill.titleFa"},
+            {name: "skill.course.code"},
+            {name: "skill.course.titleFa"}
+        ],
+    });
+
+    //////////////////////////////////////////////////////////posts/////////////////////////////////////////////////////
+    PostDS_PGG = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+
+        ],
+        fetchDataURL: postUrl + "/iscList"
+    });
+
+    PostLG_PGG = isc.TrLG.create({
+        dataSource: PostDS_PGG,
+        autoFetchData: false,
+        showResizeBar: true,
+        sortField: 0,
+        groupByField: "postGrade.titleFa",
+        fields: [
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "titleFa"},
+            {name: "job.titleFa"},
+            {name: "postGrade.titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
+            {name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "costCenterTitleFa"}
+        ],
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var Detail_Tab_Post_Grade_Group = isc.TabSet.create({
         tabBarPosition: "top",
         tabs: [
-            {
-                id: "TabPane_Post_Grade_Group_Post",
-                title: "<spring:message code='post.grade.list'/>",
-                pane: ListGrid_Grades_Post_Grade_Group_Jsp
-
-            }
-        ]
+            {name: "TabPane_Post_Grade_PGG", title: "<spring:message code='post.grade.list'/>", pane: ListGrid_Grades_Post_Grade_Group_Jsp},
+            {name: "TabPane_Post_PGG", title: "لیست پست ها", pane: PostLG_PGG},
+            {name: "TabPane_Personnel_PGG", title: "لیست پرسنل", pane: PersonnelLG_PGG},
+            {name: "TabPane_NA_PGG", title: "<spring:message code='need.assessment'/>", pane: NALG_PGG},
+        ],
+        tabSelected: function (){
+            selectionUpdated_PostGrade();
+        }
     });
 
     var HLayout_Tab_Post_Grade_Group = isc.TrHLayout.create({
@@ -618,9 +883,15 @@
     }
 
     function ListGrid_Post_Grade_Group_refresh() {
-        ListGrid_Post_Grade_Group_Jsp.invalidateCache();
-        ListGrid_Post_Grade_Group_Jsp.filterByEditor();
-        ListGrid_Post_Grade_Group_Posts_refresh();
+        refreshLG(ListGrid_Post_Grade_Group_Jsp);
+        ListGrid_Grades_Post_Grade_Group_Jsp.setData([]);
+        PostLG_PGG.setData([]);
+        PersonnelLG_PGG.setData([]);
+        NALG_PGG.setData([]);
+        postGrade_PGG = null;
+        naJob_PGG = null;
+        personnelJob_PGG = null;
+        post_PGG = null;
     }
 
     function ListGrid_Post_Grade_Group_add() {
@@ -636,6 +907,60 @@
         else {
             ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();
             ListGrid_Grades_Post_Grade_Group_Jsp.filterByEditor();
+        }
+    }
+
+    function selectionUpdated_PostGrade(){
+        let postGradeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+        let tab = Detail_Tab_Post_Grade_Group.getSelectedTab();
+        if (postGradeGroup == null && tab.pane != null){
+            tab.pane.setData([]);
+            return;
+        }
+
+        switch (tab.name) {
+            case "TabPane_Post_Grade_PGG":{
+                if (postGrade_PGG === postGradeGroup.id)
+                    return;
+                postGrade_PGG = postGradeGroup.id;
+                ListGrid_Grades_Post_Grade_Group_Jsp.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "postGradeGroup", operator: "equals", value: postGradeGroup.id}]
+                });
+                ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();
+                ListGrid_Grades_Post_Grade_Group_Jsp.fetchData();
+                break;
+            }
+            case "TabPane_Post_PGG":{
+                if (post_PGG === postGradeGroup.id)
+                    return;
+                post_PGG = postGradeGroup.id;
+                PostDS_PGG.fetchDataURL = postGradeGroupUrl + "postIscList/" + postGradeGroup.id;
+                PostLG_PGG.invalidateCache();
+                PostLG_PGG.fetchData();
+                break;
+            }
+            case "TabPane_Personnel_PGG":{
+                if (personnelJob_PGG === postGradeGroup.id)
+                    return;
+                personnelJob_PGG = postGradeGroup.id;
+                PersonnelDS_PGG.fetchDataURL = postGradeGroupUrl + "personnelIscList/" + postGradeGroup.id;
+                PersonnelLG_PGG.invalidateCache();
+                PersonnelLG_PGG.fetchData();
+                break;
+            }
+            case "TabPane_NA_PGG":{
+                if (naJob_PGG === postGradeGroup.id)
+                    return;
+                naJob_PGG = postGradeGroup.id;
+                NADS_PGG.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + postGradeGroup.id + "&objectType=PostGradeGroup";
+                NADS_PGG.invalidateCache();
+                NADS_PGG.fetchData();
+                NALG_PGG.invalidateCache();
+                NALG_PGG.fetchData();
+                break;
+            }
         }
     }
 

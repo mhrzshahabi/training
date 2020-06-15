@@ -37,6 +37,9 @@ public interface ICourseService {
 
     SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request);
 
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<CourseDTO.InfoTuple> searchInfoTuple(SearchDTO.SearchRq request);
+
     SearchDTO.SearchRs<CourseDTO.TupleInfo> safeSearch(SearchDTO.SearchRq request);
 
     //-------jafari--------

@@ -91,4 +91,7 @@ public interface ITclassService {
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TClassReport> reportSearch(SearchDTO.SearchRq request);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.InfoTuple> searchInfoTuple(SearchDTO.SearchRq request);
 }

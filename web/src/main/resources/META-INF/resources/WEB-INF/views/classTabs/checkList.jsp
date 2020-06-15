@@ -655,7 +655,7 @@
 
 
     })
-    <sec:authorize access="hasAnyAuthority('TclassCheckListTab_classStatus','TclassCheckListTab_classStatus_ShowOption')">
+
     var DynamicForm_ClassCheckList = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
@@ -669,6 +669,7 @@
         padding: 20,
         colWidths: ["1%", "20%", "15%", "30"],
         items: [
+            <sec:authorize access="hasAnyAuthority('TclassCheckListTab_classStatus','TclassCheckListTab_classStatus_ShowOption')">
             {
                 name: "checkList",
                 ID: "checkListDynamicFormField",
@@ -737,9 +738,10 @@
                     Window_CheckList_Design.show();
                 }
             },
+            </sec:authorize>
         ]
     })
-    </sec:authorize>
+
 
     var HLayout_Body_Top = isc.HLayout.create({
         width: "100%",
@@ -1125,42 +1127,15 @@
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="message"/>"
             });
-// setTimeout(function () {
-// OK.close();
-// }, 3000);
         }
 
     };
-
-
-    // isc.RPCManager.sendRequest(TrDSRequest(classCheckListUrl + "spec-list","GET", null,"callback: All_Priority_Result_NASB_JPA(rpcResponse)"));
-    //
-    // function All_Priority_Result_NASB_JPA(resp){
-    // All_Priorities = (JSON.parse(resp.data)).response.data;
-    // // console.log(All_Priorities)
-    // for (let i = 0; i < All_Priorities.length; i++) {
-    //
-    //
-    // }
-    // };
-    // function fireCheckList(record) {
-    //
-    // if (record != -1) {
-    // RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + record.id;
-    // ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + record.code});
-    // ListGrid_ClassCheckList.fetchData();
-    // ListGrid_ClassCheckList.invalidateCache();
-    // } else {
-    // ListGrid_ClassCheckList.setFieldProperties(1, {title: " "});
-    // ListGrid_ClassCheckList.setData([]);
-    // }
-    // };
 
     function loadPage_checkList() {
       var  classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + classRecord.id;
-            <%--ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});--%>
+           // ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});
 
             if(classRecord.classStatus === "3")
             {
