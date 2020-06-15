@@ -177,9 +177,7 @@
             {isSeparator: true},
             {
                 title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
-                    var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
-
-
+                    let record = ListGrid_Post_Group_Jsp.getSelectedRecord();
                     if (record == null || record.id == null) {
 
                         isc.Dialog.create({
@@ -193,17 +191,9 @@
                             }
                         });
                     } else {
-
-                        // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";
-                        // RestDataSource_All_Posts.invalidateCache();
-                        // RestDataSource_All_Posts.fetchData();
                         ListGrid_AllPosts.fetchData();
                         ListGrid_AllPosts.invalidateCache();
-
-
-                        RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts"
-                        // RestDataSource_ForThisPostGroup_GetPosts.invalidateCache();
-                        // RestDataSource_ForThisPostGroup_GetPosts.fetchData();
+                        RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts";
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                         ListGrid_ForThisPostGroup_GetPosts.fetchData();
                         DynamicForm_thisPostGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
@@ -318,92 +308,69 @@
     var RestDataSource_All_Posts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "code", filterOperator: "iContains"},
-            {name: "titleFa", filterOperator: "iContains"},
-            {name: "titleEn", filterOperator: "iContains"},
-            {name: "description", filterOperator: "iContains"},
-            {name: "version", filterOperator: "iContains"}
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ]
         , fetchDataURL: postUrl + "/iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "code", filterOperator: "iContains"},
-            {name: "titleFa", filterOperator: "iContains"},
-            {name: "titleEn", filterOperator: "iContains"},
-            {name: "description", filterOperator: "iContains"},
-            {name: "version", filterOperator: "iContains"}
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ]
     });
     var DynamicForm_thisPostGroupHeader_Jsp = isc.DynamicForm.create({
-        titleWidth: "400",
-        width: "700",
-        align: "right",
-        autoDraw: false,
-        fields: [
-            {
-                name: "sgTitle",
-                type: "staticText",
-                title: "افزودن پست به گروه پست:",
-                wrapTitle: false,
-                width: 250
-            }
-        ]
+        height: "5%",
+        align: "center",
+        fields: [{name: "sgTitle", type: "staticText", title: "افزودن پست به گروه پست ", wrapTitle: false}]
     });
+
+    Lable_AllPosts = isc.LgLabel.create({contents:"لیست تمامی پست ها", customEdges: ["R","L","T", "B"]});
     var ListGrid_AllPosts = isc.TrLG.create({
-        //title:"تمام پست ها",
-        width: "100%",
-        height: "100%", canDragResize: true,
+        height: "45%",
+        canDragResize: true,
         canDragRecordsOut: true,
         canAcceptDroppedRecords: true,
-        autoFetchData: false,
         dataSource: RestDataSource_All_Posts,
-        fields: [
-            {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد پست", align: "center", width: "20%",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }
-            },
-            {name: "titleFa", title: "نام پست", align: "center", width: "60%"},
-            {name: "titleEn", title: "نام لاتین پست", align: "center", hidden: true},
-            {name: "description", title: "توضیحات", align: "center", hidden: true},
-            {name: "version", title: "version", canEdit: false, hidden: true}
-        ],
+        selectionAppearance: "checkbox",
+        selectionType: "multiple",
         sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        showFilterEditor: true,
-        filterOnKeypress: true,
         dragTrackerMode: "title",
         canDrag: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
-
-
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-
-            // var activePost = record;
-            // var activePostId = activePost.id;
-            // var activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            // var activePostGroupId = activePostGroup.id;
-
+        gridComponents: [Lable_AllPosts, "filterEditor", "header", "body"],
+        fields: [
+            {name: "code", filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }},
+            {name: "titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"}
+        ],
+        recordDrop: function (dropRecords) {
             var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
             var postGroupId = postGroupRecord.id;
-            // var postId=dropRecords[0].id;
-            var postIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            var postIds = [];
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 postIds.add(dropRecords[i].id);
             }
-            ;
-
             var JSONObj = {"ids": postIds};
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -426,37 +393,34 @@
                 }
             });
         }
-
     });
+
+    Lable_ForThisPostGroup_GetPosts = isc.LgLabel.create({contents:"لیست پست های این گروه پست", customEdges: ["R","L","T", "B"]});
     var ListGrid_ForThisPostGroup_GetPosts = isc.TrLG.create({
-        //title:"تمام پست ها",
-        width: "100%",
-        height: "100%",
+        height: "45%",
         canDragRecordsOut: true,
         canAcceptDroppedRecords: true,
-        //showRowNumbers: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-
+        gridComponents: [Lable_ForThisPostGroup_GetPosts, "filterEditor", "header", "body"],
         dataSource: RestDataSource_ForThisPostGroup_GetPosts,
+        sortField: 1,
         fields: [
-            {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد پست", align: "center", width: "20%",
-                filterEditorProperties: {
+            {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
-                }
-            },
-            {name: "titleFa", title: "نام پست", align: "center", width: "70%"},
-            {name: "OnDelete", title: "حذف", align: "center"}
+                }},
+            {name: "titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
+            {name: "OnDelete", title: "حذف", align: "center", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
-
-        //--------------------------------------------
-
-
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
 
-            if (fieldName == "OnDelete") {
+            if (fieldName === "OnDelete") {
                 var recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
@@ -503,23 +467,13 @@
             } else
                 return null;
         },
-
-
-        //----------------------------------------------------
-
-
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-
-
-
+        recordDrop: function (dropRecords) {
             var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
             var postGroupId = postGroupRecord.id;
-            // var postId=dropRecords[0].id;
-            var postIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            var postIds = [];
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 postIds.add(dropRecords[i].id);
             }
-            ;
             var JSONObj = {"ids": postIds};
 
 
@@ -554,76 +508,6 @@
                 }
             });
         },
-
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
-
-
-    });
-
-    var SectionStack_All_Posts_Jsp = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "50%",
-        sections: [
-            {
-                title: "لیست پست ها",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_AllPosts
-                ]
-            }
-        ]
-    });
-
-    var SectionStack_Current_Post_JspClass = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "50%",
-        sections: [
-            {
-                title: "لیست پست های این گروه پست",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_ForThisPostGroup_GetPosts
-                ]
-            }
-        ]
-    });
-
-    var HStack_thisPostGroup_AddPost_Jsp = isc.HStack.create({
-        membersMargin: 10,
-        height: 500,
-        members: [
-            SectionStack_All_Posts_Jsp,
-            SectionStack_Current_Post_JspClass
-        ]
-    });
-
-    var HLayOut_thisPostGroup_AddPost_Jsp = isc.HLayout.create({
-        width: "100%",
-        height: "10%",
-        border: "0px solid yellow",
-        layoutMargin: 5,
-        align: "center",
-
-        members: [
-            DynamicForm_thisPostGroupHeader_Jsp
-        ]
     });
 
     var VLayOut_PostGroup_Posts_Jsp = isc.VLayout.create({
@@ -631,16 +515,18 @@
         height: "100%",
         border: "3px solid gray", layoutMargin: 5,
         members: [
-            HLayOut_thisPostGroup_AddPost_Jsp,
-            HStack_thisPostGroup_AddPost_Jsp
+            DynamicForm_thisPostGroupHeader_Jsp,
+            ListGrid_AllPosts,
+            isc.LayoutSpacer.create({ID: "spacer", height: "5%"}),
+            ListGrid_ForThisPostGroup_GetPosts
         ]
     });
 
     var Window_Add_Post_to_PostGroup = isc.Window.create({
         title: "لیست پست ها",
-        width: "900",
-        height: "400",
         align: "center",
+        placement: "fillScreen",
+        minWidth: 1024,
         closeClick: function () {
             ListGrid_Post_Group_Competence.invalidateCache();
             ListGrid_Post_Group_Posts.invalidateCache();
@@ -988,35 +874,28 @@
         }
     });
     var ToolStripButton_Add_Post_Group_AddPost_Jsp = isc.ToolStripButton.create({
-        <%--icon: "<spring:url value="post.png"/>",--%>
         title: "لیست پست ها",
         click: function () {
-            var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
-
+            let record = ListGrid_Post_Group_Jsp.getSelectedRecord();
             if (record == null || record.id == null) {
-
-
                 isc.Dialog.create({
-
                     message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
                     title: "پیام",
                     buttons: [isc.IButtonSave.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
+                    buttonClick: function () {
                         this.close();
                     }
                 });
 
             } else {
-                // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";
-                // RestDataSource_All_Posts.fetchDataURL = postUrl + "/iscList";
                 ListGrid_AllPosts.fetchData();
                 ListGrid_AllPosts.invalidateCache();
-
                 RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts";
                 ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                 ListGrid_ForThisPostGroup_GetPosts.fetchData();
                 DynamicForm_thisPostGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
+                Lable_ForThisPostGroup_GetPosts.setContents("لیست پست های گروه پست " + getFormulaMessage(record.titleFa, "2", "red", "B"));
                 Window_Add_Post_to_PostGroup.show();
 
 
