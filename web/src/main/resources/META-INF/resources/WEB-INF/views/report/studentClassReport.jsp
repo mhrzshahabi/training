@@ -14,25 +14,25 @@
     var RestDataSource_Course_JspStudentClass = isc.TrDS.create({
         fields: [
             {name: "classStudentId", primaryKey: true, hidden: true},
-            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentCcpArea", title:"<spring:message code='area'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentPostCode", title:"<spring:message code='post.code'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentPostTitle", title:"<spring:message code='post.title'/>", filterOperator: "equals"},
-            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpArea", title:"<spring:message code='area'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPostCode", title:"<spring:message code='post.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPostTitle", title:"<spring:message code='post.title'/>", filterOperator: "iContains"},
+            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "equals"},
-            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
-            {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
-            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
+            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
+            {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains"},
+            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", filterOperator: "greaterOrEqual", autoFitWidth: true},
             {name: "classHDuration", title:"<spring:message code="duration"/>", autoFitWidth: true},
         ],
@@ -401,8 +401,9 @@
                 endRow:false,
                 click (form) {
                     let criteria = form.getValuesAsAdvancedCriteria();
-                    if(criteria == null || Object.keys(criteria).length === 0) {
-                        ListGrid_StudentClass_StudentClassJSP.setData([])
+                    if(criteria === null || Object.keys(form.getValuesAsCriteria()).length === 0) {
+                        ListGrid_StudentClass_StudentClassJSP.setData([]);
+                        createDialog("info","فیلتری انتخاب نشده است.");
                     }
                     else{
                         if(form.getValue("studentPersonnelNo2") != undefined){
@@ -553,8 +554,8 @@
         contextMenu: Menu_Courses_StudentClassJSP,
         dataSource: RestDataSource_Course_JspStudentClass,
         // overflow: "scroll",
-        filterOnKeypress: true,
-        showFilterEditor: false,
+        filterOnKeypress: false,
+        showFilterEditor: true,
 
         gridComponents: [DynamicForm_StudentClass,
             isc.ToolStripButtonExcel.create({

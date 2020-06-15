@@ -9,30 +9,25 @@
     {
         var RestDataSource_Institute = isc.TrDS.create({
             fields: [
-                {name: "institute", title: "<spring:message code="institute"/>"}
+                {name: "id", primaryKey: true},
+                {name: "titleFa", title: "<spring:message code="institute"/>"}
             ],
-            // fetchDataURL:
+            fetchDataURL: instituteUrl +"spec-list"
         });
 
         var RestDataSource_Category = isc.TrDS.create({
-            fields: [
-                {name: "category", title: "<spring:message code="course_category"/>"}
-            ],
-            // fetchDataURL:
+            fields: [{name: "id"},
+                {name: "titleFa"}],
+            fetchDataURL: categoryUrl + "spec-list"
         });
 
-        var RestDataSource_Sub_Category = isc.TrDS.create({
+        var RestDataSource_Term = isc.TrDS.create({
             fields: [
-                {name: "sub_category", title: "<spring:message code="course_subcategory"/>"}
+                {name: "id", primaryKey: true},
+                {name: "code"},
             ],
-            // fetchDataURL:
-        });
-
-        var RestDataSource_Course = isc.TrDS.create({
-            fields: [
-                {name: "course", title: "<spring:message code="course"/>"}
-            ],
-            // fetchDataURL:
+            fetchDataURL: termUrl + "spec-list",
+            autoFetchData: true
         });
 
 
@@ -41,20 +36,17 @@
                 [
                     {name: "institute"},
                     {name: "category"},
-                    {name: "sub_category"},
-                    {name: "course"},
-                    {name: "all_classes"},
-                    {name: "planing_classes"},
-                    {name: "processing_classes"},
-                    {name: "finished_classes"},
-                    {name: "all_students"},
-                    {name: "na_students"},
-                    {name: "present_students"},
-                    {name: "overtimed_students"},
-                    {name: "absent_students"},
-                    {name: "unjustified_students"},
-                    {name: "total_time"}
-                ]
+                    {name: "planingClasses"},
+                    {name: "processingClasses"},
+                    {name: "finishedClasses"},
+                    {name: "endedClasses"},
+                    {name: "presentStudents"},
+                    {name: "overtimedStudents"},
+                    {name: "absentStudents"},
+                    {name: "unjustifiedStudents"},
+                ],
+            fetchDataURL: categoriesPerformanceReportView + "/iscList",
+            autoFetchData: true
         });
 
     // ---------------------------------------- Create - RestDataSource -------------------------->>
@@ -63,29 +55,30 @@
     {
         //*****report main dynamic form*****
         var DynamicForm_CPReport = isc.DynamicForm.create({
-            numCols: 11,
+            numCols: 16,
             padding: 10,
             readOnlyDisplay: "readOnly",
             margin:0,
             titleAlign:"left",
             wrapItemTitles: true,
-            colWidths:[50,150,50,150,50,150,150,50, 150, 150, 50],
+            colWidths:[100, 100, 100, 100, 25, 100, 100, 100, 150, 100, 100, 100, 25, 100, 100, 100],
             fields: [
                 {
-                    name: "sessionStartDate",
-                    title: "<spring:message code="start.date"/>",
-                    ID: "sessionStartDate",
-                    colSpan: 2,
+                    name: "firstStartDate",
+                    title: "<spring:message code="start.date"/> " + "<spring:message code="from"/> : ",
+                    ID: "firstStartDate",
+                    colSpan: 3,
                     width: "*",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
                     required: true,
+                    wrapTitle : false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
                             closeCalendarWindow();
-                            displayDatePicker('sessionStartDate', this, 'ymd', '/');
+                            displayDatePicker('firstStartDate', this, 'ymd', '/');
                         }
                     }],
                     textAlign: "center",
@@ -95,10 +88,10 @@
                     }
                 },
                 {
-                    name: "sessionFinishDate",
-                    title: "<spring:message code="end.date"/>",
-                    ID: "sessionFinishDate",
-                    colSpan: 2,
+                    name: "secondStartDate",
+                    title: "<spring:message code="till"/>",
+                    ID: "secondStartDate",
+                    colSpan: 3,
                     width: "*",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
@@ -108,7 +101,55 @@
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
                             closeCalendarWindow();
-                            displayDatePicker('sessionFinishDate', this, 'ymd', '/');
+                            displayDatePicker('secondStartDate', this, 'ymd', '/');
+                        }
+                    }],
+                    textAlign: "center",
+                    blur: function (form, item, value) {
+                        checkStartDate();
+                        CPReport_check_date();
+                    }
+                },
+                {
+                    name: "firstFinishDate",
+                    title: "<spring:message code="end.date"/> " + "<spring:message code="from"/> : ",
+                    ID: "firstFinishDate",
+                    colSpan: 3,
+                    width: "*",
+                    hint: "----/--/--",
+                    keyPressFilter: "[0-9/]",
+                    showHintInField: true,
+                    required: true,
+                    wrapTitle: false,
+                    icons: [{
+                        src: "<spring:url value="calendar.png"/>",
+                        click: function (form) {
+                            closeCalendarWindow();
+                            displayDatePicker('firstFinishDate', this, 'ymd', '/');
+                        }
+                    }],
+                    textAlign: "center",
+                    blur: function (form, item, value) {
+                        checkFinishDate();
+                        CPReport_check_date();
+                    }
+
+                },
+                {
+                    name: "secondFinishDate",
+                    title: "<spring:message code="till"/>",
+                    ID: "secondFinishDate",
+                    colSpan: 3,
+                    width: "*",
+                    hint: "----/--/--",
+                    keyPressFilter: "[0-9/]",
+                    showHintInField: true,
+                    required: true,
+                    icons: [{
+                        src: "<spring:url value="calendar.png"/>",
+                        click: function (form) {
+                            closeCalendarWindow();
+                            displayDatePicker('secondFinishDate', this, 'ymd', '/');
                         }
                     }],
                     textAlign: "center",
@@ -124,16 +165,16 @@
                     emptyDisplayValue: "همه",
                     multiple: true,
                     title: "<spring:message code="institute"/>",
-                    colSpan: 2,
+                    colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Institute,
-                    displayField: "",
-                    valueField: "",
+                    displayField: "titleFa",
+                    valueField: "titleFa",
                     textAlign: "center",
                     pickListFields: [
-                        {name: ""}
+                        {name: "titleFa", filterOperator: "inSet"},
                     ],
                     filterFields: [""]
                 },
@@ -143,54 +184,40 @@
                     emptyDisplayValue: "همه",
                     multiple: true,
                     title: "<spring:message code="course_category"/>",
-                    colSpan: 2,
+                    colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Category,
-                    displayField: "",
-                    valueField: "",
+                    displayField: "titleFa",
+                    valueField: "titleFa",
                     textAlign: "center",
                     pickListFields: [
-                        {name: ""}
+                        {name: "titleFa", filterOperator: "inSet"},
                     ],
                     filterFields: [""]
                 },
                 {
-                    name: "subcategory",
-                    ID: "subcategory",
+                    name: "term",
+                    ID: "term",
                     emptyDisplayValue: "همه",
                     multiple: true,
-                    title: "<spring:message code="course_subcategory"/>",
-                    colSpan: 2,
+                    title: "<spring:message code="term"/>",
+                    colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
-                    optionDataSource: RestDataSource_Sub_Category,
-                    displayField: "",
-                    valueField: "",
+                    optionDataSource: RestDataSource_Term,
+                    displayField: ["code"],
+                    valueField: ["code"],
+                    sortDirection: "descending",
                     textAlign: "center",
                     pickListFields: [
-                        {name: ""}
-                    ],
-                    filterFields: [""]
-                },
-                {
-                    name: "course",
-                    ID: "course",
-                    emptyDisplayValue: "همه",
-                    multiple: true,
-                    title: "<spring:message code="course"/>",
-                    colSpan: 2,
-                    width: "*",
-                    autoFetchData: false,
-                    useClientFiltering: true,
-                    optionDataSource: RestDataSource_Course,
-                    displayField: "",
-                    valueField: "",
-                    textAlign: "center",
-                    pickListFields: [
-                        {name: ""}
+                        {
+                            name: "code",
+                            title: "<spring:message code='term.code'/>",
+                            filterOperator: "iContains"
+                        },
                     ],
                     filterFields: [""]
                 },
@@ -198,7 +225,7 @@
                     name: "searchBtn",
                     ID: "searchBtnJspCPReport",
                     type: "ButtonItem",
-                    colSpan: 1,
+                    colSpan: 4,
                     width:"*",
                     startRow:false,
                     endRow:false,
@@ -262,31 +289,7 @@
                     summaryFunction: "totalCategory(records)",
                 },
                 {
-                    name: "sub_category",
-                    title: "<spring:message code="course_subcategory"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalSubCategory(records)",
-                },
-                {
-                    name: "course",
-                    title: "<spring:message code="course"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalCourse(records)",
-                },
-                {
-                    name: "all_classes",
-                    title: "<spring:message code="classes.all"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalClasses(records)",
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|:]"
-                    }
-                },
-                {
-                    name: "planing_classes",
+                    name: "planingClasses",
                     title: "<spring:message code="classes.planing"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -296,7 +299,7 @@
                     }
                 },
                 {
-                    name: "processing_classes",
+                    name: "processingClasses",
                     title: "<spring:message code="classes.processing"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -306,7 +309,7 @@
                     }
                 },
                 {
-                    name: "finished_classes",
+                    name: "endedClasses",
                     title: "<spring:message code="classes.finished"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -316,8 +319,8 @@
                     }
                 },
                 {
-                    name: "all_students",
-                    title: "<spring:message code="sum.of.justified.absence.hours"/>",
+                    name: "finishedClasses",
+                    title: "<spring:message code="classes.finished"/>",
                     align: "center",
                     filterOperator: "iContains",
                     summaryFunction: "totalClasses(records)",
@@ -326,17 +329,7 @@
                     }
                 },
                 {
-                    name: "na_students",
-                    title: "<spring:message code="students.all"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalClasses(records)",
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|:]"
-                    }
-                },
-                {
-                    name: "present_students",
+                    name: "presentStudents",
                     title: "<spring:message code="students.all.present"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -346,7 +339,7 @@
                     }
                 },
                 {
-                    name: "overtimed_students",
+                    name: "overtimedStudents",
                     title: "<spring:message code="students.all.overtime"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -356,7 +349,7 @@
                     }
                 },
                 {
-                    name: "absent_students",
+                    name: "absentStudents",
                     title: "<spring:message code="students.all.absent"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -366,7 +359,7 @@
                     }
                 },
                 {
-                    name: "unjustified_students",
+                    name: "unjustifiedStudents",
                     title: "<spring:message code="students.all.unjustified"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -375,16 +368,6 @@
                         keyPressFilter: "[0-9|:]"
                     }
                 },
-                {
-                    name: "total_time",
-                    title: "<spring:message code="total.time"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalClasses(records)",
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|:]"
-                    }
-                }
             ]
         });
 
@@ -450,6 +433,15 @@
             CPReport_check_date();
 
 
+
+            var criteria = DynamicForm_CPReport.getValuesAsAdvancedCriteria();
+            criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
+
+            console.log(criteria);
+
+            ListGrid_CPReport.implicitCriteria = criteria;
+            ListGrid_CPReport.invalidateCache();
+            ListGrid_CPReport.fetchData();
         }
 
         //*****calculate total summary*****

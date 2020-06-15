@@ -720,7 +720,8 @@
     const viewJobGroupUrl = rootUrl + "/view-job-group";
     const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
-    const masterDataUrl = rootUrl + "/masterData";
+    const masterDataUrl = rootUrl + "/masterData";";
+    const categoriesPerformanceReportView = rootUrl + "categories-view";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
