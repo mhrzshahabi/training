@@ -128,22 +128,22 @@
 
                 }
             }),
-            isc.ToolStripButton.create({
-                title: 'نمايش مجتمع ها از وبسرويس',
-                click: function () {
-                    DepartmentWebserviceLG_post.invalidateCache();
-                    DepartmentWebserviceLG_post.fetchData();
-                    Window_DepartmentWebService_Post.show();
-                }
-            }),
-            isc.ToolStripButton.create({
-                title: 'نمايش پست ها از وبسرويس',
-                click: function () {
-                    PostWebserviceLG_post.invalidateCache();
-                    PostWebserviceLG_post.fetchData();
-                    Window_PostWebService_Post.show();
-                }
-            }),
+            // isc.ToolStripButton.create({
+            //     title: 'نمايش مجتمع ها از وبسرويس',
+            //     click: function () {
+            //         DepartmentWebserviceLG_post.invalidateCache();
+            //         DepartmentWebserviceLG_post.fetchData();
+            //         Window_DepartmentWebService_Post.show();
+            //     }
+            // }),
+            // isc.ToolStripButton.create({
+            //     title: 'نمايش پست ها از وبسرويس',
+            //     click: function () {
+            //         PostWebserviceLG_post.invalidateCache();
+            //         PostWebserviceLG_post.fetchData();
+            //         Window_PostWebService_Post.show();
+            //     }
+            // }),
             isc.LayoutSpacer.create({
                 width: "*"
             }),

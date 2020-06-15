@@ -10,6 +10,10 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
+import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PostDTO;
+import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IPostService;
 import com.nicico.training.service.JobGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +33,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,6 +47,8 @@ public class JobGroupRestController {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
+    private final IPostService postService;
+    private final IPersonnelService personnelService;
 
     // ------------------------------
 
@@ -61,6 +70,24 @@ public class JobGroupRestController {
     public ResponseEntity<ISC<JobGroupDTO.Info>> list(HttpServletRequest iscRq, @RequestParam(value = "id", required = false) Long id) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, id, "id", EOperator.equals);
         SearchDTO.SearchRs<JobGroupDTO.Info> searchRs = jobGroupService.searchWithoutPermission(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/postIscList/{id}")
+    public ResponseEntity<ISC<PostDTO.Info>> postList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
+        List<JobDTO.Info> jobs = jobGroupService.getJobs(id);
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, jobs.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/personnelIscList/{id}")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
+        List<JobDTO.Info> jobs = jobGroupService.getJobs(id);
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, jobs.stream().map(JobDTO.Info::getCode).collect(Collectors.toList()), "jobNo", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+        SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 

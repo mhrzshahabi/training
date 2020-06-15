@@ -30,8 +30,8 @@
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "iContains"},
             {name: "titleEn", title: "نام لاتین گروه شغل ", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -767,7 +767,6 @@
         }
     });
 
-
     var HLayOut_Job_GroupSaveOrExit_Jsp = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
@@ -955,6 +954,7 @@
                 }
             },
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -969,6 +969,7 @@
         dataSource: PersonnelDS_JobGroup,
         selectionType: "single",
         alternateRecordStyles: true,
+        groupByField: "jobTitle",
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -990,6 +991,7 @@
             },
             {name: "postCode"},
             {name: "postTitle"},
+            {name: "jobTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant"},
             {name: "ccpAffairs"},
@@ -1113,6 +1115,7 @@
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -1128,20 +1131,24 @@
 
     PostLG_JobGroup = isc.TrLG.create({
         dataSource: PostDS_JobGroup,
+        autoFetchData: false,
+        showResizeBar: true,
+        sortField: 0,
+        groupByField: "job.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }
             },
-            {name: "titleFa",},
-            {name: "job.titleFa",},
-            {name: "postGrade.titleFa",},
-            {name: "area",},
-            {name: "assistance",},
-            {name: "affairs",},
-            {name: "section",},
-            {name: "unit",},
+            {name: "titleFa"},
+            {name: "job.titleFa"},
+            {name: "postGrade.titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
             {name: "costCenterCode",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -1149,9 +1156,6 @@
             },
             {name: "costCenterTitleFa"}
         ],
-        autoFetchData: false,
-        showResizeBar: true,
-        sortField: 0,
     });
 
     Detail_Tab_Job_Group = isc.TabSet.create({
@@ -1160,22 +1164,9 @@
         height: "100%",
         tabs: [
             {name: "TabPane_Job_Group_Job", title: "لیست شغل ها", pane: ListGrid_Job_Group_Jobs},
-            // {name: "TabPane_Post_JobGroup", title: "لیست پست ها", pane: PostLG_JobGroup},
-            // {name: "TabPane_Personnel_JobGroup", title: "لیست پرسنل", pane: PersonnelLG_JobGroup},
+            {name: "TabPane_Post_JobGroup", title: "لیست پست ها", pane: PostLG_JobGroup},
+            {name: "TabPane_Personnel_JobGroup", title: "لیست پرسنل", pane: PersonnelLG_JobGroup},
             {name: "TabPane_NA_JobGroup", title: "<spring:message code='need.assessment'/>", pane: NALG_JobGroup},
-
-            // {
-            //     id: "TabPane_Job_Group_Competence",
-            //     title: "لیست شایستگی ها",
-            //     visable:false,
-            //     pane: ListGrid_Job_Group_Competence
-            // }
-            // ,{
-            //     id: "TabPane_Job_Group_Competence",
-            //     title: "لیست پستهای این گروه شغل",
-            //     visable:false,
-            //     pane: ListGrid_Job_Group_Competence
-            // }
         ],
         tabSelected: function (){
             selectionUpdated_JobGroupGroup();
@@ -1391,11 +1382,7 @@
                 if (postJob_JobGroup === jobGroup.id)
                     return;
                 postJob_JobGroup = jobGroup.id;
-                PostLG_JobGroup.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "job.jobGroupSet", operator: "equals", value: jobGroup.id}]
-                });
+                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
                 PostLG_JobGroup.invalidateCache();
                 PostLG_JobGroup.fetchData();
                 break;
@@ -1404,15 +1391,7 @@
                 if (personnelJob_JobGroup === jobGroup.id)
                     return;
                 personnelJob_JobGroup = jobGroup.id;
-                PersonnelLG_JobGroup.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [
-                        {fieldName: "jobNo", operator: "equals", value: jobGroup.code},
-                        {fieldName: "active", operator: "equals", value: 1},
-                        {fieldName: "employmentStatusId", operator: "equals", value: 5}
-                    ]
-                });
+                PersonnelDS_JobGroup.fetchDataURL = jobGroupUrl + "personnelIscList/" + jobGroup.id;
                 PersonnelLG_JobGroup.invalidateCache();
                 PersonnelLG_JobGroup.fetchData();
                 break;

@@ -20,14 +20,14 @@
     isc.ToolStrip.create({
         ID: "CompetenceTS_competence",
         members: [
-            isc.ToolStripButton.create({
-                title: 'نمايش شایستگی ها از وبسرويس',
-                click: function () {
-                    CompetenceLG_competence_Webservice.invalidateCache();
-                    CompetenceLG_competence_Webservice.fetchData();
-                    Window_WebService_CompetenceWin_competence.show();
-                }
-            }),
+            // isc.ToolStripButton.create({
+            //     title: 'نمايش شایستگی ها از وبسرويس',
+            //     click: function () {
+            //         CompetenceLG_competence_Webservice.invalidateCache();
+            //         CompetenceLG_competence_Webservice.fetchData();
+            //         Window_WebService_CompetenceWin_competence.show();
+            //     }
+            // }),
             isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competence); }}),
             isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
             isc.ToolStripButtonEdit.create({click: function () { editCompetence_competence(); }}),

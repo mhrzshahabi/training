@@ -247,9 +247,41 @@ public class TeacherDTO {
         private Long id;
         private PersonalInfoDTO personality;
         private String grade;
-
         public String getFullNameFa() {
             return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
         }
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("TeacherInfoTuple")
+    public static class TeacherInfoTuple {
+        private Long id;
+        private PersonalInfoDTO.PersonalInfoCustom personality;
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherSpecRs")
+    public static class TeacherInfoTupleSpecRs {
+        private InfoTupleSpecRs response;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InfoTupleSpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

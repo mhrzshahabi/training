@@ -1339,10 +1339,18 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-002">
+    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-006">
         <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
             <![CDATA[
-			SELECT
+	    SELECT
+        rowNum as id,
+        tclass.c_created_by as c_created_by ,
+        tclass.d_created_date as d_created_date,
+        tclass.e_deleted as e_deleted,
+        tclass.e_enabled as e_enabled,
+        tclass.c_last_modified_by as c_last_modified_by,
+        tclass.d_last_modified_date as d_last_modified_date,
+        tclass.n_version as n_version,
         tclass.ID as tclass_id,
         evaluationanalysis.ID as evaluationanalysis_id,
         unit.ID as unit_id,
@@ -1357,6 +1365,7 @@ FROM
         course.CATEGORY_ID as course_category_id,
         course.SUBCATEGORY_ID as course_subcategory_id,
         course.C_TITLE_FA as course_c_title_fa,
+        course.C_EVALUATION as course_c_evaluation,
         CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END AS tclass_students_count,
         evaluationanalysis.C_BEHAVIORAL_GRADE as evaluationanalysis_c_behavioral_grade,
         evaluationanalysis.B_BEHAVIORAL_PASS as evaluationanalysis_c_behavioral_pass,
@@ -1369,7 +1378,13 @@ FROM
         evaluationanalysis.C_RESULTS_GRADE as evaluationanalysis_c_results_grade,
         evaluationanalysis.B_RESULTS_PASS as evaluationanalysis_c_results_pass,
         evaluationanalysis.C_TEACHER_GRADE as evaluationanalysis_c_teacher_grade,
-        evaluationanalysis.B_TEACHER_PASS as evaluationanalysis_c_teacher_pass
+        evaluationanalysis.B_TEACHER_PASS as evaluationanalysis_c_teacher_pass,
+        CASE WHEN evaluationanalysis.C_REACTION_GRADE IS NULL THEN 0 ELSE 1 END as evaluationanalysis_b_reaction_status,
+        CASE WHEN evaluationanalysis.C_BEHAVIORAL_GRADE IS NULL THEN 0 ELSE 1 END as evaluationanalysis_b_behavioral_status,
+        CASE WHEN evaluationanalysis.C_LEARNING_GRADE IS NULL THEN 0 ELSE 1 END as evaluationanalysis_b_learning_status,
+        CASE WHEN evaluationanalysis.C_RESULTS_GRADE IS NULL THEN 0 ELSE 1 END as evaluationanalysis_b_results_status,
+        CASE WHEN evaluationanalysis.C_TEACHER_GRADE IS NULL THEN 0 ELSE 1 END as evaluationanalysis_b_teacher_status,
+        CASE WHEN evaluationanalysis.C_EFFECTIVENESS_GRADE IS NULL THEN 0 ELSE 1 END as evaluationanalysis_b_effectiveness_status
 
         FROM TBL_CLASS tclass INNER JOIN TBL_COURSE course
         ON tclass.F_COURSE = course.ID
@@ -1498,7 +1513,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB-001">
+    <changeSet author="NICICO" id="VIEW_JOB-002">
         <createView viewName="VIEW_JOB" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1518,8 +1533,7 @@ FROM
     tbl_job j
     LEFT JOIN tbl_needs_assessment na ON j.id = na.f_object
                                          AND na.c_object_type = 'Job'
-    LEFT JOIN tbl_post               p ON j.id = p.f_job_id
-    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+    LEFT JOIN tbl_personnel prs ON j.c_code = prs.job_no
                                    AND prs.active = 1
                                    AND prs.employment_status_id = 5
 GROUP BY
@@ -1581,7 +1595,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE-001">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-002">
         <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1601,8 +1615,7 @@ FROM
     tbl_post_grade pg
     LEFT JOIN tbl_needs_assessment na ON pg.id = na.f_object
                                          AND na.c_object_type = 'PostGrade'
-    LEFT JOIN tbl_post p ON pg.id = p.f_post_grade_id
-    LEFT JOIN tbl_personnel prs ON p.c_code = prs.post_code
+    LEFT JOIN tbl_personnel prs ON pg.c_code = prs.post_grade_code
                                    AND prs.active = 1
                                    AND prs.employment_status_id = 5
 GROUP BY
