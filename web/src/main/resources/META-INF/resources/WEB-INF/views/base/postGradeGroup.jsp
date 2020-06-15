@@ -497,6 +497,7 @@
             },
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitle", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -511,7 +512,7 @@
         dataSource: PersonnelDS_PGG,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "jobTitle",
+        groupByField: "postGradeTitle",
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -534,6 +535,7 @@
             {name: "postCode"},
             {name: "postTitle"},
             {name: "jobTitle"},
+            {name: "postGradeTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant"},
             {name: "ccpAffairs"},
@@ -676,7 +678,7 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "job.titleFa",
+        groupByField: "postGrade.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {
