@@ -1154,7 +1154,7 @@ public class TclassService implements ITclassService {
                 teacherGradeToClass);
         FERGrade = (double) FERGradeResult.get("FERGrade");
 
-        FELGrade = Math.abs(evaluationAnalysistLearningService.getStudents(classId, scoringMethod)[3]);
+        FELGrade = evaluationAnalysistLearningService.getStudents(classId, scoringMethod)[3];
 
         TotalResponse<ParameterValueDTO.Info> parameters1 = parameterService.getByCode("FEC_B");
         List<ParameterValueDTO.Info> parameterValues1 = parameters1.getResponse().getData();

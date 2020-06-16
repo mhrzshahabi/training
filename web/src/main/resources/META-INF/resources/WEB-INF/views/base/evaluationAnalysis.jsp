@@ -101,6 +101,7 @@
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
                 align: "center",
+                canFilter: false,
                 filterOperator: "iContains"
             },
             {
