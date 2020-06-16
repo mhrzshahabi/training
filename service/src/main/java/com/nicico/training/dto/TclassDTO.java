@@ -251,7 +251,7 @@ public class TclassDTO {
         @Getter(AccessLevel.NONE)
         private List<Object> targetSocieties;
 
-        public List<Object> gettargetSocieties() {
+        public List<Object> getTargetSocieties() {
             if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;
@@ -683,5 +683,36 @@ public class TclassDTO {
     }
 
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassInfoTuple")
+    public static class InfoTuple{
+        private Long id;
+        private String titleClass;
+        private String code;
+        private CourseDTO.InfoTuple course;
+    }
 
-}
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassInfoTupleSpecRs")
+    public static class TclassInfoTupleSpecRs {
+        private InfoTupleSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InfoTupleSpecRs {
+        private List<TclassDTO.InfoTuple> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    }

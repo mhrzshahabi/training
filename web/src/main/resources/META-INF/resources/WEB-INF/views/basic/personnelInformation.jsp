@@ -257,7 +257,7 @@
                 {name: "ccpUnit"}
             ],
             recordClick: function () {
-                set_PersonnelInfo_Details();
+                set_PersonnelInfo_Details(this);
             }
         });
 
@@ -1334,23 +1334,23 @@
             height: "1%",
             membersMargin: 5,
             members: [
-                isc.ToolStripButton.create({
-                    title: 'نمايش پرسنل از وبسرويس',
-                    click: function () {
-                        let criteriaActive_WebServicePersonnel = {/*
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: "active", operator: "equals", value: 1}
-                            ]*/
-                        };
-
-                        //PersonnelInfoListGrid_WebService_PersonnelList.implicitCriteria = criteriaActive_WebServicePersonnel;
-                        PersonnelInfoListGrid_WebService_PersonnelList.invalidateCache();
-                        PersonnelInfoListGrid_WebService_PersonnelList.fetchData();
-                        Window_WebService_PersonnelInformation.show();
-                    }
-                }),
+                // isc.ToolStripButton.create({
+                //     title: 'نمايش پرسنل از وبسرويس',
+                //     click: function () {
+                //         let criteriaActive_WebServicePersonnel = {/*
+                //             _constructor: "AdvancedCriteria",
+                //             operator: "and",
+                //             criteria: [
+                //                 {fieldName: "active", operator: "equals", value: 1}
+                //             ]*/
+                //         };
+                //
+                //         //PersonnelInfoListGrid_WebService_PersonnelList.implicitCriteria = criteriaActive_WebServicePersonnel;
+                //         PersonnelInfoListGrid_WebService_PersonnelList.invalidateCache();
+                //         PersonnelInfoListGrid_WebService_PersonnelList.fetchData();
+                //         Window_WebService_PersonnelInformation.show();
+                //     }
+                // }),
                 isc.ToolStripButtonAdd.create({
                     title: 'فیلتر گروهي',
                     click: function () {
@@ -1418,6 +1418,9 @@
 
                 let personnelNo = selectedPersonnelListGrid.getSelectedRecord().personnelNo;
                 let nationalCode = selectedPersonnelListGrid.getSelectedRecord().nationalCode;
+
+                console.log(personnelNo)
+                console.log(nationalCode)
 
                 if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
                     if (personnelNo !== null && (nationalCode_Info !== nationalCode || personnelNo_Info !== personnelNo)) {

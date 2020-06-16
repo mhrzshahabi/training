@@ -111,8 +111,8 @@
                         let obj = {};
                         obj.personnelNo =  localData[i].student.personnelNo2;
                         obj.nationalCode =  localData[i].student.nationalCode;
-                        obj.firstName =  localData[i].student.firstName;
-                        obj.lastName =  localData[i].student.lastName;
+                        obj.firstName =  localData[i].student.firstName.trim();
+                        obj.lastName =  localData[i].student.lastName.trim();
                         obj.fatherName =  localData[i].student.fatherName;
                         obj.companyName =  localData[i].applicantCompanyName;
                         obj.ccpArea =  localData[i].student.ccpArea;
@@ -120,6 +120,12 @@
                         obj.ccpAffairs =  localData[i].student.ccpAffairs;
                         data.push(obj);
                     }
+
+                    // method 1:
+                    // data=data.sort((a, b) => (a.lastName[0] > b.lastName[0] ? -1 : 1));
+
+                    // method 2:
+                    data=data.sort(new Intl.Collator("fa").compare);
 
                     printToJasper(data, params, "ClassStudents.jasper");
 
@@ -228,6 +234,8 @@
         </sec:authorize>
        // selectionType: "single",
         selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
         fields: [
             {name: "student.firstName"},
             {name: "student.lastName"},
@@ -308,7 +316,18 @@
             } else {
                 StudentsCount_student.setContents("&nbsp;");
             }
-        }
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result="background-color : ";
+            let blackColor="; color:black";
+            switch (parseInt(record.presenceTypeId)) {
+                case 104:
+                    result += "#FFF9C4" + blackColor;
+                    break;
+            }//end switch-case
+
+            return result;
+        }//end getCellCSSText
     });
 
     SelectedPersonnelsLG_student = isc.TrLG.create({

@@ -11,8 +11,10 @@ import java.util.List;
 
 @Repository
 public interface SkillDAO extends JpaRepository<Skill, Long>, JpaSpecificationExecutor<Skill> {
-    @Query(value = "select nvl(max(s.c_code),'0') maxCode from tbl_skill s  where s.c_code like :skillCodeStart%", nativeQuery = true)
-    String findMaxSkillCode(@Param("skillCodeStart") String skillCodeStart);
+
+    @Query(value = "select  nvl(LPAD(CAST(SUBSTR(max(s.c_code),5) AS integer) + 1, 3 , 0),'001') AS skillCode  from tbl_skill s  where s.c_code like :skillCodeStart%", nativeQuery = true)
+    String findMaxSkillCode(String skillCodeStart);
+
 
     @Query(value = "SELECT * FROM tbl_skill ts where Not Exists(select * from TBL_COMPETENCE_SKILL tcs where ts.id=tcs.F_SKILL_ID) and " +
             " Not Exists(select * from TBL_SKILL_COURSE tsc where ts.id=tsc.F_SKILL_ID) and id=:skillId", nativeQuery = true)

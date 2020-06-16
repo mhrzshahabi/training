@@ -5,6 +5,9 @@
 // <script>
 
     // var view_ENA = null;
+    const yellow ="#d6d216";
+    const red = "#ff8abc";
+    const green = "#5dd851";
     var editing = false;
     var priorityList = {
         "Post": "پست",
@@ -74,7 +77,7 @@
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: postGradeUrl + "/iscList"
+        fetchDataURL: postGradeUrl + "/spec-list"
     });
     let PostGradeGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
@@ -88,11 +91,13 @@
         ID: "RestDataSource_Skill_JspNeedsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
             {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
             {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
             {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains"},
+            {name: "course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true}
         ],
         fetchDataURL: skillUrl + "/spec-list"
     });
@@ -112,23 +117,59 @@
         ],
         fetchDataURL: competenceUrl + "/iscList",
     });
-    let RestDataSource_Personnel_JspNeedsAssessment = isc.TrDS.create({
+    var RestDataSource_Course_JspENA = isc.TrDS.create({
         fields: [
-            {name: "id", hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},
-            {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "id", primaryKey: true},
+            {name: "scoringMethod"},
+            {name: "acceptancelimit"},
+            {name: "startEvaluation"},
+            {
+                name: "code",
+                title: "<spring:message code="course.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+            {name: "theoryDuration"},
+            {name: "categoryId"},
+            {name: "subCategoryId"},
         ],
-        fetchDataURL: personnelUrl + "/iscList"
+        fetchDataURL: courseUrl + "spec-list"
+
     });
+    var RestDataSource_category_JspCourse = isc.TrDS.create({
+        ID: "categoryDS",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+    var RestDataSource_subCategory_JspCourse = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
+    <%--let RestDataSource_Personnel_JspNeedsAssessment = isc.TrDS.create({--%>
+        <%--fields: [--%>
+            <%--{name: "id", hidden: true},--%>
+            <%--{name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},--%>
+            <%--{name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},--%>
+        <%--],--%>
+        <%--fetchDataURL: personnelUrl + "/iscList"--%>
+    <%--});--%>
     var DataSource_Competence_JspNeedsAssessment = isc.DataSource.create({
         clientOnly: true,
         fields: [
@@ -143,7 +184,14 @@
         ID: "DataSource_Skill_JspNeedsAssessment",
         fields: [
             {name: "id", hidden:true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",
+                showHover:true,
+                canEdit: false,
+                hoverWidth: 250,
+                    hoverHTML(record) {
+                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
+                },
+            },
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
             {name: "needsAssessmentDomainId", filterOperator: "iContains", hidden:true},
             {name: "skillId", primaryKey: true, filterOperator: "iContains", hidden:true},
@@ -152,12 +200,14 @@
             {name: "objectType", title: "<spring:message code="reference"/>", primaryKey: true, filterOperator: "iContains", valueMap: priorityList, autoFitWidth:true,
                 showHover:true,
                 canEdit: false,
+                hoverWidth: 150,
                 hoverHTML(record) {
                     return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
                 },
             },
             {name: "objectName"},
-            {name: "objectCode"}
+            {name: "objectCode"},
+            {name: "course"}
         ],
         testData: skillData,
         clientOnly: true,
@@ -188,15 +238,117 @@
         ]
     });
 
+    var Window_CourseDetail_JspENA = isc.Window.create({
+        title: "<spring:message code="course.plural.list"/>",
+        // placement: "fillScreen",
+        width: "80%",
+        height: "50%",
+        minWidth: 1024,
+        keepInParentRect: true,
+        isModal: true,
+        // autoSize: false,
+        autoSize: false,
+        show(criteria){
+            ListGrid_Course_JspENA.invalidateCache();
+            ListGrid_Course_JspENA.fetchData(criteria);
+            this.Super("show", arguments);
+        },
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    isc.TrLG.create({
+                        ID: "ListGrid_Course_JspENA",
+                        dataSource: RestDataSource_Course_JspENA,
+                        // selectionType: "none",
+                        filterOnKeypress: false,
+                        // autoFetchData:true,
+                        fields: [
+                            // {name: "scoringMethod"},
+                            // {name: "acceptancelimit"},
+                            // {name: "startEvaluation"},
+                            {
+                                name: "code",
+                                title: "<spring:message code="course.code"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            },
+                            {
+                                name: "titleFa",
+                                title: "<spring:message code="course.title"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            },
+                            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+                            {
+                                name: "theoryDuration",
+                                title: "<spring:message code="course_Running_time"/>",
+                                filterOperator: "equals",
+                            },
+                            {
+                                name: "categoryId",
+                                title: "<spring:message code="category"/> ",
+                                optionDataSource: RestDataSource_category_JspCourse,
+                                filterOnKeypress: true,
+                                valueField: "id",
+                                displayField: "titleFa",
+                                filterOperator: "equals",
+                            },
+                            {
+                                name: "subCategoryId",
+                                title: "<spring:message code="subcategory"/> ",
+                                optionDataSource: RestDataSource_subCategory_JspCourse,
+                                filterOnKeypress: true,
+                                valueField: "id",
+                                displayField: "titleFa",
+                                filterOperator: "equals",
+                            },
+                        ],
+                        gridComponents: ["filterEditor", "header", "body"],
+                    }),
+                ]
+            })]
+    });
+
     var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
         align:"left",
         contents:"",
+        margin:8,
         customEdges: []});
     var Label_Help_JspNeedsAssessment = isc.LgLabel.create({
         align:"left",
-        contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
-        contents:"اولویت ضروری با رنگ " + getFormulaMessage("قرمز", "2", "#ff8abc")+"، اواویت بهبود با رنگ "+getFormulaMessage("زرد", "2", "#fff669")+" و اولویت توسعه با رنگ "+getFormulaMessage("سبز", "2", "#61ff55")+" مشخص شده است.",
+        // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
+        contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
         customEdges: []});
+    var ButtonCourseDetail_JspEditNeedsAssessment = isc.Button.create({
+        title:"جزئیات دوره",
+        margin: 1,
+        click(){
+           if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()||ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()||ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()){
+               let courseIds = [];
+               if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().course != undefined) {
+                   courseIds.push(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().course.id);
+               }
+               if(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   courseIds.push(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().course.id);
+               }
+               if(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   courseIds.push(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().course.id);
+               }
+               if(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   courseIds.push(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().course.id);
+               }
+               let criteria = {
+                   _constructor: "AdvancedCriteria",
+                   operator: "and",
+                   criteria: [{fieldName: "id", operator: "inSet", value: courseIds}]
+               };
+               Window_CourseDetail_JspENA.show(criteria);
+           }
+           else{
+               createDialog("info", "مهارتی انتخاب نشده است")
+           }
+        }
+    });
 
     var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_AllCompetence_JspNeedsAssessment",
@@ -229,7 +381,6 @@
         dataSource: DataSource_Competence_JspNeedsAssessment,
         autoFetchData: true,
         selectionType:"single",
-
         // selectionAppearance: "checkbox",
         showHeaderContextMenu: false,
         showRowNumbers: false,
@@ -243,15 +394,31 @@
         canDragRecordsOut: true,
         dragDataAction: "none",
         removeRecordClick(rowNum){
-            let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
-            data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
-            data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
-            for (let i = 0; i < data.length; i++) {
-                if(removeRecord_JspNeedsAssessment(data[i])){
-                    return;
+            let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Competence_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
+                        data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
+                        data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
+                        let hasFather = false;
+                        for (let i = 0; i < data.length; i++) {
+                            let state = removeRecord_JspNeedsAssessment(data[i], 1);
+                            if(state===0){
+                                return;
+                            }
+                            else if(state===2){
+                                hasFather = true;
+                            }
+                        }
+                        if(hasFather===false) {
+                            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
+                        }
+                    }
                 }
-            }
-            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
+            });
         },
         dataChanged(){
             editing = true;
@@ -274,10 +441,12 @@
             {name: "titleFa"},
             {name: "category.titleFa"},
             {name: "subCategory.titleFa"},
-            {name: "skillLevel.titleFa"}
+            {name: "skillLevel.titleFa"},
+            {name: "course.titleFa"},
+            {name: "course.code"}
         ],
         gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["B"]}),
+            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["T"]}),
             "filterEditor", "header", "body"
         ],
         // canHover: true,
@@ -298,7 +467,12 @@
         },
         doubleClick: function () {
             changeDirection(1);
-        }
+        },
+        getCellCSSText: function (record) {
+            if(record.course === undefined){
+                return "color : red";
+            }
+        },
     });
     var ListGrid_Knowledge_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_Knowledge_JspNeedsAssessment",
@@ -371,14 +545,7 @@
         //     return false;
         // },
         getCellCSSText(record) {
-                switch (record.needsAssessmentPriorityId) {
-                    case 111:
-                        return "background-color : " + "#ff8abc";
-                    case 112:
-                        return "background-color : " + "#fff7bf";
-                    case 113:
-                        return "background-color : " + "#afffbe";
-                }
+            return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
@@ -454,14 +621,7 @@
         //     return false;
         // },
         getCellCSSText: function (record) {
-            switch (record.needsAssessmentPriorityId) {
-                case 111:
-                    return "background-color : " + "#ff8abc";
-                case 112:
-                    return "background-color : " + "#fff7bf";
-                case 113:
-                    return "background-color : " + "#afffbe";
-            }
+            return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
@@ -537,43 +697,36 @@
         //     return false;
         // },
         getCellCSSText: function (record) {
-            switch (record.needsAssessmentPriorityId) {
-                case 111:
-                    return "background-color : " + "#ff8abc";
-                case 112:
-                    return "background-color : " + "#fff7bf";
-                case 113:
-                    return "background-color : " + "#afffbe";
-            }
+            return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
         }
     });
-    let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({
-        width: "100%",
-        dataSource: RestDataSource_Personnel_JspNeedsAssessment,
-        fields: [
-            {name: "firstName"},
-            {name: "lastName"},
-            {name: "nationalCode"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
-            {name: "companyName"},
-            {name: "ccpAffairs"},
-            {name: "employmentStatus"},
-            {name: "complexTitle"},
-            {name: "workPlaceTitle"},
-            {name: "workTurnTitle"},
-        ],
-        autoFetchData: false,
-        gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="personnel.for"/>" + "</b></span>", customEdges: ["T","L","R","B"]}),
-            "header", "body"],
-        // canExpandRecords: true,
-        // expansionMode: "details",
-        // showDetailFields: true
-    });
+    <%--let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({--%>
+        <%--width: "100%",--%>
+        <%--dataSource: RestDataSource_Personnel_JspNeedsAssessment,--%>
+        <%--fields: [--%>
+            <%--{name: "firstName"},--%>
+            <%--{name: "lastName"},--%>
+            <%--{name: "nationalCode"},--%>
+            <%--{name: "personnelNo"},--%>
+            <%--{name: "personnelNo2"},--%>
+            <%--{name: "companyName"},--%>
+            <%--{name: "ccpAffairs"},--%>
+            <%--{name: "employmentStatus"},--%>
+            <%--{name: "complexTitle"},--%>
+            <%--{name: "workPlaceTitle"},--%>
+            <%--{name: "workTurnTitle"},--%>
+        <%--],--%>
+        <%--autoFetchData: false,--%>
+        <%--gridComponents: [--%>
+            <%--isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="personnel.for"/>" + "</b></span>", customEdges: ["T","L","R","B"]}),--%>
+            <%--"header", "body"],--%>
+        <%--// canExpandRecords: true,--%>
+        <%--// expansionMode: "details",--%>
+        <%--// showDetailFields: true--%>
+    <%--});--%>
 
     var Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="skill.plural.list"/>",
@@ -611,7 +764,7 @@
                         clearAllGrid();
                         form.getItem("objectId").clearValue();
                         Label_PlusData_JspNeedsAssessment.setContents("");
-                        refreshPersonnelLG();
+                        // refreshPersonnelLG();
                     }
                 },
             },
@@ -619,7 +772,7 @@
                 name: "objectId",
                 showTitle: false,
                 optionDataSource: JobDs_needsAssessment,
-                editorType: "SelectItem",
+                // editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
                 autoFetchData: false,
@@ -638,19 +791,21 @@
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue){
                         editNeedsAssessmentRecord(NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"));
-                        refreshPersonnelLG();
+                        // refreshPersonnelLG();
                         updateLabelEditNeedsAssessment(item.getSelectedRecord());
                     }
                 },
             },
+            // {name: "btnCourseDetail", type:"Button", title:"جزئیات دوره", startRow: false},
         ]
     });
-    var HLayout_Label_PlusData_JspNeedsAssessment = isc.TrVLayout.create({
+    var HLayout_Label_PlusData_JspNeedsAssessment = isc.TrHLayout.create({
         height: "1%",
+        padding:2,
         members: [
-            Label_Help_JspNeedsAssessment,
+            ButtonCourseDetail_JspEditNeedsAssessment,
             Label_PlusData_JspNeedsAssessment,
-        ]
+        ],
     });
     var HLayout_Bottom = isc.TrHLayout.create({
             members: [
@@ -671,6 +826,7 @@
                                 ListGrid_Attitude_JspNeedsAssessment
                             ]
                         }),
+                        Label_Help_JspNeedsAssessment,
                         ListGrid_SkillAll_JspNeedsAssessment
                     ]
                 }),
@@ -732,44 +888,44 @@
         ListGrid_Attitude_JspNeedsAssessment.setData([]);
         ListGrid_Ability_JspNeedsAssessment.setData([]);
     }
-    function refreshPersonnelLG(pickListRecord) {
-        if (pickListRecord == null)
-            pickListRecord = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
-        if (pickListRecord == null){
-            ListGrid_Personnel_JspNeedsAssessment.setData([]);
-            return;
-        }
-        let crt = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: []
-        };
-        switch (NeedsAssessmentTargetDF_needsAssessment.getItem("objectType").getValue()) {
-            case 'Job':
-                crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
-                break;
-            case 'JobGroup':
-                crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
-                break;
-            case 'Post':
-                crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
-                break;
-            case 'PostGroup':
-                // crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
-                crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.code});
-                break;
-            case 'PostGrade':
-                crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
-                break;
-            case 'PostGradeGroup':
-                crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
-                break;
-        }
-        ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
-        // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
-        ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
-        ListGrid_Personnel_JspNeedsAssessment.fetchData();
-    }
+    // function refreshPersonnelLG(pickListRecord) {
+    //     if (pickListRecord == null)
+    //         pickListRecord = NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord();
+    //     if (pickListRecord == null){
+    //         ListGrid_Personnel_JspNeedsAssessment.setData([]);
+    //         return;
+    //     }
+    //     let crt = {
+    //         _constructor: "AdvancedCriteria",
+    //         operator: "and",
+    //         criteria: []
+    //     };
+    //     switch (NeedsAssessmentTargetDF_needsAssessment.getItem("objectType").getValue()) {
+    //         case 'Job':
+    //             crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
+    //             break;
+    //         case 'JobGroup':
+    //             crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
+    //             break;
+    //         case 'Post':
+    //             crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
+    //             break;
+    //         case 'PostGroup':
+    //             // crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
+    //             crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.code});
+    //             break;
+    //         case 'PostGrade':
+    //             crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
+    //             break;
+    //         case 'PostGradeGroup':
+    //             crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
+    //             break;
+    //     }
+    //     ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
+    //     // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
+    //     ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
+    //     ListGrid_Personnel_JspNeedsAssessment.fetchData();
+    // }
     function checkSaveData(data, dataSource, field = "skillId", objectType = null) {
         if(!objectType) {
             if(dataSource.testData.find(f => f[field] === data[field]) != null) {
@@ -797,18 +953,22 @@
             ListGrid_Attitude_JspNeedsAssessment.invalidateCache();
         }
     }
-    function removeRecord_JspNeedsAssessment(record) {
+    function removeRecord_JspNeedsAssessment(record, state=0) {
         if(record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")){
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null, function (resp) {
-                if (resp.httpResponseCode != 200) {
-                    return true;
+                if (resp.httpResponseCode !== 200) {
+                    createDialog("info","خطا در حذف مهارت");
+                    return 0;
                 }
                 DataSource_Skill_JspNeedsAssessment.removeData(record);
-                // return false;
+                return 1;
             }));
         }
         else{
-            createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")]+" قابل حذف است.")
+            if(state === 0) {
+                createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")] + " قابل حذف است.")
+            }
+            return 2;
         }
     }
 
@@ -839,6 +999,12 @@
                 skill.objectType = data[i].objectType;
                 skill.objectName = data[i].objectName;
                 skill.objectCode = data[i].objectCode;
+                if(data[i].skill.course === undefined){
+                    skill.titleFa = " (بدون دوره) " + data[i].skill.titleFa;
+                }
+                else {
+                    skill.course = data[i].skill.course;
+                }
                 DataSource_Skill_JspNeedsAssessment.addData(skill);
                 if( flags[data[i].competenceId]) continue;
                 flags[data[i].competenceId] = true;
@@ -855,17 +1021,17 @@
             fetchDataDomainsGrid();
         }))
     }
-    function updateSkillRecord(form, item) {
-        let record = form.getData();
-        record.needsAssessmentPriorityId = item.getSelectedRecord().id;
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {
-            if(resp.httpResponseCode !== 200){
-                createDialog("info", "<spring:message code='error'/>");
-            }
-            DataSource_Skill_JspNeedsAssessment.updateData(record);
-            item.grid.endEditing();
-        }));
-    }
+    <%--function updateSkillRecord(form, item) {--%>
+        <%--let record = form.getData();--%>
+        <%--record.needsAssessmentPriorityId = item.getSelectedRecord().id;--%>
+        <%--isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {--%>
+            <%--if(resp.httpResponseCode !== 200){--%>
+                <%--createDialog("info", "<spring:message code='error'/>");--%>
+            <%--}--%>
+            <%--DataSource_Skill_JspNeedsAssessment.updateData(record);--%>
+            <%--item.grid.endEditing();--%>
+        <%--}));--%>
+    <%--}--%>
     function createNeedsAssessmentRecords(data) {
         if(!checkSaveData(data, DataSource_Skill_JspNeedsAssessment)){
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
@@ -889,9 +1055,10 @@
             objectCode: NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord().code,
             competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
             skillId: record.id,
-            titleFa: record.titleFa,
+            titleFa: record.course ? record.titleFa : " (بدون دوره) " + record.titleFa,
             needsAssessmentPriorityId: PriorityId,
-            needsAssessmentDomainId: DomainId
+            needsAssessmentDomainId: DomainId,
+            course: record.course
         };
         return data;
     }
@@ -948,6 +1115,16 @@
             createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")]+" قابل تغییر است.")
         }
     }
+    function priorityColor(record){
+        switch (record.needsAssessmentPriorityId) {
+            case 111:
+                return "background-color : " + red;
+            case 112:
+                return "background-color : " + yellow;
+            case 113:
+                return "background-color : " + green;
+        }
+    }
 
 
     function loadEditNeedsAssessment(objectId, type) {
@@ -956,7 +1133,7 @@
         NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId.id);
         clearAllGrid();
         editNeedsAssessmentRecord(objectId.id, type);
-        refreshPersonnelLG(objectId);
+        // refreshPersonnelLG(objectId);
         updateLabelEditNeedsAssessment(objectId);
     }
 

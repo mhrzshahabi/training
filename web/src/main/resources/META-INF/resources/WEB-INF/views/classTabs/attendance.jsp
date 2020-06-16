@@ -7,7 +7,8 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
-
+    var selfTaughts={};
+    let isSelfTaught=false;
     let isAttendanceDate=true;
     var classGridRecordInAttendanceJsp = null;
     var causeOfAbsence = [];
@@ -453,8 +454,29 @@
                                 wait.close();
                                 readOnlySession = JSON.parse(resp.data)[0].readOnly;
                                 let fields1 = [
-                                    {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true,width:"20%"},
-                                    {name: "studentFamily", title: "نام خانوادگی", valueMap: filterValuesUnique, multiple: true,width:"20%"},
+                                    {name: "studentName", title: "نام", valueMap: filterValuesUnique1, multiple: true,width:"20%",
+                                        filterEditorProperties:{
+                                            click:function () {
+                                                setTimeout(()=> {
+                                                    $('.comboBoxItemPickerrtl').eq(9).remove();
+                                                },0);
+                                            }
+                                        },
+                                    },
+                                    {
+                                        name: "studentFamily",
+                                        title: "نام خانوادگی",
+                                        valueMap: filterValuesUnique,
+                                        multiple: true,
+                                        width: "20%",
+                                        filterEditorProperties: {
+                                            click: function () {
+                                                setTimeout(() => {
+                                                    $('.comboBoxItemPickerrtl').eq(9).remove();
+                                                }, 0);
+                                            }
+                                        }
+                                    },
                                     {name: "nationalCode", title: "کد ملی",width:"10%"},
                                     {name: "personalNum", title: "شماره پرسنلي",width:"10%"},
                                 ];
@@ -636,6 +658,12 @@
                                                         sessionIds.add(this.grid.getAllFields()[i].name.substr(2))
                                                     }
                                                 }
+
+                                                selfTaughts[form.getValue("studentId").toString()]={sessionIds,'fullName':form.getValue("studentName").trim()+" "+form.getValue("studentFamily").trim()};
+
+                                                isSelfTaught=true;
+
+                                                /*Hamed Jafari:
                                                 isc.RPCManager.sendRequest({
                                                     actionURL: attendanceUrl + "/accept-absent-student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + form.getValue("studentId") + "&sessionId=" + sessionIds,
                                                     httpMethod: "GET",
@@ -655,7 +683,8 @@
                                                                 buttonClick: function (button, index) {
                                                                     this.close();
                                                                     if (index === 0) {
-                                                                        let record1 = attendanceGrid.getSelectedRecord();
+                                                                        //need a loop
+                                                                         let record1 = attendanceGrid.getSelectedRecord();
                                                                         record1.studentState = "kh";
                                                                         attendanceGrid.updateData(record1);
                                                                         attendanceGrid.focusInFilterEditor();
@@ -694,6 +723,7 @@
                                                                             }
                                                                         });
                                                                     }
+
                                                                     item.setValue(oldValue);
                                                                 },
                                                                 closeClick: function () {
@@ -703,13 +733,13 @@
                                                             });
                                                         }
                                                     }
-                                                });
+                                                });*/
                                             }
-                                            if (this.colNum == 5 && (value == 1 || value == 2)) {
-                                                for (let i = 6; i < this.grid.getAllFields().length; i++) {
-                                                    this.grid.setEditValue(this.rowNum, i, value);
-                                                }
-                                            }
+                                            // if (this.colNum == 5 && (value == 1 || value == 2)) {
+                                            //     for (let i = 6; i < this.grid.getAllFields().length; i++) {
+                                            //         this.grid.setEditValue(this.rowNum, i, value);
+                                            //     }
+                                            // }
                                         },
                                         hoverHTML(record, value, rowNum, colNum, grid) {
                                             if (value == "غیبت موجه") {
@@ -1002,19 +1032,107 @@
             isc.IButtonSave.create({
                 ID: "saveBtn",
                 click: function () {
+                    if (isSelfTaught){
+                        Object.keys(selfTaughts).forEach(x=>{
+                            isc.RPCManager.sendRequest({
+                                actionURL: attendanceUrl + "/accept-absent-student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + x + "&sessionId=" + selfTaughts[x].sessionIds,
+                                httpMethod: "GET",
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                showPrompt: false,
+                                serverOutputAsString: false,
+                                callback: function (resp) {
+                                    if (!JSON.parse(resp.data)) {
+
+                                        isc.MyYesNoDialog.create({
+                                            title: "<spring:message code='message'/>",
+                                            message: "تعداد غیبت های "+ selfTaughts[x].fullName +" از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'خودآموخته' تغییر خواهد کرد",
+                                            buttons: [
+                                                isc.IButtonSave.create({title: "موافقم",}),
+                                                isc.IButtonCancel.create({title: "مخالفم",})],
+                                            buttonClick: function (button, index) {
+                                                this.close();
+                                                attendanceGrid.setSelectedState([{studentId: x}]);
+                                                let record1 = attendanceGrid.getSelectedRecord();
+
+                                                if (index === 0) {
+                                                    record1.studentState = "kh";
+                                                    attendanceGrid.updateData(record1);
+                                                    attendanceGrid.focusInFilterEditor();
+
+                                                    isc.RPCManager.sendRequest({
+                                                        actionURL: parameterValueUrl + "/get-id/?code=kh",
+                                                        httpMethod: "GET",
+                                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                        useSimpleHttp: true,
+                                                        contentType: "application/json; charset=utf-8",
+                                                        showPrompt: false,
+                                                        serverOutputAsString: false,
+                                                        callback: function (resp) {
+                                                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                                let data = {
+                                                                    "presenceTypeId": JSON.parse(resp.data)
+                                                                };
+                                                                isc.RPCManager.sendRequest({
+                                                                    actionURL: tclassStudentUrl + "/" + record1.classStudentId,
+                                                                    httpMethod: "PUT",
+                                                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                    useSimpleHttp: true,
+                                                                    contentType: "application/json; charset=utf-8",
+                                                                    showPrompt: false,
+                                                                    serverOutputAsString: false,
+                                                                    data: JSON.stringify(data),
+                                                                    callback: function (resp) {
+                                                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                                            delete selfTaughts[x];
+                                                                            if (Object.keys(selfTaughts).length==0) {
+                                                                                checkFinalSave();
+                                                                            }
+                                                                        } else {
+                                                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                                                        }//end else
+                                                                    }
+                                                                });
+                                                                return;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                                else{
+                                                    attendanceGrid.discardEdits(record1);
+                                                    delete selfTaughts[x];
+                                                    checkFinalSave();
+                                                }
+                                            },
+                                            closeClick: function () {
+                                                attendanceGrid.setSelectedState([{studentId: x}]);
+                                                record1 = attendanceGrid.getSelectedRecord();
+                                                attendanceGrid.discardEdits(record1);
+                                                delete selfTaughts[x];
+                                                checkFinalSave();
+                                                this.close();
+                                            }
+                                        });
+                                    }
+                                }
+                        });
+                  });
+                    }
+
                     if(attendanceGrid.getAllEditRows().length <= 0){
                         createDialog("[SKIN]error","تغییری رخ نداده است.","خطا");
                         return;
                     }
-                    attendanceGrid.endEditing();
-                    attendanceGrid.saveAllEdits();
-                    // attendanceGrid.endEditing();
+
+                    checkFinalSave();
                 }
             }),
             isc.IButtonCancel.create({
                 ID: "cancelBtn",
                 click: function () {
                     attendanceGrid.discardAllEdits()
+                    selfTaughts=[];
                     // attendanceForm.getItem("sessionDate").changed(attendanceForm,attendanceForm.getItem("sessionDate"),attendanceForm.getValue("sessionDate"));
                 }
             })
@@ -1022,6 +1140,13 @@
 
     })
     </sec:authorize>
+
+    function checkFinalSave(){
+        if (Object.keys(selfTaughts).length==0) {
+            attendanceGrid.endEditing();
+            attendanceGrid.saveAllEdits();
+        }
+    }
 
 
     var ListGrid_Attendance_AttendanceJSP = isc.TrLG.create({

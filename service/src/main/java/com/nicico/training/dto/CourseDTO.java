@@ -395,6 +395,36 @@ public class CourseDTO implements Serializable {
         private String mainObjective;
         private String goals;
         private String perCourses;
+    }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CourseInfoTuple")
+    public static class InfoTuple{
+        private Long id;
+        private String titleFa;
+        private String code;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("CourseInfoTupleSpecRs")
+    public static class CourseInfoTupleSpecRs {
+        private CourseDTO.InfoTupleSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InfoTupleSpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }
