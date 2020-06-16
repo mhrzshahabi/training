@@ -217,7 +217,15 @@
             {name: "objectName"},
             {name: "objectCode"},
             {name: "course"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
+                showHover:true,
+                hoverWidth: 200,
+                hoverHTML(record) {
+                    if(record.hasWarning == "alarm"){
+                        return "دوره ای به مهارت اختصاص نیافته است";
+                    }
+                },
+            },
         ],
         testData: skillData,
         clientOnly: true,
@@ -342,9 +350,10 @@
         // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
         contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
         customEdges: []});
-    var ButtonCourseDetail_JspEditNeedsAssessment = isc.Button.create({
+    var Button_CourseDetail_JspEditNeedsAssessment = isc.Button.create({
         title:"جزئیات دوره",
         margin: 1,
+        borderRadius: 5,
         click(){
            if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()||ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()||ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()){
                let skillIds = [];
@@ -374,6 +383,14 @@
            else{
                createDialog("info", "مهارتی انتخاب نشده است")
            }
+        }
+    });
+    var Button_CancelChange_JspEditNeedsAssessment = isc.Button.create({
+        title:"لغو تغییرات",
+        borderRadius: 5,
+        margin: 1,
+        click(){
+
         }
     });
 
@@ -833,7 +850,8 @@
         height: "1%",
         padding:2,
         members: [
-            ButtonCourseDetail_JspEditNeedsAssessment,
+            Button_CourseDetail_JspEditNeedsAssessment,
+            Button_CancelChange_JspEditNeedsAssessment,
             Label_PlusData_JspNeedsAssessment,
         ],
     });
@@ -1065,6 +1083,9 @@
         <%--}));--%>
     <%--}--%>
     function createNeedsAssessmentRecords(data) {
+        if(data === null){
+            return;
+        }
         if(!checkSaveData(data, DataSource_Skill_JspNeedsAssessment)){
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
@@ -1081,6 +1102,14 @@
         }))
     }
     function createData_JspNeedsAssessment(record, DomainId, PriorityId = 111) {
+        if(record.skillLevelId === 1 && DomainId !== 108){
+            createDialog("info", "مهارت با سطح مهارت آشنایی فقط در حیطه دانشی قرار میگیرد.");
+            return null;
+        }
+        if(record.skillLevelId === 2 && DomainId !== 109){
+            createDialog("info", "مهارت با سطح مهارت توانایی فقط در حیطه توانشی قرار میگیرد.");
+            return null;
+        }
         let data = {
             objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
             objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
