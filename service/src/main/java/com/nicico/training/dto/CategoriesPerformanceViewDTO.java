@@ -16,34 +16,44 @@ import java.util.List;
 @Accessors(chain = true)
 public class CategoriesPerformanceViewDTO implements Serializable {
 
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private String institute;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer planingClasses;
+    @ApiModelProperty
+    private String instituteTitle;
 
     @ApiModelProperty
-    private Integer processingClasses;
+    private String categoryTitle;
 
     @ApiModelProperty
-    private Integer endedClasses;
+    private Integer classState;
 
     @ApiModelProperty
-    private Integer finishedClasses;
+    private Integer sessionState;
 
     @ApiModelProperty
-    private Integer presentStudents;
+    private Integer sessionStartHour;
 
     @ApiModelProperty
-    private Integer overtimedStudents;
+    private Integer sessionEndHour;
 
     @ApiModelProperty
-    private Integer absentStudents;
+    private Integer classStartDate;
 
     @ApiModelProperty
-    private Integer unjustifiedStudents;
+    private Integer classEndDate;
+
+    @ApiModelProperty
+    private String term;
+
+    @ApiModelProperty
+    private Integer instituteId;
+
+    @ApiModelProperty
+    private Integer courseId;
+
+    @ApiModelProperty
+    private Integer categoryId;
+
+    @ApiModelProperty
+    private Integer subCategoryId;
 
     @Getter
     @Setter

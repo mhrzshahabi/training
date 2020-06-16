@@ -20,34 +20,43 @@ import javax.persistence.Id;
 @Subselect("select * from categories_performance_view")
 @DiscriminatorValue("CategoriesPerformanceView")
 public class CategoriesPerformanceView extends Auditable{
-    @Id
-    @Column(name = "id")
-    private Long id;
 
-    @Column(name = "c_institute", nullable = false)
-    private String institute;
+    @Column(name = "C_INSTITUTE_TITLE")
+    private String instituteTitle;
 
-    @Column(name = "f_planing_classes", nullable = false)
-    private Integer planingClasses;
+    @Column(name = "C_CATEGORY_TITLE")
+    private String categoryTitle;
 
-    @Column(name = "f_processing_classes")
-    private Integer processingClasses;
+    @Column(name = "N_CLASS_STATE")
+    private Integer classState;
 
-    @Column(name = "f_ended_classes")
-    private Integer endedClasses;
+    @Column(name = "N_SESSION_STATE")
+    private Integer sessionState;
 
-    @Column(name = "f_finished_classes")
-    private Integer finishedClasses;
+    @Column(name = "C_SESSION_START_HOUR")
+    private Integer sessionStartHour;
 
-    @Column(name = "f_present_students")
-    private Integer presentStudents;
+    @Column(name = "C_SESSION_END_HOUR")
+    private Integer sessionEndHour;
 
-    @Column(name = "f_overtimed_students")
-    private Integer overtimedStudents;
+    @Column(name = "C_START_DATE")
+    private Integer classStartDate;
 
-    @Column(name = "f_f_absence_students")
-    private Integer absentStudents;
+    @Column(name = "C_END_DATE")
+    private Integer classEndDate;
 
-    @Column(name = "f_unjustified_students")
-    private Integer unjustifiedStudents;
+    @Column(name = "F_TERM")
+    private String term;
+
+    @Column(name = "F_INSTITUTE_ORGANIZER")
+    private Integer instituteId;
+
+    @Column(name = "F_COURSE")
+    private Integer courseId;
+
+    @Column(name = "F_CATEGORY")
+    private Integer categoryId;
+
+    @Column(name = "F_SUBCATEGORY")
+    private Integer subCategoryId;
 }

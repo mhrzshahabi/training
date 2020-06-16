@@ -21,6 +21,14 @@
             fetchDataURL: categoryUrl + "spec-list"
         });
 
+        var RestDataSource_Sub_Category = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true},
+                {name: "titleFa", type: "text"}
+            ],
+            fetchDataURL: subCategoryUrl + "spec-list",
+        });
+
         var RestDataSource_Term = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
@@ -45,7 +53,7 @@
                     {name: "absentStudents"},
                     {name: "unjustifiedStudents"},
                 ],
-            fetchDataURL: categoriesPerformanceReportView + "/iscList",
+            fetchDataURL:  + "/iscList",
             autoFetchData: true
         });
 
@@ -194,6 +202,25 @@
                     textAlign: "center",
                     pickListFields: [
                         {name: "titleFa", filterOperator: "inSet"},
+                    ],
+                    filterFields: [""]
+                },
+                {
+                    name: "subcategory",
+                    ID: "subcategory",
+                    emptyDisplayValue: "همه",
+                    multiple: true,
+                    title: "<spring:message code="course_subcategory"/>",
+                    colSpan: 3,
+                    width: "*",
+                    autoFetchData: false,
+                    useClientFiltering: true,
+                    optionDataSource: RestDataSource_Sub_Category,
+                    displayField: "titleFa",
+                    valueField: "titleFa",
+                    textAlign: "center",
+                    pickListFields: [
+                        {name: "titleFa", filterOperator: "equals"},
                     ],
                     filterFields: [""]
                 },
