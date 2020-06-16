@@ -29,10 +29,18 @@
             fetchDataURL: subCategoryUrl + "spec-list",
         });
 
+        var RestDataSource_Course = isc.TrDS.create({
+            fields: [
+                {name: "id"},
+                {name: "titleFa"}
+            ],
+            fetchDataURL: categoryUrl + "spec-list"
+        });
+
         var RestDataSource_Term = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
-                {name: "code"},
+                {name: "titleFa"},
             ],
             fetchDataURL: termUrl + "spec-list",
             autoFetchData: true
@@ -53,7 +61,7 @@
                     {name: "absentStudents"},
                     {name: "unjustifiedStudents"},
                 ],
-            fetchDataURL:  + "/iscList",
+            // fetchDataURL:  + "/iscList",
             autoFetchData: true
         });
 
@@ -69,7 +77,7 @@
             margin:0,
             titleAlign:"left",
             wrapItemTitles: true,
-            colWidths:[100, 100, 100, 100, 25, 100, 100, 100, 150, 100, 100, 100, 25, 100, 100, 100],
+            colWidths:[75, 75, 75, 75, 25, 75, 75, 75, 100, 75, 75, 75, 25, 75, 75, 75],
             fields: [
                 {
                     name: "firstStartDate",
@@ -91,7 +99,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkStartDate();
+                        checkStartDate("firstStartDate");
                         CPReport_check_date();
                     }
                 },
@@ -114,7 +122,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkStartDate();
+                        checkStartDate("secondStartDate");
                         CPReport_check_date();
                     }
                 },
@@ -138,7 +146,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkFinishDate();
+                        checkFinishDate("firstFinishDate");
                         CPReport_check_date();
                     }
 
@@ -162,7 +170,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkFinishDate();
+                        checkFinishDate("secondFinishDate");
                         CPReport_check_date();
                     }
 
@@ -171,7 +179,7 @@
                     name: "institute",
                     ID: "institute",
                     emptyDisplayValue: "همه",
-                    multiple: true,
+                    multiple: false,
                     title: "<spring:message code="institute"/>",
                     colSpan: 3,
                     width: "*",
@@ -179,7 +187,7 @@
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Institute,
                     displayField: "titleFa",
-                    valueField: "titleFa",
+                    valueField: "id",
                     textAlign: "center",
                     pickListFields: [
                         {name: "titleFa", filterOperator: "inSet"},
@@ -190,7 +198,7 @@
                     name: "category",
                     ID: "category",
                     emptyDisplayValue: "همه",
-                    multiple: true,
+                    multiple: false,
                     title: "<spring:message code="course_category"/>",
                     colSpan: 3,
                     width: "*",
@@ -198,7 +206,7 @@
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Category,
                     displayField: "titleFa",
-                    valueField: "titleFa",
+                    valueField: "id",
                     textAlign: "center",
                     pickListFields: [
                         {name: "titleFa", filterOperator: "inSet"},
@@ -209,7 +217,7 @@
                     name: "subcategory",
                     ID: "subcategory",
                     emptyDisplayValue: "همه",
-                    multiple: true,
+                    multiple: false,
                     title: "<spring:message code="course_subcategory"/>",
                     colSpan: 3,
                     width: "*",
@@ -217,7 +225,7 @@
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Sub_Category,
                     displayField: "titleFa",
-                    valueField: "titleFa",
+                    valueField: "id",
                     textAlign: "center",
                     pickListFields: [
                         {name: "titleFa", filterOperator: "equals"},
@@ -225,23 +233,43 @@
                     filterFields: [""]
                 },
                 {
+                    name: "course",
+                    ID: "course",
+                    emptyDisplayValue: "همه",
+                    multiple: false,
+                    title: "<spring:message code="course"/>",
+                    colSpan: 3,
+                    width: "*",
+                    autoFetchData: false,
+                    useClientFiltering: true,
+                    optionDataSource: RestDataSource_Course,
+                    displayField: "titleFa",
+                    valueField: "id",
+                    textAlign: "center",
+                    pickListFields: [
+                        {name: "titleFa", filterOperator: "inSet"},
+                    ],
+                    filterFields: [""]
+                },
+                {
                     name: "term",
                     ID: "term",
                     emptyDisplayValue: "همه",
-                    multiple: true,
+                    multiple: false,
                     title: "<spring:message code="term"/>",
                     colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Term,
-                    displayField: ["code"],
-                    valueField: ["code"],
+                    displayField: ["titleFa"],
+                    valueField: ["id"],
+                    sortField: ["titleFa"],
                     sortDirection: "descending",
                     textAlign: "center",
                     pickListFields: [
                         {
-                            name: "code",
+                            name: "titleFa",
                             title: "<spring:message code='term.code'/>",
                             filterOperator: "iContains"
                         },
@@ -414,25 +442,25 @@
     // <<----------------------------------------------- Functions --------------------------------------------
     {
         //*****check date is valid*****
-        function checkStartDate() {
+        function checkStartDate(id) {
 
-            DynamicForm_CPReport.clearFieldErrors("sessionStartDate", true);
+            DynamicForm_CPReport.clearFieldErrors(id, true);
 
-            if (DynamicForm_CPReport.getValue("sessionStartDate") === undefined || !checkDate(DynamicForm_CPReport.getValue("sessionStartDate"))) {
-                DynamicForm_CPReport.addFieldErrors("sessionStartDate", "<spring:message code='msg.correct.date'/>", true);
+            if (DynamicForm_CPReport.getValue(id) === undefined || !checkDate(DynamicForm_CPReport.getValue(id))) {
+                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
             } else {
-                DynamicForm_CPReport.clearFieldErrors("sessionStartDate", true);
+                DynamicForm_CPReport.clearFieldErrors(id, true);
             }
         }
 
-        function checkFinishDate() {
+        function checkFinishDate(id) {
 
-            DynamicForm_CPReport.clearFieldErrors("sessionFinishDate", true);
+            DynamicForm_CPReport.clearFieldErrors(id, true);
 
-            if (DynamicForm_CPReport.getValue("sessionFinishDate") === undefined || !checkDate(DynamicForm_CPReport.getValue("sessionFinishDate"))) {
-                DynamicForm_CPReport.addFieldErrors("sessionFinishDate", "<spring:message code='msg.correct.date'/>", true);
+            if (DynamicForm_CPReport.getValue(id) === undefined || !checkDate(DynamicForm_CPReport.getValue(id))) {
+                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
             } else {
-                DynamicForm_CPReport.clearFieldErrors("sessionFinishDate", true);
+                DynamicForm_CPReport.clearFieldErrors(id, true);
             }
         }
 
@@ -455,18 +483,30 @@
         //*****search report result*****
         function searchResult() {
 
-            checkFinishDate();
-            checkStartDate();
-            CPReport_check_date();
+            checkFinishDate("firstFinishDate");
+            checkFinishDate("secondFinishDate");
+            checkStartDate("firstStartDate");
+            checkStartDate("secondStartDate");
+            // CPReport_check_date();
 
+            if (DynamicForm_CPReport.hasErrors())
+                return;
 
+            var reportParameters = {
+                firstStartDate: firstStartDate._value.replace(/\//g, "^"),
+                secondStartDate: secondStartDate._value.replace(/\//g, "^"),
+                firstFinishDate: firstFinishDate._value.replace(/\//g, "^"),
+                secondFinishDate: secondFinishDate._value.replace(/\//g, "^"),
+                institute: DynamicForm_CPReport.getValue("institute") !== undefined ? DynamicForm_CPReport.getValue("institute") : "همه",
+                category: DynamicForm_CPReport.getValue("category") !== undefined ? DynamicForm_CPReport.getValue("category") : "همه",
+                subcategory: DynamicForm_CPReport.getValue("subcategory") !== undefined ? DynamicForm_CPReport.getValue("subcategory") : "همه",
+                term: DynamicForm_CPReport.getValue("term") !== undefined ? DynamicForm_CPReport.getValue("term") : "همه",
+                course: DynamicForm_CPReport.getValue("course") !== undefined ? DynamicForm_CPReport.getValue("course") : "همه"
+            };
 
-            var criteria = DynamicForm_CPReport.getValuesAsAdvancedCriteria();
-            criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
+            console.log(reportParameters);
 
-            console.log(criteria);
-
-            ListGrid_CPReport.implicitCriteria = criteria;
+            RestDataSource_CPReport.fetchDataURL = classPerformanceReport + "list" + "/" + JSON.stringify(reportParameters);
             ListGrid_CPReport.invalidateCache();
             ListGrid_CPReport.fetchData();
         }
