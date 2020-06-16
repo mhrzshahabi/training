@@ -108,7 +108,7 @@ public class SkillService implements ISkillService {
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
-        if (!requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
+        if (  requestSkill.getCourseId() == null || !requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
             updating.setCourseMainObjectiveId(null);
         }
         Skill skill = skillDAO.saveAndFlush(updating);
@@ -151,7 +151,7 @@ public class SkillService implements ISkillService {
     @Transactional(readOnly = true)
     @Override
     public String getMaxSkillCode(String skillCodeStart) {
-        return skillDAO.findMaxSkillCode(skillCodeStart);
+        return skillCodeStart + skillDAO.findMaxSkillCode(skillCodeStart);
     }
 
 

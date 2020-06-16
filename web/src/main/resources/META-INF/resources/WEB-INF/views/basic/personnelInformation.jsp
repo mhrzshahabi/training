@@ -257,7 +257,7 @@
                 {name: "ccpUnit"}
             ],
             recordClick: function () {
-                set_PersonnelInfo_Details();
+                set_PersonnelInfo_Details(this);
             }
         });
 
@@ -1418,6 +1418,9 @@
 
                 let personnelNo = selectedPersonnelListGrid.getSelectedRecord().personnelNo;
                 let nationalCode = selectedPersonnelListGrid.getSelectedRecord().nationalCode;
+
+                console.log(personnelNo)
+                console.log(nationalCode)
 
                 if (PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
                     if (personnelNo !== null && (nationalCode_Info !== nationalCode || personnelNo_Info !== personnelNo)) {

@@ -1801,21 +1801,6 @@
         //*****print student form issuance*****
         function print_Student_FormIssuance(type, numberOfStudents) {
 
-
-            /*if (Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Reaction" && ListGrid_evaluation_class.getSelectedRecord().classStatus !== "3") {
-                isc.Dialog.create({
-                    message: "اين كلاس هنوز خاتمه اوليه نخورده است",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="global.message"/>",
-                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-
-                return;
-            }*/
-
             if (ListGrid_evaluation_student.getTotalRows() > 0) {
                 let selectedClass = ListGrid_evaluation_class.getSelectedRecord();
                 let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();

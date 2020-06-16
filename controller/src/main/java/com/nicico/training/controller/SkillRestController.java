@@ -71,18 +71,9 @@ public class SkillRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_skill')")
     public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request) {
-        String maxSkillCode;
-        String newSkillCode;
-        Integer maxId;
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
-            maxSkillCode = skillService.getMaxSkillCode(create.getCode());
-            if (maxSkillCode == null)
-                throw new Exception("Skill with this Code wrong");
-            maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
-            maxId++;
-            newSkillCode = create.getCode() + String.format("%04d", maxId);
-            create.setCode(newSkillCode);
+            create.setCode(skillService.getMaxSkillCode(create.getCode()));
             return new ResponseEntity<>(skillService.create(create), HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -94,17 +85,9 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/getMaxSkillCode/{code}")
     public String MaxSkillCode(@PathVariable String code) throws Exception {
-            String maxSkillCode;
-            String newSkillCode;
-            Integer maxId;
-            maxSkillCode = skillService.getMaxSkillCode(code);
-            if (maxSkillCode == null)
-                throw new Exception("Skill with this Code wrong");
-            maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
-            maxId++;
-            newSkillCode = code + String.format("%04d", maxId);
-            return newSkillCode;
+        return skillService.getMaxSkillCode(code);
     }
+
 
     @Loggable
     @PutMapping(value = "/{id}")

@@ -41,7 +41,6 @@ public class PostRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
-    private final ModelMapper modelMapper;
 
 
     @GetMapping("/list")
@@ -131,7 +130,6 @@ public class PostRestController {
                                                        @RequestParam(value = "id", required = false) Long id,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";

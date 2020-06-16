@@ -51,4 +51,31 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private Boolean evaluationTeacherStatus;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Statical")
+    public static class Statical{
+        private Integer classCount_reaction;
+        private Integer classCount_learning;
+        private Integer classCount_behavioral;
+        private Integer classCount_results;
+        private Integer classCount_teacher;
+        private Integer classCount_effectiveness;
+
+        private Integer passed_reaction;
+        private Integer passed_learning;
+        private Integer passed_behavioral;
+        private Integer passed_results;
+        private Integer passed_teacher ;
+        private Integer passed_effectiveness;
+
+        private Integer failed_reaction;
+        private Integer failed_learning;
+        private Integer failed_behavioral;
+        private Integer failed_results;
+        private Integer failed_teacher;
+        private Integer failed_effectiveness;
+    }
+
 }
