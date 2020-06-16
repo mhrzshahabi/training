@@ -128,6 +128,12 @@ public class ClassSessionRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Transactional
+    @DeleteMapping(value = "/deleteSessions/{sessionIds}")
+    public ResponseEntity<ClassSessionDTO.DeleteStatus> deleteSessions(@PathVariable List<Long> sessionIds) {
+        return new ResponseEntity<>(classSessionService.deleteSessions(sessionIds),HttpStatus.OK);
+    }
+
     //*********************************
 
     @Loggable

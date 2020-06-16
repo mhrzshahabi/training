@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.Option;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +46,7 @@ public class ClassSessionService implements IClassSession {
     private final HolidayDAO holidayDAO;
     private final MessageSource messageSource;
     private final TclassDAO tclassDAO;
+    private final ClassAlarmService classAlarmService;
 
     //*********************************
 
@@ -293,6 +293,39 @@ public class ClassSessionService implements IClassSession {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    //*********************************
+
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public ClassSessionDTO.DeleteStatus deleteSessions(List<Long> sessionIds) {
+        int totalSize = sessionIds.size();
+        int successes = 0;
+
+        for (int i=0;i<sessionIds.size();i++) {
+             Long sessionId=sessionIds.get(i);
+
+             if (!attendanceDAO.existsBySessionId(sessionId)) {
+                 Long classId = getClassIdBySessionId(sessionId);
+
+                 classSessionDAO.deleteById(sessionId);
+                 classAlarmService.alarmSumSessionsTimes(classId);
+                 classAlarmService.alarmTeacherConflict(classId);
+                 classAlarmService.alarmStudentConflict(classId);
+                 classAlarmService.alarmTrainingPlaceConflict(classId);
+                 successes++;
+             }//end if
+        }
+
+        ClassSessionDTO.DeleteStatus deleteStatus=new ClassSessionDTO.DeleteStatus();
+        deleteStatus.setSucesses(successes);
+        deleteStatus.setTotalSizes(totalSize);
+
+        return deleteStatus;
     }
 
     //*********************************
