@@ -95,6 +95,16 @@ public class AttendanceService implements IAttendanceService {
         return returnList;
     }
 
+    static private String prepareForArabicSort(String text) {
+        return text
+                .replaceAll("ی", "ي")
+                .replaceAll("ک", "ك")
+                .replaceAll("گ", "كی")
+                .replaceAll("ژ", "زی")
+                .replaceAll("چ", "جی")
+                .replaceAll("پ", "بی");
+    }
+
 
     @Transactional
     @Override
@@ -106,11 +116,12 @@ public class AttendanceService implements IAttendanceService {
         List<Attendance> attendances = new ArrayList<>();
         sessions.forEach(s -> attendances.addAll(attendanceDAO.findBySessionId(s.getId())));
         List<Map> maps = new ArrayList<>();
+
         for (ClassStudent classStudent : tclass.getClassStudents()) {
             Map<String, String> map = new HashMap<>();
             map.put("studentId", String.valueOf(classStudent.getStudent().getId()));
-            map.put("studentName", classStudent.getStudent().getFirstName());
-            map.put("studentFamily", classStudent.getStudent().getLastName());
+            map.put("studentName", classStudent.getStudent().getFirstName().trim());
+            map.put("studentFamily", prepareForArabicSort(classStudent.getStudent().getLastName().trim()));
             map.put("personalNum", classStudent.getStudent().getPersonnelNo());
             map.put("nationalCode", classStudent.getStudent().getNationalCode());
             map.put("company", classStudent.getStudent().getCompanyName());
@@ -131,6 +142,12 @@ public class AttendanceService implements IAttendanceService {
             }
             maps.add(map);
         }
+
+        maps.sort(Comparator.nullsLast(Comparator.comparing(m -> m.get("studentFamily").toString(),
+                Comparator.nullsLast(Comparator.naturalOrder()))));
+
+        Collections.reverse(maps);
+
         List<Attendance> causesOfAbsence = attendances.stream().filter(a -> a.getState().equals("4")).collect(Collectors.toList());
         List<Map> causesMap = new ArrayList<>();
         for (Attendance attendance : causesOfAbsence) {
