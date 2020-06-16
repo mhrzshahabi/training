@@ -4,9 +4,12 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Set;
 
 public interface IClassSession {
 
@@ -38,4 +41,6 @@ public interface IClassSession {
 
     @Transactional
     SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode);
+
+    ClassSessionDTO.DeleteStatus deleteSessions(@RequestBody List<Long> studentIds);
 }
