@@ -20,7 +20,7 @@ public class AttendancePerformanceReportService implements IAttendancePerformanc
 
 
     @Override
-    public List<AttendancePerformanceReportDTO> classPerformanceList(String reportParameter) {
+    public List<AttendancePerformanceReportDTO> attendancePerformanceList(String reportParameter) {
         return null;
     }
 }
