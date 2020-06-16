@@ -72,6 +72,22 @@ public class SkillDTO {
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private CourseDTO.CourseInfoTupleLite course;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("SkillInfoTupleENA")
+    public static class InfoTupleENA extends SkillDTO {
+        private Long id;
+        private CourseDTO.CourseInfoTupleLite course;
+    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("SkillInfoENA")
+    public static class InfoENA extends SkillDTO {
+        private Long id;
+        private CourseDTO.Info course;
+    }
 
     @Getter
     @Setter
@@ -133,8 +149,8 @@ public class SkillDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<SkillDTO.Info> data;
+    public static class SpecRs <T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
