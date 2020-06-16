@@ -73,7 +73,7 @@ nicico:
     update:
       mode: false
   training:
-    version: '1.14'
+    version: '1.16'
 ---
 
 spring:

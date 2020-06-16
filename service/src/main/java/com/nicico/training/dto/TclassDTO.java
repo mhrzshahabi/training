@@ -251,7 +251,7 @@ public class TclassDTO {
         @Getter(AccessLevel.NONE)
         private List<Object> targetSocieties;
 
-        public List<Object> gettargetSocieties() {
+        public List<Object> getTargetSocieties() {
             if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;

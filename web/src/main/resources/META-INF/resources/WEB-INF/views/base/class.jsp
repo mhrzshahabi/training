@@ -1108,7 +1108,6 @@
                         let record = ListGrid_Class_JspClass.getSelectedRecord();
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
                     }
-
                 },
             },
             {
