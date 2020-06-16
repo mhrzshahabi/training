@@ -149,6 +149,13 @@ public class SkillService implements ISkillService {
     }
 
     @Transactional(readOnly = true)
+//    @Override
+    public <T> SearchDTO.SearchRs<T> searchGeneric(SearchDTO.SearchRq request, Class<T> infoType) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        return SearchUtil.search(skillDAO, request, e -> modelMapper.map(e, infoType));
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public String getMaxSkillCode(String skillCodeStart) {
         return skillCodeStart + skillDAO.findMaxSkillCode(skillCodeStart);

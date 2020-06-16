@@ -124,6 +124,7 @@ public class PostGradeGroupRestController {
                                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                                        @RequestParam(value = "operator", required = false) String operator,
                                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "id", required = false) Long id,
                                                                        @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
@@ -138,12 +139,19 @@ public class PostGradeGroupRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.searchWithoutPermission(request);
-
         final PostGradeGroupDTO.SpecRs specResponse = new PostGradeGroupDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
