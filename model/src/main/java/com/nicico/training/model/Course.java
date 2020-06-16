@@ -23,8 +23,8 @@ import java.util.Set;
 public class Course extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Course_seq")
-    @SequenceGenerator(name = "Course_seq", sequenceName = "seq_Course_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_seq")
+    @SequenceGenerator(name = "course_seq", sequenceName = "seq_course_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
@@ -78,13 +78,6 @@ public class Course extends Auditable {
     @OneToMany(mappedBy = "courseMainObjective")
     private Set<Skill> skillMainObjectiveSet;
 
-//    @Transient
-//    public List<Long> getMainObjectiveIds() {
-//        List<Long> ids = new ArrayList<>();
-//        skillMainObjectiveSet.forEach(c -> ids.add(c.getId()));
-//        return ids;
-//    }
-
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;
 
@@ -130,14 +123,6 @@ public class Course extends Auditable {
     @Column(name = "start_evaluation")
     private Integer startEvaluation;
 
-    //    @Transient
-//    private Long knowledge = Long.valueOf(0);
-//
-//    @Transient
-//    private Long skill = Long.valueOf(0);
-//
-//    @Transient
-//    private Long attitude = Long.valueOf(0);
     @Column(name = "c_equal_course")
     private String equalCourse;
 
@@ -150,13 +135,6 @@ public class Course extends Auditable {
     @Column(name = "b_has_goal")
     private Boolean hasGoal;
 
-
-    //    @ManyToOne(cascade={CascadeType.ALL})
-//    @JoinColumn(name="pre_course_id")
-//    private Course preCourse;
-//
-//    @OneToMany(mappedBy="preCourse")
-//    private List<Course> preCourseList = new ArrayList<>();
     @Column(name = "c_workflow_status")
     private String workflowStatus;
     @Column(name = "c_workflow_status_code")

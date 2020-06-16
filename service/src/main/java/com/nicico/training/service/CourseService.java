@@ -460,13 +460,6 @@ public class CourseService implements ICourseService {
         return String.valueOf(max);
     }
 
-    @Transactional
-    @Override
-    public List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId) {
-        List<CompetenceDTOOld.Info> compeInfoList = new ArrayList<>();
-        return compeInfoList;
-    }
-
     //-------------------------------
 //    @Transactional
 //    @Override

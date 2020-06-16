@@ -12,32 +12,6 @@ import javax.persistence.*;
 @Immutable
 @Table(name = "tbl_department")
 public class Department {
-//
-//    @Id
-//    @Column(name = "id", precision = 10)
-//    private String id;
-//
-//    @Column(name = "c_area")
-//    private String area;
-//
-//    @Column(name = "c_assistance")
-//    private String assistance;
-//
-//    @Column(name = "c_affairs")
-//    private String affairs;
-//
-//    @Column(name = "c_section")
-//    private String section;
-//
-//    @Column(name = "c_unit")
-//    private String unit;
-//
-//    @Column(name = "c_cost_center_code")
-//    private String costCenterCode;
-//
-//    @Column(name = "c_cost_center_title_fa")
-//    private String costCenterTitleFa;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "department_seq")
