@@ -173,8 +173,6 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         if(result != null && result.length > 2)
             felGrade = result[3];
-        if(felGrade < 0)
-            felGrade = Math.abs(felGrade);
 
         finalResult.put("felGrade",felGrade);
         if(felGrade >= minScoreEL)

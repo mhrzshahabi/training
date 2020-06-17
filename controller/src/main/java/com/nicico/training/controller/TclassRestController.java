@@ -704,7 +704,7 @@ public class TclassRestController {
         if (learningEvaluationOperator != null && learningEvaluationGrade != null) {
             double grade = Double.parseDouble(learningEvaluationGrade.toString());
             for (TclassDTO.TClassReport datum : response.getList()) {
-                double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
+                double classLearningGrade = evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3];
                 if (learningEvaluationOperator.equals("1")) {
                     if (classLearningGrade >= grade)
                         listRemovedObjects.add(datum);
@@ -899,7 +899,7 @@ public class TclassRestController {
         if (learningEvaluationOperator != null && learningEvaluationGrade != null) {
             double grade = Double.parseDouble(learningEvaluationGrade.toString());
             for (TclassDTO.TClassReport datum : resp.getList()) {
-                double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
+                double classLearningGrade = evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3];
                 if (learningEvaluationOperator.equals("1")) {
                     if (classLearningGrade >= grade)
                         listRemovedObjects.add(datum);

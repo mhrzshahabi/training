@@ -462,7 +462,7 @@ public class ExportToFileController {
                 if (trainingClassReportlearningEvaluationOperator != null && trainingClassReportlearningEvaluationGrade != null) {
                     double grade = Double.parseDouble(trainingClassReportlearningEvaluationGrade.toString());
                     for (TclassDTO.TClassReport datum : list8.getList()) {
-                        double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
+                        double classLearningGrade = evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3];
                         if (trainingClassReportlearningEvaluationOperator.equals("1")) {
                             if (classLearningGrade >= grade)
                                 trainingClassReportlistRemovedObjects.add(datum);
