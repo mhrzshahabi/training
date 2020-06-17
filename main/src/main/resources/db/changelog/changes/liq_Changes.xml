@@ -101,4 +101,33 @@
         </addColumn>
     </changeSet>
 
+
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-416">
+        <addColumn tableName="tbl_equal_course">
+            <column name="id" type="number(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-237">
+        <dropForeignKeyConstraint baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-377">
+        <dropPrimaryKey tableName="tbl_equal_course"/>
+        <createIndex indexName="IX_tbl_equal_coursePK" tableName="tbl_equal_course" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_equal_coursePK" forIndexName="IX_tbl_equal_coursePK" tableName="tbl_equal_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-215">
+        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" referencedColumnNames="id" referencedTableName="tbl_equal_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-504">
+        <dropColumn columnName="EQUAL_COURSE_ID" tableName="tbl_equal_course"/>
+    </changeSet>
+
+    <!--    <changeSet author="poursalehi_mos (generated)" id="1592301837609-373">-->
+    <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
+    <!--    </changeSet>-->
+
 </databaseChangeLog>
