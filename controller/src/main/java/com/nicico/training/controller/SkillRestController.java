@@ -185,6 +185,40 @@ public class SkillRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+    @Loggable
+    @GetMapping(value = "WFC/spec-list")
+//    @PreAuthorize("hasAuthority('r_skill')")
+    public ResponseEntity<SkillDTO.SkillSpecRs> listWithFullCourse(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                     @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<SkillDTO.InfoENA> response = skillService.searchGeneric(request, SkillDTO.InfoENA.class);
+        final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
+        final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 
     // ---------------
 

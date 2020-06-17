@@ -19,7 +19,7 @@ public class EqualCourse extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equal_course_seq")
     @SequenceGenerator(name = "equal_course_seq", sequenceName = "seq_equal_course_id", allocationSize = 1)
-    @Column(name = "equal_course_id", precision = 10)
+    @Column(name = "id", precision = 10)
     private Long id;
 
     @ElementCollection

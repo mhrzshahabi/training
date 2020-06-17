@@ -269,38 +269,47 @@ public class EvaluationAnalysisRestController {
         map.put("1003", 80);
         map.put("1004", 100);
 
-        int studentCount = classStudents.size();
+        int studentCount = 0;
         List<Double> preScores = new ArrayList<>();
         List<Double> postScores = new ArrayList<>();
 
         for (ClassStudent classStudent : classStudents) {
             if(classStudent.getScore() != null || classStudent.getValence() != null)
                 resultSet.setHavePostTest("true");
-            if (classStudent.getScore() == null)
-            {
-                classStudent.setScore((float) 0.0);
-            }
-            if (classStudent.getPreTestScore() == null)
-            {
-                classStudent.setPreTestScore((float) 0.0);
-            }
-            if (classStudent.getValence() == null)
-            {
-                classStudent.setValence(String.valueOf(0));
-            }
+//            if (classStudent.getScore() == null)
+//            {
+//                classStudent.setScore((float) 0.0);
+//            }
+//            if (classStudent.getPreTestScore() == null)
+//            {
+//                classStudent.setPreTestScore((float) 0.0);
+//            }
+//            if (classStudent.getValence() == null)
+//            {
+//                classStudent.setValence(String.valueOf(0));
+//            }
 
-            preScores.add(Double.valueOf(classStudent.getPreTestScore()));
-            if(scoringMethod.equalsIgnoreCase("1")) {
+            if(classStudent.getPreTestScore() != null && scoringMethod.equalsIgnoreCase("1") && classStudent.getValence()!=null) {
                 postScores.add(Double.valueOf(map.get(classStudent.getValence())));
+                preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                studentCount++;
             }
-            else if(scoringMethod.equalsIgnoreCase("3"))
-                postScores.add(Double.valueOf(classStudent.getScore())*5);
-            else
+            else if(classStudent.getPreTestScore() != null && scoringMethod.equalsIgnoreCase("3") && classStudent.getScore()!=null) {
+                postScores.add(Double.valueOf(classStudent.getScore()) * 5);
+                preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                studentCount++;
+            }
+            else if(classStudent.getPreTestScore() != null && classStudent.getScore() != null) {
                 postScores.add(Double.valueOf(classStudent.getScore()));
+                preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                studentCount++;
+            }
         }
 
-        Map<String, Boolean> tStudentResult = calculateTStudentResult(preScores, postScores,studentCount);
-        if(tStudentResult.get("hasDiffer")){
+        Map<String, Boolean> tStudentResult = new HashMap<String, Boolean>();
+        if(studentCount != 0)
+            tStudentResult = calculateTStudentResult(preScores, postScores,studentCount);
+        if(tStudentResult.containsKey("hasDiffer") && tStudentResult.get("hasDiffer")){
             if(tStudentResult.get("positiveDiffer"))
                 resultSet.setTstudent("بر اساس توزیع تی استیودنت  با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیر مثبتی داشته اند.");
             else

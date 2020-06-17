@@ -40,6 +40,19 @@
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
 
     <script>
+        String.prototype.toEnglishDigit = function() {
+            var find = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+            var replace = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            var replaceString = this;
+            var regex;
+            for (var i = 0; i < find.length; i++)
+            {
+                regex = new RegExp(find[i], "g");
+                replaceString = replaceString.replace(regex, replace[i]);
+            }
+            return replaceString;
+        };
+
         function groupFilter(title,inputURL,func){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
@@ -79,7 +92,9 @@
                                         let value=DynamicForm_GroupInsert_Textbox_JspStudent.getValue();
                                         if(value != null&& value != "" && typeof(value) != "undefined")
                                         {
-                                            let personnels=value.split(',');
+                                            value=value.toEnglishDigit();
+                                            let personnels=(value.indexOf('،')>-1)?value.split('،'):value.split(',');
+
                                             let len=personnels.size();
 
                                             for (let i=0;i<len;i++){
@@ -971,7 +986,7 @@
         width: 350,
         height: "100%",
         styleName: "header-logo",
-        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/> 1.16 </h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
+        contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/></h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
     });
 
     <%--var headerFlow = isc.HTMLFlow.create({--%>

@@ -778,6 +778,20 @@
                                             item.fillHorizontalSpace = true;
                                             item.valueMap = valueMapAnswer;
                                             // item.colSpan = ,
+                                            item.icons = [
+                                                {
+                                                    name: "clear",
+                                                    src: "[SKIN]actions/remove.png",
+                                                    width: 15,
+                                                    height: 15,
+                                                    inline: true,
+                                                    prompt: "پاک کردن",
+                                                    click : function (form, item, icon) {
+                                                        item.clearValue();
+                                                        item.focusInItem();
+                                                    }
+                                                }
+                                            ];
                                             itemList.add(item);
                                         }
                                         ;
@@ -804,6 +818,20 @@
                                                     item.fillHorizontalSpace = true;
                                                     item.valueMap = valueMapAnswer;
                                                     // item.colSpan = ,
+                                                    item.icons = [
+                                                        {
+                                                            name: "clear",
+                                                            src: "[SKIN]actions/remove.png",
+                                                            width: 15,
+                                                            height: 15,
+                                                            inline: true,
+                                                            prompt: "پاک کردن",
+                                                            click : function (form, item, icon) {
+                                                                item.clearValue();
+                                                                item.focusInItem();
+                                                            }
+                                                        }
+                                                    ];
                                                     itemList.add(item);
                                                 }
                                                 DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
@@ -838,6 +866,20 @@
                                                 item.fillHorizontalSpace = true;
                                                 item.valueMap = valueMapAnswer;
                                                 // item.colSpan = ,
+                                                item.icons = [
+                                                    {
+                                                        name: "clear",
+                                                        src: "[SKIN]actions/remove.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "پاک کردن",
+                                                        click : function (form, item, icon) {
+                                                            item.clearValue();
+                                                            item.focusInItem();
+                                                        }
+                                                    }
+                                                ];
                                                 itemList.add(item);
                                             }
                                             DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);

@@ -39,36 +39,42 @@
 
     var RestDataSource_StaticalResult_JspEvaluationStaticalReport = [
         {
+            index: 1,
             evaluationType:"واکنشی",
             classCount: classCount_reaction,
             passedCount: passed_reaction,
             failedCount:failed_reaction
         },
         {
+            index: 2,
             evaluationType:"یادگیری",
             classCount: classCount_learning,
             passedCount: passed_learning,
             failedCount:failed_learning
         },
         {
+            index: 3,
             evaluationType:"رفتاری",
             classCount: classCount_behavioral,
             passedCount: passed_behavioral,
             failedCount:failed_behavioral
         },
         {
+            index: 4,
             evaluationType:"نتایج",
             classCount: classCount_results,
             passedCount: passed_results,
             failedCount:failed_results
         },
         {
+            index: 5,
             evaluationType:"مدرس",
             classCount: classCount_teacher,
             passedCount: passed_teacher,
             failedCount:failed_teacher
         },
         {
+            index: 6,
             evaluationType:"اثربخشی",
             classCount: classCount_effectiveness,
             passedCount: passed_effectiveness,
@@ -301,13 +307,14 @@
         height: "100%",
         data: RestDataSource_StaticalResult_JspEvaluationStaticalReport,
         fields: [
+            {name: "index",hidden:true},
             {name: "evaluationType", title: "نوع ارزیابی"},
             {name: "classCount", title: "تعداد کلاس"},
             {name: "passedCount", title: "تعداد تائید شده"},
             {name: "failedCount", title: "تعداد تائید نشده"}
         ],
         cellHeight: 43,
-        sortField: 1,
+        sortField: 0,
         showFilterEditor: false,
         selectionType: "single"
     });
@@ -1056,36 +1063,42 @@
 
             var RestDataSource_StaticalResult_JspEvaluationStaticalReport = [
                 {
+                    index: 1,
                     evaluationType:"واکنشی",
                     classCount: classCount_reaction,
                     passedCount: passed_reaction,
                     failedCount:failed_reaction
                 },
                 {
+                    index: 2,
                     evaluationType:"یادگیری",
                     classCount: classCount_learning,
                     passedCount: passed_learning,
                     failedCount:failed_learning
                 },
                 {
+                    index: 3,
                     evaluationType:"رفتاری",
                     classCount: classCount_behavioral,
                     passedCount: passed_behavioral,
                     failedCount:failed_behavioral
                 },
                 {
+                    index: 4,
                     evaluationType:"نتایج",
                     classCount: classCount_results,
                     passedCount: passed_results,
                     failedCount:failed_results
                 },
                 {
+                    index: 5,
                     evaluationType:"مدرس",
                     classCount: classCount_teacher,
                     passedCount: passed_teacher,
                     failedCount:failed_teacher
                 },
                 {
+                    index: 6,
                     evaluationType:"اثربخشی",
                     classCount: classCount_effectiveness,
                     passedCount: passed_effectiveness,

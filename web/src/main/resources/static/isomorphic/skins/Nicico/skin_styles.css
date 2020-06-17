@@ -358,7 +358,7 @@ ul {
   border: 2px solid #fe9d2a;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  border-radius: 0px;
+  border-radius: 3px;
   padding-left: 5px;
   padding-right: 5px;
   line-height: 18px;

@@ -9,6 +9,7 @@
     const red = "#ff8abc";
     const green = "#5dd851";
     var editing = false;
+    var isFirstChange;
     var priorityList = {
         "Post": "پست",
         "PostGroup": "گروه پستی",
@@ -120,22 +121,30 @@
     var RestDataSource_Course_JspENA = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "scoringMethod"},
-            {name: "acceptancelimit"},
-            {name: "startEvaluation"},
-            {
-                name: "code",
-                title: "<spring:message code="course.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
-            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
-            {name: "theoryDuration"},
-            {name: "categoryId"},
-            {name: "subCategoryId"},
+            {name: "code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            <%--{name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},--%>
+            <%--{name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},--%>
+            <%--{name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains"},--%>
+            {name: "course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "iContains"}
+            <%--{name: "scoringMethod"},--%>
+            <%--{name: "acceptancelimit"},--%>
+            <%--{name: "startEvaluation"},--%>
+            <%--{--%>
+                <%--name: "code",--%>
+                <%--title: "<spring:message code="course.code"/>",--%>
+                <%--filterOperator: "iContains",--%>
+                <%--autoFitWidth: true--%>
+            <%--},--%>
+            <%--{name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},--%>
+            <%--{name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},--%>
+            <%--{name: "theoryDuration"},--%>
+            <%--{name: "categoryId"},--%>
+            // {name: "subCategoryId"},
         ],
-        fetchDataURL: courseUrl + "spec-list"
+        fetchDataURL: skillUrl + "/WFC/spec-list"
 
     });
     var RestDataSource_category_JspCourse = isc.TrDS.create({
@@ -207,7 +216,16 @@
             },
             {name: "objectName"},
             {name: "objectCode"},
-            {name: "course"}
+            {name: "course"},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
+                showHover:true,
+                hoverWidth: 200,
+                hoverHTML(record) {
+                    if(record.hasWarning == "alarm"){
+                        return "دوره ای به مهارت اختصاص نیافته است";
+                    }
+                },
+            },
         ],
         testData: skillData,
         clientOnly: true,
@@ -260,7 +278,7 @@
                         ID: "ListGrid_Course_JspENA",
                         dataSource: RestDataSource_Course_JspENA,
                         // selectionType: "none",
-                        filterOnKeypress: false,
+                        filterOnKeypress: true,
                         // autoFetchData:true,
                         fields: [
                             // {name: "scoringMethod"},
@@ -268,25 +286,33 @@
                             // {name: "startEvaluation"},
                             {
                                 name: "code",
-                                title: "<spring:message code="course.code"/>",
+                                title: "<spring:message code="skill.code"/>",
                                 filterOperator: "iContains",
                                 autoFitWidth: true
                             },
                             {
                                 name: "titleFa",
+                                title: "<spring:message code="skill"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            },
+                            {
+                                name: "course.code",
+                                title: "<spring:message code="course.code"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            },
+                            {
+                                name: "course.titleFa",
                                 title: "<spring:message code="course.title"/>",
                                 filterOperator: "iContains",
                                 autoFitWidth: true
                             },
-                            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+                            <%--{name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},--%>
+
                             {
-                                name: "theoryDuration",
-                                title: "<spring:message code="course_Running_time"/>",
-                                filterOperator: "equals",
-                            },
-                            {
-                                name: "categoryId",
-                                title: "<spring:message code="category"/> ",
+                                name: "course.categoryId",
+                                title: "<spring:message code="category"/> <spring:message code="course"/>",
                                 optionDataSource: RestDataSource_category_JspCourse,
                                 filterOnKeypress: true,
                                 valueField: "id",
@@ -294,12 +320,17 @@
                                 filterOperator: "equals",
                             },
                             {
-                                name: "subCategoryId",
-                                title: "<spring:message code="subcategory"/> ",
+                                name: "course.subCategoryId",
+                                title: "<spring:message code="subcategory"/> <spring:message code="course"/>",
                                 optionDataSource: RestDataSource_subCategory_JspCourse,
                                 filterOnKeypress: true,
                                 valueField: "id",
                                 displayField: "titleFa",
+                                filterOperator: "equals",
+                            },
+                            {
+                                name: "course.theoryDuration",
+                                title: "<spring:message code="course_Running_time"/>",
                                 filterOperator: "equals",
                             },
                         ],
@@ -319,34 +350,47 @@
         // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
         contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
         customEdges: []});
-    var ButtonCourseDetail_JspEditNeedsAssessment = isc.Button.create({
+    var Button_CourseDetail_JspEditNeedsAssessment = isc.Button.create({
         title:"جزئیات دوره",
         margin: 1,
+        borderRadius: 5,
         click(){
            if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()||ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()||ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()){
-               let courseIds = [];
+               let skillIds = [];
                if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().course != undefined) {
-                   courseIds.push(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().course.id);
+                   skillIds.push(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().skillId);
                }
                if(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   courseIds.push(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().course.id);
+                   skillIds.push(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().skillId);
                }
                if(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   courseIds.push(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().course.id);
+                   skillIds.push(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().skillId);
                }
                if(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   courseIds.push(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().course.id);
+                   skillIds.push(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().id);
+               }
+               if(skillIds.length == 0){
+                   createDialog("info", "مهارت های انتخاب شده بدون دوره هستند.");
+                   return;
                }
                let criteria = {
                    _constructor: "AdvancedCriteria",
                    operator: "and",
-                   criteria: [{fieldName: "id", operator: "inSet", value: courseIds}]
+                   criteria: [{fieldName: "id", operator: "inSet", value: skillIds}]
                };
                Window_CourseDetail_JspENA.show(criteria);
            }
            else{
                createDialog("info", "مهارتی انتخاب نشده است")
            }
+        }
+    });
+    var Button_CancelChange_JspEditNeedsAssessment = isc.Button.create({
+        title:"لغو تغییرات",
+        borderRadius: 5,
+        margin: 1,
+        click(){
+
         }
     });
 
@@ -485,6 +529,7 @@
         fields: [
             {name: "titleFa"},
             {name: "objectType"},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
 
             // {
             //     name: "needsAssessmentPriorityId",
@@ -560,6 +605,7 @@
         fields: [
             {name: "titleFa"},
             {name: "objectType"},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
             // {
             //     name: "needsAssessmentPriorityId",
             //     canEdit:true,
@@ -637,6 +683,7 @@
         fields: [
             {name: "titleFa"},
             {name: "objectType"},
+            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
             // {
             //     name: "needsAssessmentPriorityId",
             //     canEdit:true,
@@ -803,7 +850,8 @@
         height: "1%",
         padding:2,
         members: [
-            ButtonCourseDetail_JspEditNeedsAssessment,
+            Button_CourseDetail_JspEditNeedsAssessment,
+            Button_CancelChange_JspEditNeedsAssessment,
             Label_PlusData_JspNeedsAssessment,
         ],
     });
@@ -955,11 +1003,12 @@
     }
     function removeRecord_JspNeedsAssessment(record, state=0) {
         if(record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")){
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "DELETE", null, function (resp) {
                 if (resp.httpResponseCode !== 200) {
                     createDialog("info","خطا در حذف مهارت");
                     return 0;
                 }
+                isFirstChange = false;
                 DataSource_Skill_JspNeedsAssessment.removeData(record);
                 return 1;
             }));
@@ -973,6 +1022,7 @@
     }
 
     function editNeedsAssessmentRecord(objectId, objectType) {
+        isFirstChange = true;
         // let criteria = [
         //     '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
         //     '{"fieldName":"objectId","operator":"equals","value":'+objectId+'}'
@@ -1000,7 +1050,7 @@
                 skill.objectName = data[i].objectName;
                 skill.objectCode = data[i].objectCode;
                 if(data[i].skill.course === undefined){
-                    skill.titleFa = " (بدون دوره) " + data[i].skill.titleFa;
+                    skill.hasWarning = "alarm";
                 }
                 else {
                     skill.course = data[i].skill.course;
@@ -1033,21 +1083,33 @@
         <%--}));--%>
     <%--}--%>
     function createNeedsAssessmentRecords(data) {
+        if(data === null){
+            return;
+        }
         if(!checkSaveData(data, DataSource_Skill_JspNeedsAssessment)){
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
         }
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "POST", JSON.stringify(data),function(resp){
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "?isFirstChange=" + isFirstChange, "POST", JSON.stringify(data),function(resp){
             if (resp.httpResponseCode != 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
             data.id = JSON.parse(resp.data).id;
             DataSource_Skill_JspNeedsAssessment.addData(data);
+            isFirstChange = false;
             fetchDataDomainsGrid();
         }))
     }
     function createData_JspNeedsAssessment(record, DomainId, PriorityId = 111) {
+        if(record.skillLevelId === 1 && DomainId !== 108){
+            createDialog("info", "مهارت با سطح مهارت آشنایی فقط در حیطه دانشی قرار میگیرد.");
+            return null;
+        }
+        if(record.skillLevelId === 2 && DomainId !== 109){
+            createDialog("info", "مهارت با سطح مهارت توانایی فقط در حیطه توانشی قرار میگیرد.");
+            return null;
+        }
         let data = {
             objectType: NeedsAssessmentTargetDF_needsAssessment.getValue("objectType"),
             objectId: NeedsAssessmentTargetDF_needsAssessment.getValue("objectId"),
@@ -1055,10 +1117,11 @@
             objectCode: NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").getSelectedRecord().code,
             competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
             skillId: record.id,
-            titleFa: record.course ? record.titleFa : " (بدون دوره) " + record.titleFa,
+            titleFa: record.titleFa,
             needsAssessmentPriorityId: PriorityId,
             needsAssessmentDomainId: DomainId,
-            course: record.course
+            hasWarning: record.course ? "" : "alarm",
+            course: record.course,
         };
         return data;
     }
@@ -1102,12 +1165,13 @@
                     record.needsAssessmentPriorityId = 111;
                     break;
             }
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "PUT", JSON.stringify(record), function (resp) {
                 if (resp.httpResponseCode !== 200) {
                     createDialog("info", "<spring:message code='error'/>");
                     return;
                 }
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
+                isFirstChange = false;
                 viewer.endEditing();
             }));
         }
