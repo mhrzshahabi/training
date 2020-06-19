@@ -72,8 +72,8 @@ public class ClassStudentReportService {
             return;
         equalCourseIds.add(course.getId());
         for (EqualCourse equalCourses : course.getEqualCourses()) {
-            for (Long courseId : equalCourses.getEqualAndList())
-                getEqualCourseIds(courseDAO.getOne(courseId), equalCourseIds);
+            for (Course eqCourse : equalCourses.getEqualAndList())
+                getEqualCourseIds(eqCourse, equalCourseIds);
         }
     }
 
@@ -86,7 +86,7 @@ public class ClassStudentReportService {
         isPassed.put(course.getId(), false);
         Boolean result = course.getEqualCourses().stream().anyMatch
                 (eq -> eq.getEqualAndList().stream().allMatch
-                        (aId -> isPassed(courseDAO.getOne(aId), isPassed)));
+                        (aId -> isPassed(aId, isPassed)));
         if (result)
             isPassed.replace(course.getId(), true);
         return result;
