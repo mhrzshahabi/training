@@ -142,5 +142,11 @@
     <changeSet author="razmnoosh (generated)" id="1591591181879-458">
         <addUniqueConstraint columnNames="f_tclass" constraintName="UC_TBL_EVALUATION_ANALYSISF_TCLASS_COL" tableName="tbl_evaluation_analysis"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592578568485-426">
+        <addUniqueConstraint columnNames="f_course_id, f_pre_course_id" constraintName="UK6bjcl6v9lar1ilnfv34i1kq05" tableName="tbl_pre_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592578568485-427">
+        <addUniqueConstraint columnNames="f_equal_course_id, list_equal_and_course" constraintName="UKcighigweqkeocnrjxvy37ysb1" tableName="tbl_equal_and_course"/>
+    </changeSet>
     
 </databaseChangeLog>
