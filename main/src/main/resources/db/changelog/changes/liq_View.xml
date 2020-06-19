@@ -1678,4 +1678,127 @@ GROUP BY
     </changeSet>
 
 
+    <changeSet author="NICICO" id="VIEW_ACTIVE_PERSONNEL-001">
+        <createView viewName="VIEW_ACTIVE_PERSONNEL" replaceIfExists="true">
+            <![CDATA[
+SELECT "PERSONNEL_NO","ACTIVE","ADDRESS","AGE","BIRTH_CERTIFICATE_NO","BIRTH_DATE","BIRTH_PLACE","CCP_AFFAIRS","CCP_AREA","CCP_ASSISTANT","CCP_CODE","CCP_SECTION","CCP_TITLE","CCP_UNIT","COMPANY_NAME","COMPLEX_TITLE","CONTRACT_DESCRIPTION","CONTRACT_NO","DELETED","DEPARTMENT_CODE","DEPARTMENT_TITLE","EDUCATION_LEVEL_TITLE","EDUCATION_LICENSE_TYPE_TITLE","EDUCATION_FIELD_TITLE","EMAIL","EMPLOYMENT_DATE","EMPLOYMENT_STATUS_TITLE","EMPLOYMENT_STATUS_ID","EMPLOYMENT_TYPE_TITLE","FATHER_NAME","FIRST_NAME","GENDER_TITLE","ID","INSURANCE_CODE","JOB_NO","JOB_TITLE","LAST_NAME","MARITAL_STATUS_TITLE","MILITARY_STATUS_TITLE","MOBILE","NATIONAL_CODE","OPERATIONAL_UNIT_TITLE","EMP_NO","PHONE","POST_ASSIGNMENT_DATE","POST_CODE","POST_GRADE_CODE","POST_GRADE_TITLE","POST_TITLE","WORK_DAYS","WORK_MONTHS","WORK_PLACE_TITLE","WORK_TURN_TITLE","WORK_YEARS"
+        FROM
+            tbl_personnel
+        WHERE
+            tbl_personnel.active = 1
+            AND   tbl_personnel.employment_status_id = 5
+]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_SUB_ACTIVE_PERSONNEL_PASSED_COURSE-001">
+        <createView viewName="VIEW_SUB_ACTIVE_PERSONNEL_PASSED_COURSE" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    cs.id as class_student_id,
+    cs.student_id,
+    cs.class_id,
+    cl.f_course,
+    cs.scores_state_id,
+    s.national_code,
+    s.personnel_no,
+    s.emp_no,
+    s.first_name,
+    s.last_name
+FROM
+    tbl_class_student cs
+    INNER JOIN tbl_student s ON s.id = cs.student_id
+    INNER JOIN tbl_personnel p ON p.national_code = s.national_code
+    INNER JOIN tbl_class cl ON cl.id = cs.class_id
+WHERE
+    p.active = 1 AND
+    p.employment_status_id = 5 AND
+    cs.scores_state_id IN (
+        400,
+        401,
+        410
+    )
+]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_SUB_ACTIVE_PERSONNEL_MUST_PASS_COURSE-001">
+        <createView viewName="VIEW_SUB_ACTIVE_PERSONNEL_MUST_PASS_COURSE" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    co.id                      AS course_id,
+    co.c_code                  AS course_code,
+    co.c_title_fa              AS course_title_fa,
+    co.category_id             AS category_id,
+    p.personnel_no            AS personnel_personnel_no,
+    p.first_name              AS personnel_first_name,
+    p.last_name               AS personnel_last_name,
+    p.national_code           AS personnel_national_code,
+    p.ccp_affairs             AS personnel_cpp_affairs,
+    p.ccp_area                AS personnel_cpp_area,
+    p.ccp_assistant           AS personnel_cpp_assistant,
+    p.ccp_code                AS personnel_cpp_code,
+    p.ccp_section             AS personnel_cpp_section,
+    p.ccp_title               AS personnel_cpp_title,
+    p.ccp_unit                AS personnel_cpp_unit,
+    p.company_name            AS personnel_company_name,
+    p.complex_title           AS personnel_complex_title,
+    p.education_level_title   AS personnel_education_level_title,
+    p.id                      AS personnel_id,
+    p.job_no                  AS personnel_job_no,
+    p.job_title               AS personnel_job_title,
+    p.emp_no                  AS personnel_emp_no,
+    p.post_code               AS personnel_post_code,
+    p.post_grade_code         AS personnel_post_grade_code,
+    p.post_grade_title        AS personnel_post_grade_title,
+    p.post_title              AS personnel_post_title
+FROM
+    tbl_course co
+    CROSS JOIN view_active_personnel p
+]]>
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT_NEW-001">
+        <createView viewName="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT_NEW" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    must_pass.course_id,
+    must_pass.course_code,
+    must_pass.course_title_fa,
+    must_pass.category_id,
+    must_pass.personnel_personnel_no,
+    must_pass.personnel_first_name,
+    must_pass.personnel_last_name,
+    must_pass.personnel_national_code,
+    must_pass.personnel_cpp_affairs,
+    must_pass.personnel_cpp_area,
+    must_pass.personnel_cpp_assistant,
+    must_pass.personnel_cpp_code,
+    must_pass.personnel_cpp_section,
+    must_pass.personnel_cpp_title,
+    must_pass.personnel_cpp_unit,
+    must_pass.personnel_company_name,
+    must_pass.personnel_complex_title,
+    must_pass.personnel_education_level_title,
+    must_pass.personnel_id,
+    must_pass.personnel_job_no,
+    must_pass.personnel_job_title,
+    must_pass.personnel_emp_no,
+    must_pass.personnel_post_code,
+    must_pass.personnel_post_grade_code,
+    must_pass.personnel_post_grade_title,
+    must_pass.personnel_post_title,
+    passed.class_student_id
+FROM
+    view_sub_active_personnel_must_pass_course must_pass
+    LEFT JOIN view_sub_active_personnel_passed_course passed ON passed.f_course = must_pass.course_id
+                                                                AND passed.national_code = must_pass.personnel_national_code
+where  passed.class_student_id is null
+]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>
