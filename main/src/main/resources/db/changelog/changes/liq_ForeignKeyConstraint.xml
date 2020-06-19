@@ -984,5 +984,13 @@
     <changeSet author="razmnoosh (generated)" id="1591591181879-461">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_evaluation_analysis" constraintName="FKrk55lb4wloh92c4hc5vai97tn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="mosta (generated)" id="1592557743650-462">
+        <addForeignKeyConstraint baseColumnNames="list_equal_and_course" baseTableName="tbl_equal_and_course" constraintName="FKilbxoraqadwtok81kwpdgbssb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+    <changeSet author="mosta (generated)" id="1592557743650-465">
+        <dropForeignKeyConstraint baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l"/>
+        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_equal_course" validate="true"/>
+    </changeSet>
+
 
 </databaseChangeLog>

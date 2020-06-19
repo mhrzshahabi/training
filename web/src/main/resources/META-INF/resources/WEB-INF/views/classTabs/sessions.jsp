@@ -54,7 +54,7 @@
 
                 <sec:authorize access="hasAuthority('TclassSessionsTab_D')">
                 {
-                    title: "<spring:message code="remove"/>",
+                    title: "<spring:message code="remove.and.group.remove"/>",
                     icon: "<spring:url value="remove.png"/>",
                     click: function () {
                         remove_Session();
@@ -358,6 +358,7 @@
 
         <sec:authorize access="hasAnyAuthority('TclassSessionsTab_D','TclassSessionsTab_classStatus')">
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+            title: "<spring:message code="remove.and.group.remove" />",
             click: function () {
                 remove_Session();
             }
