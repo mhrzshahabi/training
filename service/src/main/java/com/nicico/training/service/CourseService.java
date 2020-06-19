@@ -81,8 +81,8 @@ public class CourseService implements ICourseService {
         final List<CourseDTO.Info> listOut = new ArrayList<>();
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        String s = course.getPreCourse();
-        if (s != null) {
+        if (course.getPerCourseList() != null && !course.getPerCourseList().isEmpty()) {
+            String s = Joiner.on(',').join(course.getPerCourseList().stream().map(Course::getId).collect(Collectors.toList()));
             List<Long> x = Arrays.stream(s.split(","))
                     .map(Long::parseLong)
                     .collect(Collectors.toList());
@@ -133,8 +133,10 @@ public class CourseService implements ICourseService {
         final List<Map> listOut = new ArrayList<>();
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        String s = course.getEqualCourse();
-        if (s != null) {
+        List<String> equalCourseStringList = new ArrayList<>();
+        if (course.getEqualCourses() != null && !course.getEqualCourses().isEmpty()) {
+            course.getEqualCourses().forEach(equalCourse -> equalCourseStringList.add(Joiner.on('_').join(equalCourse.getEqualAndList())));
+            String s = Joiner.on(',').join(equalCourseStringList);
             StringBuilder nameEQ1;
             List<String> myList = new ArrayList<>(Arrays.asList(s.split(",")));
             for (String idEQ1 : myList) {
@@ -617,9 +619,9 @@ public class CourseService implements ICourseService {
         }
 
         if (teacherId != 0 && sendingList.stream().filter(p -> p.getId() == teacherId).count() == 0) {
-            Teacher teacher=teacherDAO.findById(teacherId).orElse(null);
+            Teacher teacher = teacherDAO.findById(teacherId).orElse(null);
 
-            if(teacher!=null){
+            if (teacher != null) {
                 List<Tclass> tclassList = tclassDAO.findByCourseAndTeacher(course, teacher);
                 TeacherDTO.TeacherFullNameTupleWithFinalGrade teacherDTO = modelMapper.map(teacher, TeacherDTO.TeacherFullNameTupleWithFinalGrade.class);
                 Optional<Tclass> max = tclassList.stream().max(tclassComparator);
@@ -675,19 +677,19 @@ public class CourseService implements ICourseService {
     //----------------------------------------------------------------------
     @Transactional
     @Override
-    public List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate){
-        StringBuilder stringBuilder=new StringBuilder().append("SELECT  tbl_course.id,tbl_course.c_code ,tbl_course.c_title_fa  FROM  tbl_course WHERE tbl_course.id NOT IN (SELECT DISTINCT  tbl_class.f_course  FROM  tbl_class   WHERE   tbl_class.c_start_date >= :startDate    AND   tbl_class.c_end_date <= :endDate )");
-        List<Object> list=new ArrayList<>();
-        list= (List<Object>) entityManager.createNativeQuery(stringBuilder.toString())
-                .setParameter("startDate",startDate)
-                .setParameter("endDate",endDate).getResultList();
-        List<CourseDTO.courseWithOutTeacher> courseWithOutTeacherList =new ArrayList<>();
-        if(list != null)
-        {  for(int i=0;i<list.size();i++)
-        {
-            Object[] arr = (Object[]) list.get(i);
-            courseWithOutTeacherList.add(new CourseDTO.courseWithOutTeacher(Long.valueOf(arr[0].toString()), (arr[1] == null ? "" : arr[1].toString()),(arr[2] == null ? "" : arr[2].toString())));
-        }}
+    public List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate) {
+        StringBuilder stringBuilder = new StringBuilder().append("SELECT  tbl_course.id,tbl_course.c_code ,tbl_course.c_title_fa  FROM  tbl_course WHERE tbl_course.id NOT IN (SELECT DISTINCT  tbl_class.f_course  FROM  tbl_class   WHERE   tbl_class.c_start_date >= :startDate    AND   tbl_class.c_end_date <= :endDate )");
+        List<Object> list = new ArrayList<>();
+        list = (List<Object>) entityManager.createNativeQuery(stringBuilder.toString())
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate).getResultList();
+        List<CourseDTO.courseWithOutTeacher> courseWithOutTeacherList = new ArrayList<>();
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                Object[] arr = (Object[]) list.get(i);
+                courseWithOutTeacherList.add(new CourseDTO.courseWithOutTeacher(Long.valueOf(arr[0].toString()), (arr[1] == null ? "" : arr[1].toString()), (arr[2] == null ? "" : arr[2].toString())));
+            }
+        }
         return (modelMapper.map(courseWithOutTeacherList, new TypeToken<List<CourseDTO.courseWithOutTeacher>>() {
         }.getType()));
     }
