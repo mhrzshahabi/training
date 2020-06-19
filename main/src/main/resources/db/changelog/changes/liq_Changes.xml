@@ -126,6 +126,17 @@
         <dropColumn columnName="EQUAL_COURSE_ID" tableName="tbl_equal_course"/>
     </changeSet>
 
+    <changeSet author="mosta (generated)" id="1592557743650-372">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="list_equal_and_course" tableName="tbl_equal_and_course"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1592578568485-507">
+        <dropColumn columnName="C_EQUAL_COURSE" tableName="TBL_COURSE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592578568485-508">
+        <dropColumn columnName="C_PRE_COURSE" tableName="TBL_COURSE"/>
+    </changeSet>
+
     <!--    <changeSet author="poursalehi_mos (generated)" id="1592301837609-373">-->
     <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
     <!--    </changeSet>-->

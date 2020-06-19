@@ -95,16 +95,13 @@ public class Course extends Auditable {
     private List<Goal> goalSet;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_pre_course",
+    @JoinTable(name = "tbl_pre_course", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_course_id", "f_pre_course_id"})},
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
-    private List<Course> perCourseList;
+    private List<Course> preCourseList;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_pre_course",
-            joinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
-    private List<Course> perCourseListOf;
+    @ManyToMany(mappedBy = "preCourseList", fetch = FetchType.LAZY)
+    private List<Course> preCourseListOf;
 
     @Column(name = "e_run_type")
     private ERunType eRunType;
@@ -117,9 +114,6 @@ public class Course extends Auditable {
 
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
-
-    @Column(name = "c_pre_course")
-    private String preCourse;
 
     @Column(name = "scoring_method")
     private String scoringMethod;
@@ -138,8 +132,6 @@ public class Course extends Auditable {
 //
 //    @Transient
 //    private Long attitude = Long.valueOf(0);
-    @Column(name = "c_equal_course")
-    private String equalCourse;
 
     @Column(name = "c_need_text")
     private String needText;
