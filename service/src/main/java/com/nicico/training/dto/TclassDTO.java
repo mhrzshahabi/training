@@ -70,7 +70,6 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
-
         private Long courseId;
         private InstituteDTO.InstituteInfoTuple institute;
         private String lastModifiedBy;

@@ -289,4 +289,46 @@
     <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
     <!--    </changeSet>-->
 
+
+    <changeSet author="golrokhi (generated)" id="1592644619220-418">
+        <addColumn tableName="tbl_student">
+            <column name="account_number" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-419">
+        <addColumn tableName="tbl_student">
+            <column name="address" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-420">
+        <addColumn tableName="tbl_student">
+            <column name="email" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-421">
+        <addColumn tableName="tbl_student">
+            <column name="fax" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-422">
+        <addColumn tableName="tbl_student">
+            <column name="mobile" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-423">
+        <addColumn tableName="tbl_student">
+            <column name="nationality_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-424">
+        <addColumn tableName="tbl_student">
+            <column name="phone" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-425">
+        <addColumn tableName="tbl_student">
+            <column name="religion_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

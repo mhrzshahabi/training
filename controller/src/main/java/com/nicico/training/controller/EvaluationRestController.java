@@ -31,6 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -327,8 +328,95 @@ public class EvaluationRestController {
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
+        for (TclassDTO.Info datum : specResponse.getData()) {
+            LocalDate todayDate = LocalDate.now();
+            String tDate = getPersianDate(todayDate.getYear(),todayDate.getMonthValue(),todayDate.getDayOfMonth());
+            datum.setHasWarning("");
+            if(datum.getEndDate().equalsIgnoreCase(tDate) && datum.getCourse().getEvaluation().equalsIgnoreCase("1")) {
+                datum.setHasWarning("alarm");
+            }
+            if(datum.getStartDate().equalsIgnoreCase(tDate) && datum.getCourse().getEvaluation().equalsIgnoreCase("2")) {
+                datum.setHasWarning("alarm");
+            }
+        }
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    //--------------------------------------------- Calender -----------------------------------------------------------
+    private static double greg_len = 365.2425;
+    private static double greg_origin_from_jalali_base = 629964;
+    private static double len = 365.24219879;
+
+    public static String getPersianDate(Date d) {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(d);
+        int year = gc.get(Calendar.YEAR);
+        return getPersianDate(year, (gc.get(Calendar.MONTH)) + 1,
+                gc.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public static String getPersianDate(int gregYear, int gregMonth, int gregDay) {
+        // passed days from Greg orig
+        double d = Math.ceil((gregYear - 1) * greg_len);
+        // passed days from jalali base
+        double d_j = d + greg_origin_from_jalali_base
+                + getGregDayOfYear(gregYear, gregMonth, gregDay);
+
+        // first result! jalali year
+        double j_y = Math.ceil(d_j / len) - 2346;
+        // day of the year
+        double j_days_of_year = Math
+                .floor(((d_j / len) - Math.floor(d_j / len)) * 365) + 1;
+
+        StringBuffer result = new StringBuffer();
+
+        if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)
+            result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/0"
+                    + (int) dayOfMonth(j_days_of_year));
+        else if(month(j_days_of_year) >= 10 && dayOfMonth(j_days_of_year) < 10)
+            result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/0"
+                    + (int) dayOfMonth(j_days_of_year));
+        else if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) >= 10)
+            result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/"
+                    + (int) dayOfMonth(j_days_of_year));
+        else
+            result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/"
+                    + (int) dayOfMonth(j_days_of_year));
+
+        return result.toString();
+    }
+
+    private static double month(double day) {
+
+        if (day < 6 * 31)
+            return Math.ceil(day / 31);
+        else
+            return Math.ceil((day - 6 * 31) / 30) + 6;
+    }
+
+    private static double dayOfMonth(double day) {
+
+        double m = month(day);
+        if (m <= 6)
+            return day - 31 * (m - 1);
+        else
+            return day - (6 * 31) - (m - 7) * 30;
+    }
+
+    private static double getGregDayOfYear(double year, double month, double day) {
+        int greg_moneths_len[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31,
+                30, 31};
+        boolean leap = false;
+        if (((year % 4) == 0) && (((year % 400) != 0)))
+            leap = true;
+        if (leap)
+            greg_moneths_len[2] = 29;
+        int sum = 0;
+        for (int i = 0; i < month; i++)
+            sum += greg_moneths_len[i];
+        return sum + day - 2;
+    }
+    //--------------------------------------------- Calender -----------------------------------------------------------
 }
