@@ -50,7 +50,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
 
 
     @Modifying
-    @Query(value = "update  TBL_CLASS_STUDENT set SCORES_STATE = 'قبول بدون نمره' ,  FAILURE_REASON = null where CLASS_ID =:id ", nativeQuery = true)
+    @Query(value = "update  TBL_CLASS_STUDENT set scores_state_id = 401 ,  failure_reason_id = null where CLASS_ID =:id ", nativeQuery = true)
     void setTotalStudentWithOutScore(@Param("id") Long id);
 
     Optional<ClassStudent> findByTclassIdAndStudentId(Long tclassId, Long studentId);
