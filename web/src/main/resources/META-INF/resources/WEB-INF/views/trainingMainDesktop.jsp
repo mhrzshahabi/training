@@ -1192,14 +1192,14 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_NeedAssessment_NeedAssessment')">
-                {
-                    title: "<spring:message code="needs.assessment"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
-                    }
-                },
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_NeedAssessment_NeedAssessment')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="needs.assessment"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="web/needsAssessment/"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAnyAuthority('Menu_NeedAssessment_Competence','Menu_NeedAssessment_Skill','Menu_NeedAssessment_NeedAssessment')">
                 {isSeparator: true},
@@ -1461,14 +1461,14 @@
                 <%--}--%>
                 <%--},--%>
 
-                <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">
-                {
-                    title: "<spring:message code="register.Score.PreTest"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="register.Score.PreTest"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
             ]
         }),

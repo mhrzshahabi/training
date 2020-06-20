@@ -36,7 +36,7 @@ public interface ICourseService {
 
     CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response);
 
-    CourseDTO.Info update(Long id, CourseDTO.Update request);
+    CourseDTO.Info update(Long id, Object request);
 
     void delete(Long id);
 

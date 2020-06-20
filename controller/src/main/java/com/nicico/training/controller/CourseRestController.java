@@ -99,8 +99,18 @@ public class CourseRestController {
     @PutMapping(value = "setPreCourse/{id}")
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
-    public ResponseEntity setPreCourse(@PathVariable Long id, @RequestBody List<Long> req) {
-        courseService.setPreCourse(id, req);
+    public ResponseEntity setPreCourse(@PathVariable Long id,
+                                       @RequestBody List<Long> req,
+                                       @RequestParam(required = false) String type) {
+        final CourseDTO.AddOrRemovePreCourse preCourse = new CourseDTO.AddOrRemovePreCourse();
+        preCourse.setCourseId(id);
+        preCourse.setPreCoursesId(req);
+        if(type.equals("create")) {
+            courseService.addPreCourse(preCourse);
+        }
+        else if(type.equals("remove")){
+            courseService.removePreCourse(preCourse);
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -119,8 +129,8 @@ public class CourseRestController {
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
 //		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
-        return new ResponseEntity<>(courseService.update(id, update), HttpStatus.OK);
+//        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
+        return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable

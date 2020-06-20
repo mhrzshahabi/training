@@ -171,6 +171,30 @@ public class Student extends Auditable {
     @Column(name = "ccp_title")
     private String ccpTitle;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "mobile")
+    private String mobile;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "religion_title")
+    private String religion;
+
+    @Column(name = "nationality_title")
+    private String nationality;
+
+    @Column(name = "fax")
+    private String fax;
+
+    @Column(name = "account_number")
+    private String accountNumber;
+
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ClassStudent> classStudents;
 }
