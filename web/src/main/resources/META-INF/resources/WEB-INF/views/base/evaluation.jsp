@@ -7,7 +7,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-
+var dummy;
 // <script>
     var localQuestions;
     // <<========== Global - Variables ==========
@@ -240,7 +240,7 @@
         width: "85%",
         height: "100%",
         numCols: 6,
-        colWidths: ["2%", "8%", "2%", "8%","0%","80%"],
+        colWidths: ["1%", "6%", "1%", "20%","0%","60%"],
         fields: [
             {
                 name: "yearFilter",
@@ -450,7 +450,8 @@
                 {name: "instituteId"},
                 {name: "workflowEndingStatusCode"},
                 {name: "workflowEndingStatus"},
-                {name: "scoringMethod"}
+                {name: "scoringMethod"},
+                {name: "preCourseTest"}
             ],
             fetchDataURL: evaluationUrl + "/class-spec-list"
         });
@@ -614,16 +615,17 @@
                 },
                 {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
                 {name: "scoringMethod", hidden: true},
-                {name: "saveResults", title: " ", align:"center", canSort: false, canFilter: false}
+                {name: "saveResults", title: " ", align: "center", canSort: false, canFilter: false},
+                {name: "preCourseTest", hidden: true}
             ],
 
-            createRecordComponent : function (record, colNum) {
+            createRecordComponent: function (record, colNum) {
                 var fieldName = this.getFieldName(colNum);
                 if (fieldName == "saveResults") {
                     var button = isc.IButton.create({
                         layoutAlign: "center",
                         title: "ثبت نتایج ارزیابی",
-                        click : function () {
+                        click: function () {
                             register_evaluation_result(record);
                         }
                     });
@@ -633,8 +635,16 @@
                 }
             },
             selectionUpdated: function () {
+                var classRecord = ListGrid_evaluation_class.getSelectedRecord();
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
                 set_Evaluation_Tabset_status();
+                if (classRecord.preCourseTest == true) {
+                    RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id;
+                    ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
+                    ListGrid_Class_Student_RegisterScorePreTest.fetchData();
+                } else {
+                    Detail_Tab_Evaluation.getTab(1).disabled = true;
+                }
             }
         });
 
@@ -1047,8 +1057,8 @@
                 <sec:authorize access="hasAuthority('Evaluation_Learning')">
                 {
                     id: "TabPane_Learning",
-                    title: "<spring:message code="evaluation.learning"/>",
-                    pane: VLayout_Body_evaluation
+                    title: "یادگیری-ثبت نمرات پیش آزمون",
+                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form"})
                 },
                 </sec:authorize>
 
