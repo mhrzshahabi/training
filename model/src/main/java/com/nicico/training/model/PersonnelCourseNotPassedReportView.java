@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_personnel_course_not_passed_report")
+@Subselect("select * from view_personnel_course_not_passed_report_new")
 public class PersonnelCourseNotPassedReportView implements Serializable {
 
     @EmbeddedId
