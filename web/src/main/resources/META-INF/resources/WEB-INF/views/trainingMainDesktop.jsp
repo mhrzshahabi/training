@@ -738,6 +738,7 @@
     const masterDataUrl = rootUrl + "/masterData";
     const categoriesPerformanceReportView = rootUrl + "categories-view";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
+    const attendanceReportUrl = rootUrl + "/attendanceReport";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1669,14 +1670,26 @@
                                     createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                                 }
                             },
-                            </sec:authorize>
                             {isSeparator: true},
+                            </sec:authorize>
+                           /* {isSeparator: true},
                             {
                                 title: "غيبت ناموجه",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
                                 }
+                            },*/
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "<spring:message code="report.Absence"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/attendanceReport/"/>");
+                                }
                             },
+                            {isSeparator: true},
+                            </sec:authorize>
+
+
                         ]
                 },
                 {isSeparator: true},

@@ -61,6 +61,7 @@ public class ExportToFileController {
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final UnfinishedClassesReportService unfinishedClassesReportService;
     private final TrainingOverTimeService trainingOverTimeService;
+    private final AttendanceReportService attendanceReportService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -533,6 +534,25 @@ public class ExportToFileController {
                     ObjectMapper mapper = new ObjectMapper();
                     jsonString = mapper.writeValueAsString(list10);
                     count = list10.size();
+                }
+                break;
+
+            case "attendanceReport":
+
+                String startDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                searchRq.getCriteria().getCriteria().remove(0);
+                String endDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                List<AttendanceReportDTO.Info> list12 = attendanceReportService.getAttendanceList(startDate2, endDate2);
+
+
+                if (list12 == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list12);
+                    count = list12.size();
                 }
                 break;
 
