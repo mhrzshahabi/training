@@ -638,13 +638,10 @@ var dummy;
                 var classRecord = ListGrid_evaluation_class.getSelectedRecord();
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
                 set_Evaluation_Tabset_status();
-                if (classRecord.preCourseTest == true) {
-                    RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id;
-                    ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
-                    ListGrid_Class_Student_RegisterScorePreTest.fetchData();
-                } else {
-                    Detail_Tab_Evaluation.getTab(1).disabled = true;
-                }
+                RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id;
+                ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
+                ListGrid_Class_Student_RegisterScorePreTest.fetchData();
+
             }
         });
 
@@ -1463,6 +1460,8 @@ var dummy;
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.disableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
+                if(!classRecord.preCourseTest)
+                    Detail_Tab_Evaluation.disableTab(1);
             } else if (evaluationType === "3") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
