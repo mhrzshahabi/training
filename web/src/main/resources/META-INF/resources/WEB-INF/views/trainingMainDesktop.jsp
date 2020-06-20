@@ -1460,14 +1460,14 @@
                 <%--}--%>
                 <%--},--%>
 
-                <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">
-                {
-                    title: "<spring:message code="register.Score.PreTest"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="register.Score.PreTest"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
             ]
         }),
