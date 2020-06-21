@@ -15,6 +15,7 @@
             {name: "nationalCode"},
             {name: "name"},
             {name: "ccpArea"},
+            {name: "ccpAffairs"},
             {name: "classCode"},
             {name: "className"},
             {name: "attendanceStatus"},
@@ -24,10 +25,10 @@
     });
 
     var DynamicForm_AttendanceReport = isc.DynamicForm.create({
-        numCols: 6,
+        numCols: 8,
         padding: 10,
         titleAlign: "left",
-        colWidths: [70, 200, 70, 200, 100, 100],
+        colWidths: [70, 200, 70, 200,70,200, 100, 100],
         fields: [
             {
                 name: "startDate",
@@ -86,6 +87,18 @@
                 }
             },
             {
+                name: "absentType",
+                title:"نوع غيبت",
+                width: 150,
+                defaultValue:5,
+                textAlign: "center",
+                valueMap:{
+                    "3": "غيرموجه",
+                    "4": "موجه",
+                    "5": "موجه و غیر موجه"
+                }
+            },
+            {
                 name: "searchBtn",
                 ID: "searchBtnJspAttendanceReport",
                 title: "<spring:message code="search"/>",
@@ -100,7 +113,7 @@
                     }
                     var wait = createDialog("wait");
                     setTimeout(function () {
-                        let url = attendanceReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
+                        let url = attendanceReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate")+ "&absentType=" + form.getValue("absentType");
 
                         RestDataSource_Class_JspAttendanceReport.fetchDataURL = url;
 
@@ -140,8 +153,9 @@
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    ExportToFile.showDialog(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',  "گزارش غيبت ها", DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null);
-                   //ExportToFile.downloadExcelFromClient(ListGrid_AttendanceReport_AttendanceReportJSP, null, '', "گزارش غیبت ها")
+                    let title="گزارش غیبت ها از تاریخ "+DynamicForm_AttendanceReport.getItem("startDate").getValue()+ " الی "+DynamicForm_AttendanceReport.getItem("endDate").getValue();
+                    ExportToFile.showDialog(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',title  , DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null);
+                   //ExportToFile.downloadExcelFromClient(ListGrid_AttendanceReport_AttendanceReportJSP, null, '', title)
                 }
             })
             , "header", "filterEditor", "body"],
@@ -168,10 +182,12 @@
             {name: "ccpAffairs", title: "<spring:message code='affairs'/>"},
             {name: "classCode", title: "<spring:message code="class.code"/>"},
             {name: "className", title: "<spring:message code="class.title"/>"},
-            {name: "attendanceStatus", title: "<spring:message code="status"/>", valueMap:
+            {name: "attendanceStatus", title: "<spring:message code="absent.type"/>",
+             valueMap:
                     {
                         "3": "غیر موجه",
-                        "4": "موجه"}
+                        "4": "موجه"
+                    }
             },
             {name: "date", title: "<spring:message code="date"/>",
                 filterEditorProperties: {
@@ -180,7 +196,7 @@
             },
             {
                 name: "time",
-                title: "<spring:message code="time"/>",
+                title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },
         ]

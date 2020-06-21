@@ -27,9 +27,10 @@ public class AttendanceReportController {
     @Transactional(readOnly = true)
     public ResponseEntity<AttendanceReportDTO.AttendanceReportDTOSpecRs> list(
             @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate) {
+            @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "absentType", required = false) String absentType) {
 
-        List<AttendanceReportDTO.Info> response = attendanceReportService.getAttendanceList(startDate, endDate);
+        List<AttendanceReportDTO.Info> response = attendanceReportService.getAbsentList(startDate, endDate,absentType);
 
         final AttendanceReportDTO.SpecRs specResponse = new AttendanceReportDTO.SpecRs();
         final AttendanceReportDTO.AttendanceReportDTOSpecRs specRs = new AttendanceReportDTO.AttendanceReportDTOSpecRs();

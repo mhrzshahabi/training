@@ -15,6 +15,7 @@
             {name: "nationalCode"},
             {name: "name"},
             {name: "ccpArea"},
+            {name: "ccpAffairs"},
             {name: "classCode"},
             {name: "className"},
             {name: "date"},
@@ -168,9 +169,9 @@
                         criteria.criteria.splice(0,0,{ fieldName: "endDate", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("endDate").getValue() });
                         criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
                     }*/
-
-                    //ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '',  "گزارش اضافه کاری آموزشی", DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
-                   ExportToFile.downloadExcelFromClient(ListGrid_TrainingOverTime_TrainingOverTimeJSP, null, '', "گزارش اضافه کاری آموزشی")
+                    let title="گزارش اضافه کاری آموزشی از تاریخ "+DynamicForm_TrainingOverTime.getItem("startDate").getValue()+ " الی "+DynamicForm_TrainingOverTime.getItem("endDate").getValue();
+                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '',  title, DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
+                  // ExportToFile.downloadExcelFromClient(ListGrid_TrainingOverTime_TrainingOverTimeJSP, null, '', "گزارش اضافه کاری آموزشی")
                 }
             })
             , "header", "filterEditor", "body"],
@@ -199,6 +200,7 @@
             },
             {name: "name", title: "<spring:message code='student'/>",},
             {name: "ccpArea", title: "<spring:message code='area'/>"},
+            {name: "ccpAffairs", title: "<spring:message code='affairs'/>"},
             {name: "classCode", title: "<spring:message code="class.code"/>"},
             {name: "className", title: "<spring:message code="class.title"/>"},
             {name: "date", title: "<spring:message code="date"/>",
@@ -208,7 +210,7 @@
             },
             {
                 name: "time",
-                title: "<spring:message code="time"/>",
+                title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },
         ]
