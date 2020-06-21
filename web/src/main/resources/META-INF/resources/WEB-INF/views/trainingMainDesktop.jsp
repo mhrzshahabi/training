@@ -1672,13 +1672,6 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
-                           /* {isSeparator: true},
-                            {
-                                title: "غيبت ناموجه",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
-                                }
-                            },*/
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
                             {
                                 title: "<spring:message code="report.Absence"/>",
@@ -1688,8 +1681,15 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
-
-
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "غيبت ناموجه",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
                         ]
                 },
                 {isSeparator: true},

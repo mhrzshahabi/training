@@ -22,6 +22,7 @@ public class TrainingOverTimeDTO implements Serializable {
     String nationalCode;
     String name;
     String ccpArea;
+    String ccpAffairs;
     String classCode;
     String className;
     String date;
