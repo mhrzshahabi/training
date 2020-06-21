@@ -548,6 +548,14 @@ public class ExportToFileController {
 
                 List<AttendanceReportDTO.Info> list12 = attendanceReportService.getAbsentList(startDate2, endDate2,absentType);
 
+                list12.forEach(x->
+                        {
+                            if (x.getAttendanceStatus().equals("3"))
+                                x.setAttendanceStatus("غیر موجه");
+                            if (x.getAttendanceStatus().equals("4"))
+                                x.setAttendanceStatus("موجه");
+                        }
+                );
 
                 if (list12 == null) {
                     count = 0;
