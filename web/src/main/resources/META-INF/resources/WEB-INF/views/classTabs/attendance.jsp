@@ -374,7 +374,16 @@
                       form.getItem("sessionDate").pickListFields = [
                           {name: "dayName", title: "روز هفته"},
                           {name: "sessionDate", title: "تاریخ"},
-                          {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
+                          {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif",
+                              showHover:true,
+                              hoverWidth:200,
+                              hoverHTML(record){
+                                  if (record.hasWarning=="alarm")
+                                  {
+                                      return "جلسه کامل حضور و غياب نشده است"
+                                  }
+                              }
+                          }
                       ];
                       form.getItem("sessionDate").displayField = "sessionDate";
                       form.getItem("sessionDate").valueField = "sessionDate";
@@ -416,7 +425,16 @@
                 pickListFields: [
                     {name: "dayName", title: "روز هفته"},
                     {name: "sessionDate", title: "تاریخ"},
-                    {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+                    {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif",
+                    showHover:true,
+                    hoverWidth:200,
+                        hoverHTML(record){
+                         if (record.hasWarning=="alarm")
+                         {
+                             return "جلسه کامل حضور و غياب نشده است"
+                         }
+                        }
+                    },
                 ],
                 click: function (form, item) {
                     attendanceGrid.endEditing();

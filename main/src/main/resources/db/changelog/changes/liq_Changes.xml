@@ -101,4 +101,234 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-440">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED" constraintName="FK1AIMHPRI3C7JQYXF61MUUE8SB"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-441">
+        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_NEW" constraintName="FK3B29TW8BISELXUSO9MTS6WJ81"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-442">
+        <dropForeignKeyConstraint baseTableName="TBL_PROVINCE" constraintName="FK3D0TOD52GYM4CVFEH2OOY1WH7"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-443">
+        <dropForeignKeyConstraint baseTableName="TBL_POLIS" constraintName="FK5UQYVIJCL031VQ9S9LOYS23J8"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-444">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FK70VM1EWKVK8XQ8PDR5L8PTVN2"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-445">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FK76PAHJAKRKWESQEHD2MSDMIKH"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-446">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FK79NQ7K3F70JFUYQ0XJQ3MOJOC"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-447">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED" constraintName="FKAYI7AD3MM6G5L1U43KOYY766C"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-448">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FKBEFRJW4GC5J8B47LJIO9BYJ8W"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-449">
+        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_SKILL_GROUP" constraintName="FKBO4REUEW9XFMENAAU57DY10OY"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-450">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FKBQM78OSP274THFOJK9IT78HXE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-451">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED" constraintName="FKCS9A7KJN1LOLDGUOTA8L3YGKQ"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-452">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FKDR3XVM2NOFKKL0TCP6YX1E3TH"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-453">
+        <dropForeignKeyConstraint baseTableName="TBL_POLIS" constraintName="FKE0AR9DPTLPVR12R35RA2JFTGA"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-454">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FKE5J8FY4GLN39VIPRDA644LNP9"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-455">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FKEKFK41GD6Q6YTOIWOJSIPCF20"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-456">
+        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_NEW" constraintName="FKEMAJ3E350AEX21CQMYKGIAGN7"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-457">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_SKILLGROUP" constraintName="FKH9ADHAXE5AP8M3HN4RN3BC8U7"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-458">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_SKILLGROUP" constraintName="FKJK6FQ86FR0RSNXGHKAIN906EF"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-459">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_GROUP" constraintName="FKKFWTC5KW7NK5KPJYBHR4A4L5A"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-460">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FKLI6XXMPKLHHTFLH4WX2OQS7C5"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-461">
+        <dropForeignKeyConstraint baseTableName="TBL_PROVINCE" constraintName="FKMTRASQJCGPEAFJCIVC5P6W0NS"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-462">
+        <dropForeignKeyConstraint baseTableName="TBL_POLIS" constraintName="FKR88EACJBYRS3U0B0W6V7VXYYD"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-463">
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FKRJPK0A9FPN167CYKP4KJJJ56X"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-464">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_GROUP" constraintName="FKSFFQSY6ICDJNIO2O99SHS3NSL"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-465">
+        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_SKILL_GROUP" constraintName="FKTBTB7RMOQN6G8UE0PYJTV2GD5"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-468">
+        <dropUniqueConstraint constraintName="UC_TBL_COMPETENCE_NEWC_TITLE_FA_COL" tableName="TBL_COMPETENCE_NEW"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-469">
+        <dropUniqueConstraint constraintName="UC_TBL_PROVINCEC_NAME_FA_COL" tableName="TBL_PROVINCE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-470">
+        <dropUniqueConstraint constraintName="UK1WN0DEHCQ9HLE4J9GR62QWUIR" tableName="TBL_NEED_ASSESSMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-471">
+        <dropUniqueConstraint constraintName="UK9AOGC2FN2Q2IEGLKI07IQ26Q8" tableName="TBL_NEED_ASSESSMENT_SKILL_BASED"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-472">
+        <dropUniqueConstraint constraintName="UKLLSR435TXY4FJTVVG3J4A5K4E" tableName="TBL_NEED_ASSESSMENT_SKILL_POST"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-527">
+        <dropTable tableName="TBL_COMPETENCE_NEW"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-528">
+        <dropTable tableName="TBL_COMPETENCE_SKILL_GROUP"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-530">
+        <dropTable tableName="TBL_NEED_ASSESSMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-531">
+        <dropTable tableName="TBL_NEED_ASSESSMENT_SKILL_BASED"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-532">
+        <dropTable tableName="TBL_NEED_ASSESSMENT_SKILL_POST"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-533">
+        <dropTable tableName="TBL_POLIS"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-534">
+        <dropTable tableName="TBL_PROVINCE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-535">
+        <dropTable tableName="TBL_SKILL_GROUP"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-536">
+        <dropTable tableName="TBL_SKILL_SKILLGROUP"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-543">
+        <dropSequence sequenceName="SEQ_CLASS_SESSIONS_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-544">
+        <dropSequence sequenceName="SEQ_NEED_ASSESSMENT_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-545">
+        <dropSequence sequenceName="SEQ_NEED_ASSESSMENT_SKILL_BASED_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-546">
+        <dropSequence sequenceName="SEQ_NEED_ASSESSMENT_SKILL_POST_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-547">
+        <dropSequence sequenceName="SEQ_POLIS_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-548">
+        <dropSequence sequenceName="SEQ_PROVINCE_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-549">
+        <dropSequence sequenceName="SEQ_SKILL_GROUP_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-550">
+        <dropSequence sequenceName="SEQ_SUBCATEGORY_ID"/>
+    </changeSet>
+
+
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-416">
+        <addColumn tableName="tbl_equal_course">
+            <column name="id" type="number(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-237">
+        <dropForeignKeyConstraint baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-377">
+        <dropPrimaryKey tableName="tbl_equal_course"/>
+        <createIndex indexName="IX_tbl_equal_coursePK" tableName="tbl_equal_course" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_equal_coursePK" forIndexName="IX_tbl_equal_coursePK" tableName="tbl_equal_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-215">
+        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" referencedColumnNames="id" referencedTableName="tbl_equal_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592371635355-504">
+        <dropColumn columnName="EQUAL_COURSE_ID" tableName="tbl_equal_course"/>
+    </changeSet>
+
+    <changeSet author="mosta (generated)" id="1592557743650-372">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="list_equal_and_course" tableName="tbl_equal_and_course"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1592578568485-507">
+        <dropColumn columnName="C_EQUAL_COURSE" tableName="TBL_COURSE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592578568485-508">
+        <dropColumn columnName="C_PRE_COURSE" tableName="TBL_COURSE"/>
+    </changeSet>
+
+    <!--    <changeSet author="poursalehi_mos (generated)" id="1592301837609-373">-->
+    <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
+    <!--    </changeSet>-->
+
+
+    <changeSet author="golrokhi (generated)" id="1592644619220-418">
+        <addColumn tableName="tbl_student">
+            <column name="account_number" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-419">
+        <addColumn tableName="tbl_student">
+            <column name="address" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-420">
+        <addColumn tableName="tbl_student">
+            <column name="email" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-421">
+        <addColumn tableName="tbl_student">
+            <column name="fax" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-422">
+        <addColumn tableName="tbl_student">
+            <column name="mobile" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-423">
+        <addColumn tableName="tbl_student">
+            <column name="nationality_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-424">
+        <addColumn tableName="tbl_student">
+            <column name="phone" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1592644619220-425">
+        <addColumn tableName="tbl_student">
+            <column name="religion_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

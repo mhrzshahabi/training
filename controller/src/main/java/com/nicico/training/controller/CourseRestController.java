@@ -62,14 +62,14 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/list")
-	//@PreAuthorize("hasAuthority('Course_R')")
+    //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<CourseDTO.Info>> list() {
         return new ResponseEntity<>(courseService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/preCourse/{courseId}")
-	//@PreAuthorize("hasAuthority('Course_R')")
+    //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<CourseDTO.Info>> preCourseList(@PathVariable Long courseId) {
         List<CourseDTO.Info> list = courseService.preCourseList(courseId);
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -77,10 +77,9 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/equalCourse/{courseId}")
-	//@PreAuthorize("hasAuthority('Course_R')")
-    public ResponseEntity<List<Map>> equalCourseList(@PathVariable Long courseId) {
-        List<Map> list = courseService.equalCourseList(courseId);
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    //@PreAuthorize("hasAuthority('Course_R')")
+    public ResponseEntity<List<EqualCourseDTO.Info>> equalCourseList(@PathVariable Long courseId) {
+        return new ResponseEntity<>(courseService.equalCourseList(courseId), HttpStatus.OK);
     }
 
     @Loggable
@@ -100,9 +99,19 @@ public class CourseRestController {
     @PutMapping(value = "setPreCourse/{id}")
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
-    public ResponseEntity setPreCourse(@PathVariable Long id, @RequestBody List<Long> req) {
-        courseService.setPreCourse(id, req);
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity setPreCourse(@PathVariable Long id,
+                                       @RequestBody List<Long> req,
+                                       @RequestParam(required = false) String type) {
+        final CourseDTO.AddOrRemovePreCourse preCourse = new CourseDTO.AddOrRemovePreCourse();
+        preCourse.setCourseId(id);
+        preCourse.setPreCoursesId(req);
+        if(type.equals("create")) {
+            courseService.addPreCourse(preCourse);
+        }
+        else if(type.equals("remove")){
+            courseService.removePreCourse(preCourse);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Loggable
@@ -111,7 +120,7 @@ public class CourseRestController {
     //TODO:Unknown
     public ResponseEntity setEqualCourse(@PathVariable Long id, @RequestBody List<String> req) {
         courseService.setEqualCourse(id, req);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Loggable
@@ -120,8 +129,8 @@ public class CourseRestController {
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
 //		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
-        return new ResponseEntity<>(courseService.update(id, update), HttpStatus.OK);
+//        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
+        return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
@@ -143,7 +152,7 @@ public class CourseRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-	//@PreAuthorize("hasAuthority('Course_D')")
+    //@PreAuthorize("hasAuthority('Course_D')")
     public ResponseEntity<Void> delete(@Validated @RequestBody CourseDTO.Delete request) {
         courseService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -151,7 +160,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-	//@PreAuthorize("hasAuthority('Course_R')")
+    //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
                                                        @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
@@ -194,14 +203,14 @@ public class CourseRestController {
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>( specRs, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     // ---------------
 
     @Loggable
     @PostMapping(value = "/search")
-	//@PreAuthorize("hasAuthority('Course_R')")
+    //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<SearchDTO.SearchRs<CourseDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(courseService.search(request), HttpStatus.OK);
     }
@@ -266,20 +275,6 @@ public class CourseRestController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-//    @Loggable
-//    @GetMapping(value = "/skill-group/{courseId}")
-//    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroup(@PathVariable Long courseId) {
-//        List<SkillGroupDTO.Info> skillGroup = courseService.getSkillGroup(courseId);
-//        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-//        specResponse.setData(skillGroup)
-//                .setStartRow(0)
-//                .setEndRow(skillGroup.size())
-//                .setTotalRows(skillGroup.size());
-//        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-//        specRs.setResponse(specResponse);
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
     @Loggable
     @GetMapping(value = "/job/{courseId}")
     //@PreAuthorize("hasAuthority('Course_Job')")
@@ -319,7 +314,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/remove/{courseId}/{goalIdList}")
-	//@PreAuthorize("hasAuthority('d_course')")
+    //@PreAuthorize("hasAuthority('d_course')")
     //TODO:Unknown
     public ResponseEntity<Void> removeCourseSGoal(@PathVariable Long courseId, @PathVariable List<Long> goalIdList) {
         courseService.removeCourseSGoal(courseId, goalIdList);
@@ -351,47 +346,6 @@ public class CourseRestController {
         return new ResponseEntity<>(courseService.getMaxCourseCode(str), HttpStatus.OK);
     }
 
-//    @Loggable
-//    @GetMapping(value = "/getcompetence/{courseId}")
-//    public ResponseEntity<CompetenceDTOOld.SpecRs> getCompetence(@PathVariable Long courseId) {
-//        List<CompetenceDTOOld.Info> comList = courseService.getCompetence(courseId);
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(comList)
-//                .setStartRow(0)
-//                .setEndRow(comList.size())
-//                .setTotalRows(comList.size());
-//        final CompetenceDTOOld.CompetenceSpecRs competenceSpecRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        competenceSpecRs.setResponse(specResponse);
-//        return new ResponseEntity(competenceSpecRs, HttpStatus.OK);
-//    }
-
-//    @Loggable
-//    @GetMapping(value = "/getcompetencequery/{courseId}")
-//    public ResponseEntity<CompetenceDTOOld.SpecRs> getCompetencequery(@PathVariable Long courseId) {
-//        List<CompetenceDTOOld.Info> comList = courseService.getCompetenceQuery(courseId);
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(comList)
-//                .setStartRow(0)
-//                .setEndRow(comList.size())
-//                .setTotalRows(comList.size());
-//        final CompetenceDTOOld.CompetenceSpecRs competenceSpecRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        competenceSpecRs.setResponse(specResponse);
-//        return new ResponseEntity(comList, HttpStatus.OK);
-//    }
-
-
-//    @Loggable
-//    @GetMapping(value ="/getlistEducationLicense" )
-//    public ResponseEntity<EducationLicenseDTO.SpecRs> getlistEducation()
-//    {
-//        List<EducationLicenseDTO.Info> educationInfo=educationLicenseService.list();
-//        final EducationLicenseDTO.SpecRs specResponse = new EducationLicenseDTO.SpecRs();
-//        specResponse.setData(educationInfo).setStartRow(0).setEndRow(educationInfo.size()).setTotalRows(educationInfo.size());
-//        final EducationLicenseDTO.EducationLicenseSpecRs educationLicenseSpecRs=new EducationLicenseDTO.EducationLicenseSpecRs();
-//        educationLicenseSpecRs.setResponse(specResponse);
-//        return new ResponseEntity(educationLicenseSpecRs,HttpStatus.OK);
-//    }
-
     @Loggable
     @GetMapping(value = {"/print/{type}"})
     //@PreAuthorize("hasAuthority('Course_P')")
@@ -421,7 +375,7 @@ public class CourseRestController {
         final SearchDTO.SearchRs<CourseDTO.InfoPrint> searchRs = courseService.searchGeneric(searchRq, CourseDTO.InfoPrint.class);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
+        params.put("todayDate", DateUtil.todayDate());
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
@@ -440,7 +394,7 @@ public class CourseRestController {
         final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         final SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchRs = iCourseService.searchDetails(searchRq);
         final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
+        params.put("todayDate", DateUtil.todayDate());
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -454,15 +408,15 @@ public class CourseRestController {
         final Map<String, Object> params = new HashMap<>();
         String domain = courseService.getDomain(courseId);
         List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
-        String preCourse = "";
+        StringBuilder preCourse = new StringBuilder();
         String equalCourse = "";
         for (CourseDTO.Info courseDTO : preCourseList) {
-            preCourse = preCourse + " - " + courseDTO.getTitleFa();
+            preCourse.append(" - ").append(courseDTO.getTitleFa());
         }
-        preCourse = preCourse != "" ? preCourse.substring(2) : "";
-        List<Map> equalCourseList = courseService.equalCourseList(courseId);
-        for (Map map : equalCourseList) {
-            equalCourse = equalCourse + "   یا   " + map.get("nameEC");
+        preCourse = new StringBuilder(preCourse.toString() != "" ? preCourse.substring(2) : "");
+        List<EqualCourseDTO.Info> equalCourseList = courseService.equalCourseList(courseId);
+        for (EqualCourseDTO.Info map : equalCourseList) {
+            equalCourse = equalCourse + "   یا   " + map.getNameEC();
         }
         equalCourse = equalCourse != "" ? equalCourse.substring(6) : "";
         CourseDTO.Info info = courseService.get(courseId);
@@ -471,7 +425,7 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         params.put("courseId", courseId);
         params.put("domain", domain);
-        params.put("preCourse", preCourse);
+        params.put("preCourse", preCourse.toString());
         params.put("equalCourse", equalCourse);
         params.put("eRun", eRun.getTitleFa());
         params.put("theo", eTheo.getTitleFa());
@@ -482,10 +436,10 @@ public class CourseRestController {
     @GetMapping(value = "/get_teachers/{courseId}/{teacherId}")
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
-    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long courseId,@PathVariable Long teacherId) {
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long courseId, @PathVariable Long teacherId) {
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> infoList = new ArrayList<>();
         if (courseId != 0) {
-            infoList = courseService.getTeachers(courseId,teacherId);
+            infoList = courseService.getTeachers(courseId, teacherId);
         }
         final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
@@ -512,8 +466,7 @@ public class CourseRestController {
     @GetMapping(value = "courseWithOutTeacher/{startdate}/{endDate}")
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
-    public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate,@PathVariable String endDate)
-    {
+    public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate, @PathVariable String endDate) {
         List<CourseDTO.courseWithOutTeacher> list = courseService.courseWithOutTeacher(startdate, endDate);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(list)
@@ -565,12 +518,12 @@ public class CourseRestController {
     @GetMapping(value = "/spec-safe-list")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.CourseSpecRs> safelist(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
-                                                       @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "id", required = false) Long id,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                           @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
+                                                           @RequestParam(value = "_constructor", required = false) String constructor,
+                                                           @RequestParam(value = "operator", required = false) String operator,
+                                                           @RequestParam(value = "criteria", required = false) String criteria,
+                                                           @RequestParam(value = "id", required = false) Long id,
+                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -606,19 +559,19 @@ public class CourseRestController {
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>( specRs, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/info-tuple-list")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.CourseInfoTupleSpecRs> infoTupleList(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
-                                                       @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "id", required = false) Long id,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                         @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "id", required = false) Long id,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -654,7 +607,7 @@ public class CourseRestController {
         final CourseDTO.CourseInfoTupleSpecRs specRs = new CourseDTO.CourseInfoTupleSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>( specRs, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

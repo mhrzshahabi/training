@@ -14,7 +14,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.service.SkillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -107,7 +106,7 @@ public class SkillRestController {
         try {
 //            flag = skillService.isSkillDeletable(id);
 //            if (flag)
-                skillService.delete(id);
+            skillService.delete(id);
         } catch (Exception e) {
             flag = false;
             httpStatus = HttpStatus.NO_CONTENT;
@@ -185,15 +184,16 @@ public class SkillRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
     @Loggable
     @GetMapping(value = "WFC/spec-list")
 //    @PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<SkillDTO.SkillSpecRs> listWithFullCourse(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                     @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                     @RequestParam(value = "_constructor", required = false) String constructor,
-                                                     @RequestParam(value = "operator", required = false) String operator,
-                                                     @RequestParam(value = "criteria", required = false) String criteria,
-                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -232,381 +232,6 @@ public class SkillRestController {
     // ------------------------------
 
 
-    // skill group methods ------------------------------------------------------------------------------------------------
-
-
-//    @GetMapping(value = "/{skillId}/need-assessment")
-//    public ResponseEntity<ISC<NeedAssessmentDTO.Info>> getNeedAssessment(@PathVariable Long skillId) throws IOException {
-////        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-////        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//        List<NeedAssessmentDTO.Info> infos = skillService.getNeedAssessment(skillId);
-//
-//        SearchDTO.SearchRs<NeedAssessmentDTO.Info> searchRs = new SearchDTO.SearchRs<NeedAssessmentDTO.Info>();
-//        searchRs.setList(infos);
-//        searchRs.setTotalCount(Long.valueOf(infos.size()));
-//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
-//    }
-
-
-//    @Loggable
-//    @GetMapping(value = "{skillId}/skill-groups")
-////    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-//    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroups(@PathVariable Long skillId) {
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//        List<SkillGroupDTO.Info> skillGroups = skillService.getSkillGroups(skillId);
-//
-//        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-//        specResponse.setData(skillGroups)
-//                .setStartRow(0)
-//                .setEndRow(skillGroups.size())
-//                .setTotalRows(skillGroups.size());
-//
-//        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
-    @Loggable
-    @GetMapping(value = "{skillId}/unattached-skill-groups")
-//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getUnAttachedSkillGroups(@RequestParam("_startRow") Integer startRow,
-                                                                                   @RequestParam("_endRow") Integer endRow,
-                                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                                   @RequestParam(value = "operator", required = false) String operator,
-                                                                                   @RequestParam(value = "criteria", required = false) String criteria,
-                                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy, @PathVariable Long skillId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        Integer pageSize = endRow - startRow;
-        Integer pageNumber = (endRow - 1) / pageSize;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId, pageable);
-
-        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-        specResponse.setData(skillGroups)
-                .setStartRow(startRow)
-                .setEndRow(endRow)
-                .setTotalRows(skillService.getUnAttachedSkillGroupsCount(skillId));
-
-        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-
-//    @Loggable
-//    @GetMapping(value = "/skill-groups")
-////    @PreAuthorize("hasAuthority('r_tclass')")
-//    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getAttachedSkillGroups(@RequestParam("skillId") String skillID) {
-//        Long skillId = Long.parseLong(skillID);
-//
-//        List<SkillGroupDTO.Info> skillGroupList = skillService.getSkillGroups(skillId);
-//
-//        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-//        specResponse.setData(skillGroupList)
-//                .setStartRow(0)
-//                .setEndRow(skillGroupList.size())
-//                .setTotalRows(skillGroupList.size());
-//
-//        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
-    @Loggable
-    @GetMapping(value = "/unattached-skill-groups")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getOtherSkillGroups(@RequestParam("_startRow") Integer startRow,
-                                                                              @RequestParam("_endRow") Integer endRow,
-                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                              @RequestParam(value = "operator", required = false) String operator,
-                                                                              @RequestParam(value = "criteria", required = false) String criteria,
-                                                                              @RequestParam(value = "_sortBy", required = false) String sortBy
-            , @RequestParam("skillId") String skillID) {
-
-
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        Integer pageSize = endRow - startRow;
-        Integer pageNumber = (endRow - 1) / pageSize;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Long skillId = Long.parseLong(skillID);
-
-        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId, pageable);
-
-        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-        specResponse.setData(skillGroups)
-                .setStartRow(startRow)
-                .setEndRow(endRow)
-                .setTotalRows(skillService.getUnAttachedSkillGroupsCount(skillId));
-
-        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/remove-skill-group/{skillGroupId}/{skillId}")
-    public ResponseEntity<Boolean> removeSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
-        boolean flag = false;
-        HttpStatus httpStatus = HttpStatus.OK;
-
-        try {
-            skillService.removeSkillGroup(skillGroupId, skillId);
-            flag = true;
-        } catch (Exception e) {
-            httpStatus = HttpStatus.NO_CONTENT;
-            flag = false;
-        }
-        return new ResponseEntity<>(flag, httpStatus);
-
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/remove-skill-group-list/{skillGroupIds}/{skillId}")
-    public ResponseEntity<Boolean> removeSkillGroups(@PathVariable List<Long> skillGroupIds, @PathVariable Long skillId) {
-        boolean flag = false;
-        HttpStatus httpStatus = HttpStatus.OK;
-
-        try {
-            skillService.removeSkillGroups(skillGroupIds, skillId);
-            flag = true;
-        } catch (Exception e) {
-            httpStatus = HttpStatus.NO_CONTENT;
-            flag = false;
-        }
-        return new ResponseEntity<>(flag, httpStatus);
-
-    }
-
-    @Loggable
-    @PostMapping(value = "/add-skill-group/{skillGroupId}/{skillId}")
-    public ResponseEntity<Boolean> addSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
-        boolean flag = false;
-        HttpStatus httpStatus = HttpStatus.OK;
-
-        try {
-            skillService.addSkillGroup(skillGroupId, skillId);
-            flag = true;
-        } catch (Exception e) {
-            httpStatus = HttpStatus.NO_CONTENT;
-            flag = false;
-        }
-        return new ResponseEntity<>(flag, httpStatus);
-    }
-
-    @Loggable
-    @PostMapping(value = "/add-skill-group-list/{skillId}")
-    public ResponseEntity<Boolean> addSkillGroups(@Validated @RequestBody SkillGroupDTO.SkillGroupIdList request, @PathVariable Long skillId) {
-        boolean flag = false;
-        HttpStatus httpStatus = HttpStatus.OK;
-
-        try {
-            skillService.addSkillGroups(request.getIds(), skillId);
-            flag = true;
-        } catch (Exception e) {
-            httpStatus = HttpStatus.NO_CONTENT;
-            flag = false;
-        }
-        return new ResponseEntity<>(flag, httpStatus);
-    }
-
-
-    @Loggable
-    @GetMapping(value = "/skill-group-dummy")
-//    @PreAuthorize("hasAuthority('r_skill_group')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> skillGroupDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-        return new ResponseEntity<SkillGroupDTO.SkillGroupSpecRs>(new SkillGroupDTO.SkillGroupSpecRs(), HttpStatus.OK);
-    }
-
-    // CompetenceOld methods ------------------------------------------------------------------------------------------------
-
-//    @Loggable
-//    @GetMapping(value = "{skillId}/competences")
-////    @PreAuthorize("hasAnyAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long skillId) {
-////        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//        List<CompetenceDTOOld.Info> competences = skillService.getCompetences(skillId);
-//
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(competences)
-//                .setStartRow(0)
-//                .setEndRow(competences.size())
-//                .setTotalRows(competences.size());
-//
-//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
-
-//    @Loggable
-//    @GetMapping(value = "{skillId}/unattached-competences")
-////    @PreAuthorize("hasAnyAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getUnAttachedCompetences(@RequestParam("_startRow") Integer startRow,
-//                                                                                   @RequestParam("_endRow") Integer endRow,
-//                                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
-//                                                                                   @RequestParam(value = "operator", required = false) String operator,
-//                                                                                   @RequestParam(value = "criteria", required = false) String criteria,
-//                                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy,
-//                                                                                   @PathVariable Long skillId) {
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//
-//        Integer pageSize=endRow-startRow;
-//        Integer pageNumber=(endRow-1)/pageSize;
-//        Pageable pageable= PageRequest.of(pageNumber,pageSize);
-//
-//
-//
-//
-//        List<CompetenceDTOOld.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
-//
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(competences)
-//                .setStartRow(startRow)
-//                .setEndRow(endRow)
-//                .setTotalRows(skillService.getUnAttachedCompetencesCount(skillId));
-//
-//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
-//    @Loggable
-//    @GetMapping(value = "/competences")
-////    @PreAuthorize("hasAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getAttachedCompetences(@RequestParam("skillId") String skillID) {
-//        Long skillId = Long.parseLong(skillID);
-//
-//        List<CompetenceDTOOld.Info> competences = skillService.getCompetences(skillId);
-//
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(competences)
-//                .setStartRow(0)
-//                .setEndRow(competences.size())
-//                .setTotalRows(competences.size());
-//
-//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
-//    @Loggable
-//    @GetMapping(value = "/unattached-competences")
-////    @PreAuthorize("hasAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getOtherCompetences(@RequestParam("_startRow") Integer startRow,
-//                                                                              @RequestParam("_endRow") Integer endRow,
-//                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
-//                                                                              @RequestParam(value = "operator", required = false) String operator,
-//                                                                              @RequestParam(value = "criteria", required = false) String criteria,
-//                                                                              @RequestParam(value = "_sortBy", required = false) String sortBy,
-//                                                                              @RequestParam("skillId") String skillID) {
-//        Long skillId = Long.parseLong(skillID);
-//
-//        Integer pageSize=endRow-startRow;
-//        Integer pageNumber=(endRow-1)/pageSize;
-//        Pageable pageable= PageRequest.of(pageNumber,pageSize);
-//
-//        List<CompetenceDTOOld.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
-//
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(competences)
-//                .setStartRow(startRow)
-//                .setEndRow(endRow)
-//                .setTotalRows(skillService.getUnAttachedCompetencesCount(skillId));
-//
-//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-//
-//    @Loggable
-//    @DeleteMapping(value = "/remove-competence/{competenceId}/{skillId}")
-//    public ResponseEntity<Boolean> removeCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
-//        boolean flag=false;
-//        HttpStatus httpStatus=HttpStatus.OK;
-//
-//        try {
-//            skillService.removeCompetence(competenceId, skillId);
-//            flag=true;
-//        } catch (Exception e) {
-//            httpStatus=HttpStatus.NO_CONTENT;
-//            flag=false;
-//        }
-//        return new ResponseEntity<>(flag,httpStatus);
-//    }
-
-
-//    @Loggable
-//    @DeleteMapping(value = "/remove-competence-list/{competenceIds}/{skillId}")
-//    public ResponseEntity<Boolean> removeCompetences(@PathVariable List<Long> competenceIds, @PathVariable Long skillId) {
-//        boolean flag=false;
-//        HttpStatus httpStatus=HttpStatus.OK;
-//
-//        try {
-//            skillService.removeCompetences(competenceIds, skillId);
-//            flag=true;
-//        } catch (Exception e) {
-//            httpStatus=HttpStatus.NO_CONTENT;
-//            flag=false;
-//        }
-//        return new ResponseEntity<>(flag,httpStatus);
-//    }
-
-
-//    @Loggable
-//    @PostMapping(value = "/add-competence/{competenceId}/{skillId}")
-//    public ResponseEntity<Boolean> addCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
-//        boolean flag=false;
-//        HttpStatus httpStatus=HttpStatus.OK;
-//
-//        try {
-//            skillService.addCompetence(competenceId, skillId);
-//            flag=true;
-//        } catch (Exception e) {
-//            httpStatus=HttpStatus.NO_CONTENT;
-//            flag=false;
-//        }
-//        return new ResponseEntity<>(flag,httpStatus);
-//    }
-
-//    @Loggable
-//    @PostMapping(value = "/add-competence-list/{skillId}")
-//    public ResponseEntity<Boolean> addCompetences(@Validated @RequestBody CompetenceDTOOld.CompetenceIdList request, @PathVariable Long skillId) {
-//        boolean flag=false;
-//        HttpStatus httpStatus=HttpStatus.OK;
-//
-//        try {
-//            skillService.addCompetences(request.getIds(), skillId);
-//            flag=true;
-//        } catch (Exception e) {
-//            httpStatus=HttpStatus.NO_CONTENT;
-//            flag=false;
-//        }
-//        return new ResponseEntity<>(flag,httpStatus);
-//    }
-//
-//
-//    @Loggable
-//    @GetMapping(value = "/competence-dummy")
-////    @PreAuthorize("hasAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> competenceDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-//        return new ResponseEntity<CompetenceDTOOld.CompetenceSpecRs>(new CompetenceDTOOld.CompetenceSpecRs(), HttpStatus.OK);
-//    }
-//
-
-    // Course methods ------------------------------------------------------------------------------------------------
 
 
     @Loggable
@@ -785,39 +410,6 @@ public class SkillRestController {
         return new ResponseEntity<CourseDTO.CourseSpecRs>(new CourseDTO.CourseSpecRs(), HttpStatus.OK);
     }
 
-    // Job methods ------------------------------------------------------------------------------------------------
-//
-//    @Loggable
-//    @GetMapping(value = "{skillId}/jobs")
-////    @PreAuthorize("hasAnyAuthority('r_competence')")
-//    public ResponseEntity<JobDTO.IscRes> getJobs(@PathVariable Long skillId) {
-////        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//        List<JobDTO.Info> competences = skillService.getJobs(skillId);
-//
-//        final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
-//        specResponse.setData(competences)
-//                .setStartRow(0)
-//                .setEndRow(competences.size())
-//                .setTotalRows(competences.size());
-//
-//        final JobDTO.IscRes specRs = new JobDTO.IscRes();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-//
-//
-//
-//    @Loggable
-//    @GetMapping(value = "/job-dummy")
-////    @PreAuthorize("hasAuthority('r_competence')")
-//    public ResponseEntity<JobDTO.IscRes> jobDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-//        return new ResponseEntity<JobDTO.IscRes>(new JobDTO.IscRes(), HttpStatus.OK);
-//    }
-//
-    // ------------------------------------------------------------------------------------------------
-
 
     @Loggable
     @GetMapping(value = {"/print-all/{type}"})
@@ -832,20 +424,21 @@ public class SkillRestController {
 
     @Loggable
     @GetMapping(value = "/skillthisCourse")
-    public ResponseEntity<ISC<SkillDTO.Info>> spectListAllClass(HttpServletRequest iscRq,@RequestParam Long categoryId) throws IOException {
-        return search2(iscRq, makeNewCriteria(null, null, EOperator.or, null),SkillDTO.Info.class,categoryId);
+    public ResponseEntity<ISC<SkillDTO.Info>> spectListAllClass(HttpServletRequest iscRq, @RequestParam Long categoryId) throws IOException {
+        return search2(iscRq, makeNewCriteria(null, null, EOperator.or, null), SkillDTO.Info.class, categoryId);
     }
-    private <T> ResponseEntity<ISC<T>> search2(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Class<T> infoType,Long categoryId) throws IOException {
+
+    private <T> ResponseEntity<ISC<T>> search2(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Class<T> infoType, Long categoryId) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("categoryId",iscRq.getParameter("categoryId") , EOperator.equals, new ArrayList<>());
+        SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("categoryId", iscRq.getParameter("categoryId"), EOperator.equals, new ArrayList<>());
         criteriaRq.getCriteria().add(criteria);
         criteriaRq.getCriteria().add(criteriaRq1);
-         if (searchRq.getCriteria() != null)
+        if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
         SearchDTO.SearchRs<T> searchRs = skillService.search(searchRq, infoType);

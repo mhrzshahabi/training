@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,9 +40,10 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         int pastTestVariable=0;
         int scoreEvaluationVariable=0;
         List<ClassStudent> classStudents = classStudentDAO.findByTclassId(id);
-        List<ClassStudentDTO.evaluationAnalysistLearning> list;
-        list = mapper.map(classStudents, new TypeToken<List<ClassStudentDTO.evaluationAnalysistLearning>>() {
-        }.getType());
+        List<ClassStudentDTO.evaluationAnalysistLearning> list = new ArrayList<>();
+        for (ClassStudent classStudent : classStudents) {
+            list.add(mapper.map(classStudent,ClassStudentDTO.evaluationAnalysistLearning.class));
+        }
         if (list.size() == 0)
         {
             ans[0]=Float.valueOf(0);
@@ -54,33 +56,41 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         if (scoringMethod.equals("1")) {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-                if (score.getPreTestScore() == null)
-                {
-                    score.setPreTestScore((float) 0.0);
-                    // preTestVariable++;
-                }
-
-                if (score.getValence() == null)
-                {
-                    score.setValence(String.valueOf(0));
-                    // pastTestVariable++;
-                }
+//                if (score.getPreTestScore() == null)
+//                {
+//                    score.setPreTestScore((float) 0.0);
+//                    // preTestVariable++;
+//                }
+//
+//                if (score.getValence() == null)
+//                {
+//                    score.setValence(String.valueOf(0));
+//                    // pastTestVariable++;
+//                }
 
 
                 if(score.getValence() != null && score.getPreTestScore() != null)
                 {
-                    ScoreEvaluation += map.get(score.getValence())- score.getPreTestScore();
+                    ScoreEvaluation = ScoreEvaluation + map.get(score.getValence())- score.getPreTestScore();
                     scoreEvaluationVariable++;
+                    sumValence += map.get(score.getValence());
+                    sumPreScore += score.getPreTestScore();
                 }
 
-                sumValence += map.get(score.getValence());
-                sumPreScore += score.getPreTestScore();
-
             }
-            ans[0]=Float.valueOf(df.format(sumValence / list.size()));
-            ans[1]=Float.valueOf(df.format(sumPreScore / list.size()));
-            //ans[2] = Float.valueOf(list.size());
-            ans[3]=Float.valueOf(df.format(ScoreEvaluation / (scoreEvaluationVariable)));
+            if(scoreEvaluationVariable != 0) {
+                ans[0] = Float.valueOf(df.format(sumValence / scoreEvaluationVariable));
+                ans[1] = Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+                ans[2] = Float.valueOf(scoreEvaluationVariable);
+                ans[3] = Float.valueOf(df.format(ScoreEvaluation / (scoreEvaluationVariable)));
+            }
+            else{
+                ans[0]=Float.valueOf(0);
+                ans[1]=Float.valueOf(0);
+                ans[2]=Float.valueOf(0);
+                ans[3]=Float.valueOf(0);
+            }
+
             pastTestVariable=0;
             preTestVariable=0;
             return ans;
@@ -90,31 +100,35 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         if (scoringMethod.equals("2")) {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-                if (score.getScore() == null)
-                {
-                    score.setScore((float) 0.0);
-                    // pastTestVariable++;
-                }
-                if (score.getPreTestScore() == null)
-                {
-                    score.setPreTestScore((float) 0.0);
-                    // preTestVariable++;
-
-                }
+//                if (score.getScore() == null)
+//                {
+//                    score.setScore((float) 0.0);
+//                    // pastTestVariable++;
+//                }
+//                if (score.getPreTestScore() == null)
+//                {
+//                    score.setPreTestScore((float) 0.0);
+//                    // preTestVariable++;
+//
+//                }
                 if(score.getScore() != null && score.getPreTestScore() != null)
                 {
-                    ScoreEvaluation +=(score.getScore()- score.getPreTestScore());
+                    ScoreEvaluation += Math.abs((score.getScore()- score.getPreTestScore()));
                     scoreEvaluationVariable++;
+                    sumScore += score.getScore();
+                    sumPreScore += score.getPreTestScore();
                 }
 
-                sumScore += score.getScore();
-                sumPreScore += score.getPreTestScore();
+
                }
 
             ans[0]=Float.valueOf(df.format(sumScore / (list.size()-pastTestVariable)));
             ans[1]=Float.valueOf(df.format(sumPreScore /(list.size()-preTestVariable) ));
-            ans[2]=Float.valueOf(list.size());
-            ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
+            ans[2]=Float.valueOf(scoreEvaluationVariable);
+            if(scoreEvaluationVariable != 0)
+                ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
+            else
+                ans[3]= Float.valueOf(0);
             pastTestVariable=0;
             preTestVariable=0;
             scoreEvaluationVariable=0;
@@ -122,52 +136,60 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         }
         if(scoringMethod.equals("3"))
         {
-
-
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-
-                if (score.getScore() == null)
-                {
-                    score.setScore((float) 0.0);
-                    // pastTestVariable++;
-                }
-
-                if (score.getPreTestScore() == null)
-                {
-                    score.setPreTestScore((float) 0.0);
-                    //  preTestVariable++;
-                }
+//                if (score.getScore() == null)
+//                {
+//                    score.setScore((float) 0.0);
+//                }
+//
+//                if (score.getPreTestScore() == null)
+//                {
+//                    score.setPreTestScore((float) 0.0);
+//                }
 
                 if(score.getScore() != null && score.getPreTestScore() != null)
                 {
-                    ScoreEvaluation +=((score.getScore() * 100)/20)- score.getPreTestScore();
+                    ScoreEvaluation = ScoreEvaluation + ((score.getScore()*5)- score.getPreTestScore());
                     scoreEvaluationVariable++;
+                    sumScore += (score.getScore()*5);
+                    sumPreScore += score.getPreTestScore();
                 }
-                sumScore += ((score.getScore() * 100)/20);
-                sumPreScore += score.getPreTestScore();
-
             }
-            ans[0]= Float.valueOf(df.format(sumScore / (list.size())));
-            ans[1]=Float.valueOf(df.format(sumPreScore /(list.size())));
-            ans[2] = Float.valueOf(list.size());
-            ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
+            if(scoreEvaluationVariable != 0) {
+                ans[0] = Float.valueOf(df.format(sumScore / scoreEvaluationVariable));
+                ans[1] = Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+                ans[2] = Float.valueOf(scoreEvaluationVariable);
+                ans[3] = Float.valueOf(df.format(ScoreEvaluation / scoreEvaluationVariable));
+            }
+            else{
+                ans[0]=Float.valueOf(0);
+                ans[1]=Float.valueOf(0);
+                ans[2]=Float.valueOf(0);
+                ans[3]=Float.valueOf(0);
+            }
             return ans;
         }
         if (scoringMethod.equals("4"))
         {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-                if (score.getPreTestScore() == null) {
-                    score.setPreTestScore((float) 0.0);
-                  //  preTestVariable++;
+//                if (score.getPreTestScore() == null) {
+//                    score.setPreTestScore((float) 0.0);
+//                  //  preTestVariable++;
+//                }
+                if(score.getPreTestScore() != null) {
+                    sumPreScore += score.getPreTestScore();
+                    scoreEvaluationVariable++;
                 }
-                sumPreScore += score.getPreTestScore();
             }
 
             ans[0] = (float)0.0;
-            ans[1]=Float.valueOf(df.format(sumPreScore / list.size()));
-            ans[2] = Float.valueOf(list.size());
+            if(scoreEvaluationVariable != 0)
+                ans[1]=Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+            else
+                ans[1]=(float)0.0;
+            ans[2] = Float.valueOf(scoreEvaluationVariable);
             ans[3] =  (float)0.0;
             return ans;
         }

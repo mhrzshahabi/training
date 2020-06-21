@@ -57,8 +57,8 @@ public class EvaluationAnalysistLearningRestController {
 
         params.put("score", classStudent[0]);
         params.put("preTestScore",classStudent[1]);
-        params.put("ScoreEvaluation",Math.abs(classStudent[3]));
-        if(Math.abs(classStudent[3])>=Float.valueOf(minScoreLearning))
+        params.put("ScoreEvaluation",classStudent[3]);
+        if(classStudent[3]>=Float.valueOf(minScoreLearning))
         {
             params.put("resault","تایید");
         }

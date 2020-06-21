@@ -456,5 +456,13 @@ JalaliDate.JalaliTodayDate = function(){
                 break;
         }
     }
-    return year + "/" + month + "/" + day;
+    if(month<10 && day<10)
+        return year + "/0" + month + "/0" + day;
+    else if(month>=10 && day<10)
+        return year + "/" + month + "/0" + day;
+    else if(month<10 && day>=10)
+        return year + "/0" + month + "/" + day;
+    else
+        return year + "/" + month + "/" + day;
+
 }

@@ -122,13 +122,6 @@ public class JobGroupRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/{jobGroupId}/canDelete")
-//    @PreAuthorize("hasAuthority('d_job_group')")
-    public ResponseEntity<Boolean> canDelete(@PathVariable Long jobGroupId) {
-        return new ResponseEntity<>(jobGroupService.canDelete(jobGroupId), HttpStatus.OK);
-    }
-
-    @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_job_group')")
     public ResponseEntity<JobGroupDTO.JobGroupSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,

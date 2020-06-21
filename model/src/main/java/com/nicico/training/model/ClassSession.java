@@ -18,8 +18,8 @@ import java.util.Set;
 public class ClassSession extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_sessions_seq")
-    @SequenceGenerator(name = "class_sessions_seq", sequenceName = "seq_class_sessions_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "session_seq")
+    @SequenceGenerator(name = "session_seq", sequenceName = "seq_session_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 

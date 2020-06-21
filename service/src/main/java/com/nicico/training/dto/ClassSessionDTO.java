@@ -151,6 +151,13 @@ public class ClassSessionDTO implements Serializable {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class DeleteStatus {
+        private Integer sucesses;
+        private Integer totalSizes;
+    }
 
     @Getter
     @Setter

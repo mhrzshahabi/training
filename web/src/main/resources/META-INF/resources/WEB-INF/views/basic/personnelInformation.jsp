@@ -1016,7 +1016,7 @@
                         canEdit: false
                     },
                     {
-                        name: "header_perCourses",
+                        name: "header_preCourses",
                         type: "HeaderItem",
                         defaultValue: "<spring:message code="prerequisites"/>",
                         colSpan: 6,
@@ -1024,7 +1024,7 @@
                         cellStyle: "lineField"
                     },
                     {
-                        name: "perCourses",
+                        name: "preCourses",
                         title: "",
                         type: "TextAreaItem",
                         startRow: true,

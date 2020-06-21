@@ -54,7 +54,7 @@
 
                 <sec:authorize access="hasAuthority('TclassSessionsTab_D')">
                 {
-                    title: "<spring:message code="remove"/>",
+                    title: "<spring:message code="remove.and.group.remove"/>",
                     icon: "<spring:url value="remove.png"/>",
                     click: function () {
                         remove_Session();
@@ -143,8 +143,8 @@
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
+            selectionType: "multiple",
             filterOnKeypress: true,
-            selectionType: "single",
             initialSort: [
                 {property: "sessionDate", direction: "ascending"},
                 {property: "sessionStartHour", direction: "ascending"}
@@ -265,13 +265,17 @@
                     let result="background-color : ";
                     let blackColor="; color:black";
 
+                if (this.isSelected(record)) {
+                    return "background-color: #fe9d2a;";
+                }
+
                     switch (record.dayCode) {
                         case 'Sat':
                             result+="#989899";
                             break;
 
                         case 'Sun':
-                            result+="#ffd1f2";
+                            result+="#ffd1f2"+blackColor;
                             break;
 
                         case 'Mon':
@@ -279,7 +283,7 @@
                             break;
 
                         case 'Tue':
-                            result+="#cdb7a3";
+                            result+="#cdb7a3"+blackColor;
                             break;
 
                         case 'Wed':
@@ -354,6 +358,7 @@
 
         <sec:authorize access="hasAnyAuthority('TclassSessionsTab_D','TclassSessionsTab_classStatus')">
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+            title: "<spring:message code="remove.and.group.remove" />",
             click: function () {
                 remove_Session();
             }
@@ -868,6 +873,7 @@
 
         //*****delete function*****
         function remove_Session() {
+         /* Hamed Jafari:
             var record = ListGrid_session.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
@@ -894,6 +900,43 @@
                 } else {
                     simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
                 }
+            }*/
+
+            let sessionIds=[];
+            let records = ListGrid_session.getSelectedRecords();
+
+            if (records.length == 0) {
+                isc.Dialog.create({
+                    message: "<spring:message code="msg.no.records.selected"/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    isc.MyYesNoDialog.create({
+                        message: "<spring:message code="msg.record.removes.ask"/>",
+                        title: "<spring:message code="verify.delete"/>",
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                studentRemoveWait = isc.Dialog.create({
+                                    message: "<spring:message code='msg.waiting'/>",
+                                    icon: "[SKIN]say.png",
+                                    title: "<spring:message code='message'/>"
+                                });
+
+                                records.forEach(item=> sessionIds=[...sessionIds,parseInt(item.id)]);
+                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "deleteSessions/" + sessionIds , "DELETE", null, show_SessionActionResult));
+                            }
+                        }
+                    });
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
         }
 
@@ -907,9 +950,40 @@
                 let responseID = JSON.parse(resp.data).id;
                 let gridState = "[{id:" + responseID + "}]";
 
-                MyOkDialog_Session = isc.MyOkDialog.create({
-                    message: "<spring:message code="global.form.request.successful"/>"
-                });
+                let dataTemp=JSON.parse(resp.data);
+                let success=parseInt(dataTemp.sucesses);
+                let totalSizes=parseInt(dataTemp.totalSizes);
+                let failures=totalSizes-success;
+
+                studentRemoveWait.close();
+
+                if (success!=0 && failures!=0)
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>"+
+                                 getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
+
+                else if (success!=0)
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
+
+                else
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
 
                 setTimeout(function () {
 
@@ -919,7 +993,7 @@
 
                     ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
 
-                }, 1000);
+                },2000);
 
                 Window_Session.close();
 
@@ -964,7 +1038,7 @@
         function close_MyOkDialog_Session() {
             setTimeout(function () {
                 MyOkDialog_Session.close();
-            }, 3000);
+            }, 2000);
         }
 
         //*****print*****

@@ -12,6 +12,7 @@
     var skillLevelMethod = "get";
     var skillLevelHomeUrl = rootUrl + "/skill-level";
     var skillLevelActionUrl = skillLevelHomeUrl;
+
     var Menu_ListGrid_skill_level = isc.Menu.create({
         width: 150,
         data: [{
@@ -40,30 +41,18 @@
         fetchDataURL: skillLevelHomeUrl + "/spec-list"
     });
     var ListGrid_skill_level = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
         dataSource: RestDataSource_skill_level,
         contextMenu: Menu_ListGrid_skill_level,
+        sortField: "id",
+        canSort: false,
+        autoFetchData: true,
         doubleClick: function () {
             ListGrid_skill_level_edit();
         },
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}],
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
+            {name: "titleEn", title: "نام لاتین ", align: "center"}
+         ],
     });
     var DynamicForm_skill_level = isc.DynamicForm.create({
         width: "100%",
@@ -116,7 +105,6 @@
 
             }]
     });
-
 
     var IButton_skill_level_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
@@ -208,6 +196,55 @@
         })]
     });
 
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+//icon: "<spring:url value="refresh.png"/>",
+        title: "بازخوانی اطلاعات",
+        click: function () {
+            ListGrid_skill_level_refresh();
+        }
+    });
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+//icon: "[SKIN]/actions/edit.png",
+        title: "ویرایش",
+        click: function () {
+            ListGrid_skill_level_edit();
+        }
+    });
+    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+
+        title: "ایجاد",
+        click: function () {
+            ListGrid_skill_level_Add();
+        }
+    });
+    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+        icon: "[SKIN]/actions/remove.png",
+        title: "حذف",
+        click: function () {
+            ListGrid_skill_level_remove();
+        }
+    });
+    var ToolStrip_Actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh
+                ]
+            })
+        ]
+    });
+    var HLayout_Actions = isc.HLayout.create({width: "100%", members: [ToolStrip_Actions]});
+    var HLayout_Grid = isc.HLayout.create({width: "100%", height: "100%", members: [ListGrid_skill_level]});
+    var VLayout_Body = isc.VLayout.create({width: "100%", height: "100%", members: [HLayout_Actions, HLayout_Grid]})
+
     function ListGrid_skill_level_refresh() {
         var record = ListGrid_skill_level.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -215,8 +252,7 @@
             ListGrid_skill_level.selectRecord(record);
         }
         ListGrid_skill_level.invalidateCache();
-    };
-
+    }
     function ListGrid_skill_level_remove() {
 
 
@@ -287,18 +323,14 @@
         }
 
 
-    };
-
-
+    }
     function ListGrid_skill_level_Add() {
         skillLevelMethod = "POST";
         skillLevelActionUrl = skillLevelHomeUrl;
         DynamicForm_skill_level.clearValues();
         Window_skill_level.setTitle("ایجاد سطح مهارت جدید");
         Window_skill_level.show();
-    };
-
-
+    }
     function ListGrid_skill_level_edit() {
         var record = ListGrid_skill_level.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -320,54 +352,6 @@
             Window_skill_level.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
             Window_skill_level.show();
         }
-    };
+    }
 
-
-    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-//icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
-        click: function () {
-            ListGrid_skill_level_refresh();
-        }
-    });
-    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-//icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
-        click: function () {
-            ListGrid_skill_level_edit();
-        }
-    });
-    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-
-        title: "ایجاد",
-        click: function () {
-            ListGrid_skill_level_Add();
-        }
-    });
-    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
-        click: function () {
-            ListGrid_skill_level_remove();
-        }
-    });
-    var ToolStrip_Actions = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [
-            ToolStripButton_Add,
-            ToolStripButton_Edit,
-            ToolStripButton_Remove,
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    ToolStripButton_Refresh
-                ]
-            })
-        ]
-    });
-    var HLayout_Actions = isc.HLayout.create({width: "100%", members: [ToolStrip_Actions]});
-    var HLayout_Grid = isc.HLayout.create({width: "100%", height: "100%", members: [ListGrid_skill_level]});
-    var VLayout_Body = isc.VLayout.create({width: "100%", height: "100%", members: [HLayout_Actions, HLayout_Grid]});
+    //</script>

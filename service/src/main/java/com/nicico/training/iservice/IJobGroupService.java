@@ -6,7 +6,6 @@ com.nicico.training.iservice
     */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,13 +43,9 @@ public interface IJobGroupService {
 
     Set<JobDTO.Info> unAttachJobs(Long jobGroupId);
 
-    boolean canDelete(Long jobGroupId);
-
     SearchDTO.SearchRs<JobGroupDTO.Info> search(SearchDTO.SearchRq request);
 
     SearchDTO.SearchRs<JobGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
-
-    List<CompetenceDTOOld.Info> getCompetence(Long jobGroupID);
 
     List<JobDTO.Info> getJobs(Long jobGroupID);
 
