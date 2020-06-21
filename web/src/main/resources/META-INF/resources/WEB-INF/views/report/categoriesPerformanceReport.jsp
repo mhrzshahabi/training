@@ -12,7 +12,8 @@
                 {name: "id", primaryKey: true},
                 {name: "titleFa", title: "<spring:message code="institute"/>"}
             ],
-            fetchDataURL: instituteUrl +"spec-list"
+            fetchDataURL: instituteUrl +"spec-list",
+            allowAdvancedCriteria: true,
         });
 
         var RestDataSource_Category = isc.TrDS.create({
@@ -57,9 +58,10 @@
                     {name: "finishedClasses"},
                     {name: "endedClasses"},
                     {name: "presentStudents"},
-                    {name: "overtimedStudents"},
+                    {name: "overdueStudents"},
                     {name: "absentStudents"},
                     {name: "unjustifiedStudents"},
+                    {name: "unknownStudents"},
                 ],
             // fetchDataURL:  + "/iscList",
             autoFetchData: true
@@ -88,7 +90,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     wrapTitle : false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
@@ -99,8 +101,8 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkStartDate("firstStartDate");
-                        CPReport_check_date();
+                        // checkStartDate("firstStartDate");
+                        // CPReport_check_date("firstStartDate");
                     }
                 },
                 {
@@ -112,7 +114,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -122,8 +124,8 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkStartDate("secondStartDate");
-                        CPReport_check_date();
+                        // checkStartDate("secondStartDate");
+                        // CPReport_check_date("secondStartDate");
                     }
                 },
                 {
@@ -135,7 +137,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     wrapTitle: false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
@@ -146,8 +148,8 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkFinishDate("firstFinishDate");
-                        CPReport_check_date();
+                        // checkFinishDate("firstFinishDate");
+                        // CPReport_check_date("firstFinishDate");
                     }
 
                 },
@@ -160,7 +162,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -170,8 +172,8 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkFinishDate("secondFinishDate");
-                        CPReport_check_date();
+                        // checkFinishDate("secondFinishDate");
+                        // CPReport_check_date("secondFinishDate");
                     }
 
                 },
@@ -189,8 +191,9 @@
                     displayField: "titleFa",
                     valueField: "id",
                     textAlign: "center",
+                    textMatchStyle: "substring",
                     pickListFields: [
-                        {name: "titleFa", filterOperator: "inSet"},
+                        {name: "titleFa", filterOperator: "iContains"},
                     ],
                     filterFields: [""]
                 },
@@ -394,7 +397,7 @@
                     }
                 },
                 {
-                    name: "overtimedStudents",
+                    name: "overdueStudents",
                     title: "<spring:message code="students.all.overtime"/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -416,6 +419,16 @@
                 {
                     name: "unjustifiedStudents",
                     title: "<spring:message code="students.all.unjustified"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    summaryFunction: "totalClasses(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
+                },
+                {
+                    name: "unknownStudents",
+                    title: "<spring:message code="students.all.unknown"/>",
                     align: "center",
                     filterOperator: "iContains",
                     summaryFunction: "totalClasses(records)",
@@ -464,15 +477,15 @@
             }
         }
 
-        function CPReport_check_date() {
+        function CPReport_check_date(id) {
 
-            if (DynamicForm_CPReport.getValue("sessionStartDate") !== undefined && DynamicForm_CPReport.getValue("sessionFinishDate") !== undefined) {
-                if (DynamicForm_CPReport.getValue("sessionStartDate") > DynamicForm_CPReport.getValue("sessionFinishDate")) {
-                    DynamicForm_CPReport.addFieldErrors("sessionStartDate", "<spring:message code="start.date.must.be.shorter.than.end.date"/>");
-                    DynamicForm_CPReport.addFieldErrors("sessionFinishDate", "<spring:message code="start.date.must.be.shorter.than.end.date"/> ");
+            if (DynamicForm_CPReport.getValue(id) !== undefined && DynamicForm_CPReport.getValue(id) !== undefined) {
+                if (DynamicForm_CPReport.getValue(id) > DynamicForm_CPReport.getValue(id)) {
+                    DynamicForm_CPReport.addFieldErrors(id, "<spring:message code="start.date.must.be.shorter.than.end.date"/>");
+                    DynamicForm_CPReport.addFieldErrors(id, "<spring:message code="start.date.must.be.shorter.than.end.date"/> ");
                 } else {
-                    DynamicForm_CPReport.clearFieldErrors("sessionStartDate", true);
-                    DynamicForm_CPReport.clearFieldErrors("sessionFinishDate", true);
+                    DynamicForm_CPReport.clearFieldErrors(id, true);
+                    DynamicForm_CPReport.clearFieldErrors(id, true);
                 }
             }
 
@@ -483,14 +496,25 @@
         //*****search report result*****
         function searchResult() {
 
-            checkFinishDate("firstFinishDate");
+            /*checkFinishDate("firstFinishDate");
             checkFinishDate("secondFinishDate");
             checkStartDate("firstStartDate");
             checkStartDate("secondStartDate");
-            // CPReport_check_date();
+            CPReport_check_date("firstFinishDate");
+            CPReport_check_date("secondFinishDate");
+            CPReport_check_date("firstStartDate");
+            CPReport_check_date("secondStartDate");*/
 
             if (DynamicForm_CPReport.hasErrors())
                 return;
+            if(firstStartDate._value === undefined || firstStartDate._value === null)
+                firstStartDate._value = " ";
+            if(secondStartDate._value === undefined || secondStartDate._value === null)
+                secondStartDate._value = " ";
+            if(firstFinishDate._value === undefined || firstFinishDate._value === null)
+                firstFinishDate._value = " ";
+            if(secondFinishDate._value === undefined || secondFinishDate._value === null)
+                secondFinishDate._value = " ";
 
             var reportParameters = {
                 firstStartDate: firstStartDate._value.replace(/\//g, "^"),
@@ -504,9 +528,8 @@
                 course: DynamicForm_CPReport.getValue("course") !== undefined ? DynamicForm_CPReport.getValue("course") : "همه"
             };
 
-            console.log(reportParameters);
-
-            RestDataSource_CPReport.fetchDataURL = classPerformanceReport + "list" + "/" + JSON.stringify(reportParameters);
+            RestDataSource_CPReport.fetchDataURL = attendancePerformanceReportUrl + "list" + "/" + JSON.stringify(reportParameters);
+            //classPerformanceReport
             ListGrid_CPReport.invalidateCache();
             ListGrid_CPReport.fetchData();
         }

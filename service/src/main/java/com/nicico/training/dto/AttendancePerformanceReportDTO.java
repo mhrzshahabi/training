@@ -2,27 +2,34 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Getter
+@Setter
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttendancePerformanceReportDTO implements Serializable {
     private Long instituteId;
 
     private Long categoryId;
 
-    private Long unknown;
+    private Long unknownStudents;
 
-    private Long present;
+    private Long presentStudents;
 
-    private Long overdue;
+    private Long overdueStudents;
 
-    private Long absence;
+    private Long absentStudents;
 
-    private Long unjustified;
+    private Long unjustifiedStudents;
 
 
     @Getter

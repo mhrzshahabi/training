@@ -472,7 +472,8 @@
                 align: "right",
                 startRow: false,
                 click: function () {
-                    if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length >= 1) {
+                    console.log(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length);
+                    if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length <= 1) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
                         var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();

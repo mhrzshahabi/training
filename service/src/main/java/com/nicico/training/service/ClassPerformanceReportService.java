@@ -41,63 +41,63 @@ public class ClassPerformanceReportService implements IClassPerformanceReportSer
         List<?> CPReportList = null;
         List<ClassPerformanceReportDTO> classPerformanceReportDTO = null;
 
-        String reportScript = "SELECT\n" +
-                "    c_title_fa,\n" +
-                "    category_title,\n" +
-                "    CASE WHEN planing IS NOT NULL THEN planing ELSE 0 END as planing,\n" +
-                "    CASE WHEN processing IS NOT NULL THEN processing ELSE 0 END as processing,\n" +
-                "    CASE WHEN ended IS NOT NULL THEN ended ELSE 0 END as ended,\n" +
-                "    CASE WHEN finished IS NOT NULL THEN finished ELSE 0 END as finished,\n" +
-                "    f_institute_organizer,\n" +
-                "    category_id\n" +
-                "FROM\n" +
-                "(SELECT\n" +
-                "    clp.c_title_fa,\n" +
-                "    clp.category_title,\n" +
-                "    clp.status,\n" +
-                "    COUNT(clp.status) statusCount,\n" +
-                "    clp.f_institute_organizer,\n" +
-                "    clp.category_id\n" +
-                "FROM\n" +
-                "    view_class_performance clp\n" +
-                "WHERE\n" +
-                "    (((CASE WHEN length(:firststartdate) = 10 AND clp.c_start_date >=:firststartdate THEN 1 WHEN length(:firststartdate) != 10 THEN 1 END) IS NOT NULL AND   \n" +
-                "    (CASE WHEN length(:secondstartdate) = 10 AND clp.c_start_date <=:secondstartdate THEN 1 WHEN length(:secondstartdate) != 10 THEN 1 END) IS NOT NULL) \n" +
-                "    AND\n" +
-                "    ((CASE WHEN length(:firstfinishdate) = 10 AND clp.c_end_date >=:firstfinishdate THEN 1 WHEN length(:firstfinishdate) != 10 THEN 1 END) IS NOT NULL AND\n" +
-                "    (CASE WHEN length(:secondfinishdate) = 10 AND clp.c_end_date <=:secondfinishdate THEN 1 WHEN length(:secondfinishdate) != 10 THEN 1 END)IS NOT NULL))\n" +
-                "    AND   \n" +
-                "    (CASE WHEN :institute = 'همه' THEN 1 WHEN clp.f_institute_organizer =:institute THEN 1 END)IS NOT NULL AND\n" +
-                "    (CASE WHEN :term = 'همه' THEN 1 WHEN clp.f_term =:term THEN 1 END)IS NOT NULL AND\n" +
-                "    (CASE WHEN :course_id = 'همه' THEN 1 WHEN clp.course_id =:course_id THEN 1 END)IS NOT NULL AND\n" +
-                "    (CASE WHEN :category_id = 'همه' THEN 1 WHEN clp.category_id =:category_id THEN 1 END) IS NOT NULL AND\n" +
-                "    (CASE WHEN :subcategory_id = 'همه' THEN 1 WHEN clp.subcategory_id =:subcategory_id THEN 1 END) IS NOT NULL\n" +
-                "GROUP BY\n" +
-                "    clp.c_title_fa,\n" +
-                "    clp.category_title,\n" +
-                "    clp.f_institute_organizer,\n" +
-                "    clp.category_id,\n" +
-                "    clp.status)\n" +
-                "PIVOT(\n" +
-                "    SUM (statusCount)\n" +
-                "    FOR status\n" +
-                "    IN(\n" +
-                "    '1' as planing,\n" +
-                "    '2' as processing,\n" +
-                "    '3' as ended,\n" +
-                "    '4' as finished\n" +
-                "    )) ORDER BY f_institute_organizer;\n";
+        String reportScript = "SELECT " +
+                "    c_title_fa, " +
+                "    category_title, " +
+                "    CASE WHEN planing IS NOT NULL THEN planing ELSE 0 END as planing, " +
+                "    CASE WHEN processing IS NOT NULL THEN processing ELSE 0 END as processing, " +
+                "    CASE WHEN ended IS NOT NULL THEN ended ELSE 0 END as ended, " +
+                "    CASE WHEN finished IS NOT NULL THEN finished ELSE 0 END as finished, " +
+                "    f_institute_organizer, " +
+                "    category_id " +
+                " FROM " +
+                " (SELECT " +
+                "    clp.c_title_fa, " +
+                "    clp.category_title, " +
+                "    clp.status, " +
+                "    COUNT(clp.status) statusCount, " +
+                "    clp.f_institute_organizer, " +
+                "    clp.category_id " +
+                " FROM " +
+                "    view_class_performance clp " +
+                " WHERE " +
+                "    (((CASE WHEN length(:firststartdate) = 10 AND clp.c_start_date >=:firststartdate THEN 1 WHEN length(:firststartdate) != 10 THEN 1 END) IS NOT NULL AND    " +
+                "    (CASE WHEN length(:secondstartdate) = 10 AND clp.c_start_date <=:secondstartdate THEN 1 WHEN length(:secondstartdate) != 10 THEN 1 END) IS NOT NULL)  " +
+                "    AND " +
+                "    ((CASE WHEN length(:firstfinishdate) = 10 AND clp.c_end_date >=:firstfinishdate THEN 1 WHEN length(:firstfinishdate) != 10 THEN 1 END) IS NOT NULL AND " +
+                "    (CASE WHEN length(:secondfinishdate) = 10 AND clp.c_end_date <=:secondfinishdate THEN 1 WHEN length(:secondfinishdate) != 10 THEN 1 END)IS NOT NULL)) " +
+                "    AND    " +
+                "    (CASE WHEN :institute = 'همه' THEN 1 WHEN clp.f_institute_organizer =:institute THEN 1 END)IS NOT NULL AND " +
+                "    (CASE WHEN :term = 'همه' THEN 1 WHEN clp.f_term =:term THEN 1 END)IS NOT NULL AND " +
+                "    (CASE WHEN :course_id = 'همه' THEN 1 WHEN clp.course_id =:course_id THEN 1 END)IS NOT NULL AND " +
+                "    (CASE WHEN :category_id = 'همه' THEN 1 WHEN clp.category_id =:category_id THEN 1 END) IS NOT NULL AND " +
+                "    (CASE WHEN :subcategory_id = 'همه' THEN 1 WHEN clp.subcategory_id =:subcategory_id THEN 1 END) IS NOT NULL " +
+                " GROUP BY " +
+                "    clp.c_title_fa, " +
+                "    clp.category_title, " +
+                "    clp.f_institute_organizer, " +
+                "    clp.category_id, " +
+                "    clp.status) " +
+                " PIVOT( " +
+                "    SUM (statusCount) " +
+                "    FOR status " +
+                "    IN( " +
+                "    '1' as planing, " +
+                "    '2' as processing, " +
+                "    '3' as ended, " +
+                "    '4' as finished " +
+                "    )) ORDER BY f_institute_organizer ";
 
         CPReportList = (List<?>) entityManager.createNativeQuery(reportScript)
-                .setParameter("firstStartDate", firstStartDate)
-                .setParameter("secondStartDate", secondStartDate)
-                .setParameter("firstFinishDate", firstFinishDate)
-                .setParameter("secondFinishDate", secondFinishDate)
+                .setParameter("firststartdate", firstStartDate)
+                .setParameter("secondstartdate", secondStartDate)
+                .setParameter("firstfinishdate", firstFinishDate)
+                .setParameter("secondfinishdate", secondFinishDate)
                 .setParameter("institute", institute)
-                .setParameter("category", category)
-                .setParameter("subcategory", subcategory)
+                .setParameter("category_id", category)
+                .setParameter("subcategory_id", subcategory)
                 .setParameter("term", term)
-                .setParameter("course", course)
+                .setParameter("course_id", course)
                 .getResultList();
 
         if (CPReportList != null) {
@@ -107,13 +107,13 @@ public class ClassPerformanceReportService implements IClassPerformanceReportSer
                 Object[] cpReport = (Object[]) CPReportList.get(i);
                 classPerformanceReportDTO.add(new ClassPerformanceReportDTO(
                         cpReport[0] != null ? cpReport[0].toString() : null,
-                        cpReport[0] != null ? cpReport[1].toString() : null,
-                        cpReport[0] != null ? (Integer)cpReport[2] : null,
-                        cpReport[0] != null ? (Integer)cpReport[3] : null,
-                        cpReport[0] != null ? (Integer)cpReport[4] : null,
-                        cpReport[0] != null ? (Integer)cpReport[5] : null,
-                        cpReport[0] != null ? (Long)cpReport[6] : null,
-                        cpReport[0] != null ? (Long)cpReport[7] : null));
+                        cpReport[1] != null ? cpReport[1].toString() : null,
+                        cpReport[2] != null ? Integer.parseInt(cpReport[2].toString()) : null,
+                        cpReport[3] != null ? Integer.parseInt(cpReport[3].toString()) : null,
+                        cpReport[4] != null ? Integer.parseInt(cpReport[4].toString()) : null,
+                        cpReport[5] != null ? Integer.parseInt(cpReport[5].toString()) : null,
+                        cpReport[6] != null ? Long.parseLong(cpReport[6].toString()) : null,
+                        cpReport[7] != null ? Long.parseLong(cpReport[7].toString()) : null));
 
             }
         }
