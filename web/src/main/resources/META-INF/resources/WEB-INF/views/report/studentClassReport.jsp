@@ -592,6 +592,7 @@
             },
             {name: "studentFirstName"},
             {name: "studentLastName"},
+            {name: "studentCcpAffairs"},
             {name: "studentCcpUnit"},
             {name: "studentPostCode"},
             {name: "studentPostTitle"},
