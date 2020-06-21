@@ -5,5 +5,5 @@ import com.nicico.training.dto.AttendanceReportDTO;
 import java.util.List;
 
 public interface IAttendanceReportService {
-    List<AttendanceReportDTO.Info> getAttendanceList(String startDate, String endDate);
+    List<AttendanceReportDTO.Info> getAbsentList(String startDate, String endDate,String absentType);
 }
