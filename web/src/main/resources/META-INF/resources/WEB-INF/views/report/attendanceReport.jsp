@@ -24,10 +24,10 @@
     });
 
     var DynamicForm_AttendanceReport = isc.DynamicForm.create({
-        numCols: 6,
+        numCols: 8,
         padding: 10,
         titleAlign: "left",
-        colWidths: [70, 200, 70, 200, 100, 100],
+        colWidths: [70, 200, 70, 200,70,200, 100, 100],
         fields: [
             {
                 name: "startDate",
@@ -86,6 +86,20 @@
                 }
             },
             {
+                name: "absentType",
+                title:"نوع غيبت",
+                width: 150,
+                defaultValue:5,
+                textAlign: "center",
+                textAlign: "center",
+                filterOperator: "iContains",
+                valueMap:{
+                    "3": "غيرموجه",
+                    "4": "موجه",
+                    "5": "موجه/غیر موجه"
+                }
+            },
+            {
                 name: "searchBtn",
                 ID: "searchBtnJspAttendanceReport",
                 title: "<spring:message code="search"/>",
@@ -100,7 +114,7 @@
                     }
                     var wait = createDialog("wait");
                     setTimeout(function () {
-                        let url = attendanceReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
+                        let url = attendanceReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate")+ "&absentType=" + form.getValue("absentType");
 
                         RestDataSource_Class_JspAttendanceReport.fetchDataURL = url;
 
@@ -168,10 +182,12 @@
             {name: "ccpAffairs", title: "<spring:message code='affairs'/>"},
             {name: "classCode", title: "<spring:message code="class.code"/>"},
             {name: "className", title: "<spring:message code="class.title"/>"},
-            {name: "attendanceStatus", title: "<spring:message code="status"/>", valueMap:
+            {name: "attendanceStatus", title: "<spring:message code="absent.type"/>",
+             valueMap:
                     {
                         "3": "غیر موجه",
-                        "4": "موجه"}
+                        "4": "موجه"
+                    }
             },
             {name: "date", title: "<spring:message code="date"/>",
                 filterEditorProperties: {
