@@ -601,7 +601,18 @@
             {name: "classStartDate"},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classStudentScore"},
-            {name: "classStudentScoresState"},
+            {
+                name: "classStudentScoresState",
+                optionDataSource: ScoresStateDS_SCRV,
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                },
+                displayField: "title",
+                valueField: "id",
+                multiple: true
+            },
         ]
     });
 
