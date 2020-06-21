@@ -543,10 +543,10 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-                String absentType = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                int absentType = Integer.parseInt(searchRq.getCriteria().getCriteria().get(0).getValue().get(0)+"");
                 searchRq.getCriteria().getCriteria().remove(0);
 
-                List<AttendanceReportDTO.Info> list12 = attendanceReportService.getAbsentList(startDate2, endDate2,absentType);
+                List<AttendanceReportDTO.Info> list12 = attendanceReportService.getAbsentList(startDate2, endDate2,absentType+"");
 
                 list12.forEach(x->
                         {

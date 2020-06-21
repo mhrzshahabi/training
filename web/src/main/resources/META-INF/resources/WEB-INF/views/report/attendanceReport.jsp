@@ -91,12 +91,10 @@
                 width: 150,
                 defaultValue:5,
                 textAlign: "center",
-                textAlign: "center",
-                filterOperator: "iContains",
                 valueMap:{
                     "3": "غيرموجه",
                     "4": "موجه",
-                    "5": "موجه/غیر موجه"
+                    "5": "موجه و غیر موجه"
                 }
             },
             {
@@ -196,7 +194,7 @@
             },
             {
                 name: "time",
-                title: "<spring:message code="time"/>",
+                title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },
         ]
