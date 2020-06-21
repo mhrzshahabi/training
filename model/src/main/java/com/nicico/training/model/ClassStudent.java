@@ -66,8 +66,18 @@ public class ClassStudent extends Auditable {
     @Column(name = "class_id", insertable = false, updatable = false)
     private Long tclassId;
 
-    @Column(name = "evaluation_audience_type")
-    private String evaluationAudienceType;
+//    @Column(name = "evaluation_audience_type")
+//    private String evaluationAudienceType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "evaluation_audience_type_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue evaluationAudienceType;
+
+    @Column(name = "evaluation_audience_type_id")
+    private Long evaluationAudienceTypeId;
+
+    @Column(name = "evaluation_audience_id")
+    private Long evaluationAudienceId;
 
     @Column(name = "evaluation_status_reaction")
     private Integer evaluationStatusReaction;

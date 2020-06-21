@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -16,7 +15,7 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TrainingOverTimeDTO implements Serializable {
+public class AttendanceReportDTO {
     String personalNum;
     String personalNum2;
     String nationalCode;
@@ -26,34 +25,31 @@ public class TrainingOverTimeDTO implements Serializable {
     String classCode;
     String className;
     String date;
+    String attendanceStatus;
     String time;
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TrainingOverTimeInfo")
-    public static class Info extends TrainingOverTimeDTO {
+    @ApiModel("AttendanceReportDTOInfo")
+    public static class Info extends AttendanceReportDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TrainingOverTimeSpecRs")
-    public static class TrainingOverTimeSpecRs {
-        private TrainingOverTimeDTO.SpecRs response;
+    @ApiModel("AttendanceReportDTOSpecRs")
+    public static class AttendanceReportDTOSpecRs {
+        private AttendanceReportDTO.SpecRs response;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<TrainingOverTimeDTO.Info> data;
+        private List<AttendanceReportDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

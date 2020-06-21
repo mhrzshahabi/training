@@ -9,14 +9,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
 import com.nicico.training.iservice.IPostGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.PostGroup;
-import com.nicico.training.repository.CompetenceDAOOld;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.PostGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,6 @@ public class PostGroupService implements IPostGroupService {
     private final ModelMapper modelMapper;
     private final PostGroupDAO postGroupDAO;
     private final PostDAO postDAO;
-    private final CompetenceDAOOld competenceDAO;
     private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
@@ -162,17 +159,6 @@ public class PostGroupService implements IPostGroupService {
         return modelMapper.map(saved, PostGroupDTO.Info.class);
     }
 
-
-    @Override
-    @Transactional
-    public List<CompetenceDTOOld.Info> getCompetence(Long postGroupId) {
-        final Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(postGroupId);
-        final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
-
-//        return modelMapper.map(postGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTOOld.Info>>() {}.getType());
-        return null;
-    }
-
     @Override
     @Transactional
     public List<PostDTO.Info> getPosts(Long postGroupID) {
@@ -198,16 +184,6 @@ public class PostGroupService implements IPostGroupService {
 //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
         return postList;
 //        return infoList;
-    }
-
-    @Override
-    @Transactional
-    public boolean canDelete(Long postGroupId) {
-        List<CompetenceDTOOld.Info> competences = getCompetence(postGroupId);
-        if (competences.isEmpty() || competences.size() == 0)
-            return true;
-        else
-            return false;
     }
 
     @Override

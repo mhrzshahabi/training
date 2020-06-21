@@ -228,13 +228,14 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public CourseDTO.Info update(Long id, CourseDTO.Update request) {
+    public CourseDTO.Info update(Long id, Object request) {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
         Course course = new Course();
         modelMapper.map(currentCourse, course);
-        modelMapper.map(request, course);
-        course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
+        modelMapper.map(update, course);
+        course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(update.getETechnicalTypeId()));
         if (course.getGoalSet().isEmpty()) {
             course.setHasGoal(false);
         } else {
@@ -243,7 +244,7 @@ public class CourseService implements ICourseService {
         course.setHasSkill(!course.getSkillSet().isEmpty());
         Course save = courseDAO.save(course);
         Set<Skill> savedSkills = save.getSkillMainObjectiveSet();
-        Set<Skill> savingSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
+        Set<Skill> savingSkill = new HashSet<>(skillDAO.findAllById(update.getMainObjectiveIds()));
         if (!savedSkills.equals(savingSkill)) {
             if (savingSkill.containsAll(savedSkills)) {
                 for (Skill skill : savingSkill) {
@@ -357,6 +358,10 @@ public class CourseService implements ICourseService {
         Course one = courseDAO.getOne(courseId);
         List<Goal> goalSet = one.getGoalSet();
         for (Long aLong : goalIdList) {
+            if(goalSet.stream().map(Goal::getId).anyMatch(a->a.equals(aLong)))
+            {
+                continue;
+            }
             final Optional<Goal> ById = goalDAO.findById(aLong);
             final Goal goal = ById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
             goalSet.add(goal);
@@ -464,13 +469,6 @@ public class CourseService implements ICourseService {
                 max = Integer.parseInt(course.getCode().substring(6));
         }
         return String.valueOf(max);
-    }
-
-    @Transactional
-    @Override
-    public List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId) {
-        List<CompetenceDTOOld.Info> compeInfoList = new ArrayList<>();
-        return compeInfoList;
     }
 
     //-------------------------------

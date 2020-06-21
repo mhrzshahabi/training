@@ -45,6 +45,11 @@ public class MainFormController {
         return "report/trainingOverTime";
     }
 
+    @RequestMapping("/attendanceReport")
+    public String showAttendanceReport() {
+        return "report/attendanceReport";
+    }
+
     @RequestMapping("/needsAssessment-reports")
     public String showNeedsAssessmentReportsForm() {
         return "report/needsAssessmentReports";

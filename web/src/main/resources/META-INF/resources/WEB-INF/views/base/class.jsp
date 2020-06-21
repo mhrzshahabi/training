@@ -1704,7 +1704,9 @@
             {
                 classSaveUrl += "safeCreate";
             }
+            let wait = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), (resp)=>{
+                wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     if (classMethod.localeCompare("PUT") === 0) {
                         sendEndingClassToWorkflow();

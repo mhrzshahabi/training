@@ -8,7 +8,7 @@
 
 // <script>
 
-    RestDataSource_Class_JspTrainingOverTime = isc.TrDS.create({
+    RestDataSource_Class_JspAttendanceReport = isc.TrDS.create({
         fields: [
             {name: "personalNum"},
             {name: "personalNum2"},
@@ -18,23 +18,23 @@
             {name: "ccpAffairs"},
             {name: "classCode"},
             {name: "className"},
+            {name: "attendanceStatus"},
             {name: "date"},
             {name: "time"},
         ]
     });
 
-    var DynamicForm_TrainingOverTime = isc.DynamicForm.create({
-        numCols: 6,
+    var DynamicForm_AttendanceReport = isc.DynamicForm.create({
+        numCols: 8,
         padding: 10,
         titleAlign: "left",
-        colWidths: [70, 200, 70, 200, 100, 100],
+        colWidths: [70, 200, 70, 200,70,200, 100, 100],
         fields: [
             {
                 name: "startDate",
                 titleColSpan: 1,
-// type:"staticText",
                 title: "<spring:message code='start.date'/>",
-                ID: "startDate_jspTrainingOverTime",
+                ID: "startDate_jspAttendanceReport",
                 required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
@@ -43,14 +43,12 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_jspTrainingOverTime', this, 'ymd', '/');
+                        displayDatePicker('startDate_jspAttendanceReport', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
-                // colSpan: 2,
                 changed: function (form, item, value) {
                     var dateCheck;
-                    // var endDate = form.getValue("endDate");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
@@ -63,7 +61,7 @@
                 name: "endDate",
                 titleColSpan: 1,
                 title: "<spring:message code='end.date'/>",
-                ID: "endDate_jspTrainingOverTime",
+                ID: "endDate_jspAttendanceReport",
                 type: 'text', required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
@@ -72,7 +70,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_jspTrainingOverTime', this, 'ymd', '/');
+                        displayDatePicker('endDate_jspAttendanceReport', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
@@ -89,8 +87,20 @@
                 }
             },
             {
+                name: "absentType",
+                title:"نوع غيبت",
+                width: 150,
+                defaultValue:5,
+                textAlign: "center",
+                valueMap:{
+                    "3": "غيرموجه",
+                    "4": "موجه",
+                    "5": "موجه و غیر موجه"
+                }
+            },
+            {
                 name: "searchBtn",
-                ID: "searchBtnJspTrainingOverTime",
+                ID: "searchBtnJspAttendanceReport",
                 title: "<spring:message code="search"/>",
                 type: "ButtonItem",
                 width: "*",
@@ -103,29 +113,15 @@
                     }
                     var wait = createDialog("wait");
                     setTimeout(function () {
-                        let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
-                        RestDataSource_Class_JspTrainingOverTime.fetchDataURL = url;
+                        let url = attendanceReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate")+ "&absentType=" + form.getValue("absentType");
 
-                        ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
-                        ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData();
+                        RestDataSource_Class_JspAttendanceReport.fetchDataURL = url;
+
+                        ListGrid_AttendanceReport_AttendanceReportJSP.invalidateCache();
+                        ListGrid_AttendanceReport_AttendanceReportJSP.fetchData();
                         wait.close();
 
                     }, 100);
-
-
-
-                    /*ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
-                    let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
-                    isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-                        wait.close();
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData(JSON.parse(resp.data));
-                        }
-                    }))*/
-
-                    //ListGrid_TrainingOverTime_TrainingOverTimeJSP.implicitCriteria = DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria();
-
-
                 }
             },
             {
@@ -138,49 +134,32 @@
                 click(form, item) {
                     form.clearValues();
                     form.clearErrors();
-                    ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
+                    ListGrid_AttendanceReport_AttendanceReportJSP.setData([]);
                 }
             },
         ],
         itemKeyPress: function (item, keyName) {
             if (keyName == "Enter") {
-                searchBtnJspTrainingOverTime.click(DynamicForm_TrainingOverTime);
+                searchBtnJspAttendanceReport.click(DynamicForm_AttendanceReport);
             }
         }
     });
-    var ListGrid_TrainingOverTime_TrainingOverTimeJSP = isc.TrLG.create({
-        ID: "TrainingOverTimeGrid",
+    var ListGrid_AttendanceReport_AttendanceReportJSP = isc.TrLG.create({
+        ID: "AttendanceReportGrid",
         //dynamicTitle: true,
         filterOnKeypress: false,
         showFilterEditor:true,
-        gridComponents: [DynamicForm_TrainingOverTime,
+        gridComponents: [DynamicForm_AttendanceReport,
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    /*let criteria = ListGrid_TrainingOverTime_TrainingOverTimeJSP.getValuesAsAdvancedCriteria();
-
-                    if(criteria != null && Object.keys(criteria).length != 0) {
-                        criteria.criteria.push(0,0,{ fieldName: "endDate", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("endDate").getValue() });
-                        criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
-
-                    }else{
-                        criteria={ operator: "and", _constructor: "AdvancedCriteria", criteria: [] };
-
-                        criteria.criteria.splice(0,0,{ fieldName: "endDate", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("endDate").getValue() });
-                        criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
-                    }*/
-                    let title="گزارش اضافه کاری آموزشی از تاریخ "+DynamicForm_TrainingOverTime.getItem("startDate").getValue()+ " الی "+DynamicForm_TrainingOverTime.getItem("endDate").getValue();
-                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '',  title, DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
-                  // ExportToFile.downloadExcelFromClient(ListGrid_TrainingOverTime_TrainingOverTimeJSP, null, '', "گزارش اضافه کاری آموزشی")
+                    let title="گزارش غیبت ها از تاریخ "+DynamicForm_AttendanceReport.getItem("startDate").getValue()+ " الی "+DynamicForm_AttendanceReport.getItem("endDate").getValue();
+                    ExportToFile.showDialog(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',title  , DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null);
+                   //ExportToFile.downloadExcelFromClient(ListGrid_AttendanceReport_AttendanceReportJSP, null, '', title)
                 }
             })
             , "header", "filterEditor", "body"],
-        // groupByField:"name",
-        // groupStartOpen:"none",
-        // groupByMaxRecords:5000000,
-        // showGridSummary:true,
-        // showGroupSummary:true,
-        dataSource: RestDataSource_Class_JspTrainingOverTime,
+        dataSource: RestDataSource_Class_JspAttendanceReport,
 
         fields: [
             {name: "personalNum", title: "<spring:message code='personnel.no'/>",
@@ -203,6 +182,13 @@
             {name: "ccpAffairs", title: "<spring:message code='affairs'/>"},
             {name: "classCode", title: "<spring:message code="class.code"/>"},
             {name: "className", title: "<spring:message code="class.title"/>"},
+            {name: "attendanceStatus", title: "<spring:message code="absent.type"/>",
+             valueMap:
+                    {
+                        "3": "غیر موجه",
+                        "4": "موجه"
+                    }
+            },
             {name: "date", title: "<spring:message code="date"/>",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
@@ -219,8 +205,7 @@
         width: "100%",
         height: "100%",
         members: [
-            ListGrid_TrainingOverTime_TrainingOverTimeJSP
+            ListGrid_AttendanceReport_AttendanceReportJSP
         ]
     });
-
     //</script>

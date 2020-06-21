@@ -987,9 +987,13 @@
     <changeSet author="mosta (generated)" id="1592557743650-462">
         <addForeignKeyConstraint baseColumnNames="list_equal_and_course" baseTableName="tbl_equal_and_course" constraintName="FKilbxoraqadwtok81kwpdgbssb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
     </changeSet>
-    <changeSet author="mosta (generated)" id="1592557743650-465">
+    <changeSet author="poursalehi_mos (generated)" id="1592621137328-216">
         <dropForeignKeyConstraint baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l"/>
-        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_equal_course" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" referencedColumnNames="id" referencedTableName="tbl_equal_course"/>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1592719887888-437">
+        <addForeignKeyConstraint baseColumnNames="evaluation_audience_type_id" baseTableName="tbl_class_student" constraintName="FKt96u55mg0mu9t2fvh2uliun" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
 

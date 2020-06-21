@@ -13,11 +13,11 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_Class_Check_List")
+@Table(name = "tbl_class_check_list")
 public class ClassCheckList extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Class_Check_List_seq")
-    @SequenceGenerator(name = "Class_Check_List_seq", sequenceName = "seq_Class_Check_List_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_check_list_seq")
+    @SequenceGenerator(name = "class_check_list_seq", sequenceName = "seq_class_check_list_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 

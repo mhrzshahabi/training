@@ -16,7 +16,7 @@
     var selectedRecord = 0;
 
     var RestDataSourceGoalEDomainType = isc.TrDS.create({
-        fields: [{name: "id", primeryKey: true}, {name: "titleFa"}
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -1169,19 +1169,11 @@
                 }
             });
         } else {
-            var goalRecord = ListGrid_GoalAll.getSelectedRecords();
+            let goalRecord = ListGrid_GoalAll.getSelectedRecords();
             if (goalRecord.length == 0) {
-                isc.Dialog.create({
-                    message: "هدفي انتخاب نشده است.",
-                    icon: "[SKIN]ask.png",
-                    title: "پیغام",
-                    buttons: [isc.IButtonSave.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>")
             } else {
-                var goalList = new Array();
+                let goalList = new Array();
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
                 }

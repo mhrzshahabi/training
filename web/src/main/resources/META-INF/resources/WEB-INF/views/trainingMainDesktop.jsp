@@ -738,6 +738,7 @@
     const masterDataUrl = rootUrl + "/masterData";
     const categoriesPerformanceReportView = rootUrl + "categories-view";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
+    const attendanceReportUrl = rootUrl + "/attendanceReport";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1191,14 +1192,14 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_NeedAssessment_NeedAssessment')">
-                {
-                    title: "<spring:message code="needs.assessment"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
-                    }
-                },
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_NeedAssessment_NeedAssessment')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="needs.assessment"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="web/needsAssessment/"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAnyAuthority('Menu_NeedAssessment_Competence','Menu_NeedAssessment_Skill','Menu_NeedAssessment_NeedAssessment')">
                 {isSeparator: true},
@@ -1460,14 +1461,14 @@
                 <%--}--%>
                 <%--},--%>
 
-                <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">
-                {
-                    title: "<spring:message code="register.Score.PreTest"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");
-                    }
-                },
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Evaluation_RegisterScorePreTest')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="register.Score.PreTest"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="/registerScorePreTest/show-form"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
             ]
         }),
@@ -1669,14 +1670,26 @@
                                     createTab(this.title, "<spring:url value="unfinishedClasses-report/show-form"/>");
                                 }
                             },
-                            </sec:authorize>
                             {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "<spring:message code="report.Absence"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/attendanceReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
                             {
                                 title: "غيبت ناموجه",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
                                 }
                             },
+                            {isSeparator: true},
+                            </sec:authorize>
                         ]
                 },
                 {isSeparator: true},

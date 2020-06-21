@@ -9,14 +9,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
 import com.nicico.training.iservice.IJobGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.JobGroup;
-import com.nicico.training.repository.CompetenceDAOOld;
 import com.nicico.training.repository.JobDAO;
 import com.nicico.training.repository.JobGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,6 @@ public class JobGroupService implements IJobGroupService {
     private final ModelMapper modelMapper;
     private final JobGroupDAO jobGroupDAO;
     private final JobDAO jobDAO;
-    private final CompetenceDAOOld competenceDAO;
     private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
@@ -171,16 +168,6 @@ public class JobGroupService implements IJobGroupService {
 
     @Override
     @Transactional
-    public List<CompetenceDTOOld.Info> getCompetence(Long jobGroupId) {
-        final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupId);
-        final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
-
-//        return modelMapper.map(jobGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTOOld.Info>>() {}.getType());
-        return null;
-    }
-
-    @Override
-    @Transactional
     public List<JobDTO.Info> getJobs(Long jobGroupID) {
         final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupID);
         final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
@@ -204,16 +191,6 @@ public class JobGroupService implements IJobGroupService {
 //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
         return jobList;
 //        return infoList;
-    }
-
-    @Override
-    @Transactional
-    public boolean canDelete(Long jobGroupId) {
-        List<CompetenceDTOOld.Info> competences = getCompetence(jobGroupId);
-        if (competences.isEmpty() || competences.size() == 0)
-            return true;
-        else
-            return false;
     }
 
     @Override

@@ -87,13 +87,6 @@ public class PostGroupRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/{postGroupId}/canDelete")
-//    @PreAuthorize("hasAuthority('d_post_group')")
-    public ResponseEntity<Boolean> canDelete(@PathVariable Long postGroupId) {
-        return new ResponseEntity<>(postGroupService.canDelete(postGroupId), HttpStatus.OK);
-    }
-
-    @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_post_group')")
     public ResponseEntity<PostGroupDTO.PostGroupSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,

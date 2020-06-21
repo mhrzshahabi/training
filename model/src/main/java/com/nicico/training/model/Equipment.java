@@ -20,8 +20,8 @@ import javax.persistence.*;
 @Table(name = "tbl_equipment")
 public class Equipment extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Equipment_seq")
-    @SequenceGenerator(name = "Equipment_seq", sequenceName = "seq_Equipment_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equipment_seq")
+    @SequenceGenerator(name = "equipment_seq", sequenceName = "seq_equipment_id", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
