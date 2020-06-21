@@ -133,7 +133,7 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
             node.setSkillCourseTitle(node.getSkill().getCourse().getTitleFa());
             ancestors.add(node);
         }
-        return new ArrayList<NeedsAssessmentDTO.Tree>(ancestors);
+        return new ArrayList<>(ancestors);
     }
 
     private int findAncestors(Set<NeedsAssessmentDTO.Tree> ancestors, NeedsAssessmentDTO.Tree child, int no, int parent, int index) {
@@ -144,10 +144,10 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
             NeedsAssessmentDTO.Tree father = new NeedsAssessmentDTO.Tree();
 //            father.setProperty(property,child.getProperty(property));
             father.setName(child.getProperty(property));
-            father.setParentId(new Long(parent));
+            father.setParentId((long) parent);
             NeedsAssessmentDTO.Tree node = ancestors.stream().filter(n -> n.equvalentOf(father, property)).findFirst().orElse(null);
             if (node == null) {
-                father.setId(new Long(i));
+                father.setId((long) i);
                 ancestors.add(father);
                 parent = i;
                 --i;
@@ -157,7 +157,7 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
             child.setProperty(property, "");
             i = findAncestors(ancestors, child, ++no, parent, i);
         } else {
-            child.setParentId(new Long(parent));
+            child.setParentId((long) parent);
             child.setName(child.getProperty(keys[no]));
             ancestors.add(child);
         }
