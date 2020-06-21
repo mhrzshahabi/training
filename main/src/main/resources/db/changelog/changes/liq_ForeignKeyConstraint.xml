@@ -992,5 +992,28 @@
         <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" referencedColumnNames="id" referencedTableName="tbl_equal_course"/>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1592719887888-437">
+        <addForeignKeyConstraint baseColumnNames="evaluation_audience_type_id" baseTableName="tbl_class_student" constraintName="FKt96u55mg0mu9t2fvh2uliun" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1592732622406-430">
+        <addForeignKeyConstraint baseColumnNames="f_skill" baseTableName="tbl_needs_assessment_temp" constraintName="FK7b5ry8fwkn2urfynn5psedhbl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592732622406-431">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_needs_assessment_temp" constraintName="FK8ff7k34l1inex543btar874s8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592732622406-432">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_needs_assessment_priority" baseTableName="tbl_needs_assessment_temp" constraintName="FKa9s5y96x7ilt5v0mo2i9hip6r" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592732622406-433">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_needs_assessment_domain" baseTableName="tbl_needs_assessment_temp" constraintName="FKj46ribc7hyr2222xiuq3jx0j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592732622406-434">
+        <addForeignKeyConstraint baseColumnNames="f_competence" baseTableName="tbl_needs_assessment_temp" constraintName="FKkm7a0lhjjil8ggdkfroju3gaf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_competence" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592732622406-435">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_needs_assessment_temp" constraintName="FKlg8roljxm5u56k2ot9t92ojtw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
 
 </databaseChangeLog>
