@@ -331,4 +331,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1592719887888-517">
+        <dropColumn columnName="EVALUATION_AUDIENCE_TYPE" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1592719887888-419">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_audience_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1592719887888-420">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_audience_type_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
