@@ -15,6 +15,7 @@
             {name: "nationalCode"},
             {name: "name"},
             {name: "ccpArea"},
+            {name: "ccpAffairs"},
             {name: "classCode"},
             {name: "className"},
             {name: "attendanceStatus"},
@@ -152,8 +153,9 @@
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    ExportToFile.showDialog(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',  "گزارش غيبت ها", DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null);
-                   //ExportToFile.downloadExcelFromClient(ListGrid_AttendanceReport_AttendanceReportJSP, null, '', "گزارش غیبت ها")
+                    let title="گزارش غیبت ها از تاریخ "+DynamicForm_AttendanceReport.getItem("startDate").getValue()+ " الی "+DynamicForm_AttendanceReport.getItem("endDate").getValue();
+                    ExportToFile.showDialog(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',title  , DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null);
+                   //ExportToFile.downloadExcelFromClient(ListGrid_AttendanceReport_AttendanceReportJSP, null, '', title)
                 }
             })
             , "header", "filterEditor", "body"],
