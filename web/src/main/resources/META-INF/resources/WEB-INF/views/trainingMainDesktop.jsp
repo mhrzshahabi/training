@@ -736,9 +736,9 @@
     const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
     const masterDataUrl = rootUrl + "/masterData";
-    const categoriesPerformanceReportView = rootUrl + "categories-view";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
-    const attendanceReportUrl = rootUrl + "/attendanceReport";
+    const classPerformanceReport = rootUrl + "/classPerformance/";
+    const attendancePerformanceReportUrl = rootUrl + "/attendancePerformance/";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1766,14 +1766,14 @@
                             {isSeparator: true},
                             </sec:authorize>
 
-                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
                             {
                                 title: "<spring:message code="course.performance.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
                                 }
                             },
-                            </sec:authorize>--%>
+                            </sec:authorize>
                         ]
                 },
                 </sec:authorize>

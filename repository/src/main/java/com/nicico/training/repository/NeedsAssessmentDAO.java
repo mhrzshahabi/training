@@ -19,6 +19,9 @@ public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
     @Query(value = "update TBL_NEEDS_ASSESSMENT SET N_MAIN_WORKFLOW_STATUS_CODE = :mainWorkflowStatusCode , C_MAIN_WORKFLOW_STATUS = :mainWorkflowStatus WHERE f_object = (SELECT  f_object FROM TBL_NEEDS_ASSESSMENT WHERE id = :needsAssessmentId)", nativeQuery = true)
     public Integer updateNeedsAssessmentWorkflowMainStatus(Long needsAssessmentId, Integer mainWorkflowStatusCode, String mainWorkflowStatus);
 
+
+    @Query(value = "select seq_needs_assessment_id.nextval from dual", nativeQuery = true)
+    public Long getNextId();
 }
 
 

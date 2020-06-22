@@ -345,4 +345,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1592798863869-425">
+        <addColumn tableName="tbl_class">
+            <column name="evaluation_reaction_teacher" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1592798863869-426">
+        <addColumn tableName="tbl_class">
+            <column name="evaluation_reaction_training" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

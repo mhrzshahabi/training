@@ -75,4 +75,56 @@ public class EvaluationFormController {
         return "evaluation/results";
     }
 
+    @PostMapping("/printTeacherReactionForm/{type}/{classId}")
+    public ResponseEntity<?> printTeacherReactionForm(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId) {
+
+        String token = request.getParameter("myToken");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("printData", request.getParameter("printData"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/evaluation/printTeacherReactionForm/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
+
+    @PostMapping("/printTrainingReactionForm/{type}/{classId}")
+    public ResponseEntity<?> printTrainingReactionForm(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId) {
+
+        String token = request.getParameter("myToken");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("printData", request.getParameter("printData"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/evaluation/printTrainingReactionForm/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
+
 }
