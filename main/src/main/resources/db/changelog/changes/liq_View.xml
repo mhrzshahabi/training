@@ -1800,5 +1800,61 @@ where  passed.class_student_id is null
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_ATTENDANCE_PERFORMANCE-001">
+        <createView viewName="VIEW_ATTENDANCE_PERFORMANCE" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+    ins.c_title_fa,
+    ca.c_title_fa AS category_title,
+    cl.f_institute_organizer,
+    co.category_id,
+    co.subcategory_id,
+    at.c_state,
+    cl.c_start_date,
+    cl.c_end_date,
+    cl.f_term,
+    co.id AS course_id,
+    se.c_session_end_hour,
+    se.c_session_start_hour
+FROM
+    tbl_class cl
+    INNER JOIN tbl_course co ON co.id = cl.f_course
+    INNER JOIN tbl_institute ins ON ins.id = cl.f_institute_organizer
+    INNER JOIN tbl_category ca ON ca.id = co.category_id
+    INNER JOIN tbl_session se ON cl.id = se.f_class_id
+    INNER JOIN tbl_attendance at ON se.id = at.f_session
+    ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_CLASS_PERFORMANCE-001">
+        <createView viewName="VIEW_CLASS_PERFORMANCE" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+            ins.c_title_fa,
+            ca.c_title_fa AS category_title,
+            cl.f_institute_organizer,
+            co.category_id,
+            (
+                CASE
+                    WHEN cl.c_workflow_ending_status_code = '2' THEN '4'
+                    ELSE cl.c_status
+                END
+            ) status,
+            cl.c_start_date,
+            cl.c_end_date,
+            cl.f_term,
+            co.id as course_id,
+            suca.id as subcategory_id
+        FROM
+            tbl_class cl
+            INNER JOIN tbl_course co ON co.id = cl.f_course
+            INNER JOIN tbl_institute ins ON ins.id = cl.f_institute_organizer
+            INNER JOIN tbl_category ca ON ca.id = co.category_id
+            INNER JOIN tbl_sub_category suca ON suca.id = co.subcategory_id
+    ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>
