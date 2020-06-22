@@ -17,6 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttendancePerformanceReportDTO implements Serializable {
+
+    private String institute;
+
+    private String category;
+
     private Long instituteId;
 
     private Long categoryId;

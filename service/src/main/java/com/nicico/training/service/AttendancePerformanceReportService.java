@@ -59,7 +59,7 @@ public class AttendancePerformanceReportService implements IAttendancePerformanc
                 "    atp.c_state, " +
                 "    SUM(round(to_number(TO_DATE((CASE WHEN SUBSTR(atp.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE atp.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(atp.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE atp.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) AS session_time " +
                 " FROM " +
-                "    VIEW_ATTENDANCE_PERFORMANCE_V2 atp " +
+                "    VIEW_ATTENDANCE_PERFORMANCE atp " +
                 " WHERE " +
                 "    (((CASE WHEN length(:firststartdate) = 10 AND atp.c_start_date >=:firststartdate THEN 1 WHEN length(:firststartdate) != 10 THEN 1 END) IS NOT NULL AND    " +
                 "    (CASE WHEN length(:secondstartdate) = 10 AND atp.c_start_date <=:secondstartdate THEN 1 WHEN length(:secondstartdate) != 10 THEN 1 END) IS NOT NULL)  " +
@@ -108,6 +108,8 @@ public class AttendancePerformanceReportService implements IAttendancePerformanc
             for (int i = 0; i < CPReportList.size(); i++) {
                 Object[] cpReport = (Object[]) CPReportList.get(i);
                 attendancePerformanceReportDTO.add(new AttendancePerformanceReportDTO(
+                        cpReport[0] != null ? cpReport[0].toString() : null,
+                        cpReport[1] != null ? cpReport[1].toString() : null,
                         cpReport[2] != null ? Long.parseLong(cpReport[2].toString()) : null,
                         cpReport[3] != null ? Long.parseLong(cpReport[3].toString()) : null,
                         cpReport[4] != null ? Long.parseLong(cpReport[4].toString()) : null,
