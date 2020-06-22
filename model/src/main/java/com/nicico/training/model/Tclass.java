@@ -187,4 +187,10 @@ public class Tclass extends Auditable {
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TargetSociety> targetSocietyList;
+
+    @Column(name = "evaluation_reaction_teacher")
+    private Integer evaluationStatusReactionTeacher;
+
+    @Column(name = "evaluation_reaction_training")
+    private Integer evaluationStatusReactionTraining;
 }

@@ -109,7 +109,9 @@ public class ClassStudentService implements IClassStudentService {
     public int setStudentFormIssuance(Map<String, String> formIssuance) {
         Long classId = Long.parseLong(formIssuance.get("idClassStudent").toString());
         if(formIssuance.get("evaluationAudienceType") != null)
-            classStudentDAO.setStudentFormIssuanceAudienceType(classId,formIssuance.get("evaluationAudienceType"));
+            classStudentDAO.setStudentFormIssuanceAudienceType(classId,Long.parseLong(formIssuance.get("evaluationAudienceType")));
+        if(formIssuance.get("evaluationAudienceId") != null)
+            classStudentDAO.setStudentFormIssuanceAudienceId(classId,Long.parseLong(formIssuance.get("evaluationAudienceId")));
         return classStudentDAO.setStudentFormIssuance(classId, Integer.parseInt(formIssuance.get("reaction")), Integer.parseInt(formIssuance.get("learning")), Integer.parseInt(formIssuance.get("behavior")), Integer.parseInt(formIssuance.get("results")));
     }
 
