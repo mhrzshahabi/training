@@ -2397,6 +2397,7 @@
                 DynamicForm1_Class_JspClass.editRecord(record);
                 Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
+                autoTimeActivation(true);
             }
         }
     }
