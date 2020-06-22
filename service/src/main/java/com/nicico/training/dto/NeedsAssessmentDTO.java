@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -65,6 +66,26 @@ public class NeedsAssessmentDTO implements Serializable {
         private String mainWorkflowStatus;
         private Integer mainWorkflowStatusCode;
 //        private E object;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentDTO - verify")
+    public static class verify extends NeedsAssessmentDTO {
+        private Long id;
+        private String objectName;
+        private String objectCode;
+        private String workflowStatus;
+        private Integer workflowStatusCode;
+        private String mainWorkflowStatus;
+        private Integer mainWorkflowStatusCode;
+        private Date createdDate;
+        private String createdBy;
+        private Long eEnabled;
+        private Long eDeleted;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
     }
 
     @Getter

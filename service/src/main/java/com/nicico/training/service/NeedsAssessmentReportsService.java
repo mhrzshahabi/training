@@ -45,7 +45,6 @@ public class NeedsAssessmentReportsService {
     private final ParameterValueService parameterValueService;
     private final ICourseService courseService;
     private final ISkillService skillService;
-    private final NeedsAssessmentTempService needsAssessmentTempService;
 
     @Transactional(readOnly = true)
 //    @Override
@@ -105,9 +104,9 @@ public class NeedsAssessmentReportsService {
 //    @Override
     public List<NeedsAssessment> getNeedsAssessmentList(Long objectId, String objectType) {
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        criteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));
         criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
-        addCriteria(criteriaRq.getCriteria().get(1), objectType, objectId, null, null, true);
+//        criteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));
+        addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, null, null, true);
         List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
         return removeDuplicateNAs(needsAssessmentList);
     }
@@ -115,13 +114,13 @@ public class NeedsAssessmentReportsService {
     @Transactional(readOnly = true)
     public List<NeedsAssessment> getUnverifiedNeedsAssessmentList(Long objectId, String objectType) {
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        criteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));
         criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
-        addCriteria(criteriaRq.getCriteria().get(1), objectType, objectId, objectType, objectId, false);
+//        criteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));
+        addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, objectType, objectId, false);
         List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
 
         SearchDTO.CriteriaRq tempCriteriaRq = getCriteria(objectType, objectId);
-        tempCriteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));
+//        tempCriteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));
         List<NeedsAssessmentTemp> needsAssessmentTemps = needsAssessmentTempDAO.findAll(NICICOSpecification.of(tempCriteriaRq));
         needsAssessmentList.addAll(modelMapper.map(needsAssessmentTemps, new TypeToken<List<NeedsAssessment>>() {
         }.getType()));
