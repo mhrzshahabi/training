@@ -54,6 +54,7 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusResults;
         private ParameterValueDTO.TupleInfo evaluationAudienceType;
         private Long evaluationAudienceTypeId;
+        private Long evaluationAudienceId;
 
 
         public Integer getEvaluationStatusReaction() {
