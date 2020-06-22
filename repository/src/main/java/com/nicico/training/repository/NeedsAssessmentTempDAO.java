@@ -1,23 +1,25 @@
-///*
-//ghazanfari_f,
-//1/14/2020,
-//1:55 PM
-//*/
-//package com.nicico.training.repository;
-//
-//import com.nicico.training.model.NeedsAssessmentTemp;
-//
-//public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Long> {
-//
-////    @Modifying
-////    @Query(value = "update TBL_NEEDS_ASSESSMENT SET N_WORKFLOW_STATUS_CODE = :workflowStatusCode , C_WORKFLOW_STATUS = :workflowStatus WHERE f_object = (SELECT  f_object FROM TBL_NEEDS_ASSESSMENT WHERE id = :needsAssessmentId)", nativeQuery = true)
-////    public Integer updateNeedsAssessmentWorkflowStatus(Long needsAssessmentId, Integer workflowStatusCode, String workflowStatus);
-////
-////    @Modifying
-////    @Query(value = "update TBL_NEEDS_ASSESSMENT SET N_MAIN_WORKFLOW_STATUS_CODE = :mainWorkflowStatusCode , C_MAIN_WORKFLOW_STATUS = :mainWorkflowStatus WHERE f_object = (SELECT  f_object FROM TBL_NEEDS_ASSESSMENT WHERE id = :needsAssessmentId)", nativeQuery = true)
-////    public Integer updateNeedsAssessmentWorkflowMainStatus(Long needsAssessmentId, Integer mainWorkflowStatusCode, String mainWorkflowStatus);
-//
-//}
-//
-//
-//
+package com.nicico.training.repository;
+
+import com.nicico.training.model.NeedsAssessmentTemp;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
+
+public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Long> {
+    Optional<NeedsAssessmentTemp> findFirstByObjectIdAndObjectTypeAndCompetenceIdAndSkillIdAndNeedsAssessmentDomainIdAndNeedsAssessmentPriorityId(
+            Long objectId, String objectType, Long competenceId, Long skillId, Long needsAssessmentDomainId, Long needsAssessmentPriorityId
+    );
+
+    @Modifying
+    @Query(value = "update TBL_NEEDS_ASSESSMENT_TEMP SET e_deleted = 75 WHERE id = :id", nativeQuery = true)
+    public void softDelete(Long id);
+
+    @Modifying
+    @Query(value = "update TBL_NEEDS_ASSESSMENT_TEMP SET e_deleted = null WHERE id = :id", nativeQuery = true)
+    public void recycle(Long id);
+
+}
+
+
+
