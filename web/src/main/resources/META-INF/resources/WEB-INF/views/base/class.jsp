@@ -299,8 +299,8 @@
         </sec:authorize>
         contextMenu: Menu_ListGrid_Class_JspClass,
         dataPageSize: 15,
-        // allowAdvancedCriteria: true,
-        // allowFilterExpressions: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         // filterOnKeypress: true,
         // selectionType: "single",
         // showRecordComponents: true,
@@ -1742,7 +1742,6 @@
     //*****generate sessions callback*****
     function class_get_sessions_result(resp) {
         refreshSelectedTab_class(tabSetClass.getSelectedTab());
-
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
             classCode();
@@ -2438,10 +2437,10 @@
 
     function ListGrid_class_print(type) {
         let direction =  "";
-        if(ListGrid_Class_JspClass.getSort()[0]["direction"] == "descending"){
+        if(ListGrid_Class_JspClass.getSort()[0]["direction"] === "descending"){
             direction = "-";
         }
-        var cr = {
+        let cr = {
             _constructor:"AdvancedCriteria",
             operator:"and",
             criteria:[
@@ -2450,7 +2449,20 @@
         if(ListGrid_Class_JspClass.getCriteria().criteria !== undefined){
             cr = ListGrid_Class_JspClass.getCriteria();
         }
-        cr.criteria.add({ fieldName:"term.code", operator:"inSet", value: DynamicForm_Term_Filter.getValue("termFilter")});
+        if(DynamicForm_Term_Filter.getItem("termFilter").getSelectedRecord() === undefined) {
+            cr.criteria.add({
+                fieldName: "term.code",
+                operator: "inSet",
+                value: DynamicForm_Term_Filter.getValue("termFilter")
+            });
+        }
+        else{
+            cr.criteria.add({
+                fieldName: "term.id",
+                operator: "inSet",
+                value: DynamicForm_Term_Filter.getValue("termFilter")
+            });
+        }
         printWithCriteria(cr, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
     }
 
@@ -2482,7 +2494,6 @@
     }
 
     function class_action_result(resp) {
-
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
             var courseId = JSON.parse(resp.data).courseId;
