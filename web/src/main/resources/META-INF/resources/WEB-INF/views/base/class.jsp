@@ -2350,7 +2350,6 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            autoTimeActivation(false);
             etcTargetSociety = [];
             getSocietiesList();
             getTargetSocieties(record.id);
@@ -2381,6 +2380,7 @@
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
                 } else
                     DynamicForm_Class_JspClass.getItem("preCourseTest").show();
+                autoTimeActivation(false);
             } else {
                 classMethod = "POST";
                 url = classUrl;
@@ -2397,6 +2397,7 @@
                 DynamicForm1_Class_JspClass.editRecord(record);
                 Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
+                autoTimeActivation(true);
             }
         }
     }
