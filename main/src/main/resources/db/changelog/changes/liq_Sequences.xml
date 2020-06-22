@@ -227,6 +227,9 @@
     <changeSet author="razmnoosh (generated)" id="1591591181879-446">
         <createSequence sequenceName="seq_evaluation_analysis_id"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592301837609-412">
+        <createSequence sequenceName="seq_bank_branch_id"/>
+    </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-413">
         <createSequence sequenceName="seq_session_id"/>
     </changeSet>
