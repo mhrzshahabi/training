@@ -127,10 +127,11 @@ public class ClassStudentRestController {
     @PostMapping(value = "/register-students/{classId}")
     public ResponseEntity registerStudents(@RequestBody List<ClassStudentDTO.Create> request, @PathVariable Long classId) {
         try {
-            classStudentService.registerStudents(request, classId);
+            Map<String, String> result;
+            result = classStudentService.registerStudents(request, classId);
             classAlarmService.alarmClassCapacity(classId);
             classAlarmService.alarmStudentConflict(classId);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }

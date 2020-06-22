@@ -18,7 +18,7 @@ public interface IClassStudentService {
 
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
-    void registerStudents(List<ClassStudentDTO.Create> request, Long classId);
+    Map<String, String> registerStudents(List<ClassStudentDTO.Create> request, Long classId);
 
     <E, T> T update(Long id, E request, Class<T> infoType);
 
