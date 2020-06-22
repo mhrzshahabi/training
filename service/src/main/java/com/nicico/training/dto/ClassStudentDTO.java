@@ -52,7 +52,8 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusBehavior;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
-        private String evaluationAudienceType;
+        private ParameterValueDTO.TupleInfo evaluationAudienceType;
+        private Long evaluationAudienceTypeId;
 
 
         public Integer getEvaluationStatusReaction() {
