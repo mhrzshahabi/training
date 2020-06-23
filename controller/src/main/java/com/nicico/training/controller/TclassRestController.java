@@ -17,6 +17,7 @@ import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.EvaluationAnalysistLearningService;
 import com.nicico.training.service.ParameterService;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +61,8 @@ public class TclassRestController {
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final ParameterService parameterService;
     private final IInstituteService instituteService;
+    private final TclassDAO tclassDAO;
+
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -944,6 +948,17 @@ public class TclassRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/TClassReportPrint.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @Transactional
+    @GetMapping(value = "/setReactionStatus/{teacherReactionStatus}/{trainingReactionStatus}/{classId}")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public void setReactionStatus(@PathVariable Integer teacherReactionStatus, @PathVariable Integer trainingReactionStatus, @PathVariable Long classId) {
+        if(teacherReactionStatus == 10)
+            tclassDAO.updateTrainingReactionStatus(trainingReactionStatus,classId);
+        if(trainingReactionStatus == 10)
+            tclassDAO.updateTeacherReactionStatus(teacherReactionStatus,classId);
     }
 
 }

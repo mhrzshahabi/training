@@ -1874,9 +1874,9 @@
                 delete data1["etechnicalType"];
                 data1.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
                 data1.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("etechnicalType.id");
-
-                console.log(data1);
+                let wait = createDialog("wait");
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
+                    wait.close();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         sendToWorkflowAfterUpdate(JSON.parse(resp.data));
                         // ListGrid_Course_refresh();

@@ -165,6 +165,8 @@ public class StudentDTO {
         private String ccpSection;
         private String ccpUnit;
         private String fatherName;
+        private String mobile;
+
     }
 
     @Getter

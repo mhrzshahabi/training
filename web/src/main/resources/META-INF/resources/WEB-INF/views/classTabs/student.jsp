@@ -829,18 +829,28 @@
             var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             ClassStudentWin_student.close();
             refreshLG(StudentsLG_student);
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            let messages = JSON.parse(resp.data);
+            let invalMessage = " ";
+            let timeOut = 5000;
+            if (messages.names !== null && messages.names !== undefined) {
+                invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
+                timeOut = 15000
+            }
+
+            var OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
+                + "<br/>" + invalMessage,
 
                 "<spring:message code="msg.command.done"/>");
+
             setTimeout(function () {
                 OK.close();
-            }, 3000);
+            }, timeOut);
         } else {
-            var OK = createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
                 "<spring:message code="error"/>");
             setTimeout(function () {
                 OK.close();
-            }, 3000);
+            }, 5000);
         }
     }
 

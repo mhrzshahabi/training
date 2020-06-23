@@ -39,6 +39,19 @@
     <script src="<spring:url value='/js/langConverter.js' />"></script>
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
 
+    <style>
+        .inputRTL input{
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .inputRTLFocused input{
+            direction: ltr !important;
+            text-align: left !important;
+        }
+    </style>
+
+
     <script>
         String.prototype.toEnglishDigit = function() {
             var find = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -737,6 +750,8 @@
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
+    const sendMessageUrl = rootUrl + "/sendMessage";
+    const attendanceReportUrl = rootUrl + "/attendanceReport";
     const classPerformanceReport = rootUrl + "/classPerformance/";
     const attendancePerformanceReportUrl = rootUrl + "/attendancePerformance/";
 
