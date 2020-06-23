@@ -16,47 +16,55 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TrainingOverTimeDTO implements Serializable {
-    String personalNum;
-    String personalNum2;
-    String nationalCode;
-    String name;
-    String ccpArea;
-    String ccpAffairs;
-    String classCode;
-    String className;
-    String date;
-    String time;
+public class ClassPerformanceReportDTO implements Serializable {
+
+    private String institute;
+
+    private String category;
+
+    private Integer planingClasses;
+
+    private Integer processingClasses;
+
+    private Integer finishedClasses;
+
+    private Integer endedClasses;
+
+    private Long instituteId;
+
+    private Long categoryId;
+
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TrainingOverTimeInfo")
-    public static class Info extends TrainingOverTimeDTO {
+    @ApiModel("ClassPerformanceReportInfo")
+    public static class Info extends ClassPerformanceReportDTO {
     }
 
-    // ------------------------------
+    //*********************************
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TrainingOverTimeSpecRs")
-    public static class TrainingOverTimeSpecRs {
-        private TrainingOverTimeDTO.SpecRs response;
+    @ApiModel("ClassPerformanceReportSpecRs")
+    public static class ClassPerformanceReportSpecRs {
+        private ClassPerformanceReportDTO.SpecRs response;
     }
 
-    // ------------------------------
+    //*********************************
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<TrainingOverTimeDTO.Info> data;
+        private List<ClassPerformanceReportDTO> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
+
+    //*********************************
 }

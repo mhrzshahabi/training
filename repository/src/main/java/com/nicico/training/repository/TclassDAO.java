@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -100,6 +101,16 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Query(value = "select pre_course_test from tbl_class where ID = :classId", nativeQuery = true)
     Integer checkIfClassHasPreTest(Long classId);
+
+    @Modifying
+    @Query(value = "update TBL_CLASS set evaluation_reaction_teacher = :teacherReactionStatus where ID = :classId", nativeQuery = true)
+    public void updateTeacherReactionStatus(Integer teacherReactionStatus, Long classId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update TBL_CLASS set evaluation_reaction_training = :trainingReactionStatus where ID = :classId", nativeQuery = true)
+    public void updateTrainingReactionStatus(Integer trainingReactionStatus, Long classId);
+
 
 
 }
