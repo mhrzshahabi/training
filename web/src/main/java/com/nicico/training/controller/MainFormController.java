@@ -198,6 +198,10 @@ public class MainFormController {
     public String showEditNeedsAssessmentForm() {
         return "needsAssessment/edit-needs-assessment";
     }
+    @GetMapping("/diff-needs-assessment")
+    public String showDiffNeedsAssessmentForm() {
+        return "needsAssessment/diff-needs-assessment";
+    }
     @GetMapping("/tree-needs-assessment")
     public String showTreeNeedsAssessmentForm() {
         return "needsAssessment/tree-needs-assessment";
