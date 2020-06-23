@@ -12,14 +12,14 @@
                 {name: "id", primaryKey: true},
                 {name: "titleFa", title: "<spring:message code="institute"/>"}
             ],
-            fetchDataURL: instituteUrl +"spec-list",
+            fetchDataURL: instituteUrl +"iscTupleList",
             allowAdvancedCriteria: true,
         });
 
         var RestDataSource_Category = isc.TrDS.create({
             fields: [{name: "id"},
                 {name: "titleFa"}],
-            fetchDataURL: categoryUrl + "spec-list"
+            fetchDataURL: categoryUrl + "iscTupleList"
         });
 
         var RestDataSource_Sub_Category = isc.TrDS.create({
@@ -27,7 +27,7 @@
                 {name: "id", primaryKey: true},
                 {name: "titleFa", type: "text"}
             ],
-            fetchDataURL: subCategoryUrl + "spec-list",
+            fetchDataURL: subCategoryUrl + "iscTupleList",
         });
 
         var RestDataSource_Course = isc.TrDS.create({
@@ -35,7 +35,7 @@
                 {name: "id"},
                 {name: "titleFa"}
             ],
-            fetchDataURL: categoryUrl + "spec-list"
+            fetchDataURL: courseUrl + "iscTupleList"
         });
 
         var RestDataSource_Term = isc.TrDS.create({
@@ -96,6 +96,7 @@
             titleAlign:"left",
             wrapItemTitles: true,
             colWidths:[75, 75, 75, 75, 25, 75, 75, 75, 100, 75, 75, 75, 25, 75, 75, 75],
+            styleName: "teacher-form",
             fields: [
                 {
                     name: "firstStartDate",
@@ -117,7 +118,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkStartDate("firstStartDate");
+                         checkUndefinedDate("firstStartDate");
                         CPReport_check_date("firstStartDate","secondStartDate");
                     }
                 },
@@ -140,8 +141,8 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkStartDate("secondStartDate");
-                        CPReport_check_date("firstStartDate","secondStartDate");
+                        checkUndefinedDate("secondStartDate");
+                        CPReport_check_date("secondStartDate","firstFinishDate");
                     }
                 },
                 {
@@ -153,7 +154,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     wrapTitle: false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
@@ -164,7 +165,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkFinishDate("firstFinishDate");
+                        checkNullableDate("firstFinishDate");
                         CPReport_check_date("firstFinishDate","secondFinishDate");
                     }
 
@@ -178,7 +179,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -188,8 +189,8 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkFinishDate("secondFinishDate");
-                        CPReport_check_date("firstFinishDate","secondFinishDate");
+                        checkNullableDate("secondFinishDate");
+                        CPReport_check_date("firstStartDate","secondFinishDate");
                     }
 
                 },
@@ -198,6 +199,7 @@
                     ID: "institute",
                     emptyDisplayValue: "همه",
                     multiple: false,
+                    required: true,
                     title: "<spring:message code="institute"/>",
                     colSpan: 3,
                     width: "*",
@@ -549,7 +551,7 @@
     // <<----------------------------------------------- Functions --------------------------------------------
     {
         //*****check date is valid*****
-        function checkStartDate(id) {
+        function  checkUndefinedDate(id) {
 
             DynamicForm_CPReport.clearFieldErrors(id, true);
 
@@ -560,11 +562,14 @@
             }
         }
 
-        function checkFinishDate(id) {
+        function   checkNullableDate(id) {
 
             DynamicForm_CPReport.clearFieldErrors(id, true);
 
-            if (DynamicForm_CPReport.getValue(id) === undefined || !checkDate(DynamicForm_CPReport.getValue(id))) {
+            if (DynamicForm_CPReport.getValue(id) === undefined){
+                DynamicForm_CPReport.getField(id)._value = " ";
+            }
+            else if (!checkDate(DynamicForm_CPReport.getValue(id))) {
                 DynamicForm_CPReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
             } else {
                 DynamicForm_CPReport.clearFieldErrors(id, true);
@@ -590,10 +595,10 @@
         //*****search report result*****
         function searchResult() {
 
-            checkFinishDate("firstFinishDate");
-            checkFinishDate("secondFinishDate");
-            checkStartDate("firstStartDate");
-            checkStartDate("secondStartDate");
+            checkNullableDate("firstFinishDate");
+            checkNullableDate("secondFinishDate");
+             checkUndefinedDate("firstStartDate");
+            checkUndefinedDate("secondStartDate");
             CPReport_check_date("firstStartDate","secondStartDate");
             CPReport_check_date("firstFinishDate","secondFinishDate");
 

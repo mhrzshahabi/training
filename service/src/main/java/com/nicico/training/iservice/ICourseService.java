@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.function.Function;
 
 public interface ICourseService {
 
@@ -51,6 +52,8 @@ public interface ICourseService {
 
     //-------jafari--------
     SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request);
+
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
     List<GoalDTO.Info> getGoal(Long courseId);
 

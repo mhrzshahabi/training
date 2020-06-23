@@ -15,6 +15,7 @@ import com.nicico.training.iservice.ISubcategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -32,7 +35,7 @@ public class SubcategoryRestController {
 
     private final ISubcategoryService subCategoryService;
     private final ObjectMapper objectMapper;
-
+    private final ModelMapper modelMapper;
 
     // ------------------------------
 
@@ -185,4 +188,16 @@ public class SubcategoryRestController {
     }
 
 
+    @GetMapping(value = "/iscTupleList")
+    public ResponseEntity<ISC<SubcategoryDTO.SubCategoryInfoTuple>> list(HttpServletRequest iscRq, @RequestParam(required = false) Long id) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        if (id != null) {
+            searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
+        }
+        SearchDTO.SearchRs<SubcategoryDTO.SubCategoryInfoTuple> searchRs = subCategoryService.search(searchRq, i -> modelMapper.map(i, SubcategoryDTO.SubCategoryInfoTuple.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 }
