@@ -128,8 +128,8 @@
 		<field name="student.nationalCode" class="java.lang.String"/>
 		<field name="student.lastName" class="java.lang.String"/>
 		<field name="student.personnelNo" class="java.lang.String"/>
-		<field name="scoresState" class="java.lang.String"/>
-		<field name="failureReason" class="java.lang.String"/>
+		<field name="scoresState.title" class="java.lang.String"/>
+		<field name="failureReason.title" class="java.lang.String"/>
 		<field name="valence" class="java.lang.String"/>
 		<variable name="Row_Number" class="java.lang.Integer">
 			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
@@ -291,10 +291,10 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="61" splitType="Immediate">
+		<band height="58" splitType="Immediate">
 			<property name="com.jaspersoft.studio.layout"/>
 			<componentElement>
-				<reportElement key="" x="4" y="5" width="547" height="55" isPrintWhenDetailOverflows="true" uuid="1123f072-7838-4ed9-8ba3-0a791cffe917">
+				<reportElement key="" x="4" y="1" width="547" height="55" isPrintWhenDetailOverflows="true" uuid="1123f072-7838-4ed9-8ba3-0a791cffe917">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -323,7 +323,7 @@
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
 									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-									<textField>
+									<textField isBlankWhenNull="true">
 										<reportElement x="3" y="0" width="37" height="26" uuid="a5da3ff4-b61a-474e-b9e1-6895a0abed63"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Shabnam-FD"/>
@@ -351,7 +351,7 @@
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Shabnam-FD"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$F{failureReason}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$F{failureReason.title}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
@@ -374,7 +374,7 @@
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Shabnam-FD"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$F{scoresState}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$F{scoresState.title}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
