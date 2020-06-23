@@ -113,10 +113,10 @@
 */
 @font-face {
   font-family: 'BYekan';
-  src: url("fonts/BYekan.ttf");
-  src: url("fonts/BYekan.eot");
-  src: url("fonts/BYekan.woff");
-  src: local("☺"), url("fonts/BYekan.woff") format("woff"), url("fonts/BYekan.otf") format("opentype"), url("fonts/BYekan.ttf") format("truetype");
+  src: url("../../../fonts/BYekan.ttf");
+  src: url("../../../fonts/BYekan.eot");
+  src: url("../../../fonts/BYekan.woff");
+  src: local("☺"), url("../../../fonts/BYekan.woff") format("woff"), url("../../../fonts/BYekan.otf") format("opentype"), url("../../../fonts/BYekan.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -358,7 +358,7 @@ ul {
   border: 2px solid #fe9d2a;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  border-radius: 0px;
+  border-radius: 3px;
   padding-left: 5px;
   padding-right: 5px;
   line-height: 18px;

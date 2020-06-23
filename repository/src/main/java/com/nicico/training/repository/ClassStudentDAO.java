@@ -28,7 +28,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
 //    List<Long> findStudentInClass(@Param("studentId") Long studentId, @Param("classId") Long classId);
 
 
-    @Query(value = "select STUDENT_ID from  tbl_class_student  where CLASS_ID=:classId and SCORES_STATE IS NOT NULL",nativeQuery = true)
+    @Query(value = "select STUDENT_ID from  tbl_class_student  where CLASS_ID=:classId and SCORES_STATE_ID in (448,405,449,406,404,400,401,403,450)",nativeQuery = true)
      List<Long> getScoreState(@Param("classId") Long classId);
 
     @Modifying
@@ -40,11 +40,17 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "where id = :idClassStudent", nativeQuery = true)
     public int setStudentFormIssuance(Long idClassStudent, Integer reaction, Integer learning, Integer behavior, Integer results);
 
+    @Modifying
+    @Query(value = "update TBL_CLASS_STUDENT set " +
+            "evaluation_audience_type_id = :AudienceType " +
+            "where id = :idClassStudent", nativeQuery = true)
+    public int setStudentFormIssuanceAudienceType(Long idClassStudent, Long AudienceType);
+
     List<ClassStudent> findByStudentId(Long studentId);
 
 
     @Modifying
-    @Query(value = "update  TBL_CLASS_STUDENT set SCORES_STATE = 'قبول بدون نمره' ,  FAILURE_REASON = null where CLASS_ID =:id ", nativeQuery = true)
+    @Query(value = "update  TBL_CLASS_STUDENT set scores_state_id = 401 ,  failure_reason_id = null where CLASS_ID =:id ", nativeQuery = true)
     void setTotalStudentWithOutScore(@Param("id") Long id);
 
     Optional<ClassStudent> findByTclassIdAndStudentId(Long tclassId, Long studentId);
@@ -57,5 +63,11 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     ClassStudent getClassStudentById(Long classStudentId);
 
     Integer countClassStudentsByTclassId(Long classId);
+
+    @Modifying
+    @Query(value = "update TBL_CLASS_STUDENT set " +
+            "evaluation_audience_id = :AudienceId " +
+            "where id = :idClassStudent", nativeQuery = true)
+    public int setStudentFormIssuanceAudienceId(Long idClassStudent, Long AudienceId);
 
 }

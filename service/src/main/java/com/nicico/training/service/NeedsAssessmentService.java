@@ -38,6 +38,9 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     private NeedsAssessmentDAO needsAssessmentDAO;
 
     @Autowired
+    private NeedsAssessmentReportsService needsAssessmentReportsService;
+
+    @Autowired
     NeedsAssessmentService(NeedsAssessmentDAO competenceDAO) {
         super(new NeedsAssessment(), competenceDAO);
     }
@@ -46,6 +49,32 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     @Override
     public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(dao, request, na -> modelMapper.map(na, NeedsAssessmentDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> fullSearch(SearchDTO.SearchRq request) {
+        Long objectId = 0L;
+        String objectType = "";
+        List<SearchDTO.CriteriaRq> criteriaList = request.getCriteria().getCriteria();
+        for (SearchDTO.CriteriaRq c : criteriaList) {
+            if(c.getFieldName().equalsIgnoreCase("objectId")) {
+                objectId = Long.valueOf((Integer) c.getValue().get(0));
+            }
+            else if(c.getFieldName().equalsIgnoreCase("objectType")){
+                objectType = c.getValue().get(0).toString();
+            }
+        }
+        return this.fullSearch(objectId, objectType);
+    }
+
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> fullSearch(Long objectId, String objectType) {
+        List<NeedsAssessmentDTO.Info> naList = modelMapper.map(needsAssessmentReportsService.getNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {
+        }.getType());
+        SearchDTO.SearchRs<NeedsAssessmentDTO.Info> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) naList.size());
+        rs.setList(naList);
+        return rs;
     }
 
     @Transactional
@@ -68,22 +97,23 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     }
 
     @Transactional
-    public  Integer updateNeedsAssessmentMainWorkflow(Long needsAssessmentId, Integer workflowStatusCode, String workflowStatus){
+    public Integer updateNeedsAssessmentMainWorkflow(Long needsAssessmentId, Integer workflowStatusCode, String workflowStatus) {
         return needsAssessmentDAO.updateNeedsAssessmentWorkflowMainStatus(needsAssessmentId, workflowStatusCode, workflowStatus);
     }
 
     @Transactional(readOnly = true)
-    public TotalResponse<NeedsAssessmentDTO.Tree> tree (NICICOCriteria rq) {
-        TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = (TotalResponse<NeedsAssessmentDTO.Tree>)(Object) SearchUtil.search(dao, rq, e -> modelMapper.map(e, NeedsAssessmentDTO.Info.class));
-        treeTotalResponse.getResponse().setData(modelMapper.map(treeTotalResponse.getResponse().getData(),new TypeToken<List<NeedsAssessmentDTO.Tree>>() {}.getType()));
+    public TotalResponse<NeedsAssessmentDTO.Tree> tree(NICICOCriteria rq) {
+        TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = (TotalResponse<NeedsAssessmentDTO.Tree>) (Object) SearchUtil.search(dao, rq, e -> modelMapper.map(e, NeedsAssessmentDTO.Info.class));
+        treeTotalResponse.getResponse().setData(modelMapper.map(treeTotalResponse.getResponse().getData(), new TypeToken<List<NeedsAssessmentDTO.Tree>>() {
+        }.getType()));
 
 
         findGenerations(treeTotalResponse.getResponse().getData());
         Set<NeedsAssessmentDTO.Tree> ancestors = new HashSet<NeedsAssessmentDTO.Tree>();
 
         int index = -1;
-        for(NeedsAssessmentDTO.Tree t : treeTotalResponse.getResponse().getData()){
-            index = findAncestors(ancestors,t,0,0,index);
+        for (NeedsAssessmentDTO.Tree t : treeTotalResponse.getResponse().getData()) {
+            index = findAncestors(ancestors, t, 0, 0, index);
         }
 
         List<NeedsAssessmentDTO.Tree> generations = new ArrayList<>(ancestors);
@@ -92,9 +122,9 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
         return treeTotalResponse;
     }
 
-    private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree){
+    private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree) {
         Set<NeedsAssessmentDTO.Tree> ancestors = new HashSet<>();
-        for(NeedsAssessmentDTO.Tree node : tree){
+        for (NeedsAssessmentDTO.Tree node : tree) {
             node.setCompetenceTypeTitle(node.getCompetence().getCompetenceType().getTitle());
             node.setCompetenceNameTitle(node.getCompetence().getTitle());
             node.setNeedsAssessmentDomainTitle(node.getNeedsAssessmentDomain().getTitle());
@@ -103,32 +133,31 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
             node.setSkillCourseTitle(node.getSkill().getCourse().getTitleFa());
             ancestors.add(node);
         }
-        return new ArrayList<NeedsAssessmentDTO.Tree>(ancestors);
+        return new ArrayList<>(ancestors);
     }
 
-    private int findAncestors(Set<NeedsAssessmentDTO.Tree> ancestors,NeedsAssessmentDTO.Tree child, int no, int parent, int index){
+    private int findAncestors(Set<NeedsAssessmentDTO.Tree> ancestors, NeedsAssessmentDTO.Tree child, int no, int parent, int index) {
         String[] keys = {"competenceTypeTitle", "needsAssessmentDomainTitle", "needsAssessmentPriorityTitle", "competenceNameTitle", "skillTitle", "skillCourseTitle"};
         int i = index;
-        if(keys.length - 1 > no)
-        {
+        if (keys.length - 1 > no) {
             String property = keys[no];
             NeedsAssessmentDTO.Tree father = new NeedsAssessmentDTO.Tree();
 //            father.setProperty(property,child.getProperty(property));
             father.setName(child.getProperty(property));
-            father.setParentId(new Long(parent));
-            NeedsAssessmentDTO.Tree node =  ancestors.stream().filter(n -> n.equvalentOf(father,property)).findFirst().orElse(null);
-            if(node == null){
-                father.setId(new Long(i));
+            father.setParentId((long) parent);
+            NeedsAssessmentDTO.Tree node = ancestors.stream().filter(n -> n.equvalentOf(father, property)).findFirst().orElse(null);
+            if (node == null) {
+                father.setId((long) i);
                 ancestors.add(father);
                 parent = i;
                 --i;
-            }else{
+            } else {
                 parent = node.getId().intValue();
             }
-            child.setProperty(property,"");
-            i = findAncestors(ancestors,child,++no,parent,i);
-        }else {
-            child.setParentId(new Long(parent));
+            child.setProperty(property, "");
+            i = findAncestors(ancestors, child, ++no, parent, i);
+        } else {
+            child.setParentId((long) parent);
             child.setName(child.getProperty(keys[no]));
             ancestors.add(child);
         }

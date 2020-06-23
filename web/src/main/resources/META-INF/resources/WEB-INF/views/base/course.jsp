@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -97,31 +98,25 @@
         fetchDataURL: courseUrl + "spec-list",
     });
     var RestDataSource_eTechnicalType = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eTechnicalType/spec-list",
-        autoFetchData: true,
     });
     var RestDataSource_e_level_type = isc.TrDS.create({
         autoCacheAllData: false,
-        fields: [{name: "id"}, {name: "titleFa"}
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eLevelType",
-        autoFetchData: true,
     });
     var RestDataSource_e_run_type = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eRunType/spec-list",
-// cacheAllData:true,
-        autoFetchData: true,
     });
     var RestDataSourceETheoType = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eTheoType",
-// cacheAllData:true,
-        autoFetchData: true,
     });
     var RestDataSourceSubCategory = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
@@ -168,7 +163,9 @@
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
-        data: [{
+        data: [
+            <sec:authorize access="hasAuthority('Course_R')">
+            {
             title: "<spring:message code="refresh"/>",
             <%--icon: "<spring:url value="refresh.png"/>", --%>
             click: function () {
@@ -178,39 +175,60 @@
                 // ListGrid_CourseSyllabus.setData([]);
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
             }
-        }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Course_C')">
+            {
             title: "<spring:message code="create"/>",
             <%--icon: "<spring:url value="create.png"/>", --%>
             click: function () {
                 ListGrid_Course_add();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_U')">
+            {
             title: "<spring:message code="edit"/>",
             <%--icon: "<spring:url value="edit.png"/>", --%>
             click: function () {
                 ListGrid_Course_Edit();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_D')">
+            {
             title: "<spring:message code="remove"/>",
             <%--icon: "<spring:url value="remove.png"/>", --%>
             click: function () {
                 ListGrid_Course_remove()
             }
         },
+            </sec:authorize>
+
             <%--, {--%>
             <%--title: "تعریف هدف و سرفصل", icon: "<spring:url value="goal.png"/>", click: function () {--%>
             <%--openTabGoal();--%>
             <%--}--%>
             <%--}--%>
+            <sec:authorize access="hasAuthority('Course_WF')">
             {
                 title: "<spring:message code='send.to.workflow'/>",
                 click: function () {
                     getCourseMainObjective_RunWorkflow();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('Course_C','Course_R','Course_U','Course_D','Course_WF')">
             {
                 isSeparator: true
-            }, {
+            },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_P')">
+            {
                 title: "<spring:message code="format.pdf"/>",
                 <%--icon: "<spring:url value="pdf.png"/>",--%>
                 click: function () {
@@ -236,11 +254,14 @@
                     window.open("course/testCourse/" + ListGrid_Course.getSelectedRecord().id + "/pdf/<%=accessToken%>");
                 }
             }
+            </sec:authorize>
         ]
     });
     var ListGrid_Course = isc.TrLG.create({
         ID: "gridCourse",
+        <sec:authorize access="hasAuthority('Course_R')">
         dataSource: RestDataSource_course,
+        </sec:authorize>
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
         allowAdvancedCriteria: true,
@@ -274,10 +295,14 @@
         <%--return this.rowHoverComponent;--%>
         <%--},--%>
 
+        <sec:authorize access="hasAuthority('Course_U')">
         rowDoubleClick: function () {
             // DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
         },
+        </sec:authorize>
+
+        <sec:authorize access="hasAnyAuthority('Course_Syllabus','Course_Job','Course_Post','Course_Skill','Course_Teachers')">
         selectionChanged: function (record, state) {
             if (state) {
                 courseRecord = record;
@@ -293,21 +318,17 @@
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
             }
         },
+        </sec:authorize>
 
         //working
         dataArrived: function () {
             selectWorkflowRecord();
             // var gridState = "[{id:285}]";
             // ListGrid_Course.setSelectedState(gridState);
-
-
             // if (ListGrid_Course.getSelectedRecord() != null) {
-            //     alert("Yes");
             // } else {
-            //     alert("No");
             // }
         },
-        //working
         fields: [
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -375,8 +396,10 @@
             },
             {
                 name: "theoryDuration", title: "<spring:message
-                code="course_theoryDuration"/>", align: "center", filterOperator: "iContains",
-
+                code="course_theoryDuration"/>", align: "center", filterOperator: "equals",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
@@ -497,7 +520,11 @@
         fields: [
             // {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", align: "center"},
-            {name: "code", title: "<spring:message code="job.code"/>", align: "center"},
+            {name: "code", title: "<spring:message code="job.code"/>", align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
@@ -520,8 +547,16 @@
                     return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
                 }
             },
-            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains"},
-            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains"},
+            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "teacher.personality.contactInfo.homeAddress.state.name", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
                 formatCellValue: function (value, record) {
                     return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
@@ -544,7 +579,8 @@
     var ListGrid_CourseSyllabus = isc.TrLG.create({
 
         dataSource: RestDataSource_Syllabus,
-        groupByField: "goal.titleFa", groupStartOpen: "none",
+        groupByField: "goal.titleFa",
+        groupStartOpen: "none",
         showGridSummary: true,
         showGroupSummary: true,
         fields: [
@@ -571,10 +607,9 @@
         showResizeBar: false,
 
     });
-    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code="refresh"/> ",
 
+    <sec:authorize access="hasAuthority('Course_R')">
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Course_refresh();
             refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
@@ -582,37 +617,49 @@
 
         }
     });
-    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+    </sec:authorize>
 
-        title: "<spring:message code="edit"/> ",
+    <sec:authorize access="hasAuthority('Course_U')">
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_Course_Edit()
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+    </sec:authorize>
 
-        title: "<spring:message code="create"/>",
-
+    <sec:authorize access="hasAuthority('Course_C')">
+    var ToolStripButton_Add = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Course_add();
         }
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Course_D')">
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-
-        title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()
         }
     });
+    </sec:authorize>
+
+    <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
-        //icon: "[SKIN]/RichTextEditor/print.png",
-        title: "<spring:message code='print'/>",
         click: function () {
             print_CourseListGrid("pdf");
         }
     });
+    </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Course_P')">
+    var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelFromClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
+        }
+    });
+    </sec:authorize>
+
+    <sec:authorize access="hasAuthority('Course_WF')">
     var ToolStripButton_SendToWorkflow = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/column_preferences.png",
         title: "<spring:message code='send.to.workflow'/>",
@@ -620,6 +667,7 @@
             getCourseMainObjective_RunWorkflow();
         }
     });
+    </sec:authorize>
 
     var Window_AddMainObjective = isc.Window.create({
         title: "<spring:message code="skill.plural.list"/>",
@@ -641,7 +689,11 @@
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
-                            {name: "code", title: "کد"},
+                            {name: "code", title: "کد",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9]"
+                                }
+                            },
                             {name: "categoryId"}
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
@@ -670,7 +722,11 @@
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
-                            {name: "code", title: "کد"},
+                            {name: "code", title: "کد",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9/]"
+                                }
+                            },
                             {
                                 name: "categoryId",
                             }
@@ -775,7 +831,11 @@
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
-                            {name: "code", title: "کد"},
+                            {name: "code", title: "کد",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9/]"
+                                }
+                            },
                             {name: "categoryId"},
                             {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
                         ],
@@ -853,12 +913,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Course_C')">
             ToolStripButton_Add,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_U')">
             ToolStripButton_Edit,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_D')">
             ToolStripButton_Remove,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_P')">
             ToolStripButton_Print,
-            // ToolStripButton_addSkill,
+
+            ToolStripExcel_JspCourse,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_WF')">
             ToolStripButton_SendToWorkflow,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_R')">
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -867,6 +944,7 @@
                     ToolStripButton_Refresh
                 ]
             })
+            </sec:authorize>
         ]
     });
 
@@ -936,7 +1014,6 @@
                         }
                     }
                 },
-
                 recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                     if (sourceWidget.ID === "ListGrid_AllSkill_mainObjective_JspCourse") {
                         mainObjectiveGrid.transferSelectedData(ListGrid_AllSkill_mainObjective_JspCourse);
@@ -948,7 +1025,7 @@
                     }
                     if (sourceWidget.ID === "courseAllGrid2") {
                         preCourseGrid.transferSelectedData(courseAllGrid2);
-                        setPlus(vm_JspCourse.values.id, "PreCourse", testData);
+                        setPlus(vm_JspCourse.values.id, "PreCourse", dropRecords);
                     }
                     if (sourceWidget.ID === "courseAllGrid") {
                         if (targetRecord) {
@@ -979,14 +1056,14 @@
                     }
                 },
                 removeRecordClick: function (rowNum) {
-                    var record = this.getRecord(rowNum);
+                    let record = this.getRecord(rowNum);
                     this.removeData(record, function (dsResponse, data, dsRequest) {
                     });
                     if (this.ID == "equalCourseGrid") {
                         andBtn.disable();
                         setPlus(vm_JspCourse.values.id, "EqualCourse", equalCourse)
                     } else if (this.ID == "preCourseGrid") {
-                        setPlus(vm_JspCourse.values.id, "PreCourse", testData);
+                        setPlus(vm_JspCourse.values.id, "PreCourse", [record], "remove");
                     }
                 },
                 hoverWidth: this.hoverWidth,
@@ -1731,33 +1808,27 @@
                         createDialog("info", "دوره، بدون هدف اصلي نمي توان ايجاد کرد.");
                         return;
                     }
-                    // data2.equalCourseListId = equalCourseIdList;
-                    // data2.preCourseListId = preCourseIdList;
-
                     if (data2.scoringMethod === "1") {
                         data2.acceptancelimit = data2.acceptancelimit_a
                     }
-                    // data2["workflowStatus"] = "ثبت اولیه";
                     data2.workflowStatus = "ثبت اولیه";
                     data2.workflowStatusCode = "0";
                     delete data2.subCategory;
                     data2.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-                    // data2["workflowStatusCode"] = "0";
-
+                    // console.log(data2)
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             TabSet_Goal_JspCourse.enable();
-                            ListGrid_Course_refresh();
-                            let responseID = JSON.parse(resp.data).id;
-                            let gridState = "[{id:" + responseID + "}]";
+                            // ListGrid_Course_refresh();
+                            // let responseID = JSON.parse(resp.data).id;
+                            // let gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                             courseRecord = JSON.parse(resp.data);
                             ListGrid_Course_Edit();
-                            setTimeout(function () {
-                                ListGrid_Course.setSelectedState(gridState);
-                            }, 3000);
-
+                            // setTimeout(function () {
+                            //     ListGrid_Course.setSelectedState(gridState);
+                            // }, 3000);
                         } else if (resp.httpResponseCode === 406) {
                             let myDialog = createDialog("info", "قبلاً دوره\u200cای با این نام ذخیره شده است.",
                                 "<spring:message code="message"/>");
@@ -1776,7 +1847,7 @@
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
                 let data1 = vm_JspCourse.getValues();
-                if (data1.scoringMethod == "1") {
+                if (data1.scoringMethod === "1") {
                     data1.acceptancelimit = data1.acceptancelimit_a
                 }
                 ChangeEtechnicalType = false;
@@ -1795,20 +1866,27 @@
                 data1.mainObjectiveIds = mainObjectiveIdList;
                 data1.equalCourseListId = equalCourseIdList;
                 data1.preCourseListId = preCourseIdList;
-                delete data1.subCategory;
+                delete data1["subCategory"];
+                delete data1["category"];
+                delete data1["elevelType"];
+                delete data1["etheoType"];
+                delete data1["erunType"];
+                delete data1["etechnicalType"];
                 data1.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-
+                data1.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("etechnicalType.id");
+                let wait = createDialog("wait");
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
+                    wait.close();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         sendToWorkflowAfterUpdate(JSON.parse(resp.data));
-                        ListGrid_Course_refresh();
+                        // ListGrid_Course_refresh();
                         courseRecord = JSON.parse(resp.data);
-                        let gridState = "[{id:" + courseRecord.id + "}]";
+                        // let gridState = "[{id:" + courseRecord.id + "}]";
                         simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                         ToolStripButton_addSkill.click();
-                        setTimeout(function () {
-                            ListGrid_Course.setSelectedState(gridState);
-                        }, 3000);
+                        // setTimeout(function () {
+                        //     ListGrid_Course.setSelectedState(gridState);
+                        // }, 3000);
                     } else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                     }
@@ -2436,6 +2514,9 @@
         autoCenter: false,
         showMaximizeButton: false,
         autoSize: false,
+        canDragResize:false,
+        canDragReposition:false,
+        placement: "fillScreen",
         closeClick: function () {
             // formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
             // formEqualCourse.reset();
@@ -2466,16 +2547,23 @@
         ID: "tabSetCourse",
         tabBarPosition: "top",
         tabs: [
+            <sec:authorize access="hasAuthority('Course_Syllabus')">
             {
                 ID: "tabGoal",
-                title: "<spring:message code="course_syllabus_goal"/>",
+                title: "<spring:message code="syllabus"/>",
                 pane: ListGrid_CourseSyllabus
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_Job')">
             {
                 ID: "tabJobJspCourse",
                 title: "<spring:message code="job"/>",
                 pane: ListGrid_CourseJob
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_Post')">
             {
                 ID: "tabPostJspCourse",
                 title: "<spring:message code="post"/>",
@@ -2486,29 +2574,40 @@
                         fields: [
                             {name: "id", primaryKey: true, hidden: true},
                             {name: "titleFa", title: "نام فارسی", align: "center"},
-                            {name: "code", title: "کد", align: "center"}
+                            {name: "code", title: "کد", align: "center",
+                                filterEditorProperties: {
+                                    keyPressFilter: "[0-9/]"
+                                }
+                            }
                         ],
                         ID: "RestData_Post_JspCourse",
                         fetchDataURL: courseUrl + "post/" + courseRecord.id,
                     }),
                 })
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Course_Skill')">
             {
                 ID: "tabSkillJspCourse",
                 title: "<spring:message code="skill"/>",
                 pane: ListGrid_CourseSkill
 
             },
+            </sec:authorize>
             // {
             //     ID: "tabSkillGroupJspCourse",
             //     title: "گروه مهارت",
             //     pane: ListGrid_SkillGroup
             // },
+
+            <sec:authorize access="hasAuthority('Course_Teachers')">
             {
                 ID: "teacherInformationCourse",
                 title: "<spring:message code='teacher.information'/>",
                 pane: ListGrid_teacherInformation_Course
             }
+            </sec:authorize>
             <%-- {--%>
             <%-- title: "<spring:message code="course.evaluation"/>",--%>
             <%-- ID:"courseEvaluationTAB",--%>
@@ -2539,7 +2638,7 @@
         ListGrid_CourseJob.setData([]);
         ListGrid_CourseSkill.setData([]);
         ListGrid_CourseSyllabus.setData([]);
-        courseRecord = null;
+        courseRecord = "";
         // for (j = 0; j < trainingTabSet.tabs.length; j++) {
         //     if (trainingTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
         //         trainingTabSet.removeTab(j);
@@ -2581,7 +2680,7 @@
             ListGrid_Goal.setData([]);
             ListGrid_Syllabus_Goal.setData([]);
         }, 500);
-        courseRecord = null;
+        courseRecord = "";
         mainObjectiveGrid_Refresh(1);
 
 // DynamicForm_course.getFields().get(5).prompt = "لطفا مدت دوره را به صورت یک عدد وارد کنید";
@@ -2651,9 +2750,7 @@
         equalCourse.length = 0;
         preCourseGrid.invalidateCache();
         equalCourseGrid.invalidateCache();
-        let sRecord = courseRecord;
-
-        if (sRecord == null || sRecord.id == null) {
+        if (courseRecord == null || courseRecord.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             // IButton_course_Save.disable();
@@ -2697,12 +2794,12 @@
             DynamicForm_course_GroupTab.getItem("elevelType.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("etheoType.id").setDisabled(true);
             course_method = "PUT";
-            course_url = courseUrl + sRecord.id;
+            course_url = courseUrl + courseRecord.id;
             // DynamicForm_course.getItem("epSection").enable();
-            RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.categoryId + "/sub-categories";
+            RestDataSourceSubCategory.fetchDataURL = categoryUrl + courseRecord.categoryId + "/sub-categories";
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
-            vm_JspCourse.editRecord(sRecord);
+            vm_JspCourse.editRecord(courseRecord);
             DynamicForm_course_GroupTab.setValue("subCategory.id", courseRecord.subCategoryId);
 //======================================================
 //             if (courseRecord.hasGoal && DynamicForm_course_MainTab.getValue("evaluation") != null) {
@@ -2721,8 +2818,8 @@
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
             // ListSkillBtnMainObjective.setDisabled(false);
-            if (sRecord.scoringMethod === "1") {
-                DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(sRecord.acceptancelimit)
+            if (courseRecord.scoringMethod === "1") {
+                DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(courseRecord.acceptancelimit)
             }
             DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), DynamicForm_course_MainTab.getValue("scoringMethod"));
             setTimeout(function () {
@@ -2787,23 +2884,8 @@
     }
 
     function print_CourseListGrid(type) {
-        var advancedCriteria_course = ListGrid_Course.getCriteria();
-        var criteriaForm_course = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/course/printWithCriteria/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "myToken", type: "hidden"}
-                ]
-        })
-        criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
-        criteriaForm_course.setValue("myToken", "<%=accessToken%>");
-        criteriaForm_course.show();
-        criteriaForm_course.submitForm();
-    };
+        printWithCriteria(ListGrid_Course.getCriteria(), {}, "CourseByCriteria.jasper", type);
+    }
 
     function courseCode() {
         var subCatDis = DynamicForm_course_GroupTab.getField("subCategory.id").isDisabled();
@@ -2848,7 +2930,7 @@
         }, 1000)
     }
 
-    function setPlus(id, plus, data) {
+    function setPlus(id, plus, data, type = "create") {
         setTimeout(function () {
             var listId = [];
             if (plus == "PreCourse") {
@@ -2861,7 +2943,7 @@
                 }
             }
             isc.RPCManager.sendRequest({
-                actionURL: courseUrl + "set" + plus + "/" + id,
+                actionURL: courseUrl + "set" + plus + "/" + id + "?type=" + type,
                 httpMethod: "PUT",
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -2887,13 +2969,13 @@
 
     function sendCourseToWorkflow(courseMainObjective) {
 
-        let sRecord = ListGrid_Course.getSelectedRecord();
+        // let sRecord = ListGrid_Course.getSelectedRecord();
 
-        if (sRecord === null || sRecord.id === null) {
+        if (courseRecord === null || courseRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else if (sRecord.workflowStatusCode === "2") {
+        } else if (courseRecord.workflowStatusCode === "2") {
             createDialog("info", "<spring:message code='course.workflow.confirm'/>");
-        } else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
+        } else if (courseRecord.workflowStatusCode !== "0" && courseRecord.workflowStatusCode !== "-3") {
             createDialog("info", "<spring:message code='course.sent.to.workflow'/>");
         } else {
 
@@ -2905,10 +2987,10 @@
                     if (index === 0) {
                         var varParams = [{
                             "processKey": "courseWorkflow",
-                            "cId": sRecord.id,
-                            "mainObjective": sRecord.titleFa + " (" + courseMainObjective + ") ",
-                            "titleFa": sRecord.titleFa,
-                            "theoryDuration": sRecord.theoryDuration.toString(),
+                            "cId": courseRecord.id,
+                            "mainObjective": courseRecord.titleFa + " (" + courseMainObjective + ") ",
+                            "titleFa": courseRecord.titleFa,
+                            "theoryDuration": courseRecord.theoryDuration.toString(),
                             "courseCreatorId": "${username}",
                             "courseCreator": userFullName,
                             "REJECTVAL": "",
@@ -2964,7 +3046,7 @@
 
     function sendToWorkflowAfterUpdate(selectedRecord) {
 
-        var sRecord = selectedRecord;
+        let sRecord = selectedRecord;
 
         if (sRecord !== null && sRecord.id !== null && course_workflowParameters !== null) {
 
@@ -2979,7 +3061,7 @@
                 course_workflowParameters.workflowdata["courseCreator"] = userFullName;
                 course_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";
                 course_workflowParameters.workflowdata["workflowStatusCode"] = "20";
-                var ndat = course_workflowParameters.workflowdata;
+                let ndat = course_workflowParameters.workflowdata;
                 isc.RPCManager.sendRequest({
                     actionURL: workflowUrl + "/doUserTask",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},

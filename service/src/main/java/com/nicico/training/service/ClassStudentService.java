@@ -53,8 +53,8 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public void registerStudents(List<ClassStudentDTO.Create> request, Long classId) {
-
+    public Map<String, String> registerStudents(List<ClassStudentDTO.Create> request, Long classId) {
+        List<String> invalStudents = new ArrayList<>();
         Tclass tclass = tclassService.getTClass(classId);
 
         for (ClassStudentDTO.Create create : request) {
@@ -72,6 +72,10 @@ public class ClassStudentService implements IClassStudentService {
             ClassStudent classStudent = new ClassStudent();
             if(create.getApplicantCompanyName() != null)
                 classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
+            else {
+                invalStudents.add(student.getFirstName()+ " " + student.getLastName());
+                continue;
+            }
             if(create.getPresenceTypeId() != null)
                 classStudent.setPresenceTypeId(create.getPresenceTypeId());
             classStudent.setTclass(tclass);
@@ -79,6 +83,20 @@ public class ClassStudentService implements IClassStudentService {
 
             classStudentDAO.saveAndFlush(classStudent);
         }
+
+        String nameList = new String();
+
+        if(invalStudents.size() > 0) {
+            for (String name : invalStudents) {
+                nameList += name + " , ";
+            }
+        }else
+            nameList = null;
+
+        Map<String, String> map = new HashMap();
+        map.put("names", nameList);
+        map.put("accepted", new Integer(request.size() - invalStudents.size()).toString());
+        return map;
     }
 
     @Transactional
@@ -106,8 +124,13 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public int setStudentFormIssuance(Map<String, Integer> formIssuance) {
-        return classStudentDAO.setStudentFormIssuance(Long.parseLong(formIssuance.get("idClassStudent").toString()), formIssuance.get("reaction"), formIssuance.get("learning"), formIssuance.get("behavior"), formIssuance.get("results"));
+    public int setStudentFormIssuance(Map<String, String> formIssuance) {
+        Long classId = Long.parseLong(formIssuance.get("idClassStudent").toString());
+        if(formIssuance.get("evaluationAudienceType") != null)
+            classStudentDAO.setStudentFormIssuanceAudienceType(classId,Long.parseLong(formIssuance.get("evaluationAudienceType")));
+        if(formIssuance.get("evaluationAudienceId") != null)
+            classStudentDAO.setStudentFormIssuanceAudienceId(classId,Long.parseLong(formIssuance.get("evaluationAudienceId")));
+        return classStudentDAO.setStudentFormIssuance(classId, Integer.parseInt(formIssuance.get("reaction")), Integer.parseInt(formIssuance.get("learning")), Integer.parseInt(formIssuance.get("behavior")), Integer.parseInt(formIssuance.get("results")));
     }
 
     @Transactional
@@ -141,25 +164,12 @@ public class ClassStudentService implements IClassStudentService {
         SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> result =  SearchUtil.search(classStudentDAO, request,classStudent -> mapper.map(classStudent,
                 ClassStudentDTO.evaluationAnalysistLearning.class));
         for (ClassStudentDTO.evaluationAnalysistLearning t : result.getList()) {
-            if(tClass.getScoringMethod().equalsIgnoreCase("1")){
-                if(t.getValence() != null){
-                    if(t.getValence().equalsIgnoreCase("1001"))
-                        t.setScore(Float.parseFloat("25"));
-                    else if(t.getValence().equalsIgnoreCase("1002"))
-                        t.setScore(Float.parseFloat("50"));
-                    else if(t.getValence().equalsIgnoreCase("1003"))
-                        t.setScore(Float.parseFloat("75"));
-                    else if(t.getValence().equalsIgnoreCase("1004"))
-                        t.setScore(Float.parseFloat("100"));
-                }
-            }
-            else if(tClass.getScoringMethod().equalsIgnoreCase("3")){
+            if(tClass.getScoringMethod() != null && tClass.getScoringMethod().equalsIgnoreCase("3")){
                 if(t.getScore() != null)
                     t.setScore(t.getScore()*5);
             }
         }
         return result;
     }
-
 
 }

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     var teacherMethod = "POST";
@@ -18,6 +19,7 @@
     var selected_record = null;
     var selectedRecordID = null;
     var isFileAttached = false;
+    var vm = isc.ValuesManager.create({});
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -115,23 +117,46 @@
     //----------------------------------------------------Menu-------------------------------------------------------
     var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
         width: 150,
-        data: [{
+        data: [
+            <sec:authorize access="hasAuthority('Teacher_R')">
+            {
             title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_teacher_refresh();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_C')">
+            {
             title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_teacher_add();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_U')">
+            {
             title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_teacher_edit();
             }
-        }, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_D')">
+            {
             title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_teacher_remove();
             }
-        }, {isSeparator: true}, {
+        },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('Teacher_C','Teacher_R','Teacher_U','Teacher_D')">
+
+            {isSeparator: true},
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_P')">
+            {
             title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                 trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
                     ListGrid_Teacher_JspTeacher.getCriteria());
@@ -160,6 +185,8 @@
                     trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id, null);
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Teacher_E')">
             {
                 title: "<spring:message code='teacher.evaluation'/>",
                 click: function () {
@@ -173,17 +200,26 @@
                     Window_Evaluation_JspTeacher.show();
                 }
             }
+            </sec:authorize>
         ]
     });
     //----------------------------------------------------ListGrid------------------------------------------------------
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
         width: "100%",
         height: "100%",
+
+        <sec:authorize access="hasAuthority('Teacher_R')">
         dataSource: RestDataSource_Teacher_JspTeacher,
+        </sec:authorize>
+
+
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
+
+        <sec:authorize access="hasAuthority('Teacher_U')">
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
+        </sec:authorize>
         initialSort: [
             {property: "teacherCode", direction: "descending", primarySort: true}
         ],
@@ -192,7 +228,10 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='national.code'/>",
-                align: "center"
+                align: "center",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "personality.firstNameFa",
@@ -209,6 +248,11 @@
                 sortNormalizer: function (record) {
                     return record.personality.lastNameFa;
                 }
+            },
+            {
+                name: "personnelCode",
+                title: "<spring:message code='personnel.code.six.digit'/>",
+                align: "center",
             },
             {
                 name: "categories",
@@ -285,6 +329,9 @@
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
                 type: "phoneNumber",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
                 sortNormalizer: function (record) {
                     return record.personality.contactInfo.mobile;
                 }
@@ -301,7 +348,7 @@
         },
         cellHeight: 43,
         filterOperator: "iContains",
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -368,6 +415,8 @@
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
         height: "25%",
+        minWidth:1350,
+        width:"100%",
         tabs: [
             {
                 ID: "academicBK",
@@ -523,7 +572,9 @@
         padding: 10,
         members: [
             IButton_Evaluation_Show_JspTeacher,
+            <sec:authorize access="hasAuthority('Teacher_P')">
             IButton_Evaluation_Print_JspTeacher,
+            </sec:authorize>
             IButton_Evaluation_Exit_JspTeacher
         ]
     });
@@ -734,13 +785,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Teacher_C')">
             ToolStripButton_Add_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_U')">
             ToolStripButton_Edit_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_D')">
             ToolStripButton_Remove_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_P')">
             ToolStripButton_Print_JspTeacher,
             ToolStripButton_Print_InfoForm_JspTeacher,
             ToolStripButton_Print_Empty_InfoForm_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_E')">
             ToolStripButton_Evaluation_JspTeacher,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Teacher_R')">
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -749,6 +816,7 @@
                     ToolStripButton_Refresh_JspTeacher
                 ]
             })
+            </sec:authorize>
 
         ]
     });
@@ -776,7 +844,11 @@
     }
 
     function Teacher_Save_Button_Click_JspTeacher() {
+        nationalCodeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
         if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            if(nationalCodeCheck == false)
+                DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
+        code='msg.national.code.validation'/>", true);
             return;
         }
         vm.validate();
@@ -785,6 +857,17 @@
         }
         var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
         DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
+
+        if (selected_record != null) {
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.id").setValue(selected_record.personality.id);
+            if (selected_record.personality.contactInfo != null && selected_record.personality.contactInfo.homeAddress != undefined)
+                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.id").setValue(selected_record.personality.contactInfo.homeAddress.id);
+            if (selected_record.personality.contactInfo != null && selected_record.personality.contactInfo.workAddress != undefined)
+                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.id").setValue(selected_record.personality.contactInfo.workAddress.id);
+            if (selected_record.personality.accountInfo != undefined)
+                DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
+        }
+
         var data = vm.getValues();
         var teacherSaveUrl = teacherUrl;
 
@@ -801,7 +884,11 @@
     }
 
     function Teacher_Save_Close_Button_Click_JspTeacher() {
+        nationalCodeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue());
         if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            if(nationalCodeCheck == false)
+                DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
+        code='msg.national.code.validation'/>", true);
             return;
         }
         vm.validate();
@@ -810,6 +897,17 @@
         }
         var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
         DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
+
+        if (selected_record != null) {
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.id").setValue(selected_record.personality.id);
+            if (selected_record.personality.contactInfo.homeAddress != undefined)
+                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.id").setValue(selected_record.personality.contactInfo.homeAddress.id);
+            if (selected_record.personality.contactInfo.workAddress != undefined)
+                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.id").setValue(selected_record.personality.contactInfo.workAddress.id);
+            if (selected_record.personality.accountInfo != undefined)
+                DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
+        }
+
         var data = vm.getValues();
         var teacherSaveUrl = teacherUrl;
 
@@ -965,9 +1063,20 @@
             "personality.contactInfo.workAddress.stateId", WAOCEnable);
 
 
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
-        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
-        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+        if(selected_record.personnelStatus == true){
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
+            DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(true);
+        }
+        else if(selected_record.personnelStatus == false){
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(false);
+        }
 
         selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         loadPage_AcademicBK(selectedRecordID);
@@ -998,11 +1107,13 @@
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.stateId").enable();
 
         teacherMethod = "POST";
-        vm.clearValues();
+        // vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
-        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = false;
-        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = false;
+        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").enable();
+        DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+        DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(false);
         TabSet_Bottom_JspTeacher.hide();
         clearTabFilters();
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
@@ -1132,6 +1243,27 @@
             setTimeout(function () {
                 TabSet_Bottom_JspTeacher.enable();
             }, 300);
+            if(selected_record.personnelStatus == true){
+                DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
+                DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(true);
+            }
+            else if(selected_record.personnelStatus == false){
+                DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(false);
+            }
+            DynamicForm_BasicInfo_JspTeacher.getField("personality.id").setValue(selected_record.personality.id);
+            if(selected_record.personality.contactInfo.homeAddress != undefined)
+                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.id").setValue(selected_record.personality.contactInfo.homeAddress.id);
+            if(selected_record.personality.contactInfo.workAddress != undefined)
+                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.id").setValue(selected_record.personality.contactInfo.workAddress.id);
+            if(selected_record.personality.accountInfo != undefined)
+                DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
             teacherMethod = "PUT";
         } else if (resp.httpResponseText == "duplicateAndBlackList") {
             createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
@@ -1141,7 +1273,12 @@
     }
 
     function teacher_save_edit_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        if (resp.httpResponseText == "duplicateAndBlackList") {
+            createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
+        } else if (resp.httpResponseText == "duplicateAndNotBlackList") {
+            createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
+        }
+        else if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             if (resp.data === "") {
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
             } else {
@@ -1183,10 +1320,10 @@
             "callback: personnel_findOne_result(rpcResponse)"));
     }
 
-    function  fillPersonalInfoByNationalCode(nationalCode){
-        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
-            "callback: personnel_findOne_result(rpcResponse)"));
-    }
+    // function  fillPersonalInfoByNationalCode(nationalCode){
+    //     isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
+    //         "callback: personnel_findOne_result(rpcResponse)"));
+    // }
 
     function fillWorkAddressFields(postalCode) {
         if (postalCode !== undefined)
@@ -1280,6 +1417,7 @@
 
     function personnel_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
+            vm.clearValues();
             var personnel = JSON.parse(resp.data);
             if (personnel.firstName != undefined && personnel.firstName != null)
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personnel.firstName);
@@ -1334,10 +1472,13 @@
             if (restAddress != "")
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
         }
+        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
     }
 
     function personalInfo_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
+            vm.clearValues();
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personality.nationalCode);
@@ -1388,6 +1529,7 @@
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
             }
         }
+        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
     }
 
     function clearTabFilters() {

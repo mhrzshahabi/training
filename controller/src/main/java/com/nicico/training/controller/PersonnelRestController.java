@@ -17,6 +17,7 @@ import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.model.Personnel;
 
+import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -45,6 +47,7 @@ public class PersonnelRestController {
     final ReportUtil reportUtil;
     private final MessageSource messageSource;
     private final PersonnelService personnelService;
+    private final PersonnelDAO personnelDAO;
     private final IPersonnelRegisteredService personnelRegisteredService;
 
     @GetMapping("list")
@@ -56,6 +59,13 @@ public class PersonnelRestController {
     public ResponseEntity<TotalResponse<PersonnelDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping(value = "checkPersonnelNos")
+    public ResponseEntity<List<PersonnelDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
+        List<PersonnelDTO.Info> list=personnelService.checkPersonnelNos(personnelNos);
+        return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
     @Loggable
@@ -111,6 +121,14 @@ public class PersonnelRestController {
     public ResponseEntity<PersonnelDTO.PersonalityInfo> findPersonnelByNationalCode(@PathVariable String nationalCode) {
         PersonnelDTO.PersonalityInfo personalInfoDTO = personnelService.getByNationalCode(nationalCode);
         return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/byId/{id}")
+    public ResponseEntity<Personnel> findPersonnelById(@PathVariable Long id) {
+        Personnel personalInfo = personnelDAO.findById(id);
+        return new ResponseEntity<>(personalInfo, HttpStatus.OK);
     }
 
     @GetMapping("/statisticalReport/{reportType}")

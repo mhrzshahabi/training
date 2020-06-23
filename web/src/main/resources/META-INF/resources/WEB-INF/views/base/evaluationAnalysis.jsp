@@ -29,10 +29,9 @@
             {name: "institute.titleFa"},
             {name: "classStatus"},
             {name: "course.evaluation"},
-            {name: "evaluationStatus"},
+            // {name: "evaluationStatus"},
             {name: "course.id"},
             {name: "instituteId"},
-            {name: "titleClass"},
             {name: "scoringMethod"}
         ],
         fetchDataURL: classUrl + "spec-list-evaluated"
@@ -49,9 +48,8 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         sortField: 0,
-
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -79,13 +77,19 @@
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "endDate",
                 title: "<spring:message code='end.date'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "term.titleFa",
@@ -97,13 +101,18 @@
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
                 align: "center",
+                canFilter: false,
                 filterOperator: "iContains"
             },
             {
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
                 filterOperator: "equals",
-                autoFitWidth: true
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
+                canFilter: false
             },
             {
                 name: "institute.titleFa",
@@ -125,19 +134,20 @@
                     }
                 }
             },
-            {
-                name: "evaluationStatus", title: "<spring:message code='evaluation.status'/>", align: "center",
-                valueMap: {
-                    "1": "ارزیابی نشده",
-                    "2": "در حال ارزیابی",
-                    "3": "ارزیابی شده"
-                },
-                filterEditorProperties:{
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
-                }
-            },
+            <%--{--%>
+            <%--    name: "evaluationStatus", title: "<spring:message code='evaluation.status'/>", align: "center",--%>
+            <%--    valueMap: {--%>
+            <%--        "1": "ارزیابی نشده",--%>
+            <%--        "2": "در حال ارزیابی",--%>
+            <%--        "3": "ارزیابی شده"--%>
+            <%--    },--%>
+            <%--    filterEditorProperties:{--%>
+            <%--        pickListProperties: {--%>
+            <%--            showFilterEditor: false--%>
+            <%--        }--%>
+            <%--    },--%>
+            <%--    canFilter: false--%>
+            <%--},--%>
             {
                 name: "course.evaluation",
                 title: "<spring:message code='evaluation.type'/>",
@@ -155,14 +165,13 @@
                         showFilterEditor: false
                     }
                 }
-            },
-            {name: "titleClass", hidden: true}
+            }
         ],
         selectionUpdated: function (record) {
             listGrid_record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
             set_evaluation_analysis_tabset_status();
             Detail_Tab_Evaluation_Analysis.selectTab(0);
-        },
+        }
     });
 
     //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
@@ -210,7 +219,7 @@
             ListGrid_evaluationAnalysis_class.invalidateCache();
             DynamicForm_Reaction_EvaluationAnalysis_Header.hide();
             DynamicForm_Reaction_EvaluationAnalysis_Footer.hide();
-            ListGrid_evaluationAnalysist_learning.setData([])
+            ListGrid_evaluationAnalysist_learning.setData([]);
             IButton_Print_ReactionEvaluation_Evaluation_Analysis.hide();
             chartSelector.hide();
             ReactionEvaluationChart.hide();
@@ -296,7 +305,7 @@
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
-        } else if (evaluationType === "4") {
+        } else if (evaluationType === "4" || evaluationType === "نتایج") {
             fill_reaction_evaluation_result();
             evaluationAnalysist_learning();
             fill_behavioral_evaluation_result();

@@ -63,4 +63,6 @@ public interface IAttendanceService {
     List<ClassSessionDTO.Info> studentAbsentSessionsInClass(Long classId, Long studentId);
 
     void studentAttendanceSave(List<List<Map<String, String>>> maps);
+
+    String studentUnknownSessionsInClass(Long classId);
 }

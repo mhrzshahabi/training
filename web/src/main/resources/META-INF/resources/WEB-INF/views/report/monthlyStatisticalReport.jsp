@@ -82,27 +82,39 @@
                     title: "<spring:message code="sum.of.present.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalPresent(records)"
+                    summaryFunction: "totalPresent(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 },
                 {
                     name: "overtime",
                     title: "<spring:message code="total.hours.of.overtime"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalOvertime(records)"
+                    summaryFunction: "totalOvertime(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 },
                 {
                     name: "unjustifiedAbsence",
                     title: "<spring:message code="sum.of.unjustified.absence.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalUnjustifiedAbsence(records)"
+                    summaryFunction: "totalUnjustifiedAbsence(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 }, {
                     name: "acceptableAbsence",
                     title: "<spring:message code="sum.of.justified.absence.hours"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    summaryFunction: "totalAcceptableAbsence(records)"
+                    summaryFunction: "totalAcceptableAbsence(records)",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 }
             ]
         });
@@ -261,7 +273,20 @@
                     click: function () {
                         searchResult();
                     }
-                }
+                },
+                {
+                    type: "button",
+                    width: "100%",
+                    height: 30,
+                    colSpan: 2,
+                    align: "left",
+                    title: "<spring:message code="global.form.print.excel"/>",
+                    click: function () {
+                        // console.log(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10));
+                        // exportToExcel(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10) ,ListGrid_StudentClass_StudentClassJSP.getData().localData)
+                        ExportToFile.downloadExcelFromClient(ListGrid_MSReport,null,"","گزارش آماری ماهیانه");
+                    }
+                },
             ]
         });
 

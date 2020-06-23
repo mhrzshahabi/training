@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 
 public interface ICourseService {
 
@@ -21,15 +21,23 @@ public interface ICourseService {
 
     void setPreCourse(Long id, List<Long> preCourseList);
 
+    void addPreCourse(CourseDTO.AddOrRemovePreCourse rq);
+
+    void removePreCourse(CourseDTO.AddOrRemovePreCourse rq);
+
     void updateHasSkill(Long id, Boolean hasSkill);
 
     void setEqualCourse(Long id, List<String> equalCourseList);
 
-    List<Map> equalCourseList(Long id);
+    List<EqualCourseDTO.Info> equalCourseList(Long id);
+
+    void addEqualCourse(EqualCourseDTO.Add rq);
+
+    void removeEqualCourse(EqualCourseDTO.Remove rq);
 
     CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response);
 
-    CourseDTO.Info update(Long id, CourseDTO.Update request);
+    CourseDTO.Info update(Long id, Object request);
 
     void delete(Long id);
 
@@ -37,17 +45,21 @@ public interface ICourseService {
 
     SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request);
 
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<CourseDTO.InfoTuple> searchInfoTuple(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<CourseDTO.TupleInfo> safeSearch(SearchDTO.SearchRq request);
+
     //-------jafari--------
     SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request);
+
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
     List<GoalDTO.Info> getGoal(Long courseId);
 
     List<GoalDTO.Info> getGoalWithOut(Long courseId);
 
     List<SkillDTO.Info> getSkill(Long courseId);
-
-
-    List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId);
 
 //    List<CompetenceDTOOld.Info> getCompetence(Long courseId);
 
@@ -71,7 +83,7 @@ public interface ICourseService {
 
     String getDomain(Long id);
 
-    List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> getTeachers(Long courseId);
+    List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> getTeachers(Long courseId, Long teacherId);
 
     int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
 

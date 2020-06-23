@@ -7,7 +7,8 @@
 %>
 
 // <script>
-    
+
+
     var selectedPerson_TrainingFile = null;
     var printUrl_TrainingFile = "<spring:url value="/web/print/class-student/"/>";
 
@@ -16,10 +17,22 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
             {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
@@ -51,21 +64,37 @@
             {name: "scoresState", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "student.postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "tclass.teacher", title:"<spring:message code='teacher'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.postCode", title:"<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.ccpAffairs", title:"<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: tclassStudentUrl + "classes-of-student/"
     });
+
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
         dataSource: RestDataSource_Student_JspTrainingFile,
         allowAdvancedCriteria:true,
         canSelect:false,
         selectionType: "single",
         allowFilterExpressions: true,
+        gridComponents: ["filterEditor", "header", "body"],
         fields: [
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant"},
@@ -81,9 +110,14 @@
             ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
             ListGrid_TrainingFile_TrainingFileJSP.fetchData();
             Window_StudentSearch_JspTrainingFile.close();
-
+            excelBtn.setDisabled(false);
         }
     });
+
+
+
+
+
     var Window_StudentSearch_JspTrainingFile = isc.Window.create({
         autoSize:false,
         title:"<spring:message code="students.list"/>",
@@ -98,25 +132,36 @@
         numCols: 7,
         padding: 10,
         titleAlign:"left",
-        colWidths:[100,150,100,150,100,150,100],
+        colWidths:[100,250,100,250,100,150,100],
         fields: [
             {
                 name: "personnelNo2",
                 title:"<spring:message code="personnel.no.6.digits"/>",
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                keyPressFilter: "[0-9, ]",
+                // supportsCutPasteEvents: true,
+                // changeOnKeypress:true,
+                changed (form, item, value){
+                    let res = value.split(" ");
+                    item.setValue(res.toString())
+                }
             },
             {
                 name: "personnelNo",
                 title:"<spring:message code="personnel.no"/> ",
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                keyPressFilter: "[0-9, ]"
             },
             {
                 name: "nationalCode",
                 title:"<spring:message code="national.code"/> ",
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "searchBtn",
@@ -127,15 +172,24 @@
                 startRow:false,
                 endRow:false,
                 click (form) {
-                    var advancedCriteriaStudentJspTrainingFile = {
+                    let advancedCriteriaStudentJspTrainingFile = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: []
                     };
-                    var items = form.getItems();
+                    let items = form.getItems();
                     for (let i = 0; i < items.length; i++) {
                         if(items[i].getValue() != undefined){
-                            advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})
+                            if(items[i].name == "personnelNo2"){
+                                advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "inSet", value: items[i].getValue().split(',').toArray()})
+                            }
+                            else {
+                                advancedCriteriaStudentJspTrainingFile.criteria.add({
+                                    fieldName: items[i].name,
+                                    operator: "iContains",
+                                    value: items[i].getValue()
+                                })
+                            }
                         }
                     }
                     ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);
@@ -170,6 +224,7 @@
                 click (form, item) {
                     form.clearValues();
                     ListGrid_TrainingFile_TrainingFileJSP.setData([]);
+                    excelBtn.setDisabled(true);
                 }
             },
         ],
@@ -200,47 +255,67 @@
         }]
     });
 
+    var excelBtn= isc.ToolStripButtonExcel.create({
+        click: function() {
+            let criteria = ListGrid_TrainingFile_TrainingFileJSP.getCriteria();
+
+            if(typeof(criteria.operator)=='undefined'){
+                criteria._constructor="AdvancedCriteria";
+                criteria.operator="and";
+            }
+
+            if(typeof(criteria.criteria)=='undefined'){
+                criteria.criteria=[];
+            }
+            criteria.criteria.push({fieldName:'student.nationalCode',operator:'equals',value:DynamicForm_TrainingFile.getField("nationalCode").getValue()});
+
+            ExportToFile.showDialog(null, ListGrid_TrainingFile_TrainingFileJSP, 'trainingFile', 0, null, '',  "پرونده آموزشی", criteria, null);
+        }
+    });
+
     var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
         ID: "TrainingFileGrid",
         dynamicTitle: true,
         contextMenu: Menu_Courses_TrainingFileJSP,
         dataSource: RestDataSource_Course_JspTrainingFile,
         filterOnKeypress: true,
-        gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
+        gridComponents: [DynamicForm_TrainingFile,isc.ToolStrip.create({
+            members: [
+              excelBtn
+            ]
+
+        }), "header", "filterEditor", "body"],
         fields:[
             {name: "tclass.code"},
             {name: "tclass.course.code"},
             {name: "tclass.course.titleFa"},
             {name: "tclass.term.titleFa"},
-            {name: "tclass.startDate"},
-            {name: "tclass.endDate"},
+            {name: "tclass.startDate",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "tclass.endDate",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "tclass.classStatus", hidden: true},
             {name: "score"},
             {name: "scoresState"},
             {name: "student.postTitle", hidden: true},
-            {name: "tclass.teacher"},
+            {name: "student.postCode"},
+            {name: "student.ccpAffairs"},
+            {name: "tclass.teacher"}
         ]
 
-    });
-
-    ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({
-        <%--title: "<spring:message code='print'/>",--%>
-        click: function () {
-            print_Training_File();
-        }
-    });
-
-    ToolStrip_Actions_Training_File = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [ToolStripButton_Training_File]
     });
 
     VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
-            ToolStrip_Actions_Training_File,
+
             ListGrid_TrainingFile_TrainingFileJSP
         ]
     });
@@ -288,5 +363,7 @@
         CriteriaForm_TrainingFile.show();
         CriteriaForm_TrainingFile.submitForm();
     }
+
+    excelBtn.setDisabled(true);
 
  //</script>

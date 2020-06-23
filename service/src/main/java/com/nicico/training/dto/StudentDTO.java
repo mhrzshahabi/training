@@ -3,6 +3,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -164,6 +165,8 @@ public class StudentDTO {
         private String ccpSection;
         private String ccpUnit;
         private String fatherName;
+        private String mobile;
+
     }
 
     @Getter
@@ -207,5 +210,26 @@ public class StudentDTO {
     @ApiModel("Student - ClassesOfStudentInfo")
     public static class ClassesOfStudentInfo {
         private String postTitle;
+        private String ccpAffairs;
+        private String postCode;
+    }
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Clear - Attendance")
+    public static class clearAttendance {
+        private String firstName;
+        private String lastName;
+        private String personnelNo;
+        private String jobTitle;
+        private String educationMajorTitle;
+        private String ccpAffairs;
+
+        @Getter(AccessLevel.NONE)
+        private String fullName;
+
+        public String getFullName(){
+            return firstName + " " + lastName;
+        }
     }
 }

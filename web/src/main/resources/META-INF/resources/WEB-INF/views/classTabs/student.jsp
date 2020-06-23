@@ -1,34 +1,51 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
     var studentRemoveWait;
     var studentDefaultPresenceId = 103;
     var evalData;
+    var isEditing=false;
+    var url='';
+
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
         data: [
+
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+
                     refreshStudentsLG_student();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="add"/>", icon: "<spring:url value="create.png"/>", click: function () {
                     addStudent_student();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     removeStudent_student();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
             {
                 title: "<spring:message code="evaluation"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     evaluationStudent_student();
                 }
             },
+            </sec:authorize>
         ]
     });
 
@@ -36,104 +53,35 @@
     StudentTS_student = isc.ToolStrip.create({
         members: [
 
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonAdd.create({
                 click: function () {
                     addStudent_student();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     removeStudent_student();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
             isc.ToolStripButton.create({
                 title: "<spring:message code="evaluation"/>",
                 click: function () {
                     evaluationStudent_student();
                 }
             }),
+            </sec:authorize>
+
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    ExportToFile.DownloadExcelFormClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
-                   /* //roya
-                    let allRows = StudentsLG_student.data.allRows.toArray();
-                    var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-
-                    var data = [];
-                    var fields = [];
-                    var titr = "گزارش فراگیران کلاس " + classRecord.course.titleFa +
-                        " دارای کد دوره: " + classRecord.course.code +
-                        " و کد کلاس: " +  classRecord.code +
-                        " و استاد: " + classRecord.teacher +
-                            " و مدت: " + classRecord.course.theoryDuration +
-                            " ساعت و تاریخ شروع: " +  classRecord.startDate +
-                            " و تاریخ پایان: " +  classRecord.endDate;
-
-                    var record = {};
-                    record.title = "ردیف";
-                    record.name = "row";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "شماره پرسنلی 6 رقمی";
-                    record.name = "personnelNo";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "کد ملی";
-                    record.name = "nationalCode";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "نام";
-                    record.name = "firstName";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "نام خانوادگی";
-                    record.name = "lastName";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "نام پدر";
-                    record.name = "fatherName";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "شرکت";
-                    record.name = "companyName";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "حوزه";
-                    record.name = "ccpArea";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "معاونت";
-                    record.name = "ccpAssistant";
-                    fields.push(record);
-
-                    record = {};
-                    record.title = "امور";
-                    record.name = "ccpAffairs";
-                    fields.push(record);
-
-                    for(var i=0;i< allRows.length;i++){
-                        data[i] = new Object();
-                        data[i].row =  i+1;
-                        data[i].personnelNo =  allRows[i].student.personnelNo2;
-                        data[i].nationalCode =  allRows[i].student.nationalCode;
-                        data[i].firstName =  allRows[i].student.firstName;
-                        data[i].lastName =  allRows[i].student.lastName;
-                        data[i].fatherName =  allRows[i].student.fatherName;
-                        data[i].companyName =  allRows[i].applicantCompanyName;
-                        data[i].ccpArea =  allRows[i].student.ccpArea;
-                        data[i].ccpAssistant =  allRows[i].student.ccpAssistant;
-                        data[i].ccpAffairs =  allRows[i].student.ccpAffairs;
-                    }
-
-                    exportToExcel(fields, data,titr);*/
+                    ExportToFile.downloadExcelFromClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
                 }
             }),
             isc.ToolStripButton.create({
@@ -141,13 +89,18 @@
                 title: "<spring:message code='print'/>",
                 click: function () {
                     var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+
+                    let startDateStr=[...classRecord.startDate.split("/").reverse()].join("/");
+                    let endDateStr=[...classRecord.endDate.split("/").reverse()].join("/");
+
                     var titr = "گزارش فراگیران کلاس " + classRecord.course.titleFa +
                         " دارای کد دوره: " + classRecord.course.code +
                         " و کد کلاس: " +  classRecord.code +
                         " و استاد: " + classRecord.teacher +
-                        " و مدت: " + classRecord.course.theoryDuration +
-                        " ساعت و تاریخ شروع: " +  classRecord.startDate +
-                        " و تاریخ پایان: " +  classRecord.endDate;
+                        " و مدت: " + classRecord.hduration +
+                        " ساعت و تاریخ شروع: " +  startDateStr +
+                        " و تاریخ پایان: " +  endDateStr;
+
                     let params = {};
                     params.titr = titr;
 
@@ -158,8 +111,8 @@
                         let obj = {};
                         obj.personnelNo =  localData[i].student.personnelNo2;
                         obj.nationalCode =  localData[i].student.nationalCode;
-                        obj.firstName =  localData[i].student.firstName;
-                        obj.lastName =  localData[i].student.lastName;
+                        obj.firstName =  localData[i].student.firstName.trim();
+                        obj.lastName =  localData[i].student.lastName.trim();
                         obj.fatherName =  localData[i].student.fatherName;
                         obj.companyName =  localData[i].applicantCompanyName;
                         obj.ccpArea =  localData[i].student.ccpArea;
@@ -168,18 +121,27 @@
                         data.push(obj);
                     }
 
+                    // method 1:
+                    // data=data.sort((a, b) => (a.lastName[0] > b.lastName[0] ? -1 : 1));
+
+                    // method 2:
+                    data=data.sort(new Intl.Collator("fa").compare);
+
                     printToJasper(data, params, "ClassStudents.jasper");
 
                 }
             }),
+            </sec:authorize>
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "StudentsCount_student"}),
 
+            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
             isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refreshStudentsLG_student();
                 }
             }),
+            </sec:authorize>
         ]
     });
 
@@ -267,43 +229,53 @@
     });
 
     StudentsLG_student = isc.TrLG.create({
+        <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
         dataSource: StudentsDS_student,
+        </sec:authorize>
        // selectionType: "single",
         selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
         fields: [
             {name: "student.firstName"},
             {name: "student.lastName"},
-            {name: "student.nationalCode"},
+            {name: "student.nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "student.fatherName",hidden:true},
             {
                 name: "applicantCompanyName",
                 textAlign: "center",
                 width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "titleFa",
-                optionDataSource: RestDataSource_company_Student,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                canEdit: true,
-                // filterEditorType: "TextItem",
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "70%",
-                        filterOperator: "iContains"
-                    }
-                ],
-                changed: function (form, item, value) {
-                    ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
-                }
+                <%--editorType: "ComboBoxItem",--%>
+                <%--changeOnKeypress: true,--%>
+                <%--displayField: "titleFa",--%>
+                <%--valueField: "titleFa",--%>
+                <%--<sec:authorize access="hasAuthority('TclassStudentsTab_R')">--%>
+                <%--optionDataSource: RestDataSource_company_Student,--%>
+                <%--</sec:authorize>--%>
+                <%--autoFetchData: true,--%>
+                <%--addUnknownValues: false,--%>
+                <%--cachePickListResults: false,--%>
+                <%--useClientFiltering: true,--%>
+                <%--filterFields: ["titleFa"],--%>
+                <%--sortField: ["id"],--%>
+                <%--textMatchStyle: "startsWith",--%>
+                <%--generateExactMatchCriteria: true,--%>
+                <%--canEdit: true,--%>
+                <%--// filterEditorType: "TextItem",--%>
+                <%--pickListFields: [--%>
+                    <%--{--%>
+                        <%--name: "titleFa",--%>
+                        <%--width: "70%",--%>
+                        <%--filterOperator: "iContains"--%>
+                    <%--}--%>
+                <%--],--%>
+                <%--changed: function (form, item, value) {--%>
+                    <%--ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);--%>
+                <%--}--%>
             },
             {
                 name: "presenceTypeId",
@@ -317,8 +289,16 @@
                     ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
                 }
             },
-            {name: "student.personnelNo"},
-            {name: "student.personnelNo2"},
+            {name: "student.personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "student.personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "student.postTitle"},
             {name: "student.ccpArea"},
             {name: "student.ccpAssistant"},
@@ -327,7 +307,7 @@
             {name: "student.ccpUnit"}
         ],
         gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
-        contextMenu: StudentMenu_student,
+       // contextMenu: StudentMenu_student,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -336,7 +316,18 @@
             } else {
                 StudentsCount_student.setContents("&nbsp;");
             }
-        }
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result="background-color : ";
+            let blackColor="; color:black";
+            switch (parseInt(record.presenceTypeId)) {
+                case 104:
+                    result += "#FFF9C4" + blackColor;
+                    break;
+            }//end switch-case
+
+            return result;
+        }//end getCellCSSText
     });
 
     SelectedPersonnelsLG_student = isc.TrLG.create({
@@ -351,7 +342,11 @@
             {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {
                 name: "applicantCompanyName",
                 title: "<spring:message code="company.applicant"/>",
@@ -409,10 +404,22 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
             {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
@@ -430,10 +437,22 @@
            // {name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName",hidden:true},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant",hidden:true},
@@ -495,9 +514,19 @@
         }
     });
 
+    let criteria_ActivePersonnel = {
+        _constructor: "AdvancedCriteria",
+        operator: "and",
+        criteria: [
+            {fieldName: "active", operator: "equals", value: 1}
+        ]
+    };
+
+    PersonnelsLG_student.implicitCriteria = criteria_ActivePersonnel;
+
     function nationalCodeExists(nationalCode) {
         return StudentsLG_student.data.localData.some(function(el) {
-            return el.nationalCode === nationalCode;
+            return el.student.nationalCode === nationalCode;
         });
     }
 
@@ -528,10 +557,22 @@
             //{name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName",hidden:true},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
             {name: "ccpArea"},
             {name: "ccpAssistant",hidden:true},
@@ -609,6 +650,17 @@
                     canCollapse: false,
                     align: "center",
                     items: [
+                        isc.TrHLayoutButtons.create({
+                            layoutMargin: 0, showEdges: false, edgeImage: "", width: "100%",height:"40", padding: 0,
+                            members: [
+                                isc.ToolStripButtonAdd.create({
+                                    title:'اضافه کردن گروهي',
+                                    click: function () {
+                                        groupFilter("اضافه کردن گروهی",personnelUrl+"/checkPersonnelNos/",checkPersonnelNosResponse);
+                                    }
+                                })
+                            ]
+                        }),
                         PersonnelsLG_student
                     ]
                 }]
@@ -628,7 +680,17 @@
                     expanded: true,
                     canCollapse: false,
                     align: "center",
-                    items: [
+                    items: [isc.TrHLayoutButtons.create({
+                            layoutMargin: 0, showEdges: false, edgeImage: "", width: "100%",height:"40", padding: 0,
+                            members: [
+                                isc.ToolStripButtonAdd.create({
+                                    title:'اضافه کردن گروهي',
+                                    click: function () {
+                                        groupFilter("اضافه کردن گروهی",personnelRegUrl+"/checkPersonnelNos/",checkPersonnelNosResponse);
+                                    }
+                                })
+                            ]
+                        }),
                         PersonnelsRegLG_student
                     ]
                 }]
@@ -655,7 +717,7 @@
 
     ClassStudentWin_student = isc.Window.create({
         width: 1024,
-        height: 600,
+        height: 768,
         minWidth: 1024,
         minHeight: 600,
         autoSize: false,
@@ -708,6 +770,8 @@
             }),
         ]
     });
+
+
 
     var evaluationViewloader = isc.ViewLoader.create({
         width: "100%",
@@ -765,18 +829,28 @@
             var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             ClassStudentWin_student.close();
             refreshLG(StudentsLG_student);
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            let messages = JSON.parse(resp.data);
+            let invalMessage = " ";
+            let timeOut = 5000;
+            if (messages.names !== null && messages.names !== undefined) {
+                invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
+                timeOut = 15000
+            }
+
+            var OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
+                + "<br/>" + invalMessage,
 
                 "<spring:message code="msg.command.done"/>");
+
             setTimeout(function () {
                 OK.close();
-            }, 3000);
+            }, timeOut);
         } else {
-            var OK = createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
                 "<spring:message code="error"/>");
             setTimeout(function () {
                 OK.close();
-            }, 3000);
+            }, 5000);
         }
     }
 
@@ -876,6 +950,28 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord === undefined || classRecord == null)) {
             StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+            if(classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
+                StudentTS_student.setVisibility(false)
+
+                </sec:authorize>
+            }
+            else
+            {
+                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
+                StudentTS_student.setVisibility(true)
+
+                </sec:authorize>
+            }
+
+            if (classRecord.classStatus === "3")
+            {
+                <sec:authorize access="hasAuthority('TclassStudentsTab_classStatus')">
+                StudentTS_student.setVisibility(true)
+
+                </sec:authorize>
+            }
             StudentsLG_student.invalidateCache();
             StudentsLG_student.fetchData();
         }
@@ -904,10 +1000,10 @@
             }, 3000);
         }
     }
-    
-    
-    
-    
+
+
+
+
     function  evaluationStudent_student() {
 
         var studentId = StudentsLG_student.getSelectedRecord();
@@ -980,9 +1076,109 @@
         }
     }
 
+    function checkPersonnelNosResponse(url,result){
+        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
+            , "callback: checkPersonnelNos(rpcResponse)"));
+    }
+
+    function checkPersonnelNos(resp) {
+        if(generalGetResp(resp)){
+            if (resp.httpResponseCode === 200) {
+                //------------------------------------*/
+                let len=GroupSelectedPersonnelsLG_student.data.length;
+                let list=GroupSelectedPersonnelsLG_student.data;
+                let data=JSON.parse(resp.data);
+                let allRowsOK=true;
+
+                for (let i = 0; i < len; i++) {
+                    let personnelNo=list[i].personnelNo;
+
+                    if(personnelNo != "" && personnelNo != null && typeof(personnelNo) != "undefined")
+                    {
+                        if(data.filter(function (item) {
+                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                        }).length==0){
+                            allRowsOK=false;
+                            list[i].error=true;
+                            list[i].hasWarning="warning";
+                            list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
+                        }
+                        else if(nationalCodeExists(data.filter(function (item) {
+                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                        })[0].nationalCode))
+                        {
+                            allRowsOK=false;
+                            list[i].error=true;
+                            list[i].hasWarning="warning";
+                            list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
+                        }else{
+                            list[i].error=false;
+                            list[i].hasWarning="check";
+                            list[i].description="";
+                        }
+                    }
+                }
+
+                if(allRowsOK){
+                    var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                    var students = [];
+                    for (var i=0;i<data.length;i++) {
+                        let current = data[i];
+
+                        if (!checkIfAlreadyExist(current)) {
+                            students.add({
+                                "personnelNo": current.personnelNo,
+                                "applicantCompanyName": current.companyName,
+                                "presenceTypeId": studentDefaultPresenceId,
+                                "registerTypeId": 1
+                            });
+                        }
+                    }
 
 
+                    function checkIfAlreadyExist(currentVal) {
+                        return SelectedPersonnelsLG_student.data.some(function (item) {
+                            return (item.nationalCode === currentVal.nationalCode);
+                        });
+                    }
+                    if (students.getLength() > 0)
+                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students),class_add_students_result));
+
+                    SelectedPersonnelsLG_student.data.clearAll();
 
 
+                    /*//Add Result To SelectedListGrid
+                    for (var person in data) {
+                        let current = data[person];
+                        if(!nationalCodeExists(current.nationalCode))
+                        {
 
+                            if (!checkIfAlreadyExist(current)) {
+
+                                current.applicantCompanyName = current.companyName;
+                                current.presenceTypeId = studentDefaultPresenceId;
+                                current.registerTypeId = 1;
+
+                                SelectedPersonnelsLG_student.setData(SelectedPersonnelsLG_student.data.concat([current]));
+                            }
+
+                            function checkIfAlreadyExist(currentVal) {
+                                return SelectedPersonnelsLG_student.data.some(function (item) {
+                                    return (item.nationalCode === currentVal.nationalCode);
+                                });
+                            }
+                        }
+                    }*/
+
+                    //Close Window
+                    ClassStudentWin_student_GroupInsert.close();
+                }else{
+                    GroupSelectedPersonnelsLG_student.invalidateCache();
+                    GroupSelectedPersonnelsLG_student.fetchData();
+                }
+
+
+            }
+        }
+    }
     //

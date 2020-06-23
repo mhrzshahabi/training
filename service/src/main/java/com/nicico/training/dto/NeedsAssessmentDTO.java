@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -70,6 +71,26 @@ public class NeedsAssessmentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentDTO - verify")
+    public static class verify extends NeedsAssessmentDTO {
+        private Long id;
+        private String objectName;
+        private String objectCode;
+        private String workflowStatus;
+        private Integer workflowStatusCode;
+        private String mainWorkflowStatus;
+        private Integer mainWorkflowStatusCode;
+        private Date createdDate;
+        private String createdBy;
+        private Long eEnabled;
+        private Long eDeleted;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Tree")
     public static class Tree extends Info {
         private Long parentId;
@@ -93,7 +114,6 @@ public class NeedsAssessmentDTO implements Serializable {
                 Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
                 field.set(this,value);
             } catch (Exception e) {
-                System.out.println("failed");
             }
         }
 
@@ -104,7 +124,6 @@ public class NeedsAssessmentDTO implements Serializable {
                 Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
                 result = field.get(this).toString();
             } catch (Exception e) {
-                System.out.println("failed");
             }
             return result == null ? "" : result;
         }
@@ -133,6 +152,7 @@ public class NeedsAssessmentDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Create")
     public static class Create extends NeedsAssessmentDTO {
+        private Long id;
         private String objectName;
         private String objectCode;
 //        private String Action;

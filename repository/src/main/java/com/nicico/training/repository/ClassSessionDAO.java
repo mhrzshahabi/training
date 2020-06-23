@@ -28,9 +28,13 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour, Long id);
 
+    @Query(value = "select count(*) from tbl_session where f_class_id=:classId and c_session_date=:sessionDate and ((c_session_start_hour<=:startHour and  c_session_end_hour>:startHour) or (c_session_start_hour<:endHour and  c_session_end_hour>=:endHour)) and id<>:id", nativeQuery = true)
+    int checkHour(Long classId,String sessionDate,String startHour,String endHour,Long id);
+
     List<ClassSession> findBySessionDateBetween(String start, String end);
 
     ClassSession getClassSessionById(Long sessionId);
 
+    List<ClassSession> findBySessionDateAndClassId(String sessionDate,Long classId);
 
 }

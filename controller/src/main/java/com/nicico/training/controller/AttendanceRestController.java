@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
@@ -11,9 +12,10 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IAttendanceService;
-import com.nicico.training.service.ClassSessionService;
-import com.nicico.training.service.TclassService;
+import com.nicico.training.model.ParameterValue;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -37,13 +39,14 @@ import java.util.*;
 @RequestMapping(value = "/api/attendance")
 public class AttendanceRestController {
 
-    private final IAttendanceService attendanceService;
+    private final AttendanceService attendanceService;
     private final ClassSessionService classSessionService;
     private final TclassService tclassService;
     //    private final ClassStudent classStudent;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
+    private final ParameterService parameterService;
 
     // ------------------------------
 
@@ -95,6 +98,7 @@ public class AttendanceRestController {
 //		ClassSessionDTO.Info sessionInfo = ;
 //		List<ClassSessionDTO.Info> classSessions = attendanceService.studentAbsentSessionsInClass(classId, studentId);
         Set<ClassSessionDTO.Info> classSessions = new HashSet<>(attendanceService.studentAbsentSessionsInClass(classId, studentId));
+
         for (Long aLong : sessionId) {
             classSessions.add(classSessionService.get(aLong));
         }
@@ -103,7 +107,11 @@ public class AttendanceRestController {
         for (ClassSessionDTO.Info classSession : classSessions) {
             sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
         }
-        Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, 0.2);
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+
+        Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, Double.valueOf(parameterValues.get(0).getValue())/100);
         return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
     }
 
@@ -266,5 +274,12 @@ public class AttendanceRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Attendance.jasper", params, response);
+    }
+
+    @Loggable
+    @GetMapping(value = "/studentUnknownSessionsInClass")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<String> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
+        return new ResponseEntity<>(attendanceService.studentUnknownSessionsInClass(classId), HttpStatus.OK);
     }
 }

@@ -161,8 +161,6 @@ public class TrainingExceptionHandlerControllerAdvice extends AbstractExceptionH
             public final Object[] errors = {error};
         };
 
-        System.out.println(exceptionMessage);
-
         return ResponseEntity.
                 status(HttpStatus.INTERNAL_SERVER_ERROR).
                 body(response);

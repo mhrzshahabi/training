@@ -47,7 +47,7 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
                 " (SELECT     " +
                 "    P.ccp_unit, " +
                 "    A.c_state, " +
-                "    SUM(round(to_number(TO_DATE(S.c_session_end_hour,'HH24:MI') - TO_DATE(S.c_session_start_hour,'HH24:MI') ) * 24 * 60)) AS session_time " +
+                "    SUM(round(to_number(TO_DATE((CASE WHEN SUBSTR(S.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(S.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) AS session_time " +
                 " FROM " +
                 "    tbl_attendance A " +
                 "    INNER JOIN tbl_student ON tbl_student.id = A.f_student " +

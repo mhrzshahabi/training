@@ -26,6 +26,9 @@ public class JobGroup extends Auditable {
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
+    @Column(name = "c_code", unique = true)
+    private String code;
+
     @Column(name = "c_title_en")
     private String titleEn;
 

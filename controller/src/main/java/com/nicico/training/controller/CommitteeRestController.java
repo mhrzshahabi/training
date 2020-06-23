@@ -10,7 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CommitteeDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.service.CommitteeService;
 import lombok.RequiredArgsConstructor;
@@ -173,7 +173,7 @@ public class CommitteeRestController {
     @Loggable
     @PostMapping(value = "/addmember/{personId}/{committeeId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> addMember(@PathVariable Long committeeId, @PathVariable Long personId) {
+    public ResponseEntity<Void> addMember(@PathVariable Long committeeId, @PathVariable String personId) {
 
         committeeService.addMember(committeeId, personId);
         return new ResponseEntity(HttpStatus.OK);
@@ -183,7 +183,7 @@ public class CommitteeRestController {
     @Loggable
     @PostMapping(value = "/addmembers/{personIds}/{committeeId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> addMembers(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
+    public ResponseEntity<Void> addMembers(@PathVariable Long committeeId, @PathVariable Set<String> personIds) {
 
         committeeService.addMembers(committeeId, personIds);
         return new ResponseEntity(HttpStatus.OK);
@@ -192,7 +192,7 @@ public class CommitteeRestController {
     @Loggable
     @DeleteMapping(value = "/removeMember/{committeeId}/{personId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeMember(@PathVariable Long committeeId, @PathVariable Long personId) {
+    public ResponseEntity<Void> removeMember(@PathVariable Long committeeId, @PathVariable String personId) {
 
         committeeService.removeMember(committeeId, personId);
         return new ResponseEntity(HttpStatus.OK);
@@ -200,7 +200,7 @@ public class CommitteeRestController {
 
     @Loggable
     @DeleteMapping(value = "/removeMembers/{committeeId}/{personIds}")
-     public ResponseEntity<Void> removeMembers(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
+     public ResponseEntity<Void> removeMembers(@PathVariable Long committeeId, @PathVariable Set<String> personIds) {
         committeeService.removeMembers(committeeId, personIds);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -208,45 +208,45 @@ public class CommitteeRestController {
 
     @Loggable
     @GetMapping(value = "/{committeeId}/getMembers")
-    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs> getMember(@PathVariable Long committeeId) {
+    public ResponseEntity<PersonnelDTO.PersonnelSpecRs> getMember(@PathVariable Long committeeId) {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<PersonalInfoDTO.Info> list = committeeService.getMembers(committeeId);
+        List<PersonnelDTO.Info> list = committeeService.getMembers(committeeId);
 
-        final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
+        final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
 
 
-        final PersonalInfoDTO.CompetenceSpecRs specRs = new PersonalInfoDTO.CompetenceSpecRs();
+        final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
 
     }
 
-    @Loggable
-    @GetMapping(value = "/{committeeId}/unAttachMember")
-    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs> unAttachMember(@PathVariable Long committeeId) {
-        Set<PersonalInfoDTO.Info> persInfoSet = committeeService.unAttachMember(committeeId);
-
-        List<PersonalInfoDTO.Info> arrayList = new ArrayList<>();
-        for (PersonalInfoDTO.Info personDTOInfo : persInfoSet) {
-            arrayList.add(personDTOInfo);
-
-        }
-        final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
-        specResponse.setData(arrayList)
-                .setStartRow(0)
-                .setEndRow(persInfoSet.size())
-                .setTotalRows(persInfoSet.size());
-        final PersonalInfoDTO.CompetenceSpecRs specRs = new PersonalInfoDTO.CompetenceSpecRs();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-
-    }
+//    @Loggable
+//    @GetMapping(value = "/{committeeId}/unAttachMember")
+//    public ResponseEntity<PersonnelDTO.CompetenceSpecRs> unAttachMember(@PathVariable Long committeeId) {
+//        Set<PersonnelDTO.Info> persInfoSet = committeeService.unAttachMember(committeeId);
+//
+//        List<PersonnelDTO.Info> arrayList = new ArrayList<>();
+//        for (PersonnelDTO.Info personDTOInfo : persInfoSet) {
+//            arrayList.add(personDTOInfo);
+//
+//        }
+//        final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
+//        specResponse.setData(arrayList)
+//                .setStartRow(0)
+//                .setEndRow(persInfoSet.size())
+//                .setTotalRows(persInfoSet.size());
+//        final PersonnelDTO.CompetenceSpecRs specRs = new PersonnelDTO.CompetenceSpecRs();
+//        specRs.setResponse(specResponse);
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//
+//    }
 
 
 

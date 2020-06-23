@@ -18,8 +18,11 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,6 +89,29 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(personnelRegisteredDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelRegisteredDTO.Info.class));
+    }
+
+    @Transactional
+    @Override
+    public List<PersonnelRegisteredDTO.Info> checkPersonnelNos(List<String> personnelNos) {
+        List<PersonnelRegisteredDTO.Info> result = new ArrayList<>();
+
+        List<PersonnelRegistered> list = personnelRegisteredDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos , personnelNos);
+        PersonnelRegistered prs = null;
+
+        for (String personnelNo : personnelNos) {
+
+            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) ||  p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).size()==0)
+            {
+                result.add(new PersonnelRegisteredDTO.Info());
+
+            } else {
+                prs =list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) ||  p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).get(0);
+                result.add(modelMapper.map(prs,PersonnelRegisteredDTO.Info.class));
+            }
+        }
+
+        return result;
     }
 
     @Override

@@ -22,6 +22,7 @@ public class AccountInfoDTO {
     private Long bankBranchCode;
     private String cartNumber;
     private String shabaNumber;
+    private Long instituteId;
 
     @Getter
     @Setter

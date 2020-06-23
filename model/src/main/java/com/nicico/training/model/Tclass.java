@@ -27,7 +27,7 @@ public class Tclass extends Auditable {
     @Column(name = "id", precision = 10)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Course course;
 
@@ -77,14 +77,14 @@ public class Tclass extends Auditable {
     @Column(name = "c_status_date")
     private Date classStatusDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_institute", insertable = false, updatable = false)
     private Institute institute;
 
     @Column(name = "f_institute")
     private Long instituteId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_institute_organizer", insertable = false, updatable = false)
     private Institute organizer;
 
@@ -157,7 +157,7 @@ public class Tclass extends Auditable {
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ClassStudent> classStudents;
 
-    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ClassSession> classSessions;
 
     @ElementCollection
@@ -184,4 +184,13 @@ public class Tclass extends Auditable {
 
     @OneToMany(mappedBy = "tclassConflict", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Alarm> alarmsConflict;
+
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TargetSociety> targetSocietyList;
+
+    @Column(name = "evaluation_reaction_teacher")
+    private Integer evaluationStatusReactionTeacher;
+
+    @Column(name = "evaluation_reaction_training")
+    private Integer evaluationStatusReactionTraining;
 }

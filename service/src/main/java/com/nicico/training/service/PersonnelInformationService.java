@@ -15,7 +15,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Max;
 import java.util.List;
 
 @Service
@@ -32,27 +31,27 @@ public class PersonnelInformationService implements IPersonnelInformationService
         Course course = courseDAO.findCourseByIdEquals(courseId);
         CourseDTO.CourseDetailInfo courseDetailInfo = modelMapper.map(course, CourseDTO.CourseDetailInfo.class);
 
-        String mainObjective = "";
+        StringBuilder mainObjective = new StringBuilder();
         int counter = 1;
         for (Skill skill : course.getSkillMainObjectiveSet()) {
-            mainObjective += counter++ + "- " + skill.getTitleFa() + " - " + skill.getCode() + "\n";
+            mainObjective.append(counter++).append("- ").append(skill.getTitleFa()).append(" - ").append(skill.getCode()).append("\n");
         }
 
-        String goals = "";
+        StringBuilder goals = new StringBuilder();
         counter = 1;
         for (Goal goal : course.getGoalSet()) {
-            goals += counter++ + "- " + goal.getTitleFa() + "\n";
+            goals.append(counter++).append("- ").append(goal.getTitleFa()).append("\n");
         }
 
-        String perCourses = "";
+        StringBuilder preCourses = new StringBuilder();
         counter = 1;
-        for (Course preCourse : course.getPerCourseList()) {
-            perCourses += counter++ + "- " + preCourse.getTitleFa() + " - " + preCourse.getCode() + "\n";
+        for (Course preCourse : course.getPreCourseList()) {
+            preCourses.append(counter++).append("- ").append(preCourse.getTitleFa()).append(" - ").append(preCourse.getCode()).append("\n");
         }
 
-        courseDetailInfo.setMainObjective(mainObjective);
-        courseDetailInfo.setGoals(goals);
-        courseDetailInfo.setPerCourses(perCourses);
+        courseDetailInfo.setMainObjective(mainObjective.toString());
+        courseDetailInfo.setGoals(goals.toString());
+        courseDetailInfo.setPreCourses(preCourses.toString());
 
         return courseDetailInfo;
     }
@@ -91,9 +90,9 @@ public class PersonnelInformationService implements IPersonnelInformationService
 
     @Transactional
     @Override
-    public List<TclassDTO.Info> findClassesByCourseId(Long courseId)
+    public List<TclassDTO.TclassHistory> findClassesByCourseId(Long courseId)
     {
-        return  modelMapper.map(tclassDAO.findTclassesByCourseIdEquals(courseId), new TypeToken<List<TclassDTO.Info>>(){}.getType());
+        return  modelMapper.map(tclassDAO.getTclassByCourseIdEquals(courseId), new TypeToken<List<TclassDTO.TclassHistory>>(){}.getType());
     }
 
 }

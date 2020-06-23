@@ -22,11 +22,19 @@ public class ClassStudent extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "scores_state")
-    private String scoresState;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scores_state_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue scoresState;
 
-    @Column(name = "failure_reason")
-    private String failureReason;
+    @Column(name = "scores_state_id", nullable = false)
+    private Long scoresStateId = 410L;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "failure_reason_id", insertable = false, updatable = false)
+    private ParameterValue failureReason;
+
+    @Column(name = "failure_reason_id")
+    private Long failureReasonId;
 
     @Column(name = "score")
     private Float score;
@@ -57,6 +65,19 @@ public class ClassStudent extends Auditable {
 
     @Column(name = "class_id", insertable = false, updatable = false)
     private Long tclassId;
+
+//    @Column(name = "evaluation_audience_type")
+//    private String evaluationAudienceType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "evaluation_audience_type_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue evaluationAudienceType;
+
+    @Column(name = "evaluation_audience_type_id")
+    private Long evaluationAudienceTypeId;
+
+    @Column(name = "evaluation_audience_id")
+    private Long evaluationAudienceId;
 
     @Column(name = "evaluation_status_reaction")
     private Integer evaluationStatusReaction;

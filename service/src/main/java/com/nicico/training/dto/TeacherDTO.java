@@ -66,12 +66,18 @@ public class TeacherDTO {
     public static class Grid{
         private Long id;
         private String teacherCode;
+        private String personnelCode;
         private PersonalInfoDTO.Grid personality;
         private Long personalityId;
+        private Boolean personnelStatus;
         private Boolean enableStatus;
         private Set<CategoryDTO.Info> categories;
         private Set<SubcategoryDTO.Info> subCategories;
         private Integer version;
+
+        public String getFullName(){
+            return personality.getFirstNameFa()+" "+personality.getLastNameFa();
+        }
 
         public List<Long> getCategories() {
             if (categories == null)
@@ -97,13 +103,16 @@ public class TeacherDTO {
         private String personnelCode;
         private PersonalInfoDTO.Report personality;
         private Boolean personnelStatus;
-        Set<TeachingHistoryDTO.Info> teachingHistories;
         private String numberOfCourses;
         private String evaluationGrade;
         private String lastCourse;
         private Long lastCourseId;
         private String lastCourseEvaluationGrade;
         private Integer version;
+        private String codes;
+        Set<TclassDTO.TclassTeacherReport> tclasse;
+        private Set<CategoryDTO.CategoryInfoTuple> categories;
+        private Set<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
     }
 
     @Getter
@@ -242,9 +251,41 @@ public class TeacherDTO {
         private Long id;
         private PersonalInfoDTO personality;
         private String grade;
-
         public String getFullNameFa() {
             return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
         }
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("TeacherInfoTuple")
+    public static class TeacherInfoTuple {
+        private Long id;
+        private PersonalInfoDTO.PersonalInfoCustom personality;
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherSpecRs")
+    public static class TeacherInfoTupleSpecRs {
+        private InfoTupleSpecRs response;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InfoTupleSpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

@@ -444,7 +444,7 @@
             {
                 name: "personnelNo",
                 title: "<spring:message code='personnel.no'/>",
-                required: true,
+                // required: true,
                 keyPressFilter: "[0-9]",
                 hint: "SSN/کدملی",
                 length: "10",
@@ -456,10 +456,10 @@
                 required: true,
                 keyPressFilter: "[0-9]",
                 length: "10",
-                changed: function () {
+                blur: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
                     var codeCheckPerReg;
-                    codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
+                    codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value);
                     codeMeliCheckPerReg = codeCheckPerReg;
                     if (codeCheckPerReg === false) {
                         DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
@@ -648,9 +648,26 @@
 
             {name: "age", title: "<spring:message code='age'/>", keyPressFilter: "[0-9]",
                 length: "2"},
+            {
+                name: "mobile",
+                title: "<spring:message code='cellPhone'/>",
+                keyPressFilter: "[0-9|-|+]",
+                length: "11",
+                // validators: [TrValidators.MobileValidate],
+                changed: function () {
+                    DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("mobile", true);
+                    var mobileCheck;
+                    mobileCheck = checkMobilePerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("mobile"));
+                    cellPhoneCheckPerReg = mobileCheck;
+                    if (mobileCheck === false)
+                        DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("mobile", "<spring:message
+                                                                           code='msg.mobile.validation'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("mobile", true);
+                }
+            },
             {name: "insuranceCode", title: "<spring:message code='insurance.code'/>",  keyPressFilter: "[0-9]",
                 length: "10"},
-
             {name: "postAssignmentDate", title: "version", canEdit: false, hidden: true},
             {name: "educationLicenseTypeTitle", title: "version", canEdit: false, hidden: true},
             {name: "departmentTitle", title: "version", canEdit: false, hidden: true},
@@ -1119,7 +1136,7 @@
                     phoneCheck = checkPhonePerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("phone"));
                     if (phoneCheck === false)
                         DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("phone", "<spring:message code='msg.invalid.phone.number'/>", true);
-                    if (mobileCheck === true)
+                    if (phoneCheck === true)
                         DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("phone", true);
                 },
                 length: "12"
@@ -1136,31 +1153,12 @@
                     phoneCheck = checkPhonePerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("fax"));
                     if (phoneCheck === false)
                         DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("fax", "<spring:message code='msg.invalid.phone.number'/>", true);
-                    if (mobileCheck === true)
+                    if (phoneCheck === true)
                         DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("fax", true);
                 },
                 length: "12"
 
             },
-            {
-                name: "mobile",
-                title: "<spring:message code='cellPhone'/>",
-                keyPressFilter: "[0-9|-|+]",
-                length: "11",
-                // validators: [TrValidators.MobileValidate],
-                changed: function () {
-                    DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("mobile", true);
-                    var mobileCheck;
-                    mobileCheck = checkMobilePerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("mobile"));
-                    cellPhoneCheckPerReg = mobileCheck;
-                    if (mobileCheck === false)
-                        DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("mobile", "<spring:message
-                                                                           code='msg.mobile.validation'/>", true);
-                    if (mobileCheck === true)
-                        DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("mobile", true);
-                }
-            },
-
             {
                 name: "email",
                 title: "<spring:message code='email'/>",
@@ -1250,7 +1248,7 @@
                 return;
             }
             if (cellPhoneCheckPerReg === false) {
-                DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("mobile", "<spring:message code='msg.mobile.validation'/>", true);
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("mobile", "<spring:message code='msg.mobile.validation'/>", true);
                 return;
             }
             if (mailCheckPerReg === false) {
@@ -1403,8 +1401,11 @@
             {
                 name: "personnelNo",
                 title: "<spring:message code='personal.ID'/>",
-                align: "center"
-                , filterOperator: "iContains"
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "firstName",
@@ -1422,13 +1423,19 @@
                 name: "birthCertificateNo",
                 title: "<spring:message code='birth.certificate'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "companyName",
@@ -1661,7 +1668,7 @@
 
 
     function checkCodeMeliPerReg(code) {
-        if (code === "undefined" || code === null || code === "")
+        if (code === undefined || code === null || code === "")
             return false;
         var L = code.length;
 

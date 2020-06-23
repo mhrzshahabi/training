@@ -9,24 +9,46 @@
 
 // <script>
     var method = "POST";
+    var job_JobGroup = null;
+    var naJob_JobGroup = null;
+    var personnelJob_JobGroup = null;
+    var postJob_JobGroup = null;
+
+    if(Window_NeedsAssessment_Edit === undefined) {
+        var Window_NeedsAssessment_Edit = isc.Window.create({
+            title: "<spring:message code="needs.assessment"/>",
+            placement: "fillScreen",
+            minWidth: 1024,
+            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            showUs(record, objectType) {
+                loadEditNeedsAssessment(record, objectType);
+                this.Super("show", arguments);
+            }
+        });
+    }
+    
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
             {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "iContains"},
             {name: "titleEn", title: "نام لاتین گروه شغل ", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center"},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        fetchDataURL: jobGroupUrl + "spec-list"
+        fetchDataURL: viewJobGroupUrl + "/iscList"
     });
     var RestDataSource_Job_Group_Jobs_Jsp = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa"},
-            {name: "code"},
-            // {name: "description"},
-            // {name: "version"}
-        ]
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: viewJobUrl + "/iscList"
     });
     var RestDataSource_All_Jobs = isc.TrDS.create({
         fields: [
@@ -67,15 +89,16 @@
             title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Job_Group_remove();
             }
-        }, {isSeparator: true},
-            {
-                title: "چاپ همه گروه شغل ها", icon: "<spring:url value="pdf.png"/>",
-                click: "window.open('job-group/print/pdf/<%=accessToken%>/')"
-            },
-            {
-                title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",
-                click: "window.open('job-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Job_Group_Jsp.getSelectedRecord().id)"
-            },
+        },
+            <%--{isSeparator: true},--%>
+            <%--{--%>
+            <%--    title: "چاپ همه گروه شغل ها", icon: "<spring:url value="pdf.png"/>",--%>
+            <%--    click: "window.open('job-group/print/pdf/<%=accessToken%>/')"--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",--%>
+            <%--    click: "window.open('job-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Job_Group_Jsp.getSelectedRecord().id)"--%>
+            <%--},--%>
             {isSeparator: true}, {
                 title: "حذف گروه شغل از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
                     var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
@@ -138,7 +161,6 @@
                         });
                     } else {
 
-                        // alert(record.id);
                         // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
                         // RestDataSource_All_Jobs.invalidateCache();
                         // RestDataSource_All_Jobs.fetchData();
@@ -163,27 +185,18 @@
         selectionType: "multiple",
         dataSource: RestDataSource_Job_Group_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jsp,
-        selectionChange: function (record, state) {
-            record = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            if (record == null || record.id == null) {
-            } else {
-                // RestDataSource_Job_Group_Competencies_Jsp.fetchDataURL = jobGroupUrl + record.id + "/getCompetences"
-                RestDataSource_Job_Group_Jobs_Jsp.fetchDataURL = jobGroupUrl + record.id + "/getJobs";
-                ListGrid_Job_Group_Jobs.fetchData();
-                ListGrid_Job_Group_Jobs.invalidateCache();
-                // RestDataSource_Job_Group_Competencies_Jsp.invalidateCache();
-                // RestDataSource_Job_Group_Competencies_Jsp.fetchData();
-                // RestDataSource_Job_Group_Jobs_Jsp.invalidateCache();
-                // RestDataSource_Job_Group_Jobs_Jsp.fetchData();
-                // ListGrid_Job_Group_Competence.invalidateCache();
-                // ListGrid_Job_Group_Competence.fetchData();
-            }
+        sortField: 5,
+        autoFetchData: true,
+        selectionUpdated: function () {
+            selectionUpdated_JobGroupGroup();
         },
         doubleClick: function () {
             ListGrid_Job_Group_edit();
         },
-        sortField: 1,
-        autoFetchData: true,
+        getCellCSSText: function (record) {
+            if (record.competenceCount === 0)
+                return "color:red;font-size: 12px;";
+        },
     });
     var Menu_ListGrid_Job_Group_Competences = isc.Menu.create({
         width: 150,
@@ -273,7 +286,7 @@
             }
         ]
     });
-    var ListGrid_AllJobs = isc.ListGrid.create({
+    var ListGrid_AllJobs = isc.TrLG.create({
         //title:"تمام شغل ها",
         width: "100%",
         height: "100%", canDragResize: true,
@@ -283,7 +296,11 @@
         dataSource: RestDataSource_All_Jobs,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد شغل", align: "center", width: "20%"},
+            {name: "code", title: "کد شغل", align: "center", width: "20%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa", title: "نام شغل", align: "center", width: "60%"},
             {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
@@ -315,7 +332,6 @@
 
             var jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
             var jobGroupId = jobGroupRecord.id;
-            //  alert(jobGroupId);
             // var jobId=dropRecords[0].id;
             var jobIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -347,7 +363,7 @@
         }
 
     });
-    var ListGrid_ForThisJobGroup_GetJobs = isc.ListGrid.create({
+    var ListGrid_ForThisJobGroup_GetJobs = isc.TrLG.create({
         //title:"تمام شغل ها",
         width: "100%",
         height: "100%",
@@ -360,7 +376,11 @@
         dataSource: RestDataSource_ForThisJobGroup_GetJobs,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد شغل", align: "center", width: "20%"},
+            {name: "code", title: "کد شغل", align: "center", width: "20%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
             {name: "OnDelete", title: "حذف", align: "center"}
         ],
@@ -426,12 +446,10 @@
 
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
 
-            // alert(dropRecords[0].titleFa);
 
 
             var jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
             var jobGroupId = jobGroupRecord.id;
-            //  alert(jobGroupId);
             // var jobId=dropRecords[0].id;
             var jobIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
@@ -531,8 +549,7 @@
             SectionStack_Current_Job_JspClass
         ]
     });
-
-
+    
     var HLayOut_thisJobGroup_AddJob_Jsp = isc.HLayout.create({
         width: "100%",
         height: "10%",
@@ -544,8 +561,7 @@
             DynamicForm_thisJobGroupHeader_Jsp
         ]
     });
-
-
+    
     var VLayOut_JobGroup_Jobs_Jsp = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -580,44 +596,26 @@
         ]
         //,fetchDataURL:"${restApiUrl}/api/job-group/?/getCompetences"
     });
-
-
-    var ListGrid_Job_Group_Jobs = isc.ListGrid.create({
+    
+    var ListGrid_Job_Group_Jobs = isc.TrLG.create({
         width: "100%",
         height: "100%",
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         showResizeBars: true,
-        filterOnKeypress: true,
         dataSource: RestDataSource_Job_Group_Jobs_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jobs,
-        doubleClick: function () {
-            //    ListGrid_Job_Group_edit();
-        },
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام شغل", align: "center", filterOperator: "iContains"},
-            {name: "code", title: "کد شغل ", align: "center", filterOperator: "iContains"},
-            // {name: "description", title: "توضیحات", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}
-        ],
+        fields: [{name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            }, {name: "titleFa"}, {name: "competenceCount"}, {name: "personnelCount"}],
         sortField: 1,
         sortDirection: "descending",
-        dataPageSize: 22,
         autoFetchData: false,
-        showFilterEditor: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
-
-
-    var ListGrid_Job_Group_Competence = isc.ListGrid.create({
+    
+    var ListGrid_Job_Group_Competence = isc.TrLG.create({
         width: "100%",
         height: "100%",
         showResizeBars: true,
@@ -648,8 +646,7 @@
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
     });
-
-
+    
     var DynamicForm_Job_Group_Jsp = isc.DynamicForm.create({
         width: "750",
         height: "150",
@@ -683,6 +680,10 @@
                 height: "40"
             },
             {
+                name: "code",
+                title: "<spring:message code='code'/>"
+            },
+            {
                 name: "titleEn",
                 type: "text",
                 length: "250",
@@ -708,8 +709,7 @@
             }
         ]
     });
-
-
+    
     var IButton_Job_Group_Exit_Jsp = isc.IButtonCancel.create({
         top: 260, title: "لغو",
         //icon: "<spring:url value="remove.png"/>",
@@ -767,7 +767,6 @@
         }
     });
 
-
     var HLayOut_Job_GroupSaveOrExit_Jsp = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
@@ -803,6 +802,22 @@
         })]
     });
 
+    ToolStripButton_EditNA_JobGroup = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی",
+        click: function () {
+            if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");
+        }
+    });
+    ToolStrip_NA_JobGroup = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [ToolStripButton_EditNA_JobGroup]
+    });
+
     var ToolStripButton_Refresh_Job_Group_Jsp = isc.ToolStripButtonRefresh.create({
         // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
@@ -811,13 +826,10 @@
             //  yesNoDialog("taeed","salam???",0,"stop",xx);
             //
             // if(parseInt(xx)==0){
-            //     alert("yes selected");
             // }
             // else{
-            //     alert("noSelected");
             //     }
 
-// alert("abcdef");
 
             ListGrid_Job_Group_refresh();
             //ListGrid_Job_Group_Competence_refresh();
@@ -847,53 +859,12 @@
             ListGrid_Job_Group_remove();
         }
     });
-
-    var ToolStripButton_Print_Job_Group_Jsp = isc.ToolStripButtonPrint.create({
-        menu: isc.Menu.create({
-            data: [
-                {
-                    title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>", submenu: [
-                        {
-                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
-                            click: "window.open('job-group/print/pdf/<%=accessToken%>')"
-                        },
-                        {
-                            title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
-                            click: "window.open('job-group/print/excel/<%=accessToken%>')"
-                        },
-                        {
-                            title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
-                            click: "window.open('job-group/print/html/<%=accessToken%>')"
-                        }
-
-                    ]
-                },
-                {
-                    title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu: [
-                        {
-                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
-                            click: "window.open('job-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Job_Group_Jsp.getSelectedRecord().id)"
-                        },
-                        {
-                            title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
-                            click: "window.open('job-group/printDetail/excel/<%=accessToken%>/'+ListGrid_Job_Group_Jsp.getSelectedRecord().id)"
-                        },
-                        {
-                            title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
-                            click: "window.open('job-group/printDetail/html/<%=accessToken%>/'+ListGrid_Job_Group_Jsp.getSelectedRecord().id)"
-                        }
-                    ]
-                },
-            ]
-        })
-    });
+    
     var ToolStripButton_Add_Job_Group_AddJob_Jsp = isc.ToolStripButton.create({
         <%--icon: "<spring:url value="job.png"/>",--%>
         title: "لیست شغل ها",
         click: function () {
             var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            //  alert(Window_Add_Job_to_JobGroup.DynamicForm[0].fields[0]);
-            // alert(DynamicForm_thisJobGroupHeader_Jsp.getItem("titleFa"));
 
             if (record == null || record.id == null) {
 
@@ -941,7 +912,7 @@
             ToolStripButton_Add_Job_Group_Jsp,
             ToolStripButton_Edit_Job_Group_Jsp,
             ToolStripButton_Remove_Job_Group_Jsp,
-            ToolStripButton_Print_Job_Group_Jsp,
+            // ToolStripButton_Print_Job_Group_Jsp,
             ToolStripButton_Add_Job_Group_AddJob_Jsp,
             isc.ToolStrip.create({
                 width: "100%",
@@ -955,39 +926,252 @@
         ]
     });
 
-
-    var HLayout_Actions_Job_Group_Jsp = isc.HLayout.create({
+    var HLayout_Actions_Job_Group_Jsp = isc.VLayout.create({
         width: "100%",
-        members: [ToolStrip_Actions_Job_Group_Jsp]
+        members: [ToolStrip_Actions_Job_Group_Jsp, ToolStrip_NA_JobGroup]
     });
 
+    ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
+    PersonnelDS_JobGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpSection", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+    });
 
-    var Detail_Tab_Job_Group = isc.TabSet.create({
+    PersonnelLG_JobGroup = isc.TrLG.create({
+        dataSource: PersonnelDS_JobGroup,
+        selectionType: "single",
+        alternateRecordStyles: true,
+        groupByField: "jobTitle",
+        fields: [
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postCode"},
+            {name: "postTitle"},
+            {name: "jobTitle"},
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"},
+        ]
+    });
+
+    ///////////////////////////////////////////////////////////needs assessment/////////////////////////////////////////
+    PriorityDS_JobGroup = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
+    });
+
+    DomainDS_JobGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentDomain"
+    });
+
+    CompetenceTypeDS_JobGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/competenceType"
+    });
+
+    NADS_JobGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "needsAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "needsAssessmentDomainId", title: "<spring:message code='domain'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "competence.title", title: "<spring:message code="competence"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: null
+    });
+
+    NALG_JobGroup = isc.TrLG.create({
+        dataSource: NADS_JobGroup,
+        selectionType: "none",
+        autoFetchData: false,
+        alternateRecordStyles: true,
+        showAllRecords: true,
+        fields: [
+            {name: "competence.title"},
+            {
+                name: "competence.competenceTypeId",
+                type: "SelectItem",
+                filterOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: CompetenceTypeDS_JobGroup,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentPriorityId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: PriorityDS_JobGroup,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "needsAssessmentDomainId",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: DomainDS_JobGroup,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {name: "skill.code"},
+            {name: "skill.titleFa"},
+            {name: "skill.course.code"},
+            {name: "skill.course.titleFa"}
+        ],
+    });
+
+    //////////////////////////////////////////////////////////posts/////////////////////////////////////////////////////
+    PostDS_JobGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+
+        ],
+        fetchDataURL: postUrl + "/iscList"
+    });
+
+    PostLG_JobGroup = isc.TrLG.create({
+        dataSource: PostDS_JobGroup,
+        autoFetchData: false,
+        showResizeBar: true,
+        sortField: 0,
+        groupByField: "job.titleFa",
+        fields: [
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "titleFa"},
+            {name: "job.titleFa"},
+            {name: "postGrade.titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
+            {name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "costCenterTitleFa"}
+        ],
+    });
+
+    Detail_Tab_Job_Group = isc.TabSet.create({
         tabBarPosition: "top",
         width: "100%",
         height: "100%",
         tabs: [
-            {
-                id: "TabPane_Job_Group_Job",
-                title: "لیست شغل ها",
-                pane: ListGrid_Job_Group_Jobs
-
-            },
-            // {
-            //     id: "TabPane_Job_Group_Competence",
-            //     title: "لیست شایستگی ها",
-            //     visable:false,
-            //     pane: ListGrid_Job_Group_Competence
-            // }
-            // ,{
-            //     id: "TabPane_Job_Group_Competence",
-            //     title: "لیست پستهای این گروه شغل",
-            //     visable:false,
-            //     pane: ListGrid_Job_Group_Competence
-            // }
-        ]
+            {name: "TabPane_Job_Group_Job", title: "لیست شغل ها", pane: ListGrid_Job_Group_Jobs},
+            {name: "TabPane_Post_JobGroup", title: "لیست پست ها", pane: PostLG_JobGroup},
+            {name: "TabPane_Personnel_JobGroup", title: "لیست پرسنل", pane: PersonnelLG_JobGroup},
+            {name: "TabPane_NA_JobGroup", title: "<spring:message code='need.assessment'/>", pane: NALG_JobGroup},
+        ],
+        tabSelected: function (){
+            selectionUpdated_JobGroupGroup();
+        }
     });
-
 
     var HLayout_Tab_Job_Group = isc.HLayout.create({
         width: "100%",
@@ -995,7 +1179,6 @@
         <%--border: "2px solid blue",--%>
         members: [Detail_Tab_Job_Group]
     });
-
 
     var HLayout_Grid_Job_Group_Jsp = isc.HLayout.create({
         width: "100%",
@@ -1047,7 +1230,7 @@
                 }
             }
         });
-    };
+    }
 
     function deleteCompetenceFromJobGroup(competenceId, jobGroupId) {
         isc.RPCManager.sendRequest({
@@ -1066,7 +1249,7 @@
                 }
             }
         });
-    };
+    }
 
     function deleteJobGroupFromAllCompetence(jobGroupId) {
 
@@ -1087,7 +1270,7 @@
                 }
             }
         });
-    };
+    }
 
     function ListGrid_Job_Group_edit() {
         var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
@@ -1102,7 +1285,7 @@
             DynamicForm_Job_Group_Jsp.editRecord(record);
             Window_Job_Group_Jsp.show();
         }
-    };
+    }
 
     function ListGrid_Job_Group_remove() {
         var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
@@ -1150,19 +1333,81 @@
                 }
             });
         }
-    };
+    }
 
     function ListGrid_Job_Group_refresh() {
         refreshLG(ListGrid_Job_Group_Jsp);
-        ListGrid_Job_Group_Jobs_refresh();
-        ListGrid_Job_Group_Competence_refresh();
+        ListGrid_Job_Group_Jobs.setData([]);
+        PostLG_JobGroup.setData([]);
+        PersonnelLG_JobGroup.setData([]);
+        NALG_JobGroup.setData([]);
+        job_JobGroup = null;
+        naJob_JobGroup = null;
+        personnelJob_JobGroup = null;
+        postJob_JobGroup = null;
 
 
-    };
+    }
 
     function ListGrid_Job_Group_add() {
         method = "POST";
         url = jobGroupUrl;
         DynamicForm_Job_Group_Jsp.clearValues();
         Window_Job_Group_Jsp.show();
-    };
+    }
+
+    function selectionUpdated_JobGroupGroup(){
+        let jobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
+        let tab = Detail_Tab_Job_Group.getSelectedTab();
+        if (jobGroup == null && tab.pane != null){
+            tab.pane.setData([]);
+            return;
+        }
+
+        switch (tab.name) {
+            case "TabPane_Job_Group_Job":{
+                if (job_JobGroup === jobGroup.id)
+                    return;
+                job_JobGroup = jobGroup.id;
+                ListGrid_Job_Group_Jobs.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "jobGroupSet", operator: "equals", value: jobGroup.id}]
+                });
+                ListGrid_Job_Group_Jobs.invalidateCache();
+                ListGrid_Job_Group_Jobs.fetchData();
+                break;
+            }
+            case "TabPane_Post_JobGroup":{
+                if (postJob_JobGroup === jobGroup.id)
+                    return;
+                postJob_JobGroup = jobGroup.id;
+                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                PostLG_JobGroup.invalidateCache();
+                PostLG_JobGroup.fetchData();
+                break;
+            }
+            case "TabPane_Personnel_JobGroup":{
+                if (personnelJob_JobGroup === jobGroup.id)
+                    return;
+                personnelJob_JobGroup = jobGroup.id;
+                PersonnelDS_JobGroup.fetchDataURL = jobGroupUrl + "personnelIscList/" + jobGroup.id;
+                PersonnelLG_JobGroup.invalidateCache();
+                PersonnelLG_JobGroup.fetchData();
+                break;
+            }
+            case "TabPane_NA_JobGroup":{
+                if (naJob_JobGroup === jobGroup.id)
+                    return;
+                naJob_JobGroup = jobGroup.id;
+                NADS_JobGroup.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + jobGroup.id + "&objectType=JobGroup";
+                NADS_JobGroup.invalidateCache();
+                NADS_JobGroup.fetchData();
+                NALG_JobGroup.invalidateCache();
+                NALG_JobGroup.fetchData();
+                break;
+            }
+        }
+    }
+
+    // </script>

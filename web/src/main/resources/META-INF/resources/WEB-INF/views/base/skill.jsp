@@ -584,7 +584,11 @@
         selectionType: "none",
         autoFetchData: false,
         fields: [
-            {name: "code"},
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "titleFa"},
             {name: "job.titleFa"},
             {name: "postGrade.titleFa"},
@@ -683,7 +687,8 @@
         url_Skill = skillUrl;
         SkillDF_Skill.clearValues();
         SkillDF_Skill.getItem("categoryId").setDisabled(false);
-        SkillDF_Skill.getItem("subCategoryId").setDisabled(true);
+        SkillDF_Skill.getItem("subCategoryId").setDisabled(false);
+        SkillDF_Skill.getItem("skillLevelId").setDisabled(false);
         SkillWindow_Skill.show();
     }
 

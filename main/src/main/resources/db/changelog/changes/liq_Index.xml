@@ -1,0 +1,41 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="NICICO" id="INDEX_TBL_STUDENT_COL_NATIONAL_CODE-001">
+        <createIndex indexName="INDEX_TBL_STUDENT_COL_NATIONAL_CODE" tableName="TBL_STUDENT" unique="false">
+            <column name="NATIONAL_CODE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_COL_NATIONAL_CODE-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_COL_NATIONAL_CODE" tableName="TBL_PERSONNEL" unique="false">
+            <column name="NATIONAL_CODE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_REGISTERED_COL_NATIONAL_CODE-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_REGISTERED_COL_NATIONAL_CODE" tableName="TBL_PERSONNEL_REGISTERED" unique="false">
+            <column name="NATIONAL_CODE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_COL_POST_CODE-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_COL_POST_CODE" tableName="TBL_PERSONNEL" unique="false">
+            <column name="POST_CODE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_STUDENT_COL_POST_CODE-001">
+        <createIndex indexName="INDEX_TBL_STUDENT_COL_POST_CODE" tableName="TBL_STUDENT" unique="false">
+            <column name="POST_CODE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_REGISTERED_COL_POST_CODE-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_REGISTERED_COL_POST_CODE" tableName="TBL_PERSONNEL_REGISTERED" unique="false">
+            <column name="POST_CODE"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

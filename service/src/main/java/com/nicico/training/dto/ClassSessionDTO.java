@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -8,6 +9,8 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -75,12 +78,23 @@ public class ClassSessionDTO implements Serializable {
         private InstituteDTO.InstituteTitle institute;
         private TrainingPlaceDTO.TrainingPlaceTitle trainingPlace;
         private TeacherDTO.TeacherFullNameTuple teacher;
+        @Getter(AccessLevel.NONE)
+        private boolean readOnly;
 
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
+        }
+
+        public boolean getReadOnly(){
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+            String startingDate = getSessionDate();
+
+            return todayDate.compareTo(startingDate) >= 0 ? false : true;
         }
     }
 
@@ -137,6 +151,13 @@ public class ClassSessionDTO implements Serializable {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class DeleteStatus {
+        private Integer sucesses;
+        private Integer totalSizes;
+    }
 
     @Getter
     @Setter
@@ -154,9 +175,9 @@ public class ClassSessionDTO implements Serializable {
     @ApiModel("ClassSessionsUpdateRq")
     public static class Update extends ClassSessionDTO {
 
-        @NotNull
+        /*@NotNull
         @ApiModelProperty(required = true)
-        private String sessionTime;
+        private String sessionTime;*/
 
     }
 
@@ -192,6 +213,18 @@ public class ClassSessionDTO implements Serializable {
     public static class ClassSessionsDateForOneClass {
         private String dayName;
         private String sessionDate;
+        private String hasWarning="";
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AttendanceClearForm")
+    public static class AttendanceClearForm {
+        private String dayName;
+        private String sessionDate;
+        private String sessionStartHour;
+        private String sessionEndHour;
     }
 
     //*********************************
@@ -356,6 +389,14 @@ public class ClassSessionDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionTime;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionStartHour;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionEndHour;
 
 
         @NotNull

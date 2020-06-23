@@ -49,7 +49,7 @@ public class ExportToFileService implements IExportToFileService {
 
             Font headerFont = workbook.createFont();
             headerFont.setFontHeightInPoints((short) 12);
-            headerFont.setFontName("b Titr");
+            headerFont.setFontName("B Titr");
             headerFont.setColor(IndexedColors.BLACK.getIndex());
 
             CellStyle headerCellStyle = workbook.createCellStyle();
@@ -67,7 +67,7 @@ public class ExportToFileService implements IExportToFileService {
             //first row
             Font rFont = workbook.createFont();
             rFont.setFontHeightInPoints((short) 16);
-            rFont.setFontName("b Titr");
+            rFont.setFontName("B Titr");
 
             CellStyle rCellStyle = workbook.createCellStyle();
             rCellStyle.setFont(rFont);
@@ -82,7 +82,7 @@ public class ExportToFileService implements IExportToFileService {
             //second row
             rFont = workbook.createFont();
             rFont.setFontHeightInPoints((short) 14);
-            rFont.setFontName("b Titr");
+            rFont.setFontName("B Titr");
 
             rCellStyle = workbook.createCellStyle();
             rCellStyle.setFont(rFont);
@@ -97,7 +97,7 @@ public class ExportToFileService implements IExportToFileService {
             //third row
             rFont = workbook.createFont();
             rFont.setFontHeightInPoints((short) 12);
-            rFont.setFontName("b Nazanin");
+            rFont.setFontName("B Nazanin");
 
             rCellStyle = workbook.createCellStyle();
             rCellStyle.setFont(rFont);
@@ -128,11 +128,14 @@ public class ExportToFileService implements IExportToFileService {
             dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));*/
 
             int rowNum = 3;
+            String tmpCell="";
             for (HashMap<String, String> map : allData) {
                 Row tempRow = sheet.createRow(++rowNum);
                 for (int i = 0; i < columns.length; i++) {
                     Cell cell = tempRow.createCell(i);
-                    cell.setCellValue(map.get(columns[i]).replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)","[link href=$7]$10[/link]").replaceAll("<[^>]*>",""));
+                    tmpCell=map.get(columns[i])==null?"":map.get(columns[i]);
+
+                    cell.setCellValue(tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)","[link href=$7]$10[/link]").replaceAll("<[^>]*>",""));
                     cell.setCellStyle(bodyCellStyle);
                 }
             }
@@ -160,7 +163,6 @@ public class ExportToFileService implements IExportToFileService {
             workbook.close();
 
         } catch (Exception ex) {
-            System.out.println(ex);
             throw new Exception("خطا در سرور");
         }
     }

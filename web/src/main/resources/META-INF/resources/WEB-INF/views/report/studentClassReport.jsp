@@ -7,38 +7,45 @@
 %>
 
 // <script>
-    
-    var selectedPerson_TrainingFile = null;
-    var printUrl_TrainingFile = "<spring:url value="/web/print/class-student/"/>";
 
-    var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
+    var selectedPerson_StudentClass = null;
+    var printUrl_StudentClass = "<spring:url value="/web/print/class-student/"/>";
+
+    var RestDataSource_Course_JspStudentClass = isc.TrDS.create({
         fields: [
             {name: "classStudentId", primaryKey: true, hidden: true},
             {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentCcpArea", title:"<spring:message code='area'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpArea", title:"<spring:message code='area'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPostCode", title:"<spring:message code='post.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPostTitle", title:"<spring:message code='post.title'/>", filterOperator: "iContains"},
+            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "equals"},
-            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
-            {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
-            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
+            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
+            {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains"},
+            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classEndDate", filterOperator: "greaterOrEqual", autoFitWidth: true},
+            {name: "classHDuration", title:"<spring:message code="duration"/>", autoFitWidth: true},
         ],
         fetchDataURL: studentClassReportUrl
     });
     var ScoresStateDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        autoCacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=scoreState"
+        cacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/StudentScoreState"
     });
 
     var CompanyDS_SCRV = isc.TrDS.create({
@@ -46,74 +53,82 @@
             {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
         ],
         cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=company"
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
     });
     var AreaDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=area"
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
     });
     var ComplexDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=complex"
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
     });
     var AssistantDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=assistant"
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
     });
     var AffairsDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=affairs"
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
     });
     var CourseDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "courseId", primaryKey: true},
-            {name: "courseCode", title: "<spring:message code="corse_code"/>"},
-            {name: "courseTitleFa", title: "<spring:message code="course_fa_name"/>"},
+            {name: "id", primaryKey: true},
+            {name: "code", title: "<spring:message code="corse_code"/>"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>"},
         ],
-        fetchDataURL: studentClassReportUrl + "/all-courses",
+        fetchDataURL: courseUrl + "spec-list"
     });
     var UnitDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=unit"
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
     });
     var TermDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach:true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=termCode"
+        // cacheAllData: true,
+        fetchDataURL: termUrl + "spec-list"
+    });
+    var YearDS_SCRV = isc.TrDS.create({
+        fields: [
+            {name: "year", title: "<spring:message code="year"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        // cacheAllData: true,
+        fetchDataURL: termUrl + "yearList"
     });
     var SectionDS_SCRV = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
         ],
-        cacheAllData: true,
-        fetchDataURL: studentClassReportUrl + "/all-field-values?fieldName=section"
+        // cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
     });
 
-    var DynamicForm_TrainingFile = isc.DynamicForm.create({
-        numCols: 10,
+    var DynamicForm_StudentClass = isc.DynamicForm.create({
+        numCols: 11,
         padding: 10,
+        readOnlyDisplay: "readOnly",
         margin:0,
         // cellPadding: 10,
         titleAlign:"left",
         wrapItemTitles: true,
-        colWidths:[50,150,50,150,50,150,50,150, 50, 150],
+        colWidths:[50,150,50,150,50,150,50,150, 50, 100, 50],
         // sectionVisibilityMode: "mutex",
         fields: [
             // {
@@ -126,7 +141,13 @@
                 title:"پرسنلی 6رقمی",
                 <%--title:"<spring:message code="personnel.no.6.digits"/>",--%>
                 textAlign: "center",
-                width: "*"
+                width: "*",
+                keyPressFilter: "[0-9, ]",
+                operator: "inSet",
+                changed (form, item, value){
+                    let res = value.split(" ");
+                    item.setValue(res.toString())
+                }
             },
             {
                 name: "studentPersonnelNo",
@@ -148,6 +169,7 @@
             },
             {
                 name: "studentLastName",
+                colSpan: 2,
                 title:"<spring:message code="lastName"/> ",
                 textAlign: "center",
                 width: "*"
@@ -165,44 +187,35 @@
             {
                 name: "classStudentScoresState",
                 title: "<spring:message code="score.state"/>",
-                type: "SelectItem",
                 optionDataSource: ScoresStateDS_SCRV,
-                multiple: true,
-                valueField: "value",
-                displayField: "value",
+                type: "SelectItem",
+                // criteriaField: "value",
                 pickListProperties: {
                     showFilterEditor: false,
-                    showClippedValuesOnHover: true,
+                    // showClippedValuesOnHover: true,
                 },
+                pickListFields: [
+                    {name: "title"},
+                    // {name: "id", hidden: true}
+                ],
+                multiple: true,
+                valueField: "id",
+                displayField: "title",
             },
             {
                 name: "studentComplexTitle",
                 title: "<spring:message code="complex"/>",
                 optionDataSource: ComplexDS_SCRV,
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
             },
             {
                 name: "studentCompanyName",
                 title: "<spring:message code="company"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: CompanyDS_SCRV,
@@ -210,15 +223,8 @@
             {
                 name: "studentCcpArea",
                 title: "<spring:message code="area"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AreaDS_SCRV,
@@ -226,15 +232,8 @@
             {
                 name: "studentCcpAssistant",
                 title: "<spring:message code="assistance"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_SCRV,
@@ -242,15 +241,8 @@
             {
                 name: "studentCcpSection",
                 title: "<spring:message code="section.cost"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: SectionDS_SCRV,
@@ -258,50 +250,36 @@
             {
                 name: "studentCcpUnit",
                 title: "<spring:message code="unitName"/>",
-                // filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "SelectItem",
-                // textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                multiple: true,
+                optionDataSource: UnitDS_SCRV,
+                type: "MultiComboBoxItem",
+                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
-                optionDataSource: UnitDS_SCRV,
             },
             {
                 name: "studentCcpAffairs",
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_SCRV,
-                // filterFields: ["value", "value"],
-                // pickListWidth: 300,
                 type: "MultiComboBoxItem",
-                textMatchStyle: "substring",
                 comboBoxWidth: 155,
-                layoutStyle: "verticalReverse",
-                comboBoxProperties: {
-                    pickListWidth: 300,
-                },
+                valueField: "value",
+                displayField: "value",
+                // comboBoxWidth: 155,
+                // layoutStyle: "verticalReverse",
+                // comboBoxProperties: {
+                //     pickListWidth: 300,
+                // },
                 // pickListProperties: {
                 //     showFilterEditor: false,
                 //     showClippedValuesOnHover: true,
                 // },
-                valueField: "value",
-                displayField: "value",
             },
             {
                 name: "courseCode",
                 title: "<spring:message code="course"/>",
                 optionDataSource: CourseDS_SCRV,
-                valueField: "courseCode",
-                displayField: "courseCode",
-                // comboBoxFields: [
-                //     {name: "code", autoFitWidth: true},
-                //     {name: "titleFa"},
-                // ],
-                // filterFields: ["titleFa", "code"],
+                valueField: "code",
+                displayField: "code",
                 type: "MultiComboBoxItem",
                 textMatchStyle: "substring",
                 comboBoxWidth: 155,
@@ -312,8 +290,8 @@
                 },
             },
             {
-                name: "termCode",
-                title: "<spring:message code="term.code"/>",
+                name: "termTitleFa",
+                title: "<spring:message code="term"/>",
                 // filterFields: ["value", "value"],
                 // pickListWidth: 100,
                 type: "SelectItem",
@@ -322,184 +300,372 @@
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
+                colSpan: 2,
                 multiple: true,
-                valueField: "value",
-                displayField: "value",
+                valueField: "titleFa",
+                displayField: "titleFa",
+                initialSort: [
+                    {property: "titleFa", direction: "descending", primarySort: true}
+                ],
                 optionDataSource: TermDS_SCRV,
             },
             <%--{--%>
-                <%--name: "searchBtn",--%>
-                <%--ID: "searchBtnJspTrainingFile",--%>
-                <%--title: "<spring:message code="search"/>",--%>
-                <%--type: "ButtonItem",--%>
-                <%--width:"*",--%>
-                <%--startRow:false,--%>
-                <%--endRow:false,--%>
-                <%--click (form) {--%>
-                    <%--var advancedCriteriaStudentJspTrainingFile = {--%>
-                        <%--_constructor: "AdvancedCriteria",--%>
-                        <%--operator: "and",--%>
-                        <%--criteria: []--%>
-                    <%--};--%>
-                    <%--var items = form.getItems();--%>
-                    <%--for (let i = 0; i < items.length; i++) {--%>
-                        <%--if(items[i].getValue() != undefined){--%>
-                            <%--advancedCriteriaStudentJspTrainingFile.criteria.add({fieldName: items[i].name, operator: "iContains", value: items[i].getValue()})--%>
-                        <%--}--%>
-                    <%--}--%>
-                    <%--ListGrid_StudentSearch_JspTrainingFile.fetchData(advancedCriteriaStudentJspTrainingFile);--%>
-                    <%--Window_StudentSearch_JspTrainingFile.show();--%>
-                <%--}--%>
+            <%--name: "year",--%>
+            <%--title: "<spring:message code="year"/>",--%>
+            <%--// filterFields: ["value", "value"],--%>
+            <%--// pickListWidth: 100,--%>
+            <%--type: "SelectItem",--%>
+            <%--criteriaField: "termCode",--%>
+            <%--operator: "contains",--%>
+            <%--// textMatchStyle: "substring",--%>
+            <%--pickListProperties: {--%>
+            <%--showFilterEditor: false,--%>
+            <%--showClippedValuesOnHover: true,--%>
             <%--},--%>
-            <%--{--%>
-                <%--name: "clearBtn",--%>
-                <%--title: "<spring:message code="clear"/>",--%>
-                <%--type: "ButtonItem",--%>
-                <%--width:"*",--%>
-                <%--startRow:false,--%>
-                <%--endRow:false,--%>
-                <%--click (form, item) {--%>
-                    <%--form.clearValues();--%>
-                    <%--ListGrid_TrainingFile_TrainingFileJSP.setData([]);--%>
-                <%--}--%>
+            <%--multiple: true,--%>
+            <%--valueField: "year",--%>
+            <%--displayField: "year",--%>
+            <%--optionDataSource: YearDS_SCRV,--%>
             <%--},--%>
+            // { name: "independence", editorType: "DateRangeItem", showTitle: false, allowRelativeDates: true },
+            {
+                name: "fromDate",
+                titleColSpan: 3,
+                title: "تاریخ شروع کلاس: از",
+                ID: "startDate_jspStudentClassReport",
+                hint: "--/--/----",
+                criteriaField: "classStartDate",
+                operator: "greaterOrEqual",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate_jspStudentClassReport', this, 'ymd', '/');
+                    }
+                }],
+                textAlign: "center",
+                // colSpan: 2,
+                changed: function (form, item, value) {
+                    var dateCheck;
+                    // var endDate = form.getValue("endDate");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else {
+                        form.clearFieldErrors("fromDate", true);
+                    }
+                }
+            },
+            {
+                name: "toDate",
+                titleColSpan: 1,
+                title: "تا",
+                ID: "endDate_jspStudentClassReport",
+                hint: "--/--/----",
+                criteriaField: "classStartDate",
+                operator: "lessOrEqual",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate_jspStudentClassReport', this, 'ymd', '/');
+                    }
+                }],
+                textAlign: "center",
+                // colSpan: 2,
+                changed: function (form, item, value) {
+                    let dateCheck;
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        form.clearFieldErrors("toDate", true);
+                        form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else {
+                        form.clearFieldErrors("toDate", true);
+                    }
+                }
+            },
+            {type: "SpacerItem"},
+            {
+                name: "searchBtn",
+                ID: "searchBtnJspStudentClass",
+                <%--title: "<spring:message code="report"/>",--%>
+                title: "<spring:message code="reporting"/>",
+                type: "ButtonItem",
+                colSpan: 1,
+                width:"*",
+                startRow:false,
+                endRow:false,
+                click (form) {
+                    let criteria = form.getValuesAsAdvancedCriteria();
+                    if(criteria === null || Object.keys(form.getValuesAsCriteria()).length === 0) {
+                        ListGrid_StudentClass_StudentClassJSP.setData([]);
+                        createDialog("info","فیلتری انتخاب نشده است.");
+                    }
+                    else{
+                        if(form.getValue("studentPersonnelNo2") != undefined){
+                            let cr = [];
+                            for (let i = 0; i < criteria.criteria.length; i++) {
+                                if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
+                                    cr.push(criteria.criteria[i])
+                                }
+                            }
+                            cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: form.getValue("studentPersonnelNo2").split(',').toArray()})
+                            criteria.criteria = cr;
+                        }
+                        ListGrid_StudentClass_StudentClassJSP.invalidateCache();
+                        RestDataSource_Course_JspStudentClass.implicitCriteria = criteria;
+                        ListGrid_StudentClass_StudentClassJSP.fetchData(criteria)
+                    }
+                }
+            },
+            // {type:"SpacerItem"},
+            {
+                name: "clearBtn",
+                title: "<spring:message code="clear"/>",
+                type: "ButtonItem",
+                width:"*",
+                colSpan: 2,
+                startRow:false,
+                endRow:false,
+                click (form, item) {
+                    form.clearValues();
+                    ListGrid_StudentClass_StudentClassJSP.setData([]);
+                }
+            }
         ],
         itemChanged (item, newValue){
-            if(Object.keys(DynamicForm_TrainingFile.getValuesAsCriteria()).length === 0) {
-                ListGrid_TrainingFile_TrainingFileJSP.setData([])
-            }
-            else{
-                ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-                RestDataSource_Course_JspTrainingFile.implicitCriteria = DynamicForm_TrainingFile.getValuesAsCriteria();
-                ListGrid_TrainingFile_TrainingFileJSP.fetchData(DynamicForm_TrainingFile.getValuesAsCriteria())
-            }
+            ListGrid_StudentClass_StudentClassJSP.setData([]);
         },
         // itemKeyPress: function(item, keyName) {
         //     if(keyName == "Enter"){
-        //         // searchBtnJspTrainingFile.click(DynamicForm_TrainingFile);
+        //         // searchBtnJspStudentClass.click(DynamicForm_StudentClass);
         //     }
         // }
     });
 
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListFields = [
-        {name: "courseCode", autoFitWidth: true},
-        {name: "courseTitleFa"},
+    DynamicForm_StudentClass.getField("courseCode").comboBox.pickListFields = [
+        {name: "code", autoFitWidth: true},
+        {name: "titleFa"},
     ];
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.filterFields = ["courseTitleFa", "courseCode"];
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.textMatchStyle="substring";
-    DynamicForm_TrainingFile.getField("courseCode").comboBox.pickListProperties= {
+    DynamicForm_StudentClass.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
+    DynamicForm_StudentClass.getField("courseCode").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("courseCode").comboBox.pickListProperties= {
         showFilterEditor: false,
         pickListWidth: 400,
         showClippedValuesOnHover: true,
     };
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.setHint("امور مورد نظر را انتخاب کنید");
-    DynamicForm_TrainingFile.getField("studentCcpAffairs").comboBox.pickListProperties= {
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.setHint("امورهای مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.pickListProperties= {
         showFilterEditor: false,
-        pickListWidth: 300,
+        pickListWidth: 400,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.setHint("واحدهای مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        pickListWidth: 400,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.setHint("مرکز هزینه های مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        pickListWidth: 400,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.setHint("معاونت های مورد نظر را انتخاب کنید");
+    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.pickListProperties= {
+        showFilterEditor: false,
+        showClippedValuesOnHover: true,
+    };
+    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.filterFields = ["value", "value"];
+    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.textMatchStyle="substring";
+    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.pickListProperties= {
+        showFilterEditor: false,
         showClippedValuesOnHover: true,
     };
 
-    var Menu_Courses_TrainingFileJSP = isc.Menu.create({
+    var Menu_Courses_StudentClassJSP = isc.Menu.create({
         data: [
-            <%--{--%>
-                <%--title: "<spring:message code="global.form.print.pdf"/>",--%>
-                <%--click: function () {--%>
-                    <%--print_Training_File();--%>
-                <%--}--%>
-            <%--}, --%>
+            {
+                title: "<spring:message code="global.form.print.pdf"/>",
+                click: function () {
+                    let params = {};
+                    params.complex = "مجتمع: " + (DynamicForm_StudentClass.getValue("studentComplexTitle")?DynamicForm_StudentClass.getValue("studentComplexTitle").toString():"-");
+                    params.company = "شرکت: " + (DynamicForm_StudentClass.getValue("studentCompanyName")?DynamicForm_StudentClass.getValue("studentCompanyName").toString():"-");
+                    params.area = "حوزه: " + (DynamicForm_StudentClass.getValue("studentCcpArea")?DynamicForm_StudentClass.getValue("studentCcpArea").toString():"-");
+                    params.assistant = "معاونت: " + (DynamicForm_StudentClass.getValue("studentCcpAssistant")?DynamicForm_StudentClass.getValue("studentCcpAssistant").toString():"-");
+                    params.section = "مرکز هزينه: " + (DynamicForm_StudentClass.getValue("studentCcpSection")?DynamicForm_StudentClass.getValue("studentCcpSection").toString():"-");
+                    params.unit = "نام واحد: " + (DynamicForm_StudentClass.getValue("studentCcpUnit")?DynamicForm_StudentClass.getValue("studentCcpUnit").toString():"-");
+                    params.affairs = "امور: " + (DynamicForm_StudentClass.getValue("studentCcpAffairs")?DynamicForm_StudentClass.getValue("studentCcpAffairs").toString():"-");
+                    params.term = "کد ترم: " + (DynamicForm_StudentClass.getValue("termTitleFa")?DynamicForm_StudentClass.getValue("termTitleFa").toString():"-");
+                    params.fromDate = "تاریخ شروع کلاس: از: " + (DynamicForm_StudentClass.getValue("fromDate")?DynamicForm_StudentClass.getValue("fromDate"):"-");
+                    params.toDate = "تا: " + (DynamicForm_StudentClass.getValue("toDate")?DynamicForm_StudentClass.getValue("toDate"):"-");
+                    printWithCriteria(DynamicForm_StudentClass.getValuesAsAdvancedCriteria(), params, "personnelCourses.jasper");
+                    // printToJasper(ListGrid_StudentClass_StudentClassJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
+                }
+            },
             {
                 title: "<spring:message code="global.form.print.excel"/>",
                 click: function () {
-                    console.log(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10));
-                    exportToExcel(ListGrid_TrainingFile_TrainingFileJSP.getFields().subList(1,10) ,ListGrid_TrainingFile_TrainingFileJSP.getData().localData)
-                    // print_Training_File("excel");
+                    // console.log(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10));
+                    // exportToExcel(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10) ,ListGrid_StudentClass_StudentClassJSP.getData().localData)
+                    ExportToFile.downloadExcelFromClient(ListGrid_StudentClass_StudentClassJSP,null,"","دوره های گذرانده پرسنل");
                 }
             },
             <%--{--%>
-                <%--title: "<spring:message code="global.form.print.html"/>",--%>
-                <%--click: function () {--%>
-                    <%--print_Training_File("html");--%>
-                <%--}--%>
+            <%--title: "<spring:message code="global.form.print.html"/>",--%>
+            <%--click: function () {--%>
+            <%--printToJasper(ListGrid_StudentClass_StudentClassJSP.getData().localData.toArray(), params, "personnelCourses.jasper", "HTML");--%>
+            <%--}--%>
             <%--}--%>
         ]
     });
 
-    var ListGrid_TrainingFile_TrainingFileJSP = isc.TrLG.create({
-        ID: "TrainingFileGrid",
+    var ListGrid_StudentClass_StudentClassJSP = isc.TrLG.create({
+        ID: "StudentClassGrid",
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
-        contextMenu: Menu_Courses_TrainingFileJSP,
-        dataSource: RestDataSource_Course_JspTrainingFile,
-        filterOnKeypress: true,
-        showFilterEditor: false,
+        contextMenu: Menu_Courses_StudentClassJSP,
+        dataSource: RestDataSource_Course_JspStudentClass,
+        // overflow: "scroll",
+        filterOnKeypress: false,
+        showFilterEditor: true,
 
-        gridComponents: [DynamicForm_TrainingFile, "header", "filterEditor", "body"],
+        gridComponents: [DynamicForm_StudentClass,
+            isc.ToolStripButtonExcel.create({
+                margin:5,
+            click: function() {
+
+                let criteria = DynamicForm_StudentClass.getValuesAsAdvancedCriteria();
+
+                if(criteria != null && Object.keys(criteria).length != 0) {
+
+                    if(DynamicForm_StudentClass.getValue("studentPersonnelNo2") != undefined){
+                        let cr = [];
+                        for (let i = 0; i < criteria.criteria.length; i++) {
+                            if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
+                                cr.push(criteria.criteria[i])
+                            }
+                        }
+                        cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: DynamicForm_StudentClass.getValue("studentPersonnelNo2").split(',').toArray()})
+                        criteria.criteria = cr;
+                    }
+                }else{
+                    return ;
+                }
+
+                ExportToFile.showDialog(null, ListGrid_StudentClass_StudentClassJSP, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
+            }
+        }), "header", "filterEditor", "body"],
         fields:[
-            {name: "studentPersonnelNo2"},
-            {name: "studentNationalCode"},
+            {
+                name: "studentPersonnelNo2",
+            },
+            {name: "studentNationalCode",
+                keyPressFilter: "[0-9]"
+            },
             {name: "studentFirstName"},
             {name: "studentLastName"},
+            {name: "studentCcpAffairs"},
             {name: "studentCcpUnit"},
+            {name: "studentPostCode"},
+            {name: "studentPostTitle"},
             {name: "courseCode"},
             {name: "courseTitleFa"},
+            {name: "classHDuration"},
+            {name: "classStartDate"},
+            {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classStudentScore"},
-            {name: "classStudentScoresState"},
+            {
+                name: "classStudentScoresState",
+                optionDataSource: ScoresStateDS_SCRV,
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                },
+                displayField: "title",
+                valueField: "id",
+                multiple: true
+            },
         ]
     });
 
-    var ToolStripButton_Training_File = isc.ToolStripButtonPrint.create({
+    var ToolStripButton_studentClassReport = isc.ToolStripButtonPrint.create({
         <%--title: "<spring:message code='print'/>",--%>
         click: function () {
             print_Training_File();
         }
     });
 
-    var ToolStrip_Actions_Training_File = isc.ToolStrip.create({
+    var ToolStrip_Actions_studentClassReport = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_Training_File]
+        members: [ToolStripButton_studentClassReport]
     });
 
     var VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        // overflow: "scroll",
+        overflow: "visible",
         members: [
-            // ToolStrip_Actions_Training_File,
-            ListGrid_TrainingFile_TrainingFileJSP
+            //ToolStrip_Actions_studentClassReport,
+            ListGrid_StudentClass_StudentClassJSP
         ]
     });
 
     //*************this function calls from studentPortal page**************
     <%--function call_trainingFile(selected_person) {--%>
-        <%--selectedPerson_TrainingFile = selected_person;--%>
-        <%--DynamicForm_TrainingFile.hide();--%>
-        <%--RestDataSource_Course_JspTrainingFile.fetchDataURL = studentPortalUrl + "/class-student/classes-of-student/" + selectedPerson_TrainingFile.nationalCode;--%>
-        <%--printUrl_TrainingFile = "<spring:url value="/web/print/student-portal/"/>";--%>
-        <%--ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();--%>
-        <%--ListGrid_TrainingFile_TrainingFileJSP.fetchData();--%>
+    <%--selectedPerson_StudentClass = selected_person;--%>
+    <%--DynamicForm_StudentClass.hide();--%>
+    <%--RestDataSource_Course_JspStudentClass.fetchDataURL = studentPortalUrl + "/class-student/classes-of-student/" + selectedPerson_StudentClass.nationalCode;--%>
+    <%--printUrl_StudentClass = "<spring:url value="/web/print/student-portal/"/>";--%>
+    <%--ListGrid_StudentClass_StudentClassJSP.invalidateCache();--%>
+    <%--ListGrid_StudentClass_StudentClassJSP.fetchData();--%>
     <%--}--%>
 
     function print_Training_File(type = "pdf") {
-        if (selectedPerson_TrainingFile == null){
+        if (selectedPerson_StudentClass == null){
             createDialog("info", "<spring:message code='personnel.not.selected'/>");
             return;
         }
         let params = {};
-        params.firstName = selectedPerson_TrainingFile.firstName;
-        params.lastName = selectedPerson_TrainingFile.lastName;
-        params.nationalCode = selectedPerson_TrainingFile.nationalCode;
-        params.personnelNo = selectedPerson_TrainingFile.personnelNo;
-        params.personnelNo2 = selectedPerson_TrainingFile.personnelNo2;
-        params.companyName = selectedPerson_TrainingFile.companyName;
-        
-        let CriteriaForm_TrainingFile = isc.DynamicForm.create({
+        params.firstName = selectedPerson_StudentClass.firstName;
+        params.lastName = selectedPerson_StudentClass.lastName;
+        params.nationalCode = selectedPerson_StudentClass.nationalCode;
+        params.personnelNo = selectedPerson_StudentClass.personnelNo;
+        params.personnelNo2 = selectedPerson_StudentClass.personnelNo2;
+        params.companyName = selectedPerson_StudentClass.companyName;
+
+        let CriteriaForm_StudentClass = isc.DynamicForm.create({
             method: "POST",
-            action: printUrl_TrainingFile + type,
+            action: printUrl_StudentClass + type,
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -510,12 +676,12 @@
                     {name: "formData", type: "hidden"},
                 ]
         });
-        CriteriaForm_TrainingFile.setValue("CriteriaStr", JSON.stringify(ListGrid_TrainingFile_TrainingFileJSP.getCriteria()));
-        CriteriaForm_TrainingFile.setValue("formData", JSON.stringify(selectedPerson_TrainingFile.nationalCode));
-        CriteriaForm_TrainingFile.setValue("myToken", "<%=accessToken%>");
-        CriteriaForm_TrainingFile.setValue("params", JSON.stringify(params));
-        CriteriaForm_TrainingFile.show();
-        CriteriaForm_TrainingFile.submitForm();
+        CriteriaForm_StudentClass.setValue("CriteriaStr", JSON.stringify(ListGrid_StudentClass_StudentClassJSP.getCriteria()));
+        CriteriaForm_StudentClass.setValue("formData", JSON.stringify(selectedPerson_StudentClass.nationalCode));
+        CriteriaForm_StudentClass.setValue("myToken", "<%=accessToken%>");
+        CriteriaForm_StudentClass.setValue("params", JSON.stringify(params));
+        CriteriaForm_StudentClass.show();
+        CriteriaForm_StudentClass.submitForm();
     }
 
- //</script>
+    //</script>

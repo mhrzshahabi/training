@@ -17,14 +17,12 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_sub_category", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"f_category_id", "c_title_en"}),
-        @UniqueConstraint(columnNames = {"f_category_id", "c_title_fa"})}
+@Table(name = "tbl_sub_category", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_category_id", "c_title_fa"})}
 )
 public class Subcategory extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_subcategory_id")
-    @SequenceGenerator(name = "seq_subcategory_id", sequenceName = "seq_subcategory_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_sub_category_id")
+    @SequenceGenerator(name = "seq_subcategory_id", sequenceName = "seq_sub_category_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 

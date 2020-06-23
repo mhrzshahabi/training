@@ -7,20 +7,29 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.Institute;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.function.Function;
 
 public interface IInstituteService {
 
     InstituteDTO.Info get(Long id);
 
+    Institute getInstitute(Long id);
+
     List<InstituteDTO.Info> list();
 
-    InstituteDTO.Info create(Object request);
+//    InstituteDTO.Info create(Object request, HttpServletResponse response);
 
-    InstituteDTO.Info update(Long id, Object request);
+//    InstituteDTO.Info update(Long id, LinkedHashMap request, HttpServletResponse response);
+
+    InstituteDTO.Info create(InstituteDTO.Create request, HttpServletResponse response);
+
+    InstituteDTO.Info update(Long id, InstituteDTO.Update request, HttpServletResponse response);
 
     void delete(Long id);
 
@@ -32,7 +41,7 @@ public interface IInstituteService {
 
     List<TeacherDTO.Info> getTeachers(Long instituteId);
 
-    List<InstituteAccountDTO.Info> getInstituteAccounts(Long instituteId);
+    List<AccountInfoDTO.Info> getInstituteAccounts(Long instituteId);
 
     List<TrainingPlaceDTO.Info> getTrainingPlaces(Long instituteId);
 
@@ -52,7 +61,7 @@ public interface IInstituteService {
 
     void addTeachers(List<Long> teacherIds, Long instituteId);
 
-    List<TeacherDTO.Info> getUnAttachedTeachers(Long instituteId, Pageable pageable);
+    SearchDTO.SearchRs<TeacherDTO.Info> getUnAttachedTeachers(SearchDTO.SearchRq request, Long instituteID);
 
     Integer getUnAttachedTeachersCount(Long instituteId);
 
@@ -60,6 +69,7 @@ public interface IInstituteService {
 
     Integer getUnAttachedEquipmentsCount(Long instituteId);
 
-    @Transactional
     TotalResponse<InstituteDTO.Info> search(NICICOCriteria request);
+
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 }

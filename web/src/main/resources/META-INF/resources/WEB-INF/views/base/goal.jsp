@@ -16,7 +16,7 @@
     var selectedRecord = 0;
 
     var RestDataSourceGoalEDomainType = isc.TrDS.create({
-        fields: [{name: "id", primeryKey: true}, {name: "titleFa"}
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -205,12 +205,11 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
                         simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
                         ListGrid_Goal_refresh();
-                        ToolStripButton_Goal_Print.click();
                         setTimeout(function () {
                             ListGrid_Goal.setSelectedState(gridState);
                         }, 0);
@@ -387,27 +386,23 @@
             }
         }, {
             title: "حذف",
-            <%--icon: "<spring:url value="remove.png"/>", --%>
             click: function () {
                 ListGrid_Syllabus_Goal_Remove();
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf",
-            <%--icon: "<spring:url value="pdf.png"/>", --%>
-            click: function () {
-                window.open("/syllabus/print-one-course/" + courseRecord.id + "/pdf");
-            }
+                click :function(){
+                    trPrintWithCriteria("<spring:url value="/syllabus/print-one-course/"/>" + courseRecord.id +"/pdf" ,null,null);
+                }
         }, {
             title: "ارسال به Excel",
-            <%--icon: "<spring:url value="excel.png"/>",--%>
             click: function () {
-                window.open("/syllabus/print-one-course/" + courseRecord.id + "/excel")
+                trPrintWithCriteria("<spring:url value="/syllabus/print-one-course/"/>" + courseRecord.id +"/excel" ,null,null);
             }
         }, {
             title: "ارسال به Html",
-            <%--icon: "<spring:url value="html.png"/>",--%>
             click: function () {
-                window.open("/syllabus/print-one-course/" + courseRecord.id + "/html")
+                trPrintWithCriteria("<spring:url value="/syllabus/print-one-course/"/>" + courseRecord.id +"/html" ,null,null);
             }
         }]
     });
@@ -415,56 +410,39 @@
         width: 150,
         data: [{
             title: "بازخوانی اطلاعات",
-            <%--icon: "<spring:url value="refresh.png"/>", --%>
             click: function () {
                 ListGrid_Goal_refresh();
             }
         }, {
             title: "ایجاد",
-            <%--icon: "<spring:url value="create.png"/>", --%>
             click: function () {
                 ListGrid_Goal_Add();
             }
         },
-            <%--{--%>
-            <%--title: "افزودن", icon: "pieces/16/icon_add_files.png", click: function () {--%>
-            <%--Window_AddGoal.setTitle("افزودن هدف به دوره " + courseRecord.titleFa);--%>
-            <%--Window_AddGoal.show();--%>
-            <%--ListGrid_CourseGoal_Goal.invalidateCache();--%>
-            <%--RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseRecord.id;--%>
-            <%--ListGrid_GoalAll.invalidateCache();--%>
-            <%--&lt;%&ndash;window.open("<spring:url value="/goal/print/pdf"/>");&ndash;%&gt;--%>
-            <%--}--%>
-            <%--}, --%>
             {
                 title: "ویرایش",
-                <%--icon: "<spring:url value="edit.png"/>", --%>
                 click: function () {
                     ListGrid_Goal_Edit();
                 }
             }, {
                 title: "حذف",
-                <%--icon: "<spring:url value="remove.png"/>", --%>
                 click: function () {
                     ListGrid_Goal_Remove();
                 }
             }, {isSeparator: true}, {
                 title: "ارسال به Pdf",
-                <%--icon: "<spring:url value="pdf.png"/>", --%>
                 click: function () {
-                    window.open("goal/print-one-course/" + courseRecord.id + "/pdf")
+                    trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" + courseRecord.id + "/pdf" ,null,null);
                 }
             }, {
                 title: "ارسال به Excel",
-                <%--icon: "<spring:url value="excel.png"/>", --%>
                 click: function () {
-                    window.open("/goal/print-one-course/" + courseRecord.id + "/excel")
+                    trPrintWithCriteria("<spring:url value="/goal/print-one-course/"/>" + courseRecord.id + "/excel" ,null,null);
                 }
             }, {
                 title: "ارسال به Html",
-                <%--icon: "<spring:url value="html.png"/>", --%>
                 click: function () {
-                    window.open("/goal/print-one-course/" + courseRecord.id + "/html")
+                    trPrintWithCriteria("<spring:url value="/goal/print-one-course/"/>" + courseRecord.id + "/html" ,null,null);
                 }
             }]
     });
@@ -680,57 +658,48 @@
         shadowDepth: 10
     });
     var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
-    // var ToolStripButton_Syllabus_Print = isc.ToolStripButtonPrint.create({
-        // icon: "[SKIN]/RichTextEditor/print.png",
         autoDraw: false,
         width: 100,
         title: "چاپ",
         showMenuOnRollOver: true,
         menu: menuPalette,
         mouseMove: function () {
-            // ToolStripButton_Syllabus_Print.hideClickMask();
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([
-                    <%--{--%>
-                    <%--title: "همه اهداف",--%>
-                    <%--click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'--%>
-                <%--},--%>
                     {
                     title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
-                    click: 'window.open("goal/print-one-course/"+courseRecord.id+"/pdf")'
+                    click :function(){
+                        trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
+                    }
                 },
                     {isSeparator: true},
-                    <%--{--%>
-                    <%--title: "همه سرفصل ها",--%>
-                    <%--click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'--%>
-                <%--},--%>
                     {
                     title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
-                    click: 'window.open("syllabus/print-one-course/"+courseRecord.id+"/pdf")'
+                        click :function(){
+                            trPrintWithCriteria("<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
+                        }
                 }
                 ])
             } else {
                 Menu_Print_GoalJsp.setData([
-                    <%--{--%>
-                    <%--title: "همه اهداف",--%>
-                    <%--click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'--%>
-                <%--}, --%>
                     {
                     title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
-                    click: 'window.open("goal/print-one-course/"+courseRecord.id+"/pdf")'
+                        click :function(){
+                            trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
+                        }
                 },
                     {isSeparator: true},
-                    <%--{--%>
-                    <%--title: "همه سرفصل ها",--%>
-                    <%--click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'--%>
-                <%--},--%>
                     {
                     title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
-                    click: 'window.open("syllabus/print-one-course/"+courseRecord.id+"/pdf")'
+                        click :function(){
+                            trPrintWithCriteria("<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
+                        }
                 },
                     {
                         title: "سرفصل هاي هدف " + '"' + ListGrid_Goal.getSelectedRecord().titleFa + '"',
-                        click: 'window.open("syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
+                        click :function(){
+                            trPrintWithCriteria("<spring:url value="syllabus/print-one-goal/"/>" + ListGrid_Goal.getSelectedRecord().id+"/pdf" ,null,null);
+                        }
                     }])
             }
         }
@@ -770,7 +739,7 @@
             ListGrid_Goal_Remove();
         }
     });
-    var ToolStripButton_Goal_Print = isc.ToolStripButtonAdd.create({
+    var ToolStripButton_Goal_ADD = isc.ToolStripButtonAdd.create({
         //icon: "[SKIN]/actions/plus.png",
         prompt: "افزودن اهداف انتخاب شده به دوره مذکور و یا گرفتن اهداف انتخاب شده از دوره مذکور",
         hoverWidth: "12%",
@@ -783,7 +752,6 @@
             RestDataSource_GoalAll.fetchDataURL = goalUrl + "spec-list";
             ListGrid_GoalAll.invalidateCache();
             ListGrid_GoalAll.fetchData();
-            <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
         }
     });
     var ToolStripButton_Add_Vertical = isc.IconButton.create({
@@ -808,10 +776,9 @@
         width: "100%",
         membersMargin: 5,
         members: [
-            // ToolStripButton_Goal_Add,
+            ToolStripButton_Goal_ADD,
             ToolStripButton_Goal_Edit,
             ToolStripButton_Goal_Remove,
-            ToolStripButton_Goal_Print,
             "separator",
             ToolStripButton_Goal_Refresh,
         ]
@@ -1202,19 +1169,11 @@
                 }
             });
         } else {
-            var goalRecord = ListGrid_GoalAll.getSelectedRecords();
+            let goalRecord = ListGrid_GoalAll.getSelectedRecords();
             if (goalRecord.length == 0) {
-                isc.Dialog.create({
-                    message: "هدفي انتخاب نشده است.",
-                    icon: "[SKIN]ask.png",
-                    title: "پیغام",
-                    buttons: [isc.IButtonSave.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>")
             } else {
-                var goalList = new Array();
+                let goalList = new Array();
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
                 }

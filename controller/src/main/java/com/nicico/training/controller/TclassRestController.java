@@ -12,11 +12,9 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.InstituteDTO;
 import com.nicico.training.dto.ParameterValueDTO;
-import com.nicico.training.dto.PersonnelCoursePassedNAReportViewDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Institute;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
@@ -31,11 +29,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -64,6 +61,8 @@ public class TclassRestController {
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final ParameterService parameterService;
     private final IInstituteService instituteService;
+    private final TclassDAO tclassDAO;
+
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -264,6 +263,46 @@ public class TclassRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/info-tuple-list")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TclassDTO.TclassInfoTupleSpecRs> infoTupleList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                            @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                            @RequestParam(value = "_constructor", required = false) String constructor,
+                                                            @RequestParam(value = "operator", required = false) String operator,
+                                                            @RequestParam(value = "criteria", required = false) String criteria,
+                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow).setCount(endRow - startRow);
+        request.setDistinct(true);
+
+        SearchDTO.SearchRs<TclassDTO.InfoTuple> response = tclassService.searchInfoTuple(request);
+        final TclassDTO.InfoTupleSpecRs specResponse = new TclassDTO.InfoTupleSpecRs();
+        final TclassDTO.TclassInfoTupleSpecRs specRs = new TclassDTO.TclassInfoTupleSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/spec-list-evaluated")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<TclassDTO.TclassEvaluatedSpecRs> evaluatedList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
@@ -410,10 +449,10 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/personnel-training/{national_code}")
-    public ResponseEntity<TclassDTO.PersonnelClassInfo_TclassSpecRs> personnelTraining(@PathVariable String national_code) {
+    @GetMapping(value = "/personnel-training/{national_code}/{personnel_no}")
+    public ResponseEntity<TclassDTO.PersonnelClassInfo_TclassSpecRs> personnelTraining(@PathVariable String national_code, @PathVariable String personnel_no) {
 
-        List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(national_code);
+        List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(national_code,personnel_no);
 
         final TclassDTO.PersonnelClassInfo_SpecRs specResponse = new TclassDTO.PersonnelClassInfo_SpecRs();
         final TclassDTO.PersonnelClassInfo_TclassSpecRs specRs = new TclassDTO.PersonnelClassInfo_TclassSpecRs();
@@ -560,7 +599,6 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-
         List<Object> removedObjects = new ArrayList<>();
         Object courseStatus = null;
         Object reactionEvaluationOperator = null;
@@ -670,7 +708,7 @@ public class TclassRestController {
         if (learningEvaluationOperator != null && learningEvaluationGrade != null) {
             double grade = Double.parseDouble(learningEvaluationGrade.toString());
             for (TclassDTO.TClassReport datum : response.getList()) {
-                double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
+                double classLearningGrade = evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3];
                 if (learningEvaluationOperator.equals("1")) {
                     if (classLearningGrade >= grade)
                         listRemovedObjects.add(datum);
@@ -709,7 +747,7 @@ public class TclassRestController {
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getList().size());
+                .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
 
@@ -734,7 +772,7 @@ public class TclassRestController {
             request = new SearchDTO.SearchRq();
         } else {
             criteriaRq = objectMapper.readValue(CriteriaStr, SearchDTO.CriteriaRq.class);
-            request = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+            request = new SearchDTO.SearchRq().setCriteria(criteriaRq).setSortBy("-startDate");
         }
 
             SearchDTO.CriteriaRq addedObject = null;
@@ -865,7 +903,7 @@ public class TclassRestController {
         if (learningEvaluationOperator != null && learningEvaluationGrade != null) {
             double grade = Double.parseDouble(learningEvaluationGrade.toString());
             for (TclassDTO.TClassReport datum : resp.getList()) {
-                double classLearningGrade = Math.abs(evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3]);
+                double classLearningGrade = evaluationAnalysistLearningService.getStudents(datum.getId(), datum.getScoringMethod())[3];
                 if (learningEvaluationOperator.equals("1")) {
                     if (classLearningGrade >= grade)
                         listRemovedObjects.add(datum);
@@ -910,6 +948,17 @@ public class TclassRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/TClassReportPrint.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @Transactional
+    @GetMapping(value = "/setReactionStatus/{teacherReactionStatus}/{trainingReactionStatus}/{classId}")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public void setReactionStatus(@PathVariable Integer teacherReactionStatus, @PathVariable Integer trainingReactionStatus, @PathVariable Long classId) {
+        if(teacherReactionStatus == 10)
+            tclassDAO.updateTrainingReactionStatus(trainingReactionStatus,classId);
+        if(trainingReactionStatus == 10)
+            tclassDAO.updateTeacherReactionStatus(teacherReactionStatus,classId);
     }
 
 }

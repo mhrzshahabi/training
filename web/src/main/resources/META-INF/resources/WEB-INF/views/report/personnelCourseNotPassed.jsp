@@ -447,10 +447,24 @@
         dataSource: PersonnelCourseDS_PCNP,
         // filterOnKeypress: true,
         // showFilterEditor: false,
-        gridComponents: [FilterDF_PCNP, "header", "filterEditor", "body"],
+        gridComponents: [FilterDF_PCNP,
+            isc.ToolStripButtonExcel.create({
+                margin:5,
+                click:function() {
+                    ExportToFile.showDialog(null, PersonnelCourseLG_PCNP, 'personnelCourseNotPassed', 0, null, '',  "گزارش عدم آموزش", FilterDF_PCNP.getValuesAsCriteria(), null);
+                }
+            }), "header", "filterEditor", "body"],
         fields: [
-            {name: "personnelPersonnelNo2"},
-            {name: "personnelNationalCode"},
+            {name: "personnelPersonnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "personnelFirstName"},
             {name: "personnelLastName"},
             {name: "personnelCcpUnit"},

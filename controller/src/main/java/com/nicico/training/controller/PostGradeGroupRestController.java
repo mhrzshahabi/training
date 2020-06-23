@@ -6,8 +6,12 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
+import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IPostService;
 import com.nicico.training.service.PostGradeGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +26,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RestController
@@ -32,6 +39,8 @@ public class PostGradeGroupRestController {
     private final PostGradeGroupService postGradeGroupService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
+    private final IPostService postService;
+    private final IPersonnelService personnelService;
 
     @Loggable
     @GetMapping("/list")
@@ -45,6 +54,24 @@ public class PostGradeGroupRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = postGradeGroupService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/postIscList/{id}")
+    public ResponseEntity<ISC<PostDTO.Info>> postList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
+        List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/personnelIscList/{id}")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
+        List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().map(PostGradeDTO.Info::getCode).collect(Collectors.toList()), "postGradeCode", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+        SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable
@@ -97,6 +124,7 @@ public class PostGradeGroupRestController {
                                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                                        @RequestParam(value = "operator", required = false) String operator,
                                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "id", required = false) Long id,
                                                                        @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
@@ -111,12 +139,19 @@ public class PostGradeGroupRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.searchWithoutPermission(request);
-
         final PostGradeGroupDTO.SpecRs specResponse = new PostGradeGroupDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)

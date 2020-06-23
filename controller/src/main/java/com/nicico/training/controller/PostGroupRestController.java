@@ -87,20 +87,14 @@ public class PostGroupRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/{postGroupId}/canDelete")
-//    @PreAuthorize("hasAuthority('d_post_group')")
-    public ResponseEntity<Boolean> canDelete(@PathVariable Long postGroupId) {
-        return new ResponseEntity<>(postGroupService.canDelete(postGroupId), HttpStatus.OK);
-    }
-
-    @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_post_group')")
-    public ResponseEntity<PostGroupDTO.PostGroupSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                             @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+    public ResponseEntity<PostGroupDTO.PostGroupSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                             @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
                                                              @RequestParam(value = "_constructor", required = false) String constructor,
                                                              @RequestParam(value = "operator", required = false) String operator,
                                                              @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "id", required = false) Long id,
                                                              @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
@@ -110,25 +104,24 @@ public class PostGroupRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-
-
             request.setCriteria(criteriaRq);
         }
 
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
-
-        //SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-
         SearchDTO.SearchRs<PostGroupDTO.Info> response = postGroupService.searchWithoutPermission(request);
-
         final PostGroupDTO.SpecRs specResponse = new PostGroupDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)

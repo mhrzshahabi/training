@@ -3,6 +3,9 @@ package com.nicico.training.service;
 @Author:roya
 */
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.domain.criteria.NICICOPageable;
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
@@ -13,15 +16,13 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.CourseDAO;
-import com.nicico.training.repository.QuestionnaireQuestionDAO;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.repository.TrainingPlaceDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +46,12 @@ public class TclassService implements ITclassService {
     private final IEvaluationService evaluationService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterService parameterService;
+    private final ParameterValueService parameterValueService;
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final CourseDAO courseDAO;
     private final MessageSource messageSource;
+    private final TargetSocietyService societyService;
+    private final TargetSocietyDAO societyDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -110,18 +114,19 @@ public class TclassService implements ITclassService {
     @Transactional
     public TclassDTO.Info safeCreate(TclassDTO.Create request, HttpServletResponse response) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
-        if(checkDuration(tclass)){
+        if (checkDuration(tclass)) {
             List<Long> list = request.getTrainingPlaceIds();
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
             Set<TrainingPlace> set = new HashSet<>(allById);
             tclass.setTrainingPlaceSet(set);
-            return save(tclass);
-        }
-        else {
+            Tclass save = tclassDAO.save(tclass);
+            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+            return modelMapper.map(save, TclassDTO.Info.class);
+        } else {
             try {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
-            } catch (IOException e){
+            } catch (IOException e) {
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
             }
         }
@@ -133,7 +138,7 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info safeUpdate(Long id, TclassDTO.Update request, HttpServletResponse response) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        if(checkDuration(tclass)){
+        if (checkDuration(tclass)) {
             List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
             Set<TrainingPlace> set = new HashSet<>(allById);
@@ -141,17 +146,19 @@ public class TclassService implements ITclassService {
             modelMapper.map(tclass, updating);
             modelMapper.map(request, updating);
             updating.setTrainingPlaceSet(set);
-            return save(updating);
-        }else {
+            Tclass save = tclassDAO.save(updating);
+            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+            return modelMapper.map(save, TclassDTO.Info.class);
+        } else {
             try {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
-            } catch (IOException e){
+            } catch (IOException e) {
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
             }
-            }
-        return null;
         }
+        return null;
+    }
 
     @Transactional
     @Override
@@ -178,10 +185,66 @@ public class TclassService implements ITclassService {
         }
     }
 
+    @Transactional
+//    @Override
+    public SearchDTO.SearchRs<TclassDTO.Info> mainSearch(SearchDTO.SearchRq request) {
+        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
+    }
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
+
+        long start = System.nanoTime();
+
+        Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+        List<Tclass> list = all.getContent();
+
+        Long totalCount = all.getTotalElements();
+        SearchDTO.SearchRs<TclassDTO.Info> searchRs = null;
+
+        if (totalCount == 0) {
+
+            searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TclassDTO.Info>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = list.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(list.get(i).getId());
+            }
+
+            request.setCriteria(makeNewCriteria("", null, EOperator.or, null));
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            SearchDTO.CriteriaRq tmpcriteria = null;
+            int page = 0;
+
+            while (page * 1000 < ids.size()) {
+                page++;
+                criteriaRqList.add(makeNewCriteria("id", ids.subList((page - 1) * 1000, Math.min((page * 1000), ids.size())), EOperator.inSet, null));
+
+            }
+
+            request.setCriteria(makeNewCriteria("", null, EOperator.or, criteriaRqList));
+            request.setStartIndex(null);
+
+
+            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
+                    TclassDTO.Info.class));
+        }
+
+        searchRs.setTotalCount(totalCount);
+
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+
+
+        return searchRs;
+
+
+        //return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
 
     @Transactional(readOnly = true)
@@ -193,37 +256,37 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> evaluatedSearch(SearchDTO.SearchRq request) {
-        SearchDTO.CriteriaRq criteriaRq = null;
+        Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+        List<Tclass> list = all.getContent();
 
-        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        if (request.getCriteria() != null) {
-            if (request.getCriteria().getCriteria() != null)
-                request.getCriteria().getCriteria().add(criteriaRq);
-            else {
-                criteriaRqList.add(criteriaRq);
-                request.getCriteria().setCriteria(criteriaRqList);
+        Long totalCount = all.getTotalElements();
+        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> searchRs = null;
+
+        if (totalCount == 0) {
+
+            searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TclassDTO.EvaluatedInfoGrid>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = list.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(list.get(i).getId());
             }
-        } else
-            request.setCriteria(criteriaRq);
 
-        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> searchRs = SearchUtil.search(tclassDAO, request, needAssessment -> modelMapper.map(needAssessment,
-                TclassDTO.EvaluatedInfoGrid.class));
+            request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+            request.setStartIndex(null);
 
-        List<TclassDTO.EvaluatedInfoGrid> unAcceptedClasses = new ArrayList<>();
-        for (TclassDTO.EvaluatedInfoGrid tClass : searchRs.getList()) {
-            int accepted = tClass.getNumberOfStudentCompletedEvaluation();
-            if (accepted == 0) {
-                unAcceptedClasses.add(tClass);
-                searchRs.setTotalCount(searchRs.getTotalCount() - 1);
-            }
-            tClass.setEvaluationStatus("3");
+
+            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
+                    TclassDTO.EvaluatedInfoGrid.class));
         }
 
-        for (TclassDTO.EvaluatedInfoGrid unAcceptedClass : unAcceptedClasses) {
-            searchRs.getList().remove(unAcceptedClass);
-        }
+        searchRs.setTotalCount(totalCount);
 
         return searchRs;
+
     }
 
     @Transactional(readOnly = true)
@@ -249,6 +312,46 @@ public class TclassService implements ITclassService {
     }
 
     // ------------------------------
+    private List<TargetSociety> updateTargetSocieties(List<TargetSociety> targets, List<Object> societies, Long typeId, Long tclassId) {
+        List<Long> deleteList = new ArrayList<>();
+        String type = parameterValueService.get(typeId).getCode();
+        for (int i = 0; i < targets.size(); i++) {
+            TargetSociety society = targets.get(i);
+            if (!society.getTargetSocietyTypeId().equals(typeId)) {
+
+            } else if (type.equals("single")) {
+                Object id = societies.stream().filter(s -> ((Integer) s).longValue() == society.getSocietyId()).findFirst().orElse(null);
+                if (id != null) {
+                    societies.remove(id);
+                    continue;
+                }
+            } else if (type.equals("etc")) {
+                Object id = societies.stream().filter(s -> (String) s == society.getTitle()).findFirst().orElse(null);
+                if (id != null) {
+                    societies.remove(id);
+                    continue;
+                }
+            }
+            targets.set(i, null);
+        }
+        return saveTargetSocieties(societies, typeId, tclassId);
+    }
+
+    private List<TargetSociety> saveTargetSocieties(List<Object> societies, Long typeId, Long tclassId) {
+        List<TargetSociety> result = new ArrayList<>();
+        String type = parameterValueService.get(typeId).getCode();
+        for (Object society : societies) {
+            TargetSociety create = new TargetSociety();
+            if (type.equals("single"))
+                create.setSocietyId(((Integer) society).longValue());
+            else if (type.equals("etc"))
+                create.setTitle((String) society);
+            create.setTargetSocietyTypeId(new Long(typeId));
+            create.setTclassId(tclassId);
+            result.add(societyDAO.save(create));
+        }
+        return result;
+    }
 
     private TclassDTO.Info save(Tclass tclass) {
         final Tclass saved = tclassDAO.saveAndFlush(tclass);
@@ -336,7 +439,7 @@ public class TclassService implements ITclassService {
     }
 
 
-    public boolean compareTodayDate(Long id){
+    public boolean compareTodayDate(Long id) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         Tclass tclass = getTClass(id);
@@ -462,27 +565,29 @@ public class TclassService implements ITclassService {
                     double facilityTotalWeight = 0.0;
                     double goalsTotalWeight = 0.0;
                     for (EvaluationAnswer answer : answers) {
-                        double weight = 1.0;
-                        double grade = 1.0;
-                        QuestionnaireQuestion questionnaireQuestion = null;
-                        Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                        if (question.isPresent())
-                            questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                        if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
-                            weight = questionnaireQuestion.getWeight();
-                        }
-                        grade = Double.parseDouble(answer.getAnswer().getValue());
-                        if (questionnaireQuestion != null) {
-                            if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
-                                teacherTotalGrade += grade * weight;
-                                teacherTotalWeight += weight;
-                            } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
-                                facilityTotalGrade += grade * weight;
-                                facilityTotalWeight += weight;
+                        if (answer.getAnswer() != null) {
+                            double weight = 1.0;
+                            double grade = 1.0;
+                            QuestionnaireQuestion questionnaireQuestion = null;
+                            Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
+                            if (question.isPresent())
+                                questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                            if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
+                                weight = questionnaireQuestion.getWeight();
                             }
-                        } else {//Goals
-                            goalsTotalGrade += grade * weight;
-                            goalsTotalWeight += weight;
+                            grade = Double.parseDouble(answer.getAnswer().getValue());
+                            if (questionnaireQuestion != null) {
+                                if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
+                                    teacherTotalGrade += grade * weight;
+                                    teacherTotalWeight += weight;
+                                } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
+                                    facilityTotalGrade += grade * weight;
+                                    facilityTotalWeight += weight;
+                                }
+                            } else {//Goals
+                                goalsTotalGrade += grade * weight;
+                                goalsTotalWeight += weight;
+                            }
                         }
                     }
                     if (teacherTotalWeight != 0)
@@ -515,7 +620,7 @@ public class TclassService implements ITclassService {
             double totalGrade = 0.0;
             double totalWeight = 0.0;
             for (EvaluationAnswer answer : answers) {
-                if (answer != null) {
+                if (answer != null && answer.getAnswer() != null) {
                     double weight = 1.0;
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
@@ -538,13 +643,13 @@ public class TclassService implements ITclassService {
 
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId, Long teacherId) {
         double result = 0.0;
-        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacher(teacherId, classId, trainingId);
+        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacherCustomized(teacherId, classId);
         if (evaluation != null) {
             List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
             double totalGrade = 0.0;
             double totalWeight = 0.0;
             for (EvaluationAnswer answer : answers) {
-                if (answer != null) {
+                if (answer != null && answer.getAnswer() != null) {
                     double weight = 1.0;
                     double grade = 1.0;
                     Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
@@ -562,6 +667,53 @@ public class TclassService implements ITclassService {
             if (totalWeight != 0)
                 result = totalGrade / totalWeight;
         }
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public double getJustFERGrade(Long classId) {
+        Tclass tclass = getTClass(classId);
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
+        double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
+        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
+        double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
+        double teacherGradeToClass = getTeacherGradeToClass(classId, tclass.getTeacherId());
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+                studentsGradeToGoals,
+                studentsGradeToFacility,
+                percenetOfFilledReactionEvaluationForms,
+                teacherGradeToClass);
+        return (double) FERGradeResult.get("FERGrade");
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Object> getFERAndFETGradeResult(Long classId) {
+        Tclass tclass = getTClass(classId);
+        Map<String, Object> result = new HashMap<>();
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
+        double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
+        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
+        double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
+        double teacherGradeToClass = getTeacherGradeToClass(classId, tclass.getTeacherId());
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+                studentsGradeToGoals,
+                studentsGradeToFacility,
+                percenetOfFilledReactionEvaluationForms,
+                teacherGradeToClass);
+        result.put("FERGrade",FERGradeResult.get("FERGrade"));
+        result.put("FERPass",FERGradeResult.get("FERPass"));
+
+        double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, null, tclass.getTeacherId());
+        Map<String,Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,trainingGradeToTeacher,percenetOfFilledReactionEvaluationForms);
+        result.put("FETGrade", FETGradeResult.get("FETGrade"));
+        result.put("FETPass", FETGradeResult.get("FETPass"));
+
         return result;
     }
 
@@ -746,6 +898,7 @@ public class TclassService implements ITclassService {
         double result = (r1 / r2) * 100;
         return result;
     }
+
     ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
 
     //----------------------------------------------- Behavioral Evaluation --------------------------------------------
@@ -1001,7 +1154,7 @@ public class TclassService implements ITclassService {
                 teacherGradeToClass);
         FERGrade = (double) FERGradeResult.get("FERGrade");
 
-        FELGrade = Math.abs(evaluationAnalysistLearningService.getStudents(classId, scoringMethod)[3]);
+        FELGrade = evaluationAnalysistLearningService.getStudents(classId, scoringMethod)[3];
 
         TotalResponse<ParameterValueDTO.Info> parameters1 = parameterService.getByCode("FEC_B");
         List<ParameterValueDTO.Info> parameterValues1 = parameters1.getResponse().getData();
@@ -1039,11 +1192,11 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code) {
+    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code, String personnel_no) {
 
         List<TclassDTO.PersonnelClassInfo> personnelClassInfo = null;
 
-        List<?> personnelClassInfoList = tclassDAO.findAllPersonnelClass(national_code);
+        List<?> personnelClassInfoList = tclassDAO.findAllPersonnelClass(national_code, personnel_no);
 
         if (personnelClassInfoList != null) {
 
@@ -1064,7 +1217,9 @@ public class TclassService implements ITclassService {
                         (classInfo[9] != null ? classInfo[9].toString() : null),
                         (classInfo[10] != null ? classInfo[10].toString() : null),
                         (classInfo[11] != null ? Long.parseLong(classInfo[11].toString()) : null),
-                        (classInfo[12] != null ? classInfo[12].toString() : null)));
+                        (classInfo[12] != null ? classInfo[12].toString() : null),
+                        (classInfo[13] != null ? Long.parseLong(classInfo[13].toString()) : null),
+                        (classInfo[14] != null ? classInfo[14].toString() : null)));
             }
         }
 
@@ -1156,9 +1311,57 @@ public class TclassService implements ITclassService {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TClassReport.class));
     }
 
-    private boolean checkDuration(Tclass tclass){
+    private boolean checkDuration(Tclass tclass) {
         final float theoryDuration = courseDAO.getCourseTheoryDurationById(tclass.getCourseId());
         return theoryDuration >= tclass.getHDuration() ? true : false;
+
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.InfoTuple> searchInfoTuple(SearchDTO.SearchRq request) {
+
+        Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+        List<Tclass> list = all.getContent();
+
+        Long totalCount = all.getTotalElements();
+        SearchDTO.SearchRs<TclassDTO.InfoTuple> searchRs = null;
+
+        if (totalCount == 0) {
+
+            searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<TclassDTO.InfoTuple>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = list.size();
+
+            for (int i = 0; i < len; i++) {
+                ids.add(list.get(i).getId());
+            }
+
+            request.setCriteria(makeNewCriteria("", null, EOperator.or, null));
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            SearchDTO.CriteriaRq tmpcriteria = null;
+            int page = 0;
+
+            while (page * 1000 < ids.size()) {
+                page++;
+                criteriaRqList.add(makeNewCriteria("id", ids.subList((page - 1) * 1000, Math.min((page * 1000), ids.size())), EOperator.inSet, null));
+
+            }
+
+            request.setCriteria(makeNewCriteria("", null, EOperator.or, criteriaRqList));
+            request.setStartIndex(null);
+
+
+            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
+                    TclassDTO.InfoTuple.class));
+        }
+
+        searchRs.setTotalCount(totalCount);
+
+        return searchRs;
 
     }
 }

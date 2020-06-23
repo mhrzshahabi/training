@@ -8,23 +8,19 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.service.NeedsAssessmentReportsService;
 import com.nicico.training.service.NeedsAssessmentService;
+import com.nicico.training.service.NeedsAssessmentTempService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
-import static com.nicico.training.service.BaseService.makeNewCriteria;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +28,9 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class NeedsAssessmentRestController {
 
     private final NeedsAssessmentService needsAssessmentService;
+    private final NeedsAssessmentTempService needsAssessmentTempService;
     private final ModelMapper modelMapper;
-    private final NeedsAssessmentReportsService needsAssessmentReportsService;
+
 
     @Loggable
     @GetMapping("/list")
@@ -51,10 +48,8 @@ public class NeedsAssessmentRestController {
     @Loggable
 //    @Transactional(readOnly = true)
     @GetMapping("/editList/{objectType}/{objectId}")
-    public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String objectType, @PathVariable Long objectId) {
-        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
-        needsAssessmentReportsService.addCriteria(criteriaRq, objectType, objectId);
-        return new ResponseEntity<>(needsAssessmentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq)), HttpStatus.OK);
+    public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscList(@PathVariable String objectType, @PathVariable Long objectId) {
+        return new ResponseEntity<>(needsAssessmentService.fullSearch(objectId, objectType), HttpStatus.OK);
     }
 
     @Loggable
@@ -68,6 +63,7 @@ public class NeedsAssessmentRestController {
     public ResponseEntity<NeedsAssessmentDTO.Info> create(@RequestBody Object rq) {
         NeedsAssessmentDTO.Create create = modelMapper.map(rq, NeedsAssessmentDTO.Create.class);
         return new ResponseEntity<>(needsAssessmentService.checkAndCreate(create), HttpStatus.OK);
+//        return new ResponseEntity<>(needsAssessmentTempService.create(true, create), HttpStatus.OK);
     }
 
     @Loggable
@@ -75,6 +71,7 @@ public class NeedsAssessmentRestController {
     public ResponseEntity<NeedsAssessmentDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
         NeedsAssessmentDTO.Update update = modelMapper.map(rq, NeedsAssessmentDTO.Update.class);
         return new ResponseEntity<>(needsAssessmentService.update(id, update), HttpStatus.OK);
+//        return new ResponseEntity<>(needsAssessmentTempService.update(true, id, update), HttpStatus.OK);
     }
 
     @Loggable
@@ -82,8 +79,9 @@ public class NeedsAssessmentRestController {
     public ResponseEntity delete(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(needsAssessmentService.delete(id), HttpStatus.OK);
+//            return new ResponseEntity<>(needsAssessmentTempService.delete(false, id), HttpStatus.OK);
         } catch (Exception ex) {
-            return new ResponseEntity(ex.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
     }
 

@@ -77,6 +77,21 @@ public class CourseDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("CourseTupleInfo")
+    public static class TupleInfo {
+        private Long id;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String code;
+
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String titleFa;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("CourseInfo")
     public static class Info extends CourseDTO {
         private Long id;
@@ -126,6 +141,8 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+        private CategoryDTO.CategoryInfoTuple category;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
     }
 
     @Getter
@@ -210,17 +227,17 @@ public class CourseDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CourseUpdateRq")
     public static class Update extends CourseDTO {
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Integer eRunTypeId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Integer eRunTypeId;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Integer eLevelTypeId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Integer eLevelTypeId;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Integer eTheoTypeId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Integer eTheoTypeId;
 
         @NotEmpty
         @ApiModelProperty(required = true)
@@ -230,20 +247,15 @@ public class CourseDTO implements Serializable {
 //        @ApiModelProperty(required = true)
 //        private Integer version;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Long categoryId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Long categoryId;
 
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Long subCategoryId;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private Long subCategoryId;
 
-        @ApiModelProperty(required = true)
-        private List<Long> preCourseListId;
-
-        @ApiModelProperty(required = true)
-        private List<String> equalCourseListId;
         private String evaluation;
 
         private String behavioralLevel;
@@ -333,7 +345,7 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private Float theoryDuration;
-        private String scoresState;
+        private Long scoresState;
     }
 
     // ------------------------------
@@ -377,7 +389,46 @@ public class CourseDTO implements Serializable {
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private String mainObjective;
         private String goals;
-        private String perCourses;
+        private String preCourses;
+    }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CreateOrDeletePreCourse")
+    public static class AddOrRemovePreCourse {
+        private Long courseId;
+        private List<Long> preCoursesId;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CourseInfoTuple")
+    public static class InfoTuple{
+        private Long id;
+        private String titleFa;
+        private String code;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("CourseInfoTupleSpecRs")
+    public static class CourseInfoTupleSpecRs {
+        private CourseDTO.InfoTupleSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InfoTupleSpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

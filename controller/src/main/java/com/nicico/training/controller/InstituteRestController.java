@@ -26,14 +26,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,6 +45,7 @@ public class InstituteRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -63,17 +64,15 @@ public class InstituteRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_institute')")
-    public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request) {
-        //       InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
-        return new ResponseEntity<>(instituteService.create(request), HttpStatus.CREATED);
+    public ResponseEntity<InstituteDTO.Info> create(@RequestBody InstituteDTO.Create request, HttpServletResponse response) {
+        return new ResponseEntity<>(instituteService.create(request, response), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_institute')")
-    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        //InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
-        return new ResponseEntity<>(instituteService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id, @RequestBody InstituteDTO.Update request, HttpServletResponse response) {
+        return new ResponseEntity<>(instituteService.update(id, request, response), HttpStatus.OK);
     }
 
     @Loggable
@@ -132,9 +131,13 @@ public class InstituteRestController {
                     }));
             request.setCriteria(criteriaRq);
         }
+
+        boolean flag = true;
+
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
+
         if (id != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.equals)
@@ -161,6 +164,7 @@ public class InstituteRestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
@@ -361,33 +365,13 @@ public class InstituteRestController {
 
     @Loggable
     @GetMapping(value = "{instituteId}/unattached-teachers")
-//    @PreAuthorize("hasAnyAuthority('r_teacher')")
-    public ResponseEntity<TeacherDTO.TeacherSpecRs> getUnAttachedTeachers(@RequestParam("_startRow") Integer startRow,
-                                                                          @RequestParam("_endRow") Integer endRow,
-                                                                          @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                          @RequestParam(value = "operator", required = false) String operator,
-                                                                          @RequestParam(value = "criteria", required = false) String criteria,
-                                                                          @RequestParam(value = "_sortBy", required = false) String sortBy,
-                                                                          @PathVariable Long instituteId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-
-        Integer pageSize = endRow - startRow;
-        Integer pageNumber = (endRow - 1) / pageSize;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        List<TeacherDTO.Info> teachers = instituteService.getUnAttachedTeachers(instituteId, pageable);
-
-        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
-        specResponse.setData(teachers)
-                .setStartRow(startRow)
-                .setEndRow(endRow)
-                .setTotalRows(instituteService.getUnAttachedTeachersCount(instituteId));
-
-        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    public ResponseEntity<ISC<TeacherDTO.Info>> getUnAttachedTeachers(HttpServletRequest iscRq, @PathVariable Long instituteId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<TeacherDTO.Info> searchRs = instituteService.getUnAttachedTeachers(searchRq, instituteId);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
@@ -502,25 +486,6 @@ public class InstituteRestController {
 //    @PreAuthorize("hasAuthority('r_equipment')")
     public ResponseEntity<EquipmentDTO.EquipmentSpecRs> equipmentDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         return new ResponseEntity<>(new EquipmentDTO.EquipmentSpecRs(), HttpStatus.OK);
-    }
-
-    @Loggable
-    @GetMapping(value = "{instituteId}/accounts")
-//    @PreAuthorize("hasAnyAuthority('r_teacher')")
-    public ResponseEntity<InstituteAccountDTO.AccountSpecRs> getAccounts(@PathVariable Long instituteId) {
-
-        List<InstituteAccountDTO.Info> instituteAccountList = instituteService.getInstituteAccounts(instituteId);
-
-        final InstituteAccountDTO.SpecRs specResponse = new InstituteAccountDTO.SpecRs();
-        specResponse.setData(instituteAccountList)
-                .setStartRow(0)
-                .setEndRow(instituteAccountList.size())
-                .setTotalRows(instituteAccountList.size());
-
-        final InstituteAccountDTO.AccountSpecRs specRs = new InstituteAccountDTO.AccountSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @Loggable
@@ -643,5 +608,16 @@ public class InstituteRestController {
         return new ResponseEntity<>(instituteService.search(nicicoCriteria), HttpStatus.OK);
     }
 
-
+    @GetMapping(value = "/iscTupleList")
+    public ResponseEntity<ISC<InstituteDTO.InstituteInfoTuple>> list(HttpServletRequest iscRq, @RequestParam(required = false) Long id) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        if (id != null) {
+            searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
+        }
+        SearchDTO.SearchRs<InstituteDTO.InstituteInfoTuple> searchRs = instituteService.search(searchRq, i -> modelMapper.map(i, InstituteDTO.InstituteInfoTuple.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 }

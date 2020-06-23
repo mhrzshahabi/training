@@ -5,7 +5,7 @@
 // <script>
 
     var postCode_NABOP = null;
-    var passedStatusId_NABOP = "216";
+    var passedStatusId_NABOP = 216;
     var priorities_NABOP;
     var wait_NABOP;
     var selectedPerson_NABOP = null;
@@ -77,6 +77,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
             ],
@@ -88,7 +89,8 @@
             [
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true}
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+                {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
             ],
         fetchDataURL: jobUrl + "/iscList"
     });
@@ -97,6 +99,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
             ],
@@ -106,8 +109,9 @@
     PostGradeDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
@@ -115,7 +119,8 @@
     PostGradeGroupDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code='post.grade.group.titleFa'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true}
         ],
         fetchDataURL: postGradeGroupUrl + "spec-list"
@@ -147,7 +152,7 @@
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     JobLG_NABOP = isc.TrLG.create({
@@ -158,8 +163,9 @@
         fields: [
             {name: "code"},
             {name: "titleFa"},
+            {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     PostGradeLG_NABOP = isc.TrLG.create({
@@ -170,8 +176,9 @@
         fields: [
             {name: "code"},
             {name: "titleFa"},
+            {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     PostGroupLG_NABOP = isc.TrLG.create({
@@ -180,10 +187,11 @@
         selectionType: "single",
         autoFetchData: true,
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     JobGroupLG_NABOP = isc.TrLG.create({
@@ -192,10 +200,11 @@
         selectionType: "single",
         autoFetchData: true,
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     PostGradeGroupLG_NABOP = isc.TrLG.create({
@@ -204,10 +213,11 @@
         selectionType: "single",
         autoFetchData: true,
         fields: [
+            {name: "code"},
             {name: "titleFa"},
             {name: "description"}
         ],
-        rowDoubleClick: Select_Post_NABOP
+        rowDoubleClick: "Select_Post_NABOP()"
     });
 
     Tabset_Object_NABOP = isc.TabSet.create({
@@ -225,7 +235,7 @@
 
     IButton_Post_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Post_NABOP
+        click: "Select_Post_NABOP()"
     });
 
     HLayout_Post_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -308,24 +318,40 @@
         fields: [
             {name: "firstName"},
             {name: "lastName"},
-            {name: "nationalCode"},
+            {name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "companyName"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
+            {name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "postTitle"},
-            {name: "postCode"},
+            {name: "postCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
             {name: "ccpArea"},
             {name: "ccpAssistant"},
             {name: "ccpAffairs"},
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
-        rowDoubleClick: Select_Person_NABOP
+        rowDoubleClick: "Select_Person_NABOP()"
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: Select_Person_NABOP
+        click: "Select_Person_NABOP()"
     });
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -423,7 +449,11 @@
             {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -675,6 +705,9 @@
                 }
             });
         },
+        filterEditorSubmit: function () {
+            return CourseDS_NABOP.fetchDataURL != null;
+        }
     });
 
     ToolStripButton_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
@@ -736,7 +769,6 @@
 
     function Select_Person_NABOP(selected_Person) {
         selected_Person = (selected_Person == null) ? PersonnelsLG_NABOP.getSelectedRecord() : selected_Person;
-
         if (selected_Person == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;

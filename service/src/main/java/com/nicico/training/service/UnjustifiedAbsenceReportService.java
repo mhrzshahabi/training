@@ -28,10 +28,9 @@ public class UnjustifiedAbsenceReportService implements IUnjustifiedAbsenceRepor
                 "                tbl_student.last_name,\n" +
                 "                tbl_student.first_name,\n" +
                 "                tbl_class.c_title_class,\n" +
-                "            tbl_class_student.pre_test_score,\n" +
                 "                tbl_class.c_start_date, \n" +
-                "                tbl_class_student.class_id,\n" +
-                "                tbl_class.c_end_date,\n" +
+               "                tbl_class.c_end_date,\n" +
+                "                tbl_class.c_code,\n" +
                 "                tbl_session.c_session_end_hour,\n" +
                 "                tbl_session.c_session_start_hour,\n" +
                 "                tbl_session.c_session_state\n" +
@@ -39,8 +38,7 @@ public class UnjustifiedAbsenceReportService implements IUnjustifiedAbsenceRepor
                 "                tbl_attendance\n" +
                 "                INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session\n" +
                 "                INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id\n" +
-                "                INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id\n" +
-                "                INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id\n" +
+                "                INNER JOIN tbl_student ON tbl_student.id = tbl_attendance.f_student\n" +
                 "            WHERE\n" +
                 "                tbl_attendance.c_state = '3'\n" +
                 "                AND   tbl_class.c_start_date >= :startDate \n" +
@@ -54,7 +52,8 @@ public class UnjustifiedAbsenceReportService implements IUnjustifiedAbsenceRepor
         {  for(int i=0;i<list.size();i++)
         {
             Object[] arr = (Object[]) list.get(i);
-            unjustifiedAbsenceReportDTO.add(new unjustifiedAbsenceReportDTO(arr[0].toString(),arr[1].toString(),arr[2].toString(),arr[3].toString(),arr[5].toString(),arr[7].toString(),arr[8].toString(),arr[9].toString()));
+          //  unjustifiedAbsenceReportDTO.add(new unjustifiedAbsenceReportDTO(String.valueOf(arr[0]),String.valueOf(arr[1]),String.valueOf(arr[2]),String.valueOf(arr[3]),String.valueOf(arr[6]),String.valueOf(arr[5]),String.valueOf(arr[7]),String.valueOf(arr[8]),String.valueOf(arr[9])));
+            unjustifiedAbsenceReportDTO.add(new unjustifiedAbsenceReportDTO(String.valueOf(arr[0]),String.valueOf(arr[1]),String.valueOf(arr[2]),String.valueOf(arr[3] == null ? "" :arr[3]),String.valueOf(arr[4]),String.valueOf(arr[5]),String.valueOf(arr[6]),String.valueOf(arr[7]),String.valueOf(arr[8])));
         }}
         return (mapper.map(unjustifiedAbsenceReportDTO, new TypeToken<List<unjustifiedAbsenceReportDTO>>() {
         }.getType()));

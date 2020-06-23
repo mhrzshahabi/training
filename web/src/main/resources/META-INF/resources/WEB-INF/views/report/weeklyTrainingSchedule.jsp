@@ -20,8 +20,8 @@
             {name: "tclass.course.titleFa"},
             {name: "tclass.course.categoryId"},
             {name: "tclass.course.subCategoryId"},
-            {name: "studentStatus"},
-            {name: "studentPresentStatus"}
+            {name: "studentStatus",canSort:false},
+            {name: "studentPresentStatus",canSort: false}
         ],
         fetchDataURL: studentPortalUrl + "/sessionService/specListWeeklyTrainingSchedule/" + userNationalCode_JspWeeklyTrainingSchedule
     });
@@ -121,9 +121,9 @@
                     ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
                     ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
 
-                    ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    /*ListGrid_Result_JspWeeklyTrainingSchedule.implicitCriteria = DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
                     ListGrid_Result_JspWeeklyTrainingSchedule.invalidateCache();
-                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();
+                    ListGrid_Result_JspWeeklyTrainingSchedule.fetchData();*/
 
                 }
             }
@@ -165,7 +165,10 @@
             },
             {
                 name: "sessionDate",
-                title: "تاریخ"
+                title: "تاریخ",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "sessionStartHour",
@@ -181,7 +184,13 @@
             {
                 name: "sessionHour",
                 title: "ساعت",
-                filterOperator: "equals"
+                filterOperator: "iContains",
+                displayField:"sessionStartHour",
+                displayValueFromRecord: false,
+                type: "TextItem",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
             {
                 name: "sessionStateFa",
@@ -213,12 +222,14 @@
                 },
                 sortNormalizer: function (record) {
                     return record.studentStatus;
-                }
+                },
+                canFilter: false
             },
             {
                 name: "studentPresentStatus",
                 title: "وضعیت حضور و غیاب شما",
                 align: "center",
+                canFilter: false,
                 valueMap: {
                     "0": "نامشخص",
                     "1": "حاضر",
@@ -254,6 +265,27 @@
     VLayout_Body_JspWeeklyTrainingSchedule = isc.TrVLayout.create({
         members: [
             HLayout_CriteriaForm_JspWeeklyTrainingSchedule,
+            isc.ToolStripButtonExcel.create({
+                margin:5,
+                click: function() {
+
+                    let criteria=DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+
+                    if(criteria==null){
+                        criteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule}
+                            ]
+                        };
+                    }else{
+                        criteria.criteria.splice(0,0,{fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule});
+                    }
+
+                    ExportToFile.showDialog(null, ListGrid_Result_JspWeeklyTrainingSchedule, 'weeklyTrainingSchedule', 0, null, '',  "برنامه ريزي آموزشي هفته", criteria, null);
+                }
+            }),
             HLayout_ListGrid_JspWeeklyTrainingSchedule
         ]
     });

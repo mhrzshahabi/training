@@ -48,7 +48,12 @@
         recordDoubleClick: function () {
 
         },
-        gridComponents: ["filterEditor", "header", "body"],
+        gridComponents: [isc.ToolStripButtonExcel.create({
+            margin:5,
+            click: function () {
+                ExportToFile.downloadExcelFromClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
+            }
+        }),"filterEditor", "header", "body"],
         dataArrived: function ()
         {
             modalDialog.close();
@@ -214,16 +219,12 @@
     var ToolStrip_ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
         width: "30%",
         padding:16,
-        members: [ToolStrip_Actions,
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    ExportToFile.DownloadExcelFormClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
-                }
-            })
+        members: [
+            ToolStrip_Actions
         ]
     });
 
-    var Hlayout__Personnel_Info_Training_body = isc.HLayout.create({
+    var Hlayout__Personnel_Info_Training_body_CWOTR = isc.HLayout.create({
         height:"10%",
         top:20,
         members: [ToolStrip_ToolStrip_Personnel_Info_Training_Action]
@@ -232,7 +233,7 @@
 
     var Hlayout_Reaport_body = isc.HLayout.create({
         height:"10%",
-        members: [DynamicForm_Report_CourseWithOutTeacher, Hlayout__Personnel_Info_Training_body]
+        members: [DynamicForm_Report_CourseWithOutTeacher, Hlayout__Personnel_Info_Training_body_CWOTR]
     })
 
     var Hlayout_Reaport_body1=isc.HLayout.create({

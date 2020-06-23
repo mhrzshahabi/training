@@ -21,6 +21,7 @@ public class PostGradeGroupDTO implements Serializable {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
+    private String code;
     private String titleEn;
     private String description;
 
@@ -45,6 +46,7 @@ public class PostGradeGroupDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("PostGradeGroup - Update")
     public static class Update extends PostGradeGroupDTO {
+        private Long id;
     }
 
     @Getter

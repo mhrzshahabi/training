@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken1 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -19,6 +20,7 @@
     {
         Menu_ListGrid_session = isc.Menu.create({
             data: [
+                <sec:authorize access="hasAuthority('TclassSessionsTab_R')">
                 {
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
@@ -26,6 +28,10 @@
                         ListGrid_session.invalidateCache();
                     }
                 },
+                </sec:authorize>
+
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_C')">
                 {
                     title: "<spring:message code="create"/>",
                     // title: "<spring:message code="create"/>",
@@ -34,6 +40,9 @@
                         create_Session();
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_U')">
                 {
                     title: "<spring:message code="edit"/>",
                     icon: "<spring:url value="edit.png"/>",
@@ -41,16 +50,24 @@
                         show_SessionEditForm();
                     }
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_D')">
                 {
-                    title: "<spring:message code="remove"/>",
+                    title: "<spring:message code="remove.and.group.remove"/>",
                     icon: "<spring:url value="remove.png"/>",
                     click: function () {
                         remove_Session();
                     }
                 },
+                </sec:authorize>
+
+
                 {
                     isSeparator: true
                 },
+
+                <sec:authorize access="hasAuthority('TclassSessionsTab_P')">
                 {
                     title: "<spring:message code="print.pdf"/>",
                     icon: "<spring:url value="pdf.png"/>",
@@ -72,6 +89,7 @@
                         print_SessionListGrid("html");
                     }
                 }
+               </sec:authorize>
             ]
         })
     }
@@ -115,15 +133,18 @@
         var ListGrid_session = isc.TrLG.create({
             width: "100%",
             height: "100%",
+
+            <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
             dataSource: RestDataSource_session,
-            contextMenu: Menu_ListGrid_session,
+            </sec:authorize>
+           // contextMenu: Menu_ListGrid_session,
             canAddFormulaFields: false,
             // autoFetchData: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
+            selectionType: "multiple",
             filterOnKeypress: true,
-            selectionType: "single",
             initialSort: [
                 {property: "sessionDate", direction: "ascending"},
                 {property: "sessionStartHour", direction: "ascending"}
@@ -147,19 +168,28 @@
                     name: "sessionDate",
                     title: "<spring:message code="date"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "sessionStartHour",
                     title: "<spring:message code="start.time"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 },
                 {
                     name: "sessionEndHour",
                     title: "<spring:message code="end.time"/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9|:]"
+                    }
                 }, {
                     name: "sessionTypeId",
                     title: "sessionTypeId",
@@ -209,7 +239,7 @@
                     align: "center",
                     filterOperator: "iContains"
                 },
-                {
+                /*{
                     name: "sessionState",
                     title: "sessionState",
                     align: "center",
@@ -221,7 +251,7 @@
                     title: "<spring:message code="session.state"/>",
                     align: "center",
                     filterOperator: "iContains"
-                }, {
+                },*/ {
                     name: "description",
                     title: "<spring:message code="description"/>",
                     align: "center",
@@ -235,13 +265,17 @@
                     let result="background-color : ";
                     let blackColor="; color:black";
 
+                if (this.isSelected(record)) {
+                    return "background-color: #fe9d2a;";
+                }
+
                     switch (record.dayCode) {
                         case 'Sat':
-                            result+="#7d6b99";
+                            result+="#989899";
                             break;
 
                         case 'Sun':
-                            result+="#ff88d2";
+                            result+="#ffd1f2"+blackColor;
                             break;
 
                         case 'Mon':
@@ -249,19 +283,19 @@
                             break;
 
                         case 'Tue':
-                            result+="#CD5C5C";
+                            result+="#cdb7a3"+blackColor;
                             break;
 
                         case 'Wed':
-                            result+="#32CD32";
+                            result+="#80cd86";
                             break;
 
                         case 'Thu':
-                            result+="#ffd700"+blackColor;
+                            result+="#ffff77"+blackColor;
                             break;
 
                         case 'Fri':
-                            result+="#ADD8E6"+blackColor;
+                            result+="#bedae6"+blackColor;
                             break;
                     }//end switch-case
                 return result;
@@ -296,32 +330,42 @@
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
             click: function () {
                 ListGrid_session.invalidateCache();
             }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_C','TclassSessionsTab_classStatus')">
         var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
             title: "<spring:message code="create" />",
             click:
                 function () {
                     create_Session();
                 }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_U','TclassSessionsTab_classStatus')">
         var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
             click: function () {
                 show_SessionEditForm();
             }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_D','TclassSessionsTab_classStatus')">
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+            title: "<spring:message code="remove.and.group.remove" />",
             click: function () {
                 remove_Session();
             }
-        });
+        })
+        </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_P','TclassSessionsTab_classStatus')">
         var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
             click: function () {
                 print_SessionListGrid("pdf");
@@ -334,19 +378,27 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.DownloadExcelFormClient(ListGrid_session, ListGrid_Class_JspClass, '', "کلاس - جلسات");
+                        ExportToFile.downloadExcelFromClient(ListGrid_session, ListGrid_Class_JspClass, '', "کلاس - جلسات");
                     }
                 })]
         });
+        </sec:authorize>
 
         var ToolStrip_session = isc.ToolStrip.create({
             width: "100%",
             members: [
+
                 ToolStripButton_Add,
                 ToolStripButton_Edit,
                 ToolStripButton_Remove,
+
+
+
                 ToolStripButton_Print,
                 ToolStrip_Excel_JspClass,
+
+
+
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -355,6 +407,7 @@
                         ToolStripButton_Refresh
                     ]
                 })
+
             ]
         });
     }
@@ -406,19 +459,30 @@
                         type: "SpacerItem"
                     },
                     {
-                        name: "sessionTime",
-                        title: "<spring:message code="session.time"/>",
-                        type: "selectItem",
-                        textAlign: "center",
+                        name: "sessionStartHour",
+                        title: "<spring:message code="session.start.hour"/>",
                         required: true,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
-                        valueMap: {
-                            "1": "08-10",
-                            "2": "10-12",
-                            "3": "14-16"
-                        },
-                        pickListProperties: {
-                            showFilterEditor: false
+                        hint: "--:--",
+                        keyPressFilter: "[0-9:]",
+                        showHintInField: true,
+                        textAlign: "center",
+                        /*blur: function () {
+                            let val=DynamicForm_Session.getValue("sessionStartHour");
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
+                                DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
+                            }
+                        },*/
+                        editorExit:function(){
+                            let val=DynamicForm_Session.getValue("sessionStartHour");
+
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                                DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
+                            }
                         }
                     },
                     {
@@ -441,7 +505,7 @@
                     {
                         type: "SpacerItem"
                     },
-                    {
+                    /*{
                         name: "sessionState",
                         title: "<spring:message code="session.state"/>",
                         type: "selectItem",
@@ -456,6 +520,32 @@
                         defaultValue: "1",
                         pickListProperties: {
                             showFilterEditor: false
+                        }
+                    },*/
+                    {
+                        name: "sessionEndHour",
+                        title: "<spring:message code="session.end.hour"/>",
+                        required: true,
+                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                        hint: "--:--",
+                        keyPressFilter: "[0-9:]",
+                        showHintInField: true,
+                        textAlign: "center",
+                        /*blur: function () {
+                            let val=DynamicForm_Session.getValue("sessionEndHour");
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
+                                DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
+                            }
+                        },*/
+                        editorExit:function(){
+                            let val=DynamicForm_Session.getValue("sessionEndHour");
+                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                                DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
+                            }else{
+                                DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
+                            }
                         }
                     },
                     {
@@ -526,10 +616,12 @@
                                 let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
                                 let courseId = ClassRecord.course.id;
 
-                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
+                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId+"/0";
+                                RestDataSource_Teacher_JspClass.invalidateCache();
                                 item.fetchData();
                             } else {
-                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
+                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0/0";
+                                RestDataSource_Teacher_JspClass.invalidateCache();
                                 item.fetchData();
                                 let dialogTeacher = isc.MyOkDialog.create({
                                     message: "<spring:message code="msg.record.select.class.ask"/>",
@@ -711,7 +803,7 @@
             //**add new property to form values**
             sessionData["classId"] = classId;
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
-            sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
+            //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
@@ -735,13 +827,15 @@
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
                     let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
                     let courseId = ClassRecord.course.id;
+                    let teacherId =ClassRecord.teacherId;
 
                     let startHour_ = record.sessionStartHour.split(':')[0].trim();
                     record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
 
                     DynamicForm_Session.getField("instituteId").fetchData();
                     RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
-                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
+                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId+"/"+teacherId;
+                    RestDataSource_Teacher_JspClass.invalidateCache();
 
                     session_method = "PUT";
                     DynamicForm_Session.clearValues();
@@ -772,13 +866,14 @@
             }
 
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
-            sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
+            //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionEditUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
 
         //*****delete function*****
         function remove_Session() {
+         /* Hamed Jafari:
             var record = ListGrid_session.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
@@ -805,6 +900,43 @@
                 } else {
                     simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
                 }
+            }*/
+
+            let sessionIds=[];
+            let records = ListGrid_session.getSelectedRecords();
+
+            if (records.length == 0) {
+                isc.Dialog.create({
+                    message: "<spring:message code="msg.no.records.selected"/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    isc.MyYesNoDialog.create({
+                        message: "<spring:message code="msg.record.removes.ask"/>",
+                        title: "<spring:message code="verify.delete"/>",
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                studentRemoveWait = isc.Dialog.create({
+                                    message: "<spring:message code='msg.waiting'/>",
+                                    icon: "[SKIN]say.png",
+                                    title: "<spring:message code='message'/>"
+                                });
+
+                                records.forEach(item=> sessionIds=[...sessionIds,parseInt(item.id)]);
+                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "deleteSessions/" + sessionIds , "DELETE", null, show_SessionActionResult));
+                            }
+                        }
+                    });
+                } else {
+                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
+                }
             }
         }
 
@@ -818,9 +950,40 @@
                 let responseID = JSON.parse(resp.data).id;
                 let gridState = "[{id:" + responseID + "}]";
 
-                MyOkDialog_Session = isc.MyOkDialog.create({
-                    message: "<spring:message code="global.form.request.successful"/>"
-                });
+                let dataTemp=JSON.parse(resp.data);
+                let success=parseInt(dataTemp.sucesses);
+                let totalSizes=parseInt(dataTemp.totalSizes);
+                let failures=totalSizes-success;
+
+                studentRemoveWait.close();
+
+                if (success!=0 && failures!=0)
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>"+
+                                 getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
+
+                else if (success!=0)
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
+
+                else
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
 
                 setTimeout(function () {
 
@@ -830,7 +993,7 @@
 
                     ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
 
-                }, 1000);
+                },2000);
 
                 Window_Session.close();
 
@@ -838,7 +1001,15 @@
 
                 let respText = JSON.parse(resp.httpResponseText);
 
-                if (resp.httpResponseCode === 406) {
+                if (resp.httpResponseCode === 409) {
+
+                    MyOkDialog_Session = isc.MyOkDialog.create({
+                        message: respText.message
+                    });
+
+                    close_MyOkDialog_Session()
+
+                } else if (resp.httpResponseCode === 406) {
 
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: respText.message
@@ -867,7 +1038,7 @@
         function close_MyOkDialog_Session() {
             setTimeout(function () {
                 MyOkDialog_Session.close();
-            }, 3000);
+            }, 2000);
         }
 
         //*****print*****
@@ -911,10 +1082,31 @@
 
 
         function loadPage_session() {
-            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+           let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (!(classRecord == undefined || classRecord == null)) {
                 //RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
                 RestDataSource_session.fetchDataURL = sessionServiceUrl + "iscList/" + classRecord.id;
+
+                if(classRecord.classStatus === "3")
+                {
+                    <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_C','TclassSessionsTab_U','TclassSessionsTab_D','TclassSessionsTab_P')">
+                    ToolStrip_session.setVisibility(false)
+                    </sec:authorize>
+                }
+                else
+                {
+                    <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_C','TclassSessionsTab_U','TclassSessionsTab_D','TclassSessionsTab_P')">
+                    ToolStrip_session.setVisibility(true)
+                    </sec:authorize>
+                }
+
+                if (classRecord.classStatus === "3")
+                {
+                    <sec:authorize access="hasAuthority('TclassSessionsTab_classStatus')">
+                    ToolStrip_session.setVisibility(true)
+                    </sec:authorize>
+                }
+
                 ListGrid_session.invalidateCache();
                 ListGrid_session.fetchData();
             }

@@ -11,5 +11,5 @@ public interface IPersonnelInformationService {
 
     TclassDTO.ClassDetailInfo findClassById(Long classId);
 
-    List<TclassDTO.Info> findClassesByCourseId(Long courseId);
+    List<TclassDTO.TclassHistory> findClassesByCourseId(Long courseId);
 }

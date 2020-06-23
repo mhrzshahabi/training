@@ -20,12 +20,27 @@
     isc.ToolStrip.create({
         ID: "CompetenceTS_competence",
         members: [
+            // isc.ToolStripButton.create({
+            //     title: 'نمايش شایستگی ها از وبسرويس',
+            //     click: function () {
+            //         CompetenceLG_competence_Webservice.invalidateCache();
+            //         CompetenceLG_competence_Webservice.fetchData();
+            //         Window_WebService_CompetenceWin_competence.show();
+            //     }
+            // }),
             isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competence); }}),
             isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
             isc.ToolStripButtonEdit.create({click: function () { editCompetence_competence(); }}),
             isc.ToolStripButtonRemove.create({click: function () { removeCompetence_competence(); }}),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "CompetenceLGCountLabel_competence"}),
+        ]
+    });
+
+    isc.ToolStrip.create({
+        ID: "CompetenceTS_competence_webservice",
+        members: [
+            isc.Label.create({ID: "CompetenceLGCountLabel_competence_webservice"}),
         ]
     });
 
@@ -42,6 +57,18 @@
         fetchDataURL: competenceUrl + "/iscList",
     });
 
+    CompetenceDS_competence_Webservice = isc.TrDS.create({
+        ID: "CompetenceDS_competence_Webservice",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceTypeId", hidden: true},
+            {name: "competenceType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: masterDataUrl + "/competence/iscList",
+    });
+
     CompetenceLG_competence = isc.TrLG.create({
         ID: "CompetenceLG_competence",
         dataSource: CompetenceDS_competence,
@@ -53,6 +80,17 @@
         contextMenu: CompetenceMenu_competence,
         dataChanged: function () { updateCountLabel(this, CompetenceLGCountLabel_competence)},
         recordDoubleClick: function () { editCompetence_competence(); }
+    });
+
+    CompetenceLG_competence_Webservice = isc.TrLG.create({
+        ID: "CompetenceLG_competence_Webservice",
+        dataSource: CompetenceDS_competence_Webservice,
+        autoFetchData: true,
+        fields: [{name: "title"}, {name: "competenceType.title",canFilter:false,canSort:false}, {name: "description",canFilter:false,canSort:false}],
+        gridComponents: [
+            CompetenceTS_competence_webservice,"filterEditor", "header", "body"
+        ],
+        dataChanged: function () { updateCountLabel(this, CompetenceTS_competence_webservice)},
     });
 
     CompetenceTypeDS_competence = isc.TrDS.create({
@@ -87,6 +125,36 @@
                 isc.IButtonCancel.create({click: function () { CompetenceWin_competence.close(); }}),
             ],
         }),]
+    });
+
+    var Window_WebService_CompetenceWin_competence = isc.Window.create({
+        title: "<spring:message code='competence'/>",
+        width: "100%",
+        height: "100%",
+        minWidth: "100%",
+        minHeight: "100%",
+        autoSize: false,
+        items: [
+            CompetenceLG_competence_Webservice,
+            isc.HLayout.create({
+                width: "100%",
+                height: "6%",
+                autoDraw: false,
+                align: "center",
+                members: [
+                    isc.IButton.create({
+                        title: "<spring:message code='close'/>",
+                        icon: "[SKIN]/actions/cancel.png",
+                        width: "70",
+                        align: "center",
+                        click: function () {
+                            Window_WebService_CompetenceWin_competence.close();
+                        }
+                    })
+                ]
+            })
+
+        ]
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -125,8 +193,9 @@
             action = '<spring:message code="edit"/>';
         }
         let data = CompetenceDF_competence.getValues();
+        let entityTitle = data.title
         isc.RPCManager.sendRequest(
-            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence)")
+            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence,'" + entityTitle + "')")
         );
     }
 

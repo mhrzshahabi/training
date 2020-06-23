@@ -89,21 +89,30 @@
                     title: "<spring:message code="class.duration"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
                 },
                 {
                     name: "startDate",
                     title: "<spring:message code="start.date"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "endDate",
                     title: "<spring:message code="end.date"/>",
                     align: "center",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9/]"
+                    }
                 },
                 {
                     name: "firstSession",
@@ -191,6 +200,15 @@
         height: "100%",
         members: [
             ToolStripButton_Print_UCReport,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "right",
+                members: [isc.ToolStripButtonExcel.create({
+                    click: function() {
+                        ExportToFile.showDialog(null, ListGrid_UCReport, 'unfinishedClassesReport', 0, null, '',  "کلاس هاي پايان نيافته", ListGrid_UCReport.data.criteria, null);
+                    }
+                })]
+            }),
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface IPersonnelRegisteredService {
@@ -25,6 +26,8 @@ public interface IPersonnelRegisteredService {
     void delete(PersonnelRegisteredDTO.Delete request);
 
     SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request);
+
+    List<PersonnelRegisteredDTO.Info> checkPersonnelNos(List<String> personnelNos);
 
     TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request);
 

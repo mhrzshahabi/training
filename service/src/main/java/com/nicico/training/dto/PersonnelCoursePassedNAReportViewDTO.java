@@ -57,4 +57,25 @@ public class PersonnelCoursePassedNAReportViewDTO {
         private String personnelCcpTitle;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("MinInfo")
+    public static class MinInfo{
+        private Long courseId;
+        private String courseCode;
+        private String courseTitleFa;
+        private String personnelPersonnelNo;
+        private String personnelPersonnelNo2;
+        private String personnelFirstName;
+        private String personnelLastName;
+        private String personnelNationalCode;
+        private String personnelPostTitle;
+        private String personnelCcpAffairs;
+        private String personnelCcpSection;
+        private String personnelCcpUnit;
+        private String personnelPostCode;
+        private Long priorityId;
+        private Long isPassed;
+    }
 }

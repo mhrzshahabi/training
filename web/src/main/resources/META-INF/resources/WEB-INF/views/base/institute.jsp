@@ -15,8 +15,10 @@
     var institute_Institute_Account_Url = rootUrl + "/institute-account/";
     var institute_Institute_TrainingPlace_Url = rootUrl + "/trainingPlace/";
     var institute_Bank_Url = rootUrl + "/bank/";
+    var institute_Manager_Url = rootUrl + "/personalInfo/";
     var equipmentDestUrl = "";
     var globalWait = undefined;
+    var InstituteManagerEdit=false;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -25,8 +27,8 @@
     var RestDataSource_Institute_Institute = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa"},
-            {name: "titleEn"},
+            {name: "titleFa",canSort:false},
+            {name: "titleEn",canSort:false},
             {name: "stateId"},
             {name: "cityId"},
             {name: "state.name"},
@@ -49,34 +51,41 @@
             {name: "teacherNumDiploma"},
             {name: "empNumDiploma"},
             {name: "managerId"},
-            {name: "manager.firstNameFa"},
-            {name: "manager.lastNameFa"},
+            {name: "manager.firstNameFa",canSort:false},
+            {name: "manager.lastNameFa",canSort:false},
             {name: "manager.nationalCode"},
             {name: "parentInstituteId"},
-            {name: "parentInstitute.titleFa"},
-            {name: "einstituteType.titleFa"},
-            {name: "elicenseType.titleFa"},
+            {name: "parentInstitute.titleFa",canSort:false},
+            {name: "companyTypeId", hidden: true},
+            {name: "companyType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains",canSort:false},
+            {name: "licenseTypeId", hidden: true},
+            {name: "licenseType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains",canSort:false},
             {name: "version"}
         ],
         fetchDataURL: institute_Institute_Url + "spec-list"
+    });
+
+    var RestDataSource_TupleInstitute_Institute = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"},
+            {name: "titleEn"},
+        ],
+        fetchDataURL: institute_Institute_Url + "iscTupleList"
     });
 
     var RestDataSource_Institute_Institute_Account = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "instituteId"},
-            {name: "bank.titleFa"},
-            {name: "bankBranch.titleFa"},
-            {name: "bankId"},
-            {name: "bankBranchId"},
+            {name: "bank"},
+            {name: "bankBranch"},
+            {name: "bankBranchCode"},
             {name: "accountNumber"},
             {name: "cartNumber"},
             {name: "shabaNumber"},
-            {name: "accountOwnerName"},
-            {name: "isEnable"},
-            {name: "description"}
         ],
-        fetchDataURL: institute_Institute_Url + "account-dummy"
+        fetchDataURL: institute_Institute_Account_Url
     });
 
     var RestDataSource_Institute_TrainingPlace = isc.TrDS.create({
@@ -93,6 +102,7 @@
         ],
         fetchDataURL: institute_Institute_Url + "trainingPlace/0"
     });
+
     var RestDataSource_Institute_TrainingPlace_Equipment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -114,6 +124,7 @@
         ],
         fetchDataURL: institute_Institute_Url + "equipment-dummy"
     });
+
     var RestDataSource_Institute_Institite_UnAttachedEquipment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -137,13 +148,14 @@
         ],
         fetchDataURL: institute_Institute_Url + "teacher-dummy"
     });
+
     var RestDataSource_Institute_Institite_UnAttachedTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "teacherCode"},
-            {name: "personality.firstNameFa"},
-            {name: "personality.lastNameFa"},
-            {name: "personality.nationalCode"},
+            {name: "teacherCode" ,filterOperator: "iContains"},
+            {name: "personality.firstNameFa", filterOperator: "iContains"},
+            {name: "personality.lastNameFa", filterOperator: "iContains"},
+            {name: "personality.nationalCode", filterOperator: "iContains"},
             {name: "economicalCode"},
             {name: "economicalRecordNumber"}
         ],
@@ -157,6 +169,7 @@
         ],
         fetchDataURL: cityUrl + "spec-list"
     });
+
     var RestDataSource_Institute_State = isc.TrDS.create({
         fields: [
             {name: "id"},
@@ -175,6 +188,7 @@
         ],
         fetchDataURL: institute_Bank_Url + "spec-list"
     });
+
     var RestDataSource_Institute_BankBranch = isc.TrDS.create({
         fields: [
             {name: "id"},
@@ -194,43 +208,49 @@
         ],
         fetchDataURL: enumUrl + "ePlaceType/spec-list"
     });
+
     var RestDataSource_Institute_EArrangementType = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eArrangementType/spec-list"
     });
+
     var RestDataSource_Institute_EInstituteType = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}
+        fields: [{name: "id"}, {name: "title"}
         ],
-        fetchDataURL: enumUrl + "eInstituteType/spec-list"
+        fetchDataURL:  parameterValueUrl + "/iscList/276"
     });
+
     var RestDataSource_Institute_ELicenseType = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}
+        fields: [{name: "id"}, {name: "title"}
         ],
-        fetchDataURL: enumUrl + "eLicenseType/spec-list"
+        fetchDataURL: parameterValueUrl  + "/iscList/277"
     });
 
     var RestDataSource_Institute_PersonalInfo_List = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "firstNameFa"},
-            {name: "lastNameFa"},
-            {name: "fatherName"},
-            {name: "nationalCode"},
-            {name: "birthDate"}
+            {name: "firstNameFa",canSort:false},
+            {name: "lastNameFa",canSort:false},
+            {name: "nationalCode",canSort:false},
+            {name: "contactInfo.mobile",canSort:false},
+            {name: "contactInfo.email",canSort:false}
         ],
         fetchDataURL: personalInfoUrl + "spec-list"
     });
+
     var RestDataSource_Institute_Institute_List = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "manager.firstNameFa"},
-            {name: "manager.lastNameFa"},
-            {name: "parentInstitute.titleFa"},
-            {name: "einstituteType.titleFa"},
-            {name: "elicenseType.titleFa"}
+            {name: "titleFa",canSort:false},
+            {name: "titleEn",canSort:false},
+            {name: "manager.firstNameFa",canSort:false},
+            {name: "manager.lastNameFa",canSort:false},
+            {name: "parentInstitute.titleFa",canSort:false},
+            {name: "companyTypeId", hidden: true},
+            {name: "companyType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains",canSort:false},
+            {name: "licenseTypeId", hidden: true},
+            {name: "licenseType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains",canSort:false},
         ],
         fetchDataURL: institute_Institute_Url + "spec-list"
     });
@@ -307,7 +327,7 @@
                 name: "manager.firstNameFa",
                 title: "<spring:message code='manager.name'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
             },
             {
                 name: "manager.lastNameFa",
@@ -321,29 +341,47 @@
                 align: "center",
                 filterOperator: "iContains"
             },
+            <%--{--%>
+            <%--    name: "parentInstituteId",--%>
+            <%--    title: "<spring:message code='institute.parent'/>",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains"--%>
+            <%--},--%>
             {
-                name: "einstituteType.titleFa",
+                name: "companyTypeId",
                 title: "<spring:message code='institute.type'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "equals",
+                textAlign: "center",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EInstituteType,
+                addUnknownValues: false,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                },
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
             {
-                name: "elicenseType.titleFa",
+                name: "licenseTypeId",
                 title: "<spring:message code='diploma.type'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "equals",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_ELicenseType,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
-            {name: "state.name", hidden: true},
-            {name: "city.name", hidden: true},
-            {name: "restAddress", hidden: true},
-            {name: "stateId", hidden: true},
-            {name: "cityId", hidden: true},
-            {name: "postalCode", hidden: true},
-            {name: "phone", hidden: true},
-            {name: "fax", hidden: true},
-            {name: "mobile", hidden: true},
-            {name: "e_mail", hidden: true},
-            {name: "webSite", hidden: true},
             {name: "teacherNumPHD", hidden: true},
             {name: "empNumPHD", hidden: true},
             {name: "teacherNumLicentiate", hidden: true},
@@ -379,7 +417,7 @@
             } else {
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
                 RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
-                RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
+                RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Account_Url + record.id + "/accounts";
                 RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/trainingPlaces";
                 ListGrid_Institute_Institute_Account.invalidateCache();
                 ListGrid_Institute_Institute_Account.fetchData();
@@ -440,6 +478,7 @@
         autoFetchData: false,
         showFilterEditor: false,
     });
+
     var ListGrid_Institute_Attached_Equipment = isc.TrLG.create({
         width: "100%",
         height: "100%",
@@ -460,6 +499,7 @@
         doubleClick: function () {
         }
     });
+
     var ListGrid_Institute_Institute_Account = isc.TrLG.create({
         width: "100%",
         height: "100%",
@@ -467,14 +507,12 @@
         dataSource: RestDataSource_Institute_Institute_Account,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "bank.titleFa", title: "<spring:message code='bank.title'/>", align: "center"},
-            {name: "bankBranch.titleFa", title: "<spring:message code='bank.branch.title'/>", align: "center"},
+            {name: "bank", title: "<spring:message code='bank.title'/>", align: "center"},
+            {name: "bankBranch", title: "<spring:message code='bank.branch.title'/>", align: "center"},
+            {name: "bankBranchCode", title: "<spring:message code='bank.branch.code'/>", align: "center"},
             {name: "accountNumber", title: "<spring:message code='account.number'/>", align: "center"},
             {name: "cartNumber", title: "<spring:message code='cart.number'/>", align: "center"},
             {name: "shabaNumber", title: "<spring:message code='shaba.number'/>", align: "center"},
-            {name: "accountOwnerName", title: "<spring:message code='account.owner.name'/>", align: "center"},
-            {name: "isEnable", title: "<spring:message code='isEnable'/>", align: "center"},
-            {name: "description", title: "<spring:message code='description'/>", align: "center"}
         ],
         selectionType: "multiple",
         sortDirection: "descending",
@@ -530,6 +568,7 @@
             }
         }
     });
+
     var ListGrid_Institute_TrainingPlece_Equipment = isc.TrLG.create({
         width: "100%",
         height: "100%",
@@ -588,17 +627,40 @@
                 filterOperator: "iContains"
             },
             {
-                name: "einstituteType.titleFa",
+                name: "companyTypeId",
                 title: "<spring:message code='institute.type'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "equals",
+                textAlign: "center",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EInstituteType,
+                addUnknownValues: false,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                },
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
             {
-                name: "elicenseType.titleFa",
+                name: "licenseTypeId",
                 title: "<spring:message code='diploma.type'/>",
                 align: "center",
-                filterOperator: "iContains"
-            }
+                filterOperator: "equals",
+                type: "SelectItem",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_ELicenseType,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
+            },
         ],
         sortDirection: "descending",
         dataPageSize: 50,
@@ -606,14 +668,15 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         doubleClick: function () {
             Function_Institute_InstituteList_Selected();
         }
     });
+
     var ListGrid_Institute_PersonalInfo_List = isc.TrLG.create({
         width: "100%",
-        height: "100%",
+        height: "80%",
         dataSource: RestDataSource_Institute_PersonalInfo_List,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -630,24 +693,23 @@
                 filterOperator: "iContains"
             },
             {
-                name: "fatherName",
-                title: "<spring:message code='father.name'/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
-            {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 align: "center",
                 filterOperator: "iContains"
             },
             {
-                name: "birthDate",
-                title: "<spring:message code='birth.date'/>",
+                name: "contactInfo.mobile",
+                title: "<spring:message code='mobile'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "contactInfo.email",
+                title: "<spring:message code='email'/>",
                 align: "center",
                 filterOperator: "iContains"
             }
-
         ],
         sortDirection: "descending",
         dataPageSize: 50,
@@ -655,7 +717,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         doubleClick: function () {
             Function_Institute_PersonalList_Selected();
         }
@@ -712,6 +774,44 @@
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 length: "255"
             },
+            <%--{--%>
+            <%--    name: "parentInstituteId",--%>
+            <%--    title: "<spring:message code='institute.parent'/>",--%>
+            <%--    iconWidth: 16,--%>
+            <%--    iconHeight: 16,--%>
+            <%--    suppressBrowserClearIcon: true,--%>
+            <%--    icons: [--%>
+            <%--    //     {--%>
+            <%--    //     name: "add",--%>
+            <%--    //     src: "[SKIN]/actions/add.png",--%>
+            <%--    //     click: function (form, item, icon) {--%>
+            <%--    //         ListGrid_Institute_InstituteList_Select();--%>
+            <%--    //     },--%>
+            <%--    // },--%>
+            <%--        {--%>
+            <%--            name: "remove",--%>
+            <%--            src: "[SKIN]/actions/remove.png",--%>
+            <%--            click: function (form, item, icon) {--%>
+            <%--                DynamicForm_Institute_Institute.clearValue("parentInstituteId");--%>
+            <%--                DynamicForm_Institute_Institute.clearValue("parentInstitute.titleFa")--%>
+            <%--            },--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--    // click: function (form, item, icon) {--%>
+            <%--    //     ListGrid_Institute_InstituteList_Select();--%>
+            <%--    // },--%>
+            <%--    // readOnly: true,--%>
+            <%--    type: "ComboBoxItem",--%>
+            <%--    optionDataSource: RestDataSource_TupleInstitute_Institute,--%>
+            <%--    valueField: "id",--%>
+            <%--    displayField: "titleFa",--%>
+            <%--    filterFields: ["titleFa","titleFa"],--%>
+            <%--    // keyPressFilter: "[]",--%>
+            <%--    pickListFields: [{name: "titleFa", width: "30%", filterOperator: "iContains"}],--%>
+            <%--    textMatchStyle: "substring",--%>
+            <%--    pickListProperties: {showFilterEditor: false, allowAdvancedCriteria: true},--%>
+            <%--    width: "*",--%>
+            <%--},--%>
             {
                 name: "parentInstituteId",
                 title: "<spring:message code='institute.parent'/>",
@@ -724,7 +824,16 @@
                     click: function (form, item, icon) {
                         ListGrid_Institute_InstituteList_Select();
                     },
-                }],
+                },
+                    {
+                        name: "remove",
+                        src: "[SKIN]/actions/remove.png",
+                        click: function (form, item, icon) {
+                            DynamicForm_Institute_Institute.clearValue("parentInstituteId");
+                            DynamicForm_Institute_Institute.clearValue("parentInstitute.titleFa")
+                        },
+                    }
+                ],
                 click: function (form, item, icon) {
                     ListGrid_Institute_InstituteList_Select();
                 },
@@ -771,8 +880,7 @@
                 title: "<spring:message code='account.number'/>",
                 showTitle: false,
                 canEdit: false,
-                colSpan: 2,
-                width: "*",
+                width: "10%",
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "30"
@@ -782,14 +890,13 @@
                 title: "<spring:message code='cart.number'/>",
                 canEdit: false,
                 showTitle: false,
-                colSpan: 2,
-                width: "*",
+                width: "10%",
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "30"
             },
             {
-                name: "einstituteTypeId",
+                name: "companyTypeId",
                 type: "IntegerItem",
                 colSpan: 2,
                 title: "<spring:message code='institute.type'/>",
@@ -797,14 +904,14 @@
                 textAlign: "center",
                 editorType: "SelectItem",
                 changeOnKeypress: true,
-                displayField: "titleFa",
+                displayField: "title",
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_EInstituteType,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
-                filterFields: ["titleFa"],
+                filterFields: ["title"],
                 required: true,
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -813,10 +920,10 @@
                     showFilterEditor: true,
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
             {
-                name: "elicenseTypeId",
+                name: "licenseTypeId",
                 type: "IntegerItem",
                 title: "<spring:message code='diploma.type'/>",
                 colSpan: 2,
@@ -824,7 +931,7 @@
                 editorType: "SelectItem",
                 width: "*",
                 changeOnKeypress: true,
-                displayField: "titleFa",
+                displayField: "title",
                 valueField: "id",
                 required: true,
                 optionDataSource: RestDataSource_Institute_ELicenseType,
@@ -832,7 +939,7 @@
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
-                filterFields: ["titleFa"],
+                filterFields: ["title"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
@@ -840,7 +947,7 @@
                     showFilterEditor: true,
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "title", width: "30%", filterOperator: "iContains"}],
             },
             {
                 name: "instituteId",
@@ -992,68 +1099,22 @@
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
         fields: [
+            {name: "contactInfo.id", hidden: true},
             {
-                name: "stateId",
-                type: "IntegerItem",
-                title: "<spring:message code='state'/>",
-                textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "name",
-                required: true,
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_State,
-                autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "name", width: "30%", filterOperator: "iContains"}],
-            },
-            {
-                name: "cityId",
-                type: "IntegerItem",
-                title: "<spring:message code='city'/>",
-                textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-// defaultToFirstOption: true,
-                required: true,
-                displayField: "name",
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_City,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "name", width: "30%", filterOperator: "iContains"}]
-            },
-            {
-                name: "postalCode",
+                name: "contactInfo.workAddress.postalCode",
+                validators: [TrValidators.PostalCodeValidate],
                 title: "<spring:message code='post.code'/>",
                 keyPressFilter: "[0-9|-| ]",
                 width: "*",
                 length: "11",
+                changed: function (form, item, value) {
+                    if (value == null || !this.validate())
+                        return;
+                    fillAddressFields(value);
+                }
             },
             {
-                name: "phone",
+                name: "contactInfo.workAddress.phone",
                 keyPressFilter: "[0-9|-]",
                 title: "<spring:message code='telephone'/>",
                 width: "*",
@@ -1062,15 +1123,49 @@
                 blur: function () {
                     var phoneCheck;
                     phoneCheck = checkPhone(DynamicForm_Institute_Institute_Address.getValue("phone"));
-                    if (phoneCheck === false)
+                    if (phoneCheck!==undefined && phoneCheck === false)
                         DynamicForm_Institute_Institute_Address.addFieldErrors("phone", "<spring:message code='msg.invalid.phone.number'/>", true);
-                    if (mobileCheck === true)
+                    if (mobileCheck!==undefined &&  mobileCheck === true)
                         DynamicForm_Institute_Institute_Address.clearFieldErrors("phone", true);
                 },
                 length: "12"
             },
             {
-                name: "mobile",
+                name: "contactInfo.workAddress.stateId",
+                title: "<spring:message code='state'/>",
+                textAlign: "center",
+                optionDataSource: RestDataSource_Institute_State,
+                required: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
+                displayField: "name",
+                valueField: "id",
+                filterFields: ["name"],
+                changed: function (form, item, value) {
+                    DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
+                    if (value !== null && value !== undefined) {
+                        RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + value;
+                        DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").fetchData();
+                    }
+                },
+            },
+            {
+                name: "contactInfo.workAddress.cityId",
+                title: "<spring:message code='city'/>",
+                prompt: "<spring:message code="msg.city.choose.state.first"/>",
+                optionDataSource: RestDataSource_Institute_City,
+                textAlign: "center",
+                destroyed: true,
+                required: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
+                displayField: "name",
+                valueField: "id",
+                filterFields: ["name"],
+
+            },
+            {
+                name: "contactInfo.mobile",
                 keyPressFilter: "[0-9|-|+]",
                 title: "<spring:message code='mobile'/>",
                 width: "*",
@@ -1086,7 +1181,7 @@
                 length: "13"
             },
             {
-                name: "fax",
+                name: "contactInfo.workAddress.fax",
                 title: "<spring:message code='telefax'/>",
                 keyPressFilter: "[0-9|-]",
                 width: "*",
@@ -1102,7 +1197,7 @@
                 length: "12"
             },
             {
-                name: "e_mail",
+                name: "contactInfo.email",
                 title: "<spring:message code='email'/>",
                 keyPressFilter: "[a-z|A-Z|0-9|.|@|-|_]",
                 width: "*",
@@ -1118,13 +1213,13 @@
                 length: "50"
             },
             {
-                name: "webSite",
+                name: "contactInfo.workAddress.webSite",
                 title: "<spring:message code='website'/>",
                 width: "*",
                 length: "100"
             },
             {
-                name: "restAddress",
+                name: "contactInfo.workAddress.restAddr",
                 title: "<spring:message code='address'/>",
                 required: true,
                 colSpan: 3,
@@ -1135,21 +1230,21 @@
             }
         ],
 
-        itemChanged: function (item, newValue) {
-            if (item.name == "stateId") {
-                if (newValue == undefined) {
-                    DynamicForm_Institute_Institute_Address.clearValue("cityId");
+    /*    itemChanged: function (item, newValue) {
+            if (item.name === "contactInfo.workAddress.stateId") {
+                if (newValue === undefined) {
+                    DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
                 } else {
                     RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
-                    DynamicForm_Institute_Institute_Address.getField("cityId").optionDataSource = RestDataSource_Institute_City;
-                    DynamicForm_Institute_Institute_Address.getField("cityId").fetchData();
-                    DynamicForm_Institute_Institute_Address.clearValue("cityId");
+                    DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").optionDataSource = RestDataSource_Institute_City;
+                    DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").fetchData();
+                    DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
                 }
             }
-            if (item.name == "e_mail") {
+            if (item.name === "e_mail") {
             }
 
-        }
+        }*/
 
     });
 
@@ -1207,6 +1302,7 @@
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
             }
+
             isc.RPCManager.sendRequest(TrDSRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
         }
     });
@@ -1227,7 +1323,13 @@
 
             Window_Institute_Institute.close();
 
-        } else {
+        }
+
+        else if(respCode==405){
+            createDialog("info", "<spring:message code="postal.code.duplicate"/>",
+                "<spring:message code="message"/>");
+        }
+        else {
             var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
             });
@@ -1369,15 +1471,12 @@
                 }
             });
         } else {
-//console.log('record:' + JSON.stringify(record));
             var id = record.id;
             var name = record.titleFa;
             DynamicForm_Institute_Institute.getItem("parentInstituteId").setValue(id);
             DynamicForm_Institute_Institute.getItem("parentInstitute.titleFa").setValue(name);
             Window_Institute_InstituteList.close();
-
         }
-
     }
 
 
@@ -1421,6 +1520,26 @@
         members: [IButton_Institute_PersonalList_Choose, IButton_Institute_PersonalList_Exit]
     });
 
+    var HLayOut_Institute_PersonalList_Toolstrip = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "10",
+        alignLayout: "right",
+        align: "right",
+        padding: 10,
+        membersMargin: 10,
+        members: [isc.ToolStripButtonCreate.create({click: function () {
+                Function_Institute_Manager_Add();
+            }
+        }),
+            isc.ToolStripButtonEdit.create({click: function () {
+                    Function_Institute_Manager_Edit();
+                }
+            }),]
+    });
+
     var Window_Institute_PersonalList = isc.Window.create({
         title: "<spring:message code='institute.selectmanager'/>",
         width: 800,
@@ -1439,7 +1558,15 @@
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [VLayout_Institute_PersonalList, HLayOut_Institute_PersonalList_Select]
+            layoutMargin: 5,
+            showEdges: false,
+            edgeImage: "",
+            alignLayout: "center",
+            align: "center",
+            padding: 10,
+            membersMargin: 5,
+            margin:5,
+            members: [  HLayOut_Institute_PersonalList_Toolstrip,VLayout_Institute_PersonalList, HLayOut_Institute_PersonalList_Select]
         })]
     });
 
@@ -1955,87 +2082,30 @@
             {name: "instituteId", hidden: true},
             {name: "isEnable", hidden: true},
             {
-                name: "bankId",
-                type: "IntegerItem",
+                name: "bank",
                 title: "<spring:message code='bank'/>",
-                textAlign: "center",
+                keyPressFilter: "[A-Z|a-z|0-9|-| ]",
                 width: "*",
-                required: true,
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_Bank,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["titleFa"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        title: "<spring:message code='bank.title'/>",
-                        width: "30%",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "ebankType.titleFa",
-                        title: "<spring:message code='bank.type'/>",
-                        width: "30%",
-                        filterOperator: "iContains"
-                    }
-                ]
+                required:true
             },
             {
-                name: "bankBranchId",
-                type: "IntegerItem",
+                name: "bankBranch",
                 title: "<spring:message code='bank.branch'/>",
-                textAlign: "center",
-                required: true,
+                keyPressFilter: "[A-Z|a-z|0-9|-| ]",
                 width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_BankBranch,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["titleFa"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "code",
-                        title: "<spring:message code='bank.branch.code'/>",
-                        width: "30%",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "titleFa",
-                        title: "<spring:message code='bank.branch.title'/>",
-                        width: "30%",
-                        filterOperator: "iContains"
-                    }
-                ]
+            },
+            {
+                name: "bankBranchCode",
+                title: "<spring:message code='bank.branch.code'/>",
+                keyPressFilter: "[0-9|/|.]| ",
+                width: "*",
             },
             {
                 name: "accountNumber",
                 title: "<spring:message code='account.number'/>",
-                required: true,
                 keyPressFilter: "[0-9|/|.]| ",
                 width: "*",
+                required:true
             },
             {
                 name: "cartNumber",
@@ -2049,49 +2119,7 @@
                 keyPressFilter: "[A-Z|a-z|0-9|-| ]",
                 width: "*",
             },
-            {
-                name: "accountOwnerName",
-                title: "<spring:message code='account.owner.name'/>",
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                width: "*",
-            },
-            {
-                name: "description",
-                title: "<spring:message code='description'/>",
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                length: "500",
-                colSpan: 2,
-                width: "*",
-            },
-            {
-                name: "isEnableVal",
-                title: "<spring:message code='isEnable'/>",
-                align: "center",
-                showTitle: false,
-                type: "checkbox",
-                keyPressFilter: "[A-Z|a-z|0-9|-| ]",
-                width: "*",
-            },
         ],
-        itemChanged: function (item, newValue) {
-// alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
-            if (item.name == "bankId") {
-                if (newValue == undefined) {
-                    DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
-// RestDataSource_Institute_BankBranch.fetchDataURL =null;
-                } else {
-                    RestDataSource_Institute_BankBranch.fetchDataURL = institute_Bank_Url + "bank-branches/" + newValue;
-                    DynamicForm_Institute_Institute_Account.getField("bankBranchId").optionDataSource = RestDataSource_Institute_BankBranch;
-                    DynamicForm_Institute_Institute_Account.getField("bankBranchId").fetchData();
-                    DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
-                }
-            } else if (item.name == "isEnableVal") {
-                var v = DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString();
-                DynamicForm_Institute_Institute_Account.getField("isEnable").setValue(v == "true" ? 1 : 0);
-
-            }
-        }
-
     });
 
     var IButton_Institute_Institute_Account_Exit = isc.IButtonCancel.create({
@@ -2225,16 +2253,9 @@
                 }
             });
         } else {
-//console.log('record:' + JSON.stringify(record));
-            DynamicForm_Institute_Institute_Account.getField("bankId").fetchData();
-            RestDataSource_Institute_BankBranch.fetchDataURL = institute_Bank_Url + "bank-branches/" + record.bankId;
-            DynamicForm_Institute_Institute_Account.getField("bankBranchId").optionDataSource = RestDataSource_Institute_BankBranch;
-            DynamicForm_Institute_Institute_Account.getField("bankBranchId").fetchData();
-            DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
-
+            DynamicForm_Institute_Institute_Account.clearValue("bankBranch");
             DynamicForm_Institute_Institute_Account.clearValues();
             DynamicForm_Institute_Institute_Account.editRecord(record);
-            DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(record.isEnable == 1 ? true : false);
             reqMethod = "PUT";
             Window_Institute_Account.setTitle(" ویرایش حساب شماره " + getFormulaMessage(ListGrid_Institute_Institute_Account.getSelectedRecord().accountNumber, 3, "red", "I"));
             Window_Institute_Account.show();
@@ -2260,10 +2281,10 @@
             reqMethod = "POST";
 // DynamicForm_Institute_Institute.clearValues();
             DynamicForm_Institute_Institute_Account.getField("isEnable").setValue(1);
-            DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(true);
+          //  DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(true);
 
             DynamicForm_Institute_Institute_Account.getItem("instituteId").setValue(record.id);
-            DynamicForm_Institute_Institute_Account.getItem("bankBranchId").setOptionDataSource(null);
+            DynamicForm_Institute_Institute_Account.getItem("bankBranch").setOptionDataSource(null);
             Window_Institute_Account.setTitle("ایجاد حساب جدید");
             Window_Institute_Account.show();
             Window_Institute_Account.bringToFront();
@@ -2676,11 +2697,180 @@
 
     }
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Edit Equipments For Training Places And Institute*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    var DynamicForm_Institute_Manager = isc.DynamicForm.create({
+        width: "100%",
+        titleWidth: 120,
+        colWidths: [120, 300, 120, 300],
+        height: "100%",
+        align: "center",
+        wrapItemTitles: false,
+        canSubmit: true,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        numCols: 4,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "firstNameFa",
+                title: "<spring:message code='firstName'/>",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]| ",
+                width: "*",
+                required:true
+            },
+            {
+                name: "lastNameFa",
+                title: "<spring:message code='lastName'/>",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]| ",
+                width: "*",
+                required:true
+            },
+            {
+                name: "nationalCode",
+                validators: [TrValidators.NationalCodeValidate],
+                title: "<spring:message code='national.code'/>",
+                keyPressFilter: "[0-9|/|.]| ",
+                width: "*",
+                length:10,
+                required:true
+            },
+            {
+                name: "contactInfo.mobile",
+                keyPressFilter: "[0-9|-|+]",
+                title: "<spring:message code='mobile'/>",
+                width: "*",
+                validators: [TrValidators.MobileValidate],
+                blur: function () {
+                    var mobileCheck;
+                    mobileCheck = checkMobile(DynamicForm_Institute_Manager.getValue("mobile"));
+                    if (mobileCheck === false)
+                        DynamicForm_Institute_Manager.addFieldErrors("mobile", "<spring:message code='msg.invalid.phone.number'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_Institute_Manager.clearFieldErrors("mobile", true);
+                },
+                length: "13"
+            },
+            {
+                name: "contactInfo.email",
+                title: "<spring:message code='email'/>",
+                keyPressFilter: "[a-z|A-Z|0-9|.|@|-|_]",
+                width: "*",
+                validators: [TrValidators.EmailValidate],
+                blur: function () {
+                    var emailCheck;
+                    emailCheck = checkEmail(DynamicForm_Institute_Manager.getValue("e_mail"));
+                    if (emailCheck === false)
+                        DynamicForm_Institute_Manager.addFieldErrors("e_mail", "<spring:message code='msg.email.validation'/>", true);
+                    if (emailCheck === true)
+                        DynamicForm_Institute_Manager.clearFieldErrors("e_mail", true);
+                },
+                length: "50"
+            },
+        ],
+    });
 
+    var IButton_Institute_Manager_Exit = isc.IButtonCancel.create({
+        top: 260,
+        title: "<spring:message code='cancel'/>",
+        align: "center",
+// icon: "<spring:url value="remove.png"/>",
+        click: function () {
+            Window_Manager_Account.close();
+            DynamicForm_Institute_Manager.clearValues();
+        }
+    });
 
+    var IButton_Institute_Manager_Save = isc.IButtonSave.create({
+        top: 260,
+        title: "<spring:message code='save'/>",
+        align: "center",
+//icon: "pieces/16/save.png",
+        click: function () {
+            Function_Institute_Manager_Save();
+        }
+    });
+
+    var VLayout_Institute_Manager_Form = isc.VLayout.create({
+        width: "100%",
+        height: "90%",
+        members: [DynamicForm_Institute_Manager]
+    });
+
+    var HLayOut_Institute_Manager_Action = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: 30,
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Institute_Manager_Save, IButton_Institute_Manager_Exit]
+    });
+
+    var Window_Manager_Account = isc.Window.create({
+        title: "مدیر موسسه",
+        width: 750,
+        height: 200,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        autoDraw: false,
+        dismissOnEscape: false,
+        border: "1px solid gray",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items: [isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [VLayout_Institute_Manager_Form, HLayOut_Institute_Manager_Action]
+        })]
+    });
+
+    function Function_Institute_Manager_Save(){
+        if (!DynamicForm_Institute_Manager.validate()) {
+            return;
+        }
+
+        let data = DynamicForm_Institute_Manager.getValues();
+
+        if (InstituteManagerEdit)
+        {
+            isc.RPCManager.sendRequest(TrDSRequest(institute_Manager_Url+"safeUpdate/"+data.id, "PUT", JSON.stringify(data)
+                ,"callback: save_Institute_Manage_result(rpcResponse)"));
+            return;
+        }//end if
+
+        isc.RPCManager.sendRequest(TrDSRequest(institute_Manager_Url+"safeCreate", "POST", JSON.stringify(data)
+            ,"callback: save_Institute_Manage_result(rpcResponse)"));
+    }
+
+    function save_Institute_Manage_result(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            var responseID = JSON.parse(resp.data).id;
+            //------------------------------------
+            refreshLG(ListGrid_Institute_PersonalInfo_List);
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+            Window_Manager_Account.close();
+            DynamicForm_Institute_Manager.clearValues();
+            //------------------------------------
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406) {
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
     var DynamicForm_Institute_TrainingPlace_Equipment = isc.DynamicForm.create({
         width: "100%",
         titleWidth: 120,
@@ -2701,7 +2891,7 @@
             {name: "instituteId", hidden: true},
             {name: "isEnable", hidden: true},
             {
-                name: "bankId",
+                name: "bank",
                 type: "IntegerItem",
                 title: "<spring:message code='bank'/>",
                 textAlign: "center",
@@ -2738,7 +2928,7 @@
                 ]
             },
             {
-                name: "bankBranchId",
+                name: "bankBranch",
                 type: "IntegerItem",
                 title: "<spring:message code='bank.branch'/>",
                 textAlign: "center",
@@ -2818,16 +3008,15 @@
             },
         ],
         itemChanged: function (item, newValue) {
-// alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
-            if (item.name == "bankId") {
+            if (item.name == "bank") {
                 if (newValue == undefined) {
-                    DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
+                    DynamicForm_Institute_Institute_Account.clearValue("bankBranch");
 // RestDataSource_Institute_BankBranch.fetchDataURL =null;
                 } else {
                     RestDataSource_Institute_BankBranch.fetchDataURL = institute_Bank_Url + "bank-branches/" + newValue;
-                    DynamicForm_Institute_Institute_Account.getField("bankBranchId").optionDataSource = RestDataSource_Institute_BankBranch;
-                    DynamicForm_Institute_Institute_Account.getField("bankBranchId").fetchData();
-                    DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
+                    DynamicForm_Institute_Institute_Account.getField("bankBranch").optionDataSource = RestDataSource_Institute_BankBranch;
+                    DynamicForm_Institute_Institute_Account.getField("bankBranch").fetchData();
+                    DynamicForm_Institute_Institute_Account.clearValue("bankBranch");
                 }
             } else if (item.name == "isEnableVal") {
                 var v = DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString();
@@ -3174,26 +3363,14 @@
         } else {
             ValuesManager_Institute_InstituteValue.clearValues();
             ValuesManager_Institute_InstituteValue.clearErrors();
-            DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
-            DynamicForm_Institute_Institute_Address.getItem("stateId").fetchData();
+           // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
+           // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").fetchData();
 
-            ValuesManager_Institute_InstituteValue.editRecord(record);
+             ValuesManager_Institute_InstituteValue.editRecord(record);
+            //DynamicForm_Institute_Institute.getItem("parentInstitute.titleFa").setValue(record.titleFa);
 
-            var stateValue = undefined;
-            var cityValue = undefined;
-
-            if (record != null && record.stateId != null)
-                stateValue = record.stateId;
-            if (record != null && record.cityId != null)
-                cityValue = record.cityId;
-            if (cityValue == undefined) {
-                DynamicForm_Institute_Institute_Address.clearValue("cityId");
-            }
-            if (stateValue != undefined) {
-                RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue;
-                DynamicForm_Institute_Institute_Address.getField("cityId").optionDataSource = RestDataSource_Institute_City;
-                DynamicForm_Institute_Institute_Address.getField("cityId").fetchData();
-            }
+            if (record != null && record.contactInfo!=null && record.contactInfo.workAddress.stateId !== undefined)
+                RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" +record.contactInfo.workAddress.stateId;
 
             instituteMethod = "PUT";
             Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().titleFa, 3, "red", "I"));
@@ -3205,12 +3382,31 @@
         ValuesManager_Institute_InstituteValue.clearValues();
         ValuesManager_Institute_InstituteValue.clearErrors(true);
         instituteMethod = "POST";
-        DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
-        ;
+       // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
+      //  ;
         Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
         Window_Institute_Institute.show();
         Window_Institute_Institute.bringToFront();
     };
+
+    function Function_Institute_Manager_Add(){
+        Window_Manager_Account.show();
+        Window_Manager_Account.bringToFront();
+        InstituteManagerEdit=false;
+    }
+
+    function Function_Institute_Manager_Edit(){
+        var record = ListGrid_Institute_PersonalInfo_List.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            InstituteManagerEdit=true;
+            DynamicForm_Institute_Manager.clearValues();
+            DynamicForm_Institute_Manager.editRecord(record);
+            Window_Manager_Account.show();
+            Window_Manager_Account.bringToFront();
+        }
+    }
 
     function ListGrid_Institute_Institute_refresh() {
         var record = ListGrid_Institute_Institute.getSelectedRecord();
@@ -3269,13 +3465,39 @@
 
 
     function checkEmail(email) {
+        if (email !== undefined)
         return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
     }
 
     function checkMobile(mobile) {
+        if (mobile !== undefined)
         return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
     }
 
     function checkPhone(phone) {
+        if (phone!== undefined)
         return (phone[0] === "0" && phone.length === 11) || (phone[0] !== "0" && phone.length === 8);
+    }
+
+    function fillAddressFields(postalCode) {
+        if (postalCode !== undefined)
+            isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,
+                "callback: address_findOne_result(rpcResponse)"));
+    }
+
+    function address_findOne_result(resp) {
+        if (resp === null || resp === undefined || resp.data === "") {
+            return;
+        }
+        let data = JSON.parse(resp.data);
+
+      //  DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.id", data.id)
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.postalCode", data.postalCode);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.restAddr", data.restAddr);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.phone", data.phone);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.fax", data.fax);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.webSite", data.webSite);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.stateId",data.stateId);
+        DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").changed(null, null, data.stateId);
+        DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.cityId", data.cityId);
     }

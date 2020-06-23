@@ -22,18 +22,18 @@ public class Post extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code", nullable = false)
+    @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_job_id", nullable = false)
+    @JoinColumn(name = "f_job_id")
     private Job job;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_post_grade_id", nullable = false)
+    @JoinColumn(name = "f_post_grade_id")
     private PostGrade postGrade;
 
 //    @ManyToOne(fetch = FetchType.LAZY)

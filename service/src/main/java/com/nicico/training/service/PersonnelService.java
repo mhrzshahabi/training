@@ -24,9 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +70,28 @@ public class PersonnelService implements IPersonnelService {
     @Override
     public TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(personnelDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelDTO.Info.class));
+    }
+
+    @Transactional
+    @Override
+    public List<PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos) {
+        List<PersonnelDTO.Info> result = new ArrayList<>();
+
+        List<Personnel> list = personnelDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos, personnelNos);
+        Personnel prs = null;
+
+        for (String personnelNo : personnelNos) {
+
+            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) || p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).size() == 0) {
+                result.add(new PersonnelDTO.Info());
+
+            } else {
+                prs = list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) || p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).get(0);
+                result.add(modelMapper.map(prs, PersonnelDTO.Info.class));
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -125,7 +149,7 @@ public class PersonnelService implements IPersonnelService {
     @Transactional
     public PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode) {
         Personnel[] optionalPersonnel = personnelDAO.findByNationalCode(nationalCode);
-        if(optionalPersonnel != null && optionalPersonnel.length != 0)
+        if (optionalPersonnel != null && optionalPersonnel.length != 0)
             return modelMapper.map(optionalPersonnel[0], PersonnelDTO.PersonalityInfo.class);
         else
             return null;
@@ -189,10 +213,24 @@ public class PersonnelService implements IPersonnelService {
     @Override
     @Transactional
     public Personnel findPersonnelByPersonnelNo(String personnelNo) {
+
+        PersonnelRegistered personnelRegistered = new PersonnelRegistered();
         Personnel personnel = personnelDAO.findPersonnelByPersonnelNo(personnelNo);
-        Long trainingTime = tclassDAO.getStudentTrainingTime(personnel.getNationalCode(), DateUtil.getYear());
-        personnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
-        return personnel;
+
+        if (personnel != null) {
+
+            Long trainingTime = tclassDAO.getStudentTrainingTime(personnel.getNationalCode(), personnelNo, DateUtil.getYear());
+            personnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
+
+        } else {
+
+            personnelRegistered = personnelRegisteredDAO.findPersonnelRegisteredByPersonnelNo(personnelNo);
+            Long trainingTime = tclassDAO.getStudentTrainingTime(personnelRegistered.getNationalCode(), personnelNo, DateUtil.getYear());
+            personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
+
+        }
+
+        return personnel != null ? personnel : modelMapper.map(personnelRegistered, Personnel.class);
     }
 
     @Override

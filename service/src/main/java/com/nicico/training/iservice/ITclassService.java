@@ -10,6 +10,7 @@ import com.nicico.training.model.Tclass;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITclassService {
 
@@ -65,9 +66,15 @@ public interface ITclassService {
 
     public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId, Long trainingId);
 
+    @Transactional
+    double getJustFERGrade(Long classId);
+
+    @Transactional
+    public Map<String, Object> getFERAndFETGradeResult(Long classId);
+
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 
-    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code);
+    public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code, String personnel_no);
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId);
@@ -84,4 +91,7 @@ public interface ITclassService {
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TClassReport> reportSearch(SearchDTO.SearchRq request);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.InfoTuple> searchInfoTuple(SearchDTO.SearchRq request);
 }

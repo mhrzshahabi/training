@@ -16,11 +16,13 @@ import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.service.TeacherService;
+import com.sun.rmi.rmid.ExecOptionPermission;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -28,9 +30,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.imageio.ImageIO;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -59,25 +63,27 @@ public class TeacherRestController {
     private final IForeignLangKnowledgeService foreignLangService;
     private final TclassDAO tclassDAO;
     private final ITclassService tclassService;
+    @Autowired
+    protected EntityManager entityManager;
 
 
     @Loggable
     @GetMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(teacherService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<List<TeacherDTO.Info>> list() {
         return new ResponseEntity<>(teacherService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-//    @PreAuthorize("hasAuthority('c_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_C')")
     public ResponseEntity create(@Validated @RequestBody LinkedHashMap request) {
         final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
         Teacher teacher = null;
@@ -115,33 +121,45 @@ public class TeacherRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('u_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_U')")
     public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
-        ((LinkedHashMap) request).remove("attachPic");
+        final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
+        Teacher teacher = null;
+        if(tById.isPresent())
+            teacher = tById.get();
+        if(teacher != null && !teacher.getId().equals(id)) {
+            if (teacher.isInBlackList() == true)
+                return new ResponseEntity<>("duplicateAndBlackList", HttpStatus.NOT_ACCEPTABLE);
+            else
+                return new ResponseEntity<>("duplicateAndNotBlackList", HttpStatus.NOT_ACCEPTABLE);
+        }
+        else {
+            ((LinkedHashMap) request).remove("attachPic");
 
-        List<CategoryDTO.Info> categories = null;
-        List<SubcategoryDTO.Info> subCategories = null;
+            List<CategoryDTO.Info> categories = null;
+            List<SubcategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null && !((List)request.get("categories")).isEmpty())
-            categories = setCats(request);
-        if (request.get("subCategories") != null && !((List)request.get("subCategories")).isEmpty())
-            subCategories = setSubCats(request);
+            if (request.get("categories") != null && !((List) request.get("categories")).isEmpty())
+                categories = setCats(request);
+            if (request.get("subCategories") != null && !((List) request.get("subCategories")).isEmpty())
+                subCategories = setSubCats(request);
 
-        TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
-        if (categories != null && categories.size() > 0)
-            update.setCategories(categories);
-        if (subCategories != null && subCategories.size() > 0)
-            update.setSubCategories(subCategories);
-        try {
-            return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
+            if (categories != null && categories.size() > 0)
+                update.setCategories(categories);
+            if (subCategories != null && subCategories.size() > 0)
+                update.setSubCategories(subCategories);
+            try {
+                return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
+            } catch (TrainingException ex) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('d_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_D')")
     public ResponseEntity delete(@PathVariable Long id) {
         List<Tclass> tclassList = tclassDAO.getTeacherClasses(id);
         if(tclassList != null && tclassList.size() != 0)
@@ -158,7 +176,7 @@ public class TeacherRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-//    @PreAuthorize("hasAuthority('d_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_D')")
     public ResponseEntity delete(@Validated @RequestBody TeacherDTO.Delete request) {
         try {
             teacherService.delete(request);
@@ -171,7 +189,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                          @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                          @RequestParam(value = "_constructor", required = false) String constructor,
@@ -197,7 +215,7 @@ public class TeacherRestController {
     }
 
     @GetMapping(value = "/info/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id)throws IOException {
         TeacherDTO.Info response = teacherService.get(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -206,7 +224,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list-grid")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridList(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                                  @RequestParam(value = "_constructor", required = false) String constructor,
@@ -240,7 +258,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list-report")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public ResponseEntity<TeacherDTO.TeacherSpecRsReport> reportList(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                                  @RequestParam(value = "_constructor", required = false) String constructor,
@@ -258,6 +276,7 @@ public class TeacherRestController {
         Object evaluationGrade = null;
         Object teachingCategories = null;
         Object teachingSubCategories = null;
+        Object term=null;
         for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
             if(criterion.getFieldName().equalsIgnoreCase("evaluationCategory")){
                 evaluationCategory = criterion.getValue().get(0);
@@ -279,73 +298,77 @@ public class TeacherRestController {
                 teachingSubCategories = criterion.getValue();
                 removedObjects.add(criterion);
             }
+
+            if (criterion.getFieldName().equalsIgnoreCase("termId"))
+            {
+                criterion.setFieldName("tclasse.term.id");
+                criterion.setOperator(EOperator.inSet);
+            }
         }
 
         for (Object removedObject : removedObjects) {
             request.getCriteria().getCriteria().remove(removedObject);
         }
-        SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
-        List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
+       Set<TeacherDTO.Report> set=new HashSet<>();
+       SearchDTO.SearchRs<TeacherDTO.Report> response = teacherService.deepSearchReport(request);
 
-        List<Integer> teaching_cats = null;
-        List<Integer> teaching_subcats = null;
 
-        if(teachingCategories != null) {
-            teaching_cats = modelMapper.map(teachingCategories, List.class);
-        }
-        if(teachingSubCategories != null) {
-            teaching_subcats = modelMapper.map(teachingSubCategories, List.class);
-        }
-
-        Float min_evalGrade = null;
-        if(evaluationGrade != null)
-           min_evalGrade = Float.parseFloat(evaluationGrade.toString());
-
-        if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
-            for (TeacherDTO.Report datum : response.getList()) {
-                if (evaluationGrade != null) {
-                    ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
-                    Float teacher_evalGrade = t.getBody();
-                    datum.setEvaluationGrade(""+teacher_evalGrade);
-                    if (teacher_evalGrade < min_evalGrade)
-                        listRemovedObjects.add(datum);
-                }
-            }
-        }
-
-        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            response.getList().remove(listRemovedObject);
-        listRemovedObjects.clear();
-
-        if(teachingCategories!=null || teachingSubCategories!=null) {
-            for (TeacherDTO.Report datum : response.getList()) {
-                boolean relatedTeachingHistory = getRelatedTeachingHistory(datum, teaching_cats, teaching_subcats);
-                if (relatedTeachingHistory == false)
-                    listRemovedObjects.add(datum);
-            }
-        }
-        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-            response.getList().remove(listRemovedObject);
+//        List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
+//
+//        Float min_evalGrade = null;
+//        if(evaluationGrade != null)
+//           min_evalGrade = Float.parseFloat(evaluationGrade.toString());
+//
+//        if(evaluationGrade!=null && evaluationCategory!=null && evaluationSubCategory!=null) {
+//            for (TeacherDTO.Report datum : response.getList()) {
+//                if (evaluationGrade != null) {
+//                    ResponseEntity<Float> t = evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString());
+//                    Float teacher_evalGrade = t.getBody();
+//                    datum.setEvaluationGrade(""+teacher_evalGrade);
+//                    if (teacher_evalGrade < min_evalGrade)
+//                        listRemovedObjects.add(datum);
+//                }
+//            }
+//        }
+//
+//        for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
+//            response.getList().remove(listRemovedObject);
+//        listRemovedObjects.clear();
 
         for (TeacherDTO.Report datum : response.getList()) {
-            SearchDTO.SearchRq req = new SearchDTO.SearchRq();
             Long tId = datum.getId();
-            SearchDTO.SearchRs<TclassDTO.TeachingHistory> resp = tclassService.searchByTeachingHistory(req, tId);
-            datum.setNumberOfCourses(""+resp.getList().size());
-            if(resp.getList() != null && resp.getList().size() > 0) {
-                String startDate = resp.getList().get(0).getStartDate();
-                for (TclassDTO.TeachingHistory teachingHistory : resp.getList()) {
-                    if (teachingHistory.getStartDate().compareTo(startDate) > 0 || teachingHistory.getStartDate().compareTo(startDate)==0) {
-                        datum.setLastCourse(teachingHistory.getCourse().getTitleFa());
-                        datum.setLastCourseId(teachingHistory.getId());
-                    }
-                }
+            List<?> result1 = null;
+            Object[] res1 = null;
+            String courseId = null;
+            String classId = null;
+            List<?> result2 = null;
+            String courseTitle = null;
+            List<?> result3 = null;
+            String classCount = null;
+
+            String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" +  tId + ") AND ROWNUM = 1";
+            result1 = (List<?>) entityManager.createNativeQuery(sql1).getResultList();
+            if(result1.size() > 0) {
+                res1 = (Object[]) result1.get(0);
+                courseId = res1[0].toString();
+                classId = res1[1].toString();
             }
-        }
-        for (TeacherDTO.Report datum : response.getList()) {
+
+            if(courseId != null) {
+                String sql2 = "select c_title_fa from tbl_course where id =" + courseId;
+                result2 = (List<?>) entityManager.createNativeQuery(sql2).getResultList();
+                courseTitle = (String) result2.get(0);
+            }
+
+            String sql3 = "select count(id) from tbl_class where f_teacher =" + tId;
+            result3 = (List<?>) entityManager.createNativeQuery(sql3).getResultList();
+            classCount = ((BigDecimal) result3.get(0)).toString();
+
+            datum.setLastCourse(courseTitle);
+            datum.setNumberOfCourses(classCount);
             if(datum.getLastCourse() != null)
-                datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(datum.getLastCourseId(),datum.getId()));
+                datum.setLastCourseEvaluationGrade(""+tclassService.getClassReactionEvaluationGrade(Long.parseLong(classId),tId));
         }
 
         final TeacherDTO.SpecRsReport specResponse = new TeacherDTO.SpecRsReport();
@@ -353,7 +376,7 @@ public class TeacherRestController {
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getList().size());
+                .setTotalRows(response.getTotalCount().intValue());
 
         specRs.setResponse(specResponse);
 
@@ -396,7 +419,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/fullName-list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
                                                                          @RequestParam(value = "_endRow", required = false, defaultValue = "50") Integer endRow,
                                                                          @RequestParam(value = "_constructor", required = false) String constructor,
@@ -407,24 +430,46 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
         SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
-
         final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
-        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+        return new ResponseEntity<>( specRs, HttpStatus.OK);
     }
 
 
     @Loggable
     @GetMapping(value = "/fullName-list/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameListFilter(@PathVariable Long id,
                                                                                @RequestParam("_startRow") Integer startRow,
                                                                                @RequestParam("_endRow") Integer endRow,
@@ -451,7 +496,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/fullName/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@PathVariable Long id,
                                                                                @RequestParam("_startRow") Integer startRow,
                                                                                @RequestParam("_endRow") Integer endRow,
@@ -481,7 +526,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
     public ResponseEntity<SearchDTO.SearchRs<TeacherDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(teacherService.search(request), HttpStatus.OK);
     }
@@ -489,6 +534,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
@@ -514,6 +560,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithDetail/{id}"})
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
         final SearchDTO.SearchRq searchRq_academicBk = new SearchDTO.SearchRq();
         final SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs_academicBk = academicBKService.search(searchRq_academicBk, Long.valueOf(id));
@@ -562,20 +609,20 @@ public class TeacherRestController {
         params.put("birthLocation", teacherDTO.getPersonality().getBirthLocation());
         Integer genderId = teacherDTO.getPersonality().getGenderId();
         String gender = null;
-        if(genderId == 1)
+        if(genderId.equals("1"))
             gender = "مرد";
-        if(genderId == 2)
+        if(genderId.equals("2"))
             gender = "زن";
         params.put("gender", gender);
         Integer militaryId = teacherDTO.getPersonality().getMilitaryId();
         String military = null;
-        if(militaryId == 1)
+        if(militaryId != null && militaryId.equals(1))
             military = "گذرانده";
-        if(militaryId == 2)
+        if(militaryId != null && militaryId.equals(2))
             military = "معاف";
-        if(militaryId == 3)
+        if(militaryId != null && militaryId.equals(3))
             military = "مشمول";
-        if(genderId == 2)
+        if(genderId != null && genderId.equals(2))
             military = null;
         params.put("military", military);
         params.put("otherActivity", teacherDTO.getOtherActivities());
@@ -618,8 +665,8 @@ public class TeacherRestController {
         params.put("address", address);
         params.put("connectionInfo", connection);
         String categories = null;
-        List<Category> categoryList = teacher.getCategories();
-        List<Subcategory> subCategoryList = teacher.getSubCategories();
+        Set<Category> categoryList = teacher.getCategories();
+        Set<Subcategory> subCategoryList = teacher.getSubCategories();
         for (Category category : categoryList) {
             categories += category.getTitleFa() + " ";
             for (Subcategory subCategory : subCategoryList) {
@@ -671,6 +718,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printEvaluation/{id}/{catId}/{subCatId}"})
+    //@PreAuthorize("hasAuthority('Teacher_P')")
     public void printEvaluation(HttpServletResponse response,@PathVariable String id, @PathVariable String catId, @PathVariable String subCatId) throws Exception {
         final Map<String, Object> params = new HashMap<>();
 
@@ -753,6 +801,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
+    //@PreAuthorize("hasAuthority('Teacher_E')")
     public ResponseEntity<Float> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
        Float evaluationGrade = (Float) teacherService.evaluateTeacher(id,catId,subCatId).get("evaluationGrade");
        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
@@ -872,7 +921,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/full-spec-list")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> fullList(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                          @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                          @RequestParam(value = "_constructor", required = false) String constructor,
@@ -899,7 +948,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/all-students-grade-to-teacher")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> getAllStudentsGradeToTeacher(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                              @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                              @RequestParam(value = "_constructor", required = false) String constructor,
@@ -923,10 +972,59 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/blackList/{inBlackList}/{id}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
+    //@PreAuthorize("hasAuthority('r_teacher')")
     public void changeBlackListStatus(HttpServletRequest req, @PathVariable Boolean inBlackList, @PathVariable Long id) {
         String reason=req.getParameter("reason");
         teacherService.changeBlackListStatus(reason,inBlackList,id);
+    }
+
+    @Loggable
+    @GetMapping(value = "/info-tuple-list")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherInfoTupleSpecRs> infoTupleList(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                                         @RequestParam(value = "_endRow", required = false, defaultValue = "50") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "id", required = false) Long id,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<TeacherDTO.TeacherInfoTuple> response = teacherService.infoTupleSearch(request);
+        final TeacherDTO.InfoTupleSpecRs specResponse = new TeacherDTO.InfoTupleSpecRs<>();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        final TeacherDTO.TeacherInfoTupleSpecRs specRs = new TeacherDTO.TeacherInfoTupleSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>( specRs, HttpStatus.OK);
     }
 
 }

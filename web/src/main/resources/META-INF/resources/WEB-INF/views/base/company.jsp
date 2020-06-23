@@ -297,7 +297,7 @@
                 length: "10",
                 validators: [TrValidators.PostalCodeValidate],
                 changed: function (form, item, value) {
-                    if (value == null || !this.validate())
+                    if (value === null || !this.validate() || value === undefined)
                         return;
                     fillAddressFields(value);
                 }

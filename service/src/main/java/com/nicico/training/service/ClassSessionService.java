@@ -1,6 +1,5 @@
 package com.nicico.training.service;
 
-import com.ibm.icu.util.PersianCalendar;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -13,11 +12,12 @@ import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.Attendance;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
+import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
+import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
-import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTimeComparator;
 import org.modelmapper.ModelMapper;
@@ -45,6 +45,8 @@ public class ClassSessionService implements IClassSession {
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
     private final MessageSource messageSource;
+    private final TclassDAO tclassDAO;
+    private final ClassAlarmService classAlarmService;
 
     //*********************************
 
@@ -132,11 +134,30 @@ public class ClassSessionService implements IClassSession {
         ClassSessionDTO.Info info = null;
 
         try {
-            if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
+            if (request.getSessionStartHour().compareTo(request.getSessionEndHour()) >= 0) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.start.hour.bigger.than.end.hour", null, locale));
+
+            } else if (!request.getSessionStartHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$") || !request.getSessionEndHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$")) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.hour.invalid", null, locale));
+            }
+            else if (classSessionDAO.checkHour(request.getClassId(),
+                    request.getSessionDate(),
+                    request.getSessionStartHour(),
+                    request.getSessionEndHour(),
+                    0L) > 0) {
+
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(409, messageSource.getMessage("session.time.interval.conflict", null, locale));
+
+            } else  if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
                     request.getClassId(),
                     request.getSessionDate(),
-                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1)
+                    request.getSessionStartHour(),
+                    request.getSessionEndHour()
+                    /*MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1)*/
             )) {
 
                 //********generated sessions list*********
@@ -153,8 +174,10 @@ public class ClassSessionService implements IClassSession {
                         daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
                         getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
                         request.getSessionDate(),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                        request.getSessionStartHour(),
+                        request.getSessionEndHour(),
+                        /*MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),*/
                         request.getSessionTypeId(),
                         request.getSessionType(),
                         request.getInstituteId(),
@@ -191,13 +214,31 @@ public class ClassSessionService implements IClassSession {
 
         try {
 
-            if (!attendanceDAO.existsBySessionId(id)) {
+            if (request.getSessionStartHour().compareTo(request.getSessionEndHour()) >= 0) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.start.hour.bigger.than.end.hour", null, locale));
 
-                if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(
+            } else if (!request.getSessionStartHour().matches("^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$") || !request.getSessionEndHour().matches("^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$")) {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("session.hour.invalid", null, locale));
+            } else if (!attendanceDAO.existsBySessionId(id)) {
+
+                if (classSessionDAO.checkHour(request.getClassId(),
+                        request.getSessionDate(),
+                        request.getSessionStartHour(),
+                        request.getSessionEndHour(),
+                        id) > 0) {
+
+                    Locale locale = LocaleContextHolder.getLocale();
+                    response.sendError(409, messageSource.getMessage("session.time.interval.conflict", null, locale));
+
+                } else if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(
                         request.getClassId(),
                         request.getSessionDate(),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                        request.getSessionStartHour(),
+                        request.getSessionEndHour(),
+                        //MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                        //MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
                         id
                 )) {
 
@@ -208,8 +249,8 @@ public class ClassSessionService implements IClassSession {
 
                     request.setDayCode(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]);
                     request.setDayName(getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]));
-                    request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
-                    request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));
+                    /*request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
+                    request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));*/
 
                     Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
                     ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
@@ -252,6 +293,39 @@ public class ClassSessionService implements IClassSession {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    //*********************************
+
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public ClassSessionDTO.DeleteStatus deleteSessions(List<Long> sessionIds) {
+        int totalSize = sessionIds.size();
+        int successes = 0;
+
+        for (int i=0;i<sessionIds.size();i++) {
+             Long sessionId=sessionIds.get(i);
+
+             if (!attendanceDAO.existsBySessionId(sessionId)) {
+                 Long classId = getClassIdBySessionId(sessionId);
+
+                 classSessionDAO.deleteById(sessionId);
+                 classAlarmService.alarmSumSessionsTimes(classId);
+                 classAlarmService.alarmTeacherConflict(classId);
+                 classAlarmService.alarmStudentConflict(classId);
+                 classAlarmService.alarmTrainingPlaceConflict(classId);
+                 successes++;
+             }//end if
+        }
+
+        ClassSessionDTO.DeleteStatus deleteStatus=new ClassSessionDTO.DeleteStatus();
+        deleteStatus.setSucesses(successes);
+        deleteStatus.setTotalSizes(totalSize);
+
+        return deleteStatus;
     }
 
     //*********************************
@@ -309,6 +383,12 @@ public class ClassSessionService implements IClassSession {
         }.getType());
     }
 
+    @Transactional
+    public List<ClassSessionDTO.AttendanceClearForm> loadSessionsForClearAttendance(Long classId) {
+        return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>() {
+        }.getType());
+    }
+
 
     //*********************************
 
@@ -319,18 +399,66 @@ public class ClassSessionService implements IClassSession {
         }.getType());
     }
 
+    @Transactional
+    public List<ClassSessionDTO.Info> getSessions(Long classId) {
+        return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.Info>>() {
+        }.getType());
+    }
+
 //    public List<ClassSessionDTO.Info> getSessionsForStudent(Long classId, Long studentId) {
 //        classSessionDAO.findByClassIdAndStudent
 //        return null;
 //    }
     //*********************************
 
+    //Amin Haeri-------------------
     @Override
     @Transactional
     public List<ClassSessionDTO.ClassSessionsDateForOneClass> getDateForOneClass(Long classId) {
         List<IClassSessionDTO> dateByClassId = classSessionDAO.findSessionDateDistinctByClassId(classId);
-        return modelMapper.map(dateByClassId, new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
+        List<ClassSessionDTO.ClassSessionsDateForOneClass> exitList = new ArrayList<>();
+
+        Optional<Tclass> tclassExist = tclassDAO.findById(classId);
+        final Tclass tclass = tclassExist.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        int numStudents=tclass.getClassStudents().size();
+
+        int idx=0;
+
+        for (IClassSessionDTO sessionDate : dateByClassId) {
+            List<ClassSession> sessions = classSessionDAO.findBySessionDateAndClassId(sessionDate.getSessionDate(), classId);
+            boolean outerCheck=true;
+            ClassSessionDTO.ClassSessionsDateForOneClass classSessionsDateForOneClass= new ClassSessionDTO.ClassSessionsDateForOneClass();
+            classSessionsDateForOneClass.setDayName(sessionDate.getDayName());
+            classSessionsDateForOneClass.setSessionDate(sessionDate.getSessionDate());
+            exitList.add(classSessionsDateForOneClass);
+            idx++;
+
+            for (ClassSession session : sessions) {
+                if (!outerCheck) {
+                    break;
+                }
+
+                List<Attendance> attendanceList = attendanceDAO.findBySessionId(session.getId());
+
+                if (numStudents == 0 || attendanceList.size() == 0 || attendanceList.size() != numStudents) {
+                    exitList.get(idx-1).setHasWarning("alarm");
+                    break;
+                }
+
+                for (Attendance attendance : attendanceList) {
+                    if (attendance.getState().equals("0")) {
+                        exitList.get(idx-1).setHasWarning("alarm");
+                        outerCheck=false;
+                        break;
+                    }//end if
+                }//end for
+            }
+        }
+
+        return modelMapper.map(exitList, new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
         }.getType());
+
     }
 
     //*********************************
@@ -499,12 +627,14 @@ public class ClassSessionService implements IClassSession {
             for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
                 classSession.setStudentStatus("ثبت نام نشده");
                 for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
-                    if (attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
-                        studentId = attendanceInfo.getStudent().getId();
-                        classSession.setStudentStatus("ثبت نام شده");
+                    if(attendanceInfo.getNationalCodeStudent() != null && attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)){
+                            studentId = attendanceInfo.getStudent().getId();
+                            classSession.setStudentStatus("ثبت نام شده");
                     }
                 }
-                List<Attendance> attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                List<Attendance> attendance = null;
+                if(studentId != null)
+                    attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
                 if (attendance != null && attendance.size() != 0)
                     classSession.setStudentPresentStatus(attendance.get(0).getState());
             }
@@ -571,7 +701,6 @@ public class ClassSessionService implements IClassSession {
         double j_days_of_year = Math
                 .floor(((d_j / len) - Math.floor(d_j / len)) * 365) + 1;
 
-        // System.out.println(j_days_of_year);
         StringBuffer result = new StringBuffer();
 
         if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)
@@ -628,5 +757,4 @@ public class ClassSessionService implements IClassSession {
         ClassSession classSession = classSessionDAO.getClassSessionById(sessionId);
         return classSession.getClassId();
     }
-
 }

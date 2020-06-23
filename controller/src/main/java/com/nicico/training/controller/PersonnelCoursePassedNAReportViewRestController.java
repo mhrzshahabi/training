@@ -48,5 +48,10 @@ public class PersonnelCoursePassedNAReportViewRestController {
         return search(iscRq, e -> modelMapper.map(e, PersonnelCoursePassedNAReportViewDTO.NotPassedPersonnel.class));
     }
 
+    @Loggable
+    @GetMapping("/minList")
+    public ResponseEntity<ISC<PersonnelCoursePassedNAReportViewDTO.MinInfo>> minlist(HttpServletRequest iscRq) throws IOException {
+        return search(iscRq, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class));
+    }
 
 }

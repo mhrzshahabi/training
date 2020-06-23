@@ -9,8 +9,8 @@
 // <script>
 
     var endDateCheckReport = true;
-
-    var RestDataSource_PreTestScore = isc.TrDS.create({
+  
+    var RestDataSource_unjustifiedAbsenceReport = isc.TrDS.create({
 
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
@@ -19,17 +19,16 @@
             return this.Super("transformRequest", arguments);
         },
         fields: [{name: "id", primaryKey: true},
-            {name: "code"},
-            {name: "titleClass"},
-            {name: "preTestScore"},
-            {name: "firstName"},
+            {name: "sessionDate"},
             {name: "lastName"},
+            {name: "firstName"},
+            {name: "titleClass"},
             {name: "startDate"},
             {name: "endDate"},
-            {name: "employeNo"},
-            {name: "personnelNo"},
-            {name: "nationalCode"},
-            {name: "preTestScoreParameterValue"}
+            {name: "endHour"},
+            {name: "startHour"},
+            {name: "code"},
+
         ], dataFormat: "json",
 
         // autoFetchData: true,
@@ -43,34 +42,33 @@
                 ID: "totalsLabel_scores"
             })]
     })
-    var List_Grid_Reaport = isc.TrLG.create({
-        dataSource: RestDataSource_PreTestScore,
-        showRowNumbers: false,
-        //autoFetchData: true,
 
+    var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
+        margin:5,
+        click: function () {
+            ExportToFile.downloadExcelFromClient(List_Grid_Reaport, null, '', "غیبت ناموجه")
+        }
+    })
+
+    ToolStripButton_ExportToExcel.setDisabled(true);
+
+    var List_Grid_Reaport = isc.TrLG.create({
+        dataSource: RestDataSource_unjustifiedAbsenceReport,
+        showRowNumbers: true,
+        gridComponents: [ToolStripButton_ExportToExcel,"filterEditor", "header", "body"],
         fields: [
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "titleClass", title: "عنوان کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "firstName", title: "نام", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "lastName",title: "نام خانوادگی",align: "center",filterOperator: "iContains"},
-            {name: "nationalCode",title: "کد ملی",align: "center",filterOperator: "iContains"},
             {name: "startDate",title: "تاریخ شروع",align: "center",filterOperator: "iContains"},
             {name: "endDate",title: "تاریخ پایان",align: "center",filterOperator: "iContains"},
-            {name: "employeNo",title: "شماره پرسنلی 6 رقمي",align: "center",filterOperator: "iContains"},
-            {name: "personnelNo",title: "شماره پرسنلی",align: "center",filterOperator: "iContains"},
-            {name: "preTestScore",title: "نمره پیش آزمون/تست",align: "center",filterOperator: "iContains"}
-
-
+            {name: "startHour",title: "ساعت شروع",align: "center",filterOperator: "iContains"},
+            {name: "endHour",title: "ساعت پایان",align: "center",filterOperator: "iContains"},
+            {name: "sessionDate",title: "جلسه",align: "center",filterOperator: "iContains"},
         ],
-        recordDoubleClick: function () {
 
-        },
-        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
-        dataArrived: function ()
-        {
-            totalsLabel_scores.setContents("حد نمره پيش تست" + ":&nbsp;<b>" + List_Grid_Reaport.getRecord(0).preTestScoreParameterValue + "</b>" + "&nbsp;&nbsp;&nbsp;&nbsp;")
-        },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -82,7 +80,6 @@
         colWidths: ["5%","15%","5%","15%","10%","10%"],
         fields: [
             {
-
                 name: "startDate",
                 // height: 35,
                 //   titleColSpan: 1,
@@ -105,7 +102,6 @@
                         displayDatePicker('startDate_jspReport', this, 'ymd', '/');
                     }
                 }],
-
 
                 blur: function () {
                     var dateCheck;
@@ -180,53 +176,55 @@
                 }
 
             },
-            // {
-            //     type: "button",
-            //     title: "تهیه گزارش",
-            //     height:"25",
-            //     align:"center",
-            //     endRow:false,
-            //     startRow: false,
-            //
-            //     click:function () {
-            //         if (endDateCheckReport == false)
-            //             return;
-            //
-            //         if (!DynamicForm_Report.validate()) {
-            //             return;
-            //         }
-            //
-            //         var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
-            //         var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-            //         RestDataSource_PreTestScore.fetchDataURL=preTestScoreReportURL + "spec-list"+"/"+strSData + "/" + strEData;
-            //         List_Grid_Reaport.invalidateCache();
-            //         List_Grid_Reaport.fetchData();
-            //     }
-            // },
             {
                 type: "button",
-                startRow:false,
-                align:"center",
-                title: "چاپ گزارش",
+                title: "تهیه گزارش",
                 height:"25",
+                align:"center",
+                endRow:false,
+                startRow: false,
+
                 click:function () {
                     if (endDateCheckReport == false)
                         return;
+
                     if (!DynamicForm_Report.validate()) {
                         return;
                     }
+
+                    ToolStripButton_ExportToExcel.setDisabled(false);
                     var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-                    Print(strSData,strEData);
+                    RestDataSource_unjustifiedAbsenceReport.fetchDataURL=unjustifiedAbsenceReport +"unjustifiedAbsenceReport"+"/"+strSData + "/" + strEData;
+                    List_Grid_Reaport.fetchData();
+                    List_Grid_Reaport.invalidateCache();
+                    List_Grid_Reaport.fetchData();
                 }
-
-
             },
+            // {
+            //     type: "button",
+            //     startRow:false,
+            //     align:"center",
+            //     title: "چاپ گزارش",
+            //     height:"25",
+            //     click:function () {
+            //         if (endDateCheckReport == false)
+            //             return;
+            //         if (!DynamicForm_Report.validate()) {
+            //             return;
+            //         }
+            //         var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
+            //         var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
+            //         Print(strSData,strEData);
+            //     }
+            //
+            //
+            // },
         ]
     })
 
     var Hlayout_Reaport_body = isc.HLayout.create({
-        height:"10%",
+        height:"5%",
         members: [DynamicForm_Report]
     })
 

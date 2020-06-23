@@ -4,20 +4,10 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.training.TrainingException;
-import com.nicico.training.iservice.IEvaluationService;
-import com.nicico.training.iservice.IQuestionnaireQuestionService;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.QuestionnaireQuestionDAO;
-import com.nicico.training.service.EvaluationService;
-import com.nicico.training.service.ParameterService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -33,6 +23,7 @@ public class TclassDTO {
     private String code;
     private Long teacherId;
     private Long instituteId;
+    private Date createdDate;
     private Long organizerId;
     private String titleClass;
     private String teachingType;//روش آموزش
@@ -79,7 +70,6 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
-
         private Long courseId;
         private InstituteDTO.InstituteInfoTuple institute;
         private String lastModifiedBy;
@@ -165,7 +155,7 @@ public class TclassDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherInfo")
-    public static class teacherInfo{
+    public static class teacherInfo {
         private TeacherDTO.TeacherInformation teacher;
     }
 
@@ -173,7 +163,7 @@ public class TclassDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("teacherInfoCustom")
-    public static class teacherInfoCustom{
+    public static class teacherInfoCustom {
         private String firstName;
         private String lastName;
         private String nationalCode;
@@ -194,6 +184,24 @@ public class TclassDTO {
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
         private Long courseId;
+        private Long targetSocietyTypeId;
+        @Getter(AccessLevel.NONE)
+        private List<Object> targetSocieties;
+
+        public List<Object> gettargetSocieties() {
+            if (targetSocieties == null)
+                return new ArrayList<>(0);
+            boolean accept = true;
+            for (Object society : targetSocieties) {
+                if (targetSocietyTypeId == 371 && society instanceof Integer)
+                    continue;
+                else if (targetSocietyTypeId == 372 && society instanceof String)
+                    continue;
+                accept = false;
+                break;
+            }
+            return accept ? targetSocieties : new ArrayList<>(0);
+        }
     }
 
     //----------------------------------------------
@@ -238,6 +246,24 @@ public class TclassDTO {
     @ApiModel("TclassUpdateRq")
     public static class Update extends TclassDTO {
         private Long courseId;
+        private Long targetSocietyTypeId;
+        @Getter(AccessLevel.NONE)
+        private List<Object> targetSocieties;
+
+        public List<Object> getTargetSocieties() {
+            if (targetSocieties == null)
+                return new ArrayList<>(0);
+            boolean accept = true;
+            for (Object society : targetSocieties) {
+                if (targetSocietyTypeId == 371 && society instanceof Integer)
+                    continue;
+                else if (targetSocietyTypeId == 372 && society instanceof String)
+                    continue;
+                accept = false;
+                break;
+            }
+            return accept ? targetSocieties : new ArrayList<>(0);
+        }
     }
 
     // ------------------------------
@@ -334,7 +360,7 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple institute;
         private Long instituteId;
         private String classStatus;
-        private String evaluationStatus;
+        //        private String evaluationStatus;
         private String titleClass;
         private String scoringMethod;
 
@@ -482,6 +508,8 @@ public class TclassDTO {
         private String ERunType;
         private Long courseId;
         private String courseTitle;
+        private Long failureReasonId;
+        private String failureReason;
     }
 
     @Getter
@@ -539,20 +567,23 @@ public class TclassDTO {
         private String endDate;
         private String classStatus;
         private String scoringMethod;
+
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
         }
+
         public Integer getStudentsCount() {
             if (classStudents != null)
                 return classStudents.size();
             else
                 return 0;
         }
-        public String getYear(){
-            return startDate.substring(0,4);
+
+        public String getYear() {
+            return startDate.substring(0, 4);
         }
     }
 
@@ -577,4 +608,110 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-}
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassTerm")
+    public static class TclassTerm {
+        private Long id;
+        private CourseDTO.CourseInfoTuple course;
+        private TermDTO.TermDTOTuple term;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassTeacherReport")
+    public static class TclassTeacherReport {
+        private TermDTO.TermDTOTuple term;
+    }
+
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassHistory")
+    public static class TclassHistory {
+        private Long id;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private String code;
+        private TermDTO.TermDTOTuple term;
+        private CourseDTO.CourseInfoTuple course;
+        private InstituteDTO.InstituteInfoTuple institute;
+        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+        public Integer getStudentCount() {
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
+        }
+        private String classStatus;
+        private List<Long> trainingPlaceIds;
+        private Long instituteId;
+        private String workflowEndingStatus;
+        private Integer workflowEndingStatusCode;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsHistory {
+        private List<TclassDTO.TclassHistory> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassSpecRsHistory")
+    public static class TclassSpecRsHistory {
+        private SpecRsHistory response;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassInfoTuple")
+    public static class InfoTuple{
+        private Long id;
+        private String titleClass;
+        private String code;
+        private CourseDTO.InfoTuple course;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TclassInfoTupleSpecRs")
+    public static class TclassInfoTupleSpecRs {
+        private InfoTupleSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InfoTupleSpecRs {
+        private List<TclassDTO.InfoTuple> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    }

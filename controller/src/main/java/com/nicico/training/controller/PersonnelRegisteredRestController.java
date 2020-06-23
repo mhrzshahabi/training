@@ -164,6 +164,13 @@ public class PersonnelRegisteredRestController {
         return new ResponseEntity<>(personnelRegisteredService.search(request), HttpStatus.OK);
     }
 
+    @Loggable
+    @PostMapping(value = "checkPersonnelNos")
+    public ResponseEntity<List<PersonnelRegisteredDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
+        List<PersonnelRegisteredDTO.Info> list=personnelRegisteredService.checkPersonnelNos(personnelNos);
+        return new ResponseEntity<>(list,HttpStatus.OK);
+    }
+
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})

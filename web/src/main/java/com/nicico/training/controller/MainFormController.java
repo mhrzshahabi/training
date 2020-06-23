@@ -45,6 +45,11 @@ public class MainFormController {
         return "report/trainingOverTime";
     }
 
+    @RequestMapping("/attendanceReport")
+    public String showAttendanceReport() {
+        return "report/attendanceReport";
+    }
+
     @RequestMapping("/needsAssessment-reports")
     public String showNeedsAssessmentReportsForm() {
         return "report/needsAssessmentReports";
@@ -52,6 +57,9 @@ public class MainFormController {
 
     @RequestMapping("/calenderCurrentTerm")
      public String showCalenderCurrentTerm(){return "report/calenderCurrentTerm";}
+
+     @RequestMapping("/classOutsideCurrentTerm")
+     public String showclassOutsideCurrentTerm(){return "report/classOutsideCurrentTerm";}
 
     @RequestMapping("/oaUser")
     public String showOaUserForm() {
@@ -123,6 +131,16 @@ public class MainFormController {
         return "report/monthlyStatisticalReport";
     }
 
+    @RequestMapping("/evaluationStaticalReport")
+    public String showEvaluationStaticalReportForm() {
+        return "report/evaluationStaticalReport";
+    }
+
+    @RequestMapping("/categoriesPerformanceReport")
+    public String showCategoriesPerformanceReportForm() {
+        return "report/categoriesPerformanceReport";
+    }
+
     @RequestMapping("class-contract")
     public String showClassContractForm() {
         return "run/class-contract";
@@ -176,6 +194,15 @@ public class MainFormController {
         return "needsAssessment/needsAssessment";
     }
 
+    @GetMapping("/edit-needs-assessment")
+    public String showEditNeedsAssessmentForm() {
+        return "needsAssessment/edit-needs-assessment";
+    }
+    @GetMapping("/tree-needs-assessment")
+    public String showTreeNeedsAssessmentForm() {
+        return "needsAssessment/tree-needs-assessment";
+    }
+
     @RequestMapping("/work-group")
     public String showWorkGroupForm() {
         return "security/workGroup";
@@ -193,7 +220,7 @@ public class MainFormController {
 
     @RequestMapping("/personnel-course-NA-report")
     public String showPersonnelCourseNAReportForm() {
-        return "report/personnelCourseNAReport";
+        return "report/personnelCourseNAReportV2";
     }
 
     @PostMapping("/personnel-needs-assessment-report-print/{type}")

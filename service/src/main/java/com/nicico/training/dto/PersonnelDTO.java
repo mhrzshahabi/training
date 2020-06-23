@@ -4,6 +4,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -100,6 +101,7 @@ public class PersonnelDTO implements Serializable {
         private String jobNo;
         private String jobTitle;
         private String postCode;
+        private String postGradeTitle;
         private String workPlace;
         private String workYears;
         private String workMonths;
@@ -115,6 +117,13 @@ public class PersonnelDTO implements Serializable {
         private String phone;
         private String mobile;
         private String email;
+
+        @Getter(AccessLevel.NONE)
+        private String fullName;
+
+        public String getFullName() {
+            return getFirstName() + " " + getLastName();
+        }
     }
 
     @Getter

@@ -278,10 +278,18 @@
 
             {name: "name", title: "نام", width: "30%"},
             {name: "resourceName", title: "<spring:message code="process.name"/>", width: "30%"},
-            {name: "deploymentId", title: "<spring:message code="process.id"/>", width: "30%"},
+            {name: "deploymentId", title: "<spring:message code="process.id"/>", width: "30%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
             {name: "key", title: "<spring:message code="key"/>", width: "30%"},
             {name: "description", title: "<spring:message code="description"/>", width: "30%"},
-            {name: "version", title: "<spring:message code="version"/>", width: "10%"},
+            {name: "version", title: "<spring:message code="version"/>", width: "10%",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|.]"
+                }
+            },
             {name: "id", title: "id", type: "text", width: "30%", hidden: true}
 
         ],

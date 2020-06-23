@@ -11,7 +11,10 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.iservice.IEvaluationAnalysisService;
+import com.nicico.training.model.EvaluationAnalysis;
 import com.nicico.training.repository.ClassStudentDAO;
+import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassStudentService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +50,7 @@ public class ClassStudentRestController {
     private final ClassStudentDAO classStudentDAO;
     private final ModelMapper modelMapper;
     private final ClassAlarmService classAlarmService;
+    private final IEvaluationAnalysisService evaluationAnalysisService;
 
     private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
         int startRow = 0;
@@ -123,10 +127,11 @@ public class ClassStudentRestController {
     @PostMapping(value = "/register-students/{classId}")
     public ResponseEntity registerStudents(@RequestBody List<ClassStudentDTO.Create> request, @PathVariable Long classId) {
         try {
-            classStudentService.registerStudents(request, classId);
+            Map<String, String> result;
+            result = classStudentService.registerStudents(request, classId);
             classAlarmService.alarmClassCapacity(classId);
             classAlarmService.alarmStudentConflict(classId);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -210,7 +215,7 @@ public class ClassStudentRestController {
 
     @Loggable
     @PutMapping(value = "/setStudentFormIssuance")
-    public Integer setStudentFormIssuance(@RequestBody Map<String, Integer> formIssuance) {
+    public Integer setStudentFormIssuance(@RequestBody Map<String, String> formIssuance) {
         return classStudentService.setStudentFormIssuance(formIssuance);
     }
 

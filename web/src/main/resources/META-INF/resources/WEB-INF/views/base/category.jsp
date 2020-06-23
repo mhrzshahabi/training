@@ -562,7 +562,6 @@
 
             var data = DynamicForm_Sub_Category.getValues();
             crecord = ListGrid_Category.getSelectedRecord();
-// alert(substring(data.code,1,2));
 
 
             if (data.code.substr(0, 2) == crecord.code) {
@@ -743,7 +742,6 @@
             });
         } else {
 //selectedCategoryId=crecord.id;
-// alert(crecord.titleFa);
             method = "POST";
             url = category_SubCategoryUrl;
             DynamicForm_Sub_Category.clearValues();
@@ -766,7 +764,6 @@
         var crecord = ListGrid_Category.getSelectedRecord();
         var record = ListGrid_Sub_Category.getSelectedRecord();
 
-// alert(crecord.titleFa);
         if (record == null || crecord == null) {
             isc.Dialog.create({
                 message: "گروه یا زیر گروه انتخاب نشده است.",

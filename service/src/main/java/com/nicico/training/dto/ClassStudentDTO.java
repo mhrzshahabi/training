@@ -44,10 +44,38 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusReaction;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusLearning;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusBehavior;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
+        private ParameterValueDTO.TupleInfo evaluationAudienceType;
+        private Long evaluationAudienceTypeId;
+        private Long evaluationAudienceId;
+
+        public String getFullName(){
+            return student.getFirstName()+" "+student.getLastName();
+        }
+
+
+        public Integer getEvaluationStatusReaction() {
+            return evaluationStatusReaction == null ? 0 : evaluationStatusReaction;
+        }
+
+        public Integer getEvaluationStatusLearning() {
+            return evaluationStatusLearning == null ? 0 : evaluationStatusLearning;
+        }
+
+        public Integer getEvaluationStatusBehavior() {
+            return evaluationStatusBehavior == null ? 0 : evaluationStatusBehavior;
+        }
+
+        public Integer getEvaluationStatusResults() {
+            return evaluationStatusResults == null ? 0 : evaluationStatusResults;
+        }
     }
 
     @Getter
@@ -190,8 +218,10 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private StudentDTO.ScoresInfo student;
         private TclassDTO.ScoreInfo tclass;
-        private String scoresState;
-        private String failureReason;
+        private ParameterValueDTO.TupleInfo scoresState;
+        private ParameterValueDTO.TupleInfo failureReason;
+        Long scoresStateId;
+        Long failureReasonId;
         private Float score;
         private String valence;
     }
