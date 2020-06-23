@@ -27,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -608,6 +611,20 @@ public class CourseRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/iscTupleList")
+    public ResponseEntity<ISC<CourseDTO.CourseInfoTupleLite>> list(HttpServletRequest iscRq, @RequestParam(required = false) Long id) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        if (id != null) {
+            searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
+        }
+        SearchDTO.SearchRs<CourseDTO.CourseInfoTupleLite> searchRs = courseService.search(searchRq, i -> modelMapper.map(i, CourseDTO.CourseInfoTupleLite.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
 }

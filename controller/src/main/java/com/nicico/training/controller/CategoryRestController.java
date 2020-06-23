@@ -16,6 +16,7 @@ import com.nicico.training.iservice.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -33,6 +36,7 @@ public class CategoryRestController {
 
     private final ICategoryService categoryService;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     // ------------------------------
 
@@ -222,6 +226,19 @@ public class CategoryRestController {
 //    @PreAuthorize("hasAuthority('r_category')")
     public ResponseEntity<SubcategoryDTO.SubCategorySpecRs> dummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         return new ResponseEntity<SubcategoryDTO.SubCategorySpecRs>(new SubcategoryDTO.SubCategorySpecRs(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/iscTupleList")
+    public ResponseEntity<ISC<CategoryDTO.CategoryTitle>> list(HttpServletRequest iscRq, @RequestParam(required = false) Long id) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        if (id != null) {
+            searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
+        }
+        SearchDTO.SearchRs<CategoryDTO.CategoryTitle> searchRs = categoryService.search(searchRq, i -> modelMapper.map(i, CategoryDTO.CategoryTitle.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
 }
