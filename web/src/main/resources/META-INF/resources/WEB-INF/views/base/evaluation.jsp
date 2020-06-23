@@ -430,6 +430,128 @@ var dummy;
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
 
+        var PersonnelInfomationDS_evaluation_class = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "mobile",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "companyName",
+                    title: "<spring:message code="company.name"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "fullName",
+                    hidden:true
+                }
+            ],
+            fetchDataURL: personnelUrl + "/iscList"
+        });
+
+        var PersonnelInClassDS_evaluation_class = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "student.id", hidden: true},
+                {
+                    name: "student.firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                },
+                {
+                    name: "student.mobile",
+                    title: "<spring:message code="mobile"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.companyName",
+                    title: "<spring:message code="company.name"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                },
+                {
+                    name: "student.personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "fullName",
+                    hidden:true
+                }
+
+            ],
+            //fetchDataURL: personnelUrl + "/iscList"
+        });
+
+        var TeacherInClassDS_evaluation_class = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "personality.id"},
+                {name: "teacherCode"},
+                {name: "personnelCode"},
+                {name: "personality.firstNameFa"},
+                {name: "personality.lastNameFa"},
+                {name: "personality.contactInfo.mobile"},
+                {name: "personality.fullName"},
+                {name: "fullName"},
+            ],
+            fetchDataURL: teacherUrl + "spec-list-grid",
+            //implicitCriteria:{operator:"and", _constructor:"AdvancedCriteria",criteria:{"fieldName":"tclass.id","operator":"equals","value":ListGrid_evaluation_class.getSelectedRecord().id}}
+        });
+
         var RestDataSource_evaluation_class = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
@@ -888,6 +1010,28 @@ var dummy;
             }
         });
 
+
+        var ToolStripButton_SendMessageWithMobile = isc.ToolStripButton.create({
+            title: "ارسال پیامک",
+            click: function () {
+                DynamicForm_SendMessage_jspEvaluation.getItem("message").setValue("");
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("personnelInClass").setValue([]);
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("teacherInClass").setValue([]);
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("topPersonnelInClass").setValue([]);
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("coWorkerInClass").setValue([]);
+
+                PersonnelInClassDS_evaluation_class.fetchDataURL = tclassStudentUrl + "/students-iscList/" + ListGrid_evaluation_class.getSelectedRecord().id;
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("personnelInClass").comboBox.invalidateDisplayValueCache();
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("personnelInClass").comboBox.fetchData();
+
+                TeacherInClassDS_evaluation_class.implicitCriteria={operator:"and", _constructor:"AdvancedCriteria",criteria:[{"fieldName":"tclasse.id","operator":"equals","value":ListGrid_evaluation_class.getSelectedRecord().id}]};
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("teacherInClass").comboBox.invalidateDisplayValueCache();
+                DynamicForm_selectPersonnel_jspEvaluation.getItem("teacherInClass").comboBox.fetchData();
+
+                Window_Evaluation_SendMessage.show();
+            }
+        });
+
         var ToolStripButton_RefreshIssuance = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
             click: function () {
@@ -905,6 +1049,7 @@ var dummy;
                 ToolStripButton_FormIssuance,
                 ToolStripButton_FormIssuanceForAll,
                 </sec:authorize>
+                ToolStripButton_SendMessageWithMobile,
 
                 isc.ToolStrip.create({
                     width: "100%",
@@ -978,6 +1123,490 @@ var dummy;
                 [
                     DynamicForm_OperationalUnit, create_Buttons
                 ]
+        });
+
+
+        var DynamicForm_SendMessage_jspEvaluation = isc.DynamicForm.create({
+            align: "right",
+            titleWidth: 0,
+            titleAlign: "center",
+            /*showInlineErrors: true,
+            showErrorText: false,*/
+            //overflow:"none",
+            height: "*",
+            width:"100%",
+            numCols: 2,
+            colWidths: ["6%", "94%"],
+            fields: [
+                {
+                    name: "message",
+                    title: "متن پیام",
+                    type: "TextAreaItem",
+                    colSpan: 3,
+                    rowSpan: 4,
+                    height: "*",
+                    width: "100%",
+                    length: 300,
+                }
+            ]
+        })
+
+        var DynamicForm_selectPersonnel_jspEvaluation = isc.DynamicForm.create({
+            align: "center",
+            titleWidth: 0,
+            titleAlign: "center",
+            //height: 400,
+            height: "*",
+            width:920,
+            top:0,
+            left:0,
+            padding:0,
+            margin:0,
+            //overflow:"scroll",
+            numCols: 8,
+            colWidths: ["5%", "20%","5%", "20%","5%", "20%","5%", "20%"],
+            fields: [
+                {
+                    padding:10,
+                    vAlign: "top",
+                    titleVAlign: "top",
+                    name: "personnelInClass",
+                    align: "right",
+                    title: "فراگیران",
+                    editorType: "MultiComboBoxItem",
+                    multiple: true,
+                    defaultValue: null,
+                    changeOnKeypress: true,
+                    showHintInField: true,
+                    displayField: "fullName",
+                    comboBoxWidth: 700,
+                    valueField: "id",
+                    layoutStyle: "vertical",
+                    optionDataSource: PersonnelInClassDS_evaluation_class,
+                    comboBoxProperties: {
+                        pickListWidth: 700,
+                        pickListFields: [
+                            {name: "id", primaryKey: true, hidden: true},
+                            {
+                                name: "student.firstName",
+                                title: "<spring:message code="firstName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "student.lastName",
+                                title: "<spring:message code="lastName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "student.nationalCode",
+                                title: "<spring:message code="national.code"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "student.mobile",
+                                title: "<spring:message code="mobile"/>",
+                                filterOperator: "iContains",
+                                //width: "*"
+                            },
+                            {
+                                name: "student.companyName",
+                                title: "<spring:message code="company.name"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "student.personnelNo",
+                                title: "<spring:message code="personnel.no"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "student.personnelNo2",
+                                title: "<spring:message code="personnel.no.6.digits"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            }
+                        ],
+                        filterFields:["student.firstName", "student.lastName", "student.nationalCode", "student.mobile", "student.companyName", "student.personnelNo", "student.personnelNo2"],
+                        changed:function (form, item,value) {
+                            var values = DynamicForm_selectPersonnel_jspEvaluation.getItem("personnelInClass").getValue();
+                            var valueMaps = item.getValueMap();
+
+                            if(typeof(item.getPickListRecordForValue(item.getValue())?.student?.mobile)!="undefined") {
+
+
+                                if (typeof (values) == "undefined") {
+                                    values = [];
+                                }
+                                values.push(item.getValue())
+
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("personnelInClass").setValueMap(valueMaps);
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("personnelInClass").setValue(values);
+
+                            }else{
+                                createDialog("info", "براي فرد مورد نظر شماره موبايل وارد نشده است.");
+                            }
+
+                            item.setValue();
+                        }
+
+                    }
+                },
+                {
+                    vAlign: "top",
+                    titleVAlign: "top",
+                    name: "teacherInClass",
+                    align: "right",
+                    title: "اساتید",
+                    editorType: "MultiComboBoxItem",
+                    multiple: true,
+                    defaultValue: null,
+                    changeOnKeypress: true,
+                    showHintInField: true,
+                    displayField: "fullName",
+                    displayValueFromRecord: false,
+                    comboBoxWidth: 700,
+                    valueField: "id",
+                    layoutStyle: "vertical",
+                    optionDataSource: TeacherInClassDS_evaluation_class,
+                    comboBoxProperties: {
+                        pickListWidth: 600,
+                        pickListFields: [
+                            {name: "id", primaryKey: true, hidden: true},
+                            {
+                                name: "personality.firstNameFa",
+                                title: "<spring:message code="firstName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "personality.lastNameFa",
+                                title: "<spring:message code="lastName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "personality.nationalCode",
+                                title: "<spring:message code="national.code"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "personality.contactInfo.mobile",
+                                title: "<spring:message code="mobile"/>",
+                                filterOperator: "iContains",
+                                //width:"*"
+                            },
+                            {
+                                name: "teacherCode",
+                                title: "<spring:message code="teacher.code"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "personnelNo",
+                                title: "<spring:message code="personnel.no"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            }
+                        ],
+                        filterFields:["personality.firstNameFa", "personality.lastNameFa", "personality.nationalCode", "personality.contactInfo.mobile", "personnelNo", "personnelNo", "tclass.id"],
+                        changed:function (form, item,value) {
+                            if(typeof(item.getPickListRecordForValue(item.getValue()).personality?.contactInfo?.mobile)!="undefined") {
+
+                                var values = DynamicForm_selectPersonnel_jspEvaluation.getItem("teacherInClass").getValue();
+                                var valueMaps = item.getValueMap();
+
+                                if (typeof (values) == "undefined" || values==null) {
+                                    values = [];
+                                }
+
+                                values.push(item.getValue());
+
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("teacherInClass").setValueMap(valueMaps);
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("teacherInClass").setValue(values);
+
+                            }else{
+                                createDialog("info", "براي فرد مورد نظر شماره موبايل وارد نشده است.");
+                            }
+
+                            item.setValue();
+                        }
+                    },
+                },
+                {
+                    vAlign: "top",
+                    titleVAlign: "top",
+                    name: "topPersonnelInClass",
+                    align: "right",
+                    title: "بالا دست فراگیران",
+                    editorType: "MultiComboBoxItem",
+                    multiple: true,
+                    defaultValue: null,
+                    changeOnKeypress: true,
+                    showHintInField: true,
+                    displayField: "fullName",
+                    comboBoxWidth: 700,
+                    valueField: "id",
+                    layoutStyle: "vertical",
+                    optionDataSource: PersonnelInfomationDS_evaluation_class,
+                    comboBoxProperties: {
+                        pickListWidth: 700,
+                        pickListFields: [
+                            {name: "id", primaryKey: true, hidden: true},
+                            {
+                                name: "firstName",
+                                title: "<spring:message code="firstName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "lastName",
+                                title: "<spring:message code="lastName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "nationalCode",
+                                title: "<spring:message code="national.code"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "mobile",
+                                title: "<spring:message code="mobile"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "companyName",
+                                title: "<spring:message code="company.name"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "personnelNo",
+                                title: "<spring:message code="personnel.no"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "personnelNo2",
+                                title: "<spring:message code="personnel.no.6.digits"/>",
+                                filterOperator: "iContains"
+                            }
+                        ],
+                        filterFields:["firstName", "lastName", "nationalCode", "mobile", "companyName", "personnelNo", "personnelNo2"],
+                        changed:function (form, item,value) {
+
+                            if(typeof(item.getPickListRecordForValue(item.getValue()).mobile)!="undefined") {
+
+                                var values = DynamicForm_selectPersonnel_jspEvaluation.getItem("topPersonnelInClass").getValue();
+                                var valueMaps = item.getValueMap();
+
+                                if (typeof (values) == "undefined") {
+                                    values = [];
+                                }
+
+                                values.push(item.getValue());
+
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("topPersonnelInClass").setValueMap(valueMaps);
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("topPersonnelInClass").setValue(values);
+
+                            }else{
+                                createDialog("info", "براي فرد مورد نظر شماره موبايل وارد نشده است.");
+                            }
+
+                            item.setValue();
+                        }
+                    },
+                },
+                {
+                    vAlign: "top",
+                    titleVAlign: "top",
+                    name: "coWorkerInClass",
+                    align: "right",
+                    title: "همکاران فراگیران",
+                    editorType: "MultiComboBoxItem",
+                    multiple: true,
+                    defaultValue: null,
+                    changeOnKeypress: true,
+                    showHintInField: true,
+                    displayField: "fullName",
+                    comboBoxWidth: 700,
+                    valueField: "id",
+                    layoutStyle: "vertical",
+                    optionDataSource: PersonnelInfomationDS_evaluation_class,
+                    comboBoxProperties: {
+                        pickListWidth: 700,
+                        pickListFields: [
+                            {name: "id", primaryKey: true, hidden: true},
+                            {
+                                name: "firstName",
+                                title: "<spring:message code="firstName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "lastName",
+                                title: "<spring:message code="lastName"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "nationalCode",
+                                title: "<spring:message code="national.code"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "mobile",
+                                title: "<spring:message code="mobile"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "companyName",
+                                title: "<spring:message code="company.name"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            },
+                            {
+                                name: "personnelNo",
+                                title: "<spring:message code="personnel.no"/>",
+                                filterOperator: "iContains",
+                                //autoFitWidth: true
+                            },
+                            {
+                                name: "personnelNo2",
+                                title: "<spring:message code="personnel.no.6.digits"/>",
+                                filterOperator: "iContains"
+                            }
+                        ],
+                        filterFields:["firstName", "lastName", "nationalCode", "mobile", "companyName", "personnelNo", "personnelNo2"],
+                        changed:function (form, item,value) {
+
+                            if(typeof(item.getPickListRecordForValue(item.getValue()).mobile)!="undefined") {
+
+                                var values = DynamicForm_selectPersonnel_jspEvaluation.getItem("coWorkerInClass").getValue();
+                                var valueMaps = item.getValueMap();
+
+                                if (typeof (values) == "undefined") {
+                                    values = [];
+                                }
+                                values.push(item.getValue())
+
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("coWorkerInClass").setValueMap(valueMaps);
+                                DynamicForm_selectPersonnel_jspEvaluation.getItem("coWorkerInClass").setValue(values);
+
+                            }else{
+                                createDialog("info", "براي فرد مورد نظر شماره موبايل وارد نشده است.");
+                            }
+
+                            item.setValue();
+                        }
+                    },
+                }
+            ]
+        })
+
+        Window_Evaluation_SendMessage = isc.Window.create({
+            width: 1000,
+            height: 700,
+            autoSize: false,
+            title: 'ارسال پیامک',
+            items: [isc.VLayout.create({
+                width: "100%",
+                height: "88%",
+                autoDraw: false,
+                align: "center",
+                members: [
+                    DynamicForm_selectPersonnel_jspEvaluation,
+                    DynamicForm_SendMessage_jspEvaluation
+                ]
+            }),
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        isc.IButtonSave.create({
+                            title:"ارسال پیامک",
+                            top: 260,
+                            align: "center",
+                            icon: "[SKIN]/actions/save.png",
+                            click: function () {
+                                let message = DynamicForm_SendMessage_jspEvaluation.getItem("message").getValue();
+
+                                if(typeof(message)=='undefined' || message==null){
+                                    message = '';
+                                }
+
+                                let personnelNos=[];
+                                let values=DynamicForm_selectPersonnel_jspEvaluation.getField("personnelInClass")?.getValue();
+                                let size=values?.length;
+
+                                for (var i = 0; i < size; i++) {
+                                    personnelNos.push({type:'personnelInClass',id:values[i]})
+                                }
+
+                                values=DynamicForm_selectPersonnel_jspEvaluation.getField("teacherInClass")?.getValue();
+                                size=values?.length;
+
+                                for (var i = 0; i < size; i++) {
+                                    personnelNos.push({type:'teacherInClass',id:values[i]})
+                                }
+
+                                values=DynamicForm_selectPersonnel_jspEvaluation.getField("topPersonnelInClass")?.getValue();
+                                size=values?.length;
+
+                                for (var i = 0; i < size; i++) {
+                                    personnelNos.push({type:'topPersonnelInClass',id:values[i]})
+                                }
+
+                                values=DynamicForm_selectPersonnel_jspEvaluation.getField("coWorkerInClass")?.getValue();
+                                size=values?.length;
+
+                                for (var i = 0; i < size; i++) {
+                                    personnelNos.push({type:'coWorkerInClass',id:values[i]})
+                                }
+
+
+                                if(message == '' || personnelNos.length==0){
+                                    createDialog("info", "<spring:message code="msg.field.is.required"/>", "<spring:message code="error"/>");
+                                    return '';
+                                }
+
+
+                                let data = {
+                                    personnelNo:personnelNos,
+                                    message:DynamicForm_SendMessage_jspEvaluation.getItem("message").getValue(),
+                                };
+
+
+                                isc.RPCManager.sendRequest(TrDSRequest(sendMessageUrl + "/sendSMS", "POST", JSON.stringify(data),function(resp){
+                                    if (resp.httpResponseCode != 200){
+                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                        return;
+                                    }else{
+                                        Window_Evaluation_SendMessage.close();
+                                        createDialog("info", "<spring:message code="msg.successfully.done"/>", "<spring:message code="global.message"/>");
+                                        return;
+                                    }
+                                }))
+                            }
+                        }), isc.IButtonCancel.create({
+                            top: 260,
+                            title: "<spring:message code='cancel'/>",
+                            align: "center",
+                            icon: "[SKIN]/actions/cancel.png",
+                            click: function () {
+                                Window_Evaluation_SendMessage.close();
+                            }
+                        })
+                    ]
+                })
+            ]
         });
     }
     // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>

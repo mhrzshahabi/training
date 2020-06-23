@@ -54,6 +54,10 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusResults;
         private String evaluationAudienceType;
 
+        public String getFullName(){
+            return student.getFirstName()+" "+student.getLastName();
+        }
+
 
         public Integer getEvaluationStatusReaction() {
             return evaluationStatusReaction == null ? 0 : evaluationStatusReaction;
