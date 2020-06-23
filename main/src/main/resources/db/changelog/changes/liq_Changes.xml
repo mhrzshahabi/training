@@ -285,11 +285,6 @@
         <dropColumn columnName="C_PRE_COURSE" tableName="TBL_COURSE"/>
     </changeSet>
 
-    <!--    <changeSet author="poursalehi_mos (generated)" id="1592301837609-373">-->
-    <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
-    <!--    </changeSet>-->
-
-
     <changeSet author="golrokhi (generated)" id="1592644619220-418">
         <addColumn tableName="tbl_student">
             <column name="account_number" type="varchar2(255 CHAR)"/>
@@ -355,5 +350,34 @@
             <column name="evaluation_reaction_training" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-384">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_competence" tableName="tbl_needs_assessment"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-385">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_competence" tableName="tbl_needs_assessment_temp"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-386">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_domain" tableName="tbl_needs_assessment"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-387">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_domain" tableName="tbl_needs_assessment_temp"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-388">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_priority" tableName="tbl_needs_assessment"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-389">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_priority" tableName="tbl_needs_assessment_temp"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-390">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_skill" tableName="tbl_needs_assessment"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1592801274835-391">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_skill" tableName="tbl_needs_assessment_temp"/>
+    </changeSet>
+
+    <!--    <changeSet author="poursalehi_mos (generated)" id="1592301837609-373">-->
+    <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
+    <!--    </changeSet>-->
 
 </databaseChangeLog>

@@ -43,10 +43,10 @@ public class NeedsAssessment<E> extends Auditable {
     @JoinColumn(name = "f_object", nullable = false, insertable = false, updatable = false)
     private E object;
 
-    @Column(name = "f_object")
+    @Column(name = "f_object", nullable = false)
     private Long objectId;
 
-    @Column(name = "c_object_type")
+    @Column(name = "c_object_type", nullable = false)
     private String objectType;
 
     @Column(name = "c_object_name")
@@ -59,28 +59,28 @@ public class NeedsAssessment<E> extends Auditable {
     @JoinColumn(name = "f_competence", nullable = false, insertable = false, updatable = false)
     private Competence competence;
 
-    @Column(name = "f_competence")
+    @Column(name = "f_competence", nullable = false)
     private Long competenceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_skill", nullable = false, insertable = false, updatable = false)
     private Skill skill;
 
-    @Column(name = "f_skill")
+    @Column(name = "f_skill", nullable = false)
     private Long skillId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_parameter_value_needs_assessment_domain", nullable = false, insertable = false, updatable = false)
     private ParameterValue needsAssessmentDomain;
 
-    @Column(name = "f_parameter_value_needs_assessment_domain")
+    @Column(name = "f_parameter_value_needs_assessment_domain", nullable = false)
     private Long needsAssessmentDomainId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_parameter_value_needs_assessment_priority", nullable = false, insertable = false, updatable = false)
     private ParameterValue needsAssessmentPriority;
 
-    @Column(name = "f_parameter_value_needs_assessment_priority")
+    @Column(name = "f_parameter_value_needs_assessment_priority", nullable = false)
     private Long needsAssessmentPriorityId;
 
     public static List<String> priorityList = new ArrayList<String>() {

@@ -53,8 +53,8 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public void registerStudents(List<ClassStudentDTO.Create> request, Long classId) {
-
+    public Map<String, String> registerStudents(List<ClassStudentDTO.Create> request, Long classId) {
+        List<String> invalStudents = new ArrayList<>();
         Tclass tclass = tclassService.getTClass(classId);
 
         for (ClassStudentDTO.Create create : request) {
@@ -72,6 +72,10 @@ public class ClassStudentService implements IClassStudentService {
             ClassStudent classStudent = new ClassStudent();
             if(create.getApplicantCompanyName() != null)
                 classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
+            else {
+                invalStudents.add(student.getFirstName()+ " " + student.getLastName());
+                continue;
+            }
             if(create.getPresenceTypeId() != null)
                 classStudent.setPresenceTypeId(create.getPresenceTypeId());
             classStudent.setTclass(tclass);
@@ -79,6 +83,20 @@ public class ClassStudentService implements IClassStudentService {
 
             classStudentDAO.saveAndFlush(classStudent);
         }
+
+        String nameList = new String();
+
+        if(invalStudents.size() > 0) {
+            for (String name : invalStudents) {
+                nameList += name + " , ";
+            }
+        }else
+            nameList = null;
+
+        Map<String, String> map = new HashMap();
+        map.put("names", nameList);
+        map.put("accepted", new Integer(request.size() - invalStudents.size()).toString());
+        return map;
     }
 
     @Transactional

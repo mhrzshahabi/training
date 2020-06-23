@@ -7,15 +7,10 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-var dummy;
-// <script>
     var localQuestions;
-    // <<========== Global - Variables ==========
     {
         var evaluation_method = "POST";
     }
-    // ============ Global - Variables ========>>
-
     // <<-------------------------------------- Create - Window ------------------------------------
     {
         var RestDataSource_Year_Filter = isc.TrDS.create({
@@ -105,7 +100,7 @@ var dummy;
                     filterOperator: "iContains"
                 }
             ],
-            fetchDataURL: personnelUrl + "/iscList",
+            fetchDataURL: personnelUrl + "/iscList"
         });
 
         var AudienceTypeDS = isc.TrDS.create({
@@ -758,7 +753,6 @@ var dummy;
                     filterOperator: "iContains"
                 },
                 {
-                    // roya
                     name: "evaluationAudienceTypeId",
                     title: "<spring:message code="evaluation.audience.type"/>",
                     type: "SelectItem",
@@ -1028,7 +1022,6 @@ var dummy;
                 ]
         });
 
-//*****create insert/update window*****
         var Window_OperationalUnit = isc.Window.create({
             title: "<spring:message code="operational.unit"/> ",
             width: "40%",
@@ -1312,7 +1305,6 @@ var dummy;
         }
 
         //*****print student form issuance*****
-        //roya
         function print_Teacher_FormIssuance() {
 
             if (ListGrid_evaluation_student.getTotalRows() > 0) {
@@ -1502,15 +1494,14 @@ var dummy;
                             break;
                         }
                     }
-//roya
                     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setStudentFormIssuance/", "PUT", JSON.stringify(evaluationData), show_EvaluationActionResult));
 
                 })
             }
         }
-        //roya
         function setReactionStatus(teacherReactionStatus,trainingReactionStatus){
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "/setTeacherReactionStatus/" + teacherReactionStatus + "/" + trainingReactionStatus, "GET", null, null));
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "setReactionStatus/" + teacherReactionStatus + "/"
+                + trainingReactionStatus + "/" + ListGrid_evaluation_class.getSelectedRecord().id, "GET", null, null));
         }
 
         function setTrainingReactionStatus(){
@@ -1859,6 +1850,9 @@ var dummy;
                     name: "student.ccpUnit",
                     title: "<spring:message code="reward.cost.center.unit"/>",
                     filterOperator: "iContains"
+                },
+                {
+                    name: "evaluationAudienceId"
                 }
             ],
             fetchDataURL: tclassStudentUrl + "/students-iscList/"
@@ -1927,31 +1921,49 @@ var dummy;
                         // requestEvaluationQuestions(criteria, 1);
                         switch (value) {
                             case "Behavioral":
+                                form.getItem("evaluationType").clearValue();
+                                form.getItem("evaluator").clearValue();
+                                form.getItem("evaluated").clearValue();
+                                DynamicForm_Description_JspEvaluation.clearValues();
+                                RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + LGRecord.id;
+                                Window_AddStudent_JspEvaluation.show();
+                                form.getItem("evaluationType").setValue("OEFS");
+                                form.getItem("evaluationType").disable();
+                                DynamicForm_Description_JspEvaluation.show();
                                 criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":156}';
                                 evaluationLevelId = 156;
                                 requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                form.getItem("evaluationType").setValue("OEFS");
-                                form.getItem("evaluationType").disable();
-                                RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + LGRecord.id;
-                                Window_AddStudent_JspEvaluation.show();
                                 break;
-                            // case "Results":
-                            //     criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":157}';
-                            //     evaluationLevelId = 157;
-                            //     requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                            //     break;
-                            case "Reactive":
-                                evaluationLevelId = 154;
-                                criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"SEFC"}';
-                                criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154}';
-                                form.getItem("evaluationType").enable();
+                            case "Results":
+                                // criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":157}';
+                                // evaluationLevelId = 157;
+                                // requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                 form.getItem("evaluationType").clearValue();
+                                form.getItem("evaluator").clearValue();
+                                form.getItem("evaluated").clearValue();
+                                form.getItem("evaluationType").disable();
+                                DynamicForm_Description_JspEvaluation.clearValues();
+                                DynamicForm_Description_JspEvaluation.hide();
                                 break;
-                            // case "Learning":
-                            //     evaluationLevelId = 155;
-                            //     criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
-                            //     requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                            //     break;
+                            case "Reactive":
+                                form.getItem("evaluationType").clearValue();
+                                form.getItem("evaluator").clearValue();
+                                form.getItem("evaluated").clearValue();
+                                form.getItem("evaluationType").enable();
+                                DynamicForm_Description_JspEvaluation.clearValues();
+                                DynamicForm_Description_JspEvaluation.hide();
+                                break;
+                            case "Learning":
+                                // evaluationLevelId = 155;
+                                // criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
+                                // requestEvaluationQuestions(criteria, criteriaEdit, 1);
+                                form.getItem("evaluationType").clearValue();
+                                form.getItem("evaluator").clearValue();
+                                form.getItem("evaluated").clearValue();
+                                form.getItem("evaluationType").disable();
+                                DynamicForm_Description_JspEvaluation.clearValues();
+                                DynamicForm_Description_JspEvaluation.hide();
+                                break;
                             default:
                                 break;
                         }
@@ -1972,9 +1984,9 @@ var dummy;
                         DynamicForm_Questions_Body_JspEvaluation.clearValues();
                         DynamicForm_Description_JspEvaluation.clearValues();
                         form.clearErrors(true);
-                        form.clearValue("evaluationLevel");
-                        form.clearValue("evaluator");
-                        form.clearValue("evaluated");
+                        // form.clearValue("evaluationLevel");
+                        // form.clearValue("evaluator");
+                        // form.clearValue("evaluated");
                         var criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":""}';
                         DynamicForm_Questions_Body_JspEvaluation.setFields([]);
                         form.getItem("evaluationLevel").disable();
@@ -1996,13 +2008,13 @@ var dummy;
                                 form.setValue("evaluator", form.getValue("user"));
                                 form.setValue("evaluated", form.getValue("teacher"));
                                 form.getItem("evaluationLevel").setRequired(false);
+                                requestEvaluationQuestions(criteria, criteriaEdit, 1);
                                 break;
                             case "SEFC":
                                 // criteria= '{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
-                                form.setValue("evaluated", form.getValue("titleClass"));
                                 RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + LGRecord.id;
-                                form.getItem("evaluationLevel").setRequired(true);
                                 Window_AddStudent_JspEvaluation.show();
+                                evaluationLevelId = 154;
                                 return;
                             case "TEFC":
                                 criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"TEFC"}';
@@ -2015,7 +2027,6 @@ var dummy;
                                 form.getItem("evaluationLevel").setRequired(false);
                                 break;
                             case "OEFS":
-                                //roya
                                 criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"OEFS"}';
                                 criteriaEdit +=
                                     '{"fieldName":"questionnaireTypeId","operator":"equals","value":230},' +
@@ -2153,7 +2164,6 @@ var dummy;
             }
         });
         var Window_Questions_JspEvaluation = isc.Window.create({
-            // placement: "fillScreen",
             width: 1024,
             height: 768,
             keepInParentRect: true,
@@ -2207,12 +2217,14 @@ var dummy;
                                         keyPressFilter: "[0-9]"
                                     }
                                 },
-                                {name: "student.personnelNo",
+                                {
+                                    name: "student.personnelNo",
                                     filterEditorProperties: {
                                         keyPressFilter: "[0-9]"
                                     }
                                 },
-                                {name: "student.personnelNo2",
+                                {
+                                    name: "student.personnelNo2",
                                     filterEditorProperties: {
                                         keyPressFilter: "[0-9]"
                                     }
@@ -2223,23 +2235,51 @@ var dummy;
                                     type: "selectItem",
                                     valueField: "id",
                                     displayField: "title",
-                                    optionDataSource: RestData_StudentPresenceType_JspEvaluation,
+                                    optionDataSource: RestData_StudentPresenceType_JspEvaluation
+                                },
+                                {
+                                    name: "evaluationAudienceId",
+                                    hidden: true
                                 }
                             ],
                             gridComponents: ["filterEditor", "header", "body"],
                             recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-                                DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", record.student.firstName + " " + record.student.lastName);
                                 studentIdJspEvaluation = record.id;
+                                if (DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").getValue() == "Behavioral") {
+                                    DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", record.student.firstName + " " + record.student.lastName);
+                                    if (record.evaluationAudienceId != undefined) {
+                                        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byId/" + record.evaluationAudienceId, "GET", null, function (resp) {
+                                            DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator",
+                                                JSON.parse(resp.httpResponseText).firstName + " " + JSON.parse(resp.httpResponseText).lastName);
+                                        }));
+                                    }
+                                } else if (DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").getValue() == "Reactive") {
+                                    let criteriaEdit = '';
+                                    DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", record.student.firstName + " " + record.student.lastName);
+                                    criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"SEFC"}';
+                                    criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154},'+
+                                        '{"fieldName":"evaluatorId","operator":"equals","value":' + studentIdJspEvaluation + '}' ;
+                                    DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", DynamicForm_Questions_Title_JspEvaluation.getValue("titleClass"));
+                                    DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setRequired(true);
+                                    requestEvaluationQuestions(criteria, criteriaEdit, 1);
+                                }
                                 Window_AddStudent_JspEvaluation.close();
-                                DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").enable();
                             }
                         })
                     ]
                 })]
         });
+
+
+        DynamicForm_Questions_Title_JspEvaluation.clearValues();
+        DynamicForm_Description_JspEvaluation.clearValues();
+        DynamicForm_Description_JspEvaluation.hide();
+        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").disable();
+
         DynamicForm_Questions_Title_JspEvaluation.editRecord(LGRecord);
         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
         let itemList = [];
+
         Window_Questions_JspEvaluation.show();
 
         function requestEvaluationQuestions(criteria, criteriaEdit, type = 0) {
