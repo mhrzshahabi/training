@@ -525,6 +525,20 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="270" y="1" width="75" height="21" uuid="161562e2-a2c1-4fe1-b955-70f861495af1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[محل امضا مسئول اجرا:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="469" y="1" width="75" height="21" uuid="ef0a039e-99c2-41c3-875e-41c2d0a14191"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[محل امضا استاد:]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 </jasperReport>

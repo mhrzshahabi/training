@@ -47,4 +47,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
 
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
+    Personnel findById(Long Id);
+
 }
