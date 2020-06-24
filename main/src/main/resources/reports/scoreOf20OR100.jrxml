@@ -128,9 +128,9 @@
 		<field name="student.nationalCode" class="java.lang.String"/>
 		<field name="student.lastName" class="java.lang.String"/>
 		<field name="student.personnelNo" class="java.lang.String"/>
-		<field name="scoresState" class="java.lang.String"/>
+		<field name="scoresState.title" class="java.lang.String"/>
 		<field name="score" class="java.lang.String"/>
-		<field name="failureReason" class="java.lang.String"/>
+		<field name="failureReason.title" class="java.lang.String"/>
 		<variable name="Row_Number" class="java.lang.Integer">
 			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
 		</variable>
@@ -351,7 +351,7 @@
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Shabnam-FD"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$F{failureReason}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$F{failureReason.title}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
@@ -374,7 +374,7 @@
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Shabnam-FD"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$F{scoresState}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$F{scoresState.title}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>

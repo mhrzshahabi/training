@@ -34,7 +34,7 @@ public class ScoreRestController {
     private final ModelMapper modelMapper;
 
     @PostMapping(value = {"/printWithCriteria"})
-    public void printWithCriteria(HttpServletResponse response, @RequestParam(value = "classId") String classId, @RequestParam(value = "CriteriaStr") String criteriaStr, @RequestParam(value = "class") String classRecord) throws Exception {
+    public void printWithCriteria(HttpServletResponse response,  @RequestParam(value = "_sortBy") String sortBy, @RequestParam(value = "classId") String classId, @RequestParam(value = "CriteriaStr") String criteriaStr, @RequestParam(value = "class") String classRecord) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
         Map<String, String> map = new HashMap<>();
@@ -55,6 +55,15 @@ public class ScoreRestController {
         if (searchRq.getCriteria() != null)
             criteria.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteria);
+
+        JSONObject jsonObject = new JSONObject(sortBy);
+        String field = jsonObject.getString("property");
+        String direction = jsonObject.getString("direction");
+        if(direction.equals("descending")){
+            field = "-" + field;
+        }
+        searchRq.setSortBy(field);
+
 
         final SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ScoresInfo.class));
         Map<String, String> map1 = new HashMap<>();
