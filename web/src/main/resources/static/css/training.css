@@ -65,7 +65,34 @@ span {
 {
     color: #003580 !important;
 }
+.shortcuts{
+    width: 100%;
+    height: 100%;
+}
+.shortcut-box{
+    background-color: #f5f6f7;
+    border-radius: 10px;
+    border: 2px solid #dadbdf;
+}
 
+.sh-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.sh-item:hover h2{
+    color: #fe9d2a;
+}
+.sh-item:hover .sh-icon path{
+    fill: #fe9d2a;
+    pointer-events: none;
+}
 
-
-
+.sh-item h2{
+    color: #aab5b9;
+    //margin-top: 23px;
+}
