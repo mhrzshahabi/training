@@ -65,7 +65,7 @@ public class Course extends Auditable {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
     private Subcategory subCategory;
 
