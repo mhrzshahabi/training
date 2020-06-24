@@ -1005,8 +1005,12 @@
     }
     function removeRecord_JspNeedsAssessment(record, state=0) {
         if(record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")){
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "DELETE", null, function (resp) {
-                if (resp.httpResponseCode !== 200) {
+            // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "DELETE", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "/" + record.objectType + "/" + record.objectId , "DELETE", null, function (resp) {
+                if (resp.httpResponseCode === 409) {
+                    createDialog("info", resp.httpResponseText);
+                    return 0;
+                } else if (resp.httpResponseCode !== 200) {
                     createDialog("info","خطا در حذف مهارت");
                     return 0;
                 }
@@ -1092,8 +1096,12 @@
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
         }
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "?isFirstChange=" + isFirstChange, "POST", JSON.stringify(data),function(resp){
-            if (resp.httpResponseCode != 200){
+        // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "?isFirstChange=" + isFirstChange, "POST", JSON.stringify(data),function(resp){
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "POST", JSON.stringify(data),function(resp){
+            if (resp.httpResponseCode === 409) {
+                createDialog("info", resp.httpResponseText);
+                return 0;
+            } else if (resp.httpResponseCode != 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
@@ -1156,22 +1164,17 @@
     }
     function updatePriority_JspEditNeedsAssessment(viewer, record) {
         if(record.objectType === NeedsAssessmentTargetDF_needsAssessment.getValue("objectType")) {
-            switch (record.needsAssessmentPriorityId) {
-                case 111:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                case 112:
-                    record.needsAssessmentPriorityId++;
-                    break;
-                default:
-                    record.needsAssessmentPriorityId = 111;
-                    break;
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "PUT", JSON.stringify(record), function (resp) {
-                if (resp.httpResponseCode !== 200) {
+            let updating = {objectType: record.objectType, objectId: record.objectId, needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1};
+            // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "PUT", JSON.stringify(record), function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(updating), function (resp) {
+                if (resp.httpResponseCode === 409) {
+                    createDialog("info", resp.httpResponseText);
+                    return 0;
+                } else if (resp.httpResponseCode !== 200) {
                     createDialog("info", "<spring:message code='error'/>");
                     return;
                 }
+                record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
                 isFirstChange = false;
                 viewer.endEditing();
