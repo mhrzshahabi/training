@@ -739,6 +739,7 @@
     const categoriesPerformanceReportView = rootUrl + "categories-view";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
     const attendanceReportUrl = rootUrl + "/attendanceReport";
+    const controlReportUrl = rootUrl + "/controlReport";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1690,6 +1691,15 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
+                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">--%>
+                            <%--{--%>
+                                <%--title: "کنترل",--%>
+                                <%--click: function () {--%>
+                                    <%--createTab(this.title, "<spring:url value="web/controlReport/"/>");--%>
+                                <%--}--%>
+                            <%--},--%>
+                            <%--{isSeparator: true},--%>
+                            <%--</sec:authorize>--%>
                         ]
                 },
                 {isSeparator: true},

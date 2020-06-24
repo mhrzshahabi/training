@@ -230,4 +230,67 @@ public class StudentDTO {
             return firstName + " " + lastName;
         }
     }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Score - Attendance")
+    public static class scoreAttendance {
+        private String firstName;
+        private String lastName;
+        private String personnelNo;
+        private String scoreA;
+        private String scoreB;
+
+        public String calScoreB(String score){
+            if (score==null || score.length()==0)
+                return "";
+
+            String[] sections=score.split("\\.");
+            String scoreStr="";
+
+            String[] singleMap={"صفر","يک","دو","سه","چهار","پنج","شش","هفت","هشت","نه","ده","يازده","دوازده","سيزده","چهارده","پانزده","شانزده","هفده","هجده","نوزده","بيست"};
+
+            if (sections[0]!=null){
+                scoreStr=singleMap[Integer.parseInt(sections[0])];
+            }
+
+            if (sections[1]!=null && !sections[1].equals("0")){
+                scoreStr+=" و ";
+
+                scoreStr+=singleMap[sections[1].charAt(0)-'0']+" ";
+
+                if (sections[1].length()>1)
+                    scoreStr+=singleMap[sections[1].charAt(1)-'0'];
+            }
+
+            return  scoreStr;
+        }
+
+        @Getter(AccessLevel.NONE)
+        private String fullName;
+
+        public String getFullName(){
+            return firstName + " " + lastName;
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Control - Attendance")
+    public static class controlAttendance {
+        private String firstName;
+        private String lastName;
+        private String personnelNo;
+        private String personnelNo2;
+        private String ccpAffairs;
+
+        @Getter(AccessLevel.NONE)
+        private String fullName;
+
+        public String getFullName(){
+            return firstName + " " + lastName;
+        }
+    }
 }
