@@ -144,6 +144,8 @@
                 width: "*",
                 keyPressFilter: "[0-9, ]",
                 operator: "inSet",
+                editorType: "TextItem",
+                length:10000,
                 changed (form, item, value){
                     let res = value.split(" ");
                     item.setValue(res.toString())
