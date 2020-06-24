@@ -271,17 +271,16 @@
         modalEditing: true,
         autoSaveEdits: false,
         canSelectCells: true,
-        initialSort: [
-            {property: "student.firstName", direction: "descending", primarySort: true}
-        ],
+        // initialSort: [
+        //     {property: "student.firstName", direction: "descending", primarySort: true}
+        // ],
         dataSource: RestDataSource_ClassStudent,
         fields: [
-
             {
                 name: "student.firstName",
                 title: "<spring:message code="firstName"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
             },
             {
                 name: "student.lastName",
@@ -314,6 +313,7 @@
                 title: "<spring:message code="pass.mode"/>",
                 filterOperator: "iContains",
                 canEdit: false,
+                canSort:false,
                 type: "SelectItem",
                 valueField: "id",
                 displayField: "title",
@@ -355,6 +355,7 @@
                 title: "<spring:message code="faild.reason"/>",
                 filterOperator: "iContains",
                 canEdit: false,
+                canSort:false,
                 type: "SelectItem",
                 valueField: "id",
                 displayField: "title",
@@ -442,6 +443,7 @@
                 showIf: "false",
                 filterOperator: "iContains",
                 canEdit: true,
+                canSort:false,
                 editorType: "SelectItem",
                 valueMap: {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"},
                 changed: function (form, item, value) {
@@ -540,6 +542,7 @@
                 title: "<spring:message code="score"/>",
                 filterOperator: "iContains",
                 canEdit: true,
+                canSort:false,
                 validateOnChange: false,
                 editEvent: "click",
                 change: function (form, item, value) {
@@ -602,6 +605,16 @@
             }
 
         ],
+        sortChanged:function(sortField) {
+            let arr = ["valence", "failureReasonId", "scoresStateId"]
+            if (arr.includes(sortField[0].property)) {
+                createDialog("info", "کاربر گرامی مرتب سازی اطلاعات بر اساس فیلد های وضعیت قبولی و دلایل مردودی و نوع ارزشی امکان پذیر نیست", "توجه!")
+                return false
+            }
+            else
+          ListGrid_Class_Student.invalidateCache()
+        },
+
 
         dataArrived: function () {
             var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
@@ -682,7 +695,11 @@
                 return "background-color:#98B334;font-size: 12px;";
             }
 
-        }
+        },
+
+
+
+
     });
 
 
@@ -922,7 +939,7 @@
         });
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.setValue("class", JSON.stringify(classObj));
-        criteriaForm.setValue("sortBy", ListGrid_Class_Student.getSort().get(0).property);
+        criteriaForm.setValue("sortBy", JSON.stringify(ListGrid_Class_Student.getSort()[0]));
         criteriaForm.setValue("classId", JSON.stringify(Record.id));
         criteriaForm.setValue("token", "<%= accessToken %>");
         criteriaForm.show();
