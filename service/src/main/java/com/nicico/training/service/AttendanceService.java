@@ -206,7 +206,6 @@ public class AttendanceService implements IAttendanceService {
                 sessionIds.add(Long.valueOf(s.substring(2)));
             }
         }
-
         for (Map<String, String> map : maps.get(0)) {
             for (Long sessionId : sessionIds) {
                 ClassSessionDTO.Info info = classSessionService.get(sessionId);
@@ -224,16 +223,20 @@ public class AttendanceService implements IAttendanceService {
                 }
             }
         }
+        final ArrayList<Attendance> attendanceList = new ArrayList<>();
         for (Attendance attendance : attendanceSaving) {
             List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
             if (saved == null || saved.size()==0) {
-                attendanceDAO.save(attendance);
+                attendanceList.add(attendance);
+//                attendanceDAO.save(attendance);
             } else {
                 saved.get(0).setState(attendance.getState());
                 saved.get(0).setDescription(attendance.getDescription());
-                attendanceDAO.save(saved.get(0));
+                attendanceList.add(saved.get(0));
+//                attendanceDAO.save(saved.get(0));
             }
         }
+        attendanceDAO.saveAll(attendanceList);
     }
 
     @Transactional
@@ -309,7 +312,6 @@ public class AttendanceService implements IAttendanceService {
         List<ClassSessionDTO.Info> sessions = classSessionService.getSessions(classId);
         Tclass tclassOfSession = tclassService.getEntity(classId);
         int numStudents=tclassOfSession.getClassStudents().size();
-
         Collections.sort(sessions, (ClassSessionDTO.Info s1, ClassSessionDTO.Info s2) -> {
                     if (s1.getSessionDate() != null && s2.getSessionDate() != null)
                         return s1.getSessionDate().compareTo(s2.getSessionDate());
@@ -322,7 +324,6 @@ public class AttendanceService implements IAttendanceService {
             if (attendanceList.size() != numStudents) {
                 return s.getSessionDate();
             }
-
             for (Attendance a : attendanceList) {
                 if (a.getState().equals("0")) {
                     return s.getSessionDate();

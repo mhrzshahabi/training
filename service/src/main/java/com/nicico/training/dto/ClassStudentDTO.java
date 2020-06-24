@@ -52,7 +52,13 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusBehavior;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
-        private String evaluationAudienceType;
+        private ParameterValueDTO.TupleInfo evaluationAudienceType;
+        private Long evaluationAudienceTypeId;
+        private Long evaluationAudienceId;
+
+        public String getFullName(){
+            return student.getFirstName()+" "+student.getLastName();
+        }
 
 
         public Integer getEvaluationStatusReaction() {
@@ -81,7 +87,7 @@ public class ClassStudentDTO implements Serializable {
         private TclassDTO.CoursesOfStudent tclass;
         private StudentDTO.ClassesOfStudentInfo student;
         private Float score;
-        private String scoresState;
+        private ParameterValueDTO.MinInfo scoresState;
     }
 
     @Getter

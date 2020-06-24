@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +91,12 @@ public class CategoryService implements ICategoryService {
     @Override
     public SearchDTO.SearchRs<CategoryDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(categoryDAO, request, category -> modelMapper.map(category, CategoryDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(categoryDAO, request, converter);
     }
 
     // ------------------------------

@@ -42,9 +42,9 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
 
     @Modifying
     @Query(value = "update TBL_CLASS_STUDENT set " +
-            "EVALUATION_AUDIENCE_TYPE = :AudienceType " +
+            "evaluation_audience_type_id = :AudienceType " +
             "where id = :idClassStudent", nativeQuery = true)
-    public int setStudentFormIssuanceAudienceType(Long idClassStudent, String AudienceType);
+    public int setStudentFormIssuanceAudienceType(Long idClassStudent, Long AudienceType);
 
     List<ClassStudent> findByStudentId(Long studentId);
 
@@ -63,5 +63,11 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     ClassStudent getClassStudentById(Long classStudentId);
 
     Integer countClassStudentsByTclassId(Long classId);
+
+    @Modifying
+    @Query(value = "update TBL_CLASS_STUDENT set " +
+            "evaluation_audience_id = :AudienceId " +
+            "where id = :idClassStudent", nativeQuery = true)
+    public int setStudentFormIssuanceAudienceId(Long idClassStudent, Long AudienceId);
 
 }

@@ -10,6 +10,7 @@ import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface ISubcategoryService {
     SubcategoryDTO.Info get(Long id);
@@ -25,6 +26,8 @@ public interface ISubcategoryService {
     void delete(SubcategoryDTO.Delete request);
 
     SearchDTO.SearchRs<SubcategoryDTO.Info> search(SearchDTO.SearchRq request);
+
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
     // ---------------
 

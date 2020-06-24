@@ -427,7 +427,7 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="21">
+		<band height="22">
 			<staticText>
 				<reportElement x="80" y="1" width="25" height="20" uuid="49940453-ed28-4a40-85dc-060bde264371"/>
 				<textElement verticalAlignment="Middle">
@@ -456,6 +456,20 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="456" y="1" width="75" height="21" uuid="0fbe0305-6e6d-4b35-be8a-1b0ba1157669"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[محل امضا استاد:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="257" y="1" width="75" height="21" uuid="7cbfe949-1b80-4f5e-8f0e-9d4a104f6ba6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[محل امضا مسئول اجرا:]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 </jasperReport>
