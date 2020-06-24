@@ -20,6 +20,7 @@ import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.iservice.IMasterDataService;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -51,10 +52,10 @@ public class MasterDataService implements IMasterDataService {
 
     @Getter
     @Setter
-    @Accessors
+    @Accessors(chain = true)
     public class CompetenceWebserviceDTO {
 
-        public String id;
+        public Long id;
         public String code;
         public String latinTitle;
         public String title;
@@ -72,7 +73,16 @@ public class MasterDataService implements IMasterDataService {
         public String comment;
         public String correction;
         public String alignment;
+        public Long parentId;
+    }
 
+    @Getter
+    @Setter
+    @ApiModel("CompetenceWebserviceDTOInfoTuple")
+    public static class CompetenceWebserviceDTOInfoTuple {
+        private Long id;
+        public String title;
+        public Long parentId;
     }
 
 
@@ -107,8 +117,8 @@ public class MasterDataService implements IMasterDataService {
 
         int responseCode = postConnection.getResponseCode();
 
-        System.out.println("POST Response Code :  " + responseCode);
-        System.out.println("POST Response Message : " + postConnection.getResponseMessage());
+//        System.out.println("POST Response Code :  " + responseCode);
+//        System.out.println("POST Response Message : " + postConnection.getResponseMessage());
 
         if (responseCode == HttpURLConnection.HTTP_OK) { //success
             BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -122,7 +132,7 @@ public class MasterDataService implements IMasterDataService {
             in.close();
 
             // print result
-            System.out.println(response.toString());
+//            System.out.println(response.toString());
 
 
             PersonnelDTO.Info tmp = null;
@@ -135,7 +145,7 @@ public class MasterDataService implements IMasterDataService {
             return token;
 
         } else {
-            System.out.println("POST NOT WORKED");
+//            System.out.println("POST NOT WORKED");
 
             token = "";
 
@@ -222,7 +232,7 @@ public class MasterDataService implements IMasterDataService {
                         "  \"startIndex\": " + searchRq.getStartIndex() + "\n" +
                         "}";
 
-                System.out.println(POST_PARAMS);
+//                System.out.println(POST_PARAMS);
 
                 URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/people/get/all");
                 HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
@@ -241,8 +251,8 @@ public class MasterDataService implements IMasterDataService {
 
                 int responseCode = postConnection.getResponseCode();
 
-                System.out.println("POST Response Code :  " + responseCode);
-                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
+//                System.out.println("POST Response Code :  " + responseCode);
+//                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
 
                 GridResponse<PersonnelDTO.Info> list = new GridResponse<PersonnelDTO.Info>(new ArrayList<PersonnelDTO.Info>());
                 list.setStartRow(startRow);
@@ -406,7 +416,7 @@ public class MasterDataService implements IMasterDataService {
                         "  \"startIndex\": " + searchRq.getStartIndex() + "\n" +
                         "}";
 
-                System.out.println(POST_PARAMS);
+//                System.out.println(POST_PARAMS);
 
                 URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/Competencies/getAll");
                 HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
@@ -425,8 +435,8 @@ public class MasterDataService implements IMasterDataService {
 
                 int responseCode = postConnection.getResponseCode();
 
-                System.out.println("POST Response Code :  " + responseCode);
-                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
+//                System.out.println("POST Response Code :  " + responseCode);
+//                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
 
                 GridResponse<CompetenceDTO.Info> list = new GridResponse<>(new ArrayList<>());
                 list.setStartRow(startRow);
@@ -548,9 +558,9 @@ public class MasterDataService implements IMasterDataService {
                     }
                 }
 
-                String sortBy = iscRq.getParameter("_sortBy");
+                String sortBy = iscRq.getParameter("_sortBy") == null ? "" : "  \"sortBy\": \"" + iscRq.getParameter("_sortBy") + "\",\n";
 
-                final String POST_PARAMS = "{\n" +
+                final String POST_PARAMS = convertedCriteriaStr != "" ? "{\n" +
                         "  \"count\": " + searchRq.getCount() + ",\n" +
                         "  \"criteria\": {\n" +
                         "    \"criteria\": [\n" +
@@ -559,11 +569,12 @@ public class MasterDataService implements IMasterDataService {
                         "    \"operator\": \"and\"\n" +
                         "  },\n" +
                         "  \"distinct\": false,\n" +
-                        "  \"sortBy\": \"" + sortBy + "\",\n" +
+                        sortBy +
                         "  \"startIndex\": " + searchRq.getStartIndex() + "\n" +
-                        "}";
+                        "}" : "{}";
+                        ;
 
-                System.out.println(POST_PARAMS);
+//                System.out.println(POST_PARAMS);
 
                 URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/department/get/all");
                 HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
@@ -582,8 +593,8 @@ public class MasterDataService implements IMasterDataService {
 
                 int responseCode = postConnection.getResponseCode();
 
-                System.out.println("POST Response Code :  " + responseCode);
-                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
+//                System.out.println("POST Response Code :  " + responseCode);
+//                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
 
                 GridResponse<CompetenceWebserviceDTO> list = new GridResponse<>(new ArrayList<>());
                 list.setStartRow(startRow);
@@ -619,7 +630,7 @@ public class MasterDataService implements IMasterDataService {
                         for (int i = 0; i < jsonNode.size(); i++) {
                             tmp = new CompetenceWebserviceDTO();
 
-                            tmp.setId(jsonNode.get(i).get("id").asText());
+                            tmp.setId(Long.parseLong(jsonNode.get(i).get("id").asText()));
                             tmp.setCode(jsonNode.get(i).get("code").asText());
                             tmp.setLatinTitle(jsonNode.get(i).get("latinTitle").asText());
                             tmp.setTitle(jsonNode.get(i).get("title").asText());
@@ -682,7 +693,7 @@ public class MasterDataService implements IMasterDataService {
                             tmp.setComment(jsonNode.get(i).get("comment").asText());
                             tmp.setCorrection(jsonNode.get(i).get("correction").asText());
                             tmp.setAlignment(jsonNode.get(i).get("alignment").asText());
-
+                            tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText()));
 
                             list.getData().add(tmp);
                         }
@@ -754,8 +765,8 @@ public class MasterDataService implements IMasterDataService {
 
                 int responseCode = postConnection.getResponseCode();
 
-                System.out.println("POST Response Code :  " + responseCode);
-                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
+//                System.out.println("POST Response Code :  " + responseCode);
+//                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
 
                 GridResponse<ViewPostDTO.Info> list = new GridResponse<>(new ArrayList<>());
                 list.setStartRow(startRow);
@@ -883,6 +894,153 @@ public class MasterDataService implements IMasterDataService {
             searchRq.setCriteria(criteriaRq);
         }
         return searchRq;
+    }
+
+    public List<CompetenceWebserviceDTO> getDepartmentsByParentCode(HttpServletRequest iscRq, HttpServletResponse resp, String xUrl) throws IOException {
+        if (token == "") {
+            authorize();
+        }
+
+
+        if (token == "") {
+            Locale locale = LocaleContextHolder.getLocale();
+            resp.sendError(500, messageSource.getMessage("masterdata.cannot.get.token", null, locale));
+
+            return null;
+
+        } else {
+
+            int index = 0;
+
+            while (index <= 1) {
+                index++;
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/department/get/" + xUrl);
+                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+                postConnection.setDoOutput(true);
+                postConnection.setDoInput(true);
+
+                postConnection.setRequestMethod("GET");
+                postConnection.setRequestProperty("Accept", "*/*");
+                postConnection.setRequestProperty("authorization", "Bearer " + token);
+
+                int responseCode = postConnection.getResponseCode();
+
+                List<CompetenceWebserviceDTO> list = new ArrayList<>();
+
+
+                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            postConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    CompetenceWebserviceDTO tmp = null;
+
+                    JsonNode jsonNode = objectMapper.readTree(response.toString());
+
+                    if (jsonNode.isArray()) {
+                        for (int i = 0; i < jsonNode.size(); i++) {
+                            tmp = new CompetenceWebserviceDTO();
+
+                            tmp.setId(Long.parseLong(jsonNode.get(i).get("id").asText()));
+                            tmp.setCode(jsonNode.get(i).get("code").asText());
+                            tmp.setLatinTitle(jsonNode.get(i).get("latinTitle").asText());
+                            tmp.setTitle(jsonNode.get(i).get("title").asText());
+                            tmp.setType(jsonNode.get(i).get("type").asText());
+                            tmp.setNature(jsonNode.get(i).get("nature").asText());
+
+                            if (jsonNode.get(i).get("startDate").asText() == null)
+                                tmp.setStartDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setStartDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("startDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            if (jsonNode.get(i).get("endDate").asText() == null)
+                                tmp.setEndDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setEndDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("endDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            if (jsonNode.get(i).get("legacyCreateDate").asText() == null)
+                                tmp.setLegacyCreateDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setLegacyCreateDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyCreateDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            if (jsonNode.get(i).get("legacyChangeDate").asText() == null)
+                                tmp.setLegacyChangeDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setLegacyChangeDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyChangeDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            tmp.setActive(jsonNode.get(i).get("active").asText());
+                            tmp.setOldCode(jsonNode.get(i).get("oldCode").asText());
+                            tmp.setNewCode(jsonNode.get(i).get("newCode").asText());
+                            tmp.setUser(jsonNode.get(i).get("user").asText());
+                            tmp.setIssuable(jsonNode.get(i).get("issuable").asText());
+                            tmp.setComment(jsonNode.get(i).get("comment").asText());
+                            tmp.setCorrection(jsonNode.get(i).get("correction").asText());
+                            tmp.setAlignment(jsonNode.get(i).get("alignment").asText());
+                            tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText()));
+
+                            list.add(tmp);
+                        }
+                    }
+
+                    return list;
+
+                } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                    if (StringUtils.isNotEmpty(authorize())) {
+                        Locale locale = LocaleContextHolder.getLocale();
+                        resp.sendError(500, messageSource.getMessage("masterdata.cannot.get.token", null, locale));
+
+                        return null;
+                    }
+                } else {
+                    Locale locale = LocaleContextHolder.getLocale();
+                    resp.sendError(500, messageSource.getMessage("masterdata.error.in.webservice", null, locale));
+
+                    return null;
+                }
+            }
+
+            Locale locale = LocaleContextHolder.getLocale();
+            resp.sendError(500, messageSource.getMessage("masterdata.cannot.get.token", null, locale));
+
+            return null;
+
+        }
     }
 
 }

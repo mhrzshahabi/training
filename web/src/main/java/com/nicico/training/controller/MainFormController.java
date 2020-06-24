@@ -22,6 +22,11 @@ public class MainFormController {
         return "basic/parameter";
     }
 
+    @RequestMapping("/organizationalChart")
+    public String showOrganizationalChartForm() {
+        return "basic/organizationalChart";
+    }
+
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {
         return "report/trainingFile";
