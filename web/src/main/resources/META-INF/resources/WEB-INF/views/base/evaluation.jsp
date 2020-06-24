@@ -156,32 +156,7 @@
         });
     }
     // ---------------------------------------- Create - Window ---------------------------------->>
-
     // <<-------------------------------------- Create - contextMenu ------------------------------------------
-    <%--{--%>
-    <%--    var Menu_ListGrid_evaluation_class = isc.Menu.create({--%>
-    <%--        data: [--%>
-    <%--            <sec:authorize access="hasAuthority('Evaluation_C')">--%>
-    <%--            {--%>
-    <%--                title: "<spring:message code="record.evaluation.results"/>",--%>
-    <%--                click: function () {--%>
-    <%--                    register_evaluation_result(ListGrid_evaluation_class.getSelectedRecord());--%>
-    <%--                }--%>
-    <%--            },--%>
-    <%--            </sec:authorize>--%>
-
-    <%--            <sec:authorize access="hasAuthority('Evaluation_R')">--%>
-    <%--            {--%>
-    <%--                title: "<spring:message code="refresh"/>",--%>
-    <%--                click: function () {--%>
-    <%--                    ListGrid_evaluation_class.invalidateCache();--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--            </sec:authorize>--%>
-    <%--        ]--%>
-    <%--    })--%>
-    <%--}--%>
-
     var DynamicForm_Evalution_Term_Filter = isc.DynamicForm.create({
         width: "85%",
         height: "100%",
@@ -372,7 +347,6 @@
         ]
     });
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
-
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
 
@@ -847,7 +821,6 @@
 
     }
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
-
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
         //*****class toolStrip*****
@@ -1070,7 +1043,6 @@
         });
     }
     // ---------------------------------------- Create - TabSet & Tab --------------------------------------->>
-
     // <<-------------------------------------- Create - HLayout & VLayout ------------------------------------
     {
         //*****class HLayout & VLayout*****
@@ -1104,8 +1076,6 @@
 
     }
     // ---------------------------------------- Create - HLayout & VLayout ---------------------------------->>
-
-
     // <<----------------------------------------------- Functions --------------------------------------------
     {
         //*****check date is valid*****
@@ -3626,9 +3596,3 @@
             }
         }
 }
-
-
-
-
-
-// </script>
