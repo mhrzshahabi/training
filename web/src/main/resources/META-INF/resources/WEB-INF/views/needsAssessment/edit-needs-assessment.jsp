@@ -863,9 +863,11 @@
                     members: [ListGrid_Competence_JspNeedsAssessment]
                 }),
                 isc.TrVLayout.create({
+                    ID: "VLayoutLeft_JspEditNeedsAssessment",
                     // width: "75%",
                     members: [
                         isc.TrHLayout.create({
+                            ID: "HLayoutCenter_JspEditNeedsAssessment",
                             height: "70%",
                             showResizeBar: true,
                             members: [
@@ -1191,7 +1193,11 @@
     }
 
 
-    function loadEditNeedsAssessment(objectId, type) {
+    function loadEditNeedsAssessment(objectId, type, state = "R&W") {
+        if(state === "read"){
+            NeedsAssessmentTargetDF_needsAssessment.disable()
+
+        }
         updateObjectIdLG(NeedsAssessmentTargetDF_needsAssessment, type);
         NeedsAssessmentTargetDF_needsAssessment.setValue("objectType", type);
         NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", objectId.id);

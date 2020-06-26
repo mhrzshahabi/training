@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +91,12 @@ public class SubcategoryService implements ISubcategoryService {
     public SearchDTO.SearchRs<SubcategoryDTO.Info> search(SearchDTO.SearchRq request) {
         request.setCount(115);
         return SearchUtil.search(subCategoryDAO, request, subCategory -> modelMapper.map(subCategory, SubcategoryDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(subCategoryDAO, request, converter);
     }
 
     // ------------------------------

@@ -419,4 +419,115 @@ public class EvaluationRestController {
         return sum + day - 2;
     }
     //--------------------------------------------- Calender -----------------------------------------------------------
+
+    @Loggable
+    @PostMapping(value = {"/printTeacherReactionForm/{type}/{classId}"})
+    @Transactional
+    public void printTeacherReactionForm(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @PathVariable Long classId,
+                                  @RequestParam(value = "printData") String printData) throws Exception {
+
+        JSONObject jsonObject = new JSONObject(printData);
+
+        String evaluationType = jsonObject.get("evaluationType").toString();
+        String evaluationReturnDate = jsonObject.get("evaluationReturnDate").toString();
+        Long classd = Long.parseLong(jsonObject.get("classId").toString());
+
+        List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(138L);
+        teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
+
+        List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
+        for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
+                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+            }
+
+        TclassDTO.Info classInfo = tclassService.get(classId);
+
+        if (evaluationReturnDate.equals("noDate")) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.MONTH, 1);
+            evaluationReturnDate = DateUtil.convertMiToKh(formatter.format(calendar.getTime()));
+        }
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+        params.put("courseCode", classInfo.getCourse().getCode());
+        params.put("courseName", classInfo.getCourse().getTitleFa());
+        params.put("classCode", classInfo.getCode());
+        params.put("startDate", classInfo.getStartDate());
+        params.put("endDate", classInfo.getEndDate());
+        params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
+                evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :
+                        evaluationType.equals("TabPane_Behavior") ? "(رفتاری)" : "(نتایج)"));
+        params.put("returnDate", evaluationReturnDate.replace("-", "/"));
+        params.put("teacher", classInfo.getTeacher());
+
+
+        String data = "{" + "\"ds\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
+
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/EvaluationReactionTeacher.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @PostMapping(value = {"/printTrainingReactionForm/{type}/{classId}"})
+    @Transactional
+    public void printTrainingReactionForm(HttpServletResponse response,
+                                         @PathVariable String type,
+                                         @PathVariable Long classId,
+                                         @RequestParam(value = "printData") String printData) throws Exception {
+
+        JSONObject jsonObject = new JSONObject(printData);
+
+        String evaluationType = jsonObject.get("evaluationType").toString();
+        String evaluationReturnDate = jsonObject.get("evaluationReturnDate").toString();
+        Long classd = Long.parseLong(jsonObject.get("classId").toString());
+
+        List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(1L);
+        teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
+
+        List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
+        for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
+            evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+        }
+
+        TclassDTO.Info classInfo = tclassService.get(classId);
+
+        if (evaluationReturnDate.equals("noDate")) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.MONTH, 1);
+            evaluationReturnDate = DateUtil.convertMiToKh(formatter.format(calendar.getTime()));
+        }
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+        params.put("courseCode", classInfo.getCourse().getCode());
+        params.put("courseName", classInfo.getCourse().getTitleFa());
+        params.put("classCode", classInfo.getCode());
+        params.put("startDate", classInfo.getStartDate());
+        params.put("endDate", classInfo.getEndDate());
+        params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
+                evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :
+                        evaluationType.equals("TabPane_Behavior") ? "(رفتاری)" : "(نتایج)"));
+        params.put("returnDate", evaluationReturnDate.replace("-", "/"));
+        params.put("teacher", classInfo.getTeacher());
+        params.put("training", jsonObject.get("training").toString());
+
+
+        String data = "{" + "\"ds\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
+
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/EvaluationReactionTraining.jasper", params, jsonDataSource, response);
+    }
 }

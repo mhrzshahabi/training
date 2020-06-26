@@ -17,6 +17,7 @@ import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.EvaluationAnalysistLearningService;
 import com.nicico.training.service.ParameterService;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +61,8 @@ public class TclassRestController {
     private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final ParameterService parameterService;
     private final IInstituteService instituteService;
+    private final TclassDAO tclassDAO;
+
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -592,8 +596,8 @@ public class TclassRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
+        request.setStartIndex(0)
+                .setCount(100000);
 
         List<Object> removedObjects = new ArrayList<>();
         Object courseStatus = null;
@@ -653,11 +657,19 @@ public class TclassRestController {
 
         List<TclassDTO.TClassReport> listRemovedObjects = new ArrayList<>();
         if (courseStatus != null && !courseStatus.equals("3")) {
+
+            List<Long> ids=new ArrayList<>();
+
             for (TclassDTO.TClassReport datum : response.getList()) {
-                List<Long> courseNeedAssessmentStatus = courseDAO.getCourseNeedAssessmentStatus(datum.getCourse().getId());
-                if (courseStatus.equals("1") && courseNeedAssessmentStatus.size() == 0)
+                ids.add(datum.getCourse().getId());
+            }
+
+            List<Long> courseNeedAssessmentStatus = courseDAO.isExistInNeedsAssessment(ids);
+
+            for (TclassDTO.TClassReport datum : response.getList()) {
+                if (courseStatus.equals("1") && courseNeedAssessmentStatus.stream().filter(p->p==datum.getCourse().getId()).toArray().length == 0)
                     listRemovedObjects.add(datum);
-                if (courseStatus.equals("2") && courseNeedAssessmentStatus.size() != 0)
+                if (courseStatus.equals("2") && courseNeedAssessmentStatus.stream().filter(p->p==datum.getCourse().getId()).toArray().length != 0)
                     listRemovedObjects.add(datum);
             }
         }
@@ -741,9 +753,9 @@ public class TclassRestController {
         final TclassDTO.ReportSpecRs specResponse = new TclassDTO.ReportSpecRs();
         final TclassDTO.TclassReportSpecRs specRs = new TclassDTO.TclassReportSpecRs();
         specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
+                .setStartRow(0)
+                .setEndRow(response.getList().size())
+                .setTotalRows(response.getList().size());
 
         specRs.setResponse(specResponse);
 
@@ -944,6 +956,17 @@ public class TclassRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/TClassReportPrint.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @Transactional
+    @GetMapping(value = "/setReactionStatus/{teacherReactionStatus}/{trainingReactionStatus}/{classId}")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public void setReactionStatus(@PathVariable Integer teacherReactionStatus, @PathVariable Integer trainingReactionStatus, @PathVariable Long classId) {
+        if(teacherReactionStatus == 10)
+            tclassDAO.updateTrainingReactionStatus(trainingReactionStatus,classId);
+        if(trainingReactionStatus == 10)
+            tclassDAO.updateTeacherReactionStatus(teacherReactionStatus,classId);
     }
 
 }

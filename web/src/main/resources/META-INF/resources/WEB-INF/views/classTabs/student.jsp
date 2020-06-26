@@ -474,8 +474,19 @@
         selectionUpdated: function () {
 
             SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
-
-                if(!nationalCodeExists(current.nationalCode))
+                if(current.nationalCode=="" || current.nationalCode ==null || typeof(current.nationalCode)=="undefined")
+                {
+                    isc.Dialog.create({
+                        message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+                }
+                else if(!nationalCodeExists(current.nationalCode))
                 {
                     if (checkIfAlreadyExist(current)) {
                         return accumulator
@@ -593,7 +604,19 @@
         selectionAppearance: "checkbox",
         selectionUpdated: function () {
             SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
-                if(!nationalCodeExists(current.nationalCode))
+                if(current.nationalCode=="" || current.nationalCode ==null || typeof(current.nationalCode)=="undefined")
+                {
+                    isc.Dialog.create({
+                        message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+                }
+                else if(!nationalCodeExists(current.nationalCode))
                 {
                 if (checkIfAlreadyExist(current)) {
                     return accumulator
@@ -829,18 +852,28 @@
             var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             ClassStudentWin_student.close();
             refreshLG(StudentsLG_student);
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            let messages = JSON.parse(resp.data);
+            let invalMessage = " ";
+            let timeOut = 5000;
+            if (messages.names !== null && messages.names !== undefined) {
+                invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
+                timeOut = 15000
+            }
+
+            var OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
+                + "<br/>" + invalMessage,
 
                 "<spring:message code="msg.command.done"/>");
+
             setTimeout(function () {
                 OK.close();
-            }, 3000);
+            }, timeOut);
         } else {
-            var OK = createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
                 "<spring:message code="error"/>");
             setTimeout(function () {
                 OK.close();
-            }, 3000);
+            }, 5000);
         }
     }
 
@@ -1085,17 +1118,23 @@
 
                     if(personnelNo != "" && personnelNo != null && typeof(personnelNo) != "undefined")
                     {
-                        if(data.filter(function (item) {
+                        let person=data.filter(function (item) {
                             return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
-                        }).length==0){
+                        });
+
+                        if(person.length==0){
                             allRowsOK=false;
                             list[i].error=true;
                             list[i].hasWarning="warning";
                             list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
                         }
-                        else if(nationalCodeExists(data.filter(function (item) {
-                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
-                        })[0].nationalCode))
+                        else if(person[0].nationalCode== "" || person[0].nationalCode == null || typeof(person[0].nationalCode) == "undefined"){
+                            allRowsOK=false;
+                            list[i].error=true;
+                            list[i].hasWarning="warning";
+                            list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
+                        }
+                        else if(nationalCodeExists(person[0].nationalCode))
                         {
                             allRowsOK=false;
                             list[i].error=true;

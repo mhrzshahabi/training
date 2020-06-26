@@ -52,8 +52,7 @@ public class SkillLevelService implements ISkillLevelService {
     public SkillLevelDTO.Info create(SkillLevelDTO.Create request, HttpServletResponse response) {
         final SkillLevel skillLevel = modelMapper.map(request, SkillLevel.class);
 
-        if (skillLevelDAO.existsByTitleFa(request.getTitleFa()))
-        {
+        if (skillLevelDAO.existsByTitleFa(request.getTitleFa())) {
             try {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(406, messageSource.getMessage("skill.level.duplicate", null, locale));
@@ -68,9 +67,8 @@ public class SkillLevelService implements ISkillLevelService {
 
     @Transactional
     @Override
-    public SkillLevelDTO.Info update(Long id, SkillLevelDTO.Update request,HttpServletResponse response) {
-        if (skillLevelDAO.existsByTitleFaAndIdIsNot(request.getTitleFa(),id))
-        {
+    public SkillLevelDTO.Info update(Long id, SkillLevelDTO.Update request, HttpServletResponse response) {
+        if (skillLevelDAO.existsByTitleFaAndIdIsNot(request.getTitleFa(), id)) {
             try {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(406, messageSource.getMessage("skill.level.duplicate", null, locale));

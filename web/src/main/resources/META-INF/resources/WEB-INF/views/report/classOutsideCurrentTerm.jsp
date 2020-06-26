@@ -62,7 +62,10 @@
         dataSource: RestDataSource_classOutsideCurrentTerm,
         showRowNumbers: true,
         //autoFetchData: true,
+        initialSort: [
 
+            {property: "startDate", direction: "descending", primarySort: true}
+        ],
         fields: [
             {name: "titleClass", title: "عنوان کلاس", align: "center", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
@@ -271,8 +274,9 @@
                         };
 
                     var strSData=DynamicForm_Report_COCT.getItem("termId").getSelectedRecord().startDate
+                    let term_id=DynamicForm_Report_COCT.getItem("termId").getSelectedRecord().id
                   //  var strEData = DynamicForm_Report_COCT.getItem("endDate").getValue().replace(/(\/)/g, "");
-                    RestDataSource_classOutsideCurrentTerm.fetchDataURL=classOutsideCurrentTerm + "/"+"spec-list" + "?startDate=" +strSData;
+                    RestDataSource_classOutsideCurrentTerm.fetchDataURL=classOutsideCurrentTerm + "/"+"spec-list" + "?startDate=" +strSData +"&term_id="+term_id;
                     List_Grid_Reaport_classOutsideCurrentTerm.invalidateCache();
                     List_Grid_Reaport_classOutsideCurrentTerm.fetchData();
 

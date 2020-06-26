@@ -144,6 +144,8 @@
                 width: "*",
                 keyPressFilter: "[0-9, ]",
                 operator: "inSet",
+                editorType: "TextItem",
+                length:10000,
                 changed (form, item, value){
                     let res = value.split(" ");
                     item.setValue(res.toString())
@@ -592,6 +594,7 @@
             },
             {name: "studentFirstName"},
             {name: "studentLastName"},
+            {name: "studentCcpAffairs"},
             {name: "studentCcpUnit"},
             {name: "studentPostCode"},
             {name: "studentPostTitle"},
@@ -601,7 +604,18 @@
             {name: "classStartDate"},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classStudentScore"},
-            {name: "classStudentScoresState"},
+            {
+                name: "classStudentScoresState",
+                optionDataSource: ScoresStateDS_SCRV,
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                },
+                displayField: "title",
+                valueField: "id",
+                multiple: true
+            },
         ]
     });
 

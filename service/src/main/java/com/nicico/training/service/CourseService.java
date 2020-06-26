@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
@@ -320,6 +321,13 @@ public class CourseService implements ICourseService {
         return search;
     }
     //-------jafari--------
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(courseDAO, request, converter);
+    }
 
 
     @Transactional

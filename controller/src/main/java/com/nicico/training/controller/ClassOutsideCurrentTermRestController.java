@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class ClassOutsideCurrentTermRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "startDate",required = false) String startDate,
+                                                       @RequestParam(value = "term_id",required = false) String termId,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, ParseException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -67,24 +69,32 @@ public class ClassOutsideCurrentTermRestController {
                     }));
             request.setCriteria(criteriaRq);
         }
-       // SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("createdDate", startDate, EOperator.greaterThan, null);
-      //  List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-       // request.getCriteria().getCriteria().add(criteriaRq1);
-       // request.setCriteria(criteriaRq1);
+
+        SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("term.id", termId, EOperator.equals, null);
+
+
+        String str= DateUtil.convertKhToMi1(startDate.trim());
+        Date date=new SimpleDateFormat("yyyy-MM-dd").parse(str);
+        Timestamp ts=new Timestamp(date.getTime());
+        SearchDTO.CriteriaRq criteriaRq2 = makeNewCriteria("createdDate", ts, EOperator.greaterOrEqual, null);
+
+        request.getCriteria().getCriteria().add(criteriaRq1);
+        request.getCriteria().getCriteria().add(criteriaRq2);
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
-        String str= DateUtil.convertKhToMi1(startDate.trim()).replaceAll("[\\s\\-]", "");
 
-        List<Long> longList=response.getList().stream().filter(x->Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0,10).replaceAll("[\\s\\-]", ""))>Long.valueOf(str))
-                .map(x->x.getId()).collect(Collectors.toList());
+//
+//        List<Long> longList=response.getList().stream().filter(x->Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0,10).replaceAll("[\\s\\-]", ""))>Long.valueOf(str))
+//                .map(x->x.getId()).collect(Collectors.toList());
+//        List<TclassDTO.Info>infoList= response.getList().stream().filter(x->!longList.contains(x.getId())).collect(Collectors.toList());
+//        response.getList().removeAll(infoList);
 
 
-        List<TclassDTO.Info>infoList= response.getList().stream().filter(x->!longList.contains(x.getId())).collect(Collectors.toList());
-        response.getList().removeAll(infoList);
+
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
