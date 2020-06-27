@@ -4,7 +4,6 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.ParameterValue;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +21,6 @@ public class ClassDocumentDTO {
     @ApiModel("ClassDocumentInfo")
     public static class Info{
         private Long id;
-//        private Tclass tclass;
         private Long classId;
         private String letterNum;
         private ParameterValueDTO.TupleInfo letterType;
