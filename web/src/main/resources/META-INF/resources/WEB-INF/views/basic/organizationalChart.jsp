@@ -25,9 +25,22 @@
             },
         },
         rowClick: function (_1,_2,_3) {
-            _1["isOpen"] = true;
-            getTreeData(_1.id);
-        }
+            if(_1.isFolder === undefined){
+                // _1["isOpen"] = true;
+                // getTreeData(_1.id);
+                console.log(_1);
+                }
+            if(_1.isFolder === true){
+                _1.isOpen = true;
+                let childeren = [];
+                _1.children.forEach(function (currentValue, index, arr) {
+                    // getTreeData(currentValue.id);
+                    if(currentValue.isFolder == undefined)
+                        childeren.add(currentValue.id);
+                });
+                getchilderen(childeren);
+            }
+        },
     });
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
@@ -80,6 +93,26 @@
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
 
     // <<----------------------------------------------- Functions --------------------------------------------
+    function getchilderen(data) {
+        isc.RPCManager.sendRequest(TrDSRequest(masterDataUrl + "/department/getDepartmentsChilderen", "POST", JSON.stringify(data),function(resp){
+            if (resp.httpResponseCode != 200){
+                return;
+            } else {
+                let data = organizationalTree.getData().data.concat(JSON.parse(resp.data));
+                var Treedata = isc.Tree.create({
+                    modelType: "parent",
+                    nameProperty: "title",
+                    idField: "id",
+                    parentIdField: "parentId",
+                    data: data,
+                    openProperty: "isOpen",
+                });
+                organizationalTree.setData(Treedata);
+                //organizationalTree.getData().openAll();
+            }
+        }))
+    }
+
     function getTreeData(parentId) {
         var url = masterDataUrl + "/department/getDepartmentsByParentId/" + parentId;
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
@@ -96,7 +129,7 @@
                     openProperty: "isOpen",
                 });
                 organizationalTree.setData(Treedata);
-                // organizationalTree.getData().openAll();
+                //organizationalTree.getData().openAll();
             }
         }));
     }
@@ -107,6 +140,7 @@
             if (resp.httpResponseCode != 200) {
                 return false;
             } else {
+                let data = JSON.parse(resp.data);
                 var Treedata = isc.Tree.create({
                     modelType: "parent",
                     nameProperty: "title",
@@ -115,7 +149,9 @@
                     data: JSON.parse(resp.data)
                 });
                 organizationalTree.setData(Treedata);
-                // organizationalTree.getData().openAll();
+                Treedata.data[0]["isOpen"] = false;
+                getTreeData(Treedata.data[0].id);
+                //organizationalTree.getData().openAll();
             }
         }));
     }

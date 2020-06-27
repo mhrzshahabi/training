@@ -75,13 +75,29 @@ public class MasterDataRestController {
     }
 
     @GetMapping(value = "department/getDepartmentsByParentId/{parentId}")
-    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsByParentCode(HttpServletRequest iscRq, HttpServletResponse resp, @PathVariable String parentId) throws IOException {
-        return new ResponseEntity<>((List<MasterDataService.CompetenceWebserviceDTOInfoTuple>) (Object) modelMapper.map(masterDataService.getDepartmentsByParentCode(iscRq, resp, "ParentId?parentId=" + parentId),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType()) , HttpStatus.OK);
+    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsByParentCode(HttpServletRequest iscRq, @PathVariable String parentId) throws IOException {
+        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> result = modelMapper.map(masterDataService.getDepartmentsByParentCode(iscRq, "ParentId?parentId=" + parentId),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "department/getDepartmentsChilderen")
+    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsChilderen(HttpServletRequest iscRq, @RequestBody List<Long> childeren) throws IOException {
+//        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> result = new ArrayList<>();
+//        for (Long id : childeren){
+//            List<MasterDataService.CompetenceWebserviceDTO> data = masterDataService.getDepartmentsByParentCode(iscRq, "ParentId?parentId=" + id.toString());
+//            if(data != null)
+//                result.addAll(modelMapper.map(masterDataService.getDepartmentsByParentCode(iscRq, "ParentId?parentId=" + id.toString()),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType()));
+//        }
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+
+        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> result = modelMapper.map(masterDataService.getDepartmentsChilderenByParentCode(iscRq, childeren),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
 
     @GetMapping(value = "department/getDepartmentsRoot")
-    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsRoot(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
-        return new ResponseEntity<>((List<MasterDataService.CompetenceWebserviceDTOInfoTuple>) (Object) modelMapper.map(masterDataService.getDepartmentsByParentCode(iscRq, resp, "RootByType?peopleType=Personal"),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType()) , HttpStatus.OK);
+    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsRoot(HttpServletRequest iscRq) throws IOException {
+        return new ResponseEntity<>((List<MasterDataService.CompetenceWebserviceDTOInfoTuple>) (Object) modelMapper.map(masterDataService.getDepartmentsByParentCode(iscRq, "RootByType?peopleType=Personal"),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType()) , HttpStatus.OK);
     }
 
     @GetMapping(value = "post/iscList")
