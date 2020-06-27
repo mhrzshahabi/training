@@ -87,9 +87,13 @@ span {
 .sh-item:hover h2{
     color: #fe9d2a;
 }
-.sh-item:hover .sh-icon path{
+.sh-item:hover svg path:not([fill="none"]), .sh-item:hover svg circle:not([fill="none"]){
     fill: #fe9d2a;
     pointer-events: none;
+}
+
+.sh-item:hover svg circle:not([stroke="none"]){
+    stroke: #fe9d2a;
 }
 
 .sh-item h2{

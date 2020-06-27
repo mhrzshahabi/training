@@ -1969,132 +1969,141 @@
         <%--createTab(this.title, "<spring:url value="web/parameter/"/>");--%>
     <%--}, 2000)--%>
 
-    personalInformation = {title: "<spring:message code="personnel.information"/>", url: "<spring:url value="personnelInformation/show-form"/>", icon: "static/img/shortcutMenu/personal.svg"};
 
-
-    function openShortcutTab(item){
-        createTab(item.title, item.url);
-    }
-    function changeImage(tag, item){
-        console.log(tag)
-        console.log(tag.parentElement)
-        console.log(item)
-        tag.src = item.icon;
-    }
 
 
     mainTabSet = isc.TabSet.create({
         minWidth: 1024,
         height: "100%",
         tabs: [
-            {
-            title: "",
-            canClose: false,
-            showTabBar: false,
-            pane:
-                isc.VLayout.create({
-                    width: "100%",
-                    height: "100%",
-                    align: "center",
-                    vAlign: "center",
-                    membersMargin: 20,
-                    defaultLayoutAlign: "center",
-                    members: [
-                        isc.HLayout.create({
-                            height: 200,
-                            align: "center",
-                            vAlign: "center",
-                            defaultLayoutAlign: "center",
-                            membersMargin: 20,
-                            members: [
-                                isc.HTMLPane.create({
-                                    width:200, height:200,
-                                    showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img  class='sh-icon' onload=\" changeImage(this, personalInformation);SVGInject(this)\"  src='static/img/shortcutMenu/classroom.svg'> <h2></h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                                isc.HTMLPane.create({
-                                    width:200, height:200,
-                                    showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img  class='sh-icon' onload=\"SVGInject(this)\"  src='static/img/shortcutMenu/classroom.svg'> <h2>کلاس ها</h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                                isc.HTMLPane.create({
-                                    width:200, height:200,
-                                    showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img  class='sh-icon' onload=\"SVGInject(this)\"  src='static/img/shortcutMenu/periods.svg'> <h2>دوره ها</h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                            ]
-
-                        }),
-                        isc.HLayout.create({
-                            height: 200,
-                            align: "center",
-                            vAlign: "center",
-                            defaultLayoutAlign: "center",
-                            membersMargin: 20,
-                            members: [
-                                isc.HTMLPane.create({
-                                    width:200, height:200, showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img src='static/img/shortcutMenu/evaluation.svg'><h2>ارزیابی</h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                                isc.HTMLPane.create({
-                                    width:200, height:200, showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img src='static/img/shortcutMenu/needs.svg'><h2>نیاز سنجی گروه پستی</h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                                isc.HTMLPane.create({
-                                    width:200, height:200, showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img src='static/img/shortcutMenu/report.svg'><h2>گزارش پرونده آموزشی</h2></div>",
-                                    selectContentOnSelectAll:true
-                                })
-                            ]
-
-                        }),
-                        isc.HLayout.create({
-                            height: 200,
-                            align: "center",
-                            vAlign: "center",
-                            defaultLayoutAlign: "center",
-                            membersMargin: 20,
-                            members: [
-                                isc.HTMLPane.create({
-                                    width:200, height:200, showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img src='static/img/shortcutMenu/periodReport.svg'><h2>>گزارش دوره های گذرانده</h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                                isc.HTMLPane.create({
-                                    width:200, height:200, showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img src='static/img/shortcutMenu/trainingReport.svg'><h2>گزارش عدم آموزش</h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                                isc.HTMLPane.create({
-                                    width:200, height:200, showEdges:false,
-                                    styleName:"shortcut-box",
-                                    contents:"<div class='sh-item' onclick='openShortcutTab(personalInformation)'><img src='static/img/shortcutMenu/needReports.svg'><h2>گزارشات نیازسنجی</h2></div>",
-                                    selectContentOnSelectAll:true
-                                }),
-                            ]
-
-                        })
-                    ]
-                })
-
-              }
             ],
         tabBarControls: [closeAllButton],
     });
 
+
+
+
+
+
+    function openShortcutTab(titleUrl){
+       createTab( titleUrl.split(',')[0], titleUrl.split(',')[1]);
+    }
+
+    function initShortcuts() {
+        shortcuts = [
+            <sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">
+            {
+                title: "<spring:message code="personnel.information"/>",
+                url: "<spring:url value="personnelInformation/show-form"/>",
+                icon: "static/img/shortcutMenu/personal.svg",
+
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Run_Class')">
+            {
+                title: "<spring:message code="class"/>",
+                url: "<spring:url value="/tclass/show-form"/>",
+                icon: "static/img/shortcutMenu/classroom.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Designing_Course')">
+            {
+                title: "<spring:message code="course"/>",
+                url: "<spring:url value="/course/show-form"/>",
+                icon: "static/img/shortcutMenu/periods.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Evaluation_Evaluation')">
+            {
+                title: "<spring:message code="evaluation"/>",
+                url:"<spring:url value="/evaluation/show-form"/>",
+                icon: "static/img/shortcutMenu/evaluation.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_NeedAssessment_PostGroup')">
+            {
+                title: "<spring:message code="post.group"/>",
+                url:"<spring:url value="web/post-group/"/>",
+                icon: "static/img/shortcutMenu/needs.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingFile')">
+            {
+                title: "<spring:message code="training.file"/>",
+                url:"<spring:url value="web/trainingFile/"/>",
+                icon: "static/img/shortcutMenu/report.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PassedPersonnel')">
+            {
+                title: "<spring:message code="personnel.courses"/>",
+                url:"<spring:url value="web/studentClassReport/"/>",
+                icon: "static/img/shortcutMenu/periodReport.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PersonnelCoursesNotPassed')">
+            {
+                title: "<spring:message code="personnel.courses.not.passed"/>",
+                url:"<spring:url value="web/personnelCourseNotPassed/"/>",
+                icon: "static/img/shortcutMenu/trainingReport.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">
+            {
+                title: "<spring:message code="reports.need.assessment"/>",
+                url:"<spring:url value="web/needsAssessment-reports"/>",
+                icon: "static/img/shortcutMenu/needReports.svg"
+            }
+            </sec:authorize>
+
+        ];
+
+        vLayoutShortcuts = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            align: "center",
+            vAlign: "center",
+            membersMargin: 20,
+            defaultLayoutAlign: "center",
+        });
+        mainTabSet.addTab(
+            {
+                title: 'خانه',
+                pane:vLayoutShortcuts
+            }
+        )
+
+
+        let shortcut;
+        let index = 0;
+        let hLayoutShortcut;
+        let htmlPanShortcut;
+        for( shortcut of shortcuts){
+            if(index == 0 || index%3 == 0){
+                hLayoutShortcut = isc.HLayout.create({
+                    height: 200,
+                    align: "center",
+                    vAlign: "center",
+                    defaultLayoutAlign: "center",
+                    membersMargin: 20,
+                })
+            }
+            hLayoutShortcut.addMembers(
+                htmlPanShortcut = isc.HTMLPane.create({
+                    width:200, height:200,
+                    showEdges:false,
+                    styleName:"shortcut-box",
+                    contents: "<div class='sh-item' onclick=\"openShortcutTab('"+shortcut.title+","+shortcut.url+"')\" id='shortcutLink' ><img  class='sh-icon' onload=\"SVGInject(this)\"  src='"+shortcut.icon+"'> <h2>"+shortcut.title+"</h2></div>",
+                    selectContentOnSelectAll:true
+                })
+            )
+            if(index%3 == 0 )
+                vLayoutShortcuts.addMembers(hLayoutShortcut)
+            index++;
+        }
+
+    }
+    initShortcuts();
     // -------------------------------------------  Page UI -----------------------------------------------
 
     var headerExitHLayout = isc.HLayout.create({
