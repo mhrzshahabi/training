@@ -113,11 +113,13 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
     public List<NeedsAssessment> getUnverifiedNeedsAssessmentList(Long objectId, String objectType) {
+        List<NeedsAssessment> needsAssessmentList = new ArrayList<>();
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
 //        criteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));
         addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, objectType, objectId, false);
-        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
+        if (!criteriaRq.getCriteria().get(0).getCriteria().isEmpty())
+            needsAssessmentList.addAll(needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq)));
 
         SearchDTO.CriteriaRq tempCriteriaRq = getCriteria(objectType, objectId);
 //        tempCriteriaRq.getCriteria().add(makeNewCriteria("eDeleted", 75L, EOperator.notEqual, null));

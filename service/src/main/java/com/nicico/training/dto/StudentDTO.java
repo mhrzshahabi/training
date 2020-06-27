@@ -167,6 +167,7 @@ public class StudentDTO {
         private String ccpUnit;
         private String fatherName;
         private String mobile;
+        private String birthCertificateNo;
 
     }
 

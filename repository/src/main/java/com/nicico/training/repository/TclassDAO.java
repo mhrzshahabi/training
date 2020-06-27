@@ -111,6 +111,11 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "update TBL_CLASS set evaluation_reaction_training = :trainingReactionStatus where ID = :classId", nativeQuery = true)
     public void updateTrainingReactionStatus(Integer trainingReactionStatus, Long classId);
 
+    @Transactional
+    @Query(value = "select evaluation_reaction_teacher from TBL_CLASS where ID = :classId", nativeQuery = true)
+    public Integer  getTeacherReactionStatus(Long classId);
 
-
+    @Transactional
+    @Query(value = "select evaluation_reaction_training from TBL_CLASS where ID = :classId", nativeQuery = true)
+    public Integer  getTrainingReactionStatus(Long classId);
 }
