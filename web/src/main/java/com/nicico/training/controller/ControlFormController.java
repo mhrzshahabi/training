@@ -91,12 +91,18 @@ public class ControlFormController {
 
                 for (int i = 0; i < allData.size(); i++) {
                     final int j = i;
+                    ClassSession classSession=null;
 
-                    ClassSession classSession = sessionList.stream().filter(x ->
-                                    x.getDayName().equals(allData.get(j).getDayName()) &&
-                                    x.getSessionDate().equals(allData.get(j).getSessionDate()) &&
-                                    x.getSessionStartHour().equals(allData.get(j).getSessionStartHour()) &&
-                                    x.getSessionEndHour().equals(allData.get(j).getSessionEndHour())).findFirst().get();
+                    ClassSessionDTO.AttendanceClearForm data=allData.get(j);
+
+                    if (data!=null)
+                    {
+                        classSession = sessionList.stream().filter(x ->
+                                        x.getDayName().equals(data.getDayName()) &&
+                                        x.getSessionDate().equals(data.getSessionDate()) &&
+                                        x.getSessionStartHour().equals(data.getSessionStartHour()) &&
+                                        x.getSessionEndHour().equals(data.getSessionEndHour())).findFirst().get();
+                    }
 
                     if (classSession != null) {
                         if (!sessionList.get(i).getDayName().equals(dayName)) {
