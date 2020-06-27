@@ -214,7 +214,9 @@
             {name: "student.ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
             {name: "student.ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
             {name: "student.ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
-            {name: "student.fatherName", title: "<spring:message code="father.name"/>", filterOperator: "iContains"}
+            {name: "student.fatherName", title: "<spring:message code="father.name"/>", filterOperator: "iContains"},
+            {name: "student.mobile", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
+            {name: "student.birthCertificateNo", title: "<spring:message code="birth.certificate.no"/>", filterOperator: "iContains"}
         ],
 
         fetchDataURL: tclassStudentUrl + "/students-iscList/"
@@ -238,18 +240,18 @@
         sortField: 1,
         sortDirection: "descending",
         fields: [
-            {name: "student.firstName"},
-            {name: "student.lastName"},
+            {name: "student.firstName", autoFitWidth: true},
+            {name: "student.lastName", autoFitWidth: true},
             {name: "student.nationalCode",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                }, autoFitWidth: true
             },
             {name: "student.fatherName",hidden:true},
             {
                 name: "applicantCompanyName",
                 textAlign: "center",
-                width: "*",
+                autoFitWidth: true,
                 <%--editorType: "ComboBoxItem",--%>
                 <%--changeOnKeypress: true,--%>
                 <%--displayField: "titleFa",--%>
@@ -284,6 +286,7 @@
                 optionDataSource: StudentsDS_PresenceType,
                 valueField: "id",
                 displayField: "title",
+                autoFitWidth: true,
                 filterOnKeypress: true,
                 canEdit: true,
                 changed: function (form, item, value) {
@@ -293,19 +296,23 @@
             {name: "student.personnelNo",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                autoFitWidth: true
             },
             {name: "student.personnelNo2",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                autoFitWidth: true
             },
-            {name: "student.postTitle"},
-            {name: "student.ccpArea"},
-            {name: "student.ccpAssistant"},
-            {name: "student.ccpAffairs"},
-            {name: "student.ccpSection"},
-            {name: "student.ccpUnit"}
+            {name: "student.postTitle",autoFitWidth: true},
+            {name: "student.mobile",autoFitWidth: true},
+            {name: "student.birthCertificateNo",autoFitWidth: true},
+            {name: "student.ccpArea",autoFitWidth: true},
+            {name: "student.ccpAssistant",autoFitWidth: true},
+            {name: "student.ccpAffairs",autoFitWidth: true},
+            {name: "student.ccpSection",autoFitWidth: true},
+            {name: "student.ccpUnit",autoFitWidth: true}
         ],
         gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
        // contextMenu: StudentMenu_student,
@@ -352,7 +359,7 @@
                 name: "applicantCompanyName",
                 title: "<spring:message code="company.applicant"/>",
                 textAlign: "center",
-                canEdit: true,
+                //canEdit: true,
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -381,7 +388,7 @@
                 title: "<spring:message code="class.presence.type"/>",
                 type: "selectItem",
                 optionDataSource: StudentsDS_PresenceType,
-                canEdit: true,
+                //canEdit: true,
                 valueField: "id",
                 displayField: "title",
                 filterOnKeypress: true,
