@@ -26,15 +26,12 @@
         },
         rowClick: function (_1,_2,_3) {
             if(_1.isFolder === undefined){
-                // _1["isOpen"] = true;
-                // getTreeData(_1.id);
                 console.log(_1);
                 }
             if(_1.isFolder === true){
                 _1.isOpen = true;
                 let childeren = [];
                 _1.children.forEach(function (currentValue, index, arr) {
-                    // getTreeData(currentValue.id);
                     if(currentValue.isFolder == undefined)
                         childeren.add(currentValue.id);
                 });
@@ -49,7 +46,6 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
             getRootTreeData();
-            // getTreeData();
         }
     });
 
@@ -76,6 +72,43 @@
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
 
+    var search_bar = isc.DynamicForm.create({
+        autoDraw: false,
+        items: [{
+            name: "search",
+            title: "Search Term",
+            width: 200,
+            suppressBrowserClearIcon:true,
+            icons: [{
+                name: "view",
+                src: "[SKINIMG]actions/view.png",
+                hspace: 5,
+                inline: true,
+                baseStyle: "roundedTextItemIcon",
+                showRTL: true,
+                tabIndex: -1,
+                click: function () {
+                    let AdvanceCriteria = '{"fieldName":"title","operator":"iContains","value":"'+search_bar.getValues().search+'"}';
+                    getSearchData(AdvanceCriteria);
+                },
+            }, {
+                name: "clear",
+                src: "[SKINIMG]actions/close.png",
+                width: 10,
+                height: 10,
+                inline: true,
+                prompt: "Clear this field",
+
+                click : function (form, item, icon) {
+                    item.clearValue();
+                    item.focusInItem();
+                }
+            }],
+            iconWidth: 16,
+            iconHeight: 16
+        }]
+    });
+
     // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>
 
     // <<-------------------------------------- Create - TabSet & Tab -----------------------------------------
@@ -87,7 +120,7 @@
     var VLayout_PersonnelInfo_Data = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [ToolStripButton_Refresh, organizationalTree]
+        members: [search_bar,ToolStripButton_Refresh, organizationalTree]
     });
 
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
@@ -152,6 +185,19 @@
                 Treedata.data[0]["isOpen"] = false;
                 getTreeData(Treedata.data[0].id);
                 //organizationalTree.getData().openAll();
+            }
+        }));
+    }
+
+    function getSearchData(criteria) {
+        var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+            if (resp.httpResponseCode != 200) {
+                console.log("failed");
+                return false;
+            } else {
+                let data = JSON.parse(resp.data);
+                console.log(data);
             }
         }));
     }

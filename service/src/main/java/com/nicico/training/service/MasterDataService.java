@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -53,7 +54,7 @@ public class MasterDataService implements IMasterDataService {
     @Getter
     @Setter
     @Accessors(chain = true)
-    public class CompetenceWebserviceDTO {
+    public class CompetenceWebserviceDTO extends MasterDataService{
 
         public Long id;
         public String code;
@@ -79,10 +80,24 @@ public class MasterDataService implements IMasterDataService {
     @Getter
     @Setter
     @ApiModel("CompetenceWebserviceDTOInfoTuple")
-    public static class CompetenceWebserviceDTOInfoTuple {
+    public static class CompetenceWebserviceDTOInfoTuple extends MasterDataService{
         private Long id;
         public String title;
         public Long parentId;
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(17, 31).
+                    append(title).
+                    toHashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof MasterDataService))
+                return false;
+            return (this.getId().equals(((MasterDataService.CompetenceWebserviceDTOInfoTuple) obj).getId()));
+        }
     }
 
 
@@ -572,7 +587,6 @@ public class MasterDataService implements IMasterDataService {
                         sortBy +
                         "  \"startIndex\": " + searchRq.getStartIndex() + "\n" +
                         "}" : "{}";
-                        ;
 
 //                System.out.println(POST_PARAMS);
 
@@ -896,7 +910,7 @@ public class MasterDataService implements IMasterDataService {
         return searchRq;
     }
 
-    public List<CompetenceWebserviceDTO> getDepartmentsByParentCode(HttpServletRequest iscRq, String xUrl) throws IOException {
+    public List<CompetenceWebserviceDTO> getDepartmentsByParentCode(String xUrl) throws IOException {
         if (token == "") {
             authorize();
         }
@@ -1021,7 +1035,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    public List<CompetenceWebserviceDTO> getDepartmentsChilderenByParentCode(HttpServletRequest iscRq, List<Long> xUrl) throws IOException {
+    public List<CompetenceWebserviceDTO> getDepartmentsChilderenByParentCode(List<Long> xUrl) throws IOException {
         if (token == "") {
             authorize();
         }
@@ -1146,6 +1160,100 @@ public class MasterDataService implements IMasterDataService {
             return null;
 
         }
+    }
+
+    public CompetenceWebserviceDTO getDepartmentsById(Long id) throws IOException {
+        if (token == "") {
+            authorize();
+        }
+
+        if (token == "") {
+
+            return null;
+        } else {
+
+            int index = 0;
+
+            while (index <= 1) {
+                index++;
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/department/get/single?id=" + id.toString());
+                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+                postConnection.setDoOutput(true);
+                postConnection.setDoInput(true);
+                postConnection.setRequestMethod("GET");
+                postConnection.setRequestProperty("Accept", "*/*");
+                postConnection.setRequestProperty("authorization", "Bearer " + token);
+                int responseCode = postConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            postConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                    CompetenceWebserviceDTO tmp = null;
+                    JsonNode jsonNode = objectMapper.readTree(response.toString());
+                    tmp = new CompetenceWebserviceDTO();
+                    tmp.setId(Long.parseLong(jsonNode.get("id").asText()));
+                    tmp.setCode(jsonNode.get("code").asText());
+                    tmp.setLatinTitle(jsonNode.get("latinTitle").asText());
+                    tmp.setTitle(jsonNode.get("title").asText());
+                    tmp.setType(jsonNode.get("type").asText());
+                    tmp.setNature(jsonNode.get("nature").asText());
+                    if (jsonNode.get("startDate").asText() == null)
+                        tmp.setStartDate("");
+                    else {
+                        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            tmp.setStartDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("startDate").asLong()))));
+                        } catch (Exception ex) { }
+                    }
+                    if (jsonNode.get("endDate").asText() == null)
+                        tmp.setEndDate("");
+                    else {
+                        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            tmp.setEndDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("endDate").asLong()))));
+                        } catch (Exception ex) { }
+                    }
+                    if (jsonNode.get("legacyCreateDate").asText() == null)
+                        tmp.setLegacyCreateDate("");
+                    else {
+                        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            tmp.setLegacyCreateDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("legacyCreateDate").asLong()))));
+                        } catch (Exception ex) { }
+                    }
+                    if (jsonNode.get("legacyChangeDate").asText() == null)
+                        tmp.setLegacyChangeDate("");
+                    else {
+                        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            tmp.setLegacyChangeDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("legacyChangeDate").asLong()))));
+                        } catch (Exception ex) { }
+                    }
+                    tmp.setActive(jsonNode.get("active").asText());
+                    tmp.setOldCode(jsonNode.get("oldCode").asText());
+                    tmp.setNewCode(jsonNode.get("newCode").asText());
+                    tmp.setUser(jsonNode.get("user").asText());
+                    tmp.setIssuable(jsonNode.get("issuable").asText());
+                    tmp.setComment(jsonNode.get("comment").asText());
+                    tmp.setCorrection(jsonNode.get("correction").asText());
+                    tmp.setAlignment(jsonNode.get("alignment").asText());
+                    tmp.setParentId(Long.parseLong(jsonNode.get("parentId").asText()));
+
+                    return tmp;
+                }else
+                    return null;
+            }
+        }
+
+            return null;
+
     }
 
 }
