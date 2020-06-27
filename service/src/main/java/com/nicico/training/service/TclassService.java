@@ -1308,46 +1308,10 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.TClassReport> reportSearch(SearchDTO.SearchRq request) {
-        Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
-        List<Tclass> list = all.getContent();
+        request.setStartIndex(null);
+        request.setCount(100000);
+        return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TClassReport.class));
 
-        Long totalCount = all.getTotalElements();
-        SearchDTO.SearchRs<TclassDTO.TClassReport> searchRs = null;
-
-        if (totalCount == 0) {
-
-            searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<TclassDTO.TClassReport>());
-
-        } else {
-            List<Long> ids = new ArrayList<>();
-            int len = list.size();
-
-            for (int i = 0; i < len; i++) {
-                ids.add(list.get(i).getId());
-            }
-
-            request.setCriteria(makeNewCriteria("", null, EOperator.or, null));
-            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-            SearchDTO.CriteriaRq tmpcriteria = null;
-            int page = 0;
-
-            while (page * 1000 < ids.size()) {
-                page++;
-                criteriaRqList.add(makeNewCriteria("id", ids.subList((page - 1) * 1000, Math.min((page * 1000), ids.size())), EOperator.inSet, null));
-
-            }
-
-            request.setCriteria(makeNewCriteria("", null, EOperator.or, criteriaRqList));
-            request.setStartIndex(null);
-
-
-            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO, TclassDTO.TClassReport.class));
-        }
-
-        searchRs.setTotalCount(totalCount);
-
-        return searchRs;
     }
 
     private boolean checkDuration(Tclass tclass) {

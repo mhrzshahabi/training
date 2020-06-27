@@ -39,19 +39,6 @@
     <script src="<spring:url value='/js/langConverter.js' />"></script>
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
 
-    <style>
-        .inputRTL input{
-            direction: ltr !important;
-            text-align: left !important;
-        }
-
-        .inputRTLFocused input{
-            direction: ltr !important;
-            text-align: left !important;
-        }
-    </style>
-
-
     <script>
         String.prototype.toEnglishDigit = function() {
             var find = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -754,6 +741,7 @@
     const attendanceReportUrl = rootUrl + "/attendanceReport";
     const classPerformanceReport = rootUrl + "/classPerformance/";
     const attendancePerformanceReportUrl = rootUrl + "/attendancePerformance/";
+    const controlReportUrl = rootUrl + "/controlReport";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1702,6 +1690,15 @@
                                 click: function () {
                                     createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
                                 }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                            title: "کنترل",
+                            click: function () {
+                            createTab(this.title, "<spring:url value="web/controlReport/"/>");
+                            }
                             },
                             {isSeparator: true},
                             </sec:authorize>
