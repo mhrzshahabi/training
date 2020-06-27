@@ -61,10 +61,30 @@ span {
     cursor: pointer !important;
 }
 
-.clickableCellRTL:hover, .clickableCell:hover
+ .clickableCellRTL:hover, .clickableCell:hover
 {
     color: #003580 !important;
 }
+
+
+.inputRTL input{
+    direction: ltr !important;
+    text-align: left !important;
+}
+
+.inputRTLFocused input{
+    direction: ltr !important;
+    text-align: left !important;
+}
+
+.specialColDisabledRTL .specialColDisabled{
+    height: 35px !important;
+}
+
+.cellDisabledAltColRTL,.cellDisabledDarkAltColRTL,.cellDisabledAltCol,.cellDisabledDarkAltCol{
+    padding: 5px !important;
+}
+
 
 
 
