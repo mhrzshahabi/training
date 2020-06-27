@@ -21,6 +21,26 @@ public class AttendanceDTO {
     private String description;
     private String state;
 
+    public String statusName(int status) {
+        switch (status) {
+            case 0:
+                return "نامشخص";
+
+            case 1:
+                return "حاضر";
+
+            case 2:
+                return "حاضر و اضافه کار";
+
+            case 3:
+                return "غیبت غیرموجه";
+
+            case 4:
+                return "غیبت موجه";
+        }
+        return new String();
+    }
+
     // ------------------------------
     @Getter
     @Setter

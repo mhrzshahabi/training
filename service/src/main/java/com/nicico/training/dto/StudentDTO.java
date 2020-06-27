@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -229,9 +230,17 @@ public class StudentDTO {
         @Getter(AccessLevel.NONE)
         private String fullName;
 
-        public String getFullName(){
+        public String getFullName() {
             return firstName + " " + lastName;
         }
+    }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Clear With Attendance")
+    public static class clearAttendanceWithState extends clearAttendance {
+        private Map<String,String> states;
     }
 
     @Getter
