@@ -1308,7 +1308,10 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.TClassReport> reportSearch(SearchDTO.SearchRq request) {
+        request.setStartIndex(null);
+        request.setCount(100000);
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.TClassReport.class));
+
     }
 
     private boolean checkDuration(Tclass tclass) {

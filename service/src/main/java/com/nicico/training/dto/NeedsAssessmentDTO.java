@@ -7,7 +7,6 @@ package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,7 +16,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -65,7 +63,6 @@ public class NeedsAssessmentDTO implements Serializable {
         private Integer workflowStatusCode;
         private String mainWorkflowStatus;
         private Integer mainWorkflowStatusCode;
-//        private E object;
     }
 
     @Getter
@@ -102,35 +99,31 @@ public class NeedsAssessmentDTO implements Serializable {
         private String skillTitle;
         private String skillCourseTitle;
 
-        public boolean equvalentOf(NeedsAssessmentDTO.Tree dto,String property){
-            if(this.getParentId().equals(dto.getParentId()) && this.getName().equals(dto.getName()))
-                return true;
-            else
-                return false;
+        public boolean equvalentOf(NeedsAssessmentDTO.Tree dto) {
+            return this.getParentId().equals(dto.getParentId()) && this.getName().equals(dto.getName());
         }
 
-        public void setProperty(String property, String value){
+        public void setProperty(String property, String value) {
             try {
                 Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
-                field.set(this,value);
-            } catch (Exception e) {
+                field.set(this, value);
+            } catch (Exception ignored) {
             }
         }
 
-        public String getProperty(String property){
+        public String getProperty(String property) {
             String result = null;
             try {
-//                result = (String)PropertyUtils.getProperty(this,property);
                 Field field = NeedsAssessmentDTO.Tree.class.getDeclaredField(property);
                 result = field.get(this).toString();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             return result == null ? "" : result;
         }
 
         @Override
-        public int hashCode(){
-            return new HashCodeBuilder(17,31).
+        public int hashCode() {
+            return new HashCodeBuilder(17, 31).
                     append(competenceNameTitle).
                     append(competenceTypeTitle).
                     append(needsAssessmentDomainTitle).
@@ -140,10 +133,10 @@ public class NeedsAssessmentDTO implements Serializable {
         }
 
         @Override
-        public boolean equals(Object obj){
-            if(!(obj instanceof NeedsAssessmentDTO))
+        public boolean equals(Object obj) {
+            if (!(obj instanceof NeedsAssessmentDTO))
                 return false;
-            return (this.getId().equals(((NeedsAssessmentDTO.Tree)obj).getId()));
+            return (this.getId().equals(((NeedsAssessmentDTO.Tree) obj).getId()));
         }
     }
 
@@ -155,7 +148,6 @@ public class NeedsAssessmentDTO implements Serializable {
         private Long id;
         private String objectName;
         private String objectCode;
-//        private String Action;
     }
 
     @Getter
@@ -163,8 +155,17 @@ public class NeedsAssessmentDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Update")
     public static class Update {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long objectId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String objectType;
+
+        @NotNull
+        @ApiModelProperty(required = true)
         private Long needsAssessmentPriorityId;
-//        private Integer version;
     }
 
     @Getter
@@ -174,6 +175,14 @@ public class NeedsAssessmentDTO implements Serializable {
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
-        private List<Long> ids;
+        private Long id;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long objectId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String objectType;
     }
 }

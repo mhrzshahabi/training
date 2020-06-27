@@ -56,19 +56,6 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         if (scoringMethod.equals("1")) {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-//                if (score.getPreTestScore() == null)
-//                {
-//                    score.setPreTestScore((float) 0.0);
-//                    // preTestVariable++;
-//                }
-//
-//                if (score.getValence() == null)
-//                {
-//                    score.setValence(String.valueOf(0));
-//                    // pastTestVariable++;
-//                }
-
-
                 if(score.getValence() != null && score.getPreTestScore() != null)
                 {
                     ScoreEvaluation = ScoreEvaluation + map.get(score.getValence())- score.getPreTestScore();
@@ -100,17 +87,6 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         if (scoringMethod.equals("2")) {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-//                if (score.getScore() == null)
-//                {
-//                    score.setScore((float) 0.0);
-//                    // pastTestVariable++;
-//                }
-//                if (score.getPreTestScore() == null)
-//                {
-//                    score.setPreTestScore((float) 0.0);
-//                    // preTestVariable++;
-//
-//                }
                 if(score.getScore() != null && score.getPreTestScore() != null)
                 {
                     ScoreEvaluation += Math.abs((score.getScore()- score.getPreTestScore()));
@@ -138,16 +114,6 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-//                if (score.getScore() == null)
-//                {
-//                    score.setScore((float) 0.0);
-//                }
-//
-//                if (score.getPreTestScore() == null)
-//                {
-//                    score.setPreTestScore((float) 0.0);
-//                }
-
                 if(score.getScore() != null && score.getPreTestScore() != null)
                 {
                     ScoreEvaluation = ScoreEvaluation + ((score.getScore()*5)- score.getPreTestScore());
@@ -174,10 +140,6 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
         {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
-//                if (score.getPreTestScore() == null) {
-//                    score.setPreTestScore((float) 0.0);
-//                  //  preTestVariable++;
-//                }
                 if(score.getPreTestScore() != null) {
                     sumPreScore += score.getPreTestScore();
                     scoreEvaluationVariable++;

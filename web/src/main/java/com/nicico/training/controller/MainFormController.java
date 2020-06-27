@@ -55,6 +55,11 @@ public class MainFormController {
         return "report/attendanceReport";
     }
 
+    @RequestMapping("/controlReport")
+    public String showControlReport() {
+        return "report/controlReport";
+    }
+
     @RequestMapping("/needsAssessment-reports")
     public String showNeedsAssessmentReportsForm() {
         return "report/needsAssessmentReports";
@@ -202,6 +207,10 @@ public class MainFormController {
     @GetMapping("/edit-needs-assessment")
     public String showEditNeedsAssessmentForm() {
         return "needsAssessment/edit-needs-assessment";
+    }
+    @GetMapping("/diff-needs-assessment")
+    public String showDiffNeedsAssessmentForm() {
+        return "needsAssessment/diff-needs-assessment";
     }
     @GetMapping("/tree-needs-assessment")
     public String showTreeNeedsAssessmentForm() {

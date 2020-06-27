@@ -20,8 +20,6 @@ import javax.persistence.*;
 public class NeedsAssessmentTemp<E> extends Auditable {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_needs_assessment_id")
-//    @SequenceGenerator(name = "seq_needs_assessment_id", sequenceName = "seq_needs_assessment_id", allocationSize = 1)
     private Long id;
 
     @Any(metaColumn = @Column(name = "c_object_type", nullable = false), fetch = FetchType.LAZY)

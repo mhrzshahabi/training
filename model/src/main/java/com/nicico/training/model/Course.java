@@ -65,7 +65,7 @@ public class Course extends Auditable {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
     private Subcategory subCategory;
 
@@ -93,8 +93,8 @@ public class Course extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
     private List<Course> preCourseList;
 
-    @ManyToMany(mappedBy = "preCourseList", fetch = FetchType.LAZY)
-    private List<Course> preCourseListOf;
+//    @ManyToMany(mappedBy = "preCourseList", fetch = FetchType.LAZY)
+//    private List<Course> preCourseListOf;
 
     @Column(name = "e_run_type")
     private ERunType eRunType;

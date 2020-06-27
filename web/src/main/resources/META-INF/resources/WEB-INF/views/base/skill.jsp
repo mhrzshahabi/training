@@ -1,6 +1,10 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 // <script>
 
@@ -85,8 +89,8 @@
             {name: "code", title: "<spring:message code='skill.code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code='skill.title'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleEn", title: "<spring:message code='title.en'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
+            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
             {name: "skillLevel.titleFa", title: "<spring:message code='skill.level'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "categoryId", hidden: true},
@@ -205,7 +209,7 @@
                 required: true,
                 default: "125",
                 readonly: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+              //  keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 width: "300"
             },
             {
@@ -487,7 +491,9 @@
         selectionType: "single",
         showResizeBar: true,
         dataArrived:function(){
-            setTimeout(function(){ $("tbody tr td:last-child").css({direction:'ltr'});},100);
+            setTimeout(function(){ $("tbody tr td:last-child").css({direction:'ltr'});
+            $("tbody tr td:nth-child(2)").css({direction:'ltr'});
+            },100);
         },
         fields: [
             {name: "code"},
@@ -548,7 +554,9 @@
     PrintTSB_Skill = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print'/>",
         click: function () {
-            printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper");
+          //  printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper");
+            print_SkillListGrid('pdf')
+
         }
     });
     CourseTSB_Skill = isc.ToolStripButton.create({
@@ -749,7 +757,34 @@
                     " .cellDeselectedOverAltCol, .cellDeselectedOverDarkAltCol, .cellDisabledAltCol, .cellDisabledDarkAltCol";
         setTimeout(function() {
             $(classes).css({'direction': 'ltr!important'});
+            $("tbody tr td:nth-child(2)").css({'direction':'ltr'});
             $("tbody tr td:last-child").css({'direction':'ltr'});
         },10);
     };
+
+    function print_SkillListGrid(type) {
+
+        var advancedCriteria = SkillLG_Skill.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/skill/print-all/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "sortBy", type: "hidden"},
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.setValue("sortBy", JSON.stringify(SkillLG_Skill.getSort()[0]));
+        criteriaForm.setValue("token", "<%= accessToken %>");
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    };
+
+
+
+
     //</script>

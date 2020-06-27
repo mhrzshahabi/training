@@ -17,8 +17,10 @@
         "PostGrade": "رده پستی",
         "PostGradeGroup": "گروه رده پستی",
     };
-    var skillData = [];
-    var competenceData = [];
+    var skillTopData = [];
+    var skillBottomData = [];
+    var competenceTopData = [];
+    var competenceBottomData = [];
 
     let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
@@ -87,21 +89,21 @@
         ],
         fetchDataURL: postGradeGroupUrl + "spec-list"
     });
-    var RestDataSource_Skill_JspNeedsAssessment = isc.TrDS.create({
-        ID: "RestDataSource_Skill_JspNeedsAssessment",
+    var RestDataSource_Skill_Top_JspDiffNeedsAssessment = isc.TrDS.create({
+        ID: "RestDataSource_Skill_Top_JspDiffNeedsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains"},
             {name: "titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
-            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
-            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
-            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains"},
-            {name: "course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
+            {name: "course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
             {name: "course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true}
         ],
         fetchDataURL: skillUrl + "/spec-list"
     });
-    var RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment = isc.TrDS.create({
+    var RestDataSource_NeedsAssessmentPriority_JspDiffNeedsAssessment = isc.TrDS.create({
         fields:[
             {name: "id", primaryKey:true},
             {name:"code"},
@@ -109,7 +111,7 @@
         ],
         fetchDataURL: parameterValueUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"parameter.code\",\"operator\":\"equals\",\"value\":\"NeedsAssessmentPriority\"}"
     });
-    var RestDataSource_Competence_JspNeedsAssessment = isc.TrDS.create({
+    var RestDataSource_Competence_JspDiffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -161,35 +163,28 @@
         ],
         fetchDataURL: subCategoryUrl + "spec-list",
     });
-    <%--let RestDataSource_Personnel_JspNeedsAssessment = isc.TrDS.create({--%>
-        <%--fields: [--%>
-            <%--{name: "id", hidden: true},--%>
-            <%--{name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},--%>
-            <%--{name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},--%>
-        <%--],--%>
-        <%--fetchDataURL: personnelUrl + "/iscList"--%>
-    <%--});--%>
-    var DataSource_Competence_JspNeedsAssessment = isc.DataSource.create({
+    var DataSource_Competence_Top_JspDiffNeedsAssessment = isc.DataSource.create({
         clientOnly: true,
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
         ],
-        testData: competenceData,
+        testData: competenceTopData,
         // fetchDataURL: competenceUrl + "/iscList",
     });
-    var DataSource_Skill_JspNeedsAssessment = isc.DataSource.create({
-        ID: "DataSource_Skill_JspNeedsAssessment",
+    var DataSource_Competence_Bottom_JspDiffNeedsAssessment = isc.DataSource.create({
+        clientOnly: true,
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+        ],
+        testData: competenceBottomData,
+        // fetchDataURL: competenceUrl + "/iscList",
+    });
+    var DataSource_Skill_Top_JspDiffNeedsAssessment = isc.DataSource.create({
+        ID: "DataSource_Skill_Top_JspDiffNeedsAssessment",
         fields: [
             {name: "id", hidden:true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",
@@ -226,7 +221,48 @@
                 },
             },
         ],
-        testData: skillData,
+        testData: skillTopData,
+        clientOnly: true,
+    });
+    var DataSource_Skill_Bottom_JspDiffNeedsAssessment = isc.DataSource.create({
+        ID: "DataSource_Skill_Bottom_JspDiffNeedsAssessment",
+        fields: [
+            {name: "id", hidden:true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",
+                showHover:true,
+                canEdit: false,
+                hoverWidth: 250,
+                    hoverHTML(record) {
+                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
+                },
+            },
+            {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
+            {name: "needsAssessmentDomainId", filterOperator: "iContains", hidden:true},
+            {name: "skillId", primaryKey: true, filterOperator: "iContains", hidden:true},
+            {name: "competenceId", filterOperator: "iContains", hidden:true},
+            {name: "objectId", filterOperator: "iContains", hidden:true},
+            {name: "objectType", title: "<spring:message code="reference"/>", primaryKey: true, filterOperator: "iContains", valueMap: priorityList, autoFitWidth:true,
+                showHover:true,
+                canEdit: false,
+                hoverWidth: 150,
+                hoverHTML(record) {
+                    return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
+                },
+            },
+            {name: "objectName"},
+            {name: "objectCode"},
+            {name: "course"},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
+                showHover:true,
+                hoverWidth: 200,
+                hoverHTML(record) {
+                    if(record.hasWarning == "alarm"){
+                        return "دوره ای به مهارت اختصاص نیافته است";
+                    }
+                },
+            },
+        ],
+        testData: skillBottomData,
         clientOnly: true,
     });
 
@@ -234,14 +270,14 @@
         ID: "CompetenceTS_needsAssessment",
         members: [
             // isc.ToolStripButtonRefresh.create({
-            //     click: function () { refreshLG(ListGrid_Competence_JspNeedsAssessment); }
+            //     click: function () { refreshLG(ListGridTop_Competence_JspDiffNeedsAssessment); }
             // }),
             isc.ToolStripButtonAdd.create({
                 title:"افزودن",
                 click: function () {
-                    if(DynamicForm_JspEditNeedsAssessment.getValue("objectId")!=null) {
-                        ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
-                        ListGrid_AllCompetence_JspNeedsAssessment.invalidateCache();
+                    if(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectId")!=null) {
+                        ListGrid_AllCompetence_JspDiffNeedsAssessment.fetchData();
+                        ListGrid_AllCompetence_JspDiffNeedsAssessment.invalidateCache();
                         Window_AddCompetence.show();
                     }
                     else {
@@ -339,34 +375,33 @@
             })]
     });
 
-    var Label_PlusData_JspNeedsAssessment = isc.LgLabel.create({
+    var Label_PlusData_JspDiffNeedsAssessment = isc.LgLabel.create({
         align:"left",
         contents:"",
         margin:8,
         customEdges: []});
-    var Label_Help_JspNeedsAssessment = isc.LgLabel.create({
+    var Label_Help_JspDiffNeedsAssessment = isc.LgLabel.create({
         align:"left",
         // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
         contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
         customEdges: []});
-    var Button_CourseDetail_JspEditNeedsAssessment = isc.Button.create({
+    var Button_CourseDetail_JspDiffNeedsAssessment = isc.Button.create({
         title:"جزئیات دوره",
         margin: 1,
-        // borderRadius: 5,
         click(){
-           if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()||ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()||ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()){
+           if(ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord()||ListGridTop_Ability_JspDiffNeedsAssessment.getSelectedRecord()||ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord()){
                let skillIds = [];
-               if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().course != undefined) {
-                   skillIds.push(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().skillId);
+               if(ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord().course != undefined) {
+                   skillIds.push(ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord().skillId);
                }
-               if(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   skillIds.push(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().skillId);
+               if(ListGridTop_Ability_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridTop_Ability_JspDiffNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   skillIds.push(ListGridTop_Ability_JspDiffNeedsAssessment.getSelectedRecord().skillId);
                }
-               if(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   skillIds.push(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().skillId);
+               if(ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   skillIds.push(ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord().skillId);
                }
-               if(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   skillIds.push(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().id);
+               if(ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   skillIds.push(ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord().id);
                }
                if(skillIds.length == 0){
                    createDialog("info", "مهارت های انتخاب شده بدون دوره هستند.");
@@ -384,26 +419,24 @@
            }
         }
     });
-    var Button_CancelChange_JspEditNeedsAssessment = isc.Button.create({
+    var Button_CancelChange_JspDiffNeedsAssessment = isc.Button.create({
         title:"لغو تغییرات",
-        // borderRadius: 5,
         margin: 1,
         click(){
 
         }
     });
-    var Button_CopyOf_JspEditNeedsAssessment = isc.Button.create({
-        title:"کپی از",
-        // borderRadius: 5,
+    var Button_AddSkill_JspDiffNeedsAssessment = isc.Button.create({
+        title:"مهارت ها",
         margin: 1,
         click(){
-
+            Window_AddSkill.show();
         }
     });
 
-    var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
-        ID: "ListGrid_AllCompetence_JspNeedsAssessment",
-        dataSource: RestDataSource_Competence_JspNeedsAssessment,
+    var ListGrid_AllCompetence_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGrid_AllCompetence_JspDiffNeedsAssessment",
+        dataSource: RestDataSource_Competence_JspDiffNeedsAssessment,
         showHeaderContextMenu: false,
         selectionType: "single",
         selectionAppearance: "checkbox",
@@ -416,72 +449,20 @@
             {name: "competenceType.title", title: "<spring:message code="type"/>"}
         ],
         gridComponents: ["filterEditor", "header", "body"],
-        // selectionUpdated: "ListGrid_Competence_JspNeedsAssessment.setData(this.getSelection())"
+        // selectionUpdated: "ListGridTop_Competence_JspDiffNeedsAssessment.setData(this.getSelection())"
         selectionChanged(record, state) {
             if (state == true) {
-                if (checkSaveData(record, DataSource_Competence_JspNeedsAssessment, "id")) {
-                    ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+                if (checkSaveData(record, DataSource_Competence_Top_JspDiffNeedsAssessment, "id")) {
+                    ListGridTop_Competence_JspDiffNeedsAssessment.transferSelectedData(this);
                     return;
                 }
                 createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             }
         }
     });
-    var ListGrid_Competence_JspNeedsAssessment = isc.TrLG.create({
-        ID: "ListGrid_Competence_JspNeedsAssessment",
-        dataSource: DataSource_Competence_JspNeedsAssessment,
-        autoFetchData: true,
-        selectionType:"single",
-        // selectionAppearance: "checkbox",
-        showHeaderContextMenu: false,
-        showRowNumbers: false,
-        border: "1px solid",
-        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
-        gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
-            CompetenceTS_needsAssessment, "header", "body"
-        ],
-        canRemoveRecords:true,
-        canDragRecordsOut: true,
-        dragDataAction: "none",
-        removeRecordClick(rowNum){
-            let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
-                "<spring:message code="verify.delete"/>");
-            Dialog_Competence_remove.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
-                        data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
-                        data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
-                        let hasFather = false;
-                        for (let i = 0; i < data.length; i++) {
-                            let state = removeRecord_JspNeedsAssessment(data[i], 1);
-                            if(state===0){
-                                return;
-                            }
-                            else if(state===2){
-                                hasFather = true;
-                            }
-                        }
-                        if(hasFather===false) {
-                            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
-                        }
-                    }
-                }
-            });
-        },
-        dataChanged(){
-            editing = true;
-            this.Super("dataChanged",arguments);
-        },
-        selectionUpdated(record){
-            fetchDataDomainsGrid();
-        }
-    });
-    var ListGrid_SkillAll_JspNeedsAssessment = isc.TrLG.create({
-        ID: "ListGrid_SkillAll_JspNeedsAssessment",
-        dataSource: RestDataSource_Skill_JspNeedsAssessment,
+    var ListGrid_SkillAll_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGrid_SkillAll_JspDiffNeedsAssessment",
+        dataSource: RestDataSource_Skill_Top_JspDiffNeedsAssessment,
         autoFetchData: true,
         // selectionAppearance: "checkbox",
         // showRowNumbers: false,
@@ -497,7 +478,7 @@
             {name: "course.code"}
         ],
         gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["T"]}),
+            <%--isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["T"]}),--%>
             "filterEditor", "header", "body"
         ],
         // canHover: true,
@@ -525,10 +506,63 @@
             }
         },
     });
-    var ListGrid_Knowledge_JspNeedsAssessment = isc.TrLG.create({
-        ID: "ListGrid_Knowledge_JspNeedsAssessment",
+    var ListGridTop_Competence_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridTop_Competence_JspDiffNeedsAssessment",
+        dataSource: DataSource_Competence_Top_JspDiffNeedsAssessment,
+        autoFetchData: true,
+        selectionType:"single",
+        // selectionAppearance: "checkbox",
+        showHeaderContextMenu: false,
+        showRowNumbers: false,
+        border: "1px solid",
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
+        gridComponents: [
+            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
+            CompetenceTS_needsAssessment, "header", "body"
+        ],
+        canRemoveRecords:true,
+        canDragRecordsOut: true,
+        dragDataAction: "none",
+        removeRecordClick(rowNum){
+            let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Competence_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        let data = ListGridTop_Knowledge_JspDiffNeedsAssessment.data.localData.toArray();
+                        data.addAll(ListGridTop_Attitude_JspDiffNeedsAssessment.data.localData.toArray());
+                        data.addAll(ListGridTop_Ability_JspDiffNeedsAssessment.data.localData.toArray());
+                        let hasFather = false;
+                        for (let i = 0; i < data.length; i++) {
+                            let state = removeRecord_JspDiffNeedsAssessment(data[i], 1);
+                            if(state===0){
+                                return;
+                            }
+                            else if(state===2){
+                                hasFather = true;
+                            }
+                        }
+                        if(hasFather===false) {
+                            DataSource_Competence_Top_JspDiffNeedsAssessment.removeData(this.getRecord(rowNum));
+                            ListGridTop_Competence_JspDiffNeedsAssessment.invalidateCache();
+                        }
+                    }
+                }
+            });
+        },
+        dataChanged(){
+            editing = true;
+            this.Super("dataChanged",arguments);
+        },
+        selectionUpdated(record){
+            fetchDataDomainsTopGrid();
+        }
+    });
+    var ListGridTop_Knowledge_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridTop_Knowledge_JspDiffNeedsAssessment",
         autoFetchData:false,
-        dataSource: DataSource_Skill_JspNeedsAssessment,
+        dataSource: DataSource_Skill_Top_JspDiffNeedsAssessment,
         showRowNumbers: false,
         selectionType:"single",
         autoSaveEdits:false,
@@ -543,7 +577,7 @@
             //     canEdit:true,
             //     valueField: "id",
             //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
+            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspDiffNeedsAssessment,
             //     change(form, item){
             //         updateSkillRecord(form, item)
             //     }
@@ -569,15 +603,15 @@
         showHeaderContextMenu: false,
         showFilterEditor:false,
         removeRecordClick(rowNum){
-            removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
+            removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
         },
         recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+            let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
-                if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
+                if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 108));
-                        // fetchDataDomainsGrid();
+                        createNeedsAssessmentRecords(createData_JspDiffNeedsAssessment(dropRecords[i], 108));
+                        // fetchDataDomainsTopGrid();
                         // this.fetchData();
                     }
                 }
@@ -590,7 +624,7 @@
         // canEditCell(rowNum, colNum){
         //     if(colNum === 1) {
         //         let record = this.getRecord(rowNum);
-        //         if (record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
+        //         if (record.objectType === NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")) {
         //             return true;
         //         }
         //     }
@@ -600,12 +634,12 @@
             return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
-            updatePriority_JspEditNeedsAssessment(viewer, record);
+            updatePriority_JspDiffNeedsAssessment(viewer, record);
         }
     });
-    var ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
-        ID: "ListGrid_Ability_JspNeedsAssessment",
-        dataSource: DataSource_Skill_JspNeedsAssessment,
+    var ListGridTop_Ability_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridTop_Ability_JspDiffNeedsAssessment",
+        dataSource: DataSource_Skill_Top_JspDiffNeedsAssessment,
         autoFetchData:false,
         showRowNumbers: false,
         selectionType:"single",
@@ -618,7 +652,7 @@
             //     canEdit:true,
             //     valueField: "id",
             //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
+            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspDiffNeedsAssessment,
             //     change(form, item){
             //         updateSkillRecord(form, item)
             //     }
@@ -644,18 +678,18 @@
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":109},
         removeRecordClick(rowNum){
-            removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
+            removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
         },
         recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+            let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
-                if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
+                if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 109));
-                        // DataSource_Skill_JspNeedsAssessment.addData(data);
+                        createNeedsAssessmentRecords(createData_JspDiffNeedsAssessment(dropRecords[i], 109));
+                        // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
                         // createNeedsAssessmentRecords(data);
                         // this.fetchData();
-                        // fetchDataDomainsGrid();
+                        // fetchDataDomainsTopGrid();
                     }
                 }
             }
@@ -667,7 +701,7 @@
         // canEditCell(rowNum, colNum){
         //     if(colNum == 1) {
         //         let record = this.getRecord(rowNum);
-        //         if (record.objectType == DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
+        //         if (record.objectType == NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")) {
         //             return true;
         //         }
         //     }
@@ -677,12 +711,12 @@
             return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
-            updatePriority_JspEditNeedsAssessment(viewer, record);
+            updatePriority_JspDiffNeedsAssessment(viewer, record);
         }
     });
-    var ListGrid_Attitude_JspNeedsAssessment = isc.TrLG.create({
-        ID: "ListGrid_Attitude_JspNeedsAssessment",
-        dataSource: DataSource_Skill_JspNeedsAssessment,
+    var ListGridTop_Attitude_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridTop_Attitude_JspDiffNeedsAssessment",
+        dataSource: DataSource_Skill_Top_JspDiffNeedsAssessment,
         showHeaderContextMenu: false,
         showRowNumbers: false,
         autoFetchData:false,
@@ -696,7 +730,7 @@
             //     canEdit:true,
             //     valueField: "id",
             //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
+            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspDiffNeedsAssessment,
             //     change(form, item){
             //         updateSkillRecord(form, item)
             //     }
@@ -721,18 +755,18 @@
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":110},
         removeRecordClick(rowNum){
-            removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
+            removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
         },
         recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+            let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
-                if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
+                if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 110));
-                        // DataSource_Skill_JspNeedsAssessment.addData(data);
+                        createNeedsAssessmentRecords(createData_JspDiffNeedsAssessment(dropRecords[i], 110));
+                        // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
                         // createNeedsAssessmentRecords(data);
                         // this.fetchData();
-                        // fetchDataDomainsGrid()
+                        // fetchDataDomainsTopGrid()
                     }
                 }
             }
@@ -744,7 +778,7 @@
         // canEditCell(rowNum, colNum){
         //     if(colNum == 1) {
         //         let record = this.getRecord(rowNum);
-        //         if (record.objectType == DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
+        //         if (record.objectType == NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")) {
         //             return true;
         //         }
         //     }
@@ -754,34 +788,197 @@
             return priorityColor(record);
         },
         recordDoubleClick(viewer, record){
-            updatePriority_JspEditNeedsAssessment(viewer, record);
+            updatePriority_JspDiffNeedsAssessment(viewer, record);
         }
     });
-    <%--let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({--%>
-        <%--width: "100%",--%>
-        <%--dataSource: RestDataSource_Personnel_JspNeedsAssessment,--%>
-        <%--fields: [--%>
-            <%--{name: "firstName"},--%>
-            <%--{name: "lastName"},--%>
-            <%--{name: "nationalCode"},--%>
-            <%--{name: "personnelNo"},--%>
-            <%--{name: "personnelNo2"},--%>
-            <%--{name: "companyName"},--%>
-            <%--{name: "ccpAffairs"},--%>
-            <%--{name: "employmentStatus"},--%>
-            <%--{name: "complexTitle"},--%>
-            <%--{name: "workPlaceTitle"},--%>
-            <%--{name: "workTurnTitle"},--%>
-        <%--],--%>
-        <%--autoFetchData: false,--%>
-        <%--gridComponents: [--%>
-            <%--isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="personnel.for"/>" + "</b></span>", customEdges: ["T","L","R","B"]}),--%>
-            <%--"header", "body"],--%>
-        <%--// canExpandRecords: true,--%>
-        <%--// expansionMode: "details",--%>
-        <%--// showDetailFields: true--%>
-    <%--});--%>
+    var ListGridBottom_Competence_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridBottom_Competence_JspDiffNeedsAssessment",
+        dataSource: DataSource_Competence_Bottom_JspDiffNeedsAssessment,
+        autoFetchData: true,
+        selectionType:"single",
+        // selectionAppearance: "checkbox",
+        showHeaderContextMenu: false,
+        showRowNumbers: false,
+        border: "1px solid",
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
+        gridComponents: [
+            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
+            "header", "body"
+        ],
+        // canRemoveRecords:true,
+        // canDragRecordsOut: true,
+        // dragDataAction: "none",
+        removeRecordClick(rowNum){
+            let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Competence_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        let data = ListGridTop_Knowledge_JspDiffNeedsAssessment.data.localData.toArray();
+                        data.addAll(ListGridTop_Attitude_JspDiffNeedsAssessment.data.localData.toArray());
+                        data.addAll(ListGridTop_Ability_JspDiffNeedsAssessment.data.localData.toArray());
+                        let hasFather = false;
+                        for (let i = 0; i < data.length; i++) {
+                            let state = removeRecord_JspDiffNeedsAssessment(data[i], 1);
+                            if(state===0){
+                                return;
+                            }
+                            else if(state===2){
+                                hasFather = true;
+                            }
+                        }
+                        if(hasFather===false) {
+                            DataSource_Competence_Top_JspDiffNeedsAssessment.removeData(this.getRecord(rowNum));
+                        }
+                    }
+                }
+            });
+        },
+        dataChanged(){
+            editing = true;
+            this.Super("dataChanged",arguments);
+        },
+        selectionUpdated(record){
+            fetchDataDomainsBottomGrid();
+        }
+    });
+    var ListGridBottom_Knowledge_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridBottom_Knowledge_JspDiffNeedsAssessment",
+        autoFetchData:false,
+        dataSource: DataSource_Skill_Bottom_JspDiffNeedsAssessment,
+        showRowNumbers: false,
+        selectionType:"single",
+        autoSaveEdits:false,
+        implicitCriteria:{"needsAssessmentDomainId":108},
+        fields: [
+            {name: "titleFa"},
+            {name: "objectType"},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
 
+            // {
+            //     name: "needsAssessmentPriorityId",
+            //     canEdit:true,
+            //     valueField: "id",
+            //     displayField: "title",
+            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspDiffNeedsAssessment,
+            //     change(form, item){
+            //         updateSkillRecord(form, item)
+            //     }
+            //     // modalEditing: true,
+            //     // valueMap:["عملکرد ضروری","عملکرد توسعه ای","عملکرد بهبود"]
+            // }
+        ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "objectType"],
+                title: "<spring:message code="knowledge"/>"
+            }],
+        headerHeight: 50,
+        gridComponents: [
+            "filterEditor", "header", "body"
+        ],
+        // width: "25%",
+        // canAcceptDroppedRecords: true,
+        // canHover: true,
+        showHoverComponents: true,
+        // hoverMode: "detailField",
+        // canRemoveRecords:true,
+        showHeaderContextMenu: false,
+        showFilterEditor:false,
+
+        getCellCSSText(record) {
+            return priorityColor(record);
+        },
+    });
+    var ListGridBottom_Ability_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridBottom_Ability_JspDiffNeedsAssessment",
+        dataSource: DataSource_Skill_Bottom_JspDiffNeedsAssessment,
+        autoFetchData:false,
+        showRowNumbers: false,
+        selectionType:"single",
+        fields: [
+            {name: "titleFa"},
+            {name: "objectType"},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            // {
+            //     name: "needsAssessmentPriorityId",
+            //     canEdit:true,
+            //     valueField: "id",
+            //     displayField: "title",
+            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspDiffNeedsAssessment,
+            //     change(form, item){
+            //         updateSkillRecord(form, item)
+            //     }
+            // }
+        ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "objectType"],
+                title: "<spring:message code="ability"/>"
+            }],
+        headerHeight: 50,
+        gridComponents: [
+            "filterEditor", "header", "body"
+        ],
+        // width: "25%",
+        showHeaderContextMenu: false,
+        // canAcceptDroppedRecords: true,
+        // canHover: true,
+        showHoverComponents: true,
+        autoSaveEdits:false,
+        // hoverMode: "details",
+        // canRemoveRecords:true,
+        showFilterEditor:false,
+        implicitCriteria:{"needsAssessmentDomainId":109},
+
+        getCellCSSText: function (record) {
+            return priorityColor(record);
+        },
+    });
+    var ListGridBottom_Attitude_JspDiffNeedsAssessment = isc.TrLG.create({
+        ID: "ListGridBottom_Attitude_JspDiffNeedsAssessment",
+        dataSource: DataSource_Skill_Bottom_JspDiffNeedsAssessment,
+        showHeaderContextMenu: false,
+        showRowNumbers: false,
+        autoFetchData:false,
+        selectionType:"single",
+        fields: [
+            {name: "titleFa"},
+            {name: "objectType"},
+            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            // {
+            //     name: "needsAssessmentPriorityId",
+            //     canEdit:true,
+            //     valueField: "id",
+            //     displayField: "title",
+            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspDiffNeedsAssessment,
+            //     change(form, item){
+            //         updateSkillRecord(form, item)
+            //     }
+            // }
+        ],
+        headerSpans: [
+            {
+                fields: ["titleFa", "objectType"],
+                title: "<spring:message code="attitude"/>"
+            }],
+        headerHeight: 50,
+        gridComponents: [
+            "filterEditor", "header", "body"
+        ],
+        // width: "25%",
+        canAcceptDroppedRecords: true,
+        // canHover: true,
+        autoSaveEdits:false,
+        showHoverComponents: true,
+        // hoverMode: "details",
+        showFilterEditor:false,
+        implicitCriteria:{"needsAssessmentDomainId":110},
+        getCellCSSText: function (record) {
+            return priorityColor(record);
+        },
+    });
     var Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="skill.plural.list"/>",
         width: "40%",
@@ -792,14 +989,35 @@
         items: [
             isc.TrHLayout.create({
                 members: [
-                    ListGrid_AllCompetence_JspNeedsAssessment
+                    ListGrid_AllCompetence_JspDiffNeedsAssessment
+                ]
+            })]
+    });
+    var Window_AddSkill = isc.Window.create({
+        title: "<spring:message code="skill.plural.list"/>",
+        width: "60%",
+        height: "40%",
+        autoCenter: false,
+        keepInParentRect: true,
+        // isModal: true,
+        left:"1%", top:"60%",
+        autoSize: false,
+        modalMask: Window_AddSkill,
+        topElement: Window_NeedsAssessment_Edit,
+        showModalMask: true,
+        // opacity: 90,
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    ListGrid_SkillAll_JspDiffNeedsAssessment
                 ]
             })]
     });
 
-    var DynamicForm_JspEditNeedsAssessment = isc.DynamicForm.create({
-        ID: "DynamicForm_JspEditNeedsAssessment",
+    var NeedsAssessmentTargetDF_diffNeedsAssessment = isc.DynamicForm.create({
+        ID: "NeedsAssessmentTargetDF_diffNeedsAssessment",
         numCols: 2,
+        visible: false,
         // readOnlyDisplay: "readOnly",
         fields: [
             {
@@ -817,7 +1035,7 @@
                         updateObjectIdLG(form, value);
                         clearAllGrid();
                         form.getItem("objectId").clearValue();
-                        Label_PlusData_JspNeedsAssessment.setContents("");
+                        Label_PlusData_JspDiffNeedsAssessment.setContents("");
                         // refreshPersonnelLG();
                     }
                 },
@@ -839,60 +1057,69 @@
                     // updateObjectIdLG(form, form.getValue("objectType"));
                     // if(form.getValue("objectType") === "Post"){
                         // PostDs_needsAssessment.fetchDataURL = postUrl + "/spec-list";
-                        // Window_AddPost_JspNeedsAssessment.show();
+                        // Window_AddPost_JspDiffNeedsAssessment.show();
                     // }
                 },
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue){
-                        editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
+                        editNeedsAssessmentRecord(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType"));
                         // refreshPersonnelLG();
-                        updateLabelEditNeedsAssessment(item.getSelectedRecord());
+                        updateLabelDiffNeedsAssessment(item.getSelectedRecord());
                     }
                 },
             },
             // {name: "btnCourseDetail", type:"Button", title:"جزئیات دوره", startRow: false},
         ]
     });
-    var HLayout_Label_PlusData_JspNeedsAssessment = isc.TrHLayout.create({
+    var HLayout_Label_PlusData_JspDiffNeedsAssessment = isc.TrHLayout.create({
         height: "1%",
         padding:2,
         members: [
-            Button_CourseDetail_JspEditNeedsAssessment,
-            Button_CancelChange_JspEditNeedsAssessment,
-            Button_CopyOf_JspEditNeedsAssessment,
-            Label_PlusData_JspNeedsAssessment,
+            Button_CourseDetail_JspDiffNeedsAssessment,
+            Button_CancelChange_JspDiffNeedsAssessment,
+            Button_AddSkill_JspDiffNeedsAssessment,
+            Label_PlusData_JspDiffNeedsAssessment,
         ],
     });
     var HLayout_Bottom = isc.TrHLayout.create({
             members: [
+                // isc.TrVLayout.create({
+                //     width: "25%",
+                //     showResizeBar: true,
+                //     members: [ListGridTop_Competence_JspDiffNeedsAssessment]
+                // }),
                 isc.TrVLayout.create({
-                    width: "25%",
-                    showResizeBar: true,
-                    members: [ListGrid_Competence_JspNeedsAssessment]
-                }),
-                isc.TrVLayout.create({
-                    ID: "VLayoutLeft_JspEditNeedsAssessment",
                     // width: "75%",
                     members: [
                         isc.TrHLayout.create({
-                            ID: "HLayoutCenter_JspEditNeedsAssessment",
-                            height: "70%",
+                            height: "55%",
                             showResizeBar: true,
                             members: [
-                                ListGrid_Knowledge_JspNeedsAssessment,
-                                ListGrid_Ability_JspNeedsAssessment,
-                                ListGrid_Attitude_JspNeedsAssessment
+                                ListGridTop_Competence_JspDiffNeedsAssessment,
+                                ListGridTop_Knowledge_JspDiffNeedsAssessment,
+                                ListGridTop_Ability_JspDiffNeedsAssessment,
+                                ListGridTop_Attitude_JspDiffNeedsAssessment
                             ]
                         }),
-                        Label_Help_JspNeedsAssessment,
-                        ListGrid_SkillAll_JspNeedsAssessment
+                        Label_Help_JspDiffNeedsAssessment,
+                        isc.TrHLayout.create({
+                            height: "45%",
+                            showResizeBar: true,
+                            members: [
+                                ListGridBottom_Competence_JspDiffNeedsAssessment,
+                                ListGridBottom_Knowledge_JspDiffNeedsAssessment,
+                                ListGridBottom_Ability_JspDiffNeedsAssessment,
+                                ListGridBottom_Attitude_JspDiffNeedsAssessment
+                            ]
+                        }),
+                        // ListGrid_SkillAll_JspDiffNeedsAssessment
                     ]
                 }),
             ]
         });
 
     isc.TrVLayout.create({
-        members: [DynamicForm_JspEditNeedsAssessment, HLayout_Label_PlusData_JspNeedsAssessment, HLayout_Bottom],
+        members: [HLayout_Label_PlusData_JspDiffNeedsAssessment, HLayout_Bottom],
     });
 
     function updateObjectIdLG(form, value) {
@@ -939,51 +1166,18 @@
         }
     }
     function clearAllGrid() {
-        competenceData.length = 0;
-        skillData.length = 0;
-        ListGrid_Competence_JspNeedsAssessment.setData([]);
-        ListGrid_Knowledge_JspNeedsAssessment.setData([]);
-        ListGrid_Attitude_JspNeedsAssessment.setData([]);
-        ListGrid_Ability_JspNeedsAssessment.setData([]);
+        competenceTopData.length = 0;
+        skillTopData.length = 0;
+        skillBottomData.length = 0;
+        ListGridTop_Competence_JspDiffNeedsAssessment.setData([]);
+        ListGridTop_Knowledge_JspDiffNeedsAssessment.setData([]);
+        ListGridTop_Attitude_JspDiffNeedsAssessment.setData([]);
+        ListGridTop_Ability_JspDiffNeedsAssessment.setData([]);
+        ListGridBottom_Competence_JspDiffNeedsAssessment.setData([]);
+        ListGridBottom_Knowledge_JspDiffNeedsAssessment.setData([]);
+        ListGridBottom_Attitude_JspDiffNeedsAssessment.setData([]);
+        ListGridBottom_Ability_JspDiffNeedsAssessment.setData([]);
     }
-    // function refreshPersonnelLG(pickListRecord) {
-    //     if (pickListRecord == null)
-    //         pickListRecord = DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord();
-    //     if (pickListRecord == null){
-    //         ListGrid_Personnel_JspNeedsAssessment.setData([]);
-    //         return;
-    //     }
-    //     let crt = {
-    //         _constructor: "AdvancedCriteria",
-    //         operator: "and",
-    //         criteria: []
-    //     };
-    //     switch (DynamicForm_JspEditNeedsAssessment.getItem("objectType").getValue()) {
-    //         case 'Job':
-    //             crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
-    //             break;
-    //         case 'JobGroup':
-    //             crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
-    //             break;
-    //         case 'Post':
-    //             crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
-    //             break;
-    //         case 'PostGroup':
-    //             // crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
-    //             crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.code});
-    //             break;
-    //         case 'PostGrade':
-    //             crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
-    //             break;
-    //         case 'PostGradeGroup':
-    //             crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
-    //             break;
-    //     }
-    //     ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
-    //     // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
-    //     ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
-    //     ListGrid_Personnel_JspNeedsAssessment.fetchData();
-    // }
     function checkSaveData(data, dataSource, field = "skillId", objectType = null) {
         if(!objectType) {
             if(dataSource.testData.find(f => f[field] === data[field]) != null) {
@@ -998,37 +1192,46 @@
             return true;
         }
     }
-    function fetchDataDomainsGrid(){
-        let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+    function fetchDataDomainsTopGrid(){
+        let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
         if(record != null) {
-            ListGrid_Knowledge_JspNeedsAssessment.fetchData({"competenceId":record.id});
-            ListGrid_Knowledge_JspNeedsAssessment.invalidateCache();
+            ListGridTop_Knowledge_JspDiffNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGridTop_Knowledge_JspDiffNeedsAssessment.invalidateCache();
 
-            ListGrid_Ability_JspNeedsAssessment.fetchData({"competenceId":record.id});
-            ListGrid_Ability_JspNeedsAssessment.invalidateCache();
+            ListGridTop_Ability_JspDiffNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGridTop_Ability_JspDiffNeedsAssessment.invalidateCache();
 
-            ListGrid_Attitude_JspNeedsAssessment.fetchData({"competenceId":record.id});
-            ListGrid_Attitude_JspNeedsAssessment.invalidateCache();
+            ListGridTop_Attitude_JspDiffNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGridTop_Attitude_JspDiffNeedsAssessment.invalidateCache();
         }
     }
-    function removeRecord_JspNeedsAssessment(record, state=0) {
-        if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
-            // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "DELETE", null, function (resp) {
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "/" + record.objectType + "/" + record.objectId , "DELETE", null, function (resp) {
-                if (resp.httpResponseCode === 409) {
-                    createDialog("info", resp.httpResponseText);
-                    return 0;
-                } else if (resp.httpResponseCode !== 200) {
+    function fetchDataDomainsBottomGrid(){
+        let record = ListGridBottom_Competence_JspDiffNeedsAssessment.getSelectedRecord();
+        if(record != null) {
+            ListGridBottom_Knowledge_JspDiffNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGridBottom_Knowledge_JspDiffNeedsAssessment.invalidateCache();
+
+            ListGridBottom_Ability_JspDiffNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGridBottom_Ability_JspDiffNeedsAssessment.invalidateCache();
+
+            ListGridBottom_Attitude_JspDiffNeedsAssessment.fetchData({"competenceId":record.id});
+            ListGridBottom_Attitude_JspDiffNeedsAssessment.invalidateCache();
+        }
+    }
+    function removeRecord_JspDiffNeedsAssessment(record, state=0) {
+        if(record.objectType === NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")){
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null, function (resp) {
+                if (resp.httpResponseCode !== 200) {
                     createDialog("info","خطا در حذف مهارت");
                     return 0;
                 }
-                DataSource_Skill_JspNeedsAssessment.removeData(record);
+                DataSource_Skill_Top_JspDiffNeedsAssessment.removeData(record);
                 return 1;
             }));
         }
         else{
             if(state === 0) {
-                createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " قابل حذف است.")
+                createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")] + " قابل حذف است.")
             }
             return 2;
         }
@@ -1039,9 +1242,11 @@
         //     '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
         //     '{"fieldName":"objectId","operator":"equals","value":'+objectId+'}'
         // ];
-        updateObjectIdLG(DynamicForm_JspEditNeedsAssessment, objectType);
+        updateObjectIdLG(NeedsAssessmentTargetDF_diffNeedsAssessment, objectType);
         clearAllGrid();
+        let wait = createDialog("wait");
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
+            wait.close();
             if (resp.httpResponseCode !== 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
@@ -1067,56 +1272,48 @@
                 else {
                     skill.course = data[i].skill.course;
                 }
-                DataSource_Skill_JspNeedsAssessment.addData(skill);
-                if( flags[data[i].competenceId]) continue;
+                DataSource_Skill_Top_JspDiffNeedsAssessment.addData(skill);
+                DataSource_Skill_Bottom_JspDiffNeedsAssessment.addData(skill);
+                if(flags[data[i].competenceId]) continue;
                 flags[data[i].competenceId] = true;
                 // outPut.push(data[i].competenceId);
                 competence.id = data[i].competenceId;
                 competence.title = data[i].competence.title;
                 competence.competenceType = data[i].competence.competenceType;
-                DataSource_Competence_JspNeedsAssessment.addData(competence, ()=>{ListGrid_Competence_JspNeedsAssessment.selectRecord(0)});
+                DataSource_Competence_Top_JspDiffNeedsAssessment.addData(competence, ()=>{ListGridTop_Competence_JspDiffNeedsAssessment.selectRecord(0)});
+                DataSource_Competence_Bottom_JspDiffNeedsAssessment.addData(competence, ()=>{ListGridBottom_Competence_JspDiffNeedsAssessment.selectRecord(0)});
             }
-            ListGrid_Competence_JspNeedsAssessment.fetchData();
-            ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
-            DynamicForm_JspEditNeedsAssessment.setValue("objectId", objectId);
-            DynamicForm_JspEditNeedsAssessment.setValue("objectType", objectType);
-            fetchDataDomainsGrid();
+            ListGridTop_Competence_JspDiffNeedsAssessment.fetchData();
+            ListGridTop_Competence_JspDiffNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
+            ListGridBottom_Competence_JspDiffNeedsAssessment.fetchData();
+            ListGridBottom_Competence_JspDiffNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
+            NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId);
+            NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", objectType);
+            fetchDataDomainsTopGrid();
+            fetchDataDomainsBottomGrid();
         }))
     }
-    <%--function updateSkillRecord(form, item) {--%>
-        <%--let record = form.getData();--%>
-        <%--record.needsAssessmentPriorityId = item.getSelectedRecord().id;--%>
-        <%--isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {--%>
-            <%--if(resp.httpResponseCode !== 200){--%>
-                <%--createDialog("info", "<spring:message code='error'/>");--%>
-            <%--}--%>
-            <%--DataSource_Skill_JspNeedsAssessment.updateData(record);--%>
-            <%--item.grid.endEditing();--%>
-        <%--}));--%>
-    <%--}--%>
     function createNeedsAssessmentRecords(data) {
         if(data === null){
             return;
         }
-        if(!checkSaveData(data, DataSource_Skill_JspNeedsAssessment)){
+        if(!checkSaveData(data, DataSource_Skill_Top_JspDiffNeedsAssessment)){
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
         }
-        // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "?isFirstChange=" + isFirstChange, "POST", JSON.stringify(data),function(resp){
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "POST", JSON.stringify(data),function(resp){
-            if (resp.httpResponseCode === 409) {
-                createDialog("info", resp.httpResponseText);
-                return 0;
-            } else if (resp.httpResponseCode != 200){
+            if (resp.httpResponseCode != 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
             }
             data.id = JSON.parse(resp.data).id;
-            DataSource_Skill_JspNeedsAssessment.addData(data);
-            fetchDataDomainsGrid();
+            DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
+            // DataSource_Skill_Bottom_JspDiffNeedsAssessment.addData(data);
+            fetchDataDomainsTopGrid();
+            // fetchDataDomainsBottomGrid();
         }))
     }
-    function createData_JspNeedsAssessment(record, DomainId, PriorityId = 111) {
+    function createData_JspDiffNeedsAssessment(record, DomainId, PriorityId = 111) {
         if(record.skillLevelId === 1 && DomainId !== 108){
             createDialog("info", "مهارت با سطح مهارت آشنایی فقط در حیطه دانشی قرار میگیرد.");
             return null;
@@ -1126,11 +1323,11 @@
             return null;
         }
         let data = {
-            objectType: DynamicForm_JspEditNeedsAssessment.getValue("objectType"),
-            objectId: DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
-            objectName: DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa,
-            objectCode: DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code,
-            competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
+            objectType: NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType"),
+            objectId: NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectId"),
+            objectName: NeedsAssessmentTargetDF_diffNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa,
+            objectCode: NeedsAssessmentTargetDF_diffNeedsAssessment.getItem("objectId").getSelectedRecord().code,
+            competenceId: ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord().id,
             skillId: record.id,
             titleFa: record.titleFa,
             needsAssessmentPriorityId: PriorityId,
@@ -1155,10 +1352,10 @@
         },10);
     };
 
-    function updateLabelEditNeedsAssessment(objectId) {
-        Label_PlusData_JspNeedsAssessment.setContents("");
-        if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post") {
-            Label_PlusData_JspNeedsAssessment.setContents(
+    function updateLabelDiffNeedsAssessment(objectId) {
+        Label_PlusData_JspDiffNeedsAssessment.setContents("");
+        if(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType") === "Post") {
+            Label_PlusData_JspDiffNeedsAssessment.setContents(
                 "عنوان پست: " + objectId.titleFa
                 // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
                 + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
@@ -1167,25 +1364,30 @@
             );
         }
     }
-    function updatePriority_JspEditNeedsAssessment(viewer, record) {
-        if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
-            let updating = {objectType: record.objectType, objectId: record.objectId, needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1};
-            // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "PUT", JSON.stringify(record), function (resp) {
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(updating), function (resp) {
-                if (resp.httpResponseCode === 409) {
-                    createDialog("info", resp.httpResponseText);
-                    return 0;
-                } else if (resp.httpResponseCode !== 200) {
+    function updatePriority_JspDiffNeedsAssessment(viewer, record) {
+        if(record.objectType === NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")) {
+            switch (record.needsAssessmentPriorityId) {
+                case 111:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                case 112:
+                    record.needsAssessmentPriorityId++;
+                    break;
+                default:
+                    record.needsAssessmentPriorityId = 111;
+                    break;
+            }
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function (resp) {
+                if (resp.httpResponseCode !== 200) {
                     createDialog("info", "<spring:message code='error'/>");
                     return;
                 }
-                record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
-                DataSource_Skill_JspNeedsAssessment.updateData(record);
+                DataSource_Skill_Top_JspDiffNeedsAssessment.updateData(record);
                 viewer.endEditing();
             }));
         }
         else{
-            createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")]+" قابل تغییر است.")
+            createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")]+" قابل تغییر است.")
         }
     }
     function priorityColor(record){
@@ -1200,17 +1402,23 @@
     }
 
 
-    function loadEditNeedsAssessment(objectId, type, state = "R&W") {
+    function loadDiffNeedsAssessment(objectId, type, state = "R&W") {
         if(state === "read"){
-            DynamicForm_JspEditNeedsAssessment.disable()
+            NeedsAssessmentTargetDF_diffNeedsAssessment.disable()
         }
-        updateObjectIdLG(DynamicForm_JspEditNeedsAssessment, type);
-        DynamicForm_JspEditNeedsAssessment.setValue("objectType", type);
-        DynamicForm_JspEditNeedsAssessment.setValue("objectId", objectId.id);
+        updateObjectIdLG(NeedsAssessmentTargetDF_diffNeedsAssessment, type);
+        NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", type);
+        NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId.id);
         clearAllGrid();
         editNeedsAssessmentRecord(objectId.id, type);
         // refreshPersonnelLG(objectId);
-        updateLabelEditNeedsAssessment(objectId);
+        updateLabelDiffNeedsAssessment(objectId);
     }
+    Window_NeedsAssessment_Edit.addProperties({
+        hide(){
+            Window_AddSkill.close()
+            this.Super("hide", arguments);
+        }
+    })
 
     // </script>
