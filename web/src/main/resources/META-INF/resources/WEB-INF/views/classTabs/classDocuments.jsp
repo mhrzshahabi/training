@@ -8,57 +8,64 @@
 %>
 
 // <script>
+    var RestDataSource_Refrence_JspClassDocuments  = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "title"}
+        ],
+        fetchDataURL: parameterValueUrl  + "/iscList/338"
+    });
 
-    var RestDataSource_Attachments_JspClassDocuments = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "fileName", title: "<spring:message code='attach.file.name'/>", filterOperator: "iContains"},
-            {name: "fileTypeId", title: "<spring:message code='attach.file.format'/>", filterOperator: "equals"},
-            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"}
-        ]
+    var RestDataSource_LetterType_JspClassDocuments  = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "title"}
+        ],
+        fetchDataURL: parameterValueUrl  + "/iscList/339"
     });
 
     DynamicForm_JspClassDocuments = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         fields: [
-            {name: "id", hidden: true},
             {
-                name: "fileName",
+                name: "referenceId",
                 title: "فیلد مرجع",
                 required: true,
                 type: "SelectItem",
-                defaultValue: "3",
-                valueMap: {
-                    "1": "پرداخت شده",
-                    "2": "پرداخت نشده",
-                    "3": "همه"
-                },
                 pickListProperties: {
                     showFilterEditor: false
-                }
+                },
+                filterOperator: "equals",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                defaultValue: 476,
+                optionDataSource: RestDataSource_Refrence_JspClassDocuments,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}]
             },
             {
-                name: "fileName",
+                name: "letterTypeId",
                 title: "نوع نامه",
-                required: true,
                 type: "SelectItem",
-                defaultValue: "3",
-                valueMap: {
-                    "1": "پرداخت شده",
-                    "2": "پرداخت نشده",
-                    "3": "همه"
-                },
                 pickListProperties: {
                     showFilterEditor: false
-                }
+                },
+                filterOperator: "equals",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_LetterType_JspClassDocuments,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                pickListFields: [
+                    {name: "title", width: "30%", filterOperator: "iContains"}]
             },
             {
-                name: "description",
+                name: "letterNum",
                 title: "شماره نامه",
                 required: true,
-                length: 50,
-                keyPressFilter: /^((?![/\\?%*:|"<>.]).)*$/
+                length: 15,
+                keyPressFilter:"[0-9 ]"
             }
         ]
     });
@@ -144,10 +151,7 @@
     var ListGrid_JspClassDocuments = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_Attachments_JspClassDocuments,
-        <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_R','TclassAttachmentsTab_classStatus')">
-        contextMenu: Menu_ListGrid_JspClassDocuments,
-        </sec:authorize>
+        dataSource:RestDataSource_Refrence_JspClassDocuments,
         selectionType: "single",
         sortField: 1,
         sortDirection: "descending",
@@ -155,20 +159,40 @@
         autoFetchData: false,
         showRollOver: true,
         fields: [
+            {name: "id", hidden: true},
             {
-                name: "fileName",
-                title: "شماره نامه"
+                name: "referenceId",
+                title: "فیلد مرجع",
+                type: "SelectItem",
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }},
+                filterOperator: "equals",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_Refrence_JspClassDocuments
             },
             {
-                name: "fileTypeId",
+                name: "letterTypeId",
                 title: "نوع نامه",
-                filterOnKeypress: true,
-                editorType: "SelectItem"
+                type: "SelectItem",
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }},
+                filterOperator: "equals",
+                changeOnKeypress: true,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_LetterType_JspClassDocuments
+            },
+            {
+                name: "letterNum",
+                title: "شماره نامه"
             }
-        ],
-        recordDoubleClick: function (viewer, record) {
-            Show_Attachment_Attachments(record);
-        }
+        ]
     });
 
     ToolStripButton_Refresh_JspClassDocuments = isc.ToolStripButtonRefresh.create({
@@ -258,8 +282,6 @@
             DynamicForm_JspClassDocuments.clearValues();
             DynamicForm_JspClassDocuments.editRecord(record);
             DynamicForm_JspClassDocuments.setValue("fileName", record.fileName.split('.')[0]);
-            Button_Upload_JspClassDocuments.hide();
-            Label_FileUploadSize_JspClassDocuments.hide();
             Window_JspClassDocuments.show();
         }
     }
@@ -269,8 +291,6 @@
         methodAttachment = "POST";
         saveActionUrlAttachment = attachmentUrl + "/upload";
         DynamicForm_JspClassDocuments.clearValues();
-        Button_Upload_JspClassDocuments.show();
-        Label_FileUploadSize_JspClassDocuments.show();
         Window_JspClassDocuments.show();
     }
 
@@ -355,59 +375,8 @@
         downloadForm.submitForm();
     }
 
-    function Upload_Changed_JspClassDocuments() {
-        if (document.getElementById('file_JspClassDocuments').files.length === 0)
-            return;
-        if (document.getElementById('file_JspClassDocuments').files[0].size > maxFileSizeAttachment) {
-            createDialog("info", "<spring:message code='file.size.hint'/>");
-            DynamicForm_JspClassDocuments.getItem("fileName").setValue("");
-            return;
-        }
-        isAttachedAttachment = true;
-        let fileName = document.getElementById('file_JspClassDocuments').files[0].name;
-        if (DynamicForm_JspClassDocuments.getValue("fileName") === undefined) {
-            DynamicForm_JspClassDocuments.getItem("fileName").setValue(fileName.split('.')[0]);
-        }
-    }
-
-    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, readOnly = false, criteria = null) {
-        var  classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-        VLayout_Body_JspClassDocuments.redraw();
-        objectTypeAttachment = inputObjectType;
-        objectIdAttachment = inputObjectId;
-        RestDataSource_Attachments_JspClassDocuments.fetchDataURL = attachmentUrl + "/iscList/";
-        if (objectTypeAttachment != null)
-            RestDataSource_Attachments_JspClassDocuments.fetchDataURL += objectTypeAttachment;
-        RestDataSource_Attachments_JspClassDocuments.fetchDataURL += ",";
-        if (objectTypeAttachment != null)
-            RestDataSource_Attachments_JspClassDocuments.fetchDataURL += objectIdAttachment;
-        ListGrid_JspClassDocuments.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
-        DynamicForm_JspClassDocuments.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
-        Window_JspClassDocuments.title = inputTitleAttachment;
-        ListGrid_JspClassDocuments.setImplicitCriteria(criteria);
-        ListGrid_JspClassDocuments.fetchData(criteria);
-        ListGrid_Attachments_refresh();
-        if(classRecord.classStatus === "3")
-        {
-            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_R','TclassAttachmentsTab_U','TclassAttachmentsTab_D')">
-            ToolStrip_Actions_JspClassDocuments.setVisibility(false)
-            ListGrid_JspClassDocuments.contextMenu = null;
-            </sec:authorize>
-        }
-        else
-        {
-            <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_R','TclassAttachmentsTab_U','TclassAttachmentsTab_D')">
-            ToolStrip_Actions_JspClassDocuments.setVisibility(true)
-            ListGrid_JspClassDocuments.contextMenu = Menu_ListGrid_JspClassDocuments;
-            </sec:authorize>
-        }
-        if (classRecord.classStatus === "3")
-        {
-            <sec:authorize access="hasAuthority('TclassAttachmentsTab_classStatus')">
-            ToolStrip_Actions_JspClassDocuments.setVisibility(true)
-            ListGrid_JspClassDocuments.contextMenu = Menu_ListGrid_JspClassDocuments;
-            </sec:authorize>
-        }
+    function loadPage_classDocuments(classId){
+        alert("hi");
     }
 
     function clear_Attachments() {
