@@ -32,6 +32,7 @@ public class ScoreFormController {
         map.add("CriteriaStr",request.getParameter("CriteriaStr"));
         map.add("classId", (String) request.getParameter("classId"));
         map.add("class",request.getParameter("class"));
+        map.add("_sortBy", request.getParameter("sortBy"));
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         return restTemplate.exchange(restApiUrl + "/api/score/printWithCriteria/", HttpMethod.POST, entity, byte[].class);

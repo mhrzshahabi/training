@@ -11,13 +11,17 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.service.SkillService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +33,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +54,7 @@ public class SkillRestController {
     private final ReportUtil reportUtil;
     private final SkillService skillService;
     private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
 
     // ------------------------------
 
@@ -412,7 +419,7 @@ public class SkillRestController {
 
 
     @Loggable
-    @GetMapping(value = {"/print-all/{type}"})
+   // @GetMapping(value = {"/print-all/{type}"})
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -420,6 +427,40 @@ public class SkillRestController {
 //        reportUtil.export("/reports/skillGroup.jasper", params, response);
 
     }
+
+    @Loggable
+    @PostMapping(value = {"/print-all/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "_sortBy") String sortBy,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+        JSONObject jsonObject = new JSONObject(sortBy);
+        String field = jsonObject.getString("property");
+        String direction = jsonObject.getString("direction");
+        if(direction.equals("descending")){
+            field = "-" + field;
+        }
+        searchRq.setSortBy(field);
+        SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchSkill.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/Skill_Report.jasper", params, jsonDataSource, response);
+    }
+
+
+
 
 
     @Loggable
