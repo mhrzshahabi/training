@@ -50,6 +50,11 @@ public class MainFormController {
         return "report/attendanceReport";
     }
 
+    @RequestMapping("/controlReport")
+    public String showControlReport() {
+        return "report/controlReport";
+    }
+
     @RequestMapping("/needsAssessment-reports")
     public String showNeedsAssessmentReportsForm() {
         return "report/needsAssessmentReports";

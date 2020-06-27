@@ -32,6 +32,65 @@
     font-family: BYekan;
 }
 
+
+.sendFile,
+.sendFileOver,
+.sendFileFocused,
+.sendFileFocusedOver,
+.sendFileDown,
+.sendFileFocusedDown,
+.sendFileSelected,
+.sendFileSelectedFocused,
+.sendFileSelectedDown,
+.sendFileSelectedFocusedDown,
+.sendFileSelectedOver,
+.sendFileSelectedFocusedOver,
+.sendFileDisabled,
+.sendFileSelectedDisabled,
+.sendFileOpened,
+.sendFileOverOpened,
+.sendFileDownOpened,
+.sendFileFocusedOpened,
+.sendFileFocusedDownOpened,
+.sendFileFocusedOverOpened,
+.sendFileSelectedOpened,
+.sendFileSelectedDownOpened,
+.sendFileSelectedOverOpened {
+    color: #000000;
+    font-size: 11px;
+    background-color: #f3f3f3 !important;
+    font-size: 12px !important;
+}
+
+.registerFile,
+.registerFileOver,
+.registerFileFocused,
+.registerFileFocusedOver,
+.registerFileDown,
+.registerFileFocusedDown,
+.registerFileSelected,
+.registerFileSelectedFocused,
+.registerFileSelectedDown,
+.registerFileSelectedFocusedDown,
+.registerFileSelectedOver,
+.registerFileSelectedFocusedOver,
+.registerFileDisabled,
+.registerFileSelectedDisabled,
+.registerFileOpened,
+.registerFileOverOpened,
+.registerFileDownOpened,
+.registerFileFocusedOpened,
+.registerFileFocusedDownOpened,
+.registerFileFocusedOverOpened,
+.registerFileSelectedOpened,
+.registerFileSelectedDownOpened,
+.registerFileSelectedOverOpened {
+    color: #000000;
+    font-size: 11px;
+    background-color: #fe9d2a !important;
+    font-size: 12px !important;
+}
+
 .header-logo {
     background-color: #fe9d2a;
     border-top-left-radius: 100%;

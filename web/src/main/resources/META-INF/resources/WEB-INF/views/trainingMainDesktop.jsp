@@ -1140,15 +1140,15 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_BasicInfo_Skill')">
-                {
-                    title: "<spring:message code="skill.level"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/skill-level/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_BasicInfo_Skill')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="skill.level"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="/skill-level/show-form"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                {isSeparator: true},--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_BasicInfo_EducationDegree')">
                 {
@@ -1328,15 +1328,15 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_Designing_committee')">
-                {
-                    title: "<spring:message code="specialized.committee"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/committee/show-form"/>");
-                    }
-                },
-                {isSeparator: true},
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Designing_committee')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="specialized.committee"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="/committee/show-form"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                {isSeparator: true},--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Designing_Company')">
                 {
