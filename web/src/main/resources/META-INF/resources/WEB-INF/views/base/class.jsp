@@ -2288,16 +2288,19 @@
             {
                 ID: "teacherInformationTab",
                 title: "<spring:message code='teacher.information'/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"}),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
             },
             </sec:authorize>
+            {
+                ID: "classDocumentsTab",
+                title: "مستندات کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/classDocuments-tab"})
+            },
             <%--{--%>
                 <%--ID: "costClassTab",--%>
                 <%--title: "<spring:message code='cost.class'/>",--%>
                 <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})--%>
             <%--}--%>
-
-
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
