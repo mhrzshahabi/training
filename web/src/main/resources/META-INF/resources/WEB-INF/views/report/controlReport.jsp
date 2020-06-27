@@ -814,7 +814,7 @@
     function printClearForm(list,page,id) {
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/attendance/clear-print/pdf"/>",
+            action: "<spring:url value="/controlForm/clear-print/pdf"/>",
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -822,11 +822,13 @@
                     {name: "classId", type: "hidden"},
                     {name: "list", type: "hidden"},
                     {name: "page", type: "hidden"},
+                    {name: "dataStatus", type: "hidden"}
                 ]
         });
         criteriaForm.setValue("classId", id);
         criteriaForm.setValue("list", JSON.stringify(list));
         criteriaForm.setValue("page", page);
+        criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue() );
         criteriaForm.show();
         criteriaForm.submitForm();
     }
