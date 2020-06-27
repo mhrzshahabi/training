@@ -121,5 +121,6 @@ public class EvaluationDTO implements Serializable {
         private String feclgrade;
         private String feclpass;
         private String tstudent;
+        private Float studentCount;
     }
 }

@@ -190,24 +190,13 @@
         }
     });
 
-    // var IButton_Evaluate_LearningEvaluation_Evaluation_Analysis = isc.IButton.create({
-    //     top: 260,
-    //     width: "300",
-    //     height: "25",
-    //     margin: 2,
-    //     title: "تحلیل ارزیابی یادگیری",
-    //     click: function () {
-    //
-    //     }
-    // });
-
     function fill_learning_evaluation_result_resp(resp) {
         load_learning_evluation_analysis_data(JSON.parse(resp.data));
     }
 
     function load_learning_evluation_analysis_data(record) {
         var gridClassList = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-        DynamicForm_Learning_EvaluationAnalysis_Header.getField("studentCount").setValue(gridClassList.studentCount);
+        DynamicForm_Learning_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("preTestMeanScore").setValue(record.preTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("postTestMeanScore").setValue(record.postTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePreTest").setValue(record.havePreTest);
