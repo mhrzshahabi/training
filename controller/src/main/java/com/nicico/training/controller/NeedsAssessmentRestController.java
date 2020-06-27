@@ -55,6 +55,12 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
+    @GetMapping("/workflowList/{objectType}/{objectId}")
+    public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscWorkflowList(@PathVariable String objectType, @PathVariable Long objectId) {
+        return new ResponseEntity<>(needsAssessmentService.workflowSearch(objectId, objectType), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping("/iscList/{objectType}/{objectId}")
     public ResponseEntity<TotalResponse<NeedsAssessmentDTO.Info>> objectIdIscList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String objectType, @PathVariable Long objectId) {
         return iscList(CriteriaUtil.addCriteria(criteria, "objectId", "equals", objectId.toString()));
@@ -134,5 +140,14 @@ public class NeedsAssessmentRestController {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = needsAssessmentService.tree(nicicoCriteria);
         return new ResponseEntity<>(treeTotalResponse, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/isReadOnly/{objectType}/{objectId}")
+    public ResponseEntity<Boolean> isReadOnly(@PathVariable String objectType,
+                                              @PathVariable Long objectId) {
+        if(needsAssessmentTempService.readOnlyStatus(objectType, objectId)>1)
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.OK);
     }
 }

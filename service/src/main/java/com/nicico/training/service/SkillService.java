@@ -177,7 +177,6 @@ public class SkillService implements ISkillService {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillID);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
-
         return modelMapper.map(courseDAO.getUnAttachedCoursesBySkillId(skillID, pageable), new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
     }
