@@ -261,6 +261,8 @@ public class EvaluationAnalysisRestController {
 
         resultSet.setHavePostTest("false");
 
+        resultSet.setStudentCount(result[2]);
+
         List<ClassStudent> classStudents = classStudentDAO.findByTclassId(classId);
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put("0", 0);
@@ -276,18 +278,6 @@ public class EvaluationAnalysisRestController {
         for (ClassStudent classStudent : classStudents) {
             if(classStudent.getScore() != null || classStudent.getValence() != null)
                 resultSet.setHavePostTest("true");
-//            if (classStudent.getScore() == null)
-//            {
-//                classStudent.setScore((float) 0.0);
-//            }
-//            if (classStudent.getPreTestScore() == null)
-//            {
-//                classStudent.setPreTestScore((float) 0.0);
-//            }
-//            if (classStudent.getValence() == null)
-//            {
-//                classStudent.setValence(String.valueOf(0));
-//            }
 
             if(classStudent.getPreTestScore() != null && scoringMethod.equalsIgnoreCase("1") && classStudent.getValence()!=null) {
                 postScores.add(Double.valueOf(map.get(classStudent.getValence())));

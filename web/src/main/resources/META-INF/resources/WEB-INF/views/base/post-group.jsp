@@ -12,6 +12,7 @@
     var postGroupPostList_Post_Group_Jsp = null;
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
+    var wait_PostGroup = null;
 
 
     PostDS_PostGroup = isc.TrDS.create({
@@ -475,21 +476,19 @@
                 postIds.add(dropRecords[i].id);
             }
             var JSONObj = {"ids": postIds};
-
-
             TrDSRequest();
-
-
+            wait_PostGroup = createDialog("wait");
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: postGroupUrl + "/addPosts/" + postGroupId + "/" + postIds, //"${restApiUrl}/api/tclass/addStudents/" + ClassID,
+                actionURL: postGroupUrl + "/addPosts/" + postGroupId + "/" + postIds,
                 httpMethod: "POST",
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    wait_PostGroup.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                         ListGrid_AllPosts.invalidateCache();

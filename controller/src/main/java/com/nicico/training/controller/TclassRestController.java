@@ -969,4 +969,27 @@ public class TclassRestController {
             tclassDAO.updateTeacherReactionStatus(teacherReactionStatus,classId);
     }
 
+    @Loggable
+    @Transactional
+    @GetMapping(value = "/getTeacherReactionStatus/{classId}")
+    public ResponseEntity<Integer> getTeacherReactionStatus(@PathVariable Long classId) {
+        Integer result = tclassDAO.getTeacherReactionStatus(classId);
+        if(result != null)
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(0, HttpStatus.OK);
+    }
+
+    @Loggable
+    @Transactional
+    @GetMapping(value = "/getTrainingReactionStatus/{classId}")
+    public ResponseEntity<Integer> getTrainingReactionStatus(@PathVariable Long classId) {
+        Integer result = tclassDAO.getTrainingReactionStatus(classId);
+        if(result != null)
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(0, HttpStatus.OK);
+    }
+
+
 }
