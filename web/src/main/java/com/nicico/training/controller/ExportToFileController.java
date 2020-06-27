@@ -354,6 +354,9 @@ public class ExportToFileController {
                 break;
             case "trainingClassReport":
 
+                searchRq.setStartIndex(0)
+                        .setCount(100000);
+
                 List<Object> trainingClassReportremovedObjects = new ArrayList<>();
                 Object trainingClassReportcourseStatus = null;
                 Object trainingClassReportreactionEvaluationOperator = null;
@@ -412,11 +415,18 @@ public class ExportToFileController {
 
                 List<TclassDTO.TClassReport> trainingClassReportlistRemovedObjects = new ArrayList<>();
                 if (trainingClassReportcourseStatus != null && !trainingClassReportcourseStatus.equals("3")) {
+                    List<Long> trainingClassReportIds=new ArrayList<>();
+
                     for (TclassDTO.TClassReport datum : list8.getList()) {
-                        List<Long> courseNeedAssessmentStatus = courseDAO.getCourseNeedAssessmentStatus(datum.getCourse().getId());
-                        if (trainingClassReportcourseStatus.equals("1") && courseNeedAssessmentStatus.size() == 0)
+                        trainingClassReportIds.add(datum.getCourse().getId());
+                    }
+
+                    List<Long> courseNeedAssessmentStatus = courseDAO.isExistInNeedsAssessment(trainingClassReportIds);
+
+                    for (TclassDTO.TClassReport datum : list8.getList()) {
+                        if (trainingClassReportcourseStatus.equals("1") && courseNeedAssessmentStatus.stream().filter(p->p==datum.getCourse().getId()).toArray().length == 0)
                             trainingClassReportlistRemovedObjects.add(datum);
-                        if (trainingClassReportcourseStatus.equals("2") && courseNeedAssessmentStatus.size() != 0)
+                        if (trainingClassReportcourseStatus.equals("2") && courseNeedAssessmentStatus.stream().filter(p->p==datum.getCourse().getId()).toArray().length != 0)
                             trainingClassReportlistRemovedObjects.add(datum);
                     }
                 }
