@@ -750,6 +750,7 @@
 
     // -------------------------------------------  Constant Variables  -----------------------------------------------
     const dialogShowTime = 2000;
+    const wait = createDialog("wait");
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
@@ -807,6 +808,7 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+        wait.show();
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -2670,10 +2672,11 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
-    <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
+    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
     loadFrameworkMessageFa();
+    wait.close();
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>
