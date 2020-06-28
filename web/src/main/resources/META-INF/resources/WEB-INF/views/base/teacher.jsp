@@ -396,6 +396,7 @@
             IButton_Teacher_Exit_JspTeacher
         ]
     });
+
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         showResizeBar: true,
         titleEditorTopOffset: 2,
@@ -523,7 +524,6 @@
             ]
         })]
     });
-
     //----------------------------------------- Evaluation -------------------------------------------------------------
     IButton_Evaluation_Show_JspTeacher = isc.IButton.create({
         title: "<spring:message code='cal.eval.grade'/>",
@@ -836,7 +836,6 @@
             HLayout_Grid_Teacher_JspTeacher
         ]
     });
-
     //-------------------------------------------------Functions--------------------------------------------------------
     function ListGrid_teacher_refresh() {
         ListGrid_Teacher_JspTeacher.invalidateCache();
@@ -870,7 +869,7 @@
 
         var data = vm.getValues();
         var teacherSaveUrl = teacherUrl;
-
+        teacherWait = createDialog("wait");
         if (teacherMethod.localeCompare("PUT") === 0) {
             teacherSaveUrl += selectedRecordID;
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
@@ -880,7 +879,6 @@
         if (teacherMethod.localeCompare("POST") === 0)
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_save_add_result(rpcResponse)"));
-
     }
 
     function Teacher_Save_Close_Button_Click_JspTeacher() {
@@ -914,6 +912,7 @@
         if (teacherMethod.localeCompare("PUT") === 0) {
             teacherSaveUrl += selectedRecordID;
         }
+        teacherWait = createDialog("wait");
         isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
             "callback: teacher_saveClose_result(rpcResponse)"));
 
@@ -1210,6 +1209,7 @@
     }
 
     function teacher_saveClose_result(resp) {
+        teacherWait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             if (resp.data === "") {
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
@@ -1229,6 +1229,7 @@
     }
 
     function teacher_save_add_result(resp) {
+        teacherWait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             responseID = JSON.parse(resp.data).id;
             vm.setValue("id", responseID);
@@ -1273,6 +1274,7 @@
     }
 
     function teacher_save_edit_result(resp) {
+        teacherWait.close();
         if (resp.httpResponseText == "duplicateAndBlackList") {
             createDialog("info", "<spring:message code='teacher.duplicate.and.in.black.list'/>");
         } else if (resp.httpResponseText == "duplicateAndNotBlackList") {
