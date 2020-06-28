@@ -91,7 +91,10 @@ public class MasterDataRestController {
 
     @GetMapping(value = "department/getDepartmentsRoot")
     public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsRoot() throws IOException {
-        return new ResponseEntity<>((List<MasterDataService.CompetenceWebserviceDTOInfoTuple>) (Object) modelMapper.map(masterDataService.getDepartmentsByParentCode("RootByType?peopleType=Personal"),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType()) , HttpStatus.OK);
+        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> roots = modelMapper.map(masterDataService.getDepartmentsByParentCode("RootByType?peopleType=Personal"),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType());
+        for(MasterDataService.CompetenceWebserviceDTOInfoTuple root : roots)
+            root.setParentId(new Long(0));
+        return new ResponseEntity<>(roots  , HttpStatus.OK);
     }
 
     @GetMapping(value = "post/iscList")
@@ -102,8 +105,11 @@ public class MasterDataRestController {
     @GetMapping(value = "department/getDepartmentsChilderenAndParents")
     public ResponseEntity<Set<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsChilderenAndParents(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
         TotalResponse<MasterDataService.CompetenceWebserviceDTO> childeren = masterDataService.getDepartments(iscRq,resp);
-        Set<MasterDataService.CompetenceWebserviceDTOInfoTuple> departments = new HashSet<>(getDepartmentsRoot().getBody());
-        Long anccestorId = departments.iterator().next().getId();
+        Set<MasterDataService.CompetenceWebserviceDTOInfoTuple> departments = new HashSet<>();//getDepartmentsRoot().getBody()
+        //Long anccestorId = departments.iterator().next().getId();//
+        getDepartmentsRoot().getBody().get(0).setParentId(new Long(0));
+        Long anccestorId = getDepartmentsRoot().getBody().get(0).getId();
+        departments.add(getDepartmentsRoot().getBody().get(0));
         for(MasterDataService.CompetenceWebserviceDTO child : childeren.getResponse().getData()){
             departments.addAll(findDeparmentAnccestor(anccestorId,child.getParentId()));
             departments.add(modelMapper.map(child, MasterDataService.CompetenceWebserviceDTOInfoTuple.class));
@@ -119,8 +125,10 @@ public class MasterDataRestController {
             parents.add(parent);
             return parents;
         }
-        else
-            parents.addAll(findDeparmentAnccestor(anccestorId,parent.getParentId()));
+        else {
+            parents.add(parent);
+            parents.addAll(findDeparmentAnccestor(anccestorId, parent.getParentId()));
+        }
         return parents;
     }
 }

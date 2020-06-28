@@ -5,14 +5,38 @@
 
 // <script>
 
+    var searchTree = isc.TreeGrid.create({
+        ID: "searchTree",
+        data:[],
+        fields: [
+            {name: "title", title: " ", width:"10%"},
+        ],
+        width: "100%",
+        height: "30%",
+        autoDraw: false,
+        showOpenIcons:false,
+        showDropIcons:false,
+        showSelectedIcons:false,
+        showConnectors: true,
+        // baseStyle: "noBorderCell",
+        dataProperties:{
+            dataArrived:function (parentNode) {
+                this.openAll();
+            },
+        },
+        rowClick: function (_1,_2,_3) {
+            console.log(_1);
+        },
+    });
+
     var organizationalTree = isc.TreeGrid.create({
         ID: "organizationalTree",
         data:[],
         fields: [
-            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "title", title: " ", width:"10%", },
         ],
         width: "100%",
-        height: "80%",
+        height: "70%",
         autoDraw: false,
         showOpenIcons:false,
         showDropIcons:false,
@@ -28,7 +52,7 @@
             if(_1.isFolder === undefined){
                 console.log(_1);
                 }
-            if(_1.isFolder === true){
+            if(_1.isFolder === true || _1.isFolder === false){
                 _1.isOpen = true;
                 let childeren = [];
                 _1.children.forEach(function (currentValue, index, arr) {
@@ -38,6 +62,7 @@
                 getchilderen(childeren);
             }
         },
+        openFolder:function () {}
     });
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
@@ -45,22 +70,23 @@
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
-            getRootTreeData();
+            // getRootTreeData();
         }
     });
 
-    var ToolStrip_Info = isc.ToolStrip.create({
+    var ToolStrip_Tree = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    ToolStripButton_Refresh
-                ]
-            })
+            ToolStripButton_Refresh,
+            // isc.ToolStrip.create({
+            //     width: "100%",
+            //     align: "left",
+            //     border: '0px',
+            //     members: [
+            //         ToolStripButton_Refresh,
+            //     ]
+            // })
         ]
     });
 
@@ -74,11 +100,12 @@
 
     var search_bar = isc.DynamicForm.create({
         autoDraw: false,
+        numCols: 3,
         items: [{
             name: "search",
-            title: "Search Term",
-            width: 200,
-            suppressBrowserClearIcon:true,
+            title: "<spring:message code="search"/>",
+            width: 400,
+            suppressBrowserClearIcon: true,
             icons: [{
                 name: "view",
                 src: "[SKINIMG]actions/view.png",
@@ -88,7 +115,7 @@
                 showRTL: true,
                 tabIndex: -1,
                 click: function () {
-                    let AdvanceCriteria = '{"fieldName":"title","operator":"iContains","value":"'+search_bar.getValues().search+'"}';
+                    let AdvanceCriteria = '{"fieldName":"title","operator":"iContains","value":"' + search_bar.getValues().search + '"}';
                     getSearchData(AdvanceCriteria);
                 },
             }, {
@@ -99,14 +126,32 @@
                 inline: true,
                 prompt: "Clear this field",
 
-                click : function (form, item, icon) {
+                click: function (form, item, icon) {
                     item.clearValue();
                     item.focusInItem();
                 }
             }],
             iconWidth: 16,
             iconHeight: 16
-        }]
+        }, {
+            type: "Button",
+            title: "<spring:message code="refresh"/>",
+            startRow: false,
+            align:"left",
+            click: function () {
+                search_bar.getField("search").getIcon("clear").click(search_bar,search_bar.getField("search"));
+                searchTree.setData([]);
+                organizationalTree.setData([]);
+                getRootTreeData();
+            }
+        },
+        ],
+        itemKeyPress: function (item, keyName) {
+            if (keyName == "Enter") {
+                let AdvanceCriteria = '{"fieldName":"title","operator":"iContains","value":"' + search_bar.getValues().search + '"}';
+                getSearchData(AdvanceCriteria);
+            }
+        },
     });
 
     // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>
@@ -116,16 +161,29 @@
     // ---------------------------------------- Create - TabSet & Tab --------------------------------------->>
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
+    var HLayout_Tree_Data = isc.TrHLayout.create({
+        ID: "HLayoutCenter_JspEditNeedsAssessment",
+        height: "70%",
+        showResizeBar: true,
+        members: [
+            ToolStripButton_Refresh,
+            search_bar,
+        ]
+    })
 
-    var VLayout_PersonnelInfo_Data = isc.VLayout.create({
+    var VLayout_Tree_Data = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [search_bar,ToolStripButton_Refresh, organizationalTree]
+        members: [search_bar, searchTree, organizationalTree]
     });
 
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
 
     // <<----------------------------------------------- Functions --------------------------------------------
+    $(document).ready(function () {
+        getRootTreeData();
+    });
+
     function getchilderen(data) {
         isc.RPCManager.sendRequest(TrDSRequest(masterDataUrl + "/department/getDepartmentsChilderen", "POST", JSON.stringify(data),function(resp){
             if (resp.httpResponseCode != 200){
@@ -193,11 +251,19 @@
         var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             if (resp.httpResponseCode != 200) {
-                console.log("failed");
                 return false;
             } else {
                 let data = JSON.parse(resp.data);
-                console.log(data);
+                var Treedata = isc.Tree.create({
+                    modelType: "parent",
+                    nameProperty: "title",
+                    idField: "id",
+                    parentIdField: "parentId",
+                    data: data,
+                    openProperty: "isOpen",
+                });
+                searchTree.setData(Treedata);
+                searchTree.getData().openAll();
             }
         }));
     }
