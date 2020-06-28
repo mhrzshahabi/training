@@ -1030,6 +1030,4 @@
     <changeSet author="razmnoosh (generated)" id="1593244318133-441">
         <addForeignKeyConstraint baseColumnNames="f_letter_type" baseTableName="tbl_class_document" constraintName="FKn7btiae8cebg6exj361vktj5i" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-
-
 </databaseChangeLog>
