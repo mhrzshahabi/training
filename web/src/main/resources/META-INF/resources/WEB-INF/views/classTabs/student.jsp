@@ -115,7 +115,7 @@
                         obj.firstName =  localData[i].student.firstName.trim();
                         obj.lastName =  localData[i].student.lastName.trim();
                         obj.fatherName =  localData[i].student.fatherName;
-                        obj.companyName =  localData[i].applicantCompanyName;
+                        obj.mobile =  localData[i].student.mobile;
                         obj.ccpArea =  localData[i].student.ccpArea;
                         obj.ccpAssistant =  localData[i].student.ccpAssistant;
                         obj.ccpAffairs =  localData[i].student.ccpAffairs;
