@@ -128,7 +128,7 @@
 		<field name="firstName" class="java.lang.String"/>
 		<field name="lastName" class="java.lang.String"/>
 		<field name="fatherName" class="java.lang.String"/>
-		<field name="companyName" class="java.lang.String"/>
+		<field name="mobile" class="java.lang.String"/>
 		<field name="ccpArea" class="java.lang.String"/>
 		<field name="ccpAssistant" class="java.lang.String"/>
 		<field name="ccpAffairs" class="java.lang.String"/>
@@ -262,7 +262,7 @@
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="B Nazanin" size="11"/>
 										</textElement>
-										<text><![CDATA[شرکت]]></text>
+										<text><![CDATA[موبایل]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="26">
@@ -272,7 +272,7 @@
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Shabnam-FD" size="10"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$F{mobile}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>

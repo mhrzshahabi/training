@@ -34,6 +34,12 @@ public class ClassDocumentDTO {
     @Accessors(chain = true)
     @ApiModel("ClassDocumentCreate")
     public static class Create {
+        private Long classId;
+        private String letterNum;
+        private ParameterValueDTO.TupleInfo letterType;
+        private Long letterTypeId;
+        private ParameterValueDTO.TupleInfo reference;
+        private Long referenceId;
     }
 
     @Getter
@@ -41,6 +47,12 @@ public class ClassDocumentDTO {
     @Accessors(chain = true)
     @ApiModel("ClassDocumentUpdate")
     public static class Update{
+        private Long classId;
+        private String letterNum;
+        private ParameterValueDTO.TupleInfo letterType;
+        private Long letterTypeId;
+        private ParameterValueDTO.TupleInfo reference;
+        private Long referenceId;
     }
 
     @Getter
