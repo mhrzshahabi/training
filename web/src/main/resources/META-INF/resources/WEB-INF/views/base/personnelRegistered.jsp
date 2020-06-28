@@ -681,7 +681,6 @@
 
     });
 
-
     var DynamicForm_PersonnelReg_EmployEdu = isc.DynamicForm.create({
         valuesManager: PersonnelReg_vm,
         width: "800",
@@ -1043,7 +1042,6 @@
 
     });
 
-
     var DynamicForm_PersonnelReg_OperationalUnit= isc.DynamicForm.create({
         valuesManager: PersonnelReg_vm,
         width: "800",
@@ -1189,7 +1187,7 @@
 
     });
 
-        var personnelRegTabs = isc.TabSet.create({
+    var personnelRegTabs = isc.TabSet.create({
         width: 820,
         titleWidth: 120,
         height: 400,
@@ -1271,6 +1269,7 @@
             else {
                 var data = PersonnelReg_vm.getValues();
                 var personnelRegSaveUrl = personnelRegUrl;
+                personnelRegWait = createDialog("wait");
                 if (personnelRegMethod.localeCompare("PUT") == 0) {
                     var personnelRegRecord = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
                     personnelRegSaveUrl += "/" + personnelRegRecord.id;
@@ -1526,11 +1525,7 @@
                     this.close();
 
                     if (index == 0) {
-                        personnelRegWait = isc.Dialog.create({
-                            message: "<spring:message code='msg.waiting'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='message'/>"
-                        });
+                        personnelRegWait = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(personnelRegUrl + "/" + record.id, "DELETE", null, "callback: personnelReg_delete_result(rpcResponse)"));
                     }
                 }
@@ -1597,6 +1592,7 @@
     };
 
     function personnelReg_action_result(resp) {
+        personnelRegWait.close();
 
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             var responseID = JSON.parse(resp.data).id;
@@ -1666,7 +1662,6 @@
         }
     };
 
-
     function checkCodeMeliPerReg(code) {
         if (code === undefined || code === null || code === "")
             return false;
@@ -1690,7 +1685,6 @@
         return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
     };
 
-
     function checkMobilePerReg(mobile) {
         return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
     };
@@ -1703,7 +1697,7 @@
         isc.RPCManager.sendRequest(TrDSRequest(personnelRegByNationalCodeUrl + "getOneByNationalCode/" + nationalCode, "GET", null, "callback: personalReg_findOne_result(rpcResponse)"));
     };
 
-        function personalReg_findOne_result(rpcResponse) {
+    function personalReg_findOne_result(rpcResponse) {
             // dummy = rpcResponse;
             // if (rpcResponse === null ||  rpcResponse === undefined || rpcResponse.data === "") {
                 if (rpcResponse.status != 0 ) {

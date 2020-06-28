@@ -3,10 +3,10 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
 
+var tclassId;
+var methodClassDocument;
+var saveActionUrlClassDocument;
 // <script>
     var RestDataSource_Refrence_JspClassDocuments  = isc.TrDS.create({
         fields: [{name: "id"}, {name: "title"}
@@ -34,7 +34,6 @@
         width: "100%",
         height: "100%",
         fields: [
-            {name: "id", hidden: true},
             {
                 name: "referenceId",
                 title: "فیلد مرجع",
@@ -77,6 +76,10 @@
                 required: true,
                 length: 15,
                 keyPressFilter:"[0-9 ]"
+            },
+            {
+                name: "classId",
+                hidden:true
             }
         ]
     });
@@ -87,35 +90,64 @@
             if (!DynamicForm_JspClassDocuments.validate()) {
                 return;
             }
-            if (methodClassDocument === "POST") {
-                if (!isAttachedClassDocument || document.getElementById('file_JspClassDocuments').files.length === 0) {
-                    createDialog("info", "<spring:message code='file.not.uploaded'/>");
-                    return;
-                }
-                if (document.getElementById('file_JspClassDocuments').files[0].size > maxFileSizeClassDocument) {
-                    createDialog("info", "<spring:message code='file.size.hint'/>");
-                    return;
-                }
-                classDocumentWait = createDialog("wait");
-                let formData1 = new FormData();
-                let file = document.getElementById('file_JspClassDocuments').files[0];
-                let fileName = DynamicForm_JspClassDocuments.getValue("fileName");
-                if (file.name.split('.').length > 1)
-                    fileName += "." + file.name.split('.')[1];
-                formData1.append("file", file);
-                formData1.append("objectType", objectTypeClassDocument);
-                formData1.append("objectId", objectIdClassDocument);
-                formData1.append("fileName", fileName);
-                formData1.append("fileTypeId", DynamicForm_JspClassDocuments.getValue("fileTypeId"));
-                formData1.append("description", DynamicForm_JspClassDocuments.getValue("description"));
-                TrnXmlHttpRequest(formData1, saveActionUrlClassDocument, methodClassDocument, save_result_ClassDocuments);
-            } else if (methodClassDocument === "PUT") {
-                classDocumentWait = createDialog("wait");
+            else if (methodClassDocument === "POST") {
+                DynamicForm_JspClassDocuments.getField("classId").setValue(tclassId);
                 let data = DynamicForm_JspClassDocuments.getValues();
-                if (ListGrid_JspClassDocuments.getSelectedRecord().fileName.split('.').length > 1)
-                    data.fileName += "." + ListGrid_JspClassDocuments.getSelectedRecord().fileName.split('.')[1];
                 isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
-                    methodClassDocument, JSON.stringify(data), save_result_ClassDocuments));
+                    methodClassDocument, JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            var OK = isc.Dialog.create({
+                                message: "عملیات با موفقیت انجام شد.",
+                                icon: "[SKIN]say.png",
+                                title: "انجام فرمان"
+                            });
+                            setTimeout(function () {
+                                OK.close();
+                            }, 3000);
+                            Window_JspClassDocuments.close();
+                            ListGrid_JspClassDocuments.invalidateCache();
+                        }
+                        else {
+                            var ERROR = isc.Dialog.create({
+                                message: ("خطا در ایجاد مستند کلاس"),
+                                icon: "[SKIN]stop.png",
+                                title: "توجه"
+                            });
+                            setTimeout(function () {
+                                ERROR.close();
+                            }, 3000);
+                        }
+
+                    }));
+            }
+            else if(methodClassDocument == "PUT"){
+                let data = DynamicForm_JspClassDocuments.getValues();
+                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
+                    methodClassDocument, JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            var OK = isc.Dialog.create({
+                                message: "عملیات با موفقیت انجام شد.",
+                                icon: "[SKIN]say.png",
+                                title: "انجام فرمان"
+                            });
+                            setTimeout(function () {
+                                OK.close();
+                            }, 3000);
+                            Window_JspClassDocuments.close();
+                            ListGrid_JspClassDocuments.invalidateCache();
+                        }
+                        else {
+                            var ERROR = isc.Dialog.create({
+                                message: ("خطا در ویرایش مستند کلاس"),
+                                icon: "[SKIN]stop.png",
+                                title: "توجه"
+                            });
+                            setTimeout(function () {
+                                ERROR.close();
+                            }, 3000);
+                        }
+
+                    }));
             }
         }
     });
@@ -135,7 +167,7 @@
         members: [IButton_Save_JspClassDocuments, IButton_Cancel_JspClassDocuments]
     });
 
-    VLayOut_Photo_JspClassDocuments = isc.TrVLayout.create({
+    VLayOut_Form_JspClassDocuments = isc.TrVLayout.create({
         showEdges: false,
         edgeImage: "",
         align: "top",
@@ -150,8 +182,9 @@
         border: "1px solid gray",
         canDragResize: false,
         showMaximizeButton: false,
+        title: "مستندات کلاس",
         items: [isc.TrVLayout.create({
-            members: [VLayOut_Photo_JspClassDocuments, HLayout_SaveOrExit_JspClassDocuments]
+            members: [VLayOut_Form_JspClassDocuments, HLayout_SaveOrExit_JspClassDocuments]
         })]
     });
 
@@ -203,31 +236,89 @@
                 name: "letterNum",
                 title: "شماره نامه",
                 filterOperator: "iContains"
+            },
+            {
+                name: "classId",
+                hidden: true
             }
         ]
     });
 
     ToolStripButton_Refresh_JspClassDocuments = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_ClassDocuments_refresh();
+            ListGrid_JspClassDocuments.invalidateCache();
+            ListGrid_JspClassDocuments.filterByEditor();
         }
     });
 
     ToolStripButton_Edit_JspClassDocuments = isc.ToolStripButtonEdit.create({
         click: function () {
-            // ListGrid_ClassDocuments_Edit();
+            let record = ListGrid_JspClassDocuments.getSelectedRecord();
+            if (record == null || record.id == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            } else {
+                methodClassDocument = "PUT";
+                saveActionUrlClassDocument = classDocumentUrl + record.id;
+                DynamicForm_JspClassDocuments.clearValues();
+                DynamicForm_JspClassDocuments.editRecord(record);
+                Window_JspClassDocuments.show();
+            }
         }
     });
 
     ToolStripButton_Add_JspClassDocuments = isc.ToolStripButtonCreate.create({
         click: function () {
-            // ListGrid_ClassDocuments_Add();
+            methodClassDocument = "POST";
+            saveActionUrlClassDocument = classDocumentUrl;
+            DynamicForm_JspClassDocuments.clearValues();
+            Window_JspClassDocuments.show();
         }
     });
 
     ToolStripButton_Remove_JspClassDocuments = isc.ToolStripButtonRemove.create({
         click: function () {
-            // ListGrid_ClassDocuments_Remove();
+            let record = ListGrid_JspClassDocuments.getSelectedRecord();
+            if (record == null || record.id == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            } else {
+                let Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                    "<spring:message code="verify.delete"/>");
+                Dialog_Class_remove.addProperties({
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index === 0) {
+                            methodClassDocument = "DELETE";
+                            saveActionUrlClassDocument = classDocumentUrl + record.id;
+                            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
+                                methodClassDocument, null, function (resp) {
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        var OK = isc.Dialog.create({
+                                            message: "ركورد با موفقيت حذف گرديد",
+                                            icon: "[SKIN]say.png",
+                                            title: "انجام فرمان"
+                                        });
+                                        setTimeout(function () {
+                                            OK.close();
+                                        }, 3000);
+                                        Window_JspClassDocuments.close();
+                                        ListGrid_JspClassDocuments.invalidateCache();
+                                    }
+                                    else {
+                                        var ERROR = isc.Dialog.create({
+                                            message: ("خطا در حذف مستند کلاس"),
+                                            icon: "[SKIN]stop.png",
+                                            title: "توجه"
+                                        });
+                                        setTimeout(function () {
+                                            ERROR.close();
+                                        }, 3000);
+                                    }
+
+                                }));
+                        }
+                    }
+                });
+            }
         }
     });
 
@@ -260,125 +351,18 @@
     });
 
     var VLayout_Body_JspClassDocuments = isc.TrVLayout.create({
-        members: [HLayout_Actions_JspClassDocuments,
+        members: [
+            HLayout_Actions_JspClassDocuments,
             HLayout_Grid_JspClassDocuments
         ]
     });
 
     ///////////////////////////////////////////////////////functions///////////////////////////////////////
-
-    function ListGrid_ClassDocuments_refresh() {
-        ListGrid_JspClassDocuments.invalidateCache();
-        ListGrid_JspClassDocuments.filterByEditor();
-    }
-
-    function ListGrid_ClassDocuments_Edit() {
-        let record = ListGrid_JspClassDocuments.getSelectedRecord();
-        if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
-            methodClassDocument = "PUT";
-            saveActionUrlClassDocument = classDocumentUrl + "/" + record.id;
-            DynamicForm_JspClassDocuments.clearValues();
-            DynamicForm_JspClassDocuments.editRecord(record);
-            DynamicForm_JspClassDocuments.setValue("fileName", record.fileName.split('.')[0]);
-            Window_JspClassDocuments.show();
-        }
-    }
-
-    function ListGrid_ClassDocuments_Add() {
-        isAttachedClassDocument = false;
-        methodClassDocument = "POST";
-        saveActionUrlClassDocument = classDocumentUrl + "/upload";
-        DynamicForm_JspClassDocuments.clearValues();
-        Window_JspClassDocuments.show();
-    }
-
-    function save_result_ClassDocuments(resp) {
-        let stat;
-        let respText;
-        classDocumentWait.close();
-        if (methodClassDocument === "POST") {
-            stat = resp.status;
-            respText = resp.responseText;
-        } else {
-            stat = resp.httpResponseCode;
-            respText = resp.httpResponseText;
-        }
-        if (stat === 200 || stat === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            ListGrid_ClassDocuments_refresh();
-            Window_JspClassDocuments.close();
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        } else {
-            if (stat === 406 && respText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
-            } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>");
-            }
-        }
-    }
-
-    function ListGrid_ClassDocuments_Remove() {
-        let record = ListGrid_JspClassDocuments.getSelectedRecord();
-        if (record == null) {
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
-            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code='verify.delete'/>");
-            Dialog_Delete.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        classDocumentWait = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(classDocumentUrl + "/delete/" + record.id, "DELETE", null,
-                            "callback: remove_result_ClassDocuments(rpcResponse)"));
-                    }
-                }
-            });
-        }
-    }
-
-    function remove_result_ClassDocuments(resp) {
-        classDocumentWait.close();
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_ClassDocuments_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        } else {
-            let respText = resp.httpResponseText;
-            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
-                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
-            } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>");
-            }
-        }
-    }
-
-    function Show_ClassDocument_ClassDocuments(record) {
-        let downloadForm = isc.DynamicForm.create({
-            method: "GET",
-            action: "classDocument/download/" + record.id,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "myToken", type: "hidden"}
-                ]
-        });
-        downloadForm.setValue("myToken", "<%=accessToken%>");
-        downloadForm.show();
-        downloadForm.submitForm();
-    }
-
     function loadPage_classDocuments(classId){
         RestDataSource_Document_JspClassDocuments.fetchDataURL = classDocumentUrl  + "iscList/" + classId;
         ListGrid_JspClassDocuments.invalidateCache();
         ListGrid_JspClassDocuments.fetchData();
+        tclassId = classId;
     }
 
     function clear_ClassDocuments() {
