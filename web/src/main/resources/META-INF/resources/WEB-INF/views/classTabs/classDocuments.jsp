@@ -202,6 +202,7 @@ var saveActionUrlClassDocument;
         dataPageSize: 50,
         autoFetchData: false,
         showRollOver: true,
+        filterOnKeypress: true,
         fields: [
             {name: "id", hidden: true},
             {
