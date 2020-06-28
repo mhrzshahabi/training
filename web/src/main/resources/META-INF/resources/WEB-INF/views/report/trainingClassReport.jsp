@@ -208,7 +208,8 @@
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
-                    "3": "پایان یافته"
+                    "3": "پایان یافته",
+                    "4": "همه"
                 }
             },
             {
@@ -802,7 +803,8 @@
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
-                    "3": "پایان یافته"
+                    "3": "پایان یافته",
+                    "4": "همه"
                 }
             },
             {
@@ -1283,6 +1285,7 @@
             else if (data_values.criteria[i].fieldName == "evaluation") {
                 removedObjects.add(data_values.criteria[i]);
             }
+
             //-----------------------------------TEMP----------------------------
             // else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
             //     removedObjects.add(data_values.criteria[i]);

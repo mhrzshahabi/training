@@ -53,7 +53,7 @@
             return replaceString;
         };
 
-        function groupFilter(title,inputURL,func){
+        function groupFilter(title,inputURL,func,isCheck=false){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
                 autoDraw:false,
@@ -94,7 +94,7 @@
                                         {
                                             value=value.toEnglishDigit();
                                             let personnels=(value.indexOf('،')>-1)?value.split('،'):value.split(',');
-
+                                            let records=[];
                                             let len=personnels.size();
 
                                             for (let i=0;i<len;i++){
@@ -106,16 +106,17 @@
                                                 }).length==0){
 
                                                     let current={personnelNo:personnels[i]};
-
-                                                    GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat([current]));
-
-                                                    GroupSelectedPersonnelsLG_student.invalidateCache();
-                                                    GroupSelectedPersonnelsLG_student.fetchData();
-                                                    continue;
+                                                    records.push(current);
                                                 }
-                                                else{
-                                                    continue;
-                                                }
+                                            }
+
+                                            GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(records));
+
+                                            GroupSelectedPersonnelsLG_student.invalidateCache();
+                                            GroupSelectedPersonnelsLG_student.fetchData();
+
+                                            if(records.length > 0 && isCheck){
+                                                func(inputURL,records.map(function(item) {return item.personnelNo;}));
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
@@ -187,9 +188,15 @@
                                                         });
 
                                                         if(records.length > 0){
-                                                            GroupSelectedPersonnelsLG_student.setData(records);
+
+                                                            GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(records));
                                                             GroupSelectedPersonnelsLG_student.invalidateCache();
                                                             GroupSelectedPersonnelsLG_student.fetchData();
+
+                                                            if(isCheck){
+                                                                func(inputURL,records.map(function(item) {return item.personnelNo;}));
+                                                            }
+
                                                             createDialog("info", "فایل به لیست اضافه شد.");
                                                         }else{
                                                             createDialog("info", "خطا در محتویات فایل");
@@ -235,18 +242,20 @@
                 minWidth: 700,
                 minHeight: 500,
                 autoSize: false,
+                overflow:"hidden",
                 title:title,
                 items: [isc.HLayout.create({
-                    width: "100%",
+                    width:1050,
                     height: "88%",
                     autoDraw: false,
+                    overflow:"auto",
                     align: "center",
                     members: [
                         isc.TrLG.create({
                             ID: "GroupSelectedPersonnelsLG_student",
                             showFilterEditor: false,
                             editEvent: "click",
-                            listEndEditAction: "next",
+                            //listEndEditAction: "next",
                             enterKeyEditAction: "nextRowStart",
                             canSort:false,
                             canEdit:true,
@@ -256,8 +265,8 @@
                                 {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true,width:"10%"},
                                 {
                                     name: "personnelNo",
-                                    title: "<spring:message code="personnel.no"/>",
-                                    width:"40%",
+                                    title: "پرسنلی وارد شده",
+                                    width:130,
                                     editorExit:function(editCompletionEvent, record, newValue, rowNum, colNum)
                                     {
                                         isEditing=false;
@@ -268,6 +277,11 @@
                                                 if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
                                                     return item.personnelNo==newValue;
                                                 }).length==0){
+
+                                                    if(isCheck){
+                                                        console.log(isCheck);
+                                                        func(inputURL,[newValue]);
+                                                    }
                                                     return true;
                                                 }
                                                 else{
@@ -289,23 +303,20 @@
                                         }
                                     }
                                 },
-                                {name: "description", title: "توضیحات", canEdit: false ,width:"45%"},
-                                {name: "error", canEdit: false ,hidden:true,width:"5%"},
+                                {name: "firstName", title: "<spring:message code="firstName"/>", canEdit: false ,autoFithWidth:true},
+                                {name: "lastName", title: "<spring:message code="lastName"/>", canEdit: false ,autoFithWidth:true},
+                                {name: "nationalCode", title: "<spring:message code="national.code"/>", canEdit: false ,autoFithWidth:true},
+                                {name: "personnelNo1", title: "<spring:message code="personnel.no"/>", canEdit: false ,autoFithWidth:true},
+                                {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", canEdit: false ,autoFithWidth:true},
+                                {name: "description", title: "<spring:message code="description"/>", canEdit: false ,width:300, align: "left"},
+                                {name: "error", canEdit: false ,hidden:true,autoFithWidth:true},
                                 {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
                             ],
                             gridComponents: [TabSet_GroupInsert_JspStudent, "header", "body"],
                             canRemoveRecords: true,
                             deferRemoval:true,
                             removeRecordClick:function (rowNum){
-                                if(GroupSelectedPersonnelsLG_student.getAllEditRows()[0]==GroupSelectedPersonnelsLG_student.data.length){
-                                    GroupSelectedPersonnelsLG_student.discardEdits(GroupSelectedPersonnelsLG_student.getAllEditRows()[0]);
-                                }
                                 GroupSelectedPersonnelsLG_student.data.removeAt(rowNum);
-                                if(GroupSelectedPersonnelsLG_student.data.length==0&&!isEditing){
-                                    GroupSelectedPersonnelsLG_student.addData({
-                                        nationalCode: ""
-                                    });
-                                }
                             }
                         })
                     ]
@@ -808,7 +819,6 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
-        wait.show();
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -1165,6 +1175,17 @@
                     title: "<spring:message code="personnel.information"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="personnelInformation/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                </sec:authorize>
+
+
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">
+                {
+                    title: "<spring:message code="organizational.chart"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");
                     }
                 },
                 </sec:authorize>

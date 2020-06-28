@@ -575,7 +575,12 @@
                                 if ((typeof record.scoresStateId === "undefined" || typeof record.scoresStateId === undefined) && failureReason_change === false) {
                                     ListGrid_Cell_score_Update(record, newValue, 4)
                                     return
-                                } else if (failureReason_change === true) {
+                                }else if((typeof record.failureReasonId === "undefined" || typeof record.failureReasonId === undefined) && record.scoresStateId ===410)
+                                {
+                                    ListGrid_Cell_score_Update(record, newValue, 4)
+                                    return
+                                }
+                                else if (failureReason_change === true) {
                                     failureReason_change = false
 
                                     ListGrid_Cell_score_Update(record, newValue, 2)
@@ -653,7 +658,7 @@
                 if (failureReason_value != null && record.scoresStateId == 403) {
                     return true
                 }
-                let arr = [448, 410, 405, 449, 406, 404, 401, 450]
+                let arr = [448,405, 449, 406, 404, 401, 450]
                 return !(classRecord.scoringMethod == "2" || classRecord.scoringMethod == "3" || classRecord.scoringMethod == "4" || arr.includes(record.scoresStateId) || (record.scoresStateId === 403 && record.failureReasonId === 453) || (record.scoresStateId === 403 && record.failureReasonId === 407))
             }
 
@@ -672,7 +677,7 @@
                 {
                     return true
                 }
-                let arr = [448, 410, 405, 449, 406, 404, 401, 450]
+                let arr = [448, 405, 449, 406, 404, 401, 450]
                 return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId))
             }
 
@@ -735,6 +740,7 @@
             record.scoresStateId = 403;
             record.failureReasonId = failureReason_value;
         } else if (a == 3) {
+
             record.scoresStateId = 403;
             record.failureReasonId = record.failureReasonId;
         } else if (a == 4) {

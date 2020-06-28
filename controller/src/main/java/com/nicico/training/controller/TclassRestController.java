@@ -647,6 +647,9 @@ public class TclassRestController {
                 evaluationGrade = criterion.getValue().get(0);
                 removedObjects.add(criterion);
             }
+            if (criterion.getFieldName().equalsIgnoreCase("classStatus") && criterion.getValue().get(0).toString().equalsIgnoreCase("4")) {
+                removedObjects.add(criterion);
+            }
         }
 
         for (Object removedObject : removedObjects) {
