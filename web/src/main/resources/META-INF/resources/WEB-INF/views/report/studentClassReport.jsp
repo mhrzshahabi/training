@@ -32,9 +32,9 @@
             {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
             {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
             {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains"},
-            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classEndDate", filterOperator: "greaterOrEqual", autoFitWidth: true},
-            {name: "classHDuration", title:"<spring:message code="duration"/>", autoFitWidth: true},
+            {name: "classHDuration", title:"<spring:message code="duration"/>", autoFitWidth: true, filterOperator: "equals"},
         ],
         fetchDataURL: studentClassReportUrl
     });
