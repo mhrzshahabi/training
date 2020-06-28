@@ -1015,5 +1015,21 @@
         <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_needs_assessment_temp" constraintName="FKlg8roljxm5u56k2ot9t92ojtw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1593244318133-437">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_class_document" constraintName="FKb1mahbugke12w0whxp3c04cqn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1593244318133-438">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_class_document" constraintName="FKcrm0rfrj1x8prv1xut8kp21nq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1593244318133-439">
+        <addForeignKeyConstraint baseColumnNames="f_reference" baseTableName="tbl_class_document" constraintName="FKe8lmermlk2groqhijmgu24kte" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1593244318133-440">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_class_document" constraintName="FKkuxlxrrh6am1ewfub61r2qgta" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1593244318133-441">
+        <addForeignKeyConstraint baseColumnNames="f_letter_type" baseTableName="tbl_class_document" constraintName="FKn7btiae8cebg6exj361vktj5i" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
 
 </databaseChangeLog>

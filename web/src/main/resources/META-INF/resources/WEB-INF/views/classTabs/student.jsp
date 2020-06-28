@@ -9,6 +9,7 @@
     var evalData;
     var isEditing=false;
     var url='';
+    var studentSelection=false;
 
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
@@ -213,7 +214,9 @@
             {name: "student.ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
             {name: "student.ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
             {name: "student.ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
-            {name: "student.fatherName", title: "<spring:message code="father.name"/>", filterOperator: "iContains"}
+            {name: "student.fatherName", title: "<spring:message code="father.name"/>", filterOperator: "iContains"},
+            {name: "student.mobile", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
+            {name: "student.birthCertificateNo", title: "<spring:message code="birth.certificate.no"/>", filterOperator: "iContains"}
         ],
 
         fetchDataURL: tclassStudentUrl + "/students-iscList/"
@@ -237,18 +240,18 @@
         sortField: 1,
         sortDirection: "descending",
         fields: [
-            {name: "student.firstName"},
-            {name: "student.lastName"},
+            {name: "student.firstName", autoFitWidth: true},
+            {name: "student.lastName", autoFitWidth: true},
             {name: "student.nationalCode",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                }, autoFitWidth: true
             },
             {name: "student.fatherName",hidden:true},
             {
                 name: "applicantCompanyName",
                 textAlign: "center",
-                width: "*",
+                autoFitWidth: true,
                 <%--editorType: "ComboBoxItem",--%>
                 <%--changeOnKeypress: true,--%>
                 <%--displayField: "titleFa",--%>
@@ -283,6 +286,7 @@
                 optionDataSource: StudentsDS_PresenceType,
                 valueField: "id",
                 displayField: "title",
+                autoFitWidth: true,
                 filterOnKeypress: true,
                 canEdit: true,
                 changed: function (form, item, value) {
@@ -292,19 +296,23 @@
             {name: "student.personnelNo",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                autoFitWidth: true
             },
             {name: "student.personnelNo2",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                autoFitWidth: true
             },
-            {name: "student.postTitle"},
-            {name: "student.ccpArea"},
-            {name: "student.ccpAssistant"},
-            {name: "student.ccpAffairs"},
-            {name: "student.ccpSection"},
-            {name: "student.ccpUnit"}
+            {name: "student.postTitle",autoFitWidth: true},
+            {name: "student.mobile",autoFitWidth: true},
+            {name: "student.birthCertificateNo",autoFitWidth: true},
+            {name: "student.ccpArea",autoFitWidth: true},
+            {name: "student.ccpAssistant",autoFitWidth: true},
+            {name: "student.ccpAffairs",autoFitWidth: true},
+            {name: "student.ccpSection",autoFitWidth: true},
+            {name: "student.ccpUnit",autoFitWidth: true}
         ],
         gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
        // contextMenu: StudentMenu_student,
@@ -351,7 +359,7 @@
                 name: "applicantCompanyName",
                 title: "<spring:message code="company.applicant"/>",
                 textAlign: "center",
-                canEdit: true,
+                //canEdit: true,
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -380,7 +388,7 @@
                 title: "<spring:message code="class.presence.type"/>",
                 type: "selectItem",
                 optionDataSource: StudentsDS_PresenceType,
-                canEdit: true,
+                //canEdit: true,
                 valueField: "id",
                 displayField: "title",
                 filterOnKeypress: true,
@@ -397,6 +405,25 @@
         ],
         gridComponents: ["filterEditor", "header", "body"],
         canRemoveRecords: true,
+        removeRecordClick:function (rowNum){
+            let nationalCode = SelectedPersonnelsLG_student.data[rowNum].nationalCode;
+
+            studentSelection=true;
+            let list=PersonnelsLG_student.getSelection();
+            let current=list.filter(function(x){return x.nationalCode==nationalCode});
+            current.setProperty("enabled", true);
+            PersonnelsLG_student.deselectRecord(current)
+
+
+            list=PersonnelsRegLG_student.getSelection();
+            current=list.filter(function(x){return x.nationalCode==nationalCode});
+            current.setProperty("enabled", true);
+            PersonnelsRegLG_student.deselectRecord(current)
+
+            studentSelection=false;
+
+            SelectedPersonnelsLG_student.data.removeAt(rowNum);
+        }
     });
 
     PersonnelDS_student = isc.TrDS.create({
@@ -460,6 +487,24 @@
             {name: "ccpSection",hidden:true},
             {name: "ccpUnit",hidden:true},
         ],
+        dataArrived:function(startRow, endRow){
+            let lgNationalCodes = StudentsLG_student.data.localData.map(function(item) {
+                return item.student.nationalCode;
+            });
+            let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function(item) {
+                return item['nationalCode'];
+            });
+
+            let nationals=lgNationalCodes.concat(selectedNationalCodes);
+
+            let findRows=PersonnelsLG_student.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"nationalCode",operator:"inSet",value:nationals}]});
+            studentSelection=true;
+
+            PersonnelsLG_student.setSelectedState(findRows);
+            findRows.setProperty("enabled", false);
+
+            studentSelection=false;
+        },
         gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -473,55 +518,65 @@
         selectionAppearance: "checkbox",
         selectionUpdated: function () {
 
-            SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
-                if(current.nationalCode=="" || current.nationalCode ==null || typeof(current.nationalCode)=="undefined")
-                {
-                    isc.Dialog.create({
-                        message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
-                        icon: "[SKIN]stop.png",
-                        title: "<spring:message code="message"/>",
-                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
+            if(studentSelection){
+                return ;
+            }
+
+
+            let current=PersonnelsLG_student.getSelection().filter(function(x){return x.enabled!=false})[0];//.filter(p->p.enabled==false);
+
+            if(typeof(current)=="undefined"){
+                return;
+            }
+            if(current.nationalCode=="" || current.nationalCode ==null || typeof(current.nationalCode)=="undefined")
+            {
+                isc.Dialog.create({
+                    message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+
+                studentSelection=true;
+                PersonnelsLG_student.deselectRecord(current)
+                studentSelection=false;
+            }
+            else if(!nationalCodeExists(current.nationalCode))
+            {
+                if (checkIfAlreadyExist(current)) {
+                    return '';
+                } else {
+                    current.applicantCompanyName = current.companyName;
+                    current.presenceTypeId = studentDefaultPresenceId;
+                    current.registerTypeId = 1;
+
+                    SelectedPersonnelsLG_student.data.add(Object.assign({}, current));
+                    PersonnelsLG_student.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"nationalCode",operator:"equals",value:current.nationalCode}]}).setProperty("enabled", false);
+                }
+
+                function checkIfAlreadyExist(currentVal) {
+                    return SelectedPersonnelsLG_student.data.some(function (item) {
+                        return (item.nationalCode === currentVal.nationalCode);
                     });
                 }
-                else if(!nationalCodeExists(current.nationalCode))
-                {
-                    if (checkIfAlreadyExist(current)) {
-                        return accumulator
-                    } else {
-                        current.applicantCompanyName = current.companyName;
-                        current.presenceTypeId = studentDefaultPresenceId;
-                        current.registerTypeId = 1;
-                        return accumulator.concat([current]);
+            }
+            else {
+                isc.Dialog.create({
+                    message: "<spring:message code="student.is.duplicate"/>",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
                     }
-
-                    function checkIfAlreadyExist(currentVal) {
-                        return accumulator.some(function (item) {
-                            return (item.nationalCode === currentVal.nationalCode);
-                        });
-                    }
-                }
-                else {
-                    isc.Dialog.create({
-                        message: "<spring:message code="student.is.duplicate"/>",
-                        icon: "[SKIN]stop.png",
-                        title: "<spring:message code="message"/>",
-                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                }
-
-            }, []));
-
-           // var record = PersonnelsRegLG_student.getSelectedRecord();
-            // checkStudentDuplicateNationalCode(record.getValue("nationalCode"));
-
-            // var record = PersonnelsRegLG_student.getSelectedRecord().getValue("nationalCode");
-            //  checkStudentDuplicateNationalCode();
+                });
+                studentSelection=true;
+                PersonnelsLG_student.deselectRecord(current)
+                studentSelection=false;
+            }
         }
     });
 
@@ -592,6 +647,24 @@
             {name: "ccpUnit",hidden:true},
         ],
         gridComponents: [RegisteredTS_student, "filterEditor", "header", "body"],
+        dataArrived:function(startRow, endRow){
+            let lgNationalCodes = StudentsLG_student.data.localData.map(function(item) {
+                return item.student.nationalCode;
+            });
+            let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function(item) {
+                return item['nationalCode'];
+            });
+
+            let nationals=lgNationalCodes.concat(selectedNationalCodes);
+
+            let findRows=PersonnelsRegLG_student.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"nationalCode",operator:"inSet",value:nationals}]});
+            studentSelection=true;
+
+            PersonnelsRegLG_student.setSelectedState(findRows);
+            findRows.setProperty("enabled", false);
+
+            studentSelection=false;
+        },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -603,58 +676,65 @@
         },
         selectionAppearance: "checkbox",
         selectionUpdated: function () {
-            SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
-                if(current.nationalCode=="" || current.nationalCode ==null || typeof(current.nationalCode)=="undefined")
-                {
-                    isc.Dialog.create({
-                        message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
-                        icon: "[SKIN]stop.png",
-                        title: "<spring:message code="message"/>",
-                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                }
-                else if(!nationalCodeExists(current.nationalCode))
-                {
+            if(studentSelection){
+                return ;
+            }
+            let current=PersonnelsRegLG_student.getSelection().filter(function(x){return x.enabled!=false})[0];//.filter(p->p.enabled==false);
+
+            if(typeof(current)=="undefined"){
+                return;
+            }
+            if(current.nationalCode=="" || current.nationalCode ==null || typeof(current.nationalCode)=="undefined")
+            {
+                isc.Dialog.create({
+                    message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+
+                studentSelection=true;
+                PersonnelsRegLG_student.deselectRecord(current)
+                studentSelection=false;
+            }
+            else if(!nationalCodeExists(current.nationalCode))
+            {
                 if (checkIfAlreadyExist(current)) {
-                    return accumulator
+                    return '';
                 } else {
                     current.applicantCompanyName = current.companyName;
                     current.presenceTypeId = studentDefaultPresenceId;
                     current.registerTypeId = 2;
-                    return accumulator.concat([current]);
+
+                    SelectedPersonnelsLG_student.data.add(Object.assign({}, current));
+                    PersonnelsRegLG_student.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"nationalCode",operator:"equals",value:current.nationalCode}]}).setProperty("enabled", false);
                 }
 
                 function checkIfAlreadyExist(currentVal) {
-                    return accumulator.some(function (item) {
+                    return SelectedPersonnelsLG_student.data.some(function (item) {
                         return (item.nationalCode === currentVal.nationalCode);
                     });
                 }
+            }
+            else {
+                isc.Dialog.create({
+                    message: "<spring:message code="student.is.duplicate"/>",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
 
+                studentSelection=true;
+                PersonnelsRegLG_student.deselectRecord(current)
+                studentSelection=false;
+            }
 
-                }
-                else {
-                    isc.Dialog.create({
-                        message: "<spring:message code="student.is.duplicate"/>",
-                        icon: "[SKIN]stop.png",
-                        title: "<spring:message code="message"/>",
-                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                }
-
-
-            }, []));
-
-            // var record = PersonnelsRegLG_student.getSelectedRecord();
-            // checkStudentDuplicateNationalCode(record.getValue("nationalCode"));
-
-            // var record = PersonnelsRegLG_student.getSelectedRecord().getValue("nationalCode");
-            // checkStudentDuplicateNationalCode();
         }
     });
 

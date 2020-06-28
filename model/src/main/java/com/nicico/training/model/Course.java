@@ -93,8 +93,8 @@ public class Course extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
     private List<Course> preCourseList;
 
-    @ManyToMany(mappedBy = "preCourseList", fetch = FetchType.LAZY)
-    private List<Course> preCourseListOf;
+//    @ManyToMany(mappedBy = "preCourseList", fetch = FetchType.LAZY)
+//    private List<Course> preCourseListOf;
 
     @Column(name = "e_run_type")
     private ERunType eRunType;

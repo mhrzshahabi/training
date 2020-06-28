@@ -41,6 +41,9 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     private NeedsAssessmentReportsService needsAssessmentReportsService;
 
     @Autowired
+    private NeedsAssessmentTempService needsAssessmentTempService;
+
+    @Autowired
     NeedsAssessmentService(NeedsAssessmentDAO competenceDAO) {
         super(new NeedsAssessment(), competenceDAO);
     }
@@ -57,10 +60,9 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
         String objectType = "";
         List<SearchDTO.CriteriaRq> criteriaList = request.getCriteria().getCriteria();
         for (SearchDTO.CriteriaRq c : criteriaList) {
-            if(c.getFieldName().equalsIgnoreCase("objectId")) {
+            if (c.getFieldName().equalsIgnoreCase("objectId")) {
                 objectId = Long.valueOf((Integer) c.getValue().get(0));
-            }
-            else if(c.getFieldName().equalsIgnoreCase("objectType")){
+            } else if (c.getFieldName().equalsIgnoreCase("objectType")) {
                 objectType = c.getValue().get(0).toString();
             }
         }
@@ -69,8 +71,20 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
 
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> fullSearch(Long objectId, String objectType) {
-        List<NeedsAssessmentDTO.Info> naList = modelMapper.map(needsAssessmentReportsService.getNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {
-        }.getType());
+        List<NeedsAssessmentDTO.Info> naList;
+        if (needsAssessmentTempService.readOnlyStatus(objectType, objectId) == 1)
+            naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());
+        else
+            naList = modelMapper.map(needsAssessmentReportsService.getNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());
+        SearchDTO.SearchRs<NeedsAssessmentDTO.Info> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) naList.size());
+        rs.setList(naList);
+        return rs;
+    }
+
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> workflowSearch(Long objectId, String objectType) {
+        List<NeedsAssessmentDTO.Info> naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());
         SearchDTO.SearchRs<NeedsAssessmentDTO.Info> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) naList.size());
         rs.setList(naList);
@@ -145,7 +159,7 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
 //            father.setProperty(property,child.getProperty(property));
             father.setName(child.getProperty(property));
             father.setParentId((long) parent);
-            NeedsAssessmentDTO.Tree node = ancestors.stream().filter(n -> n.equvalentOf(father, property)).findFirst().orElse(null);
+            NeedsAssessmentDTO.Tree node = ancestors.stream().filter(n -> n.equvalentOf(father)).findFirst().orElse(null);
             if (node == null) {
                 father.setId((long) i);
                 ancestors.add(father);
