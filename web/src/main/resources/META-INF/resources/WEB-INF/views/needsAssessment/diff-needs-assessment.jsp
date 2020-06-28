@@ -1235,7 +1235,9 @@
     }
     function removeRecord_JspDiffNeedsAssessment(record, state=0) {
         if(record.objectType === NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")){
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/workflow/" + record.id, "DELETE", null, function (resp) {
+                wait.close()
                 if (resp.httpResponseCode !== 200) {
                     createDialog("info","خطا در حذف مهارت");
                     return 0;
@@ -1259,7 +1261,7 @@
         // ];
         updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, objectType);
         clearAllGrid_Diff();
-        let wait = createDialog("wait");
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
             if (resp.httpResponseCode !== 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
@@ -1352,7 +1354,9 @@
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
         }
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/workflow", "POST", JSON.stringify(data),function(resp){
+            wait.close()
             if (resp.httpResponseCode != 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
@@ -1428,7 +1432,9 @@
                     record.needsAssessmentPriorityId = 111;
                     break;
             }
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/workflow/" + record.id, "PUT", JSON.stringify(record), function (resp) {
+                wait.close()
                 if (resp.httpResponseCode !== 200) {
                     createDialog("info", "<spring:message code='error'/>");
                     return;

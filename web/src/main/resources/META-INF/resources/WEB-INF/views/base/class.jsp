@@ -8,6 +8,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
+    wait.show()
     var etcTargetSociety = [];
     var classMethod = "POST";
     var autoValid = false;
@@ -516,6 +517,7 @@
             }
         },
         dataArrived: function () {
+            wait.close();
             selectWorkflowRecord();
         },
         // getExpansionComponent: function (record) {
@@ -1106,7 +1108,11 @@
                     }
                     if(classMethod ==="PUT"){
                         let record = ListGrid_Class_JspClass.getSelectedRecord();
-                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, "callback:GetScoreState(rpcResponse,'" + record.id + "' )"));
+                        wait.show()
+                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, (resp)=>{
+                            wait.close();
+                            GetScoreState(resp,record.id);
+                        }));
                     }
                 },
             },
@@ -1693,7 +1699,6 @@
             delete data.course;
             delete data.term;
             if (data.scoringMethod == "1") {
-
                 data.acceptancelimit = data.acceptancelimit_a
             }
             let classSaveUrl = classUrl;
@@ -1704,7 +1709,7 @@
             {
                 classSaveUrl += "safeCreate";
             }
-            let wait = createDialog("wait");
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), (resp)=>{
                 wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -1726,7 +1731,11 @@
                     if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
                         if (autoValid) {
                             ClassID = JSON.parse(resp.data).id;
-                            isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), "callback: class_get_sessions_result(rpcResponse)"));
+                            wait.show()
+                            isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), (resp)=>{
+                                wait.close()
+                                class_get_sessions_result(resp)
+                            }));
                         }
                     }
                     //**********generate class sessions**********
@@ -2339,7 +2348,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        classWait = createDialog("wait");
+                        wait.show()
                         isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, "callback: class_delete_result(rpcResponse)"));
                     }
                 }
@@ -2518,6 +2527,7 @@
                 "targetTitleFa": "کلاس"
             }]
             if (classMethod.localeCompare("POST") === 0) {
+                wait.show()
                 isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
             }
 
@@ -2538,6 +2548,7 @@
     }
 
     function startProcess(resp) {
+        wait.close()
         if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code="course.set.on.workflow.engine"/>");
         } else  if (resp.httpResponseCode === 404) {
@@ -2550,7 +2561,7 @@
     }
 
     function class_delete_result(resp) {
-        classWait.close();
+        wait.close();
         if (resp.httpResponseCode === 200) {
             ListGrid_Class_JspClass.invalidateCache();
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
@@ -2686,6 +2697,7 @@
     }
 
     function getDaysOfClass(classId) {
+        wait.show()
         isc.RPCManager.sendRequest({
             actionURL: attendanceUrl + "/session-date?classId=" + classId,
             httpMethod: "GET",
@@ -2695,6 +2707,7 @@
             showPrompt: false,
             serverOutputAsString: false,
             callback: function (resp) {
+                wait.close()
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let result = JSON.parse(resp.data).response.data;
                     DynamicForm_Class_JspClass.setValue("dDuration", result.length);
@@ -2727,10 +2740,10 @@
     //*****check class is ready to end or no*****
     function checkEndingClass(oldValue) {
         let record = ListGrid_Class_JspClass.getSelectedRecord();
-        if (record !== null)
-
+        if (record !== null) {
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id + "/" + record.endDate.replaceAll("/", "-"), "GET", null, function (resp) {
-
+                wait.close();
                 if (resp.data !== "") {
                     TabSet_Class.selectTab("classAlarmsTab");
                     isc.Dialog.create({
@@ -2747,14 +2760,17 @@
                 }
 
             }));
+        }
     }
 
     function hasClassStarted(oldValue){
         let record = ListGrid_Class_JspClass.getSelectedRecord();
-        if (record !== null)
+        if (record !== null) {
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasClassStarted/" + record.id, "GET", null, function (resp) {
+                wait.close()
                 if (resp.data !== "") {
-                    if(resp.data == "false") {
+                    if (resp.data == "false") {
                         classTypeStatus.setValue(oldValue);
                         isc.Dialog.create({
                             message: "تاریخ شروع کلاس " + ListGrid_Class_JspClass.getSelectedRecord().startDate + " می باشد",
@@ -2769,16 +2785,20 @@
                 }
 
             }));
+        }
     }
 
     function getOrganizers(){
-        if(userPersonInfo !== null && userPersonInfo !== undefined)
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultExecutor/DefaultClassOrganizer/" + userPersonInfo.complexTitle , "GET", null,
-            function (resp) {
-                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201)
-                    setOrganize(JSON.parse(resp.data));
-            }
-        ));
+        if(userPersonInfo !== null && userPersonInfo !== undefined) {
+            wait.show()
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultExecutor/DefaultClassOrganizer/" + userPersonInfo.complexTitle, "GET", null,
+                function (resp) {
+                    wait.close()
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201)
+                        setOrganize(JSON.parse(resp.data));
+                }
+            ));
+        }
     }
     function setOrganize(institute){
         DynamicForm_Class_JspClass.setValue("organizerId",institute.id)
@@ -2789,8 +2809,9 @@
         let sRecord = VM_JspClass.getValues();
 
 
+        wait.show()
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
-
+            wait.close()
             let workflowStatusCode = resp.data;
 
             if (classMethod.localeCompare("PUT") === 0 && sRecord.classStatus === "3" && (workflowStatusCode === "" || workflowStatusCode === "-3")) {
@@ -2811,6 +2832,7 @@
                     "workflowStatusCode": "0"
                 }];
 
+                wait.show()
                 isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
             }
 
@@ -2819,6 +2841,7 @@
     }
 
     function startProcess_callback(resp) {
+        wait.close()
         if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
             ListGrid_Class_refresh();
@@ -2876,6 +2899,7 @@
 
                 var ndat = class_workflowParameters.workflowdata;
 
+                wait.show()
                 isc.RPCManager.sendRequest({
                     actionURL: workflowUrl + "/doUserTask",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -2887,6 +2911,7 @@
                     params: {"taskId": class_workflowParameters.taskId, "usr": class_workflowParameters.usr},
                     serverOutputAsString: false,
                     callback: function (RpcResponse_o) {
+                        wait.close()
                         if (RpcResponse_o.data === 'success') {
 
                             ListGrid_Class_refresh();
@@ -2914,8 +2939,10 @@
     }
 
     function getTargetSocieties(id) {
+        wait.show()
         isc.RPCManager.sendRequest(
             TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {
+                wait.close()
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     var societies = [];
                     var item = 0;
@@ -2946,8 +2973,10 @@
     }
     
     function getSocietiesList() {
+        wait.show()
         isc.RPCManager.sendRequest(
             TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
+                wait.close()
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
                     DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
@@ -2986,8 +3015,9 @@
             return;
         }
         let sRecord = VM_JspClass.getValues();
+        wait.show()
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
-
+            wait.close()
             let workflowStatusCode = resp.data;
 
             if (sRecord.classStatus === "3") {

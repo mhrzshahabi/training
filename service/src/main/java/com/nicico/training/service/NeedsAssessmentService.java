@@ -48,11 +48,11 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
         super(new NeedsAssessment(), competenceDAO);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(dao, request, na -> modelMapper.map(na, NeedsAssessmentDTO.Info.class));
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> search(SearchDTO.SearchRq request) {
+//        return SearchUtil.search(dao, request, na -> modelMapper.map(na, NeedsAssessmentDTO.Info.class));
+//    }
 
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> fullSearch(SearchDTO.SearchRq request) {

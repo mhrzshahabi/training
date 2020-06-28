@@ -79,6 +79,14 @@ public class NeedsAssessmentRestController {
         needsAssessmentTempService.rollback(objectType, objectId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @Loggable
+    @GetMapping("/copy/{typeCopyOf}/{idCopyOf}/{typeCopyTo}/{idCopyTo}")
+    public ResponseEntity<Boolean> copyOf(@PathVariable String typeCopyOf,
+                                 @PathVariable Long idCopyOf,
+                                 @PathVariable String typeCopyTo,
+                                 @PathVariable Long idCopyTo) {
+        return new ResponseEntity<>(needsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, typeCopyTo, idCopyTo), HttpStatus.OK);
+    }
 
     @Loggable
     @PostMapping

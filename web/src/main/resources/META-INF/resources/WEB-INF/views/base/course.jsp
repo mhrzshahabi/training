@@ -8,6 +8,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
+    wait.show();
     var testData = [];
     var mainObjectiveList = [];
     var equalCourse = [];
@@ -322,6 +323,7 @@
 
         //working
         dataArrived: function () {
+            wait.close()
             selectWorkflowRecord();
             // var gridState = "[{id:285}]";
             // ListGrid_Course.setSelectedState(gridState);
@@ -736,6 +738,7 @@
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
                                 if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
+                                    wait.show()
                                     isc.RPCManager.sendRequest({
                                         actionURL: skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id,
                                         httpMethod: "DELETE",
@@ -745,6 +748,7 @@
                                         showPrompt: false,
                                         serverOutputAsString: false,
                                         callback: function (resp) {
+                                            wait.close()
                                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                                 mainObjectiveGrid_Refresh();
                                                 <%--createDialog("info", "<spring:message code='msg.operation.successful'/>", "<spring:message code="msg.command.done"/>");--%>
@@ -843,6 +847,7 @@
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
+                                wait.show()
                                 isc.RPCManager.sendRequest({
                                     actionURL: skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id,
                                     httpMethod: "POST",
@@ -852,6 +857,7 @@
                                     showPrompt: false,
                                     serverOutputAsString: false,
                                     callback: function (resp) {
+                                        wait.close()
                                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                             <%--createDialog("info", "<spring:message code='msg.operation.successful'/>", "<spring:message code="msg.command.done"/>");--%>
                                             skillsListBtnListGridCourse.click();
@@ -1076,6 +1082,7 @@
                 showHoverComponents: this.showHoverComponents,
                 getCellHoverComponent: function (record, rowNum, colNum) {
                     equalPreCourse.length = 0;
+                    wait.show()
                     isc.RPCManager.sendRequest({
                         actionURL: courseUrl + "equalCourse/" + record.id,
                         httpMethod: "GET",
@@ -1085,6 +1092,7 @@
                         showPrompt: false,
                         serverOutputAsString: false,
                         callback: function (resp) {
+                            wait.close()
                             for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                                 equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
                             }
@@ -1282,7 +1290,6 @@
                     showFilterEditor: false,
                 },
                 pickListFields: [
-
                     {name: "titleFa", title: "<spring:message code="title"/>"},
                     {name: "code", title: "<spring:message code="code"/>"}
                 ],
@@ -1791,7 +1798,7 @@
 //------------------------------------
             if (course_method == "POST") {
                 x = courseCode();
-                let wait = createDialog("wait");
+                wait.show()
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
                     let newCourseCounter = courseCounterCode(resp.data);
                     x = x + newCourseCounter;
@@ -1874,7 +1881,7 @@
                 delete data1["etechnicalType"];
                 data1.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
                 data1.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("etechnicalType.id");
-                let wait = createDialog("wait");
+                wait.show()
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
                     wait.close();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -2704,6 +2711,7 @@
                     this.close();
 
                     if (index == 0) {
+                        wait.show()
                         isc.RPCManager.sendRequest({
                             actionURL: courseUrl + "deleteCourse/" + record.id,
                             httpMethod: "DELETE",
@@ -2713,6 +2721,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
+                                wait.close();
                                 if (resp.data === "true") {
                                     ListGrid_Course_refresh();
                                     ListGrid_CourseJob.setData([]);
@@ -2756,6 +2765,7 @@
             vm_JspCourse.clearValues();
             vm_JspCourse.clearErrors();
             // DynamicForm_course_GroupTab.clearValues();
+            wait.show()
             isc.RPCManager.sendRequest({
                 actionURL: courseUrl + "preCourse/" + courseRecord.id,
                 httpMethod: "GET",
@@ -2768,22 +2778,24 @@
                     for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         preCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
+                    isc.RPCManager.sendRequest({
+                        actionURL: courseUrl + "equalCourse/" + courseRecord.id,
+                        httpMethod: "GET",
+                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                        useSimpleHttp: true,
+                        contentType: "application/json; charset=utf-8",
+                        showPrompt: false,
+                        serverOutputAsString: false,
+                        callback: function (resp) {
+                            wait.close();
+                            for (let i = 0; i < JSON.parse(resp.data).length; i++) {
+                                equalCourseDS.addData(JSON.parse(resp.data)[i]);
+                            }
+                        }
+                    });
                 }
             });
-            isc.RPCManager.sendRequest({
-                actionURL: courseUrl + "equalCourse/" + courseRecord.id,
-                httpMethod: "GET",
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    for (let i = 0; i < JSON.parse(resp.data).length; i++) {
-                        equalCourseDS.addData(JSON.parse(resp.data)[i]);
-                    }
-                }
-            });
+
             mainObjectiveGrid_Refresh();
             // RestDataSource_category.fetchDataURL = categoryUrl + "spec-list";
             // DynamicForm_course_GroupTab.getItem("categoryId").fetchData();
@@ -2841,6 +2853,7 @@
         mainObjectiveList.length = 0;
         mainObjectiveGrid.invalidateCache();
         if (x1 == 0) {
+            wait.show()
             isc.RPCManager.sendRequest({
                 actionURL: skillUrl + "/main-objective/" + courseRecord.id,
                 httpMethod: "GET",
@@ -2850,6 +2863,7 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    wait.close()
                     for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         mainObjectiveDS.addData(JSON.parse(resp.data)[i]);
                     }
@@ -2941,6 +2955,7 @@
                     listId.add(data[i].idEC);
                 }
             }
+            wait.show()
             isc.RPCManager.sendRequest({
                 actionURL: courseUrl + "set" + plus + "/" + id + "?type=" + type,
                 httpMethod: "PUT",
@@ -2951,6 +2966,7 @@
                 data: JSON.stringify(listId),
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    wait.close()
                 }
             }, 1000)
         })
@@ -2960,10 +2976,13 @@
     //*****get course main objective*****
     function getCourseMainObjective_RunWorkflow(oldValue) {
         let record = ListGrid_Course.getSelectedRecord();
-        if (record !== null)
+        if (record !== null) {
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getCourseMainObjective/" + record.id, "GET", null, function (resp) {
+                wait.close()
                 sendCourseToWorkflow(resp.data);
             }));
+        }
     }
 
     function sendCourseToWorkflow(courseMainObjective) {
@@ -3000,7 +3019,11 @@
                             "workflowStatusCode": "0"
                         }];
 
-                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                        wait.show()
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{
+                            wait.close()
+                            startProcess_callback
+                        }));
 
                     }
                 }
@@ -3061,6 +3084,7 @@
                 course_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";
                 course_workflowParameters.workflowdata["workflowStatusCode"] = "20";
                 let ndat = course_workflowParameters.workflowdata;
+                wait.show()
                 isc.RPCManager.sendRequest({
                     actionURL: workflowUrl + "/doUserTask",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -3072,18 +3096,13 @@
                     params: {"taskId": course_workflowParameters.taskId, "usr": course_workflowParameters.usr},
                     serverOutputAsString: false,
                     callback: function (RpcResponse_o) {
+                        wait.close();
                         if (RpcResponse_o.data === 'success') {
-
                             ListGrid_Course_refresh();
-
                             let responseID = sRecord.id;
-
                             let gridState = "[{id:" + responseID + "}]";
-
                             ListGrid_Course.setSelectedState(gridState);
-
                             ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
-
                             isc.say("دوره ویرایش و به گردش کار ارسال شد");
                             taskConfirmationWindow.hide();
                             taskConfirmationWindow.maximize();

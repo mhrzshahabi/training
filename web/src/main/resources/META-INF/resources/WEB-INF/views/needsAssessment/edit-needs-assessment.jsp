@@ -212,6 +212,12 @@
                 hoverHTML(record) {
                     return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
                 },
+                sortNormalizer(record){
+                    if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
+                        return 0;
+                    }
+                    return 1;
+                }
             },
             {name: "objectName"},
             {name: "objectCode"},
@@ -271,7 +277,9 @@
                 click: function () {
                     let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
                     let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                    wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
+                        wait.close()
                         if(resp.httpResponseCode === 200){
                             editNeedsAssessmentRecord(id, type);
                         }
@@ -378,6 +386,7 @@
     var Button_CourseDetail_JspEditNeedsAssessment = isc.Button.create({
         title:"جزئیات دوره",
         margin: 1,
+        baseStyle: "toolStripButton",
         // borderRadius: 5,
         click(){
            if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()||ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()||ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()){
@@ -410,14 +419,7 @@
            }
         }
     });
-    var Button_CopyOf_JspEditNeedsAssessment = isc.Button.create({
-        title:"کپی از",
-        // borderRadius: 5,
-        margin: 1,
-        click(){
 
-        }
-    });
     var Button_changeShow_JspEditNeedsAssessment = isc.Button.create({
         title:"مشاهده تغییرات",
         margin: 1,
@@ -604,6 +606,7 @@
                 fields: ["titleFa", "objectType"],
                 title: "<spring:message code="knowledge"/>"
             }],
+        sortField: 1,
         headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
@@ -678,6 +681,7 @@
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
+        sortField: 1,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
@@ -750,6 +754,7 @@
             //     }
             // }
         ],
+        sortField: 1,
         headerSpans: [
             {
                 fields: ["titleFa", "objectType"],
@@ -860,6 +865,10 @@
                 autoFetchData: false,
                 pickListFields: [{name: "title"}],
                 defaultToFirstOption: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both",
+                },
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue) {
                         updateObjectIdLG(form, value);
@@ -874,10 +883,16 @@
                 name: "objectId",
                 showTitle: false,
                 optionDataSource: JobDs_needsAssessment,
-                // editorType: "SelectItem",
+                editorType: "ComboBoxItem",
                 valueField: "id",
                 displayField: "titleFa",
+                filterFields: ["code","titleFa"],
                 autoFetchData: false,
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both",
+                },
                 pickListFields: [
                     {name: "code"},
                     {name: "titleFa"}
@@ -900,6 +915,125 @@
             },
             // {name: "btnCourseDetail", type:"Button", title:"جزئیات دوره", startRow: false},
         ]
+    });
+    var DynamicForm_CopyOf_JspEditNeedsAssessment = isc.DynamicForm.create({
+        ID: "DynamicForm_CopyOf_JspEditNeedsAssessment",
+        margin: 10,
+        numCols: 2,
+        fields: [
+            {
+                name: "objectType",
+                showTitle: false,
+                optionDataSource: NeedsAssessmentTargetDS_needsAssessment,
+                valueField: "code",
+                displayField: "title",
+                defaultValue: "Job",
+                autoFetchData: false,
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both",
+                },
+                pickListFields: [{name: "title"}],
+                defaultToFirstOption: true,
+                changed: function (form, item, value, oldValue) {
+                    if(value !== oldValue) {
+                        updateObjectIdLG(form, value);
+                        form.getItem("objectId").clearValue();
+                    }
+                },
+            },
+            {
+                name: "objectId",
+                showTitle: false,
+                optionDataSource: JobDs_needsAssessment,
+                editorType: "ComboBoxItem",
+                valueField: "id",
+                width: 500,
+                displayField: "titleFa",
+                filterFields: ["code","titleFa"],
+                textMatchStyle: "substring",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both",
+                },
+                pickListFields: [
+                    {name: "titleFa", title: "<spring:message code="title"/>"},
+                    {name: "code", title: "<spring:message code="code"/>"}
+                ],
+                click: function(form, item){
+                    item.fetchData();
+                },
+                changed: function (form, item, value, oldValue) {
+                    if(value !== oldValue){
+                    }
+                },
+            },
+            {
+                title: "تایید",
+                colSpan: 2,
+                width:100,
+                type:"Button",
+                align: "center",
+                click(){
+                    Menu_JspEditNeedsAssessment.hideContextMenu();
+                    let url = needsAssessmentUrl + "/copy/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectType")
+                    + "/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectId") + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                    + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId");
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
+                        wait.close();
+                        console.log(resp.data);
+                        if(resp.data === "true"){
+                            editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
+                        }
+                        else if(resp.data === "false"){
+                            readOnly(true);
+                        }
+                    }));
+                }
+            }
+        ]
+    });
+
+    var Menu_JspEditNeedsAssessment = isc.Menu.create({
+        // ID: "menu",
+        // title:"کپی از",
+        // autoDraw: false,
+        // showShadow: true,
+        // width: 505,
+        // height: 440,
+        // borderRadius: 5,
+        margin: 1,
+        data:[
+            {
+                // title: "Edit",
+                // showRollOver: false,
+                embeddedComponent: isc.TrVLayout.create({
+                    // autoDraw: false,
+                    // height: "100%",
+                    // snapTo: "TR",
+                    // membersMargin: 3,
+                    // layoutRightMargin: 3,
+                    // defaultLayoutAlign: "center",
+                    members: [
+                        DynamicForm_CopyOf_JspEditNeedsAssessment
+                    ]
+                }),
+                // embeddedComponentFields: ["key"]
+            },
+        ]
+    });
+    var Button_CopyOf_JspEditNeedsAssessment = isc.MenuButton.create({
+        // ID: "menuButton",
+        // autoDraw: false,
+        // height:20,
+        baseStyle: "toolStripButton",
+        borderRadius: 5,
+        title: "کپی نیازسنجی از",
+        titleAlign: "center",
+        width: 120,
+        menu: Menu_JspEditNeedsAssessment
     });
     var HLayout_Label_PlusData_JspNeedsAssessment = isc.TrHLayout.create({
         height: "1%",
@@ -940,7 +1074,11 @@
         });
 
     isc.TrVLayout.create({
-        members: [DynamicForm_JspEditNeedsAssessment, HLayout_Label_PlusData_JspNeedsAssessment, HLayout_Bottom, ToolStrip_JspNeedsAssessment],
+        members: [
+            DynamicForm_JspEditNeedsAssessment,
+            HLayout_Label_PlusData_JspNeedsAssessment,
+            HLayout_Bottom,
+            ToolStrip_JspNeedsAssessment],
     });
 
     function updateObjectIdLG(form, value) {
@@ -1062,7 +1200,7 @@
     function removeRecord_JspNeedsAssessment(record, state=0) {
         if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
             // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "DELETE", null, function (resp) {
-            let wait = createDialog("wait");
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "/" + record.objectType + "/" + record.objectId , "DELETE", null, function (resp) {
                 wait.close();
                 if (resp.httpResponseCode === 409) {
@@ -1091,9 +1229,9 @@
         // ];
         updateObjectIdLG(DynamicForm_JspEditNeedsAssessment, objectType);
         clearAllGrid();
-        let wait = createDialog("wait");
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
-            wait.close()
+            wait.close();
             if (resp.httpResponseCode !== 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
@@ -1155,7 +1293,7 @@
             return;
         }
         // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "?isFirstChange=" + isFirstChange, "POST", JSON.stringify(data),function(resp){
-        let wait = createDialog("wait");
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "POST", JSON.stringify(data),function(resp){
             wait.close()
             if (resp.httpResponseCode === 409) {
@@ -1225,7 +1363,7 @@
         if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
             let updating = {objectType: record.objectType, objectId: record.objectId, needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1};
             // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "PUT", JSON.stringify(record), function (resp) {
-            let wait = createDialog("wait");
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(updating), function (resp) {
                 wait.close()
                 if (resp.httpResponseCode === 409) {
@@ -1261,7 +1399,7 @@
             DynamicForm_JspEditNeedsAssessment.disable()
         }
         else {
-            let wait = createDialog("wait");
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/isReadOnly/" + type + "/" + objectId.id, "GET", null, (resp) => {
                 wait.close();
                 if(resp.httpResponseCode !== 200){
@@ -1291,6 +1429,8 @@
             ListGrid_Ability_JspNeedsAssessment.disable();
             ListGrid_Attitude_JspNeedsAssessment.disable();
             Button_changeShow_JspEditNeedsAssessment.show();
+            Button_CopyOf_JspEditNeedsAssessment.hide();
+            ToolStrip_JspNeedsAssessment.disable();
             createDialog("info", "بدلیل تایید نشدن تغییرات قبلی، امکان ویرایش وجود ندارد");
         }
         else{
@@ -1298,13 +1438,15 @@
             ListGrid_Knowledge_JspNeedsAssessment.enable();
             ListGrid_Ability_JspNeedsAssessment.enable();
             ListGrid_Attitude_JspNeedsAssessment.enable();
+            Button_CopyOf_JspEditNeedsAssessment.show();
+            ToolStrip_JspNeedsAssessment.enable();
             Button_changeShow_JspEditNeedsAssessment.hide();
         }
 
     }
 
     function isReadOnly(id, type){
-        let wait = createDialog("wait");
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/isReadOnly/" + type + "/" + id, "GET", null, (resp) => {
             wait.close();
             if (resp.httpResponseCode !== 200) {

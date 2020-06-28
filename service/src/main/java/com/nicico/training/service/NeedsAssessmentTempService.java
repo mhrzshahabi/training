@@ -9,6 +9,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.model.NeedsAssessmentTemp;
+import com.nicico.training.model.Skill;
 import com.nicico.training.repository.NeedsAssessmentDAO;
 import com.nicico.training.repository.NeedsAssessmentTempDAO;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -48,6 +50,28 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             modelMapper.map(needsAssessment, needsAssessmentTemp);
             dao.saveAndFlush(needsAssessmentTemp);
         });
+    }
+
+    @Transactional
+    public Boolean copyNA(String sourceObjectType, Long sourceObjectId, String objectType, Long objectId) {
+        switch (readOnlyStatus(objectType, objectId)) {
+            case 0:
+                initial(objectType, objectId);
+                break;
+            case 2:
+                return false;
+        }
+        List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
+        List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(sourceObjectType, sourceObjectId)));
+        sourceNeedsAssessments.forEach(sourceNA -> {
+            if (!skillList.contains(sourceNA.getSkill())) {
+                NeedsAssessmentDTO.Create newNA = new NeedsAssessmentDTO.Create();
+                modelMapper.map(sourceNA, newNA);
+                newNA.setObjectId(objectId).setObjectType(objectType);
+                create(newNA);
+            }
+        });
+        return true;
     }
 
 

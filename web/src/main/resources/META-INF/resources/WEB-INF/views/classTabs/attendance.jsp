@@ -216,7 +216,7 @@
             isc.ToolStripButton.create({
                 title: "چاپ فرم خام",
                 click: function () {
-                    let wait = createDialog("wait");
+                    wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
                         wait.close();
                         if(resp.httpResponseCode == 200){
@@ -461,7 +461,7 @@
                 },
                 changed: function (form, item, value) {
                     if (form.getValue("filterType") == 1) {
-                        let wait = createDialog("wait");
+                        wait.show();
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/session-in-date?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
                             httpMethod: "GET",
@@ -509,7 +509,7 @@
                                     field1.showHover = true;
                                     fields1.add(field1);
                                 }
-                                let wait1 = createDialog("wait");
+                                wait.show();
                                 isc.RPCManager.sendRequest({
                                     actionURL: attendanceUrl + "/auto-create?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
                                     httpMethod: "GET",
@@ -519,7 +519,7 @@
                                     showPrompt: false,
                                     serverOutputAsString: false,
                                     callback: function (resp1) {
-                                        wait1.close();
+                                        wait.close();
                                         let data1 = JSON.parse(resp1.data);
                                         filterValues.length = 0;
                                         filterValues1.length = 0;
@@ -782,7 +782,7 @@
                     }
                     if (form.getValue("filterType") == 2) {
                         isAttendanceDate=false;
-                        let wait1 = createDialog("wait");
+                        wait.show();
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().studentId,
                             httpMethod: "GET",
@@ -792,7 +792,7 @@
                             showPrompt: false,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                wait1.close();
+                                wait.close();
                                 if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
                                     let fields1 = [
                                         {name: "sessionType", title: "نوع جلسه"},
@@ -945,7 +945,7 @@
                                                         sessionIds.add(this.grid.getRecord(this.grid.getAllEditRows()[i]).sessionId)
                                                     }
                                                 }
-                                                let wait2 = createDialog("wait");
+                                                wait.show();
                                                 isc.RPCManager.sendRequest({
                                                     actionURL: attendanceUrl + "/accept-absent-student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + form.getValue("studentId") + "&sessionId=" + sessionIds,
                                                     httpMethod: "GET",
@@ -955,7 +955,7 @@
                                                     showPrompt: false,
                                                     serverOutputAsString: false,
                                                     callback: function (resp) {
-                                                        wait2.close();
+                                                        wait.close();
                                                         if (!JSON.parse(resp.data)) {
                                                             // createDialog("info", "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'خودآموخته' تغییر خواهد کرد");
                                                             isc.MyYesNoDialog.create({
@@ -974,7 +974,7 @@
                                                                         }
                                                                         // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                         attendanceGrid.focusInFilterEditor();
-                                                                        let wait3 = createDialog("wait");
+                                                                        wait.show();
                                                                         isc.RPCManager.sendRequest({
                                                                             actionURL: parameterValueUrl + "/get-id/?code=kh",
                                                                             httpMethod: "GET",
@@ -984,12 +984,12 @@
                                                                             showPrompt: false,
                                                                             serverOutputAsString: false,
                                                                             callback: function (resp) {
-                                                                                wait3.close();
+                                                                                wait.close();
                                                                                 if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
                                                                                     let data = {
                                                                                         "presenceTypeId": JSON.parse(resp.data)
                                                                                     };
-                                                                                    let wait4 = createDialog("wait");
+                                                                                    wait.show();
                                                                                     isc.RPCManager.sendRequest({
                                                                                         actionURL: tclassStudentUrl + "/" + attendanceForm.getValue("sessionDate"),
                                                                                         httpMethod: "PUT",
@@ -1000,7 +1000,7 @@
                                                                                         serverOutputAsString: false,
                                                                                         data: JSON.stringify(data),
                                                                                         callback: function (resp) {
-                                                                                            wait4.close();
+                                                                                            wait.close();
                                                                                         }
                                                                                     });
                                                                                     return;
@@ -1063,7 +1063,7 @@
                 click: function () {
                     if (isSelfTaught){
                         Object.keys(selfTaughts).forEach(x=>{
-                            let wait = createDialog("wait");
+                            wait.show();
                             isc.RPCManager.sendRequest({
                                 actionURL: attendanceUrl + "/accept-absent-student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + x + "&sessionId=" + selfTaughts[x].sessionIds,
                                 httpMethod: "GET",
@@ -1089,7 +1089,7 @@
                                                     record1.studentState = "kh";
                                                     attendanceGrid.updateData(record1);
                                                     attendanceGrid.focusInFilterEditor();
-                                                    let wait1 = createDialog("wait");
+                                                    wait.show();
                                                     isc.RPCManager.sendRequest({
                                                         actionURL: parameterValueUrl + "/get-id/?code=kh",
                                                         httpMethod: "GET",
@@ -1099,12 +1099,12 @@
                                                         showPrompt: false,
                                                         serverOutputAsString: false,
                                                         callback: function (resp) {
-                                                            wait1.close();
+                                                            wait.close();
                                                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                                                 let data = {
                                                                     "presenceTypeId": JSON.parse(resp.data)
                                                                 };
-                                                                let wait2 = createDialog("wait");
+                                                                wait.show();
                                                                 isc.RPCManager.sendRequest({
                                                                     actionURL: tclassStudentUrl + "/" + record1.classStudentId,
                                                                     httpMethod: "PUT",
@@ -1115,7 +1115,7 @@
                                                                     serverOutputAsString: false,
                                                                     data: JSON.stringify(data),
                                                                     callback: function (resp) {
-                                                                        wait2.close();
+                                                                        wait.close();
                                                                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                                                             delete selfTaughts[x];
                                                                             if (Object.keys(selfTaughts).length==0) {
@@ -1208,7 +1208,7 @@
             this.Super("saveAllEdits",arguments);
             setTimeout(function () {
                 if(attendanceForm.getValue("filterType")==1) {
-                    let wait = createDialog("wait");
+                    wait.show();
                     isc.RPCManager.sendRequest({
                         actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
                         willHandleError: true,
@@ -1230,7 +1230,7 @@
                     });
                 }
                 else if(attendanceForm.getValue("filterType")==2) {
-                    let wait1 = createDialog("wait");
+                    wait.show();
                     isc.RPCManager.sendRequest({
                         actionURL: attendanceUrl + "/student-attendance-save",
                         willHandleError: true,
@@ -1242,7 +1242,7 @@
                         data: JSON.stringify([sessionsForStudent, causeOfAbsence]),
                         serverOutputAsString: false,
                         callback: function (resp) {
-                            wait1.close();
+                            wait.close();
                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                             } else {
@@ -1306,7 +1306,7 @@
     function loadPage_Attendance() {
         if (isAttendanceDate)
         {
-                let wait = createDialog("wait");
+                wait.show();
                 isc.RPCManager.sendRequest({
                     actionURL: attendanceUrl + "/studentUnknownSessionsInClass?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id,
                     httpMethod: "GET",
