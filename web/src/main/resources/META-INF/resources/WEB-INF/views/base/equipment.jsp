@@ -52,13 +52,14 @@
         },
         fields: [
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code='code'/>", align: "center",
+            {name: "code", title: "<spring:message code='code'/>", align: "center",autoFitWidth:true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
             },
             {name: "titleFa", title: "<spring:message code='global.titleFa'/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code='title.en'/> ", align: "center"}
+            {name: "titleEn", title: "<spring:message code='title.en'/> ", align: "center"},
+            {name: "description", title: "<spring:message code='description'/> ", align: "center"}
         ],
         canAddFormulaFields: false,
         filterOnKeypress: true,
@@ -87,7 +88,7 @@
         align: "center",
         canSubmit: true,
         showInlineErrors: true,
-        showErrorText: true,
+       // showErrorText: true,
         showErrorStyle: true,
         errorOrientation: "right",
         colWidths: ["30%", "*"],
@@ -102,8 +103,9 @@
                 title: "<spring:message code='code'/>",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-                length: "20",
-                width: "300"
+                length: "10",
+                width: "300",
+                required: true,
             },
             {
                 name: "titleFa",
