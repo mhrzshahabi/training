@@ -5,14 +5,17 @@
 
     if(Window_NeedsAssessment_Edit === undefined) {
         var Window_NeedsAssessment_Edit = isc.Window.create({
+            ID: "Window_NeedsAssessment_Edit",
             title: "<spring:message code="needs.assessment"/>",
             placement: "fillScreen",
             minWidth: 1024,
             items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+            // items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
             showUs(record, objectType) {
                 loadEditNeedsAssessment(record, objectType);
+                // loadDiffNeedsAssessment(record, objectType);
                 this.Super("show", arguments);
-            }
+            },
         });
     }
     if(Window_NeedsAssessment_Tree === undefined) {

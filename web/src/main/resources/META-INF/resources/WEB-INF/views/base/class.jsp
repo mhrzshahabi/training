@@ -2288,20 +2288,22 @@
             {
                 ID: "teacherInformationTab",
                 title: "<spring:message code='teacher.information'/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"}),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
             },
             </sec:authorize>
+            {
+                ID: "classDocumentsTab",
+                title: "مستندات کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/classDocuments-tab"})
+            },
             <%--{--%>
                 <%--ID: "costClassTab",--%>
                 <%--title: "<spring:message code='cost.class'/>",--%>
                 <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})--%>
             <%--}--%>
-
-
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
-
                 refreshSelectedTab_class(tab);
         }
     });
@@ -2569,7 +2571,7 @@
             DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(false)
 
         } else if (resp.httpResponseCode === 406) {
-            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(true)
+            DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(true);
             DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(true);
             DynamicForm_Class_JspClass.getItem("acceptancelimit_a").setDisabled(true);
                // createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
@@ -2645,6 +2647,11 @@
                 case "classPreCourseTestQuestionsTab": {
                     if (typeof loadPage_preCourseTestQuestions !== "undefined")
                         loadPage_preCourseTestQuestions(ListGrid_Class_JspClass.getSelectedRecord().id, isReadOnlyClass);
+                    break;
+                }
+                case "classDocumentsTab": {
+                    if (typeof loadPage_classDocuments !== "undefined")
+                        loadPage_classDocuments(ListGrid_Class_JspClass.getSelectedRecord().id);
                     break;
                 }
             }
