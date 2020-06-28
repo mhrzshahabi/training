@@ -62,17 +62,8 @@ public class Tclass extends Auditable {
     @Column(name = "f_teacher")
     private Long teacherId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_supervisor", insertable = false, updatable = false)
-    private Personnel Personnel;
-
     @Column(name = "f_supervisor")
     private Long supervisor;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_planner", insertable = false, updatable = false)
-    private Personnel Person;
 
     @Column(name = "f_planner")
     private Long planner;

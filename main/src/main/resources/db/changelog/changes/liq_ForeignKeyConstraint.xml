@@ -1030,14 +1030,4 @@
     <changeSet author="razmnoosh (generated)" id="1593244318133-441">
         <addForeignKeyConstraint baseColumnNames="f_letter_type" baseTableName="tbl_class_document" constraintName="FKn7btiae8cebg6exj361vktj5i" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-    <changeSet author="heydaripoor (generated)" id="1593327657806-441">
-        <addForeignKeyConstraint baseColumnNames="f_planner" baseTableName="tbl_class" constraintName="FK47n2qfbj4k3ydugf974mfksu6" deferrable="false" initiallyDeferred="false" referencedColumnNames="personnel_no" referencedTableName="tbl_personnel" validate="true"/>
-    </changeSet>
-    <changeSet author="heydaripoor (generated)" id="1593327657806-442">
-        <addForeignKeyConstraint baseColumnNames="f_supervisor" baseTableName="tbl_class" constraintName="FKiiw2b2xw8e1untya6a1tipq1w" deferrable="false" initiallyDeferred="false" referencedColumnNames="personnel_no" referencedTableName="tbl_personnel" validate="true"/>
-    </changeSet>
-
-
-
-
 </databaseChangeLog>
