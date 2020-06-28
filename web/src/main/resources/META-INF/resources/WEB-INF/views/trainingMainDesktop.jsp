@@ -761,6 +761,7 @@
 
     // -------------------------------------------  Constant Variables  -----------------------------------------------
     const dialogShowTime = 2000;
+    const wait = createDialog("wait");
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
@@ -2360,6 +2361,7 @@
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
+    const classDocumentUrl = rootUrl + "/classDocument/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
@@ -2680,10 +2682,11 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
-    <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="/evaluation/show-form"/>");--%>
+    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
     loadFrameworkMessageFa();
+    wait.close();
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>

@@ -5,14 +5,9 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Getter
@@ -23,29 +18,48 @@ public class ClassDocumentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TclassInfo")
-    public static class Info extends ClassDocumentDTO {
+    @ApiModel("ClassDocumentInfo")
+    public static class Info{
+        private Long id;
+        private Long classId;
+        private String letterNum;
+        private ParameterValueDTO.TupleInfo letterType;
+        private Long letterTypeId;
+        private ParameterValueDTO.TupleInfo reference;
+        private Long referenceId;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TclassCreateRq")
-    public static class Create extends ClassDocumentDTO {
+    @ApiModel("ClassDocumentCreate")
+    public static class Create {
+        private Long classId;
+        private String letterNum;
+        private ParameterValueDTO.TupleInfo letterType;
+        private Long letterTypeId;
+        private ParameterValueDTO.TupleInfo reference;
+        private Long referenceId;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TclassUpdateRq")
-    public static class Update extends ClassDocumentDTO {
+    @ApiModel("ClassDocumentUpdate")
+    public static class Update{
+        private Long classId;
+        private String letterNum;
+        private ParameterValueDTO.TupleInfo letterType;
+        private Long letterTypeId;
+        private ParameterValueDTO.TupleInfo reference;
+        private Long referenceId;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TclassSpecRs")
+    @ApiModel("ClassDocumentsSpecRs")
     public static class TclassSpecRs {
         private SpecRs response;
     }
